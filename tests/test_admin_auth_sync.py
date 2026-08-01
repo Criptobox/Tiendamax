@@ -134,6 +134,49 @@ class FormularioDeContrasenaTest(unittest.TestCase):
         self.assertIn("pierdes el acceso al admin", self.admin)
 
 
+class CodigoRecuperacionTest(unittest.TestCase):
+    """La vuelta atrás si se borran los datos del navegador.
+
+    La copia de Firebase no se puede leer a propósito, así que sin esto
+    perder el localStorage significaba perder el admin para siempre.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.admin = (RAIZ / "admin.html").read_text(encoding="utf-8")
+
+    def test_estan_los_tres_botones_y_el_campo(self):
+        self.assertIn('id="recCodigo"', self.admin)
+        for fn in ("tmVerCodigoRecuperacion", "tmCopiarCodigoRecuperacion",
+                   "tmRestaurarCodigoRecuperacion"):
+            self.assertIn(f'onclick="{fn}()"', self.admin)
+            self.assertIn(f"window.{fn}={fn}", self.admin)
+
+    def test_valida_antes_de_escribir(self):
+        # Un código pegado a medias no puede dejar guardado un hash inservible:
+        # eso bloquearía el admin incluso con la contraseña correcta.
+        i_valida = self.admin.index("El código está incompleto o corrupto")
+        i_escribe = self.admin.index("localStorage.setItem(AUTH_HASH_KEY, d.h)")
+        self.assertLess(i_valida, i_escribe)
+        self.assertIn("d.h.length!==64", self.admin)
+
+    def test_rechaza_codigos_de_otra_version(self):
+        # Si cambiara AUTH_ITERATIONS, un código viejo restauraría un hash que
+        # ya no corresponde a lo que calcula hashPassword.
+        self.assertIn("Number(d.i)!==AUTH_ITERATIONS", self.admin)
+
+    def test_no_se_sube_a_ningun_sitio(self):
+        # Todo el sentido de esta vía es que el hash NO se publique: si se
+        # subiera, valdría lo mismo que abrir admin_auth a lectura pública.
+        bloque = self.admin[self.admin.index("const REC_PREFIJO"):
+                            self.admin.index("async function tmCambiarPassword")]
+        for prohibido in ("fetch(", "subirArchivoAGitHub", "firebaseio"):
+            self.assertNotIn(prohibido, bloque)
+
+    def test_avisa_de_que_el_codigo_es_sensible(self):
+        self.assertIn("Trátalo como una contraseña", self.admin)
+
+
 class ClienteSincronizacionTest(unittest.TestCase):
 
     @classmethod

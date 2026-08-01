@@ -1319,6 +1319,17 @@
           <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Tu contraseña solo se guarda en este navegador. La copia de Firebase no se puede leer (a propósito: si se pudiera, cualquiera podría probar contraseñas contra ella), así que si borras los datos del navegador y no la recuerdas, pierdes el acceso al admin. Apúntala en un sitio seguro.</p>
         </div>
         <div class="section">
+          <h3>🆘 Código de recuperación</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guárdalo una vez (gestor de contraseñas, una nota, una captura). Si cambias de móvil o borras los datos del navegador, lo pegas aquí y este dispositivo vuelve a reconocer tu contraseña. <strong>Seguirás necesitando la contraseña para entrar</strong> — el código solo devuelve lo que el navegador había olvidado.</p>
+          <div class="form-group"><label class="form-label" for="recCodigo">Código</label><textarea class="form-input" id="recCodigo" rows="3" spellcheck="false" placeholder="Pulsa “Ver mi código” para generarlo, o pega aquí el que guardaste" style="resize:vertical;font-family:ui-monospace,monospace;font-size:11px"></textarea></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="tmVerCodigoRecuperacion()">🆘 Ver mi código</button>
+            <button class="btn btn-ghost" onclick="tmCopiarCodigoRecuperacion()">📋 Copiar</button>
+            <button class="btn btn-ghost" onclick="tmRestaurarCodigoRecuperacion()">📥 Restaurar con este código</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-top:10px">🔐 Trátalo como una contraseña: quien lo tenga puede mandar notificaciones push a tus clientes en tu nombre. No lo pegues en chats ni lo subas a ningún sitio público.</p>
+        </div>
+        <div class="section">
           <h3>👆 Seguridad biométrica</h3>
           <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Huella o Face ID para entrar al admin sin escribir la contraseña, en este dispositivo.</p>
           <div id="tmBioSection"></div>
@@ -1762,6 +1773,52 @@ async function tmSyncPassword(){
   if(b){ b.disabled=true; b.textContent='⏳ Sincronizando…'; }
   try{ await sincronizarPasswordAFirebase(); }
   finally{ if(b){ b.disabled=false; b.textContent=t; } }
+}
+
+// ── Código de recuperación ──
+// La contraseña solo vive en localStorage y la copia de Firebase no se puede
+// leer a propósito, así que borrar los datos del navegador dejaba fuera del
+// admin para siempre. Esto es la vuelta atrás: el hash y la sal en un texto
+// que el admin guarda por su cuenta, sin publicar nada en ningún servidor.
+// No es un pase de entrada por sí solo — hay que saber la contraseña igual.
+const REC_PREFIJO = 'TMX1-';
+
+function tmVerCodigoRecuperacion(){
+  const hash=localStorage.getItem(AUTH_HASH_KEY), salt=localStorage.getItem(AUTH_SALT_KEY);
+  if(!hash||!salt){ mostrarNotificacion('❌ Este dispositivo no tiene contraseña guardada, así que no hay nada que respaldar','error'); return; }
+  const ta=$('#recCodigo'); if(!ta) return;
+  ta.value = REC_PREFIJO + btoa(JSON.stringify({ h:hash, s:salt, i:AUTH_ITERATIONS }));
+  ta.select();
+  mostrarNotificacion('🆘 Código generado. Guárdalo ahora, en un sitio seguro.','success');
+}
+
+async function tmCopiarCodigoRecuperacion(){
+  const ta=$('#recCodigo'); if(!ta||!ta.value.trim()){ mostrarNotificacion('❌ Primero pulsa “Ver mi código”','error'); return; }
+  try{ await navigator.clipboard.writeText(ta.value.trim()); mostrarNotificacion('📋 Código copiado','success'); }
+  catch(e){ ta.select(); mostrarNotificacion('Selecciónalo y cópialo a mano','info'); }
+}
+
+function tmRestaurarCodigoRecuperacion(){
+  const ta=$('#recCodigo'); if(!ta) return;
+  const codigo=(ta.value||'').trim();
+  if(!codigo.startsWith(REC_PREFIJO)){ mostrarNotificacion('❌ Eso no parece un código de recuperación','error'); return; }
+  let d=null;
+  try{ d=JSON.parse(atob(codigo.slice(REC_PREFIJO.length))); }catch(e){}
+  // Se valida la forma antes de tocar nada: un código a medio copiar podría
+  // dejar guardado un hash inservible y entonces sí no entraría ni con la
+  // contraseña buena.
+  if(!d || typeof d.h!=='string' || d.h.length!==64 || typeof d.s!=='string' || d.s.length<20){
+    mostrarNotificacion('❌ El código está incompleto o corrupto. Cópialo entero.','error'); return;
+  }
+  if(d.i && Number(d.i)!==AUTH_ITERATIONS){
+    mostrarNotificacion('❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.','error'); return;
+  }
+  try{
+    localStorage.setItem(AUTH_HASH_KEY, d.h);
+    localStorage.setItem(AUTH_SALT_KEY, d.s);
+    localStorage.removeItem('admin_rl');
+  }catch(e){ mostrarNotificacion('❌ No se pudo guardar en este navegador','error'); return; }
+  mostrarNotificacion('✅ Restaurado. Ya puedes entrar con tu contraseña de siempre.','success');
 }
 
 function fillAgregarCategorias(){
@@ -4234,6 +4291,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.tmCambiarPassword=tmCambiarPassword; window.tmSyncPassword=tmSyncPassword;
+window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
