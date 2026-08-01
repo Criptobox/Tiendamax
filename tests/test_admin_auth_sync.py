@@ -176,6 +176,33 @@ class CodigoRecuperacionTest(unittest.TestCase):
     def test_avisa_de_que_el_codigo_es_sensible(self):
         self.assertIn("Trátalo como una contraseña", self.admin)
 
+    def test_se_puede_restaurar_desde_el_login(self):
+        # Lo que está dentro del panel queda detrás del propio login: si se
+        # borran los datos del navegador no se puede entrar, así que una
+        # recuperación que viva solo en Configuración es inalcanzable justo
+        # cuando hace falta.
+        i_login = self.admin.index('id="tm2LoginPass"')
+        i_panel = self.admin.index('id="recCodigo"')
+        i_caja = self.admin.index('id="recCodigoLogin"')
+        self.assertLess(i_login, i_caja, "la caja debe estar en el formulario de login")
+        self.assertLess(i_caja, i_panel, "y antes que la de Configuración")
+        self.assertIn('onclick="tmRestaurarDesdeLogin()"', self.admin)
+        self.assertIn("window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin", self.admin)
+
+    def test_las_dos_entradas_validan_igual(self):
+        # Una sola función de validación para las dos: si se duplicara, una
+        # podría acabar aceptando lo que la otra rechaza.
+        self.assertEqual(1, self.admin.count("function _tmAplicarCodigoRec("))
+        for llamante in ("tmRestaurarCodigoRecuperacion", "tmRestaurarDesdeLogin"):
+            i = self.admin.index(f"function {llamante}(")
+            self.assertIn("_tmAplicarCodigoRec(", self.admin[i:i + 600])
+
+    def test_no_promete_un_correo_que_no_existe(self):
+        # El enlace "¿Olvidaste?" decía que se enviaría un enlace al correo
+        # registrado. No hay servidor, ni cuentas, ni correo: engañaba justo
+        # en el momento en que el admin está bloqueado.
+        self.assertNotIn("enlace de recuperación a tu correo", self.admin)
+
 
 class ClienteSincronizacionTest(unittest.TestCase):
 

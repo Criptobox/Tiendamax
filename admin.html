@@ -892,6 +892,17 @@
         </button>
       </form>
 
+      <!-- Recuperación por código. Va AQUÍ, en el login, y no solo en
+           Configuración: si se borran los datos del navegador no se puede
+           entrar, y todo lo que esté dentro del panel queda detrás de este
+           mismo formulario — o sea, inalcanzable justo cuando hace falta. -->
+      <div id="tm2RecBox" style="display:none;margin-top:14px;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:12px">
+        <p style="font-size:12px;line-height:1.5;margin:0 0 10px;opacity:.85">No hay recuperación por correo: tu contraseña nunca sale de este navegador. Si guardaste tu <strong>código de recuperación</strong>, pégalo aquí y podrás entrar con tu contraseña de siempre.</p>
+        <textarea id="recCodigoLogin" rows="3" spellcheck="false" placeholder="TMX1-…" style="width:100%;box-sizing:border-box;resize:vertical;font-family:ui-monospace,monospace;font-size:11px;padding:8px;border-radius:8px"></textarea>
+        <button type="button" class="tm2-login-btn" style="margin-top:10px" onclick="tmRestaurarDesdeLogin()"><span class="tm2-btn-label">📥 Restaurar acceso</span></button>
+        <p id="tm2RecMsg" style="font-size:12px;line-height:1.45;margin:10px 0 0"></p>
+      </div>
+
       <!-- Bio view (contenedor que llena js/biometric-auth.js) -->
       <div id="tm2LoginBio" class="tm2-bio-view" style="display:none">
         <div id="loginBioContent"></div>
@@ -960,9 +971,16 @@
   // Forgot link (demo)
   (function(){
     var l = document.getElementById('tm2ForgotLink');
+    // Antes esto promet\u00eda un correo de recuperaci\u00f3n que no existe: no hay
+    // servidor ni cuentas, la contrase\u00f1a vive solo en este navegador. Ahora
+    // abre la \u00fanica v\u00eda real, el c\u00f3digo de recuperaci\u00f3n.
     if(l) l.addEventListener('click', function(e){
       e.preventDefault();
-      alert('Se enviar\u00eda un enlace de recuperaci\u00f3n a tu correo registrado.');
+      var box = document.getElementById('tm2RecBox');
+      if(!box) return;
+      var cerrado = box.style.display === 'none';
+      box.style.display = cerrado ? 'block' : 'none';
+      if(cerrado){ var ta = document.getElementById('recCodigoLogin'); if(ta) ta.focus(); }
     });
   })();
 
@@ -1798,27 +1816,52 @@ async function tmCopiarCodigoRecuperacion(){
   catch(e){ ta.select(); mostrarNotificacion('Selecciónalo y cópialo a mano','info'); }
 }
 
-function tmRestaurarCodigoRecuperacion(){
-  const ta=$('#recCodigo'); if(!ta) return;
-  const codigo=(ta.value||'').trim();
-  if(!codigo.startsWith(REC_PREFIJO)){ mostrarNotificacion('❌ Eso no parece un código de recuperación','error'); return; }
+// Validar y aplicar un código. Devuelve {ok, msg} en vez de avisar por su
+// cuenta porque tiene dos entradas —el login y Configuración— y cada una
+// enseña el resultado a su manera; la comprobación tiene que ser la misma.
+function _tmAplicarCodigoRec(codigo){
+  codigo=(codigo||'').trim();
+  if(!codigo) return {ok:false, msg:'❌ Pega aquí el código que guardaste'};
+  if(!codigo.startsWith(REC_PREFIJO)) return {ok:false, msg:'❌ Eso no parece un código de recuperación (empiezan por '+REC_PREFIJO+')'};
   let d=null;
   try{ d=JSON.parse(atob(codigo.slice(REC_PREFIJO.length))); }catch(e){}
   // Se valida la forma antes de tocar nada: un código a medio copiar podría
   // dejar guardado un hash inservible y entonces sí no entraría ni con la
   // contraseña buena.
   if(!d || typeof d.h!=='string' || d.h.length!==64 || typeof d.s!=='string' || d.s.length<20){
-    mostrarNotificacion('❌ El código está incompleto o corrupto. Cópialo entero.','error'); return;
+    return {ok:false, msg:'❌ El código está incompleto o corrupto. Cópialo entero, sin cortarlo.'};
   }
   if(d.i && Number(d.i)!==AUTH_ITERATIONS){
-    mostrarNotificacion('❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.','error'); return;
+    return {ok:false, msg:'❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.'};
   }
   try{
     localStorage.setItem(AUTH_HASH_KEY, d.h);
     localStorage.setItem(AUTH_SALT_KEY, d.s);
     localStorage.removeItem('admin_rl');
-  }catch(e){ mostrarNotificacion('❌ No se pudo guardar en este navegador','error'); return; }
-  mostrarNotificacion('✅ Restaurado. Ya puedes entrar con tu contraseña de siempre.','success');
+  }catch(e){ return {ok:false, msg:'❌ No se pudo guardar en este navegador'}; }
+  return {ok:true, msg:'✅ Acceso restaurado. Escribe arriba tu contraseña de siempre y entra.'};
+}
+
+function tmRestaurarCodigoRecuperacion(){
+  const ta=$('#recCodigo'); if(!ta) return;
+  const r=_tmAplicarCodigoRec(ta.value);
+  mostrarNotificacion(r.ok ? '✅ Restaurado. Ya puedes entrar con tu contraseña de siempre.' : r.msg,
+                      r.ok ? 'success' : 'error');
+}
+
+// Versión del login: ahí no hay panel donde enseñar un toast con garantías,
+// y además conviene que el mensaje se quede fijo mientras se reintenta.
+function tmRestaurarDesdeLogin(){
+  const ta=document.getElementById('recCodigoLogin');
+  const out=document.getElementById('tm2RecMsg');
+  if(!ta) return;
+  const r=_tmAplicarCodigoRec(ta.value);
+  if(out){ out.textContent=r.msg; out.style.color=r.ok?'#3ddc84':'#ff6b6b'; }
+  if(r.ok){
+    ta.value='';
+    const pwd=document.getElementById('adminPassword');
+    if(pwd){ try{ pwd.focus(); }catch(e){} }
+  }
 }
 
 function fillAgregarCategorias(){
@@ -4291,7 +4334,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.tmCambiarPassword=tmCambiarPassword; window.tmSyncPassword=tmSyncPassword;
-window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion;
+window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion; window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
