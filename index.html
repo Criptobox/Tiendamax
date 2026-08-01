@@ -253,7 +253,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=cc292d7c" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=bef9502f" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -266,7 +266,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=b4839111">
+    <link rel="stylesheet" href="css/bundle.css?v=2f41b55b">
 
 
 
@@ -1552,14 +1552,16 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=cc292d7c" defer></script>
+    <script src="js/tm-bundle.js?v=bef9502f" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
          para no engordar el parseo del hilo principal en la carga inicial.
          Sigue siendo defer y va DESPUÉS del bundle, así conserva el orden de
          dependencias (usa globals del bundle: productos, agregarAlCarrito…). -->
+    <!-- Asistente antiguo desactivado: duplicaba la burbuja de Max (ver el bloque comentado al final del body)
     <script src="js/tm-agent.js?v=7bd39134" defer></script>
+    -->
 
     <script src="js/push-fix.js?v=7278889b" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
@@ -2072,6 +2074,24 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- TM Agent Chat Widget -->
 <!-- Bienvenida premium: burbuja de mensaje flotante sobre el ícono del bot,
      no un toast genérico — para que se sienta parte del widget. -->
+<!-- ══════════════════════════════════════════════════════════════
+     ASISTENTE ANTIGUO (TmAgent) — DESACTIVADO, no borrado.
+
+     Hacía lo mismo que el bot "Max" (js/tm-bot.js): buscar en el
+     inventario, comparar productos y calcular consumo, todo offline.
+     Al reactivarse Max, sus dos burbujas quedaron una encima de la
+     otra en la esquina inferior derecha —medido: tmAgentBubble en
+     x=346 y tmBotBubble en x=352— con dos carteles de bienvenida
+     solapados. Max gana por z-index y tapaba a este.
+
+     Se deja Max porque es el que tiene la base de conocimiento
+     ampliada (términos técnicos, sistemas completos, envíos por
+     provincia, métodos de pago, autonomía de baterías).
+
+     Para volver a este: descomenta este bloque Y el <script> de
+     js/tm-agent.js más arriba, y comenta los de tm-bot.
+     ══════════════════════════════════════════════════════════════ -->
+<!--
 <div class="tm-welcome-card" id="tmWelcomeCard" role="status" aria-live="polite">
   <button type="button" class="tm-welcome-close" id="tmWelcomeClose" aria-label="Cerrar bienvenida">&times;</button>
   <span class="tm-welcome-avatar">🤖</span>
@@ -2106,5 +2126,6 @@ document.addEventListener('DOMContentLoaded',function(){
     <button onclick="TmAgent.send()">➤</button>
   </div>
 </div>
+-->
 </body>
 </html>

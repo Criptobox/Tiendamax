@@ -100,7 +100,10 @@ function actualizarSelectCategorias() {
         if (!select) return;
         const val = select.value;
         select.innerHTML = '';
-        categorias.forEach(cat => {
+        // Incluye la categoría que ya tenga el producto aunque no esté
+        // declarada: si falta la <option>, select.value se queda vacío, cae a
+        // 'General' y al guardar le cambia la categoría al producto sin avisar.
+        tmCategoriasVisibles(productos, categorias).forEach(cat => {
             const opt = document.createElement('option');
             opt.value = cat; opt.textContent = cat;
             select.appendChild(opt);
@@ -115,7 +118,9 @@ function actualizarBotonesCategorias() {
 
     container.innerHTML = `<button class="categoria-btn ${categoriaSeleccionada === 'Todas' ? 'active' : ''}" onclick="filtrarPorCategoria('Todas')">Todas</button>`;
 
-    categorias.forEach(cat => {
+    // Sin esto, una categoría no declarada no tiene píldora: sus productos
+    // solo se ven en "Todas" y no hay forma de filtrarlos.
+    tmCategoriasVisibles(productos, categorias).forEach(cat => {
         const btn = document.createElement('button');
         btn.className = `categoria-btn ${categoriaSeleccionada === cat ? 'active' : ''}`;
         btn.textContent = cat;

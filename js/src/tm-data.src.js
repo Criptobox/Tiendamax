@@ -38,6 +38,32 @@ let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
 
+/**
+ * Categorías que el sitio debe mostrar: las declaradas en categorias.json
+ * MÁS las que algún producto usa aunque nadie las haya declarado.
+ *
+ * Por qué existe: la categoría de un producto es texto libre en el admin, así
+ * que se puede crear una escribiéndola en la ficha sin pasar por la lista de
+ * categorías. Cuando eso ocurre, iterar solo `categorias` deja esos productos
+ * INALCANZABLES: sin tarjeta en el home, sin píldora de filtro y —lo peor—
+ * sin opción en el <select> del admin, así que al editar uno de esos
+ * productos el select caía a 'General' y al guardar le cambiaba la categoría
+ * en silencio. Pasó de verdad con AUDIO (3 productos, ninguna tarjeta).
+ *
+ * Mantiene el orden declarado y añade las huérfanas al final, para no
+ * reordenar el home cada vez que se publica un producto.
+ */
+function tmCategoriasVisibles(prods, cats) {
+    const lista = Array.isArray(cats) ? cats.slice() : (Array.isArray(categorias) ? categorias.slice() : []);
+    const vistas = new Set(lista.map(c => String(c)));
+    const fuente = Array.isArray(prods) ? prods : (Array.isArray(productos) ? productos : []);
+    fuente.forEach(p => {
+        const c = (p && p.categoria != null) ? String(p.categoria).trim() : '';
+        if (c && !vistas.has(c)) { vistas.add(c); lista.push(c); }
+    });
+    return lista;
+}
+
 // Iconos para cada categoría (Mapeo automático por palabras clave)
 const ICONOS_MAPA = {
     'wifi': '📡', 'internet': '📡', 'red': '📡', 'router': '📡',

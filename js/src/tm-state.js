@@ -2,7 +2,7 @@ function actualizarOffsetsUI(){try{const t=document.documentElement,e=document.g
         <span class="cat-icon">${a("todos")||"\u{1F6CD}\uFE0F"}</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(r)} producto${r!==1?"s":""}</span>
-    `,n.onclick=()=>mostrarVistaCategoria("Todas"),t.appendChild(n);const i={};productos.forEach(c=>{(c.masVendido===!0||c.masVendido==="true")&&c.stock>0&&(i[c.categoria]=(i[c.categoria]||0)+1)});const d=Math.max(...Object.values(i),0),s={WIFI:"REDES"},f=[];categorias.forEach(c=>{const m=productos.filter(E=>E.categoria===c).length,l=s[c]||c;if(m<TM_CAT_MIN){f.push({cat:c,count:m,name:l,icon:obtenerIconoCategoria(c)});return}const h=i[c]||0,p=h>0&&(h===d||h>=2),u=document.createElement("div");u.className="categoria-card"+(p?" cat-popular":""),typeof tmPintarCategoria=="function"&&tmPintarCategoria(u,c),u.innerHTML=`
+    `,n.onclick=()=>mostrarVistaCategoria("Todas"),t.appendChild(n);const i={};productos.forEach(c=>{(c.masVendido===!0||c.masVendido==="true")&&c.stock>0&&(i[c.categoria]=(i[c.categoria]||0)+1)});const d=Math.max(...Object.values(i),0),s={WIFI:"REDES"},f=[];tmCategoriasVisibles(productos,categorias).forEach(c=>{const m=productos.filter(E=>E.categoria===c).length,l=s[c]||c;if(m<TM_CAT_MIN){f.push({cat:c,count:m,name:l,icon:obtenerIconoCategoria(c)});return}const h=i[c]||0,p=h>0&&(h===d||h>=2),u=document.createElement("div");u.className="categoria-card"+(p?" cat-popular":""),typeof tmPintarCategoria=="function"&&tmPintarCategoria(u,c),u.innerHTML=`
             <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${a(c)||escapeHtml(obtenerIconoCategoria(c))}</span>
             <span class="cat-name">${escapeHtml(l)}</span>

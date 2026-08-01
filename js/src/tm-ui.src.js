@@ -67,11 +67,17 @@ function renderizarCategoriasHomeInstant() {
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
-    const maxCount = localCats.length ? Math.max(...localCats.map(cat => localProds.filter(p => p.categoria === cat).length)) : 0;
+    // Mismas categorías que el renderer con datos frescos (incluidas las que
+    // solo existen dentro de los productos): si esta lista fuera más corta,
+    // el pintado instantáneo mostraría menos tarjetas y al llegar la red
+    // aparecerían de golpe.
+    const _catsI = (typeof tmCategoriasVisibles === 'function')
+        ? tmCategoriasVisibles(localProds, localCats) : localCats;
+    const maxCount = _catsI.length ? Math.max(..._catsI.map(cat => localProds.filter(p => p.categoria === cat).length)) : 0;
     const _dn = { 'WIFI': 'REDES' };
     const _extrasI = [];
     const _minI = (typeof TM_CAT_MIN !== 'undefined') ? TM_CAT_MIN : 3;
-    localCats.forEach(cat => {
+    _catsI.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
         const icon = obtenerIconoCategoria(cat);
         // Pocas unidades (< 3) → desplegable "Ver más"

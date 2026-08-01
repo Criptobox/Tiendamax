@@ -491,7 +491,9 @@ function renderizarCategoriasHome() {
 
     const _catDisplayNames = { 'WIFI': 'REDES' };
     const _extras = [];
-    categorias.forEach(cat => {
+    // Incluye las categorías que solo existen dentro de los productos: si no,
+    // sus productos no tienen tarjeta por la que llegar (ver tmCategoriasVisibles).
+    tmCategoriasVisibles(productos, categorias).forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const displayCat = _catDisplayNames[cat] || cat;
         // Pocas unidades (< 3) → al desplegable "Ver más"
