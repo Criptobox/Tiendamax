@@ -2369,19 +2369,27 @@
         const subcat = mentions[0].subcategoria;
         if(subcat){
           const sim = PRODUCTOS.filter(p => (p.subcategoria||'') === subcat && p.id !== mentions[0].id && p.stock > 0).slice(0,3);
-          if(sim.length >= 2){
-            const alternativasStr = sim.slice(0,3).map(s => `• <strong>${escapeHtml(s.nombre)}</strong> — ${fmtUSD(s.precio)}`).join('\n');
-            return {
-              response: `🆚 Para comparar necesito <em>dos productos</em>. Viste uno: <strong>${escapeHtml(mentions[0].nombre)}</strong>.\n\nAquí tienes otros <strong>del mismo tipo (${subcat})</strong> disponibles para comparar:\n${alternativasStr}\n\nDime así: <em>"compara ${escapeHtml(mentions[0].nombre.slice(0,30))} vs ${escapeHtml(sim[0].nombre.slice(0,30))}"</em>`,
-              products: [mentions[0], ...sim].slice(0,4),
-              quickReplies: sim.slice(0,2).map(s => '🆚 Comparar con ' + s.nombre.slice(0,25))
-            };
+          if(sim.length >= 1){
+            // Ya sabemos el primero: solo falta que toque el segundo.
+            return { elegirRival: mentions[0] };
           }
         }
       }
+      // Si el texto ya apunta a un tipo concreto ("compara los routers"), se
+      // ofrecen esos para elegir. Escribir los nombres completos a mano era
+      // pedirle demasiado al cliente.
+      const subPedida = _detectarSubcategoria(text);
+      const catPedida = _detectarCategoriaPedida(text);
+      let candidatos = [];
+      if(subPedida) candidatos = PRODUCTOS.filter(p => p.subcategoria === subPedida && p.stock > 0);
+      else if(catPedida) candidatos = PRODUCTOS.filter(p => p.categoria === catPedida && p.stock > 0);
+      if(candidatos.length >= 2){
+        return { elegirComparar: candidatos.sort((a,b) => a.precio - b.precio),
+                 tituloComparar: 'Esto es lo que tengo en ' + String(subPedida || catPedida) };
+      }
       return {
-        response: `🆚 Quiero comparar dos productos para ti. <strong>Importante: solo comparo productos del mismo tipo</strong> (router con router, batería con batería, cámara con cámara). Dime así:\n• <em>"compara el router Kuwfi vs el Tenda AC1200"</em>\n• <em>"compara los inversores Must y PowMr"</em>\n• <em>"¿qué cámara es mejor, la V380 Pro o el kit Zosi?"</em>`,
-        quickReplies: ['🆚 Comparar routers wifi','🆚 Comparar baterías','🆚 Comparar cámaras']
+        response: `🆚 Con gusto. <strong>Solo comparo productos del mismo tipo</strong> (router con router, batería con batería), que es cuando la comparativa sirve de algo.\n\nDime de qué tipo quieres y te enseño los que hay para que <em>elijas cuáles</em>:`,
+        quickReplies: ['🆚 Comparar routers','🆚 Comparar baterías','🆚 Comparar cámaras','🆚 Comparar inversores','📦 Ver categorías']
       };
     }
 
@@ -3055,6 +3063,81 @@
     _messages.push({html, who});
   }
 
+  /* ── Elegir QUÉ comparar, en vez de decidirlo por el cliente ──
+     Antes, cualquier atajo de comparación ("comparar dos de estos",
+     "comparar routers"…) agarraba los dos PRIMEROS de la lista y armaba la
+     tabla. Si querías comparar el tercero con el quinto, no había forma de
+     pedirlo. Ahora se muestran las opciones y se eligen una a una. */
+  let _compSel = { p1: null, lista: [] };
+
+  function _tarjetaElegible(p, etiqueta, onClick){
+    const item = document.createElement('div');
+    item.className = 'tm-bot-product';
+    const imgInfo = imageUrl(p);
+    const imgSrc = imgInfo ? imgInfo.primary : PLACEHOLDER_IMG;
+    item.innerHTML =
+      '<img class="tm-bot-product-img" src="' + escapeAttr(imgSrc) + '" alt="" loading="lazy" ' +
+        'onerror="this.src=\'' + PLACEHOLDER_IMG + '\';this.onerror=null;">' +
+      '<div class="tm-bot-product-info">' +
+        '<div class="tm-bot-product-name">' + escapeHtml(p.nombre) + '</div>' +
+        '<div class="tm-bot-product-price">' + fmtUSD(p.precio) + ' USD</div>' +
+        '<div class="tm-bot-product-stock">' + escapeHtml(String(p.subcategoria || p.categoria || '')) + ' · ' + (p.stock > 0 ? p.stock + ' en stock' : 'agotado') + '</div>' +
+      '</div>' +
+      '<div class="tm-bot-product-go">' + etiqueta + '</div>';
+    item.onclick = onClick;
+    return item;
+  }
+
+  function _pintarElegibles(lista, etiqueta, onPick){
+    const wrap = document.createElement('div');
+    wrap.className = 'tm-bot-products';
+    lista.forEach(p => wrap.appendChild(_tarjetaElegible(p, etiqueta, () => onPick(p))));
+    bodyEl.appendChild(wrap);
+    _scrollAlFondo();
+  }
+
+  // Paso 1: elegir el primero
+  function pedirElegirPrimero(lista, titulo){
+    lista = (lista || []).filter(Boolean);
+    if(lista.length < 2){
+      addMessageTyped('Para comparar necesito al menos dos productos del mismo tipo disponibles. Dime qué categoría te interesa y te enseño lo que hay.', 'bot');
+      renderQuickReplies(['📦 Ver categorías','💬 WhatsApp']);
+      return;
+    }
+    _compSel = { p1: null, lista: lista };
+    addMessageTyped('🆚 ' + (titulo || 'Vamos a comparar') + '.\n\n<strong>Toca el PRIMERO</strong> que quieras comparar:', 'bot');
+    _pintarElegibles(lista.slice(0, 8), '1️⃣', p => elegirPrimero(p));
+    renderQuickReplies(['📦 Ver categorías','💬 WhatsApp']);
+  }
+
+  // Paso 2: elegir el segundo, solo entre los comparables de verdad
+  function elegirPrimero(p){
+    _compSel.p1 = p;
+    _context.lastProduct = p;
+    // Solo del mismo tipo: comparar una batería con un router no dice nada
+    let rivales = _compSel.lista.filter(x => String(x.id) !== String(p.id) && sonComparables(p, x).ok);
+    if(!rivales.length){
+      rivales = PRODUCTOS.filter(x => String(x.id) !== String(p.id) && x.stock > 0 && sonComparables(p, x).ok);
+    }
+    if(!rivales.length){
+      addMessageTyped('No tengo otro <strong>' + escapeHtml(p.subcategoria || p.categoria) + '</strong> disponible para comparar con <strong>' + escapeHtml(p.nombre) + '</strong>. Te muestro su ficha completa:', 'bot');
+      const d = buildDetalle(p);
+      if(d.response) addMessageTyped(d.response, 'bot');
+      if(d.products) addProducts(d.products);
+      if(d.quickReplies) renderQuickReplies(d.quickReplies);
+      return;
+    }
+    addMessageTyped('Elegiste <strong>' + escapeHtml(p.nombre) + '</strong>.\n\n<strong>Ahora toca el SEGUNDO</strong> (solo te muestro los del mismo tipo, que son los que tiene sentido comparar):', 'bot');
+    _pintarElegibles(rivales.slice(0, 8), '2️⃣', p2 => {
+      const r = buildComparacion(p, p2);
+      if(r.response) addMessageTyped(r.response, 'bot');
+      if(r.compare) addCompareTable(r.compare);
+      if(r.quickReplies) renderQuickReplies(r.quickReplies);
+      _compSel = { p1: null, lista: [] };
+    });
+    renderQuickReplies(['🔄 Elegir otro primero','📦 Ver categorías']);
+  }
+
   function addProducts(products){
     if(!products || products.length === 0) return;
     const wrap = document.createElement('div');
@@ -3269,44 +3352,62 @@
     if(/pago por transferencia|transferencia bancaria/i.test(r)){ sendMessage('pago por transferencia bancaria'); return; }
     if(/enzona/i.test(r)){ sendMessage('pago por EnZona'); return; }
     if(/ver otros m[eé]todos|ver otros metodos/i.test(r)){ sendMessage('métodos de pago'); return; }
-    if(/comparar.*router|compara.*router/.test(r)){
-      const prods = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === 'ROUTERS' && p.stock > 0).slice(0,2);
-      if(prods.length >= 2) sendMessage('compara ' + prods[0].nombre + ' vs ' + prods[1].nombre);
-      else sendMessage('quiero comparar dos routers');
-      return;
-    }
-    if(/comparar.*bater|compara.*bater/.test(r)){
-      const bats = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === 'BATERÍAS' && p.stock > 0);
-      if(bats.length >= 2) sendMessage('compara ' + bats[0].nombre + ' vs ' + bats[1].nombre);
-      else sendMessage('quiero comparar dos baterías');
-      return;
-    }
-    if(/comparar.*c[aá]mara|compara.*c[aá]mara/.test(r)){
-      const cams = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === 'CÁMARAS' && p.stock > 0);
-      if(cams.length >= 2) sendMessage('compara ' + cams[0].nombre + ' vs ' + cams[1].nombre);
-      else sendMessage('quiero comparar dos cámaras');
-      return;
-    }
-    if(/comparar.*inversor|compara.*inversor/.test(r)){
-      const invs = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === 'INVERSORES' && p.stock > 0);
-      if(invs.length >= 2) sendMessage('compara ' + invs[0].nombre + ' vs ' + invs[1].nombre);
-      else sendMessage('quiero comparar dos inversores');
+    // Comparar por tipo: en vez de agarrar los dos primeros, se muestran los
+    // disponibles de ese tipo para que el cliente elija cuáles quiere.
+    const _tipoComp = [
+      [/comparar.*router|compara.*router/, 'ROUTERS', 'routers'],
+      [/comparar.*bater|compara.*bater/,   'BATERÍAS', 'baterías'],
+      [/comparar.*c[aá]mara|compara.*c[aá]mara/, 'CÁMARAS', 'cámaras'],
+      [/comparar.*inversor|compara.*inversor/,   'INVERSORES', 'inversores'],
+    ].find(t => t[0].test(r));
+    if(_tipoComp){
+      const lista = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === _tipoComp[1] && x.stock > 0)
+                             .sort((a,b) => a.precio - b.precio);
+      pedirElegirPrimero(lista, 'Esto es lo que tengo en ' + _tipoComp[1]);
       return;
     }
     if(/comparar dos de (wif|energi|seguridad|carros|motos|hogar|celulares|audio|juegos|ropa|pc|gym|utiles|router|bater|c[aá]mara|inversor|cargador|cerradura|alarma|antena|switch|panel|controlador)/.test(r)){
       const catMatch = r.match(/comparar dos de (\w+)/);
       if(catMatch){
-        const key = catMatch[1];
-        // Buscar por subcategoría o categoría
-        let prods = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase().startsWith(key.toUpperCase()) && p.stock > 0).slice(0,2);
-        if(prods.length < 2) prods = PRODUCTOS.filter(p => p.categoria.toUpperCase().startsWith(key.toUpperCase()) && p.stock > 0).slice(0,2);
-        if(prods.length >= 2){
-          sendMessage('compara ' + prods[0].nombre + ' vs ' + prods[1].nombre);
+        const key = catMatch[1].toUpperCase();
+        let lista = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase().startsWith(key) && x.stock > 0);
+        if(lista.length < 2) lista = PRODUCTOS.filter(x => (x.categoria||'').toUpperCase().startsWith(key) && x.stock > 0);
+        if(lista.length >= 2){
+          pedirElegirPrimero(lista.sort((a,b) => a.precio - b.precio), 'Elige cuáles quieres comparar');
           return;
         }
       }
       sendMessage('quiero comparar dos productos');
       return;
+    }
+    if(/comparar dos de estos/.test(r)){
+      // Antes comparaba el 1º con el 2º de lo que hubiera en pantalla. Si
+      // querías el tercero contra el quinto, no había manera de pedirlo.
+      pedirElegirPrimero(_lastProductsShown, 'De los que te acabo de mostrar');
+      return;
+    }
+    if(/elegir otro primero/.test(r)){
+      pedirElegirPrimero(_compSel.lista.length ? _compSel.lista : _lastProductsShown, 'Empezamos de nuevo');
+      return;
+    }
+    // "Comparar con otro" desde la ficha de un producto concreto
+    if(/comparar con otro/.test(r)){
+      const base = _context.lastProduct;
+      if(base){
+        const rivales = PRODUCTOS.filter(x => String(x.id) !== String(base.id) && x.stock > 0 && sonComparables(base, x).ok);
+        if(rivales.length){
+          _compSel = { p1: base, lista: rivales };
+          addMessageTyped('Comparando <strong>' + escapeHtml(base.nombre) + '</strong>.\n\n<strong>Toca con cuál</strong> quieres compararlo:', 'bot');
+          _pintarElegibles(rivales.sort((a,b) => a.precio - b.precio).slice(0, 8), '2️⃣', p2 => {
+            const r2 = buildComparacion(base, p2);
+            if(r2.response) addMessageTyped(r2.response, 'bot');
+            if(r2.compare) addCompareTable(r2.compare);
+            if(r2.quickReplies) renderQuickReplies(r2.quickReplies);
+          });
+          renderQuickReplies(['📦 Ver categorías','💬 WhatsApp']);
+          return;
+        }
+      }
     }
     if(/comparar dos/.test(r)){ sendMessage('quiero comparar dos productos'); return; }
     if(/arma.*sistema solar|sistema solar/.test(r)){ sendMessage('arma un sistema solar básico'); return; }
@@ -3331,15 +3432,6 @@
         addMessageTyped(`📦 Alternativas disponibles del mismo tipo (${subcat}):`, 'bot');
         addProducts(alt);
         renderQuickReplies(['🆚 Comparar dos de estos','💬 WhatsApp']);
-      }
-      return;
-    }
-    if(/comparar dos de estos/.test(r)){
-      if(_lastProductsShown.length >= 2){
-        const r2 = buildComparacion(_lastProductsShown[0], _lastProductsShown[1]);
-        if(r2.response) addMessageTyped(r2.response, 'bot');
-        if(r2.compare) addCompareTable(r2.compare);
-        if(r2.quickReplies) renderQuickReplies(r2.quickReplies);
       }
       return;
     }
@@ -3423,6 +3515,10 @@
       // chat sigue igual. responder() acaba de dejar la intención en _context.
       _registrarPreguntaFAQ(text, _context.lastIntent, data.response);
       if(data.response) addMessageTyped(data.response, 'bot');
+      // Señales del flujo de comparación: en vez de un texto, se pintan las
+      // opciones para que el cliente elija tocando cuál va contra cuál.
+      if(data.elegirComparar){ pedirElegirPrimero(data.elegirComparar, data.tituloComparar); saveHistory(); return; }
+      if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
       if(data.compare) addCompareTable(data.compare);
       else if(data.products) addProducts(data.products);
       renderQuickReplies(data.quickReplies || defaultQuickReplies());
