@@ -100,6 +100,40 @@ class SenalDeVersionTest(unittest.TestCase):
         self.assertIn("`${base}/config.json`", self.catalog)
 
 
+class FormularioDeContrasenaTest(unittest.TestCase):
+    """El motor traía cambiarPasswordAdmin desde siempre, pero sin formulario.
+
+    O sea que no había manera de cambiar la contraseña desde ningún sitio del
+    admin, y la función de sincronizar tampoco se podía disparar nunca.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.admin = (RAIZ / "admin.html").read_text(encoding="utf-8")
+
+    def test_estan_los_tres_campos(self):
+        # cambiarPasswordAdmin limpia estos ids por su cuenta al terminar,
+        # así que los nombres no son libres.
+        for campo in ("ci", "ni", "coi"):
+            self.assertIn(f'id="{campo}"', self.admin)
+
+    def test_estan_los_dos_botones(self):
+        self.assertIn('onclick="tmCambiarPassword()"', self.admin)
+        self.assertIn('onclick="tmSyncPassword()"', self.admin)
+
+    def test_los_wrappers_llegan_al_onclick(self):
+        # Todo ese <script> vive dentro de un IIFE: una función declarada ahí
+        # no es global y el onclick del HTML no la encuentra. Hay que
+        # exponerla a mano, como se hace con probarFirebase y compañía.
+        self.assertIn("window.tmCambiarPassword=tmCambiarPassword", self.admin)
+        self.assertIn("window.tmSyncPassword=tmSyncPassword", self.admin)
+
+    def test_avisa_de_que_no_hay_recuperacion(self):
+        # La copia de Firebase no se puede leer, así que borrar los datos del
+        # navegador sin recordar la contraseña deja fuera del admin.
+        self.assertIn("pierdes el acceso al admin", self.admin)
+
+
 class ClienteSincronizacionTest(unittest.TestCase):
 
     @classmethod

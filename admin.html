@@ -1307,6 +1307,18 @@
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
         <div class="section">
+          <h3>🔒 Contraseña del admin</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El cambio vale en este dispositivo al instante. Pulsa también “Sincronizar” para que el resto de tus dispositivos acepten la nueva.</p>
+          <div class="form-group"><label class="form-label" for="ci">Contraseña actual</label><input class="form-input" id="ci" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+          <div class="form-group"><label class="form-label" for="ni">Nueva contraseña</label><input class="form-input" id="ni" type="password" autocomplete="new-password" placeholder="mínimo 4 caracteres"></div>
+          <div class="form-group"><label class="form-label" for="coi">Repite la nueva</label><input class="form-input" id="coi" type="password" autocomplete="new-password" placeholder="otra vez, para no equivocarte"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="btnCambiarPass" onclick="tmCambiarPassword()">🔒 Cambiar contraseña</button>
+            <button class="btn btn-ghost" id="btnSyncPass" onclick="tmSyncPassword()">☁️ Sincronizar con Firebase</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Tu contraseña solo se guarda en este navegador. La copia de Firebase no se puede leer (a propósito: si se pudiera, cualquiera podría probar contraseñas contra ella), así que si borras los datos del navegador y no la recuerdas, pierdes el acceso al admin. Apúntala en un sitio seguro.</p>
+        </div>
+        <div class="section">
           <h3>👆 Seguridad biométrica</h3>
           <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Huella o Face ID para entrar al admin sin escribir la contraseña, en este dispositivo.</p>
           <div id="tmBioSection"></div>
@@ -1731,6 +1743,27 @@ async function probarFirebase(){
     if(st){ st.style.color=r.ok?'var(--green)':'var(--red)'; st.textContent=r.ok?'✅ Conexión OK con la base de datos.':'❌ La base respondió '+r.status+'. Revisa la URL/reglas.'; }
   }catch(e){ if(st){ st.style.color='var(--red)'; st.textContent='❌ No se pudo conectar: '+e.message; } }
 }
+// El motor (js/tm-bundle.js) ya traía cambiarPasswordAdmin y
+// sincronizarPasswordAFirebase, pero nunca se les hizo formulario: no había
+// forma de cambiar la contraseña desde ningún sitio. Estos dos wrappers solo
+// añaden el aviso de "esto tarda": PBKDF2 va a 310.000 iteraciones y bloquea
+// un par de segundos, y sin feedback parece que el botón no hizo nada.
+async function tmCambiarPassword(){
+  const b=$('#btnCambiarPass'), ci=$('#ci'), ni=$('#ni'), coi=$('#coi');
+  if(!ci||!ni||!coi) return;
+  const t=b?b.textContent:'';
+  if(b){ b.disabled=true; b.textContent='⏳ Cambiando…'; }
+  try{ await cambiarPasswordAdmin(ci.value.trim(), ni.value, coi.value); }
+  finally{ if(b){ b.disabled=false; b.textContent=t; } }
+}
+async function tmSyncPassword(){
+  const b=$('#btnSyncPass');
+  const t=b?b.textContent:'';
+  if(b){ b.disabled=true; b.textContent='⏳ Sincronizando…'; }
+  try{ await sincronizarPasswordAFirebase(); }
+  finally{ if(b){ b.disabled=false; b.textContent=t; } }
+}
+
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
   const cats=catNombres();
@@ -4200,6 +4233,7 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
+window.tmCambiarPassword=tmCambiarPassword; window.tmSyncPassword=tmSyncPassword;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
