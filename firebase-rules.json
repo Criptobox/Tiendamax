@@ -1,5 +1,7 @@
 {
   "rules": {
+    ".read": false,
+    ".write": false,
     "analytics": {
       "vistas": {
         "$productId": {
@@ -49,10 +51,18 @@
       "$almId": {
         ".write": "!newData.exists() || !root.child('admin_auth/hash').exists() || newData.child('_proof').val() === root.child('admin_auth/hash').val()",
         ".validate": "newData.hasChildren(['nombre'])",
-        "nombre": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200" },
-        "direccion": { ".validate": "newData.isString() && newData.val().length < 300" },
-        "ubicacion": { ".validate": "newData.isString() && newData.val().length < 500" },
-        "_proof": { ".validate": "newData.isString() && newData.val().length == 64" }
+        "nombre": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"
+        },
+        "direccion": {
+          ".validate": "newData.isString() && newData.val().length < 300"
+        },
+        "ubicacion": {
+          ".validate": "newData.isString() && newData.val().length < 500"
+        },
+        "_proof": {
+          ".validate": "newData.isString() && newData.val().length == 64"
+        }
       }
     },
     "tokens": {
@@ -79,19 +89,27 @@
       ".read": true,
       ".write": false
     },
-    ".read": false,
-    ".write": false,
     "errores_js": {
       ".read": true,
       ".write": false,
       "$errId": {
         ".write": "!data.exists()",
         ".validate": "newData.hasChildren(['mensaje','pagina','ts']) && newData.child('mensaje').isString() && newData.child('mensaje').val().length > 0 && newData.child('mensaje').val().length <= 300 && newData.child('pagina').isString() && newData.child('pagina').val().length <= 200 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
-        "mensaje": { ".validate": "newData.isString() && newData.val().length <= 300" },
-        "pagina": { ".validate": "newData.isString() && newData.val().length <= 200" },
-        "ts": { ".validate": "newData.isNumber()" },
-        "ua": { ".validate": "newData.isString() && newData.val().length <= 200" },
-        "stack": { ".validate": "newData.isString() && newData.val().length <= 500" }
+        "mensaje": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "pagina": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "ts": {
+          ".validate": "newData.isNumber()"
+        },
+        "ua": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "stack": {
+          ".validate": "newData.isString() && newData.val().length <= 500"
+        }
       }
     },
     "auditoria_productos": {
@@ -100,13 +118,27 @@
       "$auditId": {
         ".write": "!data.exists()",
         ".validate": "newData.hasChildren(['accion','productoId','nombre','ts']) && newData.child('accion').isString() && newData.child('accion').val().length <= 20 && newData.child('productoId').isString() && newData.child('productoId').val().length <= 40 && newData.child('nombre').isString() && newData.child('nombre').val().length <= 80 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
-        "accion": { ".validate": "newData.isString() && newData.val().length <= 20" },
-        "productoId": { ".validate": "newData.isString() && newData.val().length <= 40" },
-        "nombre": { ".validate": "newData.isString() && newData.val().length <= 80" },
-        "ts": { ".validate": "newData.isNumber()" },
-        "campo": { ".validate": "newData.isString() && newData.val().length <= 20" },
-        "de": { ".validate": "newData.isString() && newData.val().length <= 120" },
-        "a": { ".validate": "newData.isString() && newData.val().length <= 120" }
+        "accion": {
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "productoId": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "nombre": {
+          ".validate": "newData.isString() && newData.val().length <= 80"
+        },
+        "ts": {
+          ".validate": "newData.isNumber()"
+        },
+        "campo": {
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "de": {
+          ".validate": "newData.isString() && newData.val().length <= 120"
+        },
+        "a": {
+          ".validate": "newData.isString() && newData.val().length <= 120"
+        }
       }
     },
     "avisos_stock": {
@@ -139,22 +171,38 @@
         "$faqKey": {
           ".write": true,
           ".validate": "newData.hasChildren(['query','intent','count','lastUpdated'])",
-          "query": { ".validate": "newData.isString() && newData.val().length <= 300" },
-          "intent": { ".validate": "newData.isString() && newData.val().length <= 40" },
-          "lastResponse": { ".validate": "newData.isString() && newData.val().length <= 300" },
-          "count": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-          "lastUpdated": { ".validate": "newData.isNumber()" }
+          "query": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "intent": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "lastResponse": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "count": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          },
+          "lastUpdated": {
+            ".validate": "newData.isNumber()"
+          }
         },
         ".read": true,
         ".write": false,
-        ".indexOn": ["count"]
+        ".indexOn": [
+          "count"
+        ]
       },
       "interacciones": {
         "$ts": {
           ".write": "!data.exists()",
           ".validate": "newData.hasChildren(['query','intent','ts']) && newData.child('query').isString() && newData.child('query').val().length <= 300 && newData.child('intent').isString() && newData.child('intent').val().length <= 40 && newData.child('ts').isNumber()",
-          "fecha": { ".validate": "newData.isString() && newData.val().length <= 40" },
-          "productsShown": { ".validate": true }
+          "fecha": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "productsShown": {
+            ".validate": true
+          }
         },
         ".read": true,
         ".write": false
@@ -193,18 +241,38 @@
       "$pedidoId": {
         ".write": "!newData.exists() || !data.exists()",
         ".validate": "newData.hasChildren(['fecha','items','total','estado','actualizado']) && newData.child('fecha').isString() && newData.child('fecha').val().length <= 60 && newData.child('total').isNumber() && newData.child('total').val() >= 0 && newData.child('estado').isString() && newData.child('estado').val().length <= 20 && newData.child('actualizado').isNumber()",
-        "id": { ".validate": "newData.isNumber() || newData.isString()" },
-        "fecha": { ".validate": "newData.isString() && newData.val().length <= 60" },
-        "estado": { ".validate": "newData.isString() && newData.val().length <= 20" },
-        "total": { ".validate": "newData.isNumber() && newData.val() >= 0" },
-        "actualizado": { ".validate": "newData.isNumber()" },
-        "clienteTs": { ".validate": "newData.isNumber()" },
+        "id": {
+          ".validate": "newData.isNumber() || newData.isString()"
+        },
+        "fecha": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "estado": {
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "total": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "actualizado": {
+          ".validate": "newData.isNumber()"
+        },
+        "clienteTs": {
+          ".validate": "newData.isNumber()"
+        },
         "items": {
           "$idx": {
-            "id": { ".validate": true },
-            "nombre": { ".validate": "newData.isString() && newData.val().length <= 120" },
-            "cantidad": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
-            "precio": { ".validate": "newData.isNumber() && newData.val() >= 0" }
+            "id": {
+              ".validate": true
+            },
+            "nombre": {
+              ".validate": "newData.isString() && newData.val().length <= 120"
+            },
+            "cantidad": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000"
+            },
+            "precio": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            }
           }
         }
       }
@@ -255,8 +323,7 @@
         ".read": true,
         ".write": "newData.exists() && (!data.exists() || newData.val() > data.val())",
         ".validate": "newData.isNumber() && newData.val() >= now - 300000 && newData.val() <= now + 300000"
-      },
-      "$otro": { ".validate": false }
+      }
     },
     "admin_push_requests": {
       "$reqId": {
@@ -309,11 +376,18 @@
       ".read": false,
       ".write": "!data.exists() || newData.child('proof').val() == data.child('hash').val()",
       ".validate": "newData.hasChildren(['hash','salt','iterations','proof']) && newData.child('hash').isString() && newData.child('hash').val().length == 64 && newData.child('salt').isString() && newData.child('salt').val().length >= 20 && newData.child('iterations').isNumber() && newData.child('iterations').val() >= 100000 && newData.child('proof').isString() && newData.child('proof').val().length == 64 && newData.child('proof').val() !== newData.child('hash').val()",
-      "hash": { ".validate": "newData.isString() && newData.val().length == 64" },
-      "salt": { ".validate": "newData.isString() && newData.val().length >= 20" },
-      "iterations": { ".validate": "newData.isNumber() && newData.val() >= 100000" },
-      "proof": { ".validate": "newData.isString() && newData.val().length == 64" },
-      "$otro": { ".validate": false }
+      "hash": {
+        ".validate": "newData.isString() && newData.val().length == 64"
+      },
+      "salt": {
+        ".validate": "newData.isString() && newData.val().length >= 20"
+      },
+      "iterations": {
+        ".validate": "newData.isNumber() && newData.val() >= 100000"
+      },
+      "proof": {
+        ".validate": "newData.isString() && newData.val().length == 64"
+      }
     }
   }
 }

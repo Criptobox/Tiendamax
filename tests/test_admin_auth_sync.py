@@ -99,7 +99,11 @@ class SenalDeVersionTest(unittest.TestCase):
         self.assertIs(False, self.config[".write"])
 
     def test_no_se_pueden_colar_hijos_nuevos(self):
-        self.assertIs(False, self.config["$otro"][".validate"])
+        # Sin comodin "$otro": la consola de Firebase lo rechazaba, y ademas
+        # sobraba. El padre tiene .write false y solo "version" concede
+        # escritura, asi que /config/loquesea ya esta denegado por si solo.
+        self.assertIs(False, self.config[".write"])
+        self.assertEqual({".read", ".write", "version"}, set(self.config))
 
     def test_la_ventana_de_reloj_es_simetrica(self):
         # Era now-300000 .. now+60000: un movil 61 s adelantado (normal) hacia
