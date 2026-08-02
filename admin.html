@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=e17a6f47"></script>
+<script src="js/tm-bundle.js?v=cece5dd2"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1687,12 +1687,13 @@ async function cargarVentasFirebase(){
     if(!base) return;
     const data = await jget(base+'/ventas.json');
     if(!data || typeof data!=='object') return;
-    const fb = Object.values(data).filter(v=>v && v.id && !v.anulada);
+    const anuladas = (typeof ventasAnuladas==='function') ? ventasAnuladas() : [];
+    const fb = Object.values(data).filter(v=>v && v.id && anuladas.indexOf(String(v.id))===-1);
     // Ventas de prueba viejas en Firebase: bórralas y no las vuelvas a mostrar.
-    // Se marcan, no se borran: la regla no puede permitir DELETE solo al admin
-    // (un DELETE no lleva datos que comparar), y abrirlo dejaría que cualquiera
-    // destruyese el historial de ventas.
-    fb.filter(_ventaEsPrueba).forEach(v=>{ fetch(base+'/ventas/'+v.id+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:'{"anulada":true}'}).catch(()=>{}); });
+    // Las ventas de Firebase son inmutables a propósito: sin autenticación, el
+    // permiso que se le diera al admin para borrarlas o marcarlas lo tendría
+    // igual cualquiera. Las de prueba y las anuladas se filtran aquí.
+    fb.filter(_ventaEsPrueba).forEach(v=>{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); });
     const porId = {};
     lsVentas().forEach(v=>{ porId[String(v.id)] = v; });
     fb.filter(v=>!_ventaEsPrueba(v)).forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
@@ -2843,12 +2844,13 @@ async function cargarAlmacenes(){
     const r = await fetch(base+'/almacenes.json?_='+Date.now(), {cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
-    // Los borrados vienen marcados con _borrado, no eliminados: la regla no
-    // puede permitir DELETE solo al admin, y abrirlo dejaría que cualquiera
-    // borrase tus almacenes.
+    // Los borrados se llevan en este dispositivo: en Firebase no cabe un flag
+    // que solo pueda poner el admin, y abierto se lo pondría cualquiera a todos.
+    let _almBorrados=[];
+    try{ _almBorrados=JSON.parse(localStorage.getItem('tm_almacenes_borrados')||'[]')||[]; }catch(e){}
     ALMACENES = {};
     if(data && typeof data==='object'){
-      Object.entries(data).forEach(([k,v])=>{ if(v && !v._borrado) ALMACENES[k]=v; });
+      Object.entries(data).forEach(([k,v])=>{ if(v && _almBorrados.indexOf(k)===-1) ALMACENES[k]=v; });
     }
     // Reaplicar a los productos la asignación que vino de Firebase (fuente de
     // verdad compartida) — por si localStorage la perdió o se abre desde otro
@@ -2893,7 +2895,12 @@ function _almPayload(nombre,direccion,ubicacion){
 function almBorrar(id, nombre){
   const enUso=PRODUCTOS.filter(p=>p.almacenId===id).length;
   if(!confirm('¿Borrar el almacén "'+nombre+'"?'+(enUso?(' '+enUso+' producto(s) quedarán sin almacén asignado.'):''))) return;
-  const base=rtdbBase(); if(base){ fetch(base+'/almacenes/'+id+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:'{"_borrado":true}'}).catch(()=>{}); }
+  // Local, no en Firebase: un flag _borrado escribible sin autenticación se lo
+  // podía poner cualquiera a todos tus almacenes y desaparecían del panel.
+  try{
+    const b=JSON.parse(localStorage.getItem('tm_almacenes_borrados')||'[]');
+    if(b.indexOf(id)===-1){ b.push(id); localStorage.setItem('tm_almacenes_borrados', JSON.stringify(b)); }
+  }catch(e){}
   delete ALMACENES[id];
   PRODUCTOS.forEach(p=>{ if(p.almacenId===id){ delete p.almacenId; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } });
   if(enUso) apSaveProds();
@@ -3096,7 +3103,7 @@ function ventaAnular(id){
   tmGuardarLS('registroVentas', rest);
   VENTAS=rest;
   // Quitar de Firebase
-  try{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); else { const base=rtdbBase(); if(base) fetch(base+'/ventas/'+v.id+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:'{"anulada":true}'}).catch(()=>{}); } }catch(e){}
+  try{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); }catch(e){}
   renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
   showToast('↩️ Venta anulada','Stock devuelto al inventario');
 }

@@ -59,16 +59,13 @@
         },
         "ubicacion": {
           ".validate": "newData.isString() && newData.val().length < 500"
-        },
-        "_borrado": {
-          ".validate": "newData.isBoolean()"
         }
       }
     },
     "tokens": {
       "$tokenId": {
         ".read": false,
-        ".write": true,
+        ".write": "newData.exists() && (!data.exists() || newData.child('token').val() === data.child('token').val())",
         ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 900000 && newData.child('timestamp').val() <= now + 900000",
         "token": {
           ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
@@ -169,7 +166,7 @@
       ".write": false,
       "faq": {
         "$faqKey": {
-          ".write": "newData.exists() && (!data.exists() || newData.child('count').val() >= data.child('count').val())",
+          ".write": "newData.exists() && (!data.exists() || newData.child('count').val() === data.child('count').val() + 1)",
           ".validate": "newData.hasChildren(['query','intent','count','lastUpdated'])",
           "query": {
             ".validate": "newData.isString() && newData.val().length <= 300"
@@ -211,7 +208,7 @@
     "wishlist_avisos": {
       "$productId": {
         "$tokenId": {
-          ".write": "!newData.exists() || !data.exists()",
+          ".write": "!data.exists()",
           ".validate": "newData.hasChildren(['token','ts'])",
           "token": {
             ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
@@ -282,11 +279,8 @@
       ".read": true,
       ".write": false,
       "$ventaId": {
-        ".write": "newData.exists()",
-        ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('producto').isString() && newData.child('producto').val().length > 0 && newData.child('producto').val().length <= 200 && newData.child('precio').isNumber() && newData.child('precio').val() >= 0 && newData.child('cantidad').isNumber() && newData.child('cantidad').val() >= 0 && newData.child('total').isNumber() && newData.child('total').val() >= 0 && (!data.exists() || newData.child('fecha').val() === data.child('fecha').val())",
-        "anulada": {
-          ".validate": "newData.isBoolean()"
-        }
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('producto').isString() && newData.child('producto').val().length > 0 && newData.child('producto').val().length <= 200 && newData.child('precio').isNumber() && newData.child('precio').val() >= 0 && newData.child('cantidad').isNumber() && newData.child('cantidad').val() >= 0 && newData.child('total').isNumber() && newData.child('total').val() >= 0"
       }
     },
     "lista_espera": {
@@ -331,7 +325,7 @@
     },
     "admin_push_requests": {
       "$reqId": {
-        ".write": "newData.child('proof').val() === root.child('admin_auth/hash').val()",
+        ".write": "newData.exists() && root.child('admin_auth/hash').exists() && newData.child('proof').val() === root.child('admin_auth/hash').val() && newData.child('ts').val() > now - 120000 && newData.child('ts').val() < now + 120000",
         ".validate": "newData.hasChildren(['title','body','ts','proof']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
       },
       ".read": false,
@@ -347,7 +341,7 @@
     },
     "admin_tokens": {
       "$tokenId": {
-        ".write": "newData.exists() && root.child('admin_meta/pinHash').exists() && newData.child('proof').val() === root.child('admin_meta/pinHash').val()",
+        ".write": "newData.exists() && root.child('admin_meta/pinHash').exists() && newData.child('proof').val() === root.child('admin_meta/pinHash').val() && newData.child('ts').val() > now - 120000 && newData.child('ts').val() < now + 120000",
         ".validate": "newData.hasChildren(['token','ts','proof'])",
         "token": {
           ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"

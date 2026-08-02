@@ -636,25 +636,29 @@ function _fbGuardarVenta(venta) {
     })().catch(() => {}); // OPT 3G: silencioso
 }
 
-// Marca una venta como anulada en Firebase RTDB.
-// No se borra: un DELETE no lleva datos, así que la regla no puede distinguir
-// al admin de cualquiera y tendría que permitirlo a todo el mundo — o sea que
-// cualquiera podría destruir tu historial de ventas. Marcándola, el dato
-// sobrevive y el panel la filtra al leer.
-function _fbEliminarVenta(id) {
-    (async () => {
-        await _fbEnsureConfig();
-        const url = _fbRtdbUrl();
-        if (!url) return;
-        await fetch(`${url}/ventas/${id}.json`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ anulada: true })
-        });
-    })().catch(() => {}); // OPT 3G: silencioso
+// Anula una venta. En Firebase NO se toca nada: el nodo es inmutable
+// (.write "!data.exists()"), porque sin autenticación cualquier permiso que
+// se le diera al admin lo tendría también un desconocido — y con él podría
+// borrar el historial o marcarlo entero como anulado, que a efectos del panel
+// es lo mismo. La anulación se guarda aquí, en el dispositivo del admin.
+const VENTAS_ANULADAS_KEY = 'tm_ventas_anuladas';
+
+function ventasAnuladas() {
+    try {
+        const v = JSON.parse(localStorage.getItem(VENTAS_ANULADAS_KEY) || '[]');
+        return Array.isArray(v) ? v.map(String) : [];
+    } catch(e) { return []; }
 }
 
-// Anula todas las ventas de Firebase RTDB una a una (respeta reglas: solo write en $ventaId)
+function _fbEliminarVenta(id) {
+    try {
+        const lista = ventasAnuladas();
+        if (lista.indexOf(String(id)) === -1) lista.push(String(id));
+        localStorage.setItem(VENTAS_ANULADAS_KEY, JSON.stringify(lista.slice(-2000)));
+    } catch(e) {}
+}
+
+// Anula todas las ventas. Igual que arriba: local, no se toca Firebase.
 function _fbBorrarTodasVentas() {
     (async () => {
         await _fbEnsureConfig();
@@ -664,13 +668,7 @@ function _fbBorrarTodasVentas() {
         if (!res.ok) return;
         const data = await res.json();
         if (!data || typeof data !== 'object') return;
-        await Promise.all(Object.keys(data).map(k =>
-            fetch(`${url}/ventas/${k}.json`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ anulada: true })
-            }).catch(() => {})
-        ));
+        Object.values(data).forEach(v => { if (v && v.id) _fbEliminarVenta(v.id); });
     })().catch(() => {}); // OPT 3G: silencioso
 }
 
