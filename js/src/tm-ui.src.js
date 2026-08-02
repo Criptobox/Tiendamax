@@ -436,7 +436,13 @@ async function _procesarAvisosStock(productId, nombre) {
             body: JSON.stringify({ proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: '✅ ¡' + nombre + ' está de vuelta!', body: 'El producto que querías ya está disponible. ¡No te quedes sin él!', url: '/', ts: Date.now() })
         });
         if (!putRes.ok) return;
-        await fetch(rtdbUrl + '/avisos_stock/' + productId + '.json', { method: 'DELETE' });
+        // Uno a uno, no el nodo del producto entero: la regla solo concede
+        // escritura en avisos_stock/$productId/$tokenId, así que borrar el
+        // padre devuelve 403 y la lista se quedaba ahí para siempre,
+        // reavisando a la misma gente en cada reposición.
+        await Promise.all(Object.keys(avisos).map(tokenId =>
+            fetch(rtdbUrl + '/avisos_stock/' + productId + '/' + encodeURIComponent(tokenId) + '.json',
+                  { method: 'DELETE' }).catch(() => {})));
         const ghUser  = localStorage.getItem('githubUser');
         const ghRepo  = localStorage.getItem('githubRepo') || 'Tiendamax';
         const ghToken = localStorage.getItem('githubToken');

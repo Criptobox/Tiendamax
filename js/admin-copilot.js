@@ -1394,20 +1394,10 @@ function iaNormalizarBulk(){
   if(n) iaPersistir('🔤 '+n+' nombres normalizados'); else toast('Todos los nombres ya están bien');
   renderSheet();
 }
-async function iaSyncFirebase(){
-  try{
-    const cfg=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');
-    const base=cfg.databaseURL||(cfg.projectId?('https://'+cfg.projectId+'-default-rtdb.firebaseio.com'):null);
-    if(!base){ toast('Configura Firebase primero (⚙️)'); return; }
-    const issues=iaScan();
-    const estado={ ts:Date.now(), fecha:new Date().toISOString(), productos:(window.productos||[]).length,
-      urgentes:issues.filter(i=>i.level==='urgente').length, advertencias:issues.filter(i=>i.level==='adv').length,
-      info:issues.filter(i=>i.level==='info').length,
-      detalle:issues.slice(0,80).map(i=>({t:i.type,pid:i.pid,n:i.nombre.slice(0,60),d:String(i.detalle).slice(0,90)})) };
-    const r=await fetch(base+'/correcciones_ia/estado.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(estado)});
-    toast(r.ok?'🔥 Estado subido a Firebase (/correcciones_ia/estado)':'❌ Firebase respondió '+r.status);
-  }catch(e){ toast('❌ Error al subir a Firebase: '+e.message); }
-}
+// iaSyncFirebase se retiro: subia un volcado de diagnostico a
+// /correcciones_ia/estado, un nodo sin regla (o sea denegado por la raiz) y
+// sin nadie que lo leyera, ni cliente ni script. Ademas no la llamaba nadie.
+// El informe sigue disponible en iaExportCSV, que no depende de Firebase.
 function iaExportCSV(){
   const issues=iaScan();
   const rows=[['nivel','tipo','producto','detalle','arreglo_automatico'],

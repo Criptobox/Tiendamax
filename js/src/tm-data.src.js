@@ -930,9 +930,16 @@ async function cargarDatosDesdeGitHub() {
                 const r = await fetch(base + '/configuracion/activeCountdown.json');
                 if (!r.ok) return;
                 const fbCd = await r.json();
+                // Solo se toca si Firebase TIENE countdown. El else borraba el
+                // local cuando la respuesta era null, y como la regla de
+                // configuracion es .write false el admin nunca consigue
+                // escribirlo ahí: resultado, cada cliente borraba a los 0,8 s
+                // el countdown que le había llegado por config.json. La oferta
+                // por tiempo limitado no se veía nunca.
                 if (fbCd && fbCd.productId && fbCd.endTime && fbCd.endTime > Date.now()) {
                     localStorage.setItem('activeCountdown', JSON.stringify(fbCd));
-                } else {
+                } else if (fbCd && fbCd.endTime && fbCd.endTime <= Date.now()) {
+                    // Caducado en origen: eso sí es una orden de limpiar.
                     localStorage.removeItem('activeCountdown');
                 }
                 if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();

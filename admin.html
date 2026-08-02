@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=bc48b461"></script>
+<script src="js/tm-bundle.js?v=6869c8a3"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1569,7 +1569,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=dabaacb7"></script>
+<script src="js/admin-copilot.js?v=89160f7b"></script>
 
 <script>
 (function(){
@@ -3594,9 +3594,25 @@ async function avisoManualAgregar(){
 function avisoLimpiar(pid, nombre){
   if(!confirm('¿Vaciar la lista de espera de "'+nombre+'"? Úsalo cuando ya avisaste a todos.')) return;
   const base = rtdbBase();
-  if(base){ fetch(base+'/avisos_stock/'+pid+'.json',{method:'DELETE'}).catch(()=>{}); }
-  showToast('🔔 Lista vaciada', nombre);
-  setTimeout(()=>renderClientes(), 300);
+  // Uno a uno: la regla solo concede escritura en el hijo $tokenId, así que
+  // borrar el nodo del producto devolvía 403 y la lista seguía intacta —
+  // con el toast diciendo "vaciada".
+  if(base){
+    (async () => {
+      try{
+        const r = await fetch(base+'/avisos_stock/'+pid+'.json',{cache:'no-store'});
+        const avisos = r.ok ? (await r.json()) : null;
+        if(!avisos || typeof avisos!=='object'){ showToast('🔔 La lista ya estaba vacía', nombre); return; }
+        const ids = Object.keys(avisos);
+        const oks = await Promise.all(ids.map(t =>
+          fetch(base+'/avisos_stock/'+pid+'/'+encodeURIComponent(t)+'.json',{method:'DELETE'})
+            .then(x=>x.ok).catch(()=>false)));
+        const n = oks.filter(Boolean).length;
+        showToast(n===ids.length ? '🔔 Lista vaciada' : ('⚠️ Solo se borraron '+n+' de '+ids.length), nombre);
+      }catch(e){ showToast('❌ No se pudo vaciar', e.message||''); }
+      renderClientes();
+    })();
+  }
 }
 
 /* ============ PUBLICAR / COMPARTIR ============ */
