@@ -2481,7 +2481,17 @@ async function tmActivarAlertaAdmin(){
     // Registrar este teléfono (la regla de Firebase valida el PIN)
     const r=await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,ts:Date.now(),proof:proof,label:(navigator.userAgent||'').slice(0,70)})});
     if(r.ok){ localStorage.setItem('tm_es_admin','1'); toast('✅ Este teléfono recibirá los avisos de administrador.'); }
-    else { toast('❌ PIN incorrecto: no se activó este teléfono.'); }
+    else if(r.status===401||r.status===403){
+      // El nodo es de solo-alta a proposito: si ya existe, ninguna escritura
+      // pasa. Eso cierra el secuestro (la prueba guardada ya no se puede
+      // heredar en una escritura parcial), pero significa que un re-registro
+      // del mismo telefono tambien da 403 — y no es un PIN incorrecto.
+      const yaEstaba = await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json')
+        .then(x=>x.ok).catch(()=>false);
+      if(yaEstaba){ localStorage.setItem('tm_es_admin','1'); toast('✅ Este teléfono ya estaba activado.'); }
+      else { toast('❌ PIN incorrecto: no se activó este teléfono.'); }
+    }
+    else { toast('❌ No se pudo activar (error '+r.status+').'); }
   }catch(e){ toast('No se pudo activar: '+e.message); }
 }
 window.tmActivarAlertaAdmin=tmActivarAlertaAdmin;

@@ -253,7 +253,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=cece5dd2" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=713fb439" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1519,7 +1519,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=cece5dd2" defer></script>
+    <script src="js/tm-bundle.js?v=713fb439" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1673,7 +1673,15 @@
                 if (!remoto) return;
                 const local = localStorage.getItem('tm_deploy_version');
                 localStorage.setItem('tm_deploy_version', String(remoto));
+                // Tope de una recarga cada 10 min. La regla de config/version
+                // solo puede exigir que el número suba y sea reciente, no saber
+                // quién lo escribe: sin este freno, cualquiera escribiendo
+                // Date.now() en bucle mantiene recargando a todos los
+                // visitantes de la tienda.
+                const ultima = Number(localStorage.getItem('tm_deploy_reload_ts') || 0);
+                if (Date.now() - ultima < 600000) return;
                 if (local && local !== String(remoto)) {
+                    try { localStorage.setItem('tm_deploy_reload_ts', String(Date.now())); } catch(e) {}
                     // Nueva versión detectada — actualizar SW y recargar
                     if ('serviceWorker' in navigator) {
                         const reg = await navigator.serviceWorker.getRegistration();

@@ -74,6 +74,7 @@ class SinBorradoAnonimoTest(unittest.TestCase):
     def test_no_se_puede_pisar_lo_ya_escrito(self):
         fallos = []
         for nodo, hijo in (("ventas", "$ventaId"), ("pedidos", "$pedidoId"),
+                           ("almacenes", "$almId"),
                            ("lista_espera", None), ("wishlist_avisos", None)):
             alcance = REGLAS[nodo]
             if hijo:
@@ -81,10 +82,13 @@ class SinBorradoAnonimoTest(unittest.TestCase):
                 if _concede_sobrescritura(alcance.get(".write")):
                     fallos.append(f"{nodo}/{hijo}: se puede pisar")
             for k, v in alcance.items():
-                if isinstance(v, dict):
-                    for k2, v2 in v.items():
-                        if isinstance(v2, dict) and _concede_sobrescritura(v2.get(".write")):
-                            fallos.append(f"{nodo}/{k}/{k2}: se puede pisar")
+                # El mapa producto->almacen es un booleano que el admin pone y
+                # quita constantemente: pisarlo ES la operacion.
+                if k == "productos" or not isinstance(v, dict):
+                    continue
+                for k2, v2 in v.items():
+                    if isinstance(v2, dict) and _concede_sobrescritura(v2.get(".write")):
+                        fallos.append(f"{nodo}/{k}/{k2}: se puede pisar")
         self.assertEqual([], fallos, "\n".join(fallos))
 
     def test_los_nodos_criticos_no_se_pueden_borrar(self):
@@ -150,6 +154,7 @@ class SinEscrituraLibreTest(unittest.TestCase):
     # y sin autenticacion no hay forma de distinguirlo. Documentado, no resuelto.
     TOLERADOS = {
         "avisos_stock/$productId/$tokenId": "alta y baja del propio aviso",
+        "almacenes/$almId/productos/$prodId": "el admin asigna y desasigna productos",
     }
 
     def test_no_hay_escrituras_totalmente_libres_sin_justificar(self):
@@ -180,15 +185,17 @@ class SinEscrituraLibreTest(unittest.TestCase):
         self.assertIn("newData.exists()", w)
         self.assertIn("data.child('token').val()", w)
 
-    def test_las_pruebas_de_admin_exigen_ts_fresco(self):
-        # Sin esto, una escritura parcial hereda del merge la prueba ya
-        # guardada y satisface la regla sin conocerla.
+    def test_los_nodos_con_prueba_son_de_solo_alta(self):
+        # La prueba vive DENTRO del nodo que protege, asi que mientras se pueda
+        # escribir sobre un nodo existente, el merge se la regala al atacante:
+        # basta un PATCH con los campos suyos y todo lo demas heredado. Exigir
+        # un ts fresco no bastaba — el ts lo manda el atacante en ese mismo
+        # PATCH. Solo-alta lo cierra de raiz: si ya existe, no pasa nada.
         for nodo, hijo in (("admin_tokens", "$tokenId"),
                            ("admin_push_requests", "$reqId")):
-            w = REGLAS[nodo][hijo][".write"]
-            self.assertIn("newData.child('ts').val() > now -", w,
-                          f"{nodo}: el merge arrastra la prueba vieja")
-            self.assertIn(".exists()", w)
+            w = REGLAS[nodo][hijo][".write"].replace(" ", "")
+            self.assertIn("!data.exists()", w,
+                          f"{nodo}: sobre un nodo existente el merge regala la prueba")
 
     def test_la_cola_de_push_no_se_abre_sola(self):
         # null === null: mientras admin_auth estuviera vacio, la regla dejaba

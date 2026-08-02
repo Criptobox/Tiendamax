@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=cece5dd2"></script>
+<script src="js/tm-bundle.js?v=713fb439"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1569,7 +1569,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=89160f7b"></script>
+<script src="js/admin-copilot.js?v=b4a85c2b"></script>
 
 <script>
 (function(){
@@ -2912,9 +2912,18 @@ function almRenombrar(id){
   const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
   const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
   const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
-  const base=rtdbBase(); const payload=_almPayload(nombre,direccion,ubicacion);
-  if(base) fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
-  ALMACENES[id]={nombre,direccion,ubicacion}; renderAlmacen();
+  // Campo a campo, no al nodo entero. Dos razones: un PUT al nodo se llevaba
+  // por delante /productos (el respaldo de que producto esta en que almacen), y
+  // la regla solo concede escritura en los campos — al nodo solo deja crearlo.
+  const base=rtdbBase();
+  if(base){
+    const campos={nombre:nombre, direccion:direccion, ubicacion:ubicacion};
+    Promise.all(Object.entries(campos).map(([k,v]) =>
+      fetch(base+'/almacenes/'+id+'/'+k+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(v)})
+        .then(r=>r.ok).catch(()=>false)
+    )).then(oks=>{ if(oks.some(x=>!x)) showToast('⚠️ Algún campo no se guardó en Firebase'); });
+  }
+  ALMACENES[id]=Object.assign({}, ALMACENES[id], {nombre,direccion,ubicacion}); renderAlmacen();
   showToast('✏️ Almacén actualizado');
 }
 // Productos asignables a un almacén: los que ya son suyos (para poder
@@ -3096,7 +3105,16 @@ function ventaAnular(id){
   syncProductos();
   const items=(v.productos||v.items||[]);
   const lista=items.length?items:[{productoId:v.productoId, cantidad:v.cantidad}];
-  lista.forEach(it=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(it.productoId)); if(p){ p.stock=(Number(p.stock)||0)+(Number(it.cantidad||it.qty)||1); } });
+  lista.forEach(it=>{
+    const p=PRODUCTOS.find(x=>String(x.id)===String(it.productoId));
+    if(p){
+      p.stock=(Number(p.stock)||0)+(Number(it.cantidad||it.qty)||1);
+      // Sin marcarlo, _tmMergeProductosConRepo da prioridad al repo para los
+      // productos no modificados y republica el stock viejo: la devolucion se
+      // deshacia sola en la siguiente sincronizacion.
+      if(typeof marcarProductoModificado==='function'){ try{ marcarProductoModificado(p.id); }catch(e){} }
+    }
+  });
   apSaveProds();
   // Quitar de local
   const rest=VENTAS.filter(x=>String(x.id)!==String(id));

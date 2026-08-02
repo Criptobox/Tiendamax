@@ -276,17 +276,10 @@ function guardarCountdown() {
     const countdown = { productId, endTime, texto };
     localStorage.setItem('activeCountdown', JSON.stringify(countdown));
 
-    // Sincronizar a Firebase + GitHub config.json
-    (async () => {
-        try {
-            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
-            if (base) await fetch(base + '/configuracion/activeCountdown.json', {
-                method: 'PUT', body: JSON.stringify(countdown),
-                headers: { 'Content-Type': 'application/json' }
-            });
-        } catch(e) {}
-        _sincronizarConfigGH();
-    })();
+    // Solo a GitHub. La regla de configuracion es .write false, asi que el PUT
+    // a Firebase que habia aqui devolvia 403 siempre y se lo tragaba el catch:
+    // el countdown viaja por config.json, que es lo que leen los clientes.
+    _sincronizarConfigGH();
 
     const producto = productos.find(p => p.id == productId);
     const nombre = producto ? producto.nombre : 'Producto';
@@ -319,14 +312,8 @@ function desactivarCountdown() {
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');
 
-    // Borrar de Firebase + GitHub config.json
-    (async () => {
-        try {
-            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
-            if (base) await fetch(base + '/configuracion/activeCountdown.json', { method: 'DELETE' });
-        } catch(e) {}
-        _sincronizarConfigGH();
-    })();
+    // Igual que al activarlo: el DELETE a Firebase daba 403 siempre.
+    _sincronizarConfigGH();
 }
 
 // ═══════════════════════════════════════════════════════

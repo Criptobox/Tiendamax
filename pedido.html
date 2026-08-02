@@ -199,18 +199,12 @@ body.light-mode .id-pedido{color:#999;}
 
         renderPedido(pedido);
 
-        // 4. Polling cada 30s para actualizaciones en tiempo real (solo si Firebase está disponible)
-        if (base) {
-            setInterval(async function() {
-                try {
-                    var r = await fetch(base + '/pedidos/' + pedidoId + '.json');
-                    if (r.ok) {
-                        var p = await r.json();
-                        if (p) renderPedido(p);
-                    }
-                } catch(e) {}
-            }, 30000);
-        }
+        // Aquí había un sondeo cada 30 s esperando cambios de estado. Se
+        // retiró: el pedido es inmutable en Firebase a propósito (la regla es
+        // de solo-alta, porque sin autenticación el permiso para cambiar el
+        // estado lo tendría también cualquiera, y podría marcar como entregado
+        // el pedido de otro). El estado nunca cambia, así que el sondeo solo
+        // gastaba datos del cliente cada 30 segundos para repintar lo mismo.
     }
 
     cargarPedido();
