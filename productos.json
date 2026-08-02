@@ -1820,7 +1820,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1783837846910.webp",
-    "categoria": "CELULARES",
+    "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 0,
     "masVendido": false,
@@ -1837,13 +1837,13 @@
       "https://tiendamax.org/imagenes/img_1783837846910.webp",
       "https://tiendamax.org/imagenes/img_1780887747583.webp"
     ],
-    "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela.",
     "specs": [
       "Doble altavoz estéreo HD con radiador de graves",
       "Aro de luz LED RGB en la base con múltiples modos rritmicos",
       "Bluetooth + Entrada Auxiliar 3.5mm + Ranura MicroSD + USB",
       "Estructura recubierta de tela resistente con correa de transporte"
-    ]
+    ],
+    "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela."
   },
   {
     "id": 1780887971522,
@@ -1883,7 +1883,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781365018400.webp",
-    "categoria": "UTILES",
+    "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
     "stock": 9,
     "masVendido": false,
@@ -1896,7 +1896,6 @@
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
-    "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.\nFicha Técnica:\nTecnología: 🔋 Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.\nPantalla: 📱 Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.\nFunciones: ⚡ Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.\nConectividad: 🔌 Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.\nEspecificaciones (Specs):\nTipo: Probador digital de baterías.\nUso: Automotriz y sistemas de 12V.\nInterfaz: Teclado direccional con botones de función dedicados (ESC, F1, V, OK).",
     "specs": [
       "🔋 Diagnóstico Preciso del Sistema Eléctrico ",
       "⚡ Pruebas Rápidas de Carga y Arranque ",
@@ -1905,7 +1904,8 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781365018400.webp",
       "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp"
-    ]
+    ],
+    "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.\nFicha Técnica:\nTecnología: 🔋 Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.\nPantalla: 📱 Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.\nFunciones: ⚡ Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.\nConectividad: 🔌 Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.\nEspecificaciones (Specs):\nTipo: Probador digital de baterías.\nUso: Automotriz y sistemas de 12V.\nInterfaz: Teclado direccional con botones de función dedicados (ESC, F1, V, OK)."
   },
   {
     "id": 1781365135486,
