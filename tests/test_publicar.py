@@ -191,3 +191,74 @@ class WizardTresRedesTest(unittest.TestCase):
     def test_los_handlers_llegan_al_onclick(self):
         for fn in ("wzToggle", "wzLimpiar", "wzSoloConStock", "wzCopiar"):
             self.assertIn(f"window.{fn}={fn}", self.admin, f"{fn} sin exponer")
+
+
+class LineasCondicionalesTest(unittest.TestCase):
+    """Un producto sin descuento no puede anunciar "Ahorras $0 USD (0%)".
+
+    Tampoco "Antes $300 → AHORA $300": resta credibilidad en vez de sumarla, y
+    era lo que salía porque precioOriginal cae a precioActual cuando no hay
+    descuento.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.src = MODULO.read_text(encoding="utf-8")
+
+    def test_existen_las_variables_de_linea(self):
+        for v in ("linea_precio", "linea_ahorro", "linea_garantia", "linea_stock"):
+            self.assertIn(f"{v}:", self.src, f"falta la variable {v}")
+            self.assertIn(f"'{v}'", self.src, f"{v} no aparece en la lista del editor")
+
+    def test_el_ahorro_desaparece_si_no_lo_hay(self):
+        i = self.src.index("linea_ahorro:")
+        self.assertIn("(ahorro > 0)", self.src[i:i + 200])
+        self.assertIn("''", self.src[i:i + 300], "sin descuento la línea va vacía")
+
+    def test_el_precio_no_ensena_un_antes_falso(self):
+        i = self.src.index("linea_precio:")
+        cuerpo = self.src[i:i + 300]
+        self.assertIn("(ahorro > 0)", cuerpo)
+        self.assertIn("Precio: $", cuerpo, "sin descuento se enseña el precio a secas")
+
+    def test_las_plantillas_por_defecto_las_usan(self):
+        i = self.src.index("function tmPlantillasPorDefecto")
+        cuerpo = self.src[i:i + 1600]
+        self.assertIn("{linea_precio}", cuerpo)
+        self.assertIn("{linea_ahorro}", cuerpo)
+        # y ya no arman esas líneas a mano
+        self.assertNotIn("Ahorras ${ahorro}", cuerpo)
+        self.assertNotIn("Antes ${precioOriginal}", cuerpo)
+
+    def test_no_quedan_huecos_al_desaparecer_una_linea(self):
+        # Una variable vacía deja su renglón en blanco; sin colapsar, el post
+        # sale con tres o cuatro saltos seguidos.
+        i = self.src.index("function tmAplicarPlantilla")
+        cuerpo = self.src[i:i + 700]
+        self.assertIn("\\n{3,}", cuerpo)
+        self.assertIn(".trim()", cuerpo)
+
+
+class ArreglosDeInterfazTest(unittest.TestCase):
+
+    def test_la_cabecera_no_parpadea_oscura_en_modo_claro(self):
+        # El script anti-parpadeo ya adelantaba el fondo, pero no la cabecera:
+        # se quedaba negra sobre página blanca hasta que cargaba el JS grande.
+        index = (RAIZ / "index.html").read_text(encoding="utf-8")
+        self.assertIn("html.tm-pre-light .header", index)
+        i = index.index("html.tm-pre-light .header")
+        self.assertIn("background", index[i:i + 200])
+
+    def test_el_cartel_de_notificaciones_no_tapa_al_bot(self):
+        # El cartel ocupa 92vw centrado abajo; la burbuja vive en
+        # bottom:20px/right:16px, así que en móvil quedaba debajo del cartel.
+        src = (RAIZ / "js" / "src" / "tm-patches.src.js").read_text(encoding="utf-8")
+        self.assertIn("body.tm-push-banner-visible .tm-bot-bubble", src)
+        self.assertIn("classList.add('tm-push-banner-visible')", src)
+        self.assertIn("classList.remove('tm-push-banner-visible')", src)
+
+    def test_la_clase_se_quita_en_todos_los_cierres(self):
+        # Si quedara puesta, la burbuja se quedaría flotando alta para siempre.
+        src = (RAIZ / "js" / "src" / "tm-patches.src.js").read_text(encoding="utf-8")
+        self.assertEqual(src.count("b.remove();"),
+                         src.count("classList.remove('tm-push-banner-visible')"))

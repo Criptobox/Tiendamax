@@ -28,7 +28,14 @@ const TM_PLANTILLA_VARS = [
     { v: 'categoria',      d: 'Categoría' },
     { v: 'wa_link',        d: 'Enlace de WhatsApp con el pedido escrito' },
     { v: 'url_producto',   d: 'Enlace a la ficha en la tienda' },
-    { v: 'hashtags',       d: 'Hashtags de la categoría' }
+    { v: 'hashtags',       d: 'Hashtags de la categoría' },
+    // Estas traen la línea entera y se quedan VACÍAS si no aplican. Sin ellas
+    // salía "Ahorras $0 USD (0%)" en productos sin descuento, o "Antes $300 →
+    // AHORA $300", que resta credibilidad en vez de sumarla.
+    { v: 'linea_precio',   d: 'Precio (con el "antes" solo si hay descuento)' },
+    { v: 'linea_ahorro',   d: 'Cuánto ahorra — vacío si no hay descuento' },
+    { v: 'linea_garantia', d: 'Garantía — vacío si el producto no la tiene' },
+    { v: 'linea_stock',    d: 'Unidades — vacío si está agotado' }
 ];
 
 function _tmNum(x) { const n = Number(x); return isFinite(n) ? n : 0; }
@@ -77,6 +84,16 @@ function tmVarsProducto(p, red) {
                    encodeURIComponent('Hola, quiero: ' + (p.nombre || '') + '\n' + url);
         })(),
         url_producto: url,
+        linea_precio: (ahorro > 0)
+            ? ('💰 Antes $' + original + ' → AHORA $' + actual + ' USD')
+            : ('💰 Precio: $' + actual + ' USD'),
+        linea_ahorro: (ahorro > 0)
+            ? ('🎉 Ahorras $' + ahorro + ' USD' + (_tmNum(p.descuento) > 0 ? ' (' + _tmNum(p.descuento) + '%)' : ''))
+            : '',
+        linea_garantia: (p.garantia && String(p.garantia).trim())
+            ? ('🛡️ Garantía: ' + String(p.garantia).trim()) : '',
+        linea_stock: (_tmNum(p.stock) > 0)
+            ? ('📦 Quedan ' + _tmNum(p.stock) + ' unidades') : '',
         hashtags: ('#TiendaMax #Cuba ' + (cat ? '#' + cat.replace(/\s+/g, '') : '')).trim()
     };
 }
@@ -85,34 +102,37 @@ function tmVarsProducto(p, red) {
  *  para no borrar en silencio algo que el admin escribió a mano. */
 function tmAplicarPlantilla(texto, producto, red) {
     const vars = tmVarsProducto(producto, red);
-    return String(texto || '').replace(/\{(\w+)\}/g, (m, k) =>
+    const out = String(texto || '').replace(/\{(\w+)\}/g, (m, k) =>
         Object.prototype.hasOwnProperty.call(vars, k) ? vars[k] : m);
+    // Una variable vacía deja su línea en blanco; sin esto el post sale con
+    // huecos de tres o cuatro saltos donde antes había una frase.
+    return out.replace(/[ \t]+$/gm, '')
+              .replace(/\n{3,}/g, '\n\n')
+              .trim();
 }
 
 function tmPlantillasPorDefecto() {
     return [
         {
             id: 'def_fb', nombre: '📘 Facebook — completa', red: 'fb',
-            texto: '🛍️ {nombre}\n\n{inicio_desc}\n\n💰 ${precioActual} USD\n' +
-                   '🛡️ Garantía: {garantia}\n📦 Quedan {stock} unidades\n\n' +
+            texto: '🛍️ {nombre}\n\n{inicio_desc}\n\n{linea_precio}\n' +
+                   '{linea_garantia}\n{linea_stock}\n\n' +
                    '📲 Pídelo aquí:\n{wa_link}\n\n🔗 Fotos y detalles:\n{url_producto}\n\n{hashtags}'
         },
         {
             id: 'def_oferta', nombre: '🔥 Facebook — con descuento', red: 'fb',
             texto: '🔥 OFERTA — {nombre}\n\n{inicio_desc}\n\n' +
-                   '💰 Antes ${precioOriginal} → AHORA ${precioActual} USD\n' +
-                   '🎉 Ahorras ${ahorro} USD ({descuento}%)\n🛡️ Garantía: {garantia}\n' +
-                   '⚡ ¡Solo quedan {stock}!\n\n📲 {wa_link}\n\n{hashtags}'
+                   '{linea_precio}\n{linea_ahorro}\n{linea_garantia}\n{linea_stock}\n\n' +
+                   '📲 {wa_link}\n\n{hashtags}'
         },
         {
             id: 'def_rev', nombre: '🟠 Revolico — anuncio', red: 'revolico',
-            texto: '{nombre}\n\n{inicio_desc}\n\nPrecio: ${precioActual} USD\n' +
-                   'Garantía: {garantia}\nDisponibles: {stock}\n\n' +
-                   'Pedir por WhatsApp: {wa_link}'
+            texto: '{nombre}\n\n{inicio_desc}\n\n{linea_precio}\n' +
+                   '{linea_garantia}\n{linea_stock}\n\nPedir por WhatsApp: {wa_link}'
         },
         {
             id: 'def_wa', nombre: '🟢 Estado de WhatsApp — corta', red: 'wa',
-            texto: '{nombre} — ${precioActual} USD\nGarantía {garantia}\nPídelo: {wa_link}'
+            texto: '{nombre} — ${precioActual} USD\n{linea_garantia}\nPídelo: {wa_link}'
         }
     ];
 }

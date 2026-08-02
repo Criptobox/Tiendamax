@@ -24,6 +24,18 @@
     <style>
     /* Evita parpadeo: si el HTML ya tiene la clase tm-pre-light, fondo claro inmediato */
     html.tm-pre-light, html.tm-pre-light body { background: #FAF8F5 !important; }
+    /* El fondo ya se adelantaba, pero la cabecera no: se quedaba oscura hasta
+       que el JS ponía body.light-mode, y en una conexión lenta eso es una
+       barra negra sobre una página blanca durante segundos. */
+    html.tm-pre-light .header {
+        background: rgba(255,252,248,.97) !important;
+        border-bottom: 1px solid rgba(0,0,0,.08) !important;
+    }
+    html.tm-pre-light .logo-premium,
+    html.tm-pre-light .nav a,
+    html.tm-pre-light .header .cart-icon-btn,
+    html.tm-pre-light .header .theme-toggle,
+    html.tm-pre-light .header button { color: #1A1A1A !important; }
     </style>
     <!-- ===== Cabeceras de seguridad ===== -->
     <!-- Sin frame-ancestors: los navegadores lo ignoran cuando la política llega
@@ -253,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=7e6f524f" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b9cc6410" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1519,7 +1531,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=7e6f524f" defer></script>
+    <script src="js/tm-bundle.js?v=b9cc6410" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

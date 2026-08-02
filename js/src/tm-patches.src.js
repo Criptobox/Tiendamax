@@ -984,6 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
+        try { document.body.classList.add('tm-push-banner-visible'); } catch (e) {}
         b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
         // El banner solo lleva estilos estructurales inline (layout, tipografía,
         // animación). Los colores se aplican via CSS inyectado una sola vez,
@@ -995,6 +996,12 @@ document.addEventListener('DOMContentLoaded', () => {
             s.id = 'slideUpBannerStyle';
             s.textContent = `
 @keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* El cartel de notificaciones ocupa 92vw centrado abajo y tapaba la burbuja
+   del bot, que vive en bottom:20px/right:16px. Mientras esté visible, la
+   burbuja (y su globo de bienvenida) suben por encima. El selector lleva
+   body delante para ganarle en especificidad al estilo que inyecta tm-bot. */
+body.tm-push-banner-visible .tm-bot-bubble{bottom:calc(env(safe-area-inset-bottom,0px) + 116px) !important}
+body.tm-push-banner-visible .tm-bot-welcome{bottom:calc(env(safe-area-inset-bottom,0px) + 180px) !important}
 @keyframes tmpbRing{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(14deg)}80%{transform:rotate(-12deg)}85%{transform:rotate(8deg)}90%{transform:rotate(-5deg)}95%{transform:rotate(0)}}
 .tmpb-bell{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:23px;transform-origin:50% 15%;animation:tmpbRing 3s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.tmpb-bell{animation:none}}
@@ -1025,6 +1032,7 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
 
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
+            try { document.body.classList.remove('tm-push-banner-visible'); } catch (e) {}
             setTimeout(() => { try { if (typeof window._tmMostrarInstall === 'function') window._tmMostrarInstall(); } catch(e){} }, 5000);
             if (estaDenegado) {
                 alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
@@ -1067,6 +1075,7 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
+            try { document.body.classList.remove('tm-push-banner-visible'); } catch (e) {}
             setTimeout(() => { try { if (typeof window._tmMostrarInstall === 'function') window._tmMostrarInstall(); } catch(e){} }, 5000);
             // Pospuesto: cuántas veces lo ha rechazado
             const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
