@@ -138,3 +138,56 @@ class InterfazTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WizardTresRedesTest(unittest.TestCase):
+    """Un solo flujo para armar el texto de las tres redes."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.admin = ADMIN.read_text(encoding="utf-8")
+
+    def test_la_pestana_existe_y_no_desplaza_a_las_otras(self):
+        self.assertIn("pill('wizard'", self.admin)
+        self.assertIn("PUB_VIEW==='wizard'", self.admin)
+        for v in ("compartir", "categoria", "plantillas", "historial", "banners", "oferta"):
+            self.assertIn(f"pill('{v}'", self.admin)
+
+    def test_cubre_las_tres_redes(self):
+        i = self.admin.index("const WZ_REDES")
+        cuerpo = self.admin[i:i + 400]
+        for red in ("'fb'", "'revolico'", "'wa'"):
+            self.assertIn(red, cuerpo)
+
+    def test_no_promete_publicar_solo(self):
+        # No hay API de Facebook ni Revolico desde aquí: el admin pega. Decir
+        # otra cosa en la interfaz genera una expectativa que no se cumple.
+        i = self.admin.index("function pubWizardHTML")
+        cuerpo = self.admin[i:i + 1400]
+        self.assertIn("Tú pegas", cuerpo)
+
+    def test_registra_cada_producto_antes_de_copiar(self):
+        # Antes del portapapeles: si el navegador lo bloquea, el admin publica
+        # igual a mano y el historial tiene que reflejarlo.
+        i = self.admin.index("async function wzCopiar")
+        cuerpo = self.admin[i:i + 1200]
+        self.assertIn("tmRegistrarPublicacion", cuerpo)
+        self.assertLess(cuerpo.index("tmRegistrarPublicacion"),
+                        cuerpo.index("clipboard.writeText"))
+
+    def test_ensena_cuanto_lleva_sin_publicarse(self):
+        # Es el dato que decide a cuál le toca hoy.
+        i = self.admin.index("function wzRenderLista")
+        cuerpo = self.admin[i:i + 1600]
+        self.assertIn("tmDiasSinPublicar", cuerpo)
+        self.assertIn("nunca", cuerpo)
+
+    def test_el_texto_del_producto_va_escapado(self):
+        i = self.admin.index("function wzRenderLista")
+        self.assertIn("esc(p.nombre", self.admin[i:i + 1600])
+        j = self.admin.index("function wzRenderSalida")
+        self.assertIn("esc(texto)", self.admin[j:j + 1600])
+
+    def test_los_handlers_llegan_al_onclick(self):
+        for fn in ("wzToggle", "wzLimpiar", "wzSoloConStock", "wzCopiar"):
+            self.assertIn(f"window.{fn}={fn}", self.admin, f"{fn} sin exponer")

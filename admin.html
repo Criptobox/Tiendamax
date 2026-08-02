@@ -3652,14 +3652,125 @@ function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
-    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('wizard','🪄 3 redes')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
   const body=$('#pub-body'); if(!body) return;
   if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); pubRenderCartelPreview(); }
+  else if(PUB_VIEW==='wizard'){ body.innerHTML=pubWizardHTML(); pubWizardInit(); }
   else if(PUB_VIEW==='plantillas'){ body.innerHTML=pubPlantillasHTML(); pubPlantillasInit(); }
   else if(PUB_VIEW==='historial'){ body.innerHTML=pubHistorialHTML(); }
   else if(PUB_VIEW==='categoria'){ body.innerHTML=pubCategoriaHTML(); pubCategoriaInit(); }
   else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
+}
+
+
+/* ── 🪄 WIZARD DE 3 REDES ────────────────────────────────────────────────
+   Un solo flujo para armar el texto de Facebook, Revolico y Estado a la vez.
+   No publica por ti — no hay API de esas redes desde aquí, tú pegas —, pero
+   deja los tres textos listos y apunta cada uno en el historial. */
+const WZ_REDES = [
+  { id:'fb',       nom:'📘 Facebook',        url:'https://www.facebook.com/groups/feed/' },
+  { id:'revolico', nom:'🟠 Revolico',        url:'https://www.revolico.com/item/publish' },
+  { id:'wa',       nom:'🟢 Estado WhatsApp', url:'' }
+];
+let WZ_SEL = new Set();
+
+function pubWizardHTML(){
+  return `<div class="section">
+    <h3>🪄 Publicar en 3 redes</h3>
+    <p style="font-size:12px;color:var(--muted);margin:6px 0 14px">Elige productos y te dejo el texto listo para cada red, con su plantilla. Tú pegas: Facebook y Revolico no dejan publicar desde fuera. Cada copia queda apuntada en el historial.</p>
+    <div class="form-group"><label class="form-label" for="wz-buscar">Buscar producto</label><input class="form-input" id="wz-buscar" placeholder="Escribe para filtrar…" oninput="wzRenderLista()"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn btn-ghost" onclick="wzSoloConStock()">📦 Solo con stock</button>
+      <button class="btn btn-ghost" onclick="wzLimpiar()">❌ Limpiar selección</button>
+      <span id="wz-cuenta" style="align-self:center;font-size:12.5px;color:var(--muted)"></span>
+    </div>
+    <div id="wz-lista" style="max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:8px"></div>
+  </div>
+  <div id="wz-salida"></div>`;
+}
+
+function _wzProductos(){ return (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]); }
+
+function pubWizardInit(){ WZ_SEL=new Set(); wzRenderLista(); }
+
+function wzRenderLista(){
+  const cont=$('#wz-lista'); if(!cont) return;
+  const q=(($('#wz-buscar')&&$('#wz-buscar').value)||'').trim().toLowerCase();
+  const lista=_wzProductos()
+    .filter(p=>!q || String(p.nombre||'').toLowerCase().includes(q))
+    .slice().sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||'')));
+  if(!lista.length){ cont.innerHTML='<div class="empty" style="padding:14px">Sin resultados.</div>'; wzActualizarCuenta(); return; }
+  cont.innerHTML=lista.slice(0,120).map(p=>{
+    const id=esc(String(p.id));
+    const d=(typeof tmDiasSinPublicar==='function')?tmDiasSinPublicar(p.id):null;
+    // Se enseña cuánto lleva sin publicarse: es el dato que decide a cuál le
+    // toca hoy, y hasta ahora no estaba en ninguna parte.
+    const hace = d===null ? '<span style="color:var(--red)">nunca</span>'
+               : (d===0 ? 'hoy' : ('hace '+d+' d'));
+    const sinStock = !Number(p.stock) ? ' · <span style="color:var(--red)">agotado</span>' : '';
+    return `<label style="display:flex;gap:10px;align-items:center;padding:7px 4px;cursor:pointer;border-bottom:1px solid var(--border)">
+      <input type="checkbox" value="${id}" ${WZ_SEL.has(String(p.id))?'checked':''} onchange="wzToggle('${id}',this.checked)">
+      <span style="flex:1;font-size:12.5px;color:var(--text)">${esc(p.nombre||'')}</span>
+      <span style="font-size:11.5px;color:var(--muted);white-space:nowrap">${hace}${sinStock}</span>
+    </label>`;
+  }).join('');
+  wzActualizarCuenta();
+}
+
+function wzToggle(id, on){ if(on) WZ_SEL.add(String(id)); else WZ_SEL.delete(String(id)); wzActualizarCuenta(); wzRenderSalida(); }
+function wzLimpiar(){ WZ_SEL=new Set(); wzRenderLista(); wzRenderSalida(); }
+function wzSoloConStock(){
+  WZ_SEL=new Set(_wzProductos().filter(p=>Number(p.stock)>0).map(p=>String(p.id)));
+  wzRenderLista(); wzRenderSalida();
+}
+function wzActualizarCuenta(){
+  const c=$('#wz-cuenta'); if(c) c.textContent=WZ_SEL.size?(WZ_SEL.size+' seleccionado(s)'):'ninguno seleccionado';
+}
+
+function _wzSeleccionados(){ return _wzProductos().filter(p=>WZ_SEL.has(String(p.id))); }
+
+/** Plantilla preferida para una red: la más usada de esa red, si hay. */
+function _wzPlantilla(red){
+  const todas=tmPlantillas();
+  const dela=todas.filter(t=>t.red===red).sort((a,b)=>(Number(b.usos)||0)-(Number(a.usos)||0));
+  return dela[0] || todas[0] || null;
+}
+
+function wzRenderSalida(){
+  const cont=$('#wz-salida'); if(!cont) return;
+  const sel=_wzSeleccionados();
+  if(!sel.length){ cont.innerHTML=''; return; }
+  cont.innerHTML=WZ_REDES.map(r=>{
+    const t=_wzPlantilla(r.id);
+    if(!t) return '';
+    const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,r.id)).join('\n\n———\n\n');
+    return `<div class="section">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <h3 style="margin:0">${r.nom}</h3>
+        <span class="badge">${esc(t.nombre)}</span>
+      </div>
+      <pre id="wz-txt-${r.id}" style="white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;margin:10px 0;max-height:220px;overflow:auto">${esc(texto)}</pre>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function wzCopiar(redId){
+  const r=WZ_REDES.find(x=>x.id===redId); const t=_wzPlantilla(redId);
+  const sel=_wzSeleccionados();
+  if(!r||!t||!sel.length){ showToast('⚠️ Elige al menos un producto'); return; }
+  const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,redId)).join('\n\n———\n\n');
+  // Se apunta ANTES de copiar: si el navegador bloquea el portapapeles, el
+  // admin igual abre la red y publica a mano, y el historial debe reflejarlo.
+  sel.forEach(p=>tmRegistrarPublicacion(p.id, redId, t.nombre));
+  tmContarUsoPlantilla(t.id);
+  try{ await navigator.clipboard.writeText(texto); showToast('📋 Copiado', r.nom+' · '+sel.length+' producto(s)'); }
+  catch(e){ showToast('⚠️ No pude copiar', 'Selecciona el texto a mano'); }
+  if(r.url) setTimeout(()=>{ try{ window.open(r.url,'_blank','noopener,noreferrer'); }catch(e){} }, 400);
+  wzRenderLista();
 }
 
 /* ── 📝 PLANTILLAS DE TEXTO ──────────────────────────────────────────────
@@ -4606,6 +4717,7 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
+window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
 window.tmCambiarPassword=tmCambiarPassword;
 window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion; window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin;
