@@ -332,8 +332,13 @@ def procesar_restock(messaging_api, database, restock_items):
             continue
         tokens = [v["token"] for v in interesados.values()
                   if isinstance(v, dict) and "token" in v]
-        # Teléfonos de clientes que dejaron su WhatsApp (para que el admin les escriba)
-        tels = [str(v.get("tel")).strip() for v in interesados.values()
+        # Teléfonos: viven en lista_espera, no aquí. avisos_stock es de lectura
+        # pública (el panel lo consulta sin autenticación), así que guardar ahí
+        # el WhatsApp del cliente era publicarlo. lista_espera tiene .read
+        # false; este script usa cuenta de servicio y se salta las reglas.
+        espera_ref = database.reference(f"lista_espera/{pid}")
+        espera = espera_ref.get() or {}
+        tels = [str(v.get("tel")).strip() for v in espera.values()
                 if isinstance(v, dict) and v.get("tel")]
         if not tokens and not tels:
             ref.delete()
@@ -354,6 +359,8 @@ def procesar_restock(messaging_api, database, restock_items):
                               link=f"/p/producto-{pid}.html", tag=f"admin-restock-{pid}")
         # Limpiar: ya fueron notificados
         ref.delete()
+        if espera:
+            espera_ref.delete()
         # Resetear el contador público de demanda
         try:
             database.reference(f"avisos_count/{pid}/count").set(0)

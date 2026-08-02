@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=713fb439"></script>
+<script src="js/tm-bundle.js?v=c03d5c3b"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3559,7 +3559,9 @@ async function renderAvisos(box){
       const tel = _avisoTel(e.tel);
       const key = esc(String(e._key||''));
       const cuando = e.ts ? new Date(Number(e.ts)).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}) : '';
-      const quien = tel ? esc(e.tel) : '<span style="color:var(--muted)">sin teléfono</span>';
+      // El telefono ya no viaja en avisos_stock (era publico). Los que dejaron
+      // WhatsApp llegan por el aviso push privado al reponer stock.
+      const quien = tel ? esc(e.tel) : '<span style="color:var(--muted)">te llega por push al reponer</span>';
       if(e.avisado){
         return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px;opacity:.55">
         <div style="flex:1;font-size:13px;color:#fff;text-decoration:line-through">${quien}<span style="color:var(--muted);font-size:11px;text-decoration:none"> · ${cuando}</span></div>

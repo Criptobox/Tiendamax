@@ -1187,12 +1187,25 @@ async function suscribirAvisoStock(productId, nombreProducto) {
         const res = await fetch(rtdbUrl + '/avisos_stock/' + productId + '/' + encodeURIComponent(fcmToken) + '.json', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.assign({
+            body: JSON.stringify({
                 token: fcmToken,
                 ts: Date.now(),
                 producto: nombreProducto
-            }, telCliente ? { tel: telCliente } : {}))
+            })
         });
+
+        // El telefono va aparte, a lista_espera, que es .read false. En
+        // avisos_stock no cabe: ese nodo es de lectura publica (el propio panel
+        // lo lee sin autenticacion), asi que guardar ahi el WhatsApp del
+        // cliente era publicarlo. El admin los sigue recibiendo: al reponer
+        // stock, send_notifications.py le manda la lista por push privado.
+        if (telCliente) {
+            fetch(rtdbUrl + '/lista_espera/' + productId + '/' + Date.now() + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tel: telCliente, productoId: String(productId), ts: Date.now() })
+            }).catch(() => {});
+        }
 
         if (!res.ok) {
             mostrarNotificacion('⚠️ Error al registrar el aviso. Intenta más tarde.', 'error');

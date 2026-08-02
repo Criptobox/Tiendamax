@@ -212,3 +212,36 @@ class SinEscrituraLibreTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SinTelefonosPublicosTest(unittest.TestCase):
+    """avisos_stock lo lee cualquiera: ahí no puede vivir un teléfono."""
+
+    def test_avisos_stock_no_admite_telefono(self):
+        n = REGLAS["avisos_stock"]["$productId"]["$tokenId"]
+        self.assertNotIn("tel", n, "el campo tel no puede estar declarado")
+        self.assertIn("!newData.hasChild('tel')", n[".validate"],
+                      "hay que rechazarlo, no solo no declararlo: un hijo sin "
+                      "regla se acepta sin validar ninguna")
+        self.assertIs(True, REGLAS["avisos_stock"][".read"],
+                      "si dejara de ser publico, este test sobra")
+
+    def test_el_cliente_manda_el_telefono_al_nodo_privado(self):
+        src = (RAIZ / "js" / "src" / "tm-product.src.js").read_text(encoding="utf-8")
+        # Anclar en el fetch de verdad, no en la primera mencion (que esta en
+        # un comentario de cabecera y dejaba la rebanada sin llegar al codigo).
+        i = src.index("rtdbUrl + '/avisos_stock/' + productId")
+        cuerpo = src[i:i + 1800]
+        self.assertNotIn("tel: telCliente", cuerpo.split("lista_espera")[0],
+                         "el telefono no puede ir en el payload de avisos_stock")
+        self.assertIn("/lista_espera/", cuerpo)
+        self.assertIs(False, REGLAS["lista_espera"][".read"])
+
+    def test_el_script_lee_los_telefonos_de_donde_ahora_estan(self):
+        # Si siguiera leyendolos de avisos_stock, el admin dejaria de recibir
+        # los WhatsApp al reponer stock y no se enteraria.
+        src = (RAIZ / "scripts" / "send_notifications.py").read_text(encoding="utf-8")
+        i = src.index("def procesar_restock")
+        cuerpo = src[i:i + 2500]
+        self.assertIn('lista_espera/{pid}', cuerpo)
+        self.assertIn("espera_ref.delete()", cuerpo, "hay que limpiarlos tras avisar")

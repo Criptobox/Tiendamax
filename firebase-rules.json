@@ -151,7 +151,7 @@
       "$productId": {
         "$tokenId": {
           ".write": true,
-          ".validate": "newData.hasChildren(['token','ts'])",
+          ".validate": "newData.hasChildren(['token','ts']) && !newData.hasChild('tel')",
           "token": {
             ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
           },
@@ -160,9 +160,6 @@
           },
           "producto": {
             ".validate": "newData.isString() && newData.val().length < 200"
-          },
-          "tel": {
-            ".validate": "newData.isString() && newData.val().length >= 6 && newData.val().length <= 25"
           }
         },
         ".read": true
