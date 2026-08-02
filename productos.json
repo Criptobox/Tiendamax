@@ -748,9 +748,9 @@
   },
   {
     "id": 1778336789459,
-    "nombre": "🛜 Router Wi-Fi AC1200 Tenda AC6(Global Version)",
+    "nombre": "🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)",
     "precioActual": 80,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 5,
@@ -771,7 +771,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
+      "https://tiendamax.org/imagenes/img_1785284959302.webp",
       "https://tiendamax.org/imagenes/img_1778336789459.webp"
     ],
     "descripcion": "Router inalámbrico de doble banda para el hogar que ofrece velocidades de hasta 1.2 Gbps, distribuidas en 867 Mbps en la banda de 5 GHz y 300 Mbps en la de 2.4 GHz. Cuenta con cuatro antenas externas y tecnología Beamforming para ampliar la cobertura, además de soporte para modo punto de acceso y administración mediante aplicación móvil.\nFicha Técnica:\nRendimiento Inalámbrico: ⚡ Velocidades de hasta 1.2 Gbps combinadas (867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz) para transmisión de contenido y tareas diarias.\nCobertura: 📶 Cuatro antenas externas con tecnología Beamforming para direccionar la señal hacia los dispositivos.\nModos de Operación y Funciones: 🌐 Soporta modo Punto de Acceso (AP) para transformar conexiones por cable en red inalámbrica.\nAdministración: 📱 Configuración y control de red, estado y controles parentales a través de la aplicación Tenda Wi-Fi.\nEspecificaciones (Specs):\nMarca: Tenda.\nModelo: AC6.\nTipo: Router Wi-Fi AC1200 Doble Banda."
@@ -1503,10 +1503,10 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 80A PowMr",
+    "nombre": "⚡ Controlador de Carga Solar MPPT 80A Powmr",
     "precioActual": 220,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 6,
@@ -1525,10 +1525,10 @@
     "seoTitle": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "comisionMoneda": "USD",
-    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT para maximizar la eficiencia en la conversión y aprovechamiento de la energía solar.\nCompatibilidad del Sistema: 🔋 Detección automática para bancos de baterías de 12V, 24V, 36V y 48V.\nInterfaz y Monitoreo: 📟 Pantalla LCD central con indicadores gráficos de panel y batería, acompañada de botones de navegación (PV/SET, BAT/▲, BAT/▼) para configuración.\nEstructura: 🔌 Diseño compacto en carcasa robusta con disipación lateral y bornes de conexión protegidos en la sección inferior.\nEspecificaciones (Specs):\nMarca: PowMr.\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 80A.\nVoltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\nUso: Sistemas fotovoltaicos residenciales y autónomos.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp"
-    ]
+      "https://tiendamax.org/imagenes/img_1785284197964.webp"
+    ],
+    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT para maximizar la eficiencia en la conversión y aprovechamiento de la energía solar.\nCompatibilidad del Sistema: 🔋 Detección automática para bancos de baterías de 12V, 24V, 36V y 48V.\nInterfaz y Monitoreo: 📟 Pantalla LCD central con indicadores gráficos de panel y batería, acompañada de botones de navegación (PV/SET, BAT/▲, BAT/▼) para configuración.\nEstructura: 🔌 Diseño compacto en carcasa robusta con disipación lateral y bornes de conexión protegidos en la sección inferior.\nEspecificaciones (Specs):\nMarca: PowMr.\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 80A.\nVoltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\nUso: Sistemas fotovoltaicos residenciales y autónomos."
   },
   {
     "id": 1780017975657,
@@ -1959,7 +1959,7 @@
   },
   {
     "id": 1781711154462,
-    "nombre": "📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
+    "nombre": "📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)",
     "precioActual": 30,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
@@ -1984,7 +1984,7 @@
   },
   {
     "id": 1781711424820,
-    "nombre": "🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
+    "nombre": "🛜 Router Wi-fi AC1200 Tp-link Archer C54",
     "precioActual": 60,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
@@ -3050,7 +3050,7 @@
   },
   {
     "id": 1785285424837,
-    "nombre": "🌐 Antena CPE MikroTik SXTsq 5 ax",
+    "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
     "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785285422394.webp"
@@ -3077,11 +3077,10 @@
   },
   {
     "id": 1785286289086,
-    "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores.\nGanancia y Cobertura: 📶 Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido.\nConectividad Física: 🔌 Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation M5.\nTipo: CPE Inalámbrico para exteriores (Versión Internacional).",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp",
+    "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
+    "imagen": "https://tiendamax.org/imagenes/img_1785286287536.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp"
+      "https://tiendamax.org/imagenes/img_1785286287536.webp"
     ],
     "precioActual": 230,
     "precioOriginal": 0,
@@ -3100,6 +3099,7 @@
       "📶 Antena Direccional Integrada ",
       "🔌 Puertos Ethernet con PoE Pasivo"
     ],
-    "fechaAgregado": "2026-07-29T00:51:29.086Z"
+    "fechaAgregado": "2026-07-29T00:51:29.086Z",
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores.\nGanancia y Cobertura: 📶 Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido.\nConectividad Física: 🔌 Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation M5.\nTipo: CPE Inalámbrico para exteriores (Versión Internacional)."
   }
 ]
