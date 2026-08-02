@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-01T10:27:39.955193+00:00",
+  "generado": "2026-08-02T10:27:05.060388+00:00",
   "productos": 118,
   "urgentes": 6,
-  "advertencias": 44,
+  "advertencias": 42,
   "info": 9,
-  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 44 advertencia(s), 9 de info.",
+  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 42 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -123,11 +123,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Cargador Portátil Solar",
       "detalle": "agotado (stock 0)"
     },
@@ -229,11 +224,6 @@
     {
       "tipo": "agotado",
       "nombre": "🔌 Cargador Inteligente Ntrc 35A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Nanostation AC Loco",
       "detalle": "agotado (stock 0)"
     },
     {
