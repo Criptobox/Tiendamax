@@ -51,12 +51,19 @@ class ReglaAdminAuthTest(unittest.TestCase):
     def test_la_escritura_sigue_exigiendo_proof(self):
         self.assertIn("newData.child('proof').val()", self.admin_auth[".write"])
 
-    def test_las_reglas_que_dependen_del_hash_siguen_ahi(self):
-        # Si estas dejaran de existir, sincronizar el hash no tendría sentido.
-        alm = self.reglas["rules"]["almacenes"]["$almId"][".write"]
+    def test_el_hash_sigue_sirviendo_de_proof_donde_toca(self):
+        # admin_push_requests es .read false, asi que ahi el proof no se ve.
         push = self.reglas["rules"]["admin_push_requests"]["$reqId"][".write"]
-        self.assertIn("root.child('admin_auth/hash')", alm)
         self.assertIn("root.child('admin_auth/hash')", push)
+
+    def test_el_hash_no_se_guarda_en_un_nodo_publico(self):
+        # almacenes es .read true. Mandar ahi el _proof dejaba el hash del
+        # admin a la vista de cualquiera, y con el se forjan notificaciones a
+        # todos los clientes. La regla ya no lo pide y el admin ya no lo manda.
+        alm = self.reglas["rules"]["almacenes"]
+        self.assertIs(True, alm[".read"])
+        self.assertNotIn("_proof", json.dumps(alm))
+        self.assertNotIn("_proof", (RAIZ / "admin.html").read_text(encoding="utf-8"))
 
 
 class SenalDeVersionTest(unittest.TestCase):

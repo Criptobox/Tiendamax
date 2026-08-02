@@ -636,17 +636,25 @@ function _fbGuardarVenta(venta) {
     })().catch(() => {}); // OPT 3G: silencioso
 }
 
-// Elimina una venta de Firebase RTDB
+// Marca una venta como anulada en Firebase RTDB.
+// No se borra: un DELETE no lleva datos, así que la regla no puede distinguir
+// al admin de cualquiera y tendría que permitirlo a todo el mundo — o sea que
+// cualquiera podría destruir tu historial de ventas. Marcándola, el dato
+// sobrevive y el panel la filtra al leer.
 function _fbEliminarVenta(id) {
     (async () => {
         await _fbEnsureConfig();
         const url = _fbRtdbUrl();
         if (!url) return;
-        await fetch(`${url}/ventas/${id}.json`, { method: 'DELETE' });
+        await fetch(`${url}/ventas/${id}.json`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ anulada: true })
+        });
     })().catch(() => {}); // OPT 3G: silencioso
 }
 
-// Borra todas las ventas de Firebase RTDB una a una (respeta reglas: solo write en $ventaId)
+// Anula todas las ventas de Firebase RTDB una a una (respeta reglas: solo write en $ventaId)
 function _fbBorrarTodasVentas() {
     (async () => {
         await _fbEnsureConfig();
@@ -657,7 +665,11 @@ function _fbBorrarTodasVentas() {
         const data = await res.json();
         if (!data || typeof data !== 'object') return;
         await Promise.all(Object.keys(data).map(k =>
-            fetch(`${url}/ventas/${k}.json`, { method: 'DELETE' }).catch(() => {})
+            fetch(`${url}/ventas/${k}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ anulada: true })
+            }).catch(() => {})
         ));
     })().catch(() => {}); // OPT 3G: silencioso
 }
