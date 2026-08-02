@@ -32,6 +32,10 @@ ORDEN = [
     "tm-admin.js",
     "tm-product.js",
     "tm-catalog.js",
+    # Va después de tm-catalog porque copiarParaFacebook/Revolico llaman a
+    # tmRegistrarPublicacion; como son funciones (se elevan), el orden no es
+    # crítico, pero mantenerlo aquí deja el módulo junto a quien lo usa.
+    "tm-publicar.js",
     "tm-init.js",
     "tm-ui.js",
     "tm-toast.js",

@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=c03d5c3b"></script>
+<script src="js/tm-bundle.js?v=7e6f524f"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3652,13 +3652,184 @@ function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
-    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
   const body=$('#pub-body'); if(!body) return;
   if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); pubRenderCartelPreview(); }
+  else if(PUB_VIEW==='plantillas'){ body.innerHTML=pubPlantillasHTML(); pubPlantillasInit(); }
+  else if(PUB_VIEW==='historial'){ body.innerHTML=pubHistorialHTML(); }
   else if(PUB_VIEW==='categoria'){ body.innerHTML=pubCategoriaHTML(); pubCategoriaInit(); }
   else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
 }
+
+/* ── 📝 PLANTILLAS DE TEXTO ──────────────────────────────────────────────
+   Solo TEXTO: el generador de carteles no se toca. Las plantillas viven en
+   localStorage (tm-publicar.src.js) y llevan variables tipo {nombre} que se
+   sustituyen con los datos reales del producto al copiarlas. */
+let PL_EDIT=null;   // plantilla en edición, o null
+
+function pubPlantillasHTML(){
+  return `<div class="section">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+      <h3 style="margin:0">📝 Plantillas de texto</h3>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="plNueva()">+ Nueva</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin:6px 0 14px">Escribe el post una vez con variables y reutilízalo con cualquier producto. Los enlaces salen ya con la etiqueta de la red, para que Analytics sepa de dónde vino cada visita.</p>
+    <div class="form-group"><label class="form-label" for="pl-prod">Producto para la vista previa</label><select class="form-select" id="pl-prod" onchange="plRender()"></select></div>
+    <div id="pl-lista"></div>
+  </div>
+  <div id="pl-editor"></div>`;
+}
+
+function pubPlantillasInit(){
+  const sel=$('#pl-prod'); if(sel){
+    const lista=(typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).slice()
+      .sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||'')));
+    sel.innerHTML=lista.map(p=>`<option value="${esc(String(p.id))}">${esc(p.nombre||'(sin nombre)')}</option>`).join('');
+  }
+  plRender();
+}
+
+function _plProducto(){
+  const sel=$('#pl-prod'); if(!sel||!sel.value) return null;
+  return (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).find(p=>String(p.id)===sel.value)||null;
+}
+
+function plRender(){
+  const cont=$('#pl-lista'); if(!cont) return;
+  const p=_plProducto();
+  const lista=tmPlantillas().slice().sort((a,b)=>(Number(b.usos)||0)-(Number(a.usos)||0));
+  if(!lista.length){ cont.innerHTML='<div class="empty"><div class="ico">📝</div>Sin plantillas.</div>'; return; }
+  cont.innerHTML=lista.map(t=>{
+    const previa=p?tmAplicarPlantilla(t.texto,p,t.red):'(elige un producto arriba)';
+    return `<div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <b style="color:var(--text)">${esc(t.nombre)}</b>
+        <span class="badge">${esc(t.red||'general')}</span>
+        <span style="font-size:11.5px;color:var(--muted)">${Number(t.usos)||0} usos</span>
+      </div>
+      <pre style="white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;margin:10px 0;max-height:160px;overflow:auto">${esc(previa)}</pre>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="plCopiar('${esc(t.id)}')">📋 Copiar con este producto</button>
+        <button class="btn btn-ghost" onclick="plEditar('${esc(t.id)}')">✏️ Editar</button>
+        <button class="btn btn-ghost" onclick="plDuplicar('${esc(t.id)}')">📄 Duplicar</button>
+        <button class="btn btn-ghost" onclick="plBorrar('${esc(t.id)}')">🗑 Borrar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function plCopiar(id){
+  const t=tmPlantillas().find(x=>x.id===id); const p=_plProducto();
+  if(!t){ showToast('❌ No encontré esa plantilla'); return; }
+  if(!p){ showToast('⚠️ Elige primero un producto'); return; }
+  const texto=tmAplicarPlantilla(t.texto,p,t.red);
+  try{ await navigator.clipboard.writeText(texto); showToast('📋 Copiado', t.nombre); }
+  catch(e){ showToast('❌ No se pudo copiar', 'Selecciónalo a mano'); return; }
+  tmContarUsoPlantilla(id);
+  // Queda registrado igual que al usar los botones de copiar de siempre, para
+  // que el historial refleje TODO lo que se publica y no solo una parte.
+  tmRegistrarPublicacion(p.id, t.red||'otra', t.nombre);
+  plRender();
+}
+
+function plNueva(){ PL_EDIT={ id:'', nombre:'', red:'fb', texto:'' }; plRenderEditor(); }
+function plEditar(id){ const t=tmPlantillas().find(x=>x.id===id); if(!t) return; PL_EDIT=Object.assign({},t); plRenderEditor(); }
+function plDuplicar(id){
+  const t=tmPlantillas().find(x=>x.id===id); if(!t) return;
+  PL_EDIT={ id:'', nombre:t.nombre+' (copia)', red:t.red, texto:t.texto }; plRenderEditor();
+}
+function plBorrar(id){
+  const t=tmPlantillas().find(x=>x.id===id); if(!t) return;
+  if(!confirm('¿Borrar la plantilla "'+t.nombre+'"?')) return;
+  tmBorrarPlantilla(id); showToast('🗑 Plantilla borrada'); plRender();
+}
+function plCerrarEditor(){ PL_EDIT=null; plRenderEditor(); }
+
+function plRenderEditor(){
+  const cont=$('#pl-editor'); if(!cont) return;
+  if(!PL_EDIT){ cont.innerHTML=''; return; }
+  const vars=TM_PLANTILLA_VARS.map(v=>
+    `<button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 8px" title="${esc(v.d)}" onclick="plInsertar('{${v.v}}')">{${v.v}}</button>`).join(' ');
+  cont.innerHTML=`<div class="section">
+    <h3>${PL_EDIT.id?'✏️ Editar plantilla':'📝 Nueva plantilla'}</h3>
+    <div class="form-group"><label class="form-label" for="pl-nombre">Nombre</label><input class="form-input" id="pl-nombre" value="${esc(PL_EDIT.nombre||'')}" placeholder="Ej: Facebook — con descuento"></div>
+    <div class="form-group"><label class="form-label" for="pl-red">Red</label><select class="form-select" id="pl-red">
+      ${['fb','revolico','wa','otra'].map(r=>`<option value="${r}"${PL_EDIT.red===r?' selected':''}>${r}</option>`).join('')}
+    </select></div>
+    <div class="form-group"><label class="form-label" for="pl-texto">Texto del post</label>
+      <textarea class="form-input" id="pl-texto" rows="10" style="resize:vertical;font-family:ui-monospace,monospace;font-size:12px">${esc(PL_EDIT.texto||'')}</textarea></div>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 8px">Pulsa una variable para insertarla donde tengas el cursor:</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${vars}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="plGuardar()">💾 Guardar</button>
+      <button class="btn btn-ghost" onclick="plCerrarEditor()">Cancelar</button>
+    </div>
+  </div>`;
+}
+
+function plInsertar(txt){
+  const ta=$('#pl-texto'); if(!ta) return;
+  const i=ta.selectionStart||0, f=ta.selectionEnd||0;
+  ta.value=ta.value.slice(0,i)+txt+ta.value.slice(f);
+  ta.focus(); ta.selectionStart=ta.selectionEnd=i+txt.length;
+}
+
+function plGuardar(){
+  const nombre=($('#pl-nombre')&&$('#pl-nombre').value||'').trim();
+  const texto=($('#pl-texto')&&$('#pl-texto').value||'').trim();
+  const red=($('#pl-red')&&$('#pl-red').value)||'otra';
+  if(!nombre){ showToast('⚠️ Ponle un nombre'); return; }
+  if(!texto){ showToast('⚠️ La plantilla está vacía'); return; }
+  const ok=tmGuardarPlantilla(Object.assign({}, PL_EDIT.id?{id:PL_EDIT.id}:{}, {nombre,texto,red}));
+  if(!ok){ showToast('❌ No se pudo guardar', '¿Sin espacio en el navegador?'); return; }
+  showToast('💾 Plantilla guardada', nombre);
+  PL_EDIT=null; plRenderEditor(); plRender();
+}
+
+/* ── 🕐 HISTORIAL DE PUBLICACIONES ───────────────────────────────────────
+   Se llena solo cada vez que copias un producto para una red. Sirve para no
+   repetir el mismo producto cada dos días y para ver qué llevas olvidado. */
+const PUB_RED_NOM={fb:'📘 Facebook', revolico:'🟠 Revolico', wa:'🟢 WhatsApp', otra:'📣 Otra'};
+
+function pubHistorialHTML(){
+  const log=tmPublicacionesRecientes(30);
+  const prods=(typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]);
+  const nom=pid=>{ const p=prods.find(x=>String(x.id)===String(pid)); return p?p.nombre:'(producto borrado)'; };
+  const cuando=ts=>{
+    const m=Math.floor((Date.now()-ts)/60000);
+    if(m<60) return 'hace '+m+' min';
+    if(m<1440) return 'hace '+Math.floor(m/60)+' h';
+    return 'hace '+Math.floor(m/1440)+' d';
+  };
+  const olvidados=tmProductosSinPublicar(prods,21);
+
+  const avisos = olvidados.length
+    ? `<div class="section"><h3>⚠️ Llevan 21 días o más sin publicar</h3>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 10px">${olvidados.length} producto(s). Los que nunca se han publicado también cuentan.</p>
+        <div style="display:flex;flex-direction:column;gap:6px">${
+          olvidados.slice(0,12).map(p=>{
+            const d=tmDiasSinPublicar(p.id);
+            return `<div style="display:flex;gap:10px;align-items:center;font-size:12.5px">
+              <span style="flex:1;color:var(--text)">${esc(p.nombre||'')}</span>
+              <span style="color:var(--muted)">${d===null?'nunca':(d+' días')}</span>
+            </div>`;
+          }).join('')}${olvidados.length>12?`<div style="font-size:12px;color:var(--muted)">…y ${olvidados.length-12} más</div>`:''}</div></div>`
+    : `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto lleva más de 21 días sin publicar.</div></div>`;
+
+  if(!log.length){
+    return avisos+`<div class="section"><div class="empty"><div class="ico">🕐</div><b style="color:#fff">Todavía no hay historial</b><br>Se va llenando solo cada vez que copias un producto para Facebook, Revolico o una plantilla.</div></div>`;
+  }
+
+  return `<div class="section">
+    <h3>🕐 Últimas publicaciones</h3>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 12px">Se registra al copiar. Vive en este dispositivo, no en la nube.</p>
+    <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Red</th><th>Cuándo</th></tr></thead><tbody>
+      ${log.map(e=>`<tr><td class="nm">${esc(nom(e.pid))}</td><td>${esc(PUB_RED_NOM[e.red]||e.red)}</td><td style="color:var(--muted)">${esc(cuando(e.ts))}</td></tr>`).join('')}
+    </tbody></table></div>
+  </div>`+avisos;
+}
+
 // Compartir por producto (fiel al admin viejo: filtro por categoría + tarjeta 1080x1920)
 /* ── Canal de publicación → utm_source ───────────────────────────────────
    Los enlaces que se publican en Facebook, Revólico, Estado, etc. llevan
@@ -4435,6 +4606,7 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
+window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
 window.tmCambiarPassword=tmCambiarPassword;
 window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion; window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;

@@ -22,6 +22,10 @@ ${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '�
 📞 Contacto: +53 54320170
     `.trim();
 
+    // Se apunta al copiar, no al publicar: es lo más cerca que se puede estar
+    // del momento real sin pedirle al admin que registre nada a mano — y un
+    // registro que hay que rellenar a mano acaba siempre incompleto.
+    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'revolico', 'Revolico');
     navigator.clipboard.writeText(texto).then(() => {
         mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 500);
@@ -48,6 +52,7 @@ ${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agot
 #TiendaMax #VentasCuba #GruposFacebook #Oferta
     `.trim();
 
+    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'fb', 'Grupos de Facebook');
     navigator.clipboard.writeText(texto).then(() => {
         mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
         setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); }, 500);
@@ -62,6 +67,10 @@ function prepararPublicacionManual(id) {
     const producto = productos.find(p => p.id === id);
     if (!producto) return;
     const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
+    // Se apunta al copiar, no al publicar: es lo más cerca que se puede estar
+    // del momento real sin pedirle al admin que registre nada a mano — y un
+    // registro que hay que rellenar a mano acaba siempre incompleto.
+    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'revolico', 'Revolico');
     navigator.clipboard.writeText(texto).then(() => {
         mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 1000);
