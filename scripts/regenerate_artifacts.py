@@ -80,19 +80,19 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-wrap{{max-width:1100px;margin:0 auto;padding:28px 16px 60px}}
   h1{{font-size:clamp(22px,4vw,30px);font-weight:800;margin-bottom:8px}}
   .tm-sub{{color:#a09080;font-size:14px;margin-bottom:24px}}
-  .tm-cta{{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff;margin-bottom:28px}}
+  .tm-cta{{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00;margin-bottom:28px}}
   .tm-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}}
   .tm-card{{background:#181310;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}}
   .tm-card img{{width:100%;aspect-ratio:1/1;object-fit:cover;background:#1a1410}}
   .tm-card-body{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}}
   .tm-card-name{{font-size:12.5px;font-weight:600;line-height:1.3;min-height:32px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
   .tm-card-price{{font-size:15px;font-weight:800;color:#FF6B35;margin-top:auto}}
-  .tm-card-out{{font-size:10.5px;color:#888}}
+  .tm-card-out{{font-size:10.5px;color:#9a9088}}
   .tm-nav-cats{{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}}
-  .tm-nav-cats h2{{font-size:13px;color:#888;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}}
+  .tm-nav-cats h2{{font-size:13px;color:#9a9088;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}}
   .tm-nav-cats a{{display:inline-block;font-size:12.5px;color:#C9A96E;border:1px solid rgba(201,169,110,.25);padding:5px 12px;border-radius:20px;margin:0 6px 6px 0}}
-  .tm-ftr{{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
-  .tm-ftr a{{color:#C9A96E}}
+  .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
+  .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
 </style>
 
 <!-- ═══ Google Analytics ═══
@@ -222,20 +222,20 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   h1{{font-size:clamp(20px,4vw,26px);font-weight:800;line-height:1.25;margin-bottom:18px}}
   .tm-prices{{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}}
   .tm-price{{font-size:30px;font-weight:800;color:#FF6B35}}
-  .tm-orig{{font-size:17px;color:#666;text-decoration:line-through}}
+  .tm-orig{{font-size:17px;color:#8a8078;text-decoration:line-through}}
   .tm-badge{{background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.3);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}}
   .tm-desc{{font-size:14px;line-height:1.75;color:#a09080;margin-bottom:22px;white-space:pre-line}}
   .tm-stok-y{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#4ade80;margin-bottom:22px}}
   .tm-stok-y::before{{content:'';width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0}}
-  .tm-stok-n{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#888;margin-bottom:22px}}
+  .tm-stok-n{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#9a9088;margin-bottom:22px}}
   .tm-stok-n::before{{content:'';width:8px;height:8px;border-radius:50%;background:#666;flex-shrink:0}}
   .tm-actions{{display:flex;flex-direction:column;gap:12px}}
   .tm-btn{{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;transition:opacity .2s}}
   .tm-btn:hover{{opacity:.85}}
-  .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff}}
-  .tm-btn-w{{background:#25D366;color:#fff}}
-  .tm-ftr{{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
-  .tm-ftr a{{color:#C9A96E}}
+  .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}}
+  .tm-btn-w{{background:#25D366;color:#062B14}}
+  .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
+  .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
   /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
      la categoría. Sin ellas la ficha era un callejón sin salida — solo se
      podía salir al home o a WhatsApp. */
