@@ -1574,7 +1574,38 @@
 <script>
 (function(){
 /* ============ Estado ============ */
-let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [], ALMACENES = {};
+// PRODUCTOS no es un `let`: es una propiedad con setter, y eso es a propósito.
+//
+// El catálogo vive a la vez en tres nombres —PRODUCTOS (aquí), window.productos
+// y el bareword `productos` del motor (un `let` dentro de tm-data)— y hasta
+// ahora se mantenían iguales llamando a syncProductos() a mano después de cada
+// asignación. Once llamadas repartidas por el fichero, y bastaba con olvidar
+// una para que el admin escribiera en un array y el motor leyera otro.
+//
+// No es hipotético: imagenEnUso() leía `productos` mientras el admin escribía
+// en PRODUCTOS, dijo "esta foto no la usa nadie" y se borró la única foto de un
+// producto. El parche ANTI-WIPE de cargarDatos() sale del mismo enredo.
+//
+// Mutar el array (push/splice/forEach) nunca fue el problema: comparten
+// referencia. El problema es REASIGNAR. Con el setter, `PRODUCTOS = x` propaga
+// solo a los tres sitios, así que la desincronización deja de depender de que
+// alguien se acuerde. Los ~99 sitios que solo LEEN siguen escribiendo
+// `PRODUCTOS` tal cual: sin `let` local, el bareword resuelve a window.
+let CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [], ALMACENES = {};
+let _PRODUCTOS = [];
+Object.defineProperty(window, 'PRODUCTOS', {
+  configurable: true,
+  get(){ return _PRODUCTOS; },
+  set(v){
+    _PRODUCTOS = Array.isArray(v) ? v : [];
+    window.productos = _PRODUCTOS;
+    // El motor puede no haberse cargado todavía (orden de los <script>); en ese
+    // caso la asignación al bareword lanza y no pasa nada: cuando cargue,
+    // syncProductos() lo pone al día.
+    try { productos = _PRODUCTOS; } catch(e) {}
+  },
+});
+window.PRODUCTOS = [];   // pasa por el setter: deja los tres nombres apuntando al mismo array desde el principio
 const $ = s => document.querySelector(s);
 const money = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -1640,10 +1671,14 @@ async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!
 // El motor (tm-*.js) usa el bareword global `productos` (un `let` en tm-data),
 // que NO es window.productos. Si no lo unificamos, ajustarStock/guardarProductos/
 // normalizar nombres tocan un array fantasma y nada se refleja ni se guarda.
-// Esta función deja PRODUCTOS === window.productos === productos (motor) = 1 array.
+//
+// Desde que PRODUCTOS tiene setter, reasignarlo ya propaga solo, así que esta
+// función es sobre todo el empujón de después de que cargue el motor (antes de
+// eso la asignación al bareword falla en silencio). Se mantiene además porque
+// la llaman 11 sitios y quitarla sería tocar mucho para no ganar nada; llamarla
+// de más no cuesta y sigue siendo la forma correcta de decir "ponlo al día".
 function syncProductos(){
-  window.productos = PRODUCTOS;
-  try { productos = PRODUCTOS; } catch(e) { /* motor no cargado aún */ }
+  window.PRODUCTOS = _PRODUCTOS;
 }
 
 async function cargarDatos(recargar){
