@@ -338,7 +338,17 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         name  = (p.get("nombre") or "").strip()
         desc  = desc_short(p.get("seoDescription") or p.get("descripcion") or "", 155 if p.get("seoDescription") else 200)
         price = f"{float(p.get('precioActual') or 0):.2f}"
-        raw_img = p.get("imagen") or f"{SITE}/og-image.jpg"
+        # La tarjeta OG de 1200x630 que arma scripts/build_og_images.py, si
+        # existe. Antes se ponía aquí la foto del producto tal cual pero las
+        # etiquetas de abajo declaran 1200x630, y las fotos reales son 480x480
+        # o 700x700: los 118 productos mentían sobre sus medidas y WhatsApp,
+        # Telegram y Facebook maquetan la vista previa con lo DECLARADO, así
+        # que salían recortadas o con franjas. La tarjeta sí mide lo que dice
+        # (y encima lleva el precio).
+        if (ROOT / "og" / f"producto-{pid}.jpg").exists():
+            raw_img = f"{SITE}/og/producto-{pid}.jpg"
+        else:
+            raw_img = p.get("imagen") or f"{SITE}/og-image.jpg"
         img   = raw_img
         # Tipo MIME real de la imagen para og:image:type (antes siempre decía jpeg)
         _ext = raw_img.split("?", 1)[0].rsplit(".", 1)[-1].lower()

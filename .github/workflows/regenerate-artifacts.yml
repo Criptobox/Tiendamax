@@ -9,6 +9,10 @@ on:
       - 'subcategorias.json'
       - 'categorias.json'
       - 'scripts/regenerate_artifacts.py'
+      - 'scripts/build_og_images.py'
+      # Las tarjetas OG llevan la foto dentro: si cambia la foto (subida nueva,
+      # o una pasada de optimize_images.py), la tarjeta hay que rehacerla.
+      - 'imagenes/**'
   workflow_dispatch:
 
 permissions:
@@ -44,6 +48,15 @@ jobs:
         # SEO real en vez del genérico de respaldo ("Nombre — $precio USD").
         run: python scripts/fill_seo.py
 
+      - name: Instalar Pillow (para las tarjetas OG)
+        run: pip install --quiet 'Pillow==10.4.0'
+
+      - name: Generar tarjetas OG (1200x630 por producto)
+        # Antes del regenerador: es él quien decide si el <meta og:image> apunta
+        # a la tarjeta o a la foto suelta, y lo hace mirando si el fichero ya
+        # existe en og/.
+        run: python scripts/build_og_images.py
+
       - name: Ejecutar regenerador
         run: python scripts/regenerate_artifacts.py
 
@@ -58,9 +71,9 @@ jobs:
           # productos.json entra aquí porque fill_seo.py puede haberlo tocado
           # (rellena seoTitle/seoDescription in place) — sin esto, ese cambio
           # se perdía al terminar el job en vez de quedar publicado.
-          git add p/ c/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null || true
-          # Asegurar que archivos nuevos en p/ y c/ también queden en el índice
-          git ls-files --others --exclude-standard -- p/ c/ | xargs -r git add 2>/dev/null || true
+          git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null || true
+          # Asegurar que archivos nuevos en p/, c/ y og/ también queden en el índice
+          git ls-files --others --exclude-standard -- p/ c/ og/ | xargs -r git add 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "Sin cambios para subir"
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -75,7 +88,7 @@ jobs:
               exit 0
             fi
             git fetch origin main
-            git rebase -X ours origin/main || { git checkout --ours -- p/ c/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; git add p/ c/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            git rebase -X ours origin/main || { git checkout --ours -- p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
             sleep $((i * 2))
           done
           echo "❌ No se pudieron publicar los artefactos." >&2
