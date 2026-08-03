@@ -405,6 +405,68 @@ function injectStyles(){
   .tcp3-right img{position:relative;max-width:88%;max-height:82%;object-fit:contain;filter:drop-shadow(0 26px 40px rgba(0,0,0,.6));border-radius:18px}
   .tcp3-badge{position:absolute;z-index:4;top:22px;right:22px;background:linear-gradient(135deg,var(--tc-a),rgba(var(--tc-a-rgb),.75));color:#fff;font-size:12px;font-weight:900;padding:8px 13px;border-radius:11px;box-shadow:0 8px 16px rgba(var(--tc-a-rgb),.55);text-align:center;line-height:1.05}
   .tcp3-badge small{display:block;font-size:7px;font-weight:800;letter-spacing:.07em;opacity:.85;margin-top:1px}
+
+  /* ── Plantilla Tecno (tcpT) ─────────────────────────────────────────────
+     Vertical 760×1140, como Clásico y Pro v2. Pensada para routers, energía y
+     audio: fondo oscuro con circuito, dato grande dentro del ícono, columnas
+     de specs a los lados de la foto y plataforma bajo el producto.
+
+     Las specs corren EN PARALELO con la foto, no debajo — es lo que le da el
+     aire de ficha técnica. El circuito de fondo se genera una vez en canvas y
+     se reutiliza como data URI: dibujarlo en SVG a mano serían cientos de
+     líneas de path, y html2canvas lee un background-image sin problema. */
+  .tcpT-root{--tc-a:#29B6F6;--tc-a-rgb:41,182,246;position:relative;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 34%,#0d1c28 0%,#070d14 55%,#04070b 100%);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;flex-direction:column}
+  .tcpT-circ{position:absolute;inset:0;opacity:.55;background-repeat:no-repeat;background-size:cover}
+  .tcpT-glow{position:absolute;left:50%;top:31%;width:620px;height:620px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(var(--tc-a-rgb),.20) 0%,transparent 62%)}
+  .tcpT-head{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:30px 34px 0}
+  .tcpT-word{font-size:25px;font-weight:800;color:#fff;letter-spacing:-.4px;line-height:1}
+  .tcpT-word em{font-style:normal;color:#FF6B1A}
+  .tcpT-tag{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--tc-a)}
+  .tcpT-title{position:relative;z-index:3;padding:20px 34px 0}
+  .tcpT-marca{font-size:14px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#93a4b3}
+  .tcpT-modelo{font-size:50px;font-weight:900;line-height:1.02;letter-spacing:-1.8px;color:#fff;margin-top:6px;word-break:break-word}
+  .tcpT-lema{font-size:21px;font-weight:800;letter-spacing:-.3px;color:var(--tc-a);margin-top:8px}
+  .tcpT-precio{position:relative;z-index:3;display:flex;align-items:flex-start;gap:16px;padding:22px 34px 0}
+  .tcpT-precio-n{font-size:62px;font-weight:900;line-height:.9;letter-spacing:-2.5px;color:#fff}
+  .tcpT-precio-c{font-size:19px;font-weight:800;color:#93a4b3;align-self:flex-end;margin-bottom:6px}
+  .tcpT-precio-old{font-size:20px;font-weight:700;color:#6b7c8a;text-decoration:line-through;align-self:flex-end;margin-bottom:7px}
+  .tcpT-precio-off{font-size:15px;font-weight:900;color:#04070b;background:var(--tc-a);padding:4px 12px;border-radius:999px;align-self:flex-end;margin-bottom:6px}
+  .tcpT-banda{position:relative;z-index:3;flex:1;display:grid;grid-template-columns:188px 1fr 188px;gap:13px;padding:22px 30px 0;min-height:0;align-items:start}
+  .tcpT-col{border:1.3px solid rgba(var(--tc-a-rgb),.35);background:rgba(4,10,18,.55);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;align-self:start}
+  .tcpT-spec{display:flex;align-items:center;gap:11px;padding:15px 13px;border-top:1px solid rgba(255,255,255,.06)}
+  .tcpT-spec:first-child{border-top:0}
+  .tcpT-spec-ic{flex-shrink:0;width:37px;height:37px;border-radius:50%;background:rgba(var(--tc-a-rgb),.12);border:1.2px solid rgba(var(--tc-a-rgb),.55);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
+  .tcpT-spec-ic svg{width:19px;height:19px}
+  .tcpT-spec-t{font-size:12.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#fff;line-height:1.15}
+  .tcpT-spec-v{font-size:15px;font-weight:900;text-transform:uppercase;color:var(--tc-a);line-height:1.15;margin-top:3px;overflow-wrap:anywhere;hyphens:none}
+  .tcpT-centro{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-width:0;height:100%}
+  .tcpT-centro>svg{width:210px;height:130px;overflow:visible;flex-shrink:0}
+  .tcpT-glifo-arc{fill:none;stroke:var(--tc-a);stroke-width:8;stroke-linecap:round;filter:drop-shadow(0 0 12px var(--tc-a))}
+  .tcpT-glifo-dot{fill:var(--tc-a);filter:drop-shadow(0 0 10px var(--tc-a))}
+  .tcpT-glifo-fill{fill:var(--tc-a);stroke:none;filter:drop-shadow(0 0 10px var(--tc-a))}
+  .tcpT-glifo-n{fill:var(--tc-a);font-weight:900;text-anchor:middle;dominant-baseline:central;filter:drop-shadow(0 0 14px var(--tc-a))}
+  .tcpT-dato{margin-top:2px;font-size:34px;font-weight:900;letter-spacing:-1px;color:var(--tc-a);text-shadow:0 0 18px rgba(var(--tc-a-rgb),.75);line-height:1}
+  .tcpT-foto{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;min-height:0;padding:6px 0 0}
+  .tcpT-foto img{max-width:100%;max-height:100%;object-fit:contain;border-radius:14px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.7))}
+  .tcpT-plat{position:relative;z-index:3;height:74px;margin-top:10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;flex-shrink:0}
+  .tcpT-plat i{display:block;clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%)}
+  .tcpT-plat i:nth-child(1){width:440px;height:26px;background:rgba(var(--tc-a-rgb),.10);border:0}
+  .tcpT-plat i:nth-child(2){width:360px;height:22px;background:rgba(var(--tc-a-rgb),.18)}
+  .tcpT-plat i:nth-child(3){width:272px;height:16px;background:var(--tc-a);box-shadow:0 0 26px 4px rgba(var(--tc-a-rgb),.55)}
+  .tcpT-usos{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);margin:8px 34px 0;border:1.3px solid rgba(var(--tc-a-rgb),.30);background:rgba(4,10,18,.55);border-radius:16px;padding:15px 0;flex-shrink:0}
+  .tcpT-uso{text-align:center;padding:0 6px}
+  .tcpT-uso-ic{width:42px;height:42px;margin:0 auto 8px;border-radius:50%;background:rgba(var(--tc-a-rgb),.12);border:1.2px solid rgba(var(--tc-a-rgb),.5);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
+  .tcpT-uso-ic svg{width:21px;height:21px}
+  .tcpT-uso b{display:block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;line-height:1.15}
+  .tcpT-uso span{display:block;font-size:10.5px;color:#8b9bab;margin-top:3px}
+  /* La cinta va anclada a la esquina, sin llegar al borde izquierdo: es lo que
+     la hace leer como pegatina y no como barra de pie. */
+  .tcpT-cta{position:relative;z-index:3;align-self:flex-end;display:flex;align-items:center;gap:13px;margin:14px 34px 30px;padding:15px 26px;background:linear-gradient(135deg,#FF7A2E,#E8501E);border-radius:22px 18px 18px 0;box-shadow:0 10px 26px rgba(232,80,30,.42)}
+  .tcpT-cta-ic{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tcpT-cta-ic svg{width:22px;height:22px}
+  .tcpT-cta-t{color:#2B0E00;font-weight:900;font-size:21px;line-height:1.1;letter-spacing:-.3px}
+  .tcpT-cta-t small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.82}
+
   .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
   .tm-chat-u,.tm-chat-b{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:92%}
   .tm-chat-u{align-self:flex-end;background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.3)}
@@ -2025,6 +2087,263 @@ function _cartelHTML2(d){
     +`<div class="tcp2-footer"><div class="tcp2-footer-qr"><img src="${esc(qrUrl)}" crossorigin="anonymous" alt="QR"></div><div class="tcp2-footer-txt"><div class="d">🌐 tiendamax.org</div><div class="h">Escanea el código para ver la tienda</div></div></div>`
     +`</div>`;
 }
+// ── Plantilla Tecno (tcpT) ────────────────────────────────────────────────
+// Para routers, energía y audio: el aire de "ficha técnica de fabricante" que
+// pidió el admin. Mismo 760×1140 que Clásico y Pro v2, y reusa el picker de
+// color, el color por categoría y los iconos SVG de las otras plantillas.
+
+// Circuito de fondo. Se genera una vez y se guarda: son ~40 trazos con
+// aleatoriedad, escribirlos a mano en SVG serían cientos de líneas de path, y
+// regenerarlos por cartel en un lote de 100 se nota. La semilla es fija para
+// que el mismo cartel salga igual dos veces — nada peor que un lote donde cada
+// tarjeta tiene el fondo distinto.
+let _tcpTCircuitoCache = null;
+function _tcpTCircuito(){
+  if(_tcpTCircuitoCache) return _tcpTCircuitoCache;
+  try{
+    const W=760, H=1140, cv=document.createElement('canvas');
+    cv.width=W; cv.height=H;
+    const x=cv.getContext('2d');
+    if(!x) return '';
+    // Mulberry32: PRNG con semilla, para que el trazado sea siempre el mismo.
+    let s=0x9E3779B9;
+    const rnd=()=>{ s|=0; s=s+0x6D2B79F5|0; let t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+    x.lineCap='square';
+    for(let i=0;i<40;i++){
+      const borde=i%4;
+      let px,py;
+      if(borde===0){ px=rnd()*W; py=-10; } else if(borde===1){ px=W+10; py=rnd()*H; }
+      else if(borde===2){ px=rnd()*W; py=H+10; } else { px=-10; py=rnd()*H; }
+      x.strokeStyle='rgba(255,255,255,'+(0.05+rnd()*0.09).toFixed(3)+')';
+      x.lineWidth=1+rnd()*0.8;
+      x.beginPath(); x.moveTo(px,py);
+      // Trazos en ángulo recto (alternando horizontal y vertical): es lo que
+      // hace que se lea como pista de circuito y no como garabato.
+      const pasos=3+Math.floor(rnd()*4);
+      for(let p=0;p<pasos;p++){
+        const largo=40+rnd()*130;
+        if(p%2===0) px += (rnd()<0.5?-1:1)*largo; else py += (rnd()<0.5?-1:1)*largo;
+        x.lineTo(px,py);
+      }
+      x.stroke();
+      x.fillStyle='rgba(255,255,255,.16)';
+      x.beginPath(); x.arc(px,py,2.4,0,Math.PI*2); x.fill();
+    }
+    _tcpTCircuitoCache = cv.toDataURL('image/png');
+    return _tcpTCircuitoCache;
+  }catch(e){ return ''; }   // sin canvas el cartel se queda sin circuito, no roto
+}
+
+// Parte el título en marca y modelo. "Router Wi-fi AC1200 Tenda AC6" ->
+// marca "ROUTER", modelo el resto: la primera palabra sirve de antetítulo y el
+// resto es lo que el cliente busca.
+function _tcpTPartir(nombre){
+  const limpio=_cStrip(String(nombre||'')).trim();
+  const partes=limpio.split(/\s+/);
+  if(partes.length<=1) return {marca:'', modelo:limpio.toUpperCase()};
+  return {marca:partes[0].toUpperCase(), modelo:partes.slice(1).join(' ').toUpperCase()};
+}
+
+// Valor corto para la columna de specs. La ficha técnica trae frases enteras
+// ("Velocidades de hasta 1.2 Gbps en doble banda"), y recortarlas por caracteres
+// dejaba cosas como "VELOCIDADES DE HASTA…", que no dice nada. Aquí se busca el
+// dato concreto —la cifra con su unidad— y solo si no hay se cae a las dos
+// primeras palabras.
+const _TCPT_CONECTORES=/^(de|del|con|sin|hasta|para|los|las|el|la|un|una|y|o|a|en|que|su|más|mas)$/i;
+function _tcpTValorCorto(txt){
+  const t=_cStrip(String(txt||'')).replace(/\s+/g,' ').trim();
+  if(!t) return '';
+  // Códigos que ya son el valor completo y no hay que tocar: IP67, WPA3,
+  // AC1200, BT5.1, USB-C. Van primero porque "IP67" no tiene separación entre
+  // letra y cifra y el patrón numérico de abajo lo partía en "Certificación IP".
+  const cod=t.match(/\b[A-Z]{2,4}-?\d[\w.\/]{0,6}\b/);
+  if(cod) return cod[0].slice(0,16);
+  // "1.2 Gbps", "2600 mAh", "30W", "12 horas"
+  const m=t.match(/\b\d[\d.,]*\s?[A-Za-zÁÉÍÓÚÑáéíóúñ]{0,5}\b/);
+  if(m){
+    let v=m[0].trim();
+    // La palabra de delante suele dar el sentido ("Bluetooth 5.4"), pero solo
+    // si cabe: con una larga el recorte se comía la propia cifra.
+    const antes=t.slice(0,m.index).trim().split(/\s+/).pop()||'';
+    if(antes && antes.length+v.length+1<=16 && !_TCPT_CONECTORES.test(antes)) v=antes+' '+v;
+    return v.slice(0,16);
+  }
+  // Sin cifras: las dos primeras palabras, quitando la de unión final para no
+  // dejar cosas como "Configuración y".
+  const pal=t.split(/\s+/).slice(0,2);
+  if(pal.length===2 && _TCPT_CONECTORES.test(pal[1])) pal.pop();
+  return pal.join(' ').slice(0,16);
+}
+
+// Etiqueta + valor de una spec. Cuando la spec no trae "Etiqueta: valor"
+// —pasa con las que son solo "12.8V" o "100AH"— _cFeatures deja el desc vacío
+// y el dato acababa en el sitio de la etiqueta, con el valor en blanco. Aquí se
+// invierte: el dato manda, y la etiqueta sale del icono que le tocó.
+const _TCPT_ETIQUETAS={wifi:'Cobertura', velocidad:'Velocidad', bateria:'Energía', escudo:'Protección',
+  dispositivos:'Compatible', sonido:'Sonido', gota:'Resistencia', reloj:'Duración', candado:'Seguridad',
+  caja:'Incluye', estrella:'Calidad', chip:'Tecnología', rayo:'Destacado'};
+// Unidades que delatan de qué habla la spec cuando el texto no lo dice:
+// "12.8V" y "100AH" son batería aunque no aparezca la palabra.
+function _tcpTPorUnidad(txt){
+  const t=String(txt||'').toUpperCase();
+  // La unidad concreta, no solo la familia: "12.8V" y "100AH" son los dos de
+  // batería, y etiquetar ambos "Energía" dejaba la tarjeta diciendo lo mismo
+  // dos veces. Voltaje y Capacidad son datos distintos y así se leen.
+  if(/\d\s?V\b/.test(t)) return 'Voltaje';
+  if(/\d\s?(AH|MAH)\b/.test(t)) return 'Capacidad';
+  if(/\d\s?(WH|KWH)\b/.test(t)) return 'Energía';
+  if(/\d\s?W\b/.test(t)) return 'Potencia';
+  if(/\d\s?(GB|TB|MB)\b/.test(t)) return 'Memoria';
+  if(/\d\s?(GHZ|MBPS|GBPS)\b/.test(t)) return 'Velocidad';
+  if(/\bIP\d{2}\b/.test(t)) return 'Resistencia';
+  if(/\d\s?H(ORAS)?\b/.test(t)) return 'Duración';
+  return '';
+}
+// El cuerpo del valor según la palabra más larga que tenga: la columna mide
+// unos 130px útiles y "CONFIGURACIÓN" a 15px no cabe ni partiéndola.
+function _tcpTCuerpoValor(v){
+  const larga=String(v||'').split(/\s+/).reduce((a,b)=>b.length>a.length?b:a,'');
+  if(larga.length>=13) return 11.5;
+  if(larga.length>=10) return 13;
+  return 15;
+}
+function _tcpTSpec(f){
+  const titulo=_cStrip(String(f.title||'')).trim();
+  const detalle=_cStrip(String(f.desc||'')).trim();
+  if(detalle) return {etiqueta:titulo, valor:_tcpTValorCorto(detalle)};
+  // Sin "Etiqueta: valor" el dato venía en el sitio de la etiqueta y el valor
+  // salía vacío. Se invierte: manda el dato, y la etiqueta se deduce.
+  const porUnidad=_tcpTPorUnidad(titulo);
+  const etiqueta=porUnidad || _TCPT_ETIQUETAS[_cIcon2Key(titulo)] || 'Dato';
+  return {etiqueta, valor:_tcpTValorCorto(titulo)||titulo.slice(0,16)};
+}
+
+// El dato grande del centro. Primero se mira el NOMBRE, porque el modelo suele
+// llevarlo (AC1200, AX3000, RTX4060) y es justo el número que el cliente
+// reconoce. Si no, la cifra más "de catálogo" de las specs. No se inventa nada:
+// sin número, el glifo va sin dato en vez de poner algo falso.
+function _tcpTDato(feats, nombre){
+  const n=_cStrip(String(nombre||'')).toUpperCase();
+  const modelo=n.match(/\b[A-Z]{2,3}\s?\d{3,5}\b/);      // AC1200, AX3000, RTX 4060
+  if(modelo) return modelo[0].replace(/\s/g,'').slice(0,7);
+  const watt=n.match(/\b\d{2,5}\s?(W|WH|AH|MAH|V)\b/);   // 30W, 100AH, 1280WH
+  if(watt) return watt[0].replace(/\s/g,'').slice(0,7);
+  for(const f of feats){
+    const m=String(f.desc||f.title||'').toUpperCase().match(/\b\d{2,5}\s?(W|WH|AH|MAH|GB|TB|V|H)\b/);
+    if(m) return m[0].replace(/\s/g,'').slice(0,7);
+  }
+  return '';
+}
+
+// Glifo central según la categoría. Unos arcos de WiFi encima de un altavoz o
+// de una batería no dicen nada: el símbolo tiene que hablar del producto, que
+// es justo lo que se pidió al encargar las variantes de energía y audio.
+//
+// El dato va DEBAJO salvo que sea de uno o dos caracteres. Metido dentro del
+// dibujo, "30W" a cuerpo grande se monta sobre los trazos y queda un borrón —
+// dentro solo cabe lo que cabe, y un "6" cabe.
+function _tcpTGlifo(categoria, dato){
+  const c=String(categoria||'').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  let tipo='senal';
+  if(/ENERGIA|BATER|SOLAR|INVERSOR|PLANTA/.test(c)) tipo='energia';
+  else if(/AUDIO|SONIDO|PARLANTE|BOCINA|AUDIFON/.test(c)) tipo='audio';
+  else if(/WIFI|RED|ROUTER|INTERNET/.test(c)) tipo='senal';
+  else if(/PC|LAPTOP|CELULAR|JUEGO|SEGURIDAD/.test(c)) tipo='chip';
+
+  const dentro = dato && dato.length<=2;
+  let cuerpo;
+  if(tipo==='energia'){
+    // Batería con el rayo dentro: se lee a cualquier tamaño.
+    cuerpo=`<rect class="tcpT-glifo-arc" x="52" y="30" width="98" height="66" rx="12"/>`
+      +`<path class="tcpT-glifo-arc" d="M150 50 h10 a6 6 0 0 1 6 6 v14 a6 6 0 0 1 -6 6 h-10"/>`
+      +`<path class="tcpT-glifo-fill" d="M108 40 L84 68 h14 l-6 22 24-30 h-14z"/>`;
+  }else if(tipo==='audio'){
+    // Altavoz con ondas: el cono a la izquierda y tres arcos saliendo.
+    cuerpo=`<path class="tcpT-glifo-arc" d="M60 46 v34 h18 l24 20 V26 l-24 20z"/>`
+      +`<path class="tcpT-glifo-arc" d="M118 48 a26 26 0 0 1 0 30"/>`
+      +`<path class="tcpT-glifo-arc" d="M132 36 a44 44 0 0 1 0 54"/>`
+      +`<path class="tcpT-glifo-arc" d="M146 24 a62 62 0 0 1 0 78"/>`;
+  }else if(tipo==='chip'){
+    cuerpo=`<rect class="tcpT-glifo-arc" x="66" y="34" width="78" height="60" rx="10"/>`
+      +`<rect class="tcpT-glifo-arc" x="88" y="56" width="34" height="16" rx="4"/>`
+      +`<path class="tcpT-glifo-arc" d="M84 34V20M105 34V20M126 34V20M84 94v14M105 94v14M126 94v14M66 52H52M66 74H52M144 52h14M144 74h14"/>`;
+  }else{
+    cuerpo=`<path class="tcpT-glifo-arc" d="M18 100 A 92 92 0 0 1 192 100"/>`
+      +`<path class="tcpT-glifo-arc" d="M50 104 A 58 58 0 0 1 160 104"/>`
+      +(dentro?'':`<path class="tcpT-glifo-arc" d="M78 108 A 28 28 0 0 1 132 108"/>`)
+      +`<circle class="tcpT-glifo-dot" cx="105" cy="122" r="7.5"/>`;
+  }
+  const centro = (tipo==='senal') ? {x:105,y:72} : {x:105,y:64};
+  return `<svg viewBox="0 0 210 130" aria-hidden="true">`+cuerpo
+    +(dentro?`<text class="tcpT-glifo-n" x="${centro.x}" y="${centro.y}" style="font-size:52px">${esc(dato)}</text>`:'')
+    +`</svg>`
+    +(dato && !dentro ? `<div class="tcpT-dato">${esc(dato)}</div>` : '');
+}
+
+function _cartelHTMLTecno(d){
+  const feats=_cFeatures(d.descripcion, d._specs, 44);
+  const {marca, modelo}=_tcpTPartir(d.nombre || ((d.title1||'')+' '+(d.title2||'')));
+  // Los nombres del catálogo arrastran coletillas entre paréntesis ("(GLOBAL
+  // Version)", "(30W)") que en un titular de 50px se comen dos líneas enteras.
+  const modeloCorto=_cClip(modelo.replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim() || modelo, 34);
+  const tagTxt=String(d.tag||'').toUpperCase().trim();
+  const catTxt=String(d.categoria||'').toUpperCase().trim();
+  const lema=(catTxt && catTxt!==tagTxt) ? _cClip(catTxt,34) : '';
+  const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
+  const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
+  const color=_cartelColorPara(d), colorRgb=_hexToRgbCsv(color);
+  const dato=_tcpTDato(feats, d.nombre);
+
+  // Las specs se reparten entre las dos columnas alternando, para que con 3 no
+  // quede una columna llena y la otra con una sola fila.
+  const izq=[], der=[];
+  feats.slice(0,8).map(_tcpTSpec).forEach((s,i)=>(i%2?der:izq).push(s));
+  const colHtml=(items)=>items.length?`<div class="tcpT-col">`+items.map(s=>
+      `<div class="tcpT-spec"><div class="tcpT-spec-ic">${_cIconSvg2(s.etiqueta)}</div>`
+      +`<div class="min-w-0"><div class="tcpT-spec-t">${esc(_cClip(s.etiqueta,15))}</div>`
+      +(s.valor?`<div class="tcpT-spec-v" style="font-size:${_tcpTCuerpoValor(s.valor)}px">${esc(s.valor)}</div>`:'')
+      +`</div></div>`).join('')+`</div>`:`<div></div>`;
+
+  const glifo=_tcpTGlifo(d.categoria||d.tag, dato);
+
+  // Tres usos genéricos pero coherentes con la categoría. No se inventan datos
+  // del producto: son promesas de la tienda, no especificaciones.
+  const usos=[
+    {t:'ENVÍO', s:'a todo el país', k:'CAJA'},
+    {t:'GARANTÍA', s:'real', k:'GARANTIA'},
+    {t:'SOPORTE', s:'24/7', k:'SOPORTE'},
+  ];
+  const usosHtml=usos.map(u=>`<div class="tcpT-uso"><div class="tcpT-uso-ic">${_cIconSvg2(u.k)}</div><b>${esc(u.t)}</b><span>${esc(u.s)}</span></div>`).join('');
+
+  const circuito=_tcpTCircuito();
+  return `<div class="tcpT-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
+    +(circuito?`<div class="tcpT-circ" style="background-image:url(${circuito})"></div>`:'')
+    +`<div class="tcpT-glow"></div>`
+    +`<div class="tcpT-head"><div class="tcpT-word">Tienda<em>Max</em></div><div class="tcpT-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
+    +`<div class="tcpT-title">`
+      +(marca?`<div class="tcpT-marca">${esc(_cClip(marca,20))}</div>`:'')
+      +`<div class="tcpT-modelo" style="font-size:${_cTitleFontFit(modeloCorto,'',50,28)}px">${esc(modeloCorto)}</div>`
+      // El lema solo si aporta: con la categoría repetida arriba a la derecha
+      // eran dos veces "WIFI" en la misma tarjeta.
+      +(lema?`<div class="tcpT-lema">${esc(lema)}</div>`:'')
+    +`</div>`
+    +`<div class="tcpT-precio"><span class="tcpT-precio-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span>`
+      +`<span class="tcpT-precio-c">${esc(d.moneda||'USD')}</span>`
+      +(hasDisc?`<span class="tcpT-precio-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcpT-precio-off">-${pct}%</span>`:'')
+    +`</div>`
+    +`<div class="tcpT-banda">`
+      +colHtml(izq)
+      +`<div class="tcpT-centro">${glifo}`
+        +`<div class="tcpT-foto">${d.imgUrl?`<img src="${esc(d.imgUrl)}" crossorigin="anonymous" alt="">`:''}</div></div>`
+      +colHtml(der)
+    +`</div>`
+    +`<div class="tcpT-plat"><i></i><i></i><i></i></div>`
+    +`<div class="tcpT-usos">${usosHtml}</div>`
+    +`<div class="tcpT-cta"><div class="tcpT-cta-ic"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></div>`
+      +`<div class="tcpT-cta-t"><small>Pídelo por</small>WhatsApp</div></div>`
+    +`</div>`;
+}
+
 // Plantilla Pro Horizontal (tcp3): formato landscape 1200×675 pensado para
 // Facebook/banners en vez de WhatsApp Estados — columna de info a la
 // izquierda, foto grande con un solo badge principal a la derecha. Reusa
@@ -2062,11 +2381,14 @@ function _cartelHTML3(d){
 // — se elige una vez en el panel de Marketing y aplica en todos lados.
 function _cartelVariante(){
   const v=localStorage.getItem('tmCartelVariante');
-  return (v==='pro2'||v==='horizontal') ? v : 'clasico';
+  return (v==='pro2'||v==='horizontal'||v==='tecno') ? v : 'clasico';
 }
 function _cartelHTMLPorVariante(datos){
   const v=_cartelVariante();
-  return v==='pro2' ? _cartelHTML2(datos) : v==='horizontal' ? _cartelHTML3(datos) : _cartelHTML(datos);
+  return v==='pro2' ? _cartelHTML2(datos)
+    : v==='horizontal' ? _cartelHTML3(datos)
+    : v==='tecno' ? _cartelHTMLTecno(datos)
+    : _cartelHTML(datos);
 }
 // Tamaño fijo de la tarjeta según la plantilla activa: Clásico y Pro v2 son
 // verticales (760×1140, para WhatsApp Estados), Pro Horizontal es landscape
@@ -2260,6 +2582,7 @@ function renderPromoImagen() {
       <button type="button" class="tm-copilot-btn ${variante==='clasico'?'primary':''}" data-cop="cartelVariante" data-variante="clasico" style="flex:1">🏷️ Clásico</button>
       <button type="button" class="tm-copilot-btn ${variante==='pro2'?'primary':''}" data-cop="cartelVariante" data-variante="pro2" style="flex:1">✨ Pro v2</button>
       <button type="button" class="tm-copilot-btn ${variante==='horizontal'?'primary':''}" data-cop="cartelVariante" data-variante="horizontal" style="flex:1">🖥️ Horizontal</button>
+      <button type="button" class="tm-copilot-btn ${variante==='tecno'?'primary':''}" data-cop="cartelVariante" data-variante="tecno" style="flex:1">📡 Tecno</button>
     </div>
     ${window.tmCartelCardHTML('tmCartelPro', true)}
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
@@ -2602,10 +2925,13 @@ function bindEvents(){
     if(act==='promoDownload') { promoDescargarCartel(el); }
     if(act==='cartelVariante'){
       const dv = el.dataset.variante;
-      const v = (dv==='pro2'||dv==='horizontal') ? dv : 'clasico';
+      const v = (dv==='pro2'||dv==='horizontal'||dv==='tecno') ? dv : 'clasico';
       localStorage.setItem('tmCartelVariante', v);
       state.view='marketing'; renderSheet(); drawPromo();
-      toast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : v==='horizontal' ? '🖥️ Plantilla Horizontal activada' : '🏷️ Plantilla Clásica activada');
+      toast(v==='pro2' ? '✨ Plantilla Pro v2 activada'
+        : v==='horizontal' ? '🖥️ Plantilla Horizontal activada'
+        : v==='tecno' ? '📡 Plantilla Tecno activada'
+        : '🏷️ Plantilla Clásica activada');
     }
   });
 }

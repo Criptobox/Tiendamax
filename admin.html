@@ -1569,7 +1569,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=b4a85c2b"></script>
+<script src="js/admin-copilot.js?v=cefc1e32"></script>
 
 <script>
 (function(){
@@ -4007,22 +4007,26 @@ function pubShareFiltered(){
 // el cartel de verdad), no una maqueta aparte — lo que ves es lo que sale.
 function pubCartelVariante(){
   const v=localStorage.getItem('tmCartelVariante');
-  return (v==='pro2'||v==='horizontal') ? v : 'clasico';
+  return (v==='pro2'||v==='horizontal'||v==='tecno') ? v : 'clasico';
 }
 function pubSetCartelVariante(v){
-  const vv=(v==='pro2'||v==='horizontal')?v:'clasico';
+  const vv=(v==='pro2'||v==='horizontal'||v==='tecno')?v:'clasico';
   localStorage.setItem('tmCartelVariante', vv);
-  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2'), bh=$('#pub-cartel-horizontal');
+  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2'), bh=$('#pub-cartel-horizontal'), bt=$('#pub-cartel-tecno');
   if(bc) bc.className='btn '+(vv==='clasico'?'btn-primary':'btn-ghost');
   if(bp) bp.className='btn '+(vv==='pro2'?'btn-primary':'btn-ghost');
   if(bh) bh.className='btn '+(vv==='horizontal'?'btn-primary':'btn-ghost');
+  if(bt) bt.className='btn '+(vv==='tecno'?'btn-primary':'btn-ghost');
   // El tamaño de la tarjeta cambia con la plantilla (760x1140 vertical vs
   // 1200x675 horizontal), así que hay que regenerar el wrapper completo,
   // no solo rellenar el contenido.
   const outer=$('#pub-cartel-preview-outer');
   if(outer && typeof window.tmCartelCardHTML==='function') outer.innerHTML=window.tmCartelCardHTML('pub-cartel-preview', true);
   pubRenderCartelPreview();
-  showToast(vv==='pro2' ? '✨ Plantilla Pro v2 activada' : vv==='horizontal' ? '🖥️ Plantilla Horizontal activada' : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
+  showToast(vv==='pro2' ? '✨ Plantilla Pro v2 activada'
+    : vv==='horizontal' ? '🖥️ Plantilla Horizontal activada'
+    : vv==='tecno' ? '📡 Plantilla Tecno activada'
+    : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
 }
 function pubCartelColoresHTML(){
   const cur=localStorage.getItem('tmCartelColor')||'#FF6B1A';
@@ -4053,8 +4057,9 @@ function pubCompartirHTML(){
       <button type="button" class="btn ${variante==='clasico'?'btn-primary':'btn-ghost'}" id="pub-cartel-clasico" style="flex:1" onclick="pubSetCartelVariante('clasico')">🏷️ Clásico</button>
       <button type="button" class="btn ${variante==='pro2'?'btn-primary':'btn-ghost'}" id="pub-cartel-pro2" style="flex:1" onclick="pubSetCartelVariante('pro2')">✨ Pro v2</button>
       <button type="button" class="btn ${variante==='horizontal'?'btn-primary':'btn-ghost'}" id="pub-cartel-horizontal" style="flex:1" onclick="pubSetCartelVariante('horizontal')">🖥️ Horizontal</button>
+      <button type="button" class="btn ${variante==='tecno'?'btn-primary':'btn-ghost'}" id="pub-cartel-tecno" style="flex:1" onclick="pubSetCartelVariante('tecno')">📡 Tecno</button>
     </div>
-    <p style="font-size:11px;color:var(--muted);margin:-4px 0 10px">🎨 Color de la marca — aplica a las 3 plantillas:</p>
+    <p style="font-size:11px;color:var(--muted);margin:-4px 0 10px">🎨 Color de la marca — aplica a las 4 plantillas:</p>
     <div id="pub-cartel-colores" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">${pubCartelColoresHTML()}</div>
     <div id="pub-cartel-preview-outer">${(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('pub-cartel-preview', true) : '<div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>'}</div>
   </div>
