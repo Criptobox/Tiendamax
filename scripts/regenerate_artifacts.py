@@ -114,7 +114,7 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
   <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
 </header>
 
-<div class="tm-wrap">
+<main class="tm-wrap">
   <h1>{icon} {html_name}</h1>
   <p class="tm-sub">{sub}</p>
   <a href="{app_url}" class="tm-cta">🛍️ Ver todo {html_name} en la tienda</a>
@@ -125,7 +125,7 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
     <h2>Otras categorías</h2>
     {other_cats_html}
   </nav>
-</div>
+</main>
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
@@ -150,8 +150,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:type" content="product">
 <meta property="og:title" content="{og_title}">
 <meta property="og:description" content="{og_desc}">
-<meta property="og:image" content="{image}">
-<meta property="og:image:secure_url" content="{image}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:secure_url" content="{og_image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="{og_image_type}">
@@ -166,7 +166,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{og_title}">
 <meta name="twitter:description" content="{og_desc}">
-<meta name="twitter:image" content="{image}">
+<meta name="twitter:image" content="{og_image}">
 <meta name="twitter:image:alt" content="{og_title}">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -207,7 +207,9 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   @media(max-width:640px){{.tm-wrap{{grid-template-columns:1fr;gap:20px}}}}
   .tm-img{{border-radius:16px;overflow:hidden;background:#1a1410;aspect-ratio:1/1}}
   .tm-img img{{width:100%;height:100%;object-fit:cover;display:block}}
-  .tm-cat{{display:inline-block;background:#FF6B35;color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}}
+  /* Texto oscuro sobre el coral: blanco a 11px daba 2.83:1, por debajo del
+     minimo AA. #241100 da 6.41:1 y el coral de marca se queda igual. */
+  .tm-cat{{display:inline-block;background:#FF6B35;color:#241100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}}
   h1{{font-size:clamp(20px,4vw,26px);font-weight:800;line-height:1.25;margin-bottom:18px}}
   .tm-prices{{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}}
   .tm-price{{font-size:30px;font-weight:800;color:#FF6B35}}
@@ -247,7 +249,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
 </header>
 
-<div class="tm-wrap">
+<main class="tm-wrap">
   <div class="tm-img">
     <img src="{image}" alt="{html_name}" loading="lazy">
   </div>
@@ -266,7 +268,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <a href="{wa_link}" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
     </div>
   </div>
-</div>
+</main>
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
@@ -338,20 +340,25 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         name  = (p.get("nombre") or "").strip()
         desc  = desc_short(p.get("seoDescription") or p.get("descripcion") or "", 155 if p.get("seoDescription") else 200)
         price = f"{float(p.get('precioActual') or 0):.2f}"
-        # La tarjeta OG de 1200x630 que arma scripts/build_og_images.py, si
-        # existe. Antes se ponía aquí la foto del producto tal cual pero las
-        # etiquetas de abajo declaran 1200x630, y las fotos reales son 480x480
-        # o 700x700: los 118 productos mentían sobre sus medidas y WhatsApp,
-        # Telegram y Facebook maquetan la vista previa con lo DECLARADO, así
-        # que salían recortadas o con franjas. La tarjeta sí mide lo que dice
-        # (y encima lleva el precio).
+        # OJO: son DOS imágenes distintas y hay que mantenerlas separadas.
+        #
+        # `img` es la foto que se ve en la página. `og_img` es la tarjeta de
+        # 1200x630 que arma scripts/build_og_images.py y que solo verá quien
+        # comparta el enlace. Mezclarlas hace que la ficha del producto enseñe
+        # la tarjeta entera —con su marco, su precio y su "TiendaMax"— en lugar
+        # del producto.
+        #
+        # La tarjeta existe porque las etiquetas de abajo declaran 1200x630 y
+        # las fotos reales son 480x480 o 700x700: los 118 productos mentían
+        # sobre sus medidas, y WhatsApp, Telegram y Facebook maquetan la vista
+        # previa con lo DECLARADO, así que salían recortadas o con franjas.
+        img = p.get("imagen") or f"{SITE}/og-image.jpg"
         if (ROOT / "og" / f"producto-{pid}.jpg").exists():
-            raw_img = f"{SITE}/og/producto-{pid}.jpg"
+            og_img = f"{SITE}/og/producto-{pid}.jpg"
         else:
-            raw_img = p.get("imagen") or f"{SITE}/og-image.jpg"
-        img   = raw_img
-        # Tipo MIME real de la imagen para og:image:type (antes siempre decía jpeg)
-        _ext = raw_img.split("?", 1)[0].rsplit(".", 1)[-1].lower()
+            og_img = img
+        # Tipo MIME real de la tarjeta para og:image:type (antes siempre jpeg)
+        _ext = og_img.split("?", 1)[0].rsplit(".", 1)[-1].lower()
         og_image_type = {
             "webp": "image/webp", "png": "image/png", "gif": "image/gif",
             "jpg": "image/jpeg", "jpeg": "image/jpeg",
@@ -368,6 +375,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         og_title  = escape(seo_title_raw)
         og_desc   = escape(desc)
         image     = escape(img, quote=True)
+        og_image  = escape(og_img, quote=True)
         keywords  = escape(keywords_raw, quote=True)
 
         # JSON-LD: json.dumps produce strings correctamente escapadas para JSON
@@ -417,6 +425,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
             og_title=og_title,
             og_desc=og_desc,
             image=image,
+            og_image=og_image,
             og_image_type=og_image_type,
             keywords=keywords,
             page_url=page_url,

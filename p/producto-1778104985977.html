@@ -39,7 +39,7 @@
   "@type": "Product",
   "name": "Bluetti AC 180P",
   "description": "Estaci\u00f3n de energ\u00eda port\u00e1til BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga r\u00e1pida. Pantalla con indicador de bater\u00eda, entrada y salida de energ\u00eda en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado).",
-  "image": "https://tiendamax.org/og/producto-1778104985977.jpg",
+  "image": "https://tiendamax.org/imagenes/img_1778104985977.webp",
   "url": "https://tiendamax.org/p/producto-1778104985977.html",
   "sku": "1778104985977",
   "category": "ENERGIA",
@@ -70,7 +70,9 @@
   @media(max-width:640px){.tm-wrap{grid-template-columns:1fr;gap:20px}}
   .tm-img{border-radius:16px;overflow:hidden;background:#1a1410;aspect-ratio:1/1}
   .tm-img img{width:100%;height:100%;object-fit:cover;display:block}
-  .tm-cat{display:inline-block;background:#FF6B35;color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}
+  /* Texto oscuro sobre el coral: blanco a 11px daba 2.83:1, por debajo del
+     minimo AA. #241100 da 6.41:1 y el coral de marca se queda igual. */
+  .tm-cat{display:inline-block;background:#FF6B35;color:#241100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}
   h1{font-size:clamp(20px,4vw,26px);font-weight:800;line-height:1.25;margin-bottom:18px}
   .tm-prices{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}
   .tm-price{font-size:30px;font-weight:800;color:#FF6B35}
@@ -110,9 +112,9 @@
   <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
 </header>
 
-<div class="tm-wrap">
+<main class="tm-wrap">
   <div class="tm-img">
-    <img src="https://tiendamax.org/og/producto-1778104985977.jpg" alt="Bluetti AC 180P" loading="lazy">
+    <img src="https://tiendamax.org/imagenes/img_1778104985977.webp" alt="Bluetti AC 180P" loading="lazy">
   </div>
   <div>
     <span class="tm-cat">ENERGIA</span>
@@ -129,7 +131,7 @@
       <a href="https://wa.me/5354320170?text=Hola%2C%20me%20interesa%3A%20Bluetti%20AC%20180P.%20https%3A//tiendamax.org/p/producto-1778104985977.html" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
     </div>
   </div>
-</div>
+</main>
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados

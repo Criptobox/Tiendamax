@@ -55,9 +55,14 @@
   display:grid; place-items:center; font-size:14px; line-height:1; cursor:pointer;
 }
 /* badge esquina foto (descuento / oferta / últimas) */
+/* Texto oscuro, no blanco, sobre el coral. Blanco sobre #ff6b35 da 2.83:1 y a
+   10px eso no se lee bajo el sol, que es donde medio Cuba mira el móvil;
+   #241100 da 6.41:1. Se elige oscurecer el TEXTO y no el fondo para no tocar el
+   coral de marca — y porque #241100 sobre coral ya es el patrón de este mismo
+   fichero: lo usan .pv2-tag.oferta y .pv2-tag.last desde antes. */
 .producto-card.pcard-v2 .pv2-tag{
   position:absolute; top:8px; left:8px; z-index:3; font-size:10px; font-weight:800;
-  padding:4px 10px; border-radius:20px; color:#fff; background:var(--accent,#ff6b35);
+  padding:4px 10px; border-radius:20px; color:#241100; background:var(--accent,#ff6b35);
 }
 .producto-card.pcard-v2 .pv2-tag.oferta{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; max-width:75%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .producto-card.pcard-v2 .pv2-tag.last{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; }
@@ -68,7 +73,7 @@
 .producto-card.pcard-v2 .pv2-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
 .producto-card.pcard-v2 .pv2-cat{
   align-self:flex-start; margin:-13px 0 2px; position:relative; z-index:3;
-  background:var(--accent,#ff6b35); color:#fff; font-weight:800; font-size:10.5px;
+  background:var(--accent,#ff6b35); color:#241100; font-weight:800; font-size:10.5px;
   letter-spacing:.05em; text-transform:uppercase; padding:6px 13px; border-radius:20px;
   box-shadow:0 6px 14px rgba(255,107,53,.4);
 }

@@ -235,16 +235,26 @@ html body #mas-vendidos .mv-slider-wrap.mv-sin-controles .mv-nav{display:none}
 
 /* Puntos: el activo se estira en píldora */
 html body #mas-vendidos .mv-dots{
-  display:flex;justify-content:center;gap:8px;margin-top:6px;
+  display:flex;justify-content:center;align-items:center;gap:0;margin-top:0;
 }
 html body #mas-vendidos .mv-slider-wrap.mv-sin-controles + .mv-dots{display:none}
+/* El punto se ve de 8px pero el botón mide 24x24 gracias al padding: en un
+   móvil, acertarle a 8 píxeles con el dedo es un ejercicio de puntería, y por
+   eso Lighthouse lo marcaba (mínimo 24x24). El punto en sí no cambia de
+   aspecto — se dibuja con un pseudoelemento dentro del área táctil. */
 html body #mas-vendidos .mv-dots button{
-  width:8px;height:8px;border-radius:50%;padding:0;border:0;cursor:pointer;
+  width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+html body #mas-vendidos .mv-dots button::before{
+  content:"";display:block;
+  width:8px;height:8px;border-radius:50%;
   background:rgba(255,255,255,.15);transition:all .3s var(--op-ease);
 }
-html body .light-mode #mas-vendidos .mv-dots button{background:rgba(0,0,0,.15)}
-html body #mas-vendidos .mv-dots button.active{
-  width:28px;border-radius:5px;
+html body .light-mode #mas-vendidos .mv-dots button::before{background:rgba(0,0,0,.15)}
+html body #mas-vendidos .mv-dots button.active{width:44px}
+html body #mas-vendidos .mv-dots button.active::before{
+  width:28px;height:8px;border-radius:5px;
   background:linear-gradient(90deg,var(--coral),var(--gold));
   box-shadow:0 0 12px rgba(255,106,31,.5);
 }
@@ -445,9 +455,12 @@ html body .nd-hero-search .hsb-input{
 html body .nd-hero-search .hsb-buscar-pill{
   display:inline-flex !important;align-items:center !important;gap:4px !important;
   padding:8px 14px !important;flex-shrink:0 !important;
-  background:var(--coral) !important;color:#fff !important;border:0 !important;
+  /* Texto oscuro sobre el coral: en blanco daba 2.86:1 y a 13px no llega al
+     mínimo AA (4.5:1); #241100 da 6.35:1 y el botón conserva el coral de
+     marca, que es lo que hace que se vea desde lejos. */
+  background:var(--coral) !important;color:#241100 !important;border:0 !important;
   font-family:var(--font-sans-glass) !important;
-  font-weight:600 !important;font-size:13px !important;white-space:nowrap !important;
+  font-weight:700 !important;font-size:13px !important;white-space:nowrap !important;
   box-shadow:0 6px 16px rgba(255,106,31,.4) !important;
   transition:transform .15s var(--op-ease) !important;cursor:pointer !important;
 }
