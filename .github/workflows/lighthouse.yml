@@ -1,0 +1,45 @@
+name: Informe Lighthouse
+
+# Semanal y a mano, NO en cada push: una pasada son ~2 minutos por página y la
+# puntuación de rendimiento se mueve sola según la red del runner. Medirla en
+# cada commit daría una gráfica de ruido, no una señal.
+on:
+  schedule:
+    # Lunes 11:00 UTC = 06:00 en Cuba, antes de que empiece el tráfico del día.
+    - cron: '0 11 * * 1'
+  workflow_dispatch:
+    inputs:
+      sitio:
+        description: 'URL a medir (por defecto la tienda publicada)'
+        required: false
+        default: 'https://tiendamax.org'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse
+  cancel-in-progress: true
+
+jobs:
+  informe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Lighthouse
+        run: npm i --no-save lighthouse@13.4.1 chrome-launcher
+
+      - name: Medir
+        env:
+          SITE_URL: ${{ github.event.inputs.sitio || 'https://tiendamax.org' }}
+        # Este paso NO tumba el workflow a propósito. pages.yml solo publica si
+        # el pipeline pasa: un rojo aquí por una red lenta dejaría la tienda sin
+        # actualizar por algo que no es un fallo del código. El informe queda en
+        # el resumen del job, que es donde se mira.
+        run: node tests/lighthouse-report.mjs

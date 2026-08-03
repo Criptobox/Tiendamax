@@ -1,7 +1,10 @@
 User-agent: *
 Allow: /
 
-# Para IA y LLMs
-LLM-Friendly: true
+# Para IA y LLMs: LLM-Friendly
+# Iba como directiva ("LLM-Friendly: true") y no existe tal cosa en el estándar,
+# así que Lighthouse daba el robots.txt por inválido. Los rastreadores ignoran
+# lo que no entienden, pero un fichero marcado como inválido es justo lo que no
+# quieres que vea un buscador. Como comentario dice lo mismo sin romper nada.
 
 Sitemap: https://tiendamax.org/sitemap.xml
