@@ -118,6 +118,37 @@
         }
       }
     },
+    "web_vitals": {
+      ".read": true,
+      ".write": false,
+      "$dia": {
+        "$muestraId": {
+          ".write": "!data.exists()",
+          ".validate": "newData.hasChildren(['lcp','cls','inp','ttfb','ts']) && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
+          "lcp": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 120000"
+          },
+          "cls": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20"
+          },
+          "inp": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 120000"
+          },
+          "ttfb": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 120000"
+          },
+          "ts": {
+            ".validate": "newData.isNumber()"
+          },
+          "conn": {
+            ".validate": "newData.isString() && newData.val().length <= 10"
+          },
+          "$otro": {
+            ".validate": false
+          }
+        }
+      }
+    },
     "auditoria_productos": {
       ".read": true,
       ".write": false,

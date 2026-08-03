@@ -33,9 +33,20 @@ SITE_URL = os.environ.get("SITE_URL", "https://tiendamax.org").rstrip("/")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID", "")
 TZ = ZoneInfo("America/Havana")
+UTC_TZ = ZoneInfo("UTC")
 TIMEOUT = 15
 WARN_SLOW_SECONDS = 6.0
 REPEAT_ALERT_HOURS = 2
+
+# Web Vitals reportados por navegadores reales (js/web-vitals-snippet.js).
+# Los cortes son más flojos que los de Google a propósito: en 3G cubano un LCP
+# de 3 s es normal y avisar de eso sería ruido constante, no una alerta.
+VITALS_DIAS = 3            # ventana que se promedia
+VITALS_RETENCION = 14      # días que se conservan antes de podar
+VITALS_MIN_MUESTRAS = 8    # con menos, el p75 no significa nada
+VITALS_LCP_MAL = 6000      # ms
+VITALS_CLS_MAL = 0.25
+VITALS_INP_MAL = 500       # ms
 
 
 @dataclass
@@ -126,6 +137,100 @@ def load_local_products() -> list[dict]:
         return json.loads((ROOT / "productos.json").read_text(encoding="utf-8"))
     except Exception:
         return []
+
+
+def _p75(valores: list[float]) -> float:
+    """Percentil 75, que es como se miden los Web Vitals: importa la cola lenta,
+    no el promedio. El promedio esconde justo al usuario que sufre."""
+    if not valores:
+        return 0.0
+    orden = sorted(valores)
+    i = min(len(orden) - 1, int(len(orden) * 0.75))
+    return float(orden[i])
+
+
+def revisar_web_vitals(db) -> tuple[Result | None, dict]:
+    """Lee las muestras que manda js/web-vitals-snippet.js desde navegadores
+    reales y las resume. Es la única señal de rendimiento medida en Cuba: los
+    chequeos HTTP de arriba salen desde un runner de GitHub, con otra red.
+
+    Devuelve (Result para el reporte, resumen para admin_meta).
+    """
+    if not db:
+        return None, {}
+    hoy = datetime.now(tz=UTC_TZ)
+    dias = [(hoy - timedelta(days=d)).strftime("%Y-%m-%d") for d in range(VITALS_DIAS)]
+    muestras: list[dict] = []
+    for dia in dias:
+        try:
+            bucket = db.reference(f"web_vitals/{dia}").get() or {}
+        except Exception:
+            continue
+        if isinstance(bucket, dict):
+            muestras += [m for m in bucket.values() if isinstance(m, dict)]
+
+    if len(muestras) < VITALS_MIN_MUESTRAS:
+        return (
+            Result("ok", "Web Vitals", f"{len(muestras)} muestras (pocas aún, no se evalúa)"),
+            {"muestras": len(muestras)},
+        )
+
+    def col(k: str) -> list[float]:
+        out = []
+        for m in muestras:
+            v = m.get(k)
+            if isinstance(v, (int, float)):
+                out.append(float(v))
+        return out
+
+    resumen = {
+        "muestras": len(muestras),
+        "dias": VITALS_DIAS,
+        "lcp_p75": round(_p75(col("lcp"))),
+        "cls_p75": round(_p75(col("cls")), 3),
+        "inp_p75": round(_p75(col("inp"))),
+        "ttfb_p75": round(_p75(col("ttfb"))),
+    }
+
+    malos = []
+    if resumen["lcp_p75"] > VITALS_LCP_MAL:
+        malos.append("LCP")
+    if resumen["cls_p75"] > VITALS_CLS_MAL:
+        malos.append("CLS")
+    if resumen["inp_p75"] > VITALS_INP_MAL:
+        malos.append("INP")
+
+    if malos:
+        # El detalle entra en la firma anti-spam, así que va redondeado a tramos
+        # gruesos: con el valor exacto, una variación de 30 ms entre corridas
+        # contaría como "alerta nueva" y Telegram sonaría cada media hora.
+        tramo = int(resumen["lcp_p75"] // 1000) * 1000
+        return (
+            Result("warn", "Web Vitals", f"p75 flojo en {', '.join(malos)} (LCP ~{tramo}ms, {len(muestras)} muestras)"),
+            resumen,
+        )
+    return (
+        Result("ok", "Web Vitals", f"p75 LCP {resumen['lcp_p75']}ms · CLS {resumen['cls_p75']} · {len(muestras)} muestras"),
+        resumen,
+    )
+
+
+def podar_web_vitals(db) -> None:
+    """Borra los días viejos. Nadie más limpia este nodo y el cliente solo sabe
+    escribir, así que sin esto crecería para siempre."""
+    if not db:
+        return
+    limite = (datetime.now(tz=UTC_TZ) - timedelta(days=VITALS_RETENCION)).strftime("%Y-%m-%d")
+    try:
+        raiz = db.reference("web_vitals")
+        # shallow=True trae solo las claves (los días), no las muestras: el nodo
+        # entero puede ser de varios MB y aquí solo hace falta saber qué borrar.
+        dias = raiz.get(shallow=True) or {}
+        for dia in list(dias):
+            if isinstance(dia, str) and dia < limite:
+                raiz.child(dia).delete()
+    except Exception as e:
+        print(f"⚠️ No se pudo podar web_vitals: {e}", file=sys.stderr)
 
 
 def main() -> int:
@@ -241,12 +346,19 @@ def main() -> int:
         if "application/ld+json" not in home:
             results.append(Result("warn", "SEO", "Home sin JSON-LD visible"))
 
+    # Firebase se inicializa antes de cerrar el conteo porque los Web Vitals
+    # salen de ahí y también cuentan como un chequeo más.
+    db = init_firebase()
+    vitals_res, vitals_resumen = revisar_web_vitals(db)
+    if vitals_res:
+        results.append(vitals_res)
+    podar_web_vitals(db)
+
     fails = [r for r in results if r.level == "fail"]
     warns = [r for r in results if r.level == "warn"]
     status = "fail" if fails else "warn" if warns else "ok"
     signature = "|".join(f"{r.level}:{r.name}:{r.detail}" for r in fails + warns)
 
-    db = init_firebase()
     meta_ref = db.reference("admin_meta/web_health") if db else None
     meta = meta_ref.get() if meta_ref else {}
     if not isinstance(meta, dict):
@@ -293,6 +405,7 @@ def main() -> int:
         "fails": [r.__dict__ for r in fails[:20]],
         "warns": [r.__dict__ for r in warns[:20]],
         "ok_count": len([r for r in results if r.level == "ok"]),
+        "vitals": vitals_resumen,
     })
     if meta_ref:
         meta_ref.set(meta)
