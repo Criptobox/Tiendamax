@@ -15,7 +15,17 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import update_rate_from_eltoque as upd  # noqa: E402
+# El script importa bs4, que está en scripts/requirements.txt y por tanto en CI,
+# pero no siempre en una máquina de trabajo. Sin este guardado, `unittest
+# discover` cortaba con un ImportError que se leía como "la suite está rota" y
+# tapaba los fallos de verdad del resto de ficheros. Saltar es honesto: dice que
+# no se comprobó, en vez de fingir que pasó.
+try:
+    import update_rate_from_eltoque as upd  # noqa: E402
+except ModuleNotFoundError as e:  # pragma: no cover
+    raise unittest.SkipTest(
+        f"falta {e.name} (pip install -r scripts/requirements.txt)"
+    ) from e
 
 
 class FallbackConTasaPreviaTest(unittest.TestCase):
