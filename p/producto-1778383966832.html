@@ -58,6 +58,37 @@
 }
 </script>
 
+<!-- ═══ Migas de pan para Google ═══
+     Con esto el resultado de búsqueda enseña "tiendamax.org › Audio › Xiaomi"
+     en vez de la URL cruda, y le da a Google la jerarquía del sitio explícita
+     en vez de tener que deducirla. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://tiendamax.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Seguridad",
+      "item": "https://tiendamax.org/c/seguridad.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid",
+      "item": "https://tiendamax.org/p/producto-1778383966832.html"
+    }
+  ]
+}
+</script>
+
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}
@@ -90,6 +121,26 @@
   .tm-btn-w{background:#25D366;color:#fff}
   .tm-ftr{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}
   .tm-ftr a{color:#C9A96E}
+  /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
+     la categoría. Sin ellas la ficha era un callejón sin salida — solo se
+     podía salir al home o a WhatsApp. */
+  .tm-migas{max-width:900px;margin:0 auto;padding:14px 16px 0;font-size:12.5px;color:#8a7b6c;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .tm-migas a{color:#C9A96E}
+  .tm-migas a:hover{text-decoration:underline}
+  .tm-migas .sep{opacity:.5}
+  .tm-migas .actual{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(46vw,340px)}
+  /* Productos relacionados: convierten 118 fichas sueltas en una malla que se
+     puede recorrer, tanto por un cliente como por un rastreador. */
+  .tm-rel{max-width:900px;margin:0 auto;padding:8px 16px 48px}
+  .tm-rel h2{font-size:16px;font-weight:800;margin-bottom:16px;color:#e8dcc8}
+  .tm-rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+  .tm-rel-card{background:#141010;border:1px solid rgba(201,169,110,.14);border-radius:12px;overflow:hidden;display:block;transition:border-color .2s}
+  .tm-rel-card:hover{border-color:rgba(201,169,110,.4)}
+  .tm-rel-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1a1410}
+  .tm-rel-body{padding:9px 10px 11px}
+  .tm-rel-name{font-size:12.5px;line-height:1.35;color:#d8cbb8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px;min-height:34px}
+  .tm-rel-price{font-size:14px;font-weight:800;color:#FF6B35}
+  .tm-rel-mas{display:inline-block;margin-top:18px;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:8px 16px;border-radius:20px}
 </style>
 
 <!-- ═══ Google Analytics ═══
@@ -112,6 +163,7 @@
   <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
 </header>
 
+<nav class="tm-migas" aria-label="Ruta de navegación"><a href="https://tiendamax.org/">Inicio</a><span class="sep">›</span><a href="https://tiendamax.org/c/seguridad.html">Seguridad</a><span class="sep">›</span><span class="actual">🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid</span></nav>
 <main class="tm-wrap">
   <div class="tm-img">
     <img src="https://tiendamax.org/imagenes/img_1784572922212.webp" alt="🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid" loading="lazy">
@@ -141,6 +193,19 @@ Uso: Seguridad y automatización residencial o comercial.</p>
     </div>
   </div>
 </main>
+
+<section class="tm-rel">
+  <h2>También te puede interesar</h2>
+  <div class="tm-rel-grid">
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1784571782777.html"><img src="https://tiendamax.org/imagenes/img_1784571781169.webp" alt="🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB</div><div class="tm-rel-price">$420.00 USD</div></div></a>
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1778384314795.html"><img src="https://tiendamax.org/imagenes/img_1778384314795_ext.webp" alt="🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales</div><div class="tm-rel-price">$230.00 USD</div></div></a>
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1784825579392.html"><img src="https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp" alt="🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI</div><div class="tm-rel-price">$100.00 USD</div></div></a>
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1778384158283.html"><img src="https://tiendamax.org/imagenes/img_1784572438933.webp" alt="🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico</div><div class="tm-rel-price">$60.00 USD</div></div></a>
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1780344659047.html"><img src="https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp" alt="🔒 Cámara de Seguridad Bullet Zosi" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 Cámara de Seguridad Bullet Zosi</div><div class="tm-rel-price">$45.00 USD</div></div></a>
+    <a class="tm-rel-card" href="https://tiendamax.org/p/producto-1778384840618.html"><img src="https://tiendamax.org/imagenes/img_1784572695580.webp" alt="🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi" loading="lazy" decoding="async"><div class="tm-rel-body"><div class="tm-rel-name">🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi</div><div class="tm-rel-price">$30.00 USD</div></div></a>
+  </div>
+  <a class="tm-rel-mas" href="https://tiendamax.org/c/seguridad.html">Ver toda la categoría →</a>
+</section>
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados

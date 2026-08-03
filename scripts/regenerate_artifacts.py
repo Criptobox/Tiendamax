@@ -31,6 +31,7 @@ CATS = ROOT / "categorias.json"
 P_DIR = ROOT / "p"
 C_DIR = ROOT / "c"
 SITEMAP = ROOT / "sitemap.xml"
+INDEX = ROOT / "index.html"
 
 SITE = "https://tiendamax.org"
 
@@ -195,6 +196,14 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 }}
 </script>
 
+<!-- ═══ Migas de pan para Google ═══
+     Con esto el resultado de búsqueda enseña "tiendamax.org › Audio › Xiaomi"
+     en vez de la URL cruda, y le da a Google la jerarquía del sitio explícita
+     en vez de tener que deducirla. -->
+<script type="application/ld+json">
+{json_breadcrumb}
+</script>
+
 <style>
   *{{margin:0;padding:0;box-sizing:border-box}}
   body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}}
@@ -227,6 +236,26 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-btn-w{{background:#25D366;color:#fff}}
   .tm-ftr{{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
   .tm-ftr a{{color:#C9A96E}}
+  /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
+     la categoría. Sin ellas la ficha era un callejón sin salida — solo se
+     podía salir al home o a WhatsApp. */
+  .tm-migas{{max-width:900px;margin:0 auto;padding:14px 16px 0;font-size:12.5px;color:#8a7b6c;display:flex;flex-wrap:wrap;gap:6px;align-items:center}}
+  .tm-migas a{{color:#C9A96E}}
+  .tm-migas a:hover{{text-decoration:underline}}
+  .tm-migas .sep{{opacity:.5}}
+  .tm-migas .actual{{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(46vw,340px)}}
+  /* Productos relacionados: convierten 118 fichas sueltas en una malla que se
+     puede recorrer, tanto por un cliente como por un rastreador. */
+  .tm-rel{{max-width:900px;margin:0 auto;padding:8px 16px 48px}}
+  .tm-rel h2{{font-size:16px;font-weight:800;margin-bottom:16px;color:#e8dcc8}}
+  .tm-rel-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}}
+  .tm-rel-card{{background:#141010;border:1px solid rgba(201,169,110,.14);border-radius:12px;overflow:hidden;display:block;transition:border-color .2s}}
+  .tm-rel-card:hover{{border-color:rgba(201,169,110,.4)}}
+  .tm-rel-card img{{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1a1410}}
+  .tm-rel-body{{padding:9px 10px 11px}}
+  .tm-rel-name{{font-size:12.5px;line-height:1.35;color:#d8cbb8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px;min-height:34px}}
+  .tm-rel-price{{font-size:14px;font-weight:800;color:#FF6B35}}
+  .tm-rel-mas{{display:inline-block;margin-top:18px;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:8px 16px;border-radius:20px}}
 </style>
 
 <!-- ═══ Google Analytics ═══
@@ -249,6 +278,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
 </header>
 
+{breadcrumb_html}
 <main class="tm-wrap">
   <div class="tm-img">
     <img src="{image}" alt="{html_name}" loading="lazy">
@@ -269,6 +299,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     </div>
   </div>
 </main>
+
+{related_html}
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
@@ -327,11 +359,104 @@ def desc_short(s: str, n: int = 200) -> str:
     return s
 
 
+def _breadcrumb(cat: str, slug: str, name: str, page_url: str) -> tuple[str, str]:
+    """Migas de pan visibles + su JSON-LD.
+
+    Las fichas eran callejones sin salida: solo enlazaban al home, a sí mismas
+    y a WhatsApp. Ni a su categoría ni a nada más. Para quien navega es un
+    incordio; para Google es una página que no reparte nada de lo que recibe.
+
+    Si el producto no tiene categoría se degrada a "Inicio › Producto" en vez
+    de inventar un enlace a una /c/ que no existe.
+    """
+    inicio = f'<a href="{SITE}/">Inicio</a>'
+    if cat and slug:
+        cat_nombre = escape(category_display_name(cat))
+        visible = (
+            f'<nav class="tm-migas" aria-label="Ruta de navegación">'
+            f'{inicio}<span class="sep">›</span>'
+            f'<a href="{SITE}/c/{slug}.html">{cat_nombre}</a>'
+            f'<span class="sep">›</span>'
+            f'<span class="actual">{escape(name)}</span></nav>'
+        )
+        items = [
+            {"@type": "ListItem", "position": 1, "name": "Inicio", "item": f"{SITE}/"},
+            {"@type": "ListItem", "position": 2, "name": category_display_name(cat),
+             "item": f"{SITE}/c/{slug}.html"},
+            {"@type": "ListItem", "position": 3, "name": name, "item": page_url},
+        ]
+    else:
+        visible = (
+            f'<nav class="tm-migas" aria-label="Ruta de navegación">'
+            f'{inicio}<span class="sep">›</span>'
+            f'<span class="actual">{escape(name)}</span></nav>'
+        )
+        items = [
+            {"@type": "ListItem", "position": 1, "name": "Inicio", "item": f"{SITE}/"},
+            {"@type": "ListItem", "position": 2, "name": name, "item": page_url},
+        ]
+    jsonld = json.dumps(
+        {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": items},
+        ensure_ascii=False, indent=2,
+    )
+    return visible, jsonld
+
+
+def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: int = 6) -> str:
+    """Tarjetas de otros productos de la misma categoría.
+
+    Es lo que convierte 118 fichas aisladas en una malla recorrible. Se
+    priorizan los que están en stock: enlazar a agotados reparte enlaces hacia
+    páginas que no venden.
+    """
+    pid_actual = str(actual.get("id"))
+    candidatos = [p for p in hermanos if str(p.get("id")) != pid_actual and p.get("id")]
+    if not candidatos:
+        return ""
+    candidatos.sort(key=lambda p: (int(p.get("stock") or 0) <= 0, -float(p.get("precioActual") or 0)))
+    elegidos = candidatos[:limite]
+
+    tarjetas = []
+    for p in elegidos:
+        pid = p.get("id")
+        nombre = (p.get("nombre") or "").strip()
+        precio = f"{float(p.get('precioActual') or 0):.2f}"
+        img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
+        tarjetas.append(
+            f'<a class="tm-rel-card" href="{SITE}/p/producto-{pid}.html">'
+            f'<img src="{img}" alt="{escape(nombre)}" loading="lazy" decoding="async">'
+            f'<div class="tm-rel-body">'
+            f'<div class="tm-rel-name">{escape(nombre)}</div>'
+            f'<div class="tm-rel-price">${precio} USD</div>'
+            f'</div></a>'
+        )
+
+    ver_mas = (
+        f'<a class="tm-rel-mas" href="{SITE}/c/{slug}.html">Ver toda la categoría →</a>'
+        if slug else ""
+    )
+    return (
+        '<section class="tm-rel">\n'
+        '  <h2>También te puede interesar</h2>\n'
+        '  <div class="tm-rel-grid">\n    '
+        + "\n    ".join(tarjetas)
+        + f'\n  </div>\n  {ver_mas}\n</section>'
+    )
+
+
 def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[int, list[str]]:
     """Crea/actualiza páginas /p/ y borra las huérfanas."""
     P_DIR.mkdir(exist_ok=True)
     written = 0
     valid_files = set()
+
+    # Índice por categoría para los "relacionados". Se arma una vez: hacerlo
+    # dentro del bucle serían 118 recorridos del catálogo entero.
+    por_categoria: dict[str, list[dict]] = {}
+    for p in products:
+        c = (p.get("categoria") or "").strip()
+        if c:
+            por_categoria.setdefault(c, []).append(p)
 
     for p in products:
         pid = p.get("id")
@@ -419,6 +544,10 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         wa_msg  = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
         wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
 
+        cat_slug = slugify(cat) if cat else ""
+        breadcrumb_html, json_breadcrumb = _breadcrumb(cat, cat_slug, name, page_url)
+        related_html = _relacionados_html(p, por_categoria.get(cat, []), cat_slug)
+
         html = PAGE_TEMPLATE.format(
             title=title,
             html_name=html_name,
@@ -444,6 +573,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
             pct_desc_html=pct_desc_html,
             stock_html=stock_html,
             wa_link=wa_link,
+            breadcrumb_html=breadcrumb_html,
+            json_breadcrumb=json_breadcrumb,
+            related_html=related_html,
         )
 
         fp = P_DIR / f"producto-{pid}.html"
@@ -559,7 +691,10 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
                 "name": name,
             }, ensure_ascii=False))
 
-        other_cats = [c for c in cat_names if c != cat][:11]
+        # Todas las hermanas, no las 11 primeras: con 13 categorías el corte
+        # dejaba una fuera de cada página, y siempre la misma — la de menos
+        # productos, que es justo la que más necesita que la enlacen.
+        other_cats = [c for c in cat_names if c != cat]
         other_cats_html = " ".join(
             f'<a href="{SITE}/c/{slugs[c]}.html">{icons.get(c, "🛍️")} {escape(category_display_name(c))}</a>'
             for c in other_cats
@@ -593,6 +728,51 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
             print(f"🗑️  Borrado huérfano: c/{fname}")
 
     return written, removed
+
+
+CATS_INICIO = "<!-- tm:cats-inicio -->"
+CATS_FIN = "<!-- tm:cats-fin -->"
+
+
+def regenerate_home_nav(cat_names: list[str], slugs: dict[str, str]) -> bool:
+    """Reescribe la lista de categorías del pie de index.html.
+
+    Estaba a mano y se quedó desfasada: 8 enlaces para 13 categorías. Las cinco
+    que faltaban (audio, gym, juegos, pc-y-laptops, ropa) tenían su página y
+    estaban en el sitemap, pero nada en el sitio las enlazaba — y una página a
+    la que no apunta nadie es una página de segunda para Google, aunque exista.
+
+    Generarla evita que vuelva a pasar: la próxima categoría se enlaza sola.
+    """
+    if not INDEX.exists():
+        return False
+    html = INDEX.read_text(encoding="utf-8")
+    i, j = html.find(CATS_INICIO), html.find(CATS_FIN)
+    if i == -1 or j == -1 or j < i:
+        # Sin marcas no se toca nada: es preferible una lista desfasada a
+        # reescribir a ciegas un index.html de 2000 líneas.
+        print("⚠️  index.html sin las marcas tm:cats-*; no se actualiza el pie", file=sys.stderr)
+        return False
+
+    estilo = "color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;"
+    enlaces = [
+        f'<a href="/c/{slugs[c]}.html" style="{estilo}">{escape(category_display_name(c))}</a>'
+        for c in cat_names
+    ]
+    enlaces.append(f'<a href="/faq.html" style="{estilo}">Preguntas frecuentes</a>')
+    nav = (
+        CATS_INICIO + "\n"
+        '            <nav aria-label="Categorías" style="text-align:center;padding:14px 0;'
+        'border-top:1px solid rgba(255,255,255,.06);margin-top:8px;">\n                '
+        + "\n                ".join(enlaces)
+        + "\n            </nav>\n            " + CATS_FIN
+    )
+    nuevo = html[:i] + nav + html[j + len(CATS_FIN):]
+    if nuevo == html:
+        return False
+    _atomic_write(INDEX, nuevo)
+    print(f"✏️  Actualizado: index.html (pie con {len(cat_names)} categorías)")
+    return True
 
 
 def regenerate_sitemap(products: list[dict], category_slugs: list[str] | None = None) -> bool:
@@ -678,6 +858,15 @@ def main() -> int:
     n_cat_written, cat_removed = regenerate_category_pages(products)
     print(f"   Páginas /c/ actualizadas: {n_cat_written}, borradas: {len(cat_removed)}")
     category_slugs = sorted({slugify((p.get("categoria") or "").strip()) for p in products if p.get("categoria")})
+
+    # Mismo orden que las páginas /c/: más productos primero.
+    por_cat: dict[str, int] = {}
+    for p in products:
+        c = (p.get("categoria") or "").strip()
+        if c:
+            por_cat[c] = por_cat.get(c, 0) + 1
+    cats_ordenadas = sorted(por_cat, key=lambda c: -por_cat[c])
+    regenerate_home_nav(cats_ordenadas, {c: slugify(c) for c in cats_ordenadas})
 
     if regenerate_sitemap(products, category_slugs):
         print("   sitemap.xml actualizado")
