@@ -761,9 +761,24 @@ async function borrarImagenDeGitHub(url) {
 
 // ¿Queda algún producto (o combo) usando esta imagen? Se comprueba antes de
 // borrar: dos productos pueden compartir foto y borrarla dejaría al otro roto.
+//
+// La comparación es por RUTA del fichero, no por la URL literal. El mismo
+// fichero convive en el catálogo escrito de dos formas —
+// "https://tiendamax.org/imagenes/x.webp" y
+// "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/x.webp" —
+// y borrarImagenDeGitHub() borra por ruta (_rutaImagenDesdeUrl), así que
+// comparar strings dejaba pasar el caso peor: la comprobación decía "no la usa
+// nadie", el borrado sí encontraba el fichero, y el otro producto se quedaba
+// con la foto rota. Ya pasó con img_1783179797781.webp.
 function imagenEnUso(url, ignorarProductoId) {
     if (!url) return false;
-    const iguales = (v) => typeof v === 'string' && v === url;
+    // Para lo que no es una imagen del repo (data: URI, dominio ajeno) no hay
+    // ruta que normalizar: ahí la igualdad literal es lo correcto — y además
+    // borrarImagenDeGitHub() tampoco las tocaría.
+    const objetivo = _rutaImagenDesdeUrl(url);
+    const iguales = objetivo
+        ? (v) => typeof v === 'string' && _rutaImagenDesdeUrl(v) === objetivo
+        : (v) => typeof v === 'string' && v === url;
     const lista = (typeof productos !== 'undefined' && Array.isArray(productos)) ? productos : [];
     for (const p of lista) {
         if (ignorarProductoId != null && String(p.id) === String(ignorarProductoId)) continue;
