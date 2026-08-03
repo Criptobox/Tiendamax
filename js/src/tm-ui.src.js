@@ -1778,13 +1778,20 @@ renderizarProductos = function() {
         const esOfertaDia = String(producto.id) === String(ofertaId);
         const card = document.createElement('div');
         card.className = 'producto-card pcard-v2 tm-anim-card' + (esAgotado ? ' card-agotado' : '');
+        // Clic en cualquier parte de la tarjeta: comodidad para el ratón y el
+        // dedo, nada más. La tarjeta NO es un botón.
+        //
+        // Lo era: role="button" + tabIndex + aria-label sobre el contenedor. Y
+        // dentro lleva el botón "Pedir", o sea un botón dentro de otro botón —
+        // que no es válido y deja al de dentro fuera del alcance de un lector de
+        // pantalla en modo formulario. Además el nombre accesible ("Ver detalle
+        // de X") no contenía el texto visible de la tarjeta, así que quien usa
+        // control por voz decía "pulsa <nombre del producto>" y no pasaba nada.
+        //
+        // Ahora lo que se enfoca y se anuncia es el título (abajo, un <button>
+        // de verdad) y el botón "Pedir", cada uno con su nombre. Para el teclado
+        // hay dos paradas claras en vez de una tarjeta entera opaca.
         card.onclick = () => abrirDetalleProducto(producto.id);
-        card.tabIndex = 0;
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', 'Ver detalle de ' + (producto.nombre || 'producto') + (esAgotado ? ', agotado' : ''));
-        card.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirDetalleProducto(producto.id); }
-        });
         card.dataset.productId = String(producto.id);
         const _id  = safeNum(producto.id);
         const _nomCorto = _tmTruncar2Lineas(producto.nombre);
@@ -1824,7 +1831,13 @@ renderizarProductos = function() {
             '</div>' +
             '<div class="pv2-body">' +
                 (_cat ? '<span class="pv2-cat">' + _cat + '</span>' : '') +
-                '<h3 class="pv2-title" style="height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">' + _nomHTML + '</h3>' +
+                // El título es el destino accesible de la tarjeta: un <button>
+                // real, con el nombre del producto como nombre accesible. El
+                // stopPropagation evita que el clic llegue además a la tarjeta y
+                // abra el detalle dos veces.
+                '<h3 class="pv2-title" style="height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">' +
+                    '<button type="button" class="pv2-title-btn" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">' + _nomHTML + '</button>' +
+                '</h3>' +
                 '<div class="pv2-meta">' + (typeof _tmMetaCard === 'function' ? _tmMetaCard(_id) : '') + '</div>' +
                 (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                 '<div class="pv2-foot">' +

@@ -224,7 +224,7 @@
     bubble.className = 'tm-bot-bubble';
     bubble.id = 'tmBotBubble';
     bubble.setAttribute('aria-label', 'Abrir chat con Max');
-    bubble.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.86.51 3.6 1.39 5.09L2 22l4.91-1.39C8.4 21.49 10.14 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.66 0-3.22-.45-4.56-1.24l-.33-.2-2.92.83.83-2.92-.2-.33C3.45 15.22 3 13.66 3 12c0-4.96 4.04-9 9-9s9 4.04 9 9-4.04 9-9 9zm5-9.5c0 2.49-2.01 4.5-4.5 4.5-.78 0-1.51-.2-2.15-.55L8 15.5l1.05-2.35C8.7 12.51 8.5 11.78 8.5 11c0-2.49 2.01-4.5 4.5-4.5S17 8.51 17 11z"/></svg><span class="tm-bot-badge">1</span>';
+    bubble.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.86.51 3.6 1.39 5.09L2 22l4.91-1.39C8.4 21.49 10.14 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.66 0-3.22-.45-4.56-1.24l-.33-.2-2.92.83.83-2.92-.2-.33C3.45 15.22 3 13.66 3 12c0-4.96 4.04-9 9-9s9 4.04 9 9-4.04 9-9 9zm5-9.5c0 2.49-2.01 4.5-4.5 4.5-.78 0-1.51-.2-2.15-.55L8 15.5l1.05-2.35C8.7 12.51 8.5 11.78 8.5 11c0-2.49 2.01-4.5 4.5-4.5S17 8.51 17 11z"/></svg><span class="tm-bot-badge" aria-hidden="true">1</span>';
     document.body.appendChild(bubble);
 
     const welcome = document.createElement('div');

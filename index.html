@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=6057888a" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=a151fb7e" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=9a88b050">
+    <link rel="stylesheet" href="css/bundle.css?v=bb3cde90">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -1549,7 +1549,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=6057888a" defer></script>
+    <script src="js/tm-bundle.js?v=a151fb7e" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1561,7 +1561,7 @@
     <script src="js/push-fix.js?v=7278889b" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
-    <script src="js/tienda-plus.js?v=3204091a" defer></script>
+    <script src="js/tienda-plus.js?v=ba354dad" defer></script>
     <script src="js/cart-share.js?v=797b6d55" defer></script>
     <script>
     // Mismo patrón que _searchPanelHistoryPushed (js/src/tm-data.src.js):
@@ -1738,7 +1738,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=b8b6f331" defer></script>
+    <script src="js/tm-bot.js?v=5f279530" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

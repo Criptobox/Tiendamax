@@ -1795,6 +1795,24 @@ html body .producto-card.pcard-v2 h3.pv2-title{
   height:36px !important;min-height:36px !important;max-height:36px !important;
   overflow:hidden !important;
 }
+/* El título de la tarjeta es un <button> de verdad, no el contenedor entero.
+   Antes la tarjeta llevaba role="button" y dentro tenía el botón "Pedir": un
+   botón dentro de otro botón, que no es válido y deja al de dentro fuera del
+   alcance de un lector de pantalla en modo formulario.
+   El botón hereda el flex del h3 (ícono + texto) y se despoja de todo lo que
+   un <button> trae por defecto, para que se siga viendo igual que antes. */
+html body .producto-card.pcard-v2 h3.pv2-title>.pv2-title-btn{
+  display:flex;gap:6px;align-items:flex-start;
+  flex:1 1 auto;min-width:0;height:100%;overflow:hidden;
+  background:none;border:0;padding:0;margin:0;
+  font:inherit;color:inherit;letter-spacing:inherit;text-align:left;
+  cursor:pointer;-webkit-appearance:none;appearance:none;
+}
+/* Sin esto el foco de teclado no se ve: es la única pista de dónde estás al
+   tabular por la rejilla. */
+html body .producto-card.pcard-v2 h3.pv2-title>.pv2-title-btn:focus-visible{
+  outline:2px solid var(--coral,#FF6A1F);outline-offset:2px;border-radius:4px;
+}
 html body .pv2-title .tm-ico-nombre{
   width:15px;height:15px;flex:0 0 15px;margin-top:.18em;
   color:var(--coral, #FF6A1F);opacity:.9;

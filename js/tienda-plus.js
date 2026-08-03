@@ -283,6 +283,12 @@
         function etiquetar(card) {
             if (card.getAttribute('data-a11y') === '1') return;
             card.setAttribute('data-a11y', '1');
+            // Si la tarjeta ya trae su propio destino accesible (el título es un
+            // <button> real, ver tm-ui.src.js), no se toca: convertir además el
+            // contenedor en role="button" deja un botón dentro de otro botón —
+            // no es válido, y en modo formulario un lector de pantalla se salta
+            // el de dentro. El teclado ya llega al título y a "Pedir".
+            if (card.querySelector('.pv2-title-btn')) return;
             card.setAttribute('role', 'button');
             card.setAttribute('tabindex', '0');
             if (!card.getAttribute('aria-label')) {
