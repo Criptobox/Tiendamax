@@ -28,7 +28,7 @@ import re
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCTOS = ROOT / "productos.json"
@@ -110,7 +110,10 @@ def huella(producto: dict, foto: Path | None) -> str:
         "original": _num(producto.get("precioOriginal")),
         "categoria": (producto.get("categoria") or "").strip(),
         "stock": int(_num(producto.get("stock"))),
-        "version": 1,   # súbelo si cambia el diseño, para forzar regeneración
+        # Súbelo al cambiar el diseño: si no, una tarjeta ya generada se queda
+        # con el aspecto viejo para siempre porque sus datos no cambiaron.
+        # v2: la foto va sola con las esquinas redondeadas, sin panel detrás.
+        "version": 2,
     }
     h = hashlib.sha256(json.dumps(datos, sort_keys=True, ensure_ascii=False).encode())
     if foto and foto.exists():
@@ -143,46 +146,41 @@ def _cortar_lineas(draw, texto, fuente, ancho_max, max_lineas):
     return lineas
 
 
-def _panel_foto(foto: Path, lado: int) -> Image.Image:
-    """La foto encajada dentro de un cuadrado, sin recortar ni deformar: el
-    producto se ve entero, que es lo que importa en una vista previa."""
-    panel = Image.new("RGB", (lado, lado), (24, 24, 24))
+def _redondear(im: Image.Image, radio: int) -> Image.Image:
+    """Redondea las esquinas respetando la transparencia que ya trajera la
+    imagen: si se pusiera la máscara encima sin más, una foto sin fondo
+    recuperaría el rectángulo que precisamente no tiene."""
+    mascara = Image.new("L", im.size, 0)
+    ImageDraw.Draw(mascara).rounded_rectangle([0, 0, im.width - 1, im.height - 1],
+                                              radius=radio, fill=255)
+    salida = im.convert("RGBA")
+    previa = salida.getchannel("A")
+    salida.putalpha(ImageChops.darker(previa, mascara))
+    return salida
+
+
+def _foto_redondeada(foto: Path, lado: int) -> Image.Image | None:
+    """La foto sola, escalada para caber en `lado` x `lado` y con las esquinas
+    redondeadas. Nada de panel detrás: metida en un cajón, la foto se veía como
+    un cuadrado de bordes vivos dentro de otro rectángulo redondeado — dos
+    marcos para una sola imagen.
+
+    No se recorta ni se deforma: el producto se ve entero, que es lo que
+    importa en una vista previa."""
     try:
         im = Image.open(foto)
         im = im.convert("RGBA") if im.mode in ("RGBA", "LA", "P") else im.convert("RGB")
     except Exception:
-        return panel
+        return None
 
-    margen = int(lado * 0.06)
-    caja = lado - margen * 2
     copia = im.copy()
-    copia.thumbnail((caja, caja), Image.LANCZOS)
-
-    # Un halo del color medio de la foto separa el producto del fondo negro
-    # cuando la foto ya viene recortada sobre blanco o sobre transparente.
-    try:
-        chico = copia.convert("RGB").resize((1, 1), Image.LANCZOS)
-        r, g, b = chico.getpixel((0, 0))
-        halo = Image.new("RGB", (lado, lado), (r // 5, g // 5, b // 5))
-        panel = Image.blend(panel, halo, 0.7)
-    except Exception:
-        pass
-
-    pos = ((lado - copia.width) // 2, (lado - copia.height) // 2)
-    if copia.mode == "RGBA":
-        panel.paste(copia, pos, copia)
-    else:
-        panel.paste(copia, pos)
-    return panel
-
-
-def _redondear(im: Image.Image, radio: int) -> Image.Image:
-    mascara = Image.new("L", im.size, 0)
-    ImageDraw.Draw(mascara).rounded_rectangle([0, 0, im.width - 1, im.height - 1],
-                                              radius=radio, fill=255)
-    salida = im.copy()
-    salida.putalpha(mascara)
-    return salida
+    copia.thumbnail((lado, lado), Image.LANCZOS)
+    if not copia.width or not copia.height:
+        return None
+    # El radio se calcula sobre el lado corto: en una foto apaisada o muy alta,
+    # un radio fijo se comería la esquina entera.
+    radio = max(12, int(min(copia.width, copia.height) * 0.07))
+    return _redondear(copia, radio)
 
 
 def dibujar_tarjeta(producto: dict, foto: Path | None) -> Image.Image:
@@ -199,9 +197,14 @@ def dibujar_tarjeta(producto: dict, foto: Path | None) -> Image.Image:
     # ── Foto ────────────────────────────────────────────────────────────
     lado = 462
     px, py = 54, (H - lado) // 2
-    if foto:
-        panel = _redondear(_panel_foto(foto, lado), 26)
-        lienzo.paste(panel, (px, py), panel)
+    puesta = _foto_redondeada(foto, lado) if foto else None
+    if puesta is not None:
+        # Centrada dentro del hueco reservado: las fotos no son todas cuadradas
+        # (hay 360x480, 270x480…) y anclarlas arriba a la izquierda dejaba unas
+        # descolgadas respecto de otras.
+        lienzo.paste(puesta,
+                     (px + (lado - puesta.width) // 2, py + (lado - puesta.height) // 2),
+                     puesta)
     else:
         d.rounded_rectangle([px, py, px + lado, py + lado], radius=26,
                             fill=(24, 24, 24), outline=LINEA, width=2)

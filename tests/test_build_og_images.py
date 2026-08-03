@@ -67,6 +67,57 @@ class DibujoTest(unittest.TestCase):
 
 
 @unittest.skipIf(Image is None, "Pillow no está instalado en este entorno")
+class FotoRedondeadaTest(unittest.TestCase):
+    """La foto va sola con las esquinas redondeadas. Cuando iba dentro de un
+    panel se veía como un cuadrado de bordes vivos metido en otro rectángulo
+    redondeado: dos marcos para una sola imagen."""
+
+    def _foto(self, tmp, tam, color=(255, 0, 0), modo="RGB"):
+        f = Path(tmp) / "f.png"
+        Image.new(modo, tam, color if modo == "RGB" else color + (255,)).save(f)
+        return f
+
+    def test_las_esquinas_quedan_transparentes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            im = og._foto_redondeada(self._foto(tmp, (400, 400)), 462)
+        self.assertEqual("RGBA", im.mode)
+        self.assertEqual(0, im.getpixel((0, 0))[3], "la esquina superior izquierda no está recortada")
+        self.assertEqual(0, im.getpixel((im.width - 1, im.height - 1))[3], "la esquina inferior derecha no está recortada")
+        self.assertEqual(255, im.getpixel((im.width // 2, im.height // 2))[3], "el centro debería ser opaco")
+
+    def test_no_deforma_la_foto(self):
+        # Recortar o estirar el producto en la vista previa es peor que dejar
+        # aire alrededor.
+        with tempfile.TemporaryDirectory() as tmp:
+            im = og._foto_redondeada(self._foto(tmp, (480, 246)), 462)
+        self.assertAlmostEqual(480 / 246, im.width / im.height, places=1)
+
+    def test_cabe_en_el_hueco_reservado(self):
+        for tam in ((480, 480), (480, 246), (399, 600), (1200, 800)):
+            with self.subTest(tam=tam), tempfile.TemporaryDirectory() as tmp:
+                im = og._foto_redondeada(self._foto(tmp, tam), 462)
+                self.assertLessEqual(im.width, 462)
+                self.assertLessEqual(im.height, 462)
+
+    def test_respeta_la_transparencia_previa(self):
+        # Una foto sin fondo no debe recuperar el rectángulo al redondearla.
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Path(tmp) / "t.png"
+            base = Image.new("RGBA", (400, 400), (0, 0, 0, 0))
+            base.paste(Image.new("RGBA", (100, 100), (255, 0, 0, 255)), (150, 150))
+            base.save(f)
+            im = og._foto_redondeada(f, 462)
+        self.assertEqual(0, im.getpixel((im.width // 2, 8))[3],
+                         "el borde transparente de la foto se volvió opaco")
+
+    def test_fichero_ilegible_no_revienta(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            malo = Path(tmp) / "roto.webp"
+            malo.write_bytes(b"esto no es una imagen")
+            self.assertIsNone(og._foto_redondeada(malo, 462))
+
+
+@unittest.skipIf(Image is None, "Pillow no está instalado en este entorno")
 class LimpiarNombreTest(unittest.TestCase):
     def test_quita_emoji(self):
         # Ninguna fuente del runner tiene emoji: quedarían como cuadraditos.
