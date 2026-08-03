@@ -1,40 +1,15 @@
 {
-  "generado": "2026-08-02T10:27:05.060388+00:00",
+  "generado": "2026-08-03T12:14:00.631008+00:00",
   "productos": 118,
-  "urgentes": 6,
+  "urgentes": 1,
   "advertencias": 42,
   "info": 9,
-  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 42 advertencia(s), 9 de info.",
+  "resumen": "Anoche revisé tus 118 productos y encontré 1 urgente(s), 42 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
-      "nombre": "🛜 Router Wi-Fi AC1200 Tenda AC6(Global Version)",
-      "detalle": "→ 🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "⚡ Controlador de Carga Solar MPPT 80A PowMr",
-      "detalle": "→ ⚡ Controlador de Carga Solar MPPT 80A Powmr"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
-      "detalle": "→ 📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
-      "detalle": "→ 🛜 Router Wi-fi AC1200 Tp-link Archer C54"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🌐 Antena CPE MikroTik SXTsq 5 ax",
+      "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "→ 🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
-      "detalle": "→ 🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional"
     },
     {
       "tipo": "agotado",
@@ -193,7 +168,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
+      "nombre": "🛜 Router Wi-fi AC1200 Tp-link Archer C54",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -243,7 +218,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "🌐 Antena CPE MikroTik SXTsq 5 ax",
+      "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -288,7 +263,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+      "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
       "detalle": "quedan 3"
     }
   ]
