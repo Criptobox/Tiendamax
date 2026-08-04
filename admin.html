@@ -2095,16 +2095,15 @@ async function comboPublicar(){
   const combos=lsCombos();
   const btn=$('#combo-publicar-btn'); if(btn){ btn.disabled=true; btn.textContent='⏳ Publicando…'; }
   try{
-    const headers={ 'Authorization':'token '+token, 'Accept':'application/vnd.github.v3+json' };
-    const apiBase='https://api.github.com/repos/'+user+'/'+repo;
-    const jsonStr=JSON.stringify(combos, null, 2);
-    const content=btoa(Array.from(new TextEncoder().encode(jsonStr), b=>String.fromCharCode(b)).join(''));
-    let sha=null; try{ const r=await fetch(apiBase+'/contents/combos.json?_='+Date.now(),{headers}); if(r.ok){ sha=(await r.json()).sha; } }catch(e){}
-    const body={ message:'Actualización de combos.json', content }; if(sha) body.sha=sha;
-    const res=await fetch(apiBase+'/contents/combos.json',{ method:'PUT', headers, body:JSON.stringify(body) });
-    if(res.ok){ showToast('✅ Combos publicados', combos.length+' combo(s) — ya salen en la tienda'); }
-    else { const e=await res.json().catch(()=>({})); showToast('❌ No se pudo publicar', (e&&e.message)||('HTTP '+res.status)); }
-  }catch(e){ showToast('❌ Error', e.message); }
+    // Se publica con subirArchivoAGitHub() (js/src/tm-catalog.src.js), el mismo
+    // que sube productos.json. Aquí había una copia a mano del PUT que leía el
+    // sha una vez y se rendía: si un workflow commiteaba a main en ese hueco
+    // —pasa varias veces al día— GitHub devolvía 409, el admin veía
+    // "HTTP 409" y el trabajo se perdía. El de tm-catalog reintenta con sha
+    // fresco hasta tres veces y traduce 401/403/404 a algo accionable.
+    await subirArchivoAGitHub(user, repo, token, 'combos.json', combos);
+    showToast('✅ Combos publicados', combos.length+' combo(s) — ya salen en la tienda');
+  }catch(e){ showToast('❌ No se pudo publicar', (e&&e.message)||''); }
   if(btn){ btn.disabled=false; btn.textContent='📤 Publicar combos a la tienda'; }
 }
 function renderCombos(){
@@ -4719,16 +4718,11 @@ async function pubBannersPublicar(){
   if(!user||!repo||!token){ showToast('⚠️ Configura GitHub primero','En el tab Configuración'); return; }
   showToast('⏳ Publicando banners…');
   try{
-    const headers={ 'Authorization':'token '+token, 'Accept':'application/vnd.github.v3+json' };
-    const apiBase='https://api.github.com/repos/'+user+'/'+repo;
-    const jsonStr=JSON.stringify(PUB_BANNERS||[], null, 2);
-    const content=btoa(Array.from(new TextEncoder().encode(jsonStr), b=>String.fromCharCode(b)).join(''));
-    let sha=null; try{ const r=await fetch(apiBase+'/contents/banners.json?_='+Date.now(),{headers}); if(r.ok){ sha=(await r.json()).sha; } }catch(e){}
-    const body={ message:'Actualizar banners.json (admin nuevo)', content }; if(sha) body.sha=sha;
-    const res=await fetch(apiBase+'/contents/banners.json',{ method:'PUT', headers, body:JSON.stringify(body) });
-    if(res.ok) showToast('✅ Banners publicados',(PUB_BANNERS||[]).length+' en la portada de la tienda');
-    else { const e=await res.json().catch(()=>({})); showToast('❌ No se pudo publicar',(e&&e.message)||('HTTP '+res.status)); }
-  }catch(e){ showToast('❌ Error', e&&e.message||''); }
+    // Mismo publicador que productos.json y combos.json — ver el comentario en
+    // comboPublicar(). Aquí también había una copia a mano sin reintento.
+    await subirArchivoAGitHub(user, repo, token, 'banners.json', PUB_BANNERS||[]);
+    showToast('✅ Banners publicados',(PUB_BANNERS||[]).length+' en la portada de la tienda');
+  }catch(e){ showToast('❌ No se pudo publicar', (e&&e.message)||''); }
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubSetCartelVariante=pubSetCartelVariante; window.pubRenderCartelPreview=pubRenderCartelPreview;
