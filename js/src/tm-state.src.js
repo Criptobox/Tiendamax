@@ -654,6 +654,56 @@ function _tmInitDestacadosSlider() {
     if (!visObs) reanudar();
 }
 
+// ── Catálogo en la portada ──────────────────────────────────────
+// El inicio no tenía ninguna cuadrícula de productos: 6 destacados y, para
+// ver más, había que elegir una categoría. Aquí se muestran los últimos que
+// entraron, de 8 en 8, con la misma tarjeta que el resto del sitio.
+const TM_CAT_HOME_PASO = 8;
+let _catHomeMostrados = 0;
+
+function renderCatalogoHome(masCantidad) {
+    const grid = document.getElementById('catalogoHomeGrid');
+    const btn  = document.getElementById('catalogoHomeVerTodo');
+    if (!grid || typeof window._tmCrearCard !== 'function') return;
+
+    // Con existencia y precio: enseñar en portada algo que no se puede
+    // comprar es gastar el sitio que mejor convierte.
+    const vivos = productos
+        .filter(p => p && Number(p.stock) > 0 && Number(p.precioActual) > 0)
+        .sort((a, b) => Number(b.id) - Number(a.id));   // los ids son la fecha de alta
+
+    if (!vivos.length) {
+        grid.innerHTML = '';
+        if (btn) btn.style.display = 'none';
+        return;
+    }
+
+    // Al repintar (el catálogo se refresca solo) se conserva cuántos había
+    // abierto el cliente: si no, cada refresco le cerraba la lista.
+    if (!masCantidad) _catHomeMostrados = Math.max(TM_CAT_HOME_PASO, _catHomeMostrados);
+    else _catHomeMostrados += TM_CAT_HOME_PASO;
+    const hasta = Math.min(_catHomeMostrados, vivos.length);
+
+    if (typeof _tmRemoverSkeletons === 'function') _tmRemoverSkeletons('catalogoHomeGrid');
+    grid.innerHTML = '';
+    vivos.slice(0, hasta).forEach(p => grid.appendChild(window._tmCrearCard(p, { lazy: true })));
+
+    // No hace falta avisar a tienda-plus.js (el que hace las tarjetas operables
+    // con teclado): vigila el DOM con un MutationObserver sobre .producto-card,
+    // así que recoge estas solo.
+
+    if (btn) {
+        const faltan = vivos.length - hasta;
+        if (faltan > 0) {
+            btn.textContent = '+ Ver más productos (' + faltan + ')';
+            btn.style.display = '';
+            btn.onclick = () => renderCatalogoHome(true);
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+}
+
 function renderizarMasVendidos() {
     // Siempre actualizar el hero galería, independiente de si el grid existe
     if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
@@ -690,6 +740,7 @@ function renderizarMasVendidos() {
         grid.appendChild(card);
     });
     _tmInitDestacadosSlider();
+    renderCatalogoHome();
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();

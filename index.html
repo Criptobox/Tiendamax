@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=ef11fcd8" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=8376265a" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -824,6 +824,20 @@
 
         <!-- Beneficios -->
         <!-- Cómo comprar: 3 pasos visibles para generar confianza -->
+        <!-- Catálogo en la portada. Antes no había ninguna cuadrícula de
+             productos en el inicio: se veían 6 destacados y, para ver algo
+             más, había que elegir una categoría. De 8.231 px de portada, solo
+             606 enseñaban producto. -->
+        <section id="catalogo-home" class="catalogo-home">
+            <div class="container">
+                <p class="section-eyebrow">Todo el catálogo</p>
+                <h2 class="section-title">Lo que tenemos <em>ahora mismo</em></h2>
+                <p class="section-subtitle" id="catalogoHomeSub">Lo último que ha entrado. Toca cualquiera para verlo completo.</p>
+                <div class="productos-grid" id="catalogoHomeGrid"></div>
+                <button type="button" class="cat-vermas-btn" id="catalogoHomeVerTodo" style="display:none"></button>
+            </div>
+        </section>
+
         <section id="como-comprar" class="tm-steps-section">
             <div class="container">
                 <p class="section-eyebrow">Comprar es fácil y seguro</p>
@@ -1644,7 +1658,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=ef11fcd8" defer></script>
+    <script src="js/tm-bundle.js?v=8376265a" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
