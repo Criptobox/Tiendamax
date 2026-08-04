@@ -71,7 +71,14 @@ jobs:
           # productos.json entra aquí porque fill_seo.py puede haberlo tocado
           # (rellena seoTitle/seoDescription in place) — sin esto, ese cambio
           # se perdía al terminar el job en vez de quedar publicado.
-          git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null || true
+          # index.html va aquí porque regenerate_home_nav() reescribe la lista
+          # de categorías del pie. Sin él pasaban dos cosas, las dos calladas:
+          # ese cambio se descartaba en cada corrida (el pie nunca se
+          # actualizaba), y al quedar el fichero modificado sin indexar, el
+          # rebase de la línea de abajo se negaba a correr —"cannot rebase: you
+          # have unstaged changes"— y se perdían TODOS los artefactos ya
+          # generados: páginas /p/ y tarjetas OG de productos nuevos incluidas.
+          git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null || true
           # Asegurar que archivos nuevos en p/, c/ y og/ también queden en el índice
           git ls-files --others --exclude-standard -- p/ c/ og/ | xargs -r git add 2>/dev/null || true
           if git diff --cached --quiet; then
@@ -88,7 +95,11 @@ jobs:
               exit 0
             fi
             git fetch origin main
-            git rebase -X ours origin/main || { git checkout --ours -- p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            # --autostash: si algún script deja un fichero tocado que no está en
+            # el git add de arriba, el rebase se negaba a arrancar y el job
+            # moría con el trabajo hecho pero sin publicar. Con esto se aparta
+            # solo y el reintento sigue.
+            git rebase --autostash -X ours origin/main || { git checkout --ours -- p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null; git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
             sleep $((i * 2))
           done
           echo "❌ No se pudieron publicar los artefactos." >&2
