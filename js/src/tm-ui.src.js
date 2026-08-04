@@ -762,8 +762,10 @@ function _ventaItems(venta) {
     return [{ producto: venta.producto, productoId: venta.productoId, cantidad: venta.cantidad || 1, precio: venta.precio || 0 }];
 }
 
-// Registra un pedido con uno o varios productos como UNA sola venta (un vale)
-function registrarVentaPedido(items) {
+// Registra un pedido con uno o varios productos como UNA sola venta (un vale).
+// `cliente` es opcional: {nombre, tel}. Se guarda SOLO en localStorage — ver
+// más abajo, en el bloque que sube el pedido a Firebase.
+function registrarVentaPedido(items, cliente) {
     items = (items || []).filter(it => it && it.productoId);
     if (!items.length) { mostrarNotificacion('⚠️ Agrega al menos un producto', 'error'); return; }
     const detalle = items.map(it => {
@@ -798,12 +800,26 @@ function registrarVentaPedido(items) {
         total: total,
         ganancia: ganancia
     };
+    // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
+    // v.telefono) y salía vacío porque nadie los escribía nunca.
+    if (cliente) {
+        const nom = String(cliente.nombre || '').trim();
+        const tel = String(cliente.tel || '').replace(/\D/g, '');
+        if (nom) venta.cliente = nom;
+        if (tel.length >= 6) venta.telefono = tel;
+    }
     guardarVenta(venta);
     detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
     renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${detalle.length} producto${detalle.length > 1 ? 's' : ''}`);
 
-    // Guardar también como pedido en Firebase para seguimiento del cliente (multi-item)
+    // Guardar también como pedido en Firebase para seguimiento del cliente (multi-item).
+    //
+    // OJO: el payload se arma campo a campo A PROPÓSITO — nunca con el objeto
+    // `venta` entero. /pedidos/$id tiene ".read": true y aquí no hay
+    // autenticación, así que cada pedido lo puede leer cualquiera: mandar
+    // venta.cliente o venta.telefono sería publicar el nombre y el número de
+    // la persona. Esos dos se quedan en localStorage.
     (async () => {
         try {
             const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;

@@ -1176,6 +1176,13 @@
           <div class="form-group"><label class="form-label" for="venta-buscar">Buscar producto</label><input class="form-input" id="venta-buscar" placeholder="🔍 Escribe para buscar…" oninput="ventaBuscar()"><div id="venta-resultados" style="margin-top:6px;max-height:170px;overflow:auto"></div></div>
           <div id="venta-cart" style="margin-top:12px"></div>
           <div id="venta-total" style="margin-top:8px"></div>
+          <!-- Cliente: opcional, pero es lo que llena el tab Clientes y lo que
+               dispara el seguimiento post-venta. Sin el WhatsApp no hay a quién
+               escribirle a los 3/30/90 días. Queda solo en este navegador. -->
+          <div class="grid-2" style="margin-top:10px;gap:8px">
+            <div class="form-group" style="margin:0"><label class="form-label" for="venta-cliente">Cliente <span style="color:var(--gray);font-weight:600">— opcional</span></label><input class="form-input" id="venta-cliente" placeholder="Nombre" autocomplete="off"></div>
+            <div class="form-group" style="margin:0"><label class="form-label" for="venta-tel">WhatsApp <span style="color:var(--gray);font-weight:600">— para el seguimiento</span></label><input class="form-input" id="venta-tel" placeholder="5355551234" inputmode="tel" autocomplete="off"></div>
+          </div>
           <button class="btn btn-primary" id="venta-registrar-btn" style="width:100%;margin-top:12px;display:none" onclick="ventaRegistrar()">✅ Registrar venta</button>
         </div>
         <div class="kpis" id="ventas-kpis"></div>
@@ -1546,7 +1553,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=03ac95f9"></script>
+<script src="js/tm-bundle.js?v=451bb446"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1992,13 +1999,21 @@ function ventaRegistrar(){
   // que ajustarStock del motor descuente el MISMO array que muestra el admin.
   syncProductos();
   const vendidos = VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda}));
-  registrarVentaPedido(vendidos);
+  const cliente = {
+    nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
+    tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
+  };
+  registrarVentaPedido(vendidos, cliente);
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
   VENTA_CART=[]; ventaRenderCart();
+  if($('#venta-cliente')) $('#venta-cliente').value='';
+  if($('#venta-tel')) $('#venta-tel').value='';
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
-  showToast('✅ Venta registrada','Se guardó y se ajustó el stock');
+  showToast('✅ Venta registrada', cliente.tel
+    ? 'Stock ajustado · seguimiento programado a los 3, 30 y 90 días'
+    : 'Se guardó y se ajustó el stock');
 }
 
 function agregarFillSubcats(){
@@ -3461,15 +3476,20 @@ let CLI_VIEW='clientes';
 function cliSwitch(v){ CLI_VIEW=v; renderClientes(); }
 function renderClientes(){
   const cli={};
-  VENTAS.forEach(v=>{ const nm=(v.cliente||v.nombre||'').trim(); if(!nm)return; const k=norm(nm); if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:v.telefono||v.tel||''}; cli[k].compras++; cli[k].total+=ventaTotal(v); });
+  VENTAS.forEach(v=>{ const nm=(v.cliente||v.nombre||'').trim(); if(!nm)return; const k=norm(nm); if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:v.telefono||v.tel||'',ultima:0}; cli[k].compras++; cli[k].total+=ventaTotal(v);
+    if(!cli[k].tel && (v.telefono||v.tel)) cli[k].tel=v.telefono||v.tel;
+    const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0; if(ts&&ts>cli[k].ultima) cli[k].ultima=ts; });
   const list=Object.values(cli).sort((a,b)=>b.total-a.total);
-  $('#cli-sub').textContent = list.length+' clientes · reviews · carritos · WhatsApp';
+  const pend=(typeof tmSeguimientosPendientes==='function')?tmSeguimientosPendientes(VENTAS):[];
+  $('#cli-sub').textContent = list.length+' clientes · '+pend.length+' por contactar · reviews · avisos';
   const P=$('#cli-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${CLI_VIEW===v?'btn-primary':'btn-ghost'}" onclick="cliSwitch('${v}')">${l}</button>`;
-    P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('avisos','🔔 Avísame')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos')+pill('whatsapp','💬 WhatsApp'); }
+    P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('seguimiento','📞 Seguimiento ('+pend.length+')')+pill('avisos','🔔 Avísame')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos')+pill('whatsapp','💬 WhatsApp'); }
   const box=$('#cli-lista'); if(!box) return;
   if(CLI_VIEW==='clientes'){
-    box.innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
+    box.innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th><th>Última compra</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td><td>${c.ultima?esc(new Date(c.ultima).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})):'—'}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas.</small></div></div>`;
+  } else if(CLI_VIEW==='seguimiento'){
+    renderSeguimiento(box, pend);
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
   } else if(CLI_VIEW==='avisos'){
@@ -3479,6 +3499,62 @@ function renderClientes(){
     box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — no disponible</b><br>${info[2]}<br><br><small>No es que falte activarlo: hoy no existe ningún registro de esto que se pueda mostrar. Habría que construir un backend nuevo para guardarlo — no es un simple ajuste de este panel.</small></div></div>`;
   }
 }
+/* ── Seguimiento post-venta: a quién toca escribirle hoy ──────────────
+   Qué hito toca y con qué texto se decide en js/src/tm-crm.src.js (funciones
+   puras, con tests). Aquí solo se pinta y se abre WhatsApp. */
+function renderSeguimiento(box, pend){
+  const conTel = VENTAS.filter(v=> typeof tmTelDe==='function' && tmTelDe(v)).length;
+  if(!pend.length){
+    box.innerHTML = conTel
+      ? `<div class="section"><div class="empty"><div class="ico">✅</div><b style="color:#fff">Nada pendiente hoy</b><br>Los ${conTel} clientes con WhatsApp están al día.<br><small>Los seguimientos aparecen solos a los 3, 30 y 90 días de cada compra.</small></div></div>`
+      : `<div class="section"><div class="empty"><div class="ico">📞</div><b style="color:#fff">Todavía no hay a quién escribirle</b><br>El seguimiento sale de las ventas que llevan WhatsApp.<br><small>Al registrar una venta en <b>⚡ Ventas</b>, rellena el número: a los 3 días aparece aquí solo.</small></div></div>`;
+    return;
+  }
+  const fila = s => {
+    const prods = (typeof tmProductosDeVenta==='function') ? tmProductosDeVenta(s.venta) : [];
+    // El atraso se enseña porque un seguimiento se enfría: a los 3 días
+    // "¿te llegó bien?" es atención; a los 12, es un trámite.
+    const atraso = s.atraso>0
+      ? `<span style="color:#ffb347;font-weight:700">· ${s.atraso} día${s.atraso>1?'s':''} de retraso</span>` : '';
+    const id = esc(String(s.venta.id));
+    return `<div style="display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:7px">
+      <div style="font-size:20px;line-height:1.2">${s.icono}</div>
+      <div style="flex:1;min-width:0">
+        <div style="color:#fff;font-weight:800;font-size:13px">${esc(s.nombre||'(sin nombre)')} <span style="color:var(--gray);font-weight:600">· ${esc(s.tel)}</span></div>
+        <div style="font-size:11.5px;color:var(--gray);margin-top:2px">${esc(s.etiqueta)} — ${esc(s.para)}</div>
+        <div style="font-size:11.5px;color:var(--gray);margin-top:2px">${esc(prods.join(', ')||'compra')} · hace ${s.dias} día${s.dias===1?'':'s'} ${atraso}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;white-space:nowrap" onclick="segEnviar('${id}')">💬 Escribir</button>
+        <button class="btn btn-ghost" style="padding:4px 12px;font-size:11px" onclick="segSaltar('${id}')">Saltar</button>
+      </div>
+    </div>`;
+  };
+  box.innerHTML = `<div class="section">
+    <h3>📞 Pendientes de hoy <span class="badge">${pend.length}</span></h3>
+    <p style="font-size:11.5px;color:var(--gray);margin:0 0 12px">El mensaje se abre escrito en WhatsApp — puedes cambiarlo antes de enviarlo. Lo más atrasado va primero.</p>
+    ${pend.map(fila).join('')}
+  </div>`;
+}
+/** Abre WhatsApp con el mensaje puesto y da el hito por atendido. Mismo criterio
+ *  que avisoWhats() con la lista de espera: si abriste el chat, ya lo trataste. */
+function segEnviar(ventaId){
+  const v = VENTAS.find(x=>String(x.id)===String(ventaId)); if(!v) return;
+  const seg = tmSeguimientoDe(v, tmSeguimientosHechos());
+  if(!seg){ showToast('Ese seguimiento ya no aplica'); renderClientes(); return; }
+  window.open(tmWaSeguimiento(seg, 'TiendaMax'), '_blank', 'noopener,noreferrer');
+  tmMarcarSeguimiento(ventaId, seg.hito);
+  renderClientes();
+}
+function segSaltar(ventaId){
+  const v = VENTAS.find(x=>String(x.id)===String(ventaId)); if(!v) return;
+  const seg = tmSeguimientoDe(v, tmSeguimientosHechos()); if(!seg) return;
+  tmMarcarSeguimiento(ventaId, seg.hito);
+  showToast('Saltado', 'Ese seguimiento no volverá a salir');
+  renderClientes();
+}
+window.segEnviar=segEnviar; window.segSaltar=segSaltar; window.renderSeguimiento=renderSeguimiento;
+
 /* ── Reviews reales (Firebase /resenas) ── */
 function rtdbBase(){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null); }catch(e){ return null; } }
 async function renderReviewsReal(box){

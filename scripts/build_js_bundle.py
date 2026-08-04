@@ -30,6 +30,9 @@ ORDEN = [
     "tm-data.js",
     "tm-state.js",
     "tm-admin.js",
+    # Seguimiento post-venta (funciones puras). Va junto a tm-admin porque solo
+    # lo usa el panel; no colisiona con nada, así que el sitio no lo nota.
+    "tm-crm.js",
     "tm-product.js",
     "tm-catalog.js",
     # Va después de tm-catalog porque copiarParaFacebook/Revolico llaman a
