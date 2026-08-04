@@ -28,6 +28,7 @@ ORDEN = [
     "rediseno-cards.css",  # tarjetas póster + cantidad en modal — al final para ganar la cascada
     "modal-v4.css",        # rediseño premium v4 del modal de detalle
     "oficial-plus.css",    # rediseño "Oficial Plus" (header/hero/categorías/beneficios/pasos/reseñas/CTA/footer)
+    "oferta-banner.css",   # tarjeta del banner de oferta del inicio — clases propias, no pisa nada
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 

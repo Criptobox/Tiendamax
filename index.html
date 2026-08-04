@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=349188b9" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=ea99b3e4" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=40fc7677">
+    <link rel="stylesheet" href="css/bundle.css?v=5643327c">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -312,113 +312,208 @@
 
     <!-- Script inline: muestra el banner de oferta sin esperar a script.js -->
     <script>
+    /* ── Banner de oferta del inicio ────────────────────────────────────
+       Antes enseñaba un texto libre que escribía el admin ("TU MEJOR OPCIÓN"):
+       tenía el producto en la mano y no mostraba ni foto, ni precio, ni
+       descuento, así que no daba ninguna razón para tocarlo. Ahora la tarjeta
+       se arma sola con los datos del producto y va rotando por TODAS las
+       ofertas vivas, no solo por la del día.
+
+       Vive aquí, en línea, a propósito: el bundle va con `defer`, y pintar
+       esto después movería toda la página hacia abajo. tm-init.src.js llama a
+       la misma función (window.tmBannerOfertas) en vez de tener la suya, que
+       es lo que había antes: dos implementaciones del mismo banner. */
     (function(){
-        function animarBanner(pill) {
-            // Movimiento reducido: sin animación (ahorra batería y respeta preferencia)
-            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            var distancia = window.innerWidth >= 768 ? 160 : 28;
-            var duracion = 3000;
-            var st = pill._tmBanner || (pill._tmBanner = { raf: null, inicio: Date.now() });
-            function paso() {
-                // Se pausa si la pestaña no se ve o el banner está oculto → no gasta de gancho
-                if (document.hidden || !pill.offsetParent) { st.raf = null; return; }
-                var t = ((Date.now() - st.inicio) % duracion) / duracion;
-                pill.style.transform = 'translateX(' + (Math.sin(t * 2 * Math.PI) * distancia) + 'px)';
-                st.raf = requestAnimationFrame(paso);
-            }
-            st.paso = paso;
-            if (!st.raf) st.raf = requestAnimationFrame(paso);
-            if (!st.visBound) {
-                st.visBound = true;
-                document.addEventListener('visibilitychange', function () {
-                    if (document.hidden) { if (st.raf) { cancelAnimationFrame(st.raf); st.raf = null; } }
-                    else if (!st.raf && pill.offsetParent) { st.inicio = Date.now(); st.raf = requestAnimationFrame(st.paso); }
-                });
-            }
+        var ROTACION_MS = 7000;
+        var _rot = null, _cdTimer = null, _idx = 0, _lista = [];
+
+        function _prods(){
+            try { if (Array.isArray(window.productos) && window.productos.length) return window.productos; } catch(e){}
+            try { var v = JSON.parse(localStorage.getItem('productos') || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
+        }
+        function _num(x){ var n = Number(x); return isFinite(n) ? n : 0; }
+        function _tasa(){
+            try { if (typeof getTasaMN === 'function') return getTasaMN() || 0; } catch(e){}
+            try {
+                var base = _num(localStorage.getItem('tasaMN'));
+                var m = localStorage.getItem('margenMN');
+                return base > 0 ? base + (m === null ? 10 : _num(m)) : 0;
+            } catch(e){ return 0; }
+        }
+        function _hayStock(p){ return p && _num(p.stock) > 0 && p.agotado !== true; }
+        function _rebaja(p){
+            var hoy = _num(p.precioActual), antes = _num(p.precioOriginal);
+            return (_num(p.descuento) > 0 || antes > hoy) ? { hoy: hoy, antes: antes > hoy ? antes : 0 } : null;
+        }
+        function _countdown(){
+            try {
+                var cd = JSON.parse(localStorage.getItem('activeCountdown') || 'null');
+                return (cd && cd.productId && cd.endTime > Date.now()) ? cd : null;
+            } catch(e){ return null; }
         }
 
-        function mostrarBannerOferta(id, texto) {
-            var banner = document.getElementById('urgenciaBanner');
-            if (!banner) return;
-            var inicio = document.getElementById('vistaInicio');
-            if (inicio && getComputedStyle(inicio).display === 'none') {
-                banner.style.display = 'none';
-                banner.onclick = null;
-                return;
+        /* Todas las ofertas vivas, en el orden en que se enseñan. Primero lo
+           que el admin marcó a mano; después el resto, de más descuento a
+           menos — si el cliente solo ve una, que sea la más golosa. */
+        function tmOfertasActivas(){
+            var cat = _prods(), cd = _countdown();
+            var vistos = {}, out = [];
+            function add(p){
+                if (!p || vistos[p.id] || !_hayStock(p)) return;
+                vistos[p.id] = 1; out.push(p);
             }
-            var t = texto || '🔥 OFERTA DEL DÍA';
-            if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-            while (banner.firstChild) banner.removeChild(banner.firstChild);
-            var spanFlash = document.createElement('span');
-            spanFlash.className = 'flash-deal';
-            spanFlash.textContent = t + ' · VER AHORA →';
-            banner.appendChild(spanFlash);
-            banner.style.setProperty('display', 'flex', 'important');
-            banner.style.cursor  = 'pointer';
-            banner.style.overflow = 'visible';
-            banner.style.justifyContent = 'center';
-            var pill = banner.querySelector('.flash-deal');
-            if (pill) {
-                pill.style.cssText += ';animation: pillPulse 2.5s ease-in-out infinite !important;transform-origin: center center !important;';
-                animarBanner(pill);
-            }
-            banner.onclick = function() {
-                if (typeof abrirDetalleProducto === 'function') {
-                    abrirDetalleProducto(Number(id));
-                }
+            function porId(id){ for (var i=0;i<cat.length;i++) if (String(cat[i].id) === String(id)) return cat[i]; return null; }
+            if (cd) add(porId(cd.productId));
+            try { var od = localStorage.getItem('ofertaDiaId'); if (od) add(porId(od)); } catch(e){}
+            cat.filter(function(p){ return _hayStock(p) && _rebaja(p); })
+               .sort(function(a,b){ return _num(b.descuento) - _num(a.descuento); })
+               .forEach(add);
+            return out;
+        }
+
+        function _restante(ms){
+            var s = Math.max(0, Math.floor(ms/1000));
+            var h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+            if (h > 0) return h + 'h ' + m + 'm';
+            return m + 'm ' + String(s%60).padStart(2,'0') + 's';
+        }
+
+        function _tarjeta(p, cd, total, idx){
+            var r = _rebaja(p) || { hoy: _num(p.precioActual), antes: 0 };
+            var pct = r.antes > r.hoy ? Math.round((1 - r.hoy/r.antes) * 100) : 0;
+            var tasa = _tasa();
+            var ahorroMN = (tasa && r.antes > r.hoy) ? Math.round((r.antes - r.hoy) * tasa).toLocaleString('es-ES') : '';
+            // "Solo quedan N" solo con 3 o menos: así el aviso es siempre cierto
+            // y no se gasta la credibilidad de la escasez.
+            var pocas = _num(p.stock) <= 3;
+            var sub = [];
+            if (cd) sub.push('Termina en <b>' + _restante(cd.endTime - Date.now()) + '</b>');
+            if (ahorroMN) sub.push('Ahorras <b>' + ahorroMN + ' MN</b>');
+            if (pocas) sub.push('<b>Solo quedan ' + _num(p.stock) + '</b>');
+
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'tm-oferta';
+            b.setAttribute('aria-label', 'Ver oferta: ' + (p.nombre || 'producto'));
+            var img = p.imagen ? '<img src="' + String(p.imagen).replace(/"/g,'&quot;') + '" alt="" loading="lazy" decoding="async">' : '';
+            var dots = total > 1
+                ? '<span class="tm-of-dots">' + Array.apply(null, Array(total)).map(function(_,i){
+                      return '<i class="' + (i === idx ? 'on' : '') + '"></i>'; }).join('') + '</span>'
+                : '';
+            b.innerHTML = img +
+                '<span class="tm-of-txt">' +
+                    '<span class="tm-of-eyebrow">🔥 ' + (cd ? 'Oferta por tiempo limitado' : 'Oferta del día') + '</span>' +
+                    '<span class="tm-of-nom"></span>' +
+                    '<span class="tm-of-precios">' +
+                        (r.antes > r.hoy ? '<span class="tm-of-antes">$' + r.antes + '</span>' : '') +
+                        '<span class="tm-of-hoy">$' + r.hoy + ' USD</span>' +
+                        (pct ? '<span class="tm-of-pct">−' + pct + '%</span>' : '') +
+                    '</span>' +
+                    (sub.length ? '<span class="tm-of-sub">' + sub.join(' · ') + '</span>' : '') +
+                    dots +
+                '</span>' +
+                '<span class="tm-of-cta">Ver<i>→</i></span>';
+            // El nombre por textContent: viene del catálogo y puede traer < o &.
+            b.querySelector('.tm-of-nom').textContent = p.nombre || '';
+            b.onclick = function(){
+                if (typeof abrirDetalleProducto === 'function') abrirDetalleProducto(Number(p.id));
             };
+            return b;
         }
 
-        function ocultarBannerOferta() {
+        function _parar(){
+            if (_rot) { clearInterval(_rot); _rot = null; }
+            if (_cdTimer) { clearInterval(_cdTimer); _cdTimer = null; }
+        }
+
+        function _pintar(){
+            var banner = document.getElementById('urgenciaBanner');
+            if (!banner || !_lista.length) return;
+            var p = _lista[_idx % _lista.length];
+            var cd = _countdown();
+            cd = (cd && String(cd.productId) === String(p.id)) ? cd : null;
+            while (banner.firstChild) banner.removeChild(banner.firstChild);
+            banner.appendChild(_tarjeta(p, cd, _lista.length, _idx % _lista.length));
+            if (_cdTimer) { clearInterval(_cdTimer); _cdTimer = null; }
+            if (cd) {
+                // El "termina en" tiene que correr, si no es un adorno.
+                _cdTimer = setInterval(function(){
+                    var el = banner.querySelector('.tm-of-sub b');
+                    if (!el) return;
+                    if (cd.endTime <= Date.now()) { tmBannerOfertas(); return; }
+                    el.textContent = _restante(cd.endTime - Date.now());
+                }, 1000);
+            }
+        }
+
+        function ocultarBannerOferta(){
+            _parar();
             var banner = document.getElementById('urgenciaBanner');
             if (banner) {
-                // !important + clase para ganarle a '.urgencia-banner{display:flex !important}'
+                // !important para ganarle a '.urgencia-banner{display:flex !important}'
                 banner.style.setProperty('display', 'none', 'important');
                 banner.onclick = null;
             }
             if (document.body) document.body.classList.add('tm-no-oferta-banner');
-            try {
-                localStorage.removeItem('ofertaDiaId');
-                localStorage.removeItem('ofertaDiaTexto');
-            } catch(e) {}
+            if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
         }
 
-        // Devuelve true si el producto de oferta tiene stock > 0 (usa caché localStorage)
-        function productoOfertaEnStock(id) {
-            try {
-                var prods = JSON.parse(localStorage.getItem('productos') || '[]');
-                var prod  = prods.find(function(p){ return String(p.id) === String(id); });
-                if (!prod) return true; // sin datos = no ocultar todavía
-                return Number(prod.stock) > 0 && prod.agotado !== true;
-            } catch(e) { return true; }
+        function tmBannerOfertas(){
+            var banner = document.getElementById('urgenciaBanner');
+            if (!banner) return;
+            // Solo en el inicio: en categorías y detalle las tarjetas ya llevan
+            // su propia etiqueta de oferta.
+            var inicio = document.getElementById('vistaInicio');
+            if (inicio && getComputedStyle(inicio).display === 'none') { ocultarBannerOferta(); return; }
+
+            _lista = tmOfertasActivas();
+            if (!_lista.length) { ocultarBannerOferta(); return; }
+
+            _parar();
+            if (_idx >= _lista.length) _idx = 0;
+            if (document.body) document.body.classList.remove('tm-no-oferta-banner');
+            banner.style.setProperty('display', 'flex', 'important');
+            banner.style.cursor = 'auto';
+            banner.onclick = null;                 // ahora el clicable es el botón de dentro
+            _pintar();
+            if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
+
+            if (_lista.length > 1) {
+                _rot = setInterval(function(){
+                    if (document.hidden) return;   // no rota de fondo: no lo ve nadie
+                    var card = banner.querySelector('.tm-oferta');
+                    _idx = (_idx + 1) % _lista.length;
+                    if (!card) { _pintar(); return; }
+                    card.classList.add('tm-of-saliendo');
+                    setTimeout(_pintar, 280);
+                }, ROTACION_MS);
+            }
         }
 
-        // 1. Intentar desde localStorage (carga instantánea en sesiones siguientes)
-        try {
-            var sid = localStorage.getItem('ofertaDiaId');
-            var stx = localStorage.getItem('ofertaDiaTexto');
-            if (sid && productoOfertaEnStock(sid)) mostrarBannerOferta(sid, stx);
-        } catch(e) {}
+        window.tmBannerOfertas = tmBannerOfertas;
+        window.tmOfertasActivas = tmOfertasActivas;
+        window.ocultarBannerOferta = ocultarBannerOferta;
 
-        // 2. Leer config.json: es la fuente de verdad.
-        //    - Si HAY oferta y producto en stock → mostrar banner.
-        //    - Si NO hay oferta o está agotado → ocultar y limpiar localStorage.
+        // 1. Pintado inmediato con lo que ya hay en el navegador.
+        try { tmBannerOfertas(); } catch(e) {}
+
+        // 2. config.json es la fuente de verdad de la oferta del día: dice si
+        //    el admin la activó, la cambió o la quitó.
         fetch('config.json?_=' + Date.now())
             .then(function(r){ return r.ok ? r.json() : null; })
             .then(function(cfg){
-                if (!cfg || !cfg.ofertaDiaId) {
-                    ocultarBannerOferta();
-                    return;
-                }
                 try {
-                    localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
-                    if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+                    if (cfg && cfg.ofertaDiaId) {
+                        localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
+                        if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+                    } else {
+                        localStorage.removeItem('ofertaDiaId');
+                        localStorage.removeItem('ofertaDiaTexto');
+                    }
                 } catch(e) {}
-                if (!productoOfertaEnStock(cfg.ofertaDiaId)) {
-                    ocultarBannerOferta();
-                    return;
-                }
-                mostrarBannerOferta(cfg.ofertaDiaId, cfg.ofertaDiaTexto);
+                // Se repinta siempre: aunque no haya oferta del día puede haber
+                // productos rebajados, que también entran en la rotación.
+                tmBannerOfertas();
             })
             .catch(function(){});
     })();
@@ -1549,7 +1644,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=349188b9" defer></script>
+    <script src="js/tm-bundle.js?v=ea99b3e4" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

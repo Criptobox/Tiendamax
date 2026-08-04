@@ -1,0 +1,122 @@
+/* ============================================================
+   Banner de oferta del inicio (#urgenciaBanner)
+
+   Antes era una píldora con un texto libre que escribía el admin
+   ("🔥🔥🔥 TU MEJOR OPCIÓN 🔥🔥🔥"): tenía el producto en la mano y no
+   enseñaba nada de él — ni foto, ni precio, ni descuento. Ahora la tarjeta
+   se arma sola con los datos del producto.
+
+   La animación es UNA: la flecha se insinúa. Antes el banner se desplazaba
+   de lado a lado ±28px en móvil *y además* pulsaba, dos movimientos peleando
+   encima de un texto que no decía nada.
+   ============================================================ */
+
+.tm-oferta {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 9px 14px 9px 9px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    background: linear-gradient(100deg, #D24E0F 0%, #FF6A1F 55%, #FF8A47 100%);
+    box-shadow: 0 6px 22px rgba(210, 78, 15, .34);
+    transition: opacity .28s ease;
+}
+.tm-oferta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Cambio de producto: se baja la opacidad, se sustituye y se vuelve a subir. */
+.tm-oferta.tm-of-saliendo { opacity: 0; }
+
+.tm-oferta img {
+    width: 52px; height: 52px;
+    border-radius: 11px;
+    object-fit: cover;
+    flex: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .22);
+}
+
+.tm-of-txt { flex: 1; min-width: 0; color: #fff; line-height: 1.28; }
+
+.tm-of-eyebrow {
+    display: block;
+    font-size: 9.5px; font-weight: 800;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(255, 255, 255, .82);
+}
+.tm-of-nom {
+    display: block;
+    font-size: 13.5px; font-weight: 800;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 1px;
+}
+.tm-of-precios {
+    display: flex; align-items: baseline; gap: 7px;
+    flex-wrap: wrap; margin-top: 3px;
+}
+.tm-of-antes {
+    font-size: 12px;
+    color: rgba(255, 255, 255, .72);
+    text-decoration: line-through;
+}
+.tm-of-hoy {
+    font-size: 19px; font-weight: 900;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+}
+.tm-of-pct {
+    font-size: 10.5px; font-weight: 900;
+    padding: 2px 7px; border-radius: 99px;
+    background: #fff; color: #C0410A;
+    letter-spacing: .03em;
+}
+.tm-of-sub {
+    display: block;
+    font-size: 11px;
+    color: rgba(255, 255, 255, .9);
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+}
+.tm-of-sub b { color: #FFE9A8; }
+
+.tm-of-cta {
+    flex: none;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 900; color: #fff;
+    padding: 8px 12px; border-radius: 99px;
+    background: rgba(0, 0, 0, .17);
+    border: 1px solid rgba(255, 255, 255, .24);
+    white-space: nowrap;
+}
+.tm-of-cta i { display: inline-block; font-style: normal; animation: tmOfNudge 1.9s ease-in-out infinite; }
+@keyframes tmOfNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+/* Puntitos del carrusel: solo si hay más de una oferta. */
+.tm-of-dots { display: flex; gap: 4px; justify-content: center; margin-top: 5px; }
+.tm-of-dots i {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255, 255, 255, .34);
+    transition: background .25s ease;
+}
+.tm-of-dots i.on { background: #fff; }
+
+@media (max-width: 640px) {
+    .tm-oferta { gap: 9px; padding: 8px 10px 8px 8px; border-radius: 14px; }
+    .tm-oferta img { width: 46px; height: 46px; }
+    .tm-of-nom { font-size: 12.5px; }
+    .tm-of-hoy { font-size: 17px; }
+    /* En móvil manda el precio: el botón se queda en la flecha. */
+    .tm-of-cta { padding: 7px 9px; font-size: 0; }
+    .tm-of-cta i { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tm-of-cta i { animation: none; }
+    .tm-oferta { transition: none; }
+}

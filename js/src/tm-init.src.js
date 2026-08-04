@@ -8,81 +8,20 @@
 // ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
 
 function verificarOfertasYMostrarBanner() {
+    // El banner lo pinta window.tmBannerOfertas, definido en el <script> en
+    // línea de index.html. Aquí había una SEGUNDA implementación completa del
+    // mismo banner: las dos leían ofertaDiaId y pintaban cosas distintas, así
+    // que al cargar el bundle el banner se redibujaba con otro aspecto. Se
+    // deja una sola, y esta función queda como el punto por el que el resto
+    // del sitio lo refresca.
+    if (typeof window.tmBannerOfertas === 'function') { window.tmBannerOfertas(); return; }
+    // Sin ella (una página que no sea el inicio) no hay nada que pintar.
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
-
-    // El banner superior solo debe verse en el inicio.
-    // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
-    if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
-        banner.style.setProperty('display', 'none', 'important');
-        banner.onclick = null;
-        if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
-        return;
-    }
-
-    // Prioridad 1: Oferta del Día configurada en el admin
-    const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
-    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
-
-    // Prioridad 2: Countdown activo
-    const cdData = localStorage.getItem('activeCountdown');
-    const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
-    const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
-
-    let targetId = null;
-
-    // Si el producto de la oferta está agotado, el banner se oculta solo —
-    // antes seguía saliendo hasta que el cliente recargara. OJO: en la tienda
-    // `productos` es un `let` top-level (bareword global), NO window.productos.
-    const _cat = (typeof productos !== 'undefined' && Array.isArray(productos)) ? productos : [];
-    const _prodOferta = ofertaDiaId ? _cat.find(p => String(p.id) === String(ofertaDiaId)) : null;
-    // Catálogo aún no cargado (_cat vacío) → no ocultar todavía (evita parpadeo al arrancar)
-    const _ofertaAgotada = ofertaDiaId && _cat.length > 0 && (!_prodOferta || Number(_prodOferta.stock || 0) <= 0);
-
-    if (ofertaDiaId && !_ofertaAgotada) {
-        targetId = ofertaDiaId;
-        while (banner.firstChild) banner.removeChild(banner.firstChild);
-        const spanFlash = document.createElement('span');
-        spanFlash.className = 'flash-deal';
-        spanFlash.textContent = ofertaDiaTexto + ' · VER AHORA →';
-        banner.appendChild(spanFlash);
-    } else if (cdValido) {
-        targetId = cdObj.productId;
-        while (banner.firstChild) banner.removeChild(banner.firstChild);
-        banner.appendChild(document.createTextNode('🔥 ' + (cdObj.texto || '¡Oferta especial!') + ' '));
-        const spanFlash = document.createElement('span');
-        spanFlash.className = 'flash-deal';
-        spanFlash.textContent = 'VER AHORA →';
-        banner.appendChild(spanFlash);
-    } else {
-        // No hay oferta ni countdown → ocultar con !important + clase para
-        // ganarle a la regla CSS '.urgencia-banner{display:flex !important}'
-        banner.style.setProperty('display', 'none', 'important');
-        if (document.body) document.body.classList.add('tm-no-oferta-banner');
-        banner.onclick = null;
-        setTimeout(actualizarOffsetsUI, 0);
-        return;
-    }
-
-    // Sí hay oferta → quitar la clase que lo bloquea y mostrarlo
-    if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-    banner.style.setProperty('display', 'flex', 'important');
-    banner.style.cursor  = 'pointer';
-    setTimeout(actualizarOffsetsUI, 0);
-
-    banner.onclick = () => {
-        if (!targetId) return;
-        const idNum = Number(targetId);
-        const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${idNum})"]`);
-        if (tarjeta) {
-            tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            tarjeta.style.transition = 'box-shadow 0.3s';
-            tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
-            setTimeout(() => {
-            tarjeta.style.boxShadow = ''; }, 2000);
-        }
-        abrirDetalleProducto(idNum);
-    };
+    banner.style.setProperty('display', 'none', 'important');
+    banner.onclick = null;
+    if (document.body) document.body.classList.add('tm-no-oferta-banner');
+    if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
 }
 
 // Re-evaluar el banner de oferta sin que el cliente tenga que recargar:
