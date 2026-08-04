@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-03T13:41:19.894581+00:00",
-  "fecha": "2026-08-03",
+  "actualizado": "2026-08-04T13:02:22.014011+00:00",
+  "fecha": "2026-08-04",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-21",
-          "mediana": 42.5
-        },
         {
           "fecha": "2026-07-22",
           "mediana": 42.5
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-08-03",
+          "mediana": 39.99
+        },
+        {
+          "fecha": "2026-08-04",
           "mediana": 39.99
         }
       ],
@@ -146,10 +146,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-21",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-07-22",
           "mediana": 90.0
         },
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-08-03",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-04",
           "mediana": 90.0
         }
       ],
