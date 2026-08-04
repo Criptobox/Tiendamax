@@ -44,8 +44,10 @@ function _tmWaNumero() {
     // pubWaNum vive en admin.html y ya lee la clave correcta; se usa esa para
     // no acabar con dos números distintos según quién arme el texto.
     try { if (typeof pubWaNum === 'function') return pubWaNum(); } catch (e) {}
-    return String(localStorage.getItem('whatsappNumero') ||
-                  localStorage.getItem('adminWhatsappNum') || '5354320170').replace(/\D/g, '');
+    // Solo 'whatsappNumero': es la única clave que alguien escribe. Aquí había
+    // también un fallback a 'adminWhatsappNum', que es el id del input y no una
+    // clave de localStorage — nunca devolvió nada.
+    return String(localStorage.getItem('whatsappNumero') || '5354320170').replace(/\D/g, '');
 }
 
 /** Enlace a la ficha. Se delega en pubUrl cuando existe para que la plantilla

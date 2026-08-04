@@ -1546,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=a151fb7e"></script>
+<script src="js/tm-bundle.js?v=03ac95f9"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1664,7 +1664,10 @@ function _ventaEsPrueba(v){
   if(!names.length) return false;
   return names.every(n=>{ const s=String(n).trim().toLowerCase(); return s.length<=1 || _VENTA_JUNK.has(s); });
 }
-function lsVentas(){ try{ let v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v.filter(x=>!_ventaEsPrueba(x)):[]; }catch(e){ return []; } }
+// Solo 'registroVentas': es la única clave que se escribe. Había un fallback a
+// 'ventas' que no la escribe nadie — leerla solo sugería que hay dos sitios
+// donde miran las ventas cuando hay uno.
+function lsVentas(){ try{ const v=JSON.parse(localStorage.getItem('registroVentas')||'null'); return Array.isArray(v)?v.filter(x=>!_ventaEsPrueba(x)):[]; }catch(e){ return []; } }
 
 async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; } }
 
@@ -1770,7 +1773,12 @@ function fillConfig(){
   set('githubToken', localStorage.getItem('githubToken'));
   set('adminTasaMN', localStorage.getItem('tasaMN'));
   const m=localStorage.getItem('margenMN'); const mEl=$('#adminMargenMN'); if(mEl && !mEl.value && m!=null) mEl.value=m;
-  set('adminWhatsappNum', localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum'));
+  // Ojo: 'adminWhatsappNum' es el id del INPUT, no una clave de localStorage.
+  // Había aquí un `|| localStorage.getItem('adminWhatsappNum')` que parecía leer
+  // lo que guarda ese input, pero ese input guarda en 'whatsappNumero'
+  // (tm-state.src.js) y esa clave no la escribe nadie. Un fallback muerto con
+  // nombre engañoso es peor que ninguno: invita a "arreglar" la fuente falsa.
+  set('adminWhatsappNum', localStorage.getItem('whatsappNumero'));
   const iaEl=$('#ia-key'); if(iaEl && !iaEl.value) iaEl.value = localStorage.getItem('anthropicApiKey')||'';
   iaKeyStatus();
   fillFirebaseConfig();
@@ -3041,19 +3049,6 @@ function renderAlmacen(){
   // Restaurar el scroll de cada lista abierta (si no, el redibujo la manda al inicio)
   ids.forEach(id=>{ const sc=ALM_SCROLL[id]; if(sc){ const div=box.querySelector('[data-alm-scroll="'+id+'"]'); if(div) div.scrollTop=sc; } });
 }
-function renderSubcats(){
-  // subcategorias.json = { CATEGORIA: [sub, sub...] }
-  const map = (SUBCATS && !Array.isArray(SUBCATS)) ? SUBCATS : {};
-  const cont={}; PRODUCTOS.forEach(p=>{ if(p.subcategoria){ cont[norm(p.subcategoria)]=(cont[norm(p.subcategoria)]||0)+1; } });
-  const cats = Object.keys(map);
-  let totalSubs=0; cats.forEach(c=>totalSubs+=(map[c]||[]).length);
-  $('#subcat-count').textContent = totalSubs + ' subcategorías en ' + cats.length + ' categorías';
-  $('#subcat-list').innerHTML = cats.length ? cats.map(cat=>{
-    const subs=map[cat]||[];
-    return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(cat)} ${esc(cat)}</div>${subs.map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;font-size:13px;color:#fff">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${cont[norm(s)]||0}</span></div>`).join('')}</div>`;
-  }).join('') : `<div class="empty"><div class="ico">📁</div>Sin subcategorías.</div>`;
-}
-
 /* ============ CORRECCIONES IA (análisis real) ============ */
 /* El análisis de correcciones (Agente IA) vive ahora en js/admin-copilot.js
    (burbuja Copiloto → tab 🩺 Correcciones), con aplicación automática + sync. */
@@ -3987,7 +3982,10 @@ function pubUrl(p, src){
   const s=PUB_UTM[src];
   return s ? base+'?utm_source='+s+'&utm_medium=social&utm_campaign=producto' : base;
 }
-function pubWaNum(){ return String(localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum')||'5354320170').replace(/\D/g,''); }
+// 'whatsappNumero' es la única clave que se escribe (tm-state.src.js). El
+// fallback a 'adminWhatsappNum' que había aquí leía una clave que no existe:
+// ese nombre es el id del input, no donde se guarda.
+function pubWaNum(){ return String(localStorage.getItem('whatsappNumero')||'5354320170').replace(/\D/g,''); }
 /* Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya escrito.
    Antes el post solo llevaba a la página y el cliente tenía que entrar,
    buscar el botón y redactar — cada paso perdía gente. El mensaje incluye el
