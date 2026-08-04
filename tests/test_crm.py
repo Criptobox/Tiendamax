@@ -75,6 +75,27 @@ class DatosDelClienteTest(unittest.TestCase):
             "la vista de Clientes debe traer el botón para escribirle al cliente",
         )
 
+    def test_los_clientes_se_agrupan_por_numero(self):
+        # Agrupando por nombre, la misma persona salía en dos filas si una venta
+        # llevaba el nombre y otra solo el teléfono: compras repartidas y dos
+        # botones apuntando al mismo número.
+        self.assertRegex(
+            self.admin, r"const k\s*=\s*tel\s*\?\s*\('tel:'\s*\+\s*tel\)",
+            "la identidad del cliente debe ser el teléfono cuando lo hay",
+        )
+
+    def test_escribir_apunta_el_descanso(self):
+        # Sin esto, marcar un seguimiento repinta y saca al instante el
+        # siguiente hito del mismo cliente, con su botón listo.
+        m = re.search(r"function segEnviar\(ventaId\)\{(.*?)\n\}", self.admin, re.S)
+        self.assertIsNotNone(m, "no se encontró segEnviar()")
+        self.assertIn("tmRegistrarContacto", m.group(1),
+                      "al escribirle hay que apuntar el contacto para el descanso")
+        s = re.search(r"function segSaltar\(ventaId\)\{(.*?)\n\}", self.admin, re.S)
+        self.assertIsNotNone(s, "no se encontró segSaltar()")
+        self.assertNotIn("tmRegistrarContacto", s.group(1),
+                         "saltar no es contactar: no debe abrir descanso")
+
     def test_no_vuelve_la_pestana_muerta_de_whatsapp(self):
         # Solo servía para explicar que no había nada que enseñar.
         self.assertNotIn("pill('whatsapp'", self.admin)

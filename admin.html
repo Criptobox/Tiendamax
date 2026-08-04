@@ -1553,7 +1553,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=9a697329"></script>
+<script src="js/tm-bundle.js?v=349188b9"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3485,20 +3485,20 @@ function renderClientes(){
     // Con teléfono pero sin nombre también es un cliente: si se descarta, su
     // seguimiento no aparece en ningún sitio.
     if(!nm && !tel) return;
-    const k = nm ? norm(nm) : ('tel:'+tel);
+    // La identidad es el NÚMERO cuando lo hay. Agrupando por nombre, la misma
+    // persona salía en dos filas si una venta llevaba el nombre y otra solo el
+    // teléfono — con las compras repartidas y dos botones al mismo número.
+    const k = tel ? ('tel:'+tel) : ('nom:'+norm(nm));
     if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:tel,ultima:0,seg:null};
     cli[k].compras++; cli[k].total+=ventaTotal(v);
-    if(!cli[k].tel && tel) cli[k].tel=tel;
-    const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0; if(ts&&ts>cli[k].ultima) cli[k].ultima=ts;
+    const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0;
+    if(ts&&ts>cli[k].ultima){ cli[k].ultima=ts; if(nm) cli[k].nombre=nm; }  // el nombre más reciente
+    if(!cli[k].nombre && nm) cli[k].nombre=nm;
   });
+  // tmSeguimientosPendientes ya devuelve como mucho uno por número, así que la
+  // clave de aquí y la de allí salen del mismo teléfono normalizado.
   const pend=(typeof tmSeguimientosPendientes==='function')?tmSeguimientosPendientes(VENTAS):[];
-  // A cada cliente, el seguimiento más atrasado de sus compras: uno solo, para
-  // no mandarle dos mensajes el mismo día a la misma persona.
-  pend.forEach(s=>{
-    const nm=(s.nombre||'').trim();
-    const k = nm ? norm(nm) : ('tel:'+s.tel);
-    if(cli[k] && !cli[k].seg) cli[k].seg=s;
-  });
+  pend.forEach(s=>{ const c=cli['tel:'+s.tel]; if(c) c.seg=s; });
   // Primero a quien hay que escribirle, y dentro de eso lo más atrasado.
   const list=Object.values(cli).sort((a,b)=>
     (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0) || b.total-a.total);
@@ -3538,8 +3538,9 @@ function renderClientes(){
     // nada que enseñar. Ahora los mensajes al cliente salen de la propia tabla
     // de Clientes, así que se quitó en vez de dejar un cartel.
     const info={ carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carrito de servidor que registre cuándo alguien deja productos sin comprar.'] }[CLI_VIEW];
-    // Una vista que ya no existe (guardada de una sesión anterior) no debe
-    // dejar el panel en blanco: se vuelve a Clientes.
+    // Red de seguridad para una vista sin rama propia: sin esto el panel se
+    // quedaría en blanco. Hoy no puede pasar (CLI_VIEW arranca en 'clientes' y
+    // solo lo cambian las píldoras), pero es lo que rompería al añadir una.
     if(!info){ CLI_VIEW='clientes'; renderClientes(); return; }
     box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — no disponible</b><br>${info[2]}<br><br><small>No es que falte activarlo: hoy no existe ningún registro de esto que se pueda mostrar. Habría que construir un backend nuevo para guardarlo — no es un simple ajuste de este panel.</small></div></div>`;
   }
@@ -3556,6 +3557,9 @@ function segEnviar(ventaId){
   if(!seg){ showToast('Ese seguimiento ya no aplica'); renderClientes(); return; }
   window.open(tmWaSeguimiento(seg, 'TiendaMax'), '_blank', 'noopener,noreferrer');
   tmMarcarSeguimiento(ventaId, seg.hito);
+  // Descanso para ese número: si el cliente tiene otra compra con un hito
+  // vencido, esperará unos días en vez de aparecer con su botón al instante.
+  tmRegistrarContacto(seg.tel);
   renderClientes();
 }
 function segSaltar(ventaId){

@@ -28,6 +28,7 @@ vm.runInContext(readFileSync(join(RAIZ, 'js/src/tm-crm.src.js'), 'utf8'), sb);
 // superior NO — igual que en el navegador, donde window.TM_SEGUIMIENTOS es
 // undefined. Hay que pedirlo evaluando su nombre.
 const HITOS = vm.runInContext('TM_SEGUIMIENTOS', sb);
+const TM_CONTACTO_KEY = vm.runInContext('TM_SEG_CONTACTO_KEY', sb);
 
 const fallos = [];
 const ok = (c, m) => { if (!c) fallos.push(m); };
@@ -105,11 +106,49 @@ ok(sb.tmSeguimientoDe(venta(5, { telefono: '123' }), {}, AHORA) === null,
 ok(sb.tmTelDe({ telefono: '+53 5 555-1234' }) === '5355551234',
     'el número debe quedar en dígitos para wa.me');
 
+const sb_espera = () => vm.runInContext('TM_SEG_ESPERA_DIAS', sb);
+
+// ── Una persona, un mensaje ──────────────────────────────────────────────
+// Mismo número, dos compras con hitos vencidos a la vez. Los dos mensajes son
+// legítimos ("¿te llegó el router?" y "¿cómo va la batería?"), pero no el
+// mismo día: sale el más atrasado y el otro espera.
+const mismoTel = [
+    venta(4,   { id: hace(4) }),
+    venta(120, { id: hace(120), items: [{ producto: 'Batería LiFePO4' }] }),
+];
+const unaSola = sb.tmSeguimientosPendientes(mismoTel, {}, AHORA, {});
+ok(unaSola.length === 1, `mismo número: 1 pendiente, salieron ${unaSola.length}`);
+ok(unaSola[0].hito === 'recompra', 'de la misma persona debe salir el más atrasado');
+
+// Y tras escribirle, el otro NO puede aparecer al instante: agrupar solo al
+// pintar no bastaba, porque el repintado sacaba el siguiente enseguida.
+const contactos = { '5355551234': AHORA };
+ok(sb.tmSeguimientosPendientes(mismoTel, {}, AHORA, contactos).length === 0,
+    'recién contactado: no debe salir otro seguimiento del mismo número');
+const pasado = { '5355551234': AHORA - (sb_espera() + 1) * 86400000 };
+ok(sb.tmSeguimientosPendientes(mismoTel, {}, AHORA, pasado).length === 1,
+    'pasado el descanso, el segundo seguimiento debe volver a salir');
+
+// Dos personas distintas sí salen las dos aunque compren el mismo día.
+const dosPersonas = sb.tmSeguimientosPendientes(
+    [venta(4, { id: hace(4) }), venta(4, { id: hace(4) + 1, telefono: '5355559999' })], {}, AHORA, {});
+ok(dosPersonas.length === 2, `dos números distintos: 2 pendientes, salieron ${dosPersonas.length}`);
+
+// El descanso solo lo apunta quien escribe; saltar no cuenta como contacto.
+almacen[TM_CONTACTO_KEY] = undefined; delete almacen[TM_CONTACTO_KEY];
+sb.tmRegistrarContacto('+53 5 555-1234');
+ok(sb.tmContactos()['5355551234'], 'el contacto debe guardarse con el número en dígitos');
+sb.tmRegistrarContacto('12');
+ok(!sb.tmContactos()['12'], 'un número inválido no debe ensuciar el registro');
+
 // ── Orden: primero lo más frío ───────────────────────────────────────────
-const varias = sb.tmSeguimientosPendientes(
-    [venta(3, { id: hace(3) }), venta(12, { id: hace(12) }), venta(5, { id: hace(5) })],
-    {}, AHORA);
-ok(varias.length === 3, 'tres ventas con teléfono dan tres pendientes');
+// Tres clientes distintos: si compartieran número se agruparían en uno.
+const varias = sb.tmSeguimientosPendientes([
+    venta(3,  { id: hace(3),  telefono: '5355550003' }),
+    venta(12, { id: hace(12), telefono: '5355550012' }),
+    venta(5,  { id: hace(5),  telefono: '5355550005' }),
+], {}, AHORA, {});
+ok(varias.length === 3, `tres clientes dan tres pendientes, dieron ${varias.length}`);
 ok(varias[0].dias === 12, 'lo más atrasado va primero, que es lo que más se enfría');
 
 // ── El mensaje ───────────────────────────────────────────────────────────

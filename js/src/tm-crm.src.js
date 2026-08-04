@@ -19,6 +19,13 @@
    ============================================================ */
 
 const TM_SEG_KEY = 'tm_seguimientos_v1';
+const TM_SEG_CONTACTO_KEY = 'tm_seg_contacto_v1';
+
+/* Días de descanso tras escribirle a alguien. Un cliente con dos compras
+   puede tener dos hitos vencidos a la vez —"¿te llegó el router?" y "¿cómo va
+   la batería?"— y los dos son legítimos, pero no el mismo día. Con esto el
+   segundo espera su turno en vez de desaparecer. */
+const TM_SEG_ESPERA_DIAS = 3;
 
 /* Los tres hitos, en orden. `ventana` es cuántos días sigue teniendo sentido
    mandarlo: preguntar "¿te llegó bien?" ocho meses después no es un
@@ -138,17 +145,46 @@ function tmSeguimientoDe(venta, hechos, ahora) {
     };
 }
 
-/** Todo lo que toca hoy, lo más atrasado primero. */
-function tmSeguimientosPendientes(ventas, hechos, ahora) {
+/** Cuándo se le escribió por última vez a cada número. */
+function tmContactos() {
+    try {
+        const v = JSON.parse(localStorage.getItem(TM_SEG_CONTACTO_KEY) || '{}');
+        return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+    } catch (e) { return {}; }
+}
+
+/** Apunta que hoy ya se le escribió a ese número. Lo llama quien ABRE el chat;
+ *  saltar un seguimiento no cuenta, porque ahí no se le escribió a nadie. */
+function tmRegistrarContacto(tel) {
+    const n = String(tel || '').replace(/\D/g, '');
+    if (n.length < 6) return;
+    const c = tmContactos();
+    c[n] = Date.now();
+    try { localStorage.setItem(TM_SEG_CONTACTO_KEY, JSON.stringify(c)); } catch (e) {}
+}
+
+/** Todo lo que toca hoy, lo más atrasado primero.
+ *
+ *  Dos reglas viven aquí y no en el panel, que es donde estaban antes y por eso
+ *  no se cumplían: como mucho UN seguimiento por número —una persona con dos
+ *  compras no recibe dos mensajes— y nada para quien ya recibió uno en los
+ *  últimos días. Agrupar solo al pintar no bastaba: en cuanto se marcaba uno,
+ *  el repintado sacaba el siguiente de la misma persona con su botón listo. */
+function tmSeguimientosPendientes(ventas, hechos, ahora, contactos) {
     hechos = hechos || tmSeguimientosHechos();
+    contactos = contactos || tmContactos();
     ahora = ahora || Date.now();
-    const out = [];
+    const espera = TM_SEG_ESPERA_DIAS * 86400000;
+    const porTel = {};
     (ventas || []).forEach(v => {
         const s = tmSeguimientoDe(v, hechos, ahora);
-        if (s) out.push(s);
+        if (!s) return;
+        const ultimo = Number(contactos[s.tel]) || 0;
+        if (ultimo && (ahora - ultimo) < espera) return;      // ya se le escribió hace poco
+        // De la misma persona, el más atrasado: es el que más se ha enfriado.
+        if (!porTel[s.tel] || s.atraso > porTel[s.tel].atraso) porTel[s.tel] = s;
     });
-    out.sort((a, b) => b.atraso - a.atraso);
-    return out;
+    return Object.keys(porTel).map(k => porTel[k]).sort((a, b) => b.atraso - a.atraso);
 }
 
 /** Nombres de los productos de una venta, para poder nombrarlos en el mensaje.
