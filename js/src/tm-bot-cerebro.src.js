@@ -1306,6 +1306,12 @@
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
     if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)) return 'compatibilidad';
 
+    // AVERÍA: "mi inversor pita", "el router se cae", "error 04".
+    // Va después de compatibilidad para no robarle "¿no funciona con...?",
+    // y antes de la pregunta técnica: quien tiene el aparato echando humo no
+    // está preguntando qué significa una sigla.
+    if(esAveria(text)) return 'diagnostico';
+
     // PREGUNTA TÉCNICA: "qué router tiene X"
     const patronTecnico = /\b(qué|que|cu[aá]les|cuales|quienes|quien).*(tienen|tiene|con|con puerto|con luz|con wifi|con camara|con bateria|con panel|con sensor).+|(router|c[aá]mara|camaras|bater[ií]a|baterias|inversor|inversores|cerradura|alarma|antena|router|switch|panel).+(con|que tenga|que tengan|con puerto).+/i;
     if(patronTecnico.test(m)){
@@ -1378,7 +1384,7 @@
   const R = {};
 
   R.saludo = (text) => ({
-    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, ondas pura...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
+    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, ondas pura...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Diagnosticar una avería</em>: "mi inversor pita y tiene la luz roja"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
     quickReplies: ['🔥 Ver ofertas','📦 Categorías','💝 Ver mi lista','🤖 /ayuda']
   });
 
@@ -1814,6 +1820,357 @@
   });
 
   // ════════════════════════════════════════════════════════════
+  //  DIAGNÓSTICO DE AVERÍAS
+  // ════════════════════════════════════════════════════════════
+  // Para qué: casi toda "garantía" de un inversor o un router es en realidad
+  // un equipo sano mal usado — la nevera que arranca pidiendo el triple, el
+  // ONT que hay que reiniciar antes que el router, la batería descargada por
+  // debajo del corte. Cada una de esas que se resuelve por chat es una
+  // devolución que no se paga.
+  //
+  // REGLA DURA: aquí NO se inventan códigos. Lo de abajo son patrones de
+  // síntoma ciertos para toda la familia de aparatos (un inversor que pita
+  // con la luz de fallo está en sobrecarga, sea de la marca que sea). Los
+  // códigos concretos — "Error 04", "F05" — dependen del fabricante y del
+  // modelo, viven en codigos-error.json y salen de copiar los manuales. Si el
+  // código no está ahí, Max lo dice en vez de suponerlo: un diagnóstico
+  // eléctrico inventado no es una respuesta imperfecta, es una avería nueva.
+  //
+  // Y nunca se manda abrir un aparato: además del riesgo, abrirlo anula la
+  // garantía que este diagnóstico existe para proteger.
+  const DIAGNOSTICO = [
+    // ── Inversores ──────────────────────────────────────────
+    {
+      familia: 'INVERSORES', urgente: true,
+      titulo: 'Sobrecarga o cortocircuito en la salida',
+      // Ojo: aquí NO va /error/. Casaba con cualquier "da error 04" y hacía
+      // que Max encabezara la respuesta con "Sobrecarga" — presentando una
+      // suposición como si fuera lo que significa ese código.
+      sintomas: [/pit(a|ando|ido)|beep|suena|chilla|alarma/, /luz roja|roja.*(fija|encendida)|sobrecarga|fault/],
+      significa: 'El inversor se está protegiendo: lo que tienes conectado pide más de lo que puede dar, o hay un corto en la salida.',
+      pasos: [
+        'Desconecta <strong>todo</strong> lo que tenga enchufado antes de nada.',
+        'Suma los W de los equipos: si pasan de lo que aguanta el inversor, esa es la causa.',
+        'Si hay una bomba de agua o un motor, comprueba que no esté trabado — trabado consume muchísimo más.',
+        'No lo reinicies con la carga puesta: vuelve a protegerse y no habrás averiguado nada.'
+      ]
+    },
+    {
+      familia: 'INVERSORES', urgente: false,
+      titulo: 'Se apaga justo cuando arranca la nevera o la bomba',
+      sintomas: [/se apaga|se corta|se reinicia|corta.*(cuando|al)/, /nevera|refrigerador|bomba|motor|compresor|aire/],
+      significa: 'No está roto. Los motores arrancan pidiendo 3 o 4 veces su consumo normal durante un segundo, y ese pico es el que no aguanta.',
+      pasos: [
+        'Mira la potencia de <em>pico</em> del inversor, no la continua: para una nevera de 150W hacen falta unos 1000W continuos.',
+        'Conecta el motor solo, sin nada más, y prueba: si así arranca, era la suma.',
+        'Si el inversor es de onda modificada, un motor puede no arrancar nunca aunque sobre potencia.'
+      ]
+    },
+    {
+      familia: 'INVERSORES', urgente: false,
+      titulo: 'Avisa de batería baja',
+      sintomas: [/pit(a|ando|ido)|alarma|beep/, /bater[ií]a|voltaje|bajo|descargad/],
+      significa: 'La batería bajó del voltaje mínimo y el inversor corta para no dañarla. Es la protección haciendo su trabajo.',
+      pasos: [
+        'Carga la batería antes de volver a usarla; dejarla descargada días le quita vida.',
+        'Si se descarga mucho antes que antes, la batería está gastada, no el inversor.',
+        'Con batería de plomo-ácido no bajes del 50 %: descargarla a fondo la arruina en pocos ciclos.'
+      ]
+    },
+    {
+      familia: 'INVERSORES', urgente: false,
+      titulo: 'Se calienta y se apaga al rato',
+      sintomas: [/calienta|caliente|temperatura|quema|hirviendo/, /apaga|corta|para/],
+      significa: 'Protección por temperatura. Suele ser ventilación, no avería.',
+      pasos: [
+        'Déjalo destapado y con aire por los lados; dentro de un mueble cerrado se ahoga.',
+        'Trabajar al máximo de su potencia todo el día lo calienta aunque esté sano: deja margen.',
+        'Comprueba que el ventilador gire y que las rejillas no estén tapadas de polvo.'
+      ]
+    },
+    {
+      familia: 'INVERSORES', urgente: false,
+      titulo: 'No enciende nada',
+      sintomas: [/no enciende|no prende|no da se[ñn]ales|muerto|no hace nada/],
+      significa: 'Casi siempre es la alimentación de continua, no el inversor.',
+      pasos: [
+        'Revisa los bornes de la batería: flojos o sulfatados no dejan pasar corriente.',
+        'Casi todos llevan un fusible en la entrada de continua — es lo primero que se va.',
+        'Comprueba la polaridad. Invertida, muchos no encienden (y algunos se dañan).'
+      ]
+    },
+    {
+      familia: 'INVERSORES', urgente: false,
+      titulo: 'Zumbido en los equipos conectados',
+      sintomas: [/zumb|ruido|vibra|suena raro|interferencia/],
+      significa: 'Si el inversor es de onda modificada, no es un fallo: los transformadores y motores zumban con esa onda.',
+      pasos: [
+        'Para nevera, bomba, audio o equipos médicos hace falta <strong>onda pura</strong>.',
+        'Con onda modificada, ese zumbido acorta la vida de los motores.'
+      ]
+    },
+    // ── Controladores solares ───────────────────────────────
+    {
+      familia: 'CONTROLADORES SOLARES', urgente: false,
+      titulo: 'No carga aunque hay sol',
+      sintomas: [/no carga|no est[aá] cargando|no sube|no entra corriente|no llega/],
+      significa: 'Suele ser el orden de conexión o el voltaje del panel, no el controlador.',
+      pasos: [
+        'Orden correcto: <strong>primero la batería</strong>, después el panel, y la carga al final. Al revés, muchos controladores ni arrancan.',
+        'El panel tiene que dar más voltaje que la batería para poder cargarla.',
+        'Si el controlador ve voltaje del panel pero no carga, puede ser que la batería ya esté llena.',
+        'Revisa que el tipo de batería configurado sea el tuyo: con litio puesto como plomo (o al revés) carga mal.'
+      ]
+    },
+    // ── Routers y antenas ───────────────────────────────────
+    {
+      familia: 'ROUTERS', urgente: false,
+      titulo: 'Conecta al wifi pero no hay internet',
+      sintomas: [/sin internet|no hay internet|no navega|conecta pero|sin conexi[oó]n|no carga.*p[aá]gina/],
+      significa: 'El wifi del router funciona; lo que falla es lo que viene de fuera.',
+      pasos: [
+        'Reinicia <strong>primero</strong> el equipo de la fibra (ONT) y espera a que estabilice; después el router.',
+        'Mira la luz de WAN o internet del router: apagada o roja = no le llega señal.',
+        'Si cambiaste de router, hay que volver a poner el usuario y la clave de PPPoE.',
+        'Prueba con un cable directo al ONT: si así navega, el problema está entre ONT y router.'
+      ]
+    },
+    {
+      familia: 'ROUTERS', urgente: false,
+      titulo: 'Se cae la conexión cada cierto tiempo',
+      sintomas: [/se cae|se corta|se desconecta|intermitente|a cada rato|se reinicia solo/],
+      significa: 'Cortes periódicos casi nunca son del wifi: son alimentación o calor.',
+      pasos: [
+        'Toca el router: si quema, ponlo donde le dé aire y levántalo de la superficie.',
+        'Prueba otra fuente de corriente — las fuentes gastadas dan cortes que parecen fallo de señal.',
+        'Si tienes apagones o bajones, un inversor o UPS pequeño lo estabiliza.'
+      ]
+    },
+    {
+      familia: 'ROUTERS', urgente: false,
+      titulo: 'La antena de exterior no enciende (PoE)',
+      sintomas: [/no enciende|no prende|sin luz|no da se[ñn]ales/, /antena|cpe|nanostation|exterior|poe/],
+      significa: 'La alimentación de estas antenas va por el propio cable de red, y el inyector tiene dos bocas que no son iguales.',
+      pasos: [
+        'El cable que va a la antena entra en la boca <strong>PoE</strong> del inyector; la otra (LAN) va al router.',
+        'Cambiadas de sitio, la antena no recibe corriente — y es el fallo más común.',
+        'Pasados unos 50 m, un cable malo ya no lleva bien la alimentación: usa cable de cobre de verdad, no de aluminio.'
+      ]
+    },
+    // ── Cámaras ─────────────────────────────────────────────
+    {
+      familia: 'CÁMARAS', urgente: false,
+      titulo: 'No conecta al wifi',
+      sintomas: [/no conecta|no se conecta|no encuentra|no aparece|no enlaza|no vincula/],
+      significa: 'La mayoría de estas cámaras solo hablan wifi de 2.4 GHz.',
+      pasos: [
+        'Conecta el móvil a la red de <strong>2.4 GHz</strong> mientras la configuras, no a la de 5 GHz.',
+        'Si el router junta las dos bandas en un mismo nombre, sepáralas un momento para emparejarla.',
+        'La clave del wifi con símbolos raros da problemas en algunos modelos.'
+      ]
+    },
+    {
+      familia: 'CÁMARAS', urgente: false,
+      titulo: 'De noche se ve todo blanco o velado',
+      sintomas: [/blanco|velad|reflejo|borros|no se ve.*noche|noche.*no se ve/],
+      significa: 'El infrarrojo está rebotando en algo cercano, casi siempre un cristal o una pared.',
+      pasos: [
+        'Si está detrás de un cristal, el reflejo es suyo: sácala fuera o apaga el infrarrojo.',
+        'Sepárala de paredes, techos y telarañas — cualquier cosa a un palmo devuelve toda la luz.'
+      ]
+    },
+    // ── Baterías ────────────────────────────────────────────
+    {
+      familia: 'BATERÍAS', urgente: true,
+      titulo: 'Hinchada, caliente o con olor',
+      sintomas: [/hinchad|inflad|abombad|huele|olor|derrame|fuga|muy caliente|humo/],
+      significa: 'Deja de usarla ahora mismo. Una batería hinchada o que huele es un riesgo real, no una avería que se repara.',
+      pasos: [
+        '<strong>No la cargues más</strong> y desconéctala.',
+        'Sácala a un sitio ventilado, lejos de cosas que ardan, y no la pinches ni la abras.',
+        'Escríbenos por WhatsApp: eso sí entra en garantía si es reciente.'
+      ]
+    },
+    {
+      familia: 'BATERÍAS', urgente: false,
+      titulo: 'Dura mucho menos que antes',
+      sintomas: [/dura menos|dura poco|se descarga r[aá]pido|no aguanta|baja r[aá]pido/],
+      significa: 'Capacidad perdida. En plomo-ácido suele venir de haberla descargado a fondo varias veces.',
+      pasos: [
+        'Mídele el voltaje en reposo, una hora después de dejar de cargar y sin nada conectado.',
+        'Si con el inversor puesto el voltaje se desploma, ya no da su capacidad.',
+        'De plomo-ácido, no bajar del 50 %; de LiFePO4 puedes usar mucho más sin castigarla.'
+      ]
+    }
+  ];
+
+  // Palabras que delatan de qué aparato habla el cliente cuando no nombra un
+  // producto del catálogo ("mi inversor está pitando").
+  // En dos niveles: primero el nombre del aparato, y solo si no aparece
+  // ninguno, las palabras de conexión. Si no, "la cámara no conecta al wifi"
+  // se clasificaba como router — por el "wifi" — y perdía el diagnóstico de
+  // cámara, que es el que servía.
+  const _FAMILIA_PALABRAS = {
+    'INVERSORES': /\binversor|inversores|planta el[eé]ctrica\b/,
+    'CONTROLADORES SOLARES': /\bcontrolador|mppt|pwm|regulador\b/,
+    'BATERÍAS': /\bbater[ií]a|bateria|acumulador\b/,
+    'CÁMARAS': /\bc[aá]mara|camara|c[aá]maras|videovigilancia|dvr\b/,
+    'ROUTERS': /\brouter|antena|cpe|nanostation|repetidor|access point\b/
+  };
+  const _FAMILIA_VAGA = { 'ROUTERS': /\bwifi|wi-fi|internet|se[ñn]al|red\b/ };
+
+  // Señales de que esto es una avería y no una consulta de compra. Van en dos
+  // niveles a propósito: "pita" o "echa humo" no aparecen nunca en una
+  // pregunta de compra, pero "no funciona" sí ("¿no funciona con mi nevera?"),
+  // así que las flojas solo cuentan si además se sabe de qué aparato habla.
+  const _AVERIA_FUERTE = /\b(pit(a|ando|ido)|beep|parpade|titila|luz roja|se calienta|hinchad|inflad|abombad|huele|humo|zumb|averi|no da corriente|dura menos)\b/i;
+  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fallo|falla|se ve blanco)\b/i;
+
+  /** ¿Está describiendo una avería? */
+  function esAveria(text){
+    if(_AVERIA_FUERTE.test(text)) return true;
+    if(detectarCodigo(text)) return true;
+    return _AVERIA_DEBIL.test(text) && !!_familiaDelTexto(text);
+  }
+
+  function _familiaDelTexto(text){
+    // Un producto del catálogo mencionado manda sobre las palabras sueltas.
+    const mencion = detectProductMentions(text)[0];
+    if(mencion && mencion.subcategoria) return String(mencion.subcategoria).toUpperCase();
+    const m = text.toLowerCase();
+    for(const fam in _FAMILIA_PALABRAS){
+      if(_FAMILIA_PALABRAS[fam].test(m)) return fam;
+    }
+    for(const fam in _FAMILIA_VAGA){
+      if(_FAMILIA_VAGA[fam].test(m)) return fam;
+    }
+    return null;
+  }
+
+  /** Entradas que encajan con lo que describe el cliente, mejor primero. */
+  function diagnosticar(text, familia){
+    const m = text.toLowerCase();
+    const fam = familia || _familiaDelTexto(text);
+    const puntuadas = [];
+    for(const d of DIAGNOSTICO){
+      if(fam && d.familia !== fam) continue;
+      let n = 0;
+      d.sintomas.forEach(rx => { if(rx.test(m)) n++; });
+      if(n === 0) continue;
+      // Casar TODOS los grupos de síntomas pesa más que casar uno: distingue
+      // "se apaga con la nevera" de un "se apaga" genérico.
+      if(n === d.sintomas.length) n += 2;
+      if(!fam) n -= 1;   // sin saber el aparato, menos confianza
+      puntuadas.push({ d: d, n: n });
+    }
+    puntuadas.sort((a, b) => b.n - a.n);
+    return puntuadas.map(x => x.d);
+  }
+
+  // ── Códigos concretos de cada marca ─────────────────────────
+  // No van en este archivo a propósito: se copian de los manuales y cambian
+  // con cada modelo. Se bajan solo cuando alguien pregunta por una avería.
+  let _CODIGOS = null, _codigosPedidos = false;
+
+  function _cargarCodigos(){
+    if(_codigosPedidos) return;
+    _codigosPedidos = true;
+    // Relativa, igual que productos.json y resenas-cache.json: el chat solo
+    // se carga desde index.html, en la raíz. Con SITE_URL + '/…' el guard de
+    // test_llamadas_vs_reglas la confunde con una llamada a la RTDB.
+    fetch('codigos-error.json', { cache: 'force-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => { _CODIGOS = (j && j.marcas) || {}; })
+      .catch(() => { _CODIGOS = {}; });
+  }
+
+  /** "error 04", "F05", "código E3" → el código tal cual lo escribió. */
+  function detectarCodigo(text){
+    const m = text.match(/\b(?:error|err|c[oó]digo|code|falla|fallo)\s*[:#-]?\s*([a-z]?\s?\d{1,3}[a-z]?)\b/i)
+           || text.match(/\b([EFP]\s?-?\s?\d{1,3})\b/i);
+    return m ? m[1].replace(/\s+/g, '').toUpperCase() : null;
+  }
+
+  function buscarCodigo(codigo, familia){
+    if(!codigo || !_CODIGOS) return null;
+    for(const marca in _CODIGOS){
+      const tabla = _CODIGOS[marca] || {};
+      const entrada = tabla[codigo];
+      if(entrada && (!familia || !entrada.familia || entrada.familia === familia)){
+        return Object.assign({ marca: marca, codigo: codigo }, entrada);
+      }
+    }
+    return null;
+  }
+
+  R.diagnostico = (text) => {
+    _cargarCodigos();
+    const familia = _familiaDelTexto(text);
+    const codigo = detectarCodigo(text);
+    const hallazgos = diagnosticar(text, familia);
+
+    // Un código concreto que sí tenemos en el manual manda sobre el síntoma.
+    const delManual = buscarCodigo(codigo, familia);
+    if(delManual){
+      let body = `⚠️ <strong>Código ${escapeHtml(delManual.codigo)}</strong> · ${escapeHtml(delManual.marca)}\n\n`;
+      body += `${escapeHtml(delManual.significa || '')}\n\n`;
+      (delManual.pasos || []).forEach((p, i) => { body += `${i + 1}. ${p}\n`; });
+      body += `\n¿Se resolvió? Si no, escríbeme y lo vemos.`;
+      return { response: body, quickReplies: ['💬 WhatsApp', '📦 Ver productos'] };
+    }
+
+    if(!hallazgos.length){
+      // Aquí es donde se decide no inventar. Un significado sacado de otra
+      // marca puede costarle el equipo al cliente.
+      let body = `🔧 <strong>Vamos a ver qué le pasa</strong>\n\n`;
+      if(codigo){
+        body += `Veo el código <code>${escapeHtml(codigo)}</code>, pero no tengo el manual de esa marca, y los códigos no significan lo mismo en dos fabricantes distintos. Prefiero no adivinarlo: en eléctrica una suposición puede costarte el equipo. Dime <strong>marca y modelo</strong> y te lo confirmo.\n\n`;
+      }
+      body += `Cuéntame estas tres cosas y te digo qué es:\n`;
+      body += `• Qué aparato es (inversor, controlador, router, cámara, batería)\n`;
+      body += `• Qué hace exactamente: ¿pita?, ¿parpadea alguna luz?, ¿se apaga solo?\n`;
+      body += `• Qué tenías conectado cuando pasó\n\n`;
+      body += `Por ejemplo: <em>"mi inversor pita y tiene la luz roja encendida"</em>.\n\n`;
+      body += `Si prefieres, mándame marca y modelo por WhatsApp con una foto de la pantalla y lo miro yo.`;
+      return { response: body, quickReplies: ['💬 WhatsApp', '📦 Ver productos'] };
+    }
+
+    const d = hallazgos[0];
+    let body = '';
+
+    // Si preguntó por un código que no tenemos, eso va PRIMERO. Encabezar con
+    // el síntoma más probable presentaría una deducción como si fuera la
+    // lectura de su código, que es justo lo que este módulo no debe hacer.
+    if(codigo){
+      body += `🔍 <strong>El código ${escapeHtml(codigo)} no lo tengo</strong>\n\n`;
+      body += `Ese número significa cosas distintas en cada fabricante y no tengo el manual de tu modelo. No te lo traduzco a ciegas: en eléctrica, el significado de otra marca puede costarte el equipo.\n\n`;
+      body += `Ahora bien, por lo que me cuentas lo más probable es <em>${escapeHtml(d.titulo.toLowerCase())}</em> — deducido de los síntomas, no leído de tu código:\n\n`;
+    } else {
+      body += (d.urgente ? '🚨' : '🔧') + ` <strong>${escapeHtml(d.titulo)}</strong>\n\n`;
+    }
+
+    body += `${d.significa}\n\n`;
+    body += `<strong>Qué hacer:</strong>\n`;
+    d.pasos.forEach((p, i) => { body += `${i + 1}. ${p}\n`; });
+
+    if(hallazgos[1]){
+      body += `\nSi no era eso, lo siguiente más probable es <em>${escapeHtml(hallazgos[1].titulo.toLowerCase())}</em>.`;
+    }
+    if(codigo){
+      body += `\n\nMándame marca y modelo exactos y te confirmo qué es el ${escapeHtml(codigo)} de verdad.`;
+    }
+    body += `\n\n⚠️ <em>No abras el aparato</em>: además del riesgo, abrirlo anula la garantía. Si con esto sigue igual, escríbeme y lo vemos.`;
+
+    return {
+      response: body,
+      products: familia
+        ? PRODUCTOS.filter(p => (p.subcategoria || '').toUpperCase() === familia && p.stock > 0).slice(0, 2)
+        : [],
+      quickReplies: ['💬 WhatsApp', '🔧 Sigue igual', '📦 Ver productos']
+    };
+  };
+
+  // ════════════════════════════════════════════════════════════
   //  ARMADO DE SISTEMAS (estructura) + COTIZACIÓN IMPRIMIBLE
   // ════════════════════════════════════════════════════════════
   // Los tres armadores (solar, seguridad, internet) recorrían el catálogo con
@@ -1826,9 +2183,14 @@
       const prods = PRODUCTOS.filter(p =>
         (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0
       ).slice(0, 2);
+      // "Agotado" y "no lo vendemos" no son lo mismo, y decir lo primero
+      // cuando pasa lo segundo promete que vuelve algo que nunca estuvo:
+      // de PANELES SOLARES no hay ni uno en el catálogo, ni agotado.
+      const enCatalogo = PRODUCTOS.some(p => (p.subcategoria || '').toUpperCase() === comp.subcat);
       return {
         rol: comp.rol,
         subcat: comp.subcat,
+        enCatalogo: enCatalogo,
         // min:0 marca los componentes que el propio catálogo describe como
         // "(opcional)". No entran en el total: cotizar como obligatorio algo
         // que el cliente puede no llevar infla el precio y quema la confianza.
@@ -1851,7 +2213,9 @@
         });
         body += '\n';
       } else if(mostrarAgotados){
-        body += `<strong>${g.rol}:</strong> <em style="color:#ff8888">Agotado ahora mismo</em>. Avísame por WhatsApp cuando vuelve.\n\n`;
+        body += g.enCatalogo
+          ? `<strong>${g.rol}:</strong> <em style="color:#ff8888">Agotado ahora mismo</em>. Avísame por WhatsApp cuando vuelve.\n\n`
+          : `<strong>${g.rol}:</strong> <em style="color:#ffb347">No lo vendemos</em>. Esta pieza la pones tú o la buscamos aparte — el resto del sistema sí te lo armo.\n\n`;
       }
     }
     return body;
@@ -1921,9 +2285,14 @@
       const p = g.prods[0];
       if(!p){
         if(!g.opcional) hayFaltantes = true;
+        // Un componente que no vendemos no es un componente agotado: en una
+        // propuesta por escrito, "sin existencia" se lee como "ya vuelve".
+        const motivo = (g.enCatalogo === false)
+          ? 'No forma parte de nuestro catálogo — lo aporta el cliente o se busca aparte'
+          : 'Sin existencia en este momento — a confirmar por WhatsApp';
         return `<tr class="sin-stock">
           <td>${esc(g.rol)}</td>
-          <td colspan="4">Sin existencia en este momento — a confirmar por WhatsApp</td>
+          <td colspan="4">${motivo}</td>
         </tr>`;
       }
       const subtotal = (Number(p.precio) || 0) * g.cantidad;
@@ -3448,7 +3817,7 @@ ${notasHTML}
   //  AYUDA — menú de comandos
   // ════════════════════════════════════════════════════════════
   R.ayuda = () => ({
-    response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n\n¿Qué necesitas hacer?`,
+    response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"mi inversor pita y tiene la luz roja"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n\n¿Qué necesitas hacer?`,
     quickReplies: ['💝 Ver mi lista','🔥 Ofertas','📦 Categorías','💬 WhatsApp']
   });
 
@@ -3854,6 +4223,11 @@ ${notasHTML}
     // Va la primera: el documento se arma con lo que ya está en memoria, sin
     // volver a preguntarle nada al cliente.
     if(/cotizaci[oó]n|propuesta t[eé]cnica/.test(r)){ abrirCotizacion(); return; }
+    if(/sigue igual/.test(r)){
+      addMessageTyped(`Entonces hay que verlo con el modelo delante. Mándame por WhatsApp:\n\n• <strong>Marca y modelo</strong> exactos (están en la pegatina de atrás)\n• Una <strong>foto de la pantalla o de las luces</strong> como están ahora\n• Qué tenías conectado cuando empezó\n\nCon eso lo miro yo. No abras el aparato mientras tanto: abrirlo anula la garantía.`, 'bot');
+      renderQuickReplies(['💬 WhatsApp']);
+      return;
+    }
     // Estas tres van primero a propósito: /whatsapp/ de más abajo las
     // capturaría y abriría un chat vacío en vez de hacer lo que dicen.
     if(/pedir por whatsapp/.test(r)){
@@ -4389,6 +4763,8 @@ ${notasHTML}
     {ic:'🔒', title:'Kit de seguridad para casa', desc:'Cámaras + cerradura + alarma según tu caso (casa, negocio, exterior).', try:'arma un kit de seguridad para casa'},
     {ic:'⏱️', title:'Calcular autonomía de batería', desc:'Dime qué equipos conectas y te calculo cuántas horas duran con cada batería.', try:'cuánto dura una batería de 100Ah con mi nevera'},
     {ic:'🔌', title:'Compatibilidad inversor ↔ electrodomésticos', desc:'Dime qué equipos conectarás y te digo qué inversor los aguanta, considerando picos de arranque.', try:'este inversor sirve para mi nevera y mi tv'},
+    {ic:'🔧', title:'Diagnóstico de averías', desc:'Dime qué hace el aparato — pita, parpadea, se apaga — y te digo qué significa y qué hacer antes de moverlo.', try:'mi inversor pita y tiene la luz roja encendida'},
+    {ic:'📄', title:'Propuesta técnica en PDF', desc:'Del sistema que te arme, un documento con componentes, precios y autonomía, listo para imprimir o mandar por correo.', try:'arma un sistema solar mediano'},
     {ic:'💰', title:'Filtrar por presupuesto', desc:'Dime "tengo $100" y te muestro solo opciones dentro de tu presupuesto.', try:'tengo $100, ¿qué cámara me recomiendas?'},
     {ic:'🚚', title:'Envíos: Pinar del Río → Matanzas', desc:'Mensajería directa en occidente. Centro/Oriente: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
     {ic:'💵', title:'Métodos de pago detallados', desc:'Efectivo USD/MN, Zelle, EnZona, transferencia bancaria, crypto (próximamente).', try:'métodos de pago'},
@@ -4494,6 +4870,11 @@ ${notasHTML}
     armarSistemaInternet: R.sistemaInternet,
     armarSistema: _armarSistema,
     capacidadBateria: _capacidadBateria,
+    diagnosticar: R.diagnostico,
+    esAveria,
+    detectarCodigo,
+    familiaDelTexto: _familiaDelTexto,
+    DIAGNOSTICO,
     cotizacionHTML,
     abrirCotizacion,
     get ultimoSistema(){ return _ULTIMO_SISTEMA; },

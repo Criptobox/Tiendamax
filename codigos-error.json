@@ -1,0 +1,38 @@
+{
+  "_leeme": [
+    "Códigos de error concretos por marca y modelo, para el diagnóstico de Max.",
+    "",
+    "Max ya sabe diagnosticar por SÍNTOMA sin este archivo (un inversor que pita con",
+    "la luz de fallo está en sobrecarga, sea de la marca que sea). Eso vive en la",
+    "tabla DIAGNOSTICO de js/src/tm-bot-cerebro.src.js y funciona siempre.",
+    "",
+    "Este archivo es para lo otro: los códigos NUMÉRICOS que cada fabricante usa a su",
+    "manera. 'Error 04' no significa lo mismo en un Must que en un Powmr. Por eso",
+    "empieza vacío y solo se llena COPIANDO EL MANUAL del equipo. Si el código no",
+    "está aquí, Max dice que no lo tiene y pide marca y modelo por WhatsApp — que es",
+    "lo correcto: en eléctrica, un significado sacado de otra marca puede costarle el",
+    "equipo al cliente.",
+    "",
+    "Cómo añadir uno: dentro de 'marcas', una clave por marca; dentro, una clave por",
+    "código, exactamente como aparece en la pantalla (en mayúsculas y sin espacios:",
+    "'04', 'E03', 'F12'). Ver el formato en '_formato'. Los pasos admiten HTML",
+    "sencillo (<strong>, <em>, <code>).",
+    "",
+    "Empieza por los inversores y los controladores solares: son los que más se",
+    "venden y los que más vuelven por 'garantía' sin estar rotos."
+  ],
+  "_formato": {
+    "MarcaDeEjemplo": {
+      "04": {
+        "familia": "INVERSORES",
+        "significa": "Qué está pasando, en una frase que entienda quien no es técnico.",
+        "pasos": [
+          "Primero lo que lo pone a salvo (desconectar la carga, no reiniciar).",
+          "Después lo que hay que comprobar.",
+          "Al final, cuándo sí hay que traerlo."
+        ]
+      }
+    }
+  },
+  "marcas": {}
+}
