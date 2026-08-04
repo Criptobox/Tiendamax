@@ -2983,5 +2983,33 @@
       "🔌 Puertos Ethernet con PoE Pasivo"
     ],
     "fechaAgregado": "2026-07-29T00:51:29.086Z"
+  },
+  {
+    "id": 1785866159148,
+    "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866155608.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866157414.webp"
+    ],
+    "precioActual": 40,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 4,
+    "comisionMoneda": "USD",
+    "categoria": "MOTOS",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Salida de 48V / 5A (54.6V)",
+      "🔌 Conector Tipo US Pin",
+      "🔋 Carga Rápida para Litio-Ion"
+    ],
+    "fechaAgregado": "2026-08-04T17:55:59.149Z"
   }
 ]
