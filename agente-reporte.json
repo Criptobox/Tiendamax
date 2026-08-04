@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-03T12:14:00.631008+00:00",
+  "generado": "2026-08-04T11:17:06.026120+00:00",
   "productos": 118,
   "urgentes": 1,
-  "advertencias": 42,
-  "info": 9,
-  "resumen": "Anoche revisé tus 118 productos y encontré 1 urgente(s), 42 advertencia(s), 9 de info.",
+  "advertencias": 44,
+  "info": 8,
+  "resumen": "Anoche revisé tus 118 productos y encontré 1 urgente(s), 44 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -203,6 +203,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🌐 Nanostation AC Loco",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🌐 Mikrotik Sxtsq LITE5",
       "detalle": "agotado (stock 0)"
     },
@@ -219,6 +224,11 @@
     {
       "tipo": "agotado",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -259,11 +269,6 @@
     {
       "tipo": "stock_bajo",
       "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
-      "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
       "detalle": "quedan 3"
     }
   ]
