@@ -2093,11 +2093,17 @@
 
   function buscarCodigo(codigo, familia){
     if(!codigo || !_CODIGOS) return null;
+    // El cliente escribe "error 4" y el manual lo imprime "04". Se prueban las
+    // dos formas: si no, tener el código en la tabla no serviría de nada.
+    const formas = [codigo];
+    if(/^\d{1,2}$/.test(codigo)) formas.push(codigo.padStart(2, '0'), String(Number(codigo)));
     for(const marca in _CODIGOS){
       const tabla = _CODIGOS[marca] || {};
-      const entrada = tabla[codigo];
-      if(entrada && (!familia || !entrada.familia || entrada.familia === familia)){
-        return Object.assign({ marca: marca, codigo: codigo }, entrada);
+      for(const forma of formas){
+        const entrada = tabla[forma];
+        if(entrada && (!familia || !entrada.familia || entrada.familia === familia)){
+          return Object.assign({ marca: marca, codigo: forma }, entrada);
+        }
       }
     }
     return null;

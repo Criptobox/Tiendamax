@@ -7,19 +7,25 @@
     "tabla DIAGNOSTICO de js/src/tm-bot-cerebro.src.js y funciona siempre.",
     "",
     "Este archivo es para lo otro: los códigos NUMÉRICOS que cada fabricante usa a su",
-    "manera. 'Error 04' no significa lo mismo en un Must que en un Powmr. Por eso",
-    "empieza vacío y solo se llena COPIANDO EL MANUAL del equipo. Si el código no",
-    "está aquí, Max dice que no lo tiene y pide marca y modelo por WhatsApp — que es",
-    "lo correcto: en eléctrica, un significado sacado de otra marca puede costarle el",
-    "equipo al cliente.",
+    "manera. 'Error 04' no significa lo mismo en un Must que en un Powmr. Solo se",
+    "llena COPIANDO EL MANUAL del equipo. Si el código no está aquí, Max dice que no",
+    "lo tiene y pide marca y modelo por WhatsApp — que es lo correcto: en eléctrica,",
+    "un significado sacado de otra marca puede costarle el equipo al cliente.",
+    "",
+    "QUÉ HAY AHORA: los códigos 01 a 09 de Powmr, que son idénticos en los manuales",
+    "de las series POW-HPM, POW-LVM3K-24V-H y POW-LVM3.2K-24V. Del 10 en adelante NO",
+    "están a propósito: ahí las listas de Powmr YA NO COINCIDEN entre modelos (en",
+    "unos el 12 es bLineLoss y en otros es PvBoostOCHw), así que hay que sacarlos del",
+    "manual del equipo concreto que vendiste.",
+    "",
+    "QUÉ FALTA: Must (PV15-1524), Tataliken y Unizuki. No hay manual público fiable",
+    "de esos; los códigos tienen que salir del papel que viene en la caja.",
     "",
     "Cómo añadir uno: dentro de 'marcas', una clave por marca; dentro, una clave por",
     "código, exactamente como aparece en la pantalla (en mayúsculas y sin espacios:",
     "'04', 'E03', 'F12'). Ver el formato en '_formato'. Los pasos admiten HTML",
-    "sencillo (<strong>, <em>, <code>).",
-    "",
-    "Empieza por los inversores y los controladores solares: son los que más se",
-    "venden y los que más vuelven por 'garantía' sin estar rotos."
+    "sencillo (<strong>, <em>, <code>). Nunca mandes a abrir el aparato: anula la",
+    "garantía que este diagnóstico existe para proteger."
   ],
   "_formato": {
     "MarcaDeEjemplo": {
@@ -34,5 +40,90 @@
       }
     }
   },
-  "marcas": {}
+  "marcas": {
+    "Powmr": {
+      "01": {
+        "familia": "INVERSORES",
+        "significa": "Aviso de batería baja. Todavía funciona, pero la batería va por debajo de lo que el inversor considera seguro.",
+        "pasos": [
+          "Apaga lo que no necesites: cuanto más consumas, más rápido llega al corte.",
+          "Ponla a cargar en cuanto puedas. Dejarla así acorta mucho su vida.",
+          "Si salta con la batería recién cargada, la batería ya no da su capacidad."
+        ]
+      },
+      "02": {
+        "familia": "INVERSORES",
+        "significa": "La batería está entregando más corriente de la que debe. El inversor lo corta antes de que se dañe algo.",
+        "pasos": [
+          "Desconecta todo lo que tengas enchufado y vuelve a conectarlo de uno en uno.",
+          "Casi siempre es un equipo que pide demasiado: neveras, bombas o motores al arrancar.",
+          "Si salta con muy poca carga, revisa que los cables de la batería no sean finos ni estén flojos."
+        ]
+      },
+      "03": {
+        "familia": "INVERSORES",
+        "significa": "El inversor no ve la batería. Para él, no está conectada.",
+        "pasos": [
+          "Revisa los bornes: flojos o sulfatados es lo más común.",
+          "Comprueba el fusible o el interruptor de la línea de continua.",
+          "Mide el voltaje en los bornes del inversor: si ahí no llega nada, el problema está en el cable, no en el equipo."
+        ]
+      },
+      "04": {
+        "familia": "INVERSORES",
+        "significa": "La batería llegó al mínimo y el inversor cortó la descarga para no arruinarla. Es la protección haciendo su trabajo, no una avería.",
+        "pasos": [
+          "Cárgala antes de volver a usarla. No insistas en reiniciar con la batería vacía.",
+          "Si de plomo-ácido, no la bajes del 50 %: descargarla a fondo la arruina en pocos ciclos.",
+          "Si te pasa cada poco, te falta capacidad de batería o te sobra consumo."
+        ]
+      },
+      "05": {
+        "familia": "INVERSORES",
+        "significa": "Sobrecorriente detectada por la protección física del equipo. Es más seria que la 02: saltó el corte rápido.",
+        "pasos": [
+          "<strong>Desconecta todo</strong> y no lo reinicies con la carga puesta.",
+          "Busca un corto en la salida: un cable pelado, un enchufe mojado, un equipo quemado.",
+          "Si con todo desconectado vuelve a saltar, no lo sigas intentando y escríbenos."
+        ]
+      },
+      "06": {
+        "familia": "INVERSORES",
+        "significa": "La batería está recibiendo más voltaje del que admite. El inversor cortó la carga para protegerla.",
+        "pasos": [
+          "Revisa que el tipo de batería configurado sea el tuyo: con litio puesto como plomo (o al revés) carga a un voltaje equivocado.",
+          "Si tienes también un controlador solar aparte, comprueba que no estén cargando los dos a la vez con ajustes distintos.",
+          "No sigas usándolo así: cargar de más hincha las baterías."
+        ]
+      },
+      "07": {
+        "familia": "INVERSORES",
+        "significa": "Sobrevoltaje interno detectado por la protección física. Suele venir de fuera del inversor, no de él.",
+        "pasos": [
+          "Desconecta los paneles y la carga, y déjalo unos minutos apagado del todo.",
+          "Revisa que el voltaje de tus paneles en serie no pase el máximo que admite el equipo.",
+          "Si vuelve a salir con todo desconectado, tráelo: eso ya no se resuelve en casa."
+        ]
+      },
+      "08": {
+        "familia": "INVERSORES",
+        "significa": "Lo mismo que la 07, detectado por la protección del programa en vez de por la física.",
+        "pasos": [
+          "Desconecta paneles y carga, y arráncalo solo con la batería para ver si se repite.",
+          "Comprueba el voltaje de la cadena de paneles en frío: es cuando más alto sube.",
+          "Si persiste sin nada conectado, escríbenos."
+        ]
+      },
+      "09": {
+        "familia": "INVERSORES",
+        "significa": "Los paneles están entregando más voltaje del que el equipo admite.",
+        "pasos": [
+          "<strong>Desconecta los paneles ya.</strong> Este es de los que sí rompen el equipo.",
+          "Suma el voltaje de circuito abierto de los paneles que tengas en serie y compáralo con el máximo del inversor.",
+          "En días fríos y despejados los paneles dan bastante más de lo que dice la etiqueta: hay que dejar margen.",
+          "Si están dentro del límite y aun así salta, no los vuelvas a conectar y escríbenos."
+        ]
+      }
+    }
+  }
 }
