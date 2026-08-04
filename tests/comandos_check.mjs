@@ -84,6 +84,36 @@ botones.filter(b => /\//.test(b)).forEach(b => {
         `el botón "${b}" del saludo cae en ${intent(b)}`);
 });
 
+// ── Preguntas que Max contestaba con otra cosa ───────────────────────────
+// Salieron de leer 25 preguntas reales de cliente. Ninguna fallaba: todas
+// devolvían una respuesta bien formada, pero de otro tema.
+const MAL_ENCAMINADAS = [
+    // "en moneda nacional" es como se dice aquí; caía en búsqueda de productos.
+    ['cuanto es en moneda nacional', 'tasa'],
+    ['cuanto cuesta en cup', 'tasa'],
+    // Pedía una recomendación y recibía la definición de qué es un inversor.
+    ['cual es el mejor inversor que tienen', 'recomendacion'],
+    ['cual es la mejor camara', 'recomendacion'],
+];
+for (const [q, esperado] of MAL_ENCAMINADAS) {
+    ok(intent(q) === esperado, `"${q}" → ${intent(q)}, esperaba ${esperado}`);
+}
+// Y lo que ya funcionaba tiene que seguir igual: "el mejor" no puede secuestrar
+// las comparaciones.
+ok(intent('compara wifi 5 vs wifi 6') === 'comparacionTecnologica',
+    'las comparaciones técnicas no deben caer en recomendación');
+ok(intent('cual es mejor wifi 5 o wifi 6') !== 'recomendacion',
+    'preguntar cuál de dos tecnologías es mejor sigue siendo una comparación');
+
+// La garantía de un producto sin plazo anotado se dice, no se inventa ni se
+// contesta con el texto general —que invita a preguntar justo lo que acaba de
+// dejar sin responder.
+const gar = B.responder('el inversor tataliken tiene garantia').response;
+ok(/no tengo el plazo|no lo tengo anotado/i.test(gar),
+    'sin garantía en la ficha, Max debe decirlo en vez de soltar el texto general');
+ok(!/\b(\d+)\s*(mes|a[ñn]o)/i.test(gar),
+    'no debe inventarse un plazo de garantía que la ficha no trae');
+
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

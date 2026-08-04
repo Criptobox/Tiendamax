@@ -1294,7 +1294,8 @@
     if(/\b(pago|pagar|tarjeta|transferencia|efectivo|contrareembolso|contra entrega|en c[úu]anto.*pago)\b/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
     if(/\b(devoluci[oó]n|devolver|cambiar|return|reembolso)\b/.test(m)) return 'devolucion';
-    if(/\b(tasa|d[oó]lar|usd|mn|peso|cambio|conversi[oó]n|cu[aá]nto.*cuesta.*peso)\b/.test(m)) return 'tasa';
+    if(/\b(tasa|d[oó]lar|usd|mn|cup|peso|cambio|conversi[oó]n|cu[aá]nto.*cuesta.*peso)\b/.test(m)
+       || /moneda nacional/.test(m)) return 'tasa';
     if(/\b(whatsapp|tel[eé]fono|contacto|n[uú]mero|llamar|les escribo)\b/.test(m)) return 'whatsapp';
     if(/\b(donde est[aá]n|ubicaci[oó]n|direcci[oó]n|donde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)) return 'ubicacion';
     if(/\b(horario|hora.*atienden|qu[eé] hora|abren|abierto|cuando atienden)\b/.test(m)) return 'horario';
@@ -1313,6 +1314,14 @@
 
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
     if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)) return 'compatibilidad';
+
+    // "¿cuál es el mejor router?" pide una recomendación, no la definición de
+    // lo que es un router — que es lo que contestaba al caer en 'tecnico'.
+    if(/\b(el|la|los|las) mejor(es)?\b/.test(m) && !/\bvs\b|versus|diferencia/.test(m)){
+      const _cats = ['camara','camaras','bateria','baterias','cargador','inversor','inversores','router','routers',
+                     'switch','antena','alarma','cerradura','panel','paneles','controlador','controladores'];
+      if(_cats.some(c => new RegExp('\\b' + c + '\\b').test(normalize(m)))) return 'recomendacion';
+    }
 
     // AVERÍA: "mi inversor pita", "el router se cae", "error 04".
     // Va después de compatibilidad para no robarle "¿no funciona con...?",
@@ -1556,6 +1565,41 @@
 
   R.garantia = (text) => {
     const mentions = detectProductMentions(text);
+    // "el inversor tataliken tiene garantía" casa con DOS productos del
+    // catálogo (el de 12V y el de 24V) y caía al texto genérico. Si los dos
+    // traen la misma garantía, la pregunta ya tiene respuesta.
+    if(mentions.length > 1){
+      const gs = [...new Set(mentions.map(x => String(x.garantia || '').trim()))];
+      // Todos con la misma garantía escrita: la pregunta ya tiene respuesta.
+      if(gs.length === 1 && gs[0]){
+        return {
+          response: `🛡️ Los ${mentions.length} modelos que tengo de eso llevan la misma: <strong>${escapeHtml(gs[0])}</strong>.\nSi algo no funciona cuando lo recibes, escríbenos por WhatsApp dentro de las primeras 24 horas y lo resolvemos.`,
+          products: mentions.slice(0, 3),
+          quickReplies: ['💬 WhatsApp','📦 Ver más productos']
+        };
+      }
+      // Cada uno con la suya: se enseñan, en vez de un texto general que no
+      // responde por ninguno.
+      if(gs.some(g => g)){
+        let body = `🛡️ Tengo ${mentions.length} modelos de eso, y no llevan la misma garantía:\n\n`;
+        mentions.slice(0, 4).forEach(x => {
+          const g = String(x.garantia || '').trim();
+          body += `• <strong>${escapeHtml(x.nombre)}</strong> — ${g ? escapeHtml(g) : 'sin garantía anotada, te la confirmo por WhatsApp'}\n`;
+        });
+        return { response: body, products: mentions.slice(0, 4), quickReplies: ['💬 WhatsApp','📦 Ver más productos'] };
+      }
+    }
+    // Producto identificado pero sin garantía escrita en su ficha: se dice, en
+    // vez de contestar con el texto general —que invita a preguntar justo lo
+    // que se acaba de dejar sin responder—. Inventarle un plazo sería peor.
+    if(mentions.length >= 1 && !mentions.some(x => String(x.garantia || '').trim())){
+      const nom = mentions.length === 1 ? escapeHtml(mentions[0].nombre) : 'ese producto';
+      return {
+        response: `🛡️ De <strong>${nom}</strong> no tengo el plazo de garantía anotado en la ficha, y prefiero no decirte uno por decir.\n\nLo que sí te aseguro: si llega con un defecto de fábrica, escríbenos por WhatsApp dentro de las primeras 24 horas y te lo cambiamos o te devolvemos el dinero.\n\nEscríbeme y te confirmo el plazo exacto del fabricante.`,
+        products: mentions.slice(0, 3),
+        quickReplies: ['💬 WhatsApp','📦 Ver más productos']
+      };
+    }
     if(mentions.length === 1){
       const p = mentions[0];
       const g = (p.garantia||'').trim();
