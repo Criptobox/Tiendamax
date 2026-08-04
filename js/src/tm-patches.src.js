@@ -1000,27 +1000,35 @@ document.addEventListener('DOMContentLoaded', () => {
    del bot, que vive en bottom:20px/right:16px. Mientras esté visible, la
    burbuja (y su globo de bienvenida) suben por encima. El selector lleva
    body delante para ganarle en especificidad al estilo que inyecta tm-bot. */
-body.tm-push-banner-visible .tm-bot-bubble{bottom:calc(env(safe-area-inset-bottom,0px) + 116px) !important}
-body.tm-push-banner-visible .tm-bot-welcome{bottom:calc(env(safe-area-inset-bottom,0px) + 180px) !important}
+/* --tm-push-h NO es el alto del cartel: es lo que ocupa desde el borde
+   inferior de la pantalla (su alto más lo que esté separado del borde). Se
+   mide así porque el cartel no siempre se apoya donde dice su CSS —- otras
+   reglas lo suben—- y cualquier número fijo fallaba en alguna combinación. */
+body.tm-push-banner-visible .tm-bot-bubble{bottom:calc(var(--tm-push-h,140px) + 16px) !important}
+body.tm-push-banner-visible .tm-bot-welcome{bottom:calc(var(--tm-push-h,140px) + 80px) !important}
 @keyframes tmpbRing{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(14deg)}80%{transform:rotate(-12deg)}85%{transform:rotate(8deg)}90%{transform:rotate(-5deg)}95%{transform:rotate(0)}}
 .tmpb-bell{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:23px;transform-origin:50% 15%;animation:tmpbRing 3s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.tmpb-bell{animation:none}}
-/* Modo oscuro: fondo cálido + borde dorado, campana con glow */
-body:not(.light-mode) #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(232,200,138,.14),transparent 60%),linear-gradient(160deg,#241d16,#191620) !important;border:1.5px solid rgba(232,200,138,.45) !important;box-shadow:0 16px 42px rgba(0,0,0,.6),0 0 0 1px rgba(232,200,138,.06) inset !important}
-body:not(.light-mode) .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(232,200,138,.4),rgba(201,169,110,.12) 70%);border:1px solid rgba(232,200,138,.5);box-shadow:0 0 18px -2px rgba(232,200,138,.5)}
-body:not(.light-mode) .tmpb-title{color:#F5D08A !important}
-body:not(.light-mode) .tmpb-body{color:#C9C9D2 !important}
-body:not(.light-mode) #tm-push-si{background:linear-gradient(135deg,#F0D69A,#C9A96E) !important;color:#1A1A1A !important;box-shadow:0 8px 20px -6px rgba(201,169,110,.55) !important}
-body:not(.light-mode) #tm-push-si:hover{filter:brightness(1.08);transform:translateY(-1px)}
-body:not(.light-mode) #tm-push-no{color:#9B9BA5 !important}
+/* Los dos temas van en coral, el color de la marca. El oscuro estaba en dorado
+   y desentonaba con el resto del sitio; ahora es el mismo cartel en dos fondos.
+   Los tonos concretos salen de comprobar el contraste, no del gusto: el título
+   coral claro del modo claro (#E8501E) daba 3.75:1 sobre blanco y el botón
+   otro tanto — por debajo del 4.5:1 que pide AA para este tamaño de letra. */
+body:not(.light-mode) #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(255,138,71,.15),transparent 60%),linear-gradient(160deg,#241d16,#1B1512) !important;border:1.5px solid rgba(255,138,71,.45) !important;box-shadow:0 16px 42px rgba(0,0,0,.6),0 0 0 1px rgba(255,138,71,.07) inset !important}
+body:not(.light-mode) .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(255,138,71,.38),rgba(210,78,15,.12) 70%);border:1px solid rgba(255,138,71,.5);box-shadow:0 0 18px -2px rgba(255,106,31,.5)}
+body:not(.light-mode) .tmpb-title{color:#FF8A47 !important}   /* 7.11:1 */
+body:not(.light-mode) .tmpb-body{color:#CFC5BC !important}    /* 9.80:1 */
+body:not(.light-mode) #tm-push-si{background:linear-gradient(135deg,#C74A0E,#A33A08) !important;color:#FFFFFF !important;box-shadow:0 8px 20px -6px rgba(199,74,14,.6) !important}
+body:not(.light-mode) #tm-push-si:hover{filter:brightness(1.12);transform:translateY(-1px)}
+body:not(.light-mode) #tm-push-no{color:#9C9088 !important}
 body:not(.light-mode) #tm-push-no:hover{color:#FFFFFF !important}
-/* Modo claro: fondo blanco + acento coral */
-body.light-mode #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(255,107,53,.1),transparent 60%),#FFFFFF !important;border:1.5px solid rgba(232,80,30,.5) !important;box-shadow:0 12px 34px rgba(232,80,30,.16),0 2px 8px rgba(0,0,0,.06) !important}
-body.light-mode .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(255,107,53,.22),rgba(255,61,0,.06) 70%);border:1px solid rgba(255,107,53,.4);box-shadow:0 0 16px -3px rgba(255,107,53,.4)}
-body.light-mode .tmpb-title{color:#E8501E !important}
-body.light-mode .tmpb-body{color:#4A4A4A !important}
-body.light-mode #tm-push-si{background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#FFFFFF !important;box-shadow:0 6px 16px -4px rgba(232,80,30,.35) !important}
-body.light-mode #tm-push-si:hover{filter:brightness(1.06);transform:translateY(-1px)}
+/* Modo claro: mismo cartel sobre blanco */
+body.light-mode #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(255,106,31,.1),transparent 60%),#FFFFFF !important;border:1.5px solid rgba(210,78,15,.5) !important;box-shadow:0 12px 34px rgba(210,78,15,.16),0 2px 8px rgba(0,0,0,.06) !important}
+body.light-mode .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(255,106,31,.22),rgba(210,78,15,.06) 70%);border:1px solid rgba(255,106,31,.4);box-shadow:0 0 16px -3px rgba(255,106,31,.4)}
+body.light-mode .tmpb-title{color:#C0410A !important}         /* 5.25:1 */
+body.light-mode .tmpb-body{color:#4A4A4A !important}          /* 8.86:1 */
+body.light-mode #tm-push-si{background:linear-gradient(135deg,#C74A0E,#A33A08) !important;color:#FFFFFF !important;box-shadow:0 6px 16px -4px rgba(199,74,14,.35) !important}
+body.light-mode #tm-push-si:hover{filter:brightness(1.08);transform:translateY(-1px)}
 body.light-mode #tm-push-no{color:#6B6B7A !important}
 body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
 /* Móvil: banner más compacto */
@@ -1029,6 +1037,24 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
             document.head.appendChild(s);
         }
         document.body.appendChild(b);
+        // El desplazamiento de la burbuja era un número fijo (116px) calculado
+        // para el cartel de dos líneas. El de "notificaciones bloqueadas" tiene
+        // tres y seguía tapando el botón. Ahora se sigue el alto REAL: medirlo
+        // una sola vez tampoco basta, porque el texto todavía se está ajustando
+        // y sale más bajo de lo que acaba siendo.
+        const _medir = () => {
+            try {
+                const r = b.getBoundingClientRect();
+                // Desde el borde inferior de la pantalla hasta el techo del
+                // cartel: es justo lo que la burbuja tiene que salvar.
+                const usado = window.innerHeight - r.top;
+                if (usado > 0) document.documentElement.style.setProperty('--tm-push-h', Math.round(usado) + 'px');
+            } catch (e) {}
+        };
+        _medir();
+        requestAnimationFrame(_medir);
+        try { new ResizeObserver(_medir).observe(b); } catch (e) { setTimeout(_medir, 400); }
+        window.addEventListener('resize', _medir);
 
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
