@@ -1814,6 +1814,352 @@
   });
 
   // ════════════════════════════════════════════════════════════
+  //  ARMADO DE SISTEMAS (estructura) + COTIZACIÓN IMPRIMIBLE
+  // ════════════════════════════════════════════════════════════
+  // Los tres armadores (solar, seguridad, internet) recorrían el catálogo con
+  // el mismo bucle copiado tres veces, y sólo conservaban una lista plana de
+  // productos: el rol que cumplía cada uno ("Batería", "Inversor") se perdía
+  // al pintar el texto. La cotización necesita justo ese dato, así que el
+  // recorrido se hace una sola vez aquí y devuelve la estructura.
+  function _armarSistema(sis){
+    const grupos = (sis.componentes || []).map(comp => {
+      const prods = PRODUCTOS.filter(p =>
+        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0
+      ).slice(0, 2);
+      return {
+        rol: comp.rol,
+        subcat: comp.subcat,
+        // min:0 marca los componentes que el propio catálogo describe como
+        // "(opcional)". No entran en el total: cotizar como obligatorio algo
+        // que el cliente puede no llevar infla el precio y quema la confianza.
+        cantidad: Math.max(1, comp.min || 0),
+        opcional: (comp.min || 0) === 0,
+        prods: prods
+      };
+    });
+    return { nombre: sis.nombre, presupuesto: sis.presupuesto, grupos: grupos };
+  }
+
+  /** El texto de componentes, idéntico al que pintaban los tres armadores. */
+  function _sistemaCuerpo(armado, mostrarAgotados){
+    let body = '';
+    for(const g of armado.grupos){
+      if(g.prods.length > 0){
+        body += `<strong>${g.rol}:</strong>\n`;
+        g.prods.forEach(p => {
+          body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+        });
+        body += '\n';
+      } else if(mostrarAgotados){
+        body += `<strong>${g.rol}:</strong> <em style="color:#ff8888">Agotado ahora mismo</em>. Avísame por WhatsApp cuando vuelve.\n\n`;
+      }
+    }
+    return body;
+  }
+
+  function _sistemaProductos(armado){
+    const out = [];
+    armado.grupos.forEach(g => out.push(...g.prods));
+    return out;
+  }
+
+  /** Capacidad real de una batería, o null si el producto no la declara.
+   *  A diferencia de R.autonomia — que asume 100Ah × 12V para poder dar
+   *  igualmente una respuesta aproximada en el chat — aquí NO se inventa
+   *  nada: la cotización es un papel que el cliente le enseña a un
+   *  instalador, y un número supuesto ahí no se lee como estimación, se lee
+   *  como dato. Sólo cuenta "Ah" escrito con esas letras: el "(75A)" del
+   *  nombre de una batería de auto puede ser corriente de arranque, no
+   *  capacidad, y confundirlos exagera la autonomía casi un tercio. */
+  function _capacidadBateria(p){
+    if(!p) return null;
+    const texto = [p.nombre || ''].concat(p.specs || []).join(' ');
+    const mAh = texto.match(/(\d+(?:[.,]\d+)?)\s*ah\b/i);
+    const mV  = texto.match(/(\d+(?:[.,]\d+)?)\s*v\b/i);
+    if(!mAh || !mV) return null;
+    const ah = parseFloat(mAh[1].replace(',', '.'));
+    const v  = parseFloat(mV[1].replace(',', '.'));
+    if(!(ah > 0) || !(v > 0)) return null;
+    return { ah: ah, v: v, wh: Math.round(ah * v) };
+  }
+
+  // Consumos de referencia para justificar la autonomía en el papel. Son los
+  // mismos que usa el cálculo del chat, para que no digan cosas distintas.
+  const _ESCENARIOS = [
+    { nombre: 'Nevera', w: 150 },
+    { nombre: 'TV + 3 bombillas LED', w: 110 },
+    { nombre: 'Ventilador + 2 bombillas LED', w: 70 }
+  ];
+
+  function _fechaLarga(d){
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
+                   'agosto','septiembre','octubre','noviembre','diciembre'];
+    return d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+  }
+
+  function _folio(d){
+    const dosCifras = n => String(n).padStart(2, '0');
+    return 'TM-' + d.getFullYear() + dosCifras(d.getMonth() + 1) + dosCifras(d.getDate()) +
+           '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
+
+  function _horasTexto(h){
+    if(!(h > 0)) return '—';
+    return h < 1 ? Math.round(h * 60) + ' min' : (h.toFixed(1).replace('.', ',') + ' h');
+  }
+
+  /** Documento HTML completo y autónomo de la propuesta técnica.
+   *  Sin <script>, sin fuentes externas y sin imágenes remotas: se imprime
+   *  desde el navegador tal cual, también sin conexión. */
+  function cotizacionHTML(armado, notas){
+    const hoy = new Date();
+    const esc = escapeHtml;
+    let total = 0;
+    let hayFaltantes = false;
+
+    const filas = armado.grupos.map(g => {
+      const p = g.prods[0];
+      if(!p){
+        if(!g.opcional) hayFaltantes = true;
+        return `<tr class="sin-stock">
+          <td>${esc(g.rol)}</td>
+          <td colspan="4">Sin existencia en este momento — a confirmar por WhatsApp</td>
+        </tr>`;
+      }
+      const subtotal = (Number(p.precio) || 0) * g.cantidad;
+      if(!g.opcional) total += subtotal;
+      const alt = g.prods[1]
+        ? `<div class="alt">Alternativa: ${esc(g.prods[1].nombre)} — ${fmtUSD(g.prods[1].precio)}</div>`
+        : '';
+      const faltaStock = p.stock < g.cantidad
+        ? `<div class="aviso">Quedan ${p.stock} en existencia de ${g.cantidad === 1 ? 'la unidad necesaria' : 'las ' + g.cantidad + ' necesarias'}</div>`
+        : '';
+      return `<tr${g.opcional ? ' class="opcional"' : ''}>
+        <td>${esc(g.rol)}${g.opcional ? '<span class="tag">opcional</span>' : ''}</td>
+        <td><a href="${esc(productUrl(p))}">${esc(p.nombre)}</a>${alt}${faltaStock}</td>
+        <td class="num">${g.cantidad}</td>
+        <td class="num">${fmtUSD(p.precio)}</td>
+        <td class="num">${g.opcional ? '—' : fmtUSD(subtotal)}</td>
+      </tr>`;
+    }).join('\n');
+
+    // Autonomía: sólo si alguna batería del sistema declara su capacidad.
+    let bloqueAutonomia = '';
+    const grupoBat = armado.grupos.find(g => g.subcat === 'BATERÍAS' && g.prods.length);
+    if(grupoBat){
+      const bat = grupoBat.prods[0];
+      const cap = _capacidadBateria(bat);
+      if(cap){
+        const whBanco = cap.wh * grupoBat.cantidad;
+        // Se descuenta la profundidad de descarga y el rendimiento del
+        // inversor. Dar los Wh brutos como si fueran aprovechables es el
+        // error clásico de estas hojas y deja al cliente a mitad de noche.
+        const util = Math.round(whBanco * 0.8 * 0.85);
+        const filasAut = _ESCENARIOS.map(e =>
+          `<tr><td>${esc(e.nombre)}</td><td class="num">${e.w} W</td>` +
+          `<td class="num">${_horasTexto(util / e.w)}</td></tr>`
+        ).join('\n');
+        bloqueAutonomia = `
+        <section class="bloque">
+          <h2>Cálculo de autonomía</h2>
+          <p class="formula">
+            ${esc(bat.nombre)} · ${cap.ah} Ah × ${cap.v} V = <strong>${cap.wh.toLocaleString('es-ES')} Wh</strong>
+            ${grupoBat.cantidad > 1 ? ` × ${grupoBat.cantidad} unidades = <strong>${whBanco.toLocaleString('es-ES')} Wh</strong>` : ''}
+          </p>
+          <p class="nota">
+            De esa capacidad no se aprovecha todo: se calcula sobre el
+            <strong>80&nbsp;%</strong> de descarga útil (descargar por debajo acorta
+            mucho la vida de la batería) y un <strong>85&nbsp;%</strong> de rendimiento
+            del inversor. Energía real disponible: <strong>${util.toLocaleString('es-ES')} Wh</strong>.
+          </p>
+          <table class="tabla">
+            <thead><tr><th>Equipo conectado</th><th class="num">Consumo</th><th class="num">Autonomía</th></tr></thead>
+            <tbody>${filasAut}</tbody>
+          </table>
+          <p class="nota">
+            Las neveras y los aires acondicionados arrancan pidiendo 3–4 veces su
+            consumo normal. El inversor debe aguantar ese pico, no sólo el consumo
+            continuo, o se apagará cada vez que el compresor arranque.
+          </p>
+        </section>`;
+      } else {
+        bloqueAutonomia = `
+        <section class="bloque">
+          <h2>Cálculo de autonomía</h2>
+          <p class="nota">
+            La batería seleccionada (${esc(bat.nombre)}) no declara su capacidad en
+            amperios-hora, así que <strong>no se calcula la autonomía aquí</strong>:
+            estimarla sin ese dato daría un número que parece medido y no lo está.
+            Escríbenos por WhatsApp con el modelo exacto y te lo calculamos.
+          </p>
+        </section>`;
+      }
+    }
+
+    const totalMN = fmtMN(total);
+    const notasHTML = (notas && String(notas).trim())
+      ? `<section class="bloque"><h2>Notas técnicas</h2><p>${esc(notas)}</p></section>`
+      : '';
+
+    return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Propuesta técnica — ${esc(armado.nombre)} — TiendaMax</title>
+<style>
+  :root{ --coral:#FF6A1F; --tinta:#1a1512; --suave:#6b625c; --linea:#e2ddd8; }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; padding:32px 24px 64px;
+    font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--tinta); background:#fff;
+    max-width:820px; margin-inline:auto;
+  }
+  h1{ font-size:25px; line-height:1.2; margin:0 0 4px; text-wrap:balance; }
+  h2{ font-size:16px; margin:0 0 10px; letter-spacing:.02em; text-transform:uppercase; color:var(--coral); }
+  a{ color:inherit; }
+  .cab{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px;
+        border-bottom:3px solid var(--coral); padding-bottom:14px; margin-bottom:22px; }
+  .marca{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
+  .marca span{ color:var(--coral); }
+  .marca small{ display:block; font-size:11px; font-weight:600; letter-spacing:.14em;
+                text-transform:uppercase; color:var(--suave); margin-top:3px; }
+  .folio{ text-align:right; font-size:12px; color:var(--suave); white-space:nowrap; }
+  .folio b{ display:block; font-size:13px; color:var(--tinta); letter-spacing:.04em; }
+  .presu{ color:var(--suave); margin:0 0 24px; }
+  .bloque{ margin:0 0 26px; break-inside:avoid; }
+  .tabla{ width:100%; border-collapse:collapse; font-size:14px; }
+  .tabla th{ text-align:left; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+             color:var(--suave); border-bottom:1px solid var(--linea); padding:0 8px 7px; }
+  /* Sin esto los encabezados quedan a la izquierda sobre columnas de cifras
+     alineadas a la derecha: .tabla th gana por especificidad a .num. */
+  .tabla th.num{ text-align:right; }
+  .bloque .nota + .tabla{ margin-top:16px; }
+  .tabla td{ border-bottom:1px solid var(--linea); padding:9px 8px; vertical-align:top; }
+  .tabla td:first-child{ font-weight:600; width:26%; }
+  .num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .alt, .aviso{ font-size:12px; color:var(--suave); margin-top:3px; }
+  .aviso{ color:#b4540f; }
+  .sin-stock td{ color:var(--suave); font-style:italic; }
+  .opcional td:first-child{ font-weight:500; }
+  .tag{ display:inline-block; margin-left:6px; padding:1px 6px; border-radius:99px;
+        background:#f1ece7; color:var(--suave); font-size:10px; font-weight:700;
+        letter-spacing:.06em; text-transform:uppercase; font-style:normal; }
+  .total{ display:flex; justify-content:flex-end; gap:18px; align-items:baseline;
+          margin-top:14px; padding-top:12px; border-top:2px solid var(--tinta); }
+  .total .cifra{ font-size:23px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .total .mn{ font-size:13px; color:var(--suave); }
+  .formula{ font-size:16px; margin:0 0 8px; }
+  .nota{ font-size:13px; color:var(--suave); margin:8px 0 0; }
+  .pie{ margin-top:34px; padding-top:14px; border-top:1px solid var(--linea);
+        font-size:12px; color:var(--suave); }
+  .pie b{ color:var(--tinta); }
+  /* Abajo y no arriba: en la esquina superior tapaba el folio y la fecha. */
+  .tm-print{ position:fixed; bottom:16px; right:16px; padding:11px 18px; border:0;
+             border-radius:99px; background:var(--coral); color:#fff; font:inherit;
+             font-weight:700; font-size:14px; cursor:pointer;
+             box-shadow:0 4px 14px rgba(0,0,0,.18); }
+  @media print{
+    body{ padding:0; max-width:none; font-size:12pt; }
+    .tm-print{ display:none; }
+    a{ text-decoration:none; }
+    .bloque, tr{ break-inside:avoid; }
+  }
+  @page{ margin:16mm; }
+</style>
+</head>
+<body>
+<button class="tm-print" onclick="window.print()">Imprimir o guardar en PDF</button>
+
+<header class="cab">
+  <div class="marca">Tienda<span>Max</span><small>Propuesta técnica</small></div>
+  <div class="folio"><b>${esc(_folio(hoy))}</b>${esc(_fechaLarga(hoy))}</div>
+</header>
+
+<h1>${esc(armado.nombre)}</h1>
+<p class="presu">Rango de presupuesto de referencia: <strong>${esc(armado.presupuesto)}</strong></p>
+
+<section class="bloque">
+  <h2>Componentes</h2>
+  <table class="tabla">
+    <thead><tr>
+      <th>Función en el sistema</th><th>Producto</th>
+      <th class="num">Cant.</th><th class="num">Precio</th><th class="num">Subtotal</th>
+    </tr></thead>
+    <tbody>${filas}</tbody>
+  </table>
+  <div class="total">
+    <span>Total de lo disponible hoy</span>
+    <span class="cifra">${fmtUSD(total)}</span>
+    ${totalMN ? `<span class="mn">≈ ${esc(totalMN)}</span>` : ''}
+  </div>
+  <p class="nota">
+    El total suma sólo los componentes obligatorios que están en existencia hoy.
+    Los marcados como opcionales y los que aparecen sin existencia
+    ${hayFaltantes ? '— que sí hacen falta para que el sistema funcione — ' : ''}
+    quedan fuera de esa cifra.
+  </p>
+</section>
+
+${bloqueAutonomia}
+${notasHTML}
+
+<footer class="pie">
+  <p><b>Pedidos y consultas:</b> WhatsApp +${esc(WHATSAPP)} · ${esc(SITE_URL)}</p>
+  <p>
+    Precios en USD, ${esc(_fechaLarga(hoy))}. Sujetos a cambio y a existencia en el
+    momento del pedido. Esta propuesta es orientativa: la instalación eléctrica
+    debe revisarla un técnico calificado.
+  </p>
+</footer>
+</body>
+</html>`;
+  }
+
+  /** Abre la propuesta en una pestaña nueva, lista para imprimir o guardar
+   *  en PDF con el propio navegador. Nada de librerías de PDF: en 3G cubano
+   *  bajar medio mega para maquetar una hoja no se justifica, y el diálogo
+   *  del sistema ya ofrece "Guardar como PDF" en Android y en iPhone. */
+  function abrirCotizacion(){
+    if(!_ULTIMO_SISTEMA){
+      addMessageTyped(`Primero arma un sistema y te preparo la propuesta. Prueba con <em>"arma un sistema solar básico"</em>.`, 'bot');
+      renderQuickReplies(['☀️ Armar sistema solar','🔒 Kit de seguridad','💬 WhatsApp']);
+      return;
+    }
+    const html = cotizacionHTML(_ULTIMO_SISTEMA.armado, _ULTIMO_SISTEMA.notas);
+    let win = null;
+    try { win = window.open('', '_blank'); } catch(e){}
+    if(win && win.document){
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      addMessageTyped(`📄 Te abrí la <strong>propuesta técnica</strong> en otra pestaña. Ahí tienes el botón para <em>imprimirla o guardarla en PDF</em> y enviarla por correo.`, 'bot');
+    } else {
+      // Bloqueador de ventanas emergentes: en vez de perder el documento, se
+      // ofrece como descarga directa, que no lo bloquea nadie.
+      try {
+        const url = URL.createObjectURL(new Blob([html], {type:'text/html'}));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'propuesta-tiendamax.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        addMessageTyped(`📄 Tu navegador bloqueó la pestaña nueva, así que te <strong>descargué la propuesta</strong>. Ábrela y usa el botón de imprimir para guardarla en PDF.`, 'bot');
+      } catch(e){
+        addMessageTyped(`No pude abrir la propuesta desde aquí. Escríbeme por WhatsApp y te la mando yo mismo.`, 'bot');
+      }
+    }
+    renderQuickReplies(['💬 WhatsApp','🆚 Comparar inversores','📦 Ver más productos']);
+  }
+
+  // Lo último que armó el cliente, para que el botón de cotizar sepa de qué
+  // sistema hablar sin tener que volver a interpretar la frase original.
+  let _ULTIMO_SISTEMA = null;
+
+  // ════════════════════════════════════════════════════════════
   //  SISTEMA SOLAR COMPLETO
   // ════════════════════════════════════════════════════════════
   R.sistemaSolar = (text) => {
@@ -1827,35 +2173,30 @@
     body += `💰 <strong>Presupuesto estimado:</strong> ${sis.presupuesto}\n\n`;
     body += `📋 <strong>Componentes necesarios</strong> (todos disponibles en TiendaMax):\n\n`;
 
-    const prodsPorRol = [];
-    for(const comp of sis.componentes){
-      const prods = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === comp.subcat && p.stock > 0).slice(0,2);
-      if(prods.length > 0){
-        body += `<strong>${comp.rol}:</strong>\n`;
-        prods.forEach(p => {
-          body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
-        });
-        body += '\n';
-        prodsPorRol.push(...prods);
-      } else {
-        body += `<strong>${comp.rol}:</strong> <em style="color:#ff8888">Agotado ahora mismo</em>. Avísame por WhatsApp cuando vuelve.\n\n`;
-      }
-    }
+    const armado = _armarSistema(sis);
+    body += _sistemaCuerpo(armado, true);
 
-    body += `💡 <strong>Tip de experto:</strong> `;
+    let tip;
     if(tamano === 'solar basico'){
-      body += `Para luz y carga de celular, una batería de plomo-ácido de 50Ah basta. Si quieres conectar nevera después, ve por LiFePO4 directamente.`;
+      tip = `Para luz y carga de celular, una batería de plomo-ácido de 50Ah basta. Si quieres conectar nevera después, ve por LiFePO4 directamente.`;
     } else if(tamano === 'solar mediano'){
-      body += `Con 100Ah a 12V tienes 1200Wh, suficiente para nevera (~150W) durante 6-8 horas en apagón. Inversor onda pura obligatorio para nevera.`;
+      // Antes decía "6-8 horas". Salían de dividir 1200Wh entre 150W sin
+      // descontar nada, y la cotización — que sí descuenta descarga útil y
+      // rendimiento del inversor — daba 5,8 h en el mismo documento. Se
+      // corrige aquí para que el chat y el papel no se contradigan.
+      tip = `Con 100Ah a 12V tienes 1200Wh en el papel, pero descontando la descarga útil de la batería y las pérdidas del inversor cuentas con unas 5-6 horas de nevera (~150W). Inversor onda pura obligatorio para nevera.`;
     } else {
-      body += `Para casa completa necesitas inversor híbrido (carga batería con panel Y con red eléctrica). Sistema 48V es más eficiente que 12V a esta escala.`;
+      tip = `Para casa completa necesitas inversor híbrido (carga batería con panel Y con red eléctrica). Sistema 48V es más eficiente que 12V a esta escala.`;
     }
+    body += `💡 <strong>Tip de experto:</strong> ` + tip;
     body += `\n\n¿Quieres que te arme la <em>comparativa</em> de los inversores disponibles, o prefieres que te calcule la <em>autonomía</em> exacta con tus equipos?`;
+
+    _ULTIMO_SISTEMA = { armado: armado, notas: tip };
 
     return {
       response: body,
-      products: prodsPorRol.slice(0,4),
-      quickReplies: ['🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp']
+      products: _sistemaProductos(armado).slice(0,4),
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp']
     };
   };
 
@@ -1866,33 +2207,26 @@
     body += `💰 <strong>Presupuesto estimado:</strong> ${sis.presupuesto}\n\n`;
     body += `📋 <strong>Componentes recomendados</strong> (todos disponibles):\n\n`;
 
-    const prodsPorRol = [];
-    for(const comp of sis.componentes){
-      const prods = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === comp.subcat && p.stock > 0).slice(0,2);
-      if(prods.length > 0){
-        body += `<strong>${comp.rol}:</strong>\n`;
-        prods.forEach(p => {
-          body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
-        });
-        body += '\n';
-        prodsPorRol.push(...prods);
-      }
-    }
+    const armado = _armarSistema(sis);
+    body += _sistemaCuerpo(armado, false);
 
-    body += `💡 <strong>Tip de experto:</strong> `;
+    let tip;
     if(/exterior|patio|afuera|calle/.test(m)){
-      body += `Para exterior necesitas cámara con clasificación IP66 (resistente al agua) y visión nocturna. Las cámaras tipo bala son ideales para exteriores.`;
+      tip = `Para exterior necesitas cámara con clasificación IP66 (resistente al agua) y visión nocturna. Las cámaras tipo bala son ideales para exteriores.`;
     } else if(/negocio|tienda|comercio|local/.test(m)){
-      body += `Para negocio te conviene un kit con DVR + 4-8 cámaras. Grabación 24/7 sin depender de wifi. Más caro pero más serio.`;
+      tip = `Para negocio te conviene un kit con DVR + 4-8 cámaras. Grabación 24/7 sin depender de wifi. Más caro pero más serio.`;
     } else {
-      body += `Para casa basta con 2-3 cámaras wifi (algunas con rosca E27 que instalas en segundos) + la app del celular. Si quieres sumar cerradura biométrica, mejor.`;
+      tip = `Para casa basta con 2-3 cámaras wifi (algunas con rosca E27 que instalas en segundos) + la app del celular. Si quieres sumar cerradura biométrica, mejor.`;
     }
+    body += `💡 <strong>Tip de experto:</strong> ` + tip;
     body += `\n\n¿Quieres que te <em>compare las cámaras</em> disponibles, o prefieres ver <em>opciones por presupuesto</em>?`;
+
+    _ULTIMO_SISTEMA = { armado: armado, notas: tip };
 
     return {
       response: body,
-      products: prodsPorRol.slice(0,4),
-      quickReplies: ['🆚 Comparar cámaras','💬 WhatsApp','⏱️ Ver alternativas']
+      products: _sistemaProductos(armado).slice(0,4),
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar cámaras','💬 WhatsApp','⏱️ Ver alternativas']
     };
   };
 
@@ -1904,31 +2238,24 @@
     body += `💰 <strong>Presupuesto estimado:</strong> ${sis.presupuesto}\n\n`;
     body += `📋 <strong>Componentes recomendados</strong> (todos disponibles):\n\n`;
 
-    const prodsPorRol = [];
-    for(const comp of sis.componentes){
-      const prods = PRODUCTOS.filter(p => (p.subcategoria||'').toUpperCase() === comp.subcat && p.stock > 0).slice(0,2);
-      if(prods.length > 0){
-        body += `<strong>${comp.rol}:</strong>\n`;
-        prods.forEach(p => {
-          body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
-        });
-        body += '\n';
-        prodsPorRol.push(...prods);
-      }
-    }
+    const armado = _armarSistema(sis);
+    body += _sistemaCuerpo(armado, false);
 
-    body += `💡 <strong>Tip de experto:</strong> `;
+    let tip;
     if(esFinca){
-      body += `Para finca sin fibra, un router 4G LTE con SIM de ETECSA es la solución. Velocidad depende de la señal celular en tu zona. La antena CPE exterior mejora mucho la recepción si la señal es débil.`;
+      tip = `Para finca sin fibra, un router 4G LTE con SIM de ETECSA es la solución. Velocidad depende de la señal celular en tu zona. La antena CPE exterior mejora mucho la recepción si la señal es débil.`;
     } else {
-      body += `Para casa con fibra ETECSA, necesitas router con puerto WAN Gigabit para aprovechar la velocidad. Wi-Fi 6 si tienes 10+ dispositivos, Wi-Fi 5 (AC1200) basta para menos.`;
+      tip = `Para casa con fibra ETECSA, necesitas router con puerto WAN Gigabit para aprovechar la velocidad. Wi-Fi 6 si tienes 10+ dispositivos, Wi-Fi 5 (AC1200) basta para menos.`;
     }
+    body += `💡 <strong>Tip de experto:</strong> ` + tip;
     body += `\n\n¿Quieres que te <em>compare los routers</em>, o prefieres ver <em>qué router tiene puerto WAN</em>?`;
+
+    _ULTIMO_SISTEMA = { armado: armado, notas: tip };
 
     return {
       response: body,
-      products: prodsPorRol.slice(0,4),
-      quickReplies: ['🆚 Comparar routers','📖 Qué router tiene puerto WAN','💬 WhatsApp']
+      products: _sistemaProductos(armado).slice(0,4),
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar routers','📖 Qué router tiene puerto WAN','💬 WhatsApp']
     };
   };
 
@@ -3524,6 +3851,9 @@
 
   function handleQuickReply(reply){
     const r = reply.toLowerCase();
+    // Va la primera: el documento se arma con lo que ya está en memoria, sin
+    // volver a preguntarle nada al cliente.
+    if(/cotizaci[oó]n|propuesta t[eé]cnica/.test(r)){ abrirCotizacion(); return; }
     // Estas tres van primero a propósito: /whatsapp/ de más abajo las
     // capturaría y abriría un chat vacío en vez de hacer lo que dicen.
     if(/pedir por whatsapp/.test(r)){
@@ -4162,6 +4492,11 @@
     armarSistemaSolar: R.sistemaSolar,
     armarSistemaSeguridad: R.sistemaSeguridad,
     armarSistemaInternet: R.sistemaInternet,
+    armarSistema: _armarSistema,
+    capacidadBateria: _capacidadBateria,
+    cotizacionHTML,
+    abrirCotizacion,
+    get ultimoSistema(){ return _ULTIMO_SISTEMA; },
     comparacionTecnologica: R.comparacionTecnologica,
     KNOWLEDGE,
     SISTEMAS,
