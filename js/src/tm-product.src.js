@@ -1258,7 +1258,11 @@ var _tmResizeTimer = null;
 window.addEventListener('resize', function() {
     if (_tmResizeTimer) clearTimeout(_tmResizeTimer);
     _tmResizeTimer = setTimeout(function() {
-        if (typeof renderizarProductos === 'function' && !document.getElementById('productDetailModal').classList.contains('modal-show')) {
+        // El modal solo existe en index.html. En admin.html esto era null y
+        // cada cambio de tamaño de ventana (o girar el móvil) lanzaba un
+        // TypeError que mataba el resto del manejador.
+        var _modal = document.getElementById('productDetailModal');
+        if (typeof renderizarProductos === 'function' && !(_modal && _modal.classList.contains('modal-show'))) {
             // Solo re-renderizar si estamos en vista de categoría y no en modal
             var grid = document.getElementById('productosGrid');
             if (grid && grid.offsetParent !== null && grid.children.length > 0) {

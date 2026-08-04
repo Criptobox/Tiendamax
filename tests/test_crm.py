@@ -64,6 +64,21 @@ class DatosDelClienteTest(unittest.TestCase):
             "ventaRegistrar debe pasarle el cliente al motor",
         )
 
+    def test_el_seguimiento_vive_dentro_de_la_tabla_de_clientes(self):
+        # Estuvo un rato como pestaña aparte y era el mismo dato en dos sitios.
+        self.assertNotIn(
+            "pill('seguimiento'", self.admin,
+            "el seguimiento se muestra dentro de Clientes, no en una pestaña propia",
+        )
+        self.assertRegex(
+            self.admin, r"CLI_VIEW==='clientes'[\s\S]{0,3000}segEnviar\(",
+            "la vista de Clientes debe traer el botón para escribirle al cliente",
+        )
+
+    def test_no_vuelve_la_pestana_muerta_de_whatsapp(self):
+        # Solo servía para explicar que no había nada que enseñar.
+        self.assertNotIn("pill('whatsapp'", self.admin)
+
     def test_el_motor_guarda_lo_que_recibe(self):
         m = re.search(r"function registrarVentaPedido\(items,\s*cliente\)", self.ui)
         self.assertIsNotNone(m, "registrarVentaPedido debe aceptar el cliente")

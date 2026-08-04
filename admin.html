@@ -1553,7 +1553,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=451bb446"></script>
+<script src="js/tm-bundle.js?v=9a697329"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3475,67 +3475,79 @@ async function anSubsBorrarUno(fbKey,fp,tok){ await tmBorrarSuscriptor(fbKey,fp,
 let CLI_VIEW='clientes';
 function cliSwitch(v){ CLI_VIEW=v; renderClientes(); }
 function renderClientes(){
+  // Un cliente por fila, con el seguimiento dentro. Se probó como pestaña
+  // aparte y era el mismo dato en dos sitios: aquí el nombre y el teléfono,
+  // allí a quién escribirle. Una sola tabla y ya.
   const cli={};
-  VENTAS.forEach(v=>{ const nm=(v.cliente||v.nombre||'').trim(); if(!nm)return; const k=norm(nm); if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:v.telefono||v.tel||'',ultima:0}; cli[k].compras++; cli[k].total+=ventaTotal(v);
-    if(!cli[k].tel && (v.telefono||v.tel)) cli[k].tel=v.telefono||v.tel;
-    const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0; if(ts&&ts>cli[k].ultima) cli[k].ultima=ts; });
-  const list=Object.values(cli).sort((a,b)=>b.total-a.total);
+  VENTAS.forEach(v=>{
+    const nm=(v.cliente||v.nombre||'').trim();
+    const tel=(typeof tmTelDe==='function')?tmTelDe(v):String(v.telefono||v.tel||'');
+    // Con teléfono pero sin nombre también es un cliente: si se descarta, su
+    // seguimiento no aparece en ningún sitio.
+    if(!nm && !tel) return;
+    const k = nm ? norm(nm) : ('tel:'+tel);
+    if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:tel,ultima:0,seg:null};
+    cli[k].compras++; cli[k].total+=ventaTotal(v);
+    if(!cli[k].tel && tel) cli[k].tel=tel;
+    const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0; if(ts&&ts>cli[k].ultima) cli[k].ultima=ts;
+  });
   const pend=(typeof tmSeguimientosPendientes==='function')?tmSeguimientosPendientes(VENTAS):[];
-  $('#cli-sub').textContent = list.length+' clientes · '+pend.length+' por contactar · reviews · avisos';
+  // A cada cliente, el seguimiento más atrasado de sus compras: uno solo, para
+  // no mandarle dos mensajes el mismo día a la misma persona.
+  pend.forEach(s=>{
+    const nm=(s.nombre||'').trim();
+    const k = nm ? norm(nm) : ('tel:'+s.tel);
+    if(cli[k] && !cli[k].seg) cli[k].seg=s;
+  });
+  // Primero a quien hay que escribirle, y dentro de eso lo más atrasado.
+  const list=Object.values(cli).sort((a,b)=>
+    (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0) || b.total-a.total);
+  const porContactar=list.filter(c=>c.seg).length;
+  $('#cli-sub').textContent = list.length+' clientes · '+porContactar+' por contactar · reviews · avisos';
   const P=$('#cli-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${CLI_VIEW===v?'btn-primary':'btn-ghost'}" onclick="cliSwitch('${v}')">${l}</button>`;
-    P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('seguimiento','📞 Seguimiento ('+pend.length+')')+pill('avisos','🔔 Avísame')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos')+pill('whatsapp','💬 WhatsApp'); }
+    P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('avisos','🔔 Avísame')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos'); }
   const box=$('#cli-lista'); if(!box) return;
   if(CLI_VIEW==='clientes'){
-    box.innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th><th>Última compra</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td><td>${c.ultima?esc(new Date(c.ultima).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})):'—'}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas.</small></div></div>`;
-  } else if(CLI_VIEW==='seguimiento'){
-    renderSeguimiento(box, pend);
+    const fecha=ts=>ts?esc(new Date(ts).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})):'—';
+    const accion=c=>{
+      if(!c.seg) return c.tel
+        ? `<span style="color:var(--gray);font-size:11.5px">Al día</span>`
+        : `<span style="color:var(--gray);font-size:11.5px">Sin WhatsApp</span>`;
+      const s=c.seg, id=esc(String(s.venta.id));
+      // El retraso se enseña porque un seguimiento se enfría: a los 3 días
+      // "¿te llegó bien?" es atención; a los 12, un trámite.
+      const atraso=s.atraso>0?`<span style="color:#ffb347"> · ${s.atraso}d de retraso</span>`:'';
+      return `<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+        <div style="min-width:132px"><span style="color:#fff;font-weight:700;font-size:12px">${s.icono} ${esc(s.etiqueta)}</span><br>
+        <span style="color:var(--gray);font-size:11px">hace ${s.dias}d${atraso}</span></div>
+        <button class="btn btn-primary" style="padding:5px 11px;font-size:11.5px;white-space:nowrap" onclick="segEnviar('${id}')">💬 Escribir</button>
+        <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="segSaltar('${id}')">Saltar</button>
+      </div>`;
+    };
+    box.innerHTML = list.length
+      ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
+         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span></td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
+      : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
   } else if(CLI_VIEW==='avisos'){
     renderAvisos(box);
   } else {
-    const info={ carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carrito de servidor que registre cuándo alguien deja productos sin comprar.'], whatsapp:['💬','WhatsApp','Los pedidos entran por WhatsApp (click-to-chat): el mensaje se abre directo en el teléfono del cliente y no pasa por ningún servidor de TiendaMax que lo pueda guardar aquí.'] }[CLI_VIEW];
+    // La pestaña "WhatsApp" vivía aquí y solo servía para explicar que no había
+    // nada que enseñar. Ahora los mensajes al cliente salen de la propia tabla
+    // de Clientes, así que se quitó en vez de dejar un cartel.
+    const info={ carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carrito de servidor que registre cuándo alguien deja productos sin comprar.'] }[CLI_VIEW];
+    // Una vista que ya no existe (guardada de una sesión anterior) no debe
+    // dejar el panel en blanco: se vuelve a Clientes.
+    if(!info){ CLI_VIEW='clientes'; renderClientes(); return; }
     box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — no disponible</b><br>${info[2]}<br><br><small>No es que falte activarlo: hoy no existe ningún registro de esto que se pueda mostrar. Habría que construir un backend nuevo para guardarlo — no es un simple ajuste de este panel.</small></div></div>`;
   }
 }
-/* ── Seguimiento post-venta: a quién toca escribirle hoy ──────────────
-   Qué hito toca y con qué texto se decide en js/src/tm-crm.src.js (funciones
-   puras, con tests). Aquí solo se pinta y se abre WhatsApp. */
-function renderSeguimiento(box, pend){
-  const conTel = VENTAS.filter(v=> typeof tmTelDe==='function' && tmTelDe(v)).length;
-  if(!pend.length){
-    box.innerHTML = conTel
-      ? `<div class="section"><div class="empty"><div class="ico">✅</div><b style="color:#fff">Nada pendiente hoy</b><br>Los ${conTel} clientes con WhatsApp están al día.<br><small>Los seguimientos aparecen solos a los 3, 30 y 90 días de cada compra.</small></div></div>`
-      : `<div class="section"><div class="empty"><div class="ico">📞</div><b style="color:#fff">Todavía no hay a quién escribirle</b><br>El seguimiento sale de las ventas que llevan WhatsApp.<br><small>Al registrar una venta en <b>⚡ Ventas</b>, rellena el número: a los 3 días aparece aquí solo.</small></div></div>`;
-    return;
-  }
-  const fila = s => {
-    const prods = (typeof tmProductosDeVenta==='function') ? tmProductosDeVenta(s.venta) : [];
-    // El atraso se enseña porque un seguimiento se enfría: a los 3 días
-    // "¿te llegó bien?" es atención; a los 12, es un trámite.
-    const atraso = s.atraso>0
-      ? `<span style="color:#ffb347;font-weight:700">· ${s.atraso} día${s.atraso>1?'s':''} de retraso</span>` : '';
-    const id = esc(String(s.venta.id));
-    return `<div style="display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:7px">
-      <div style="font-size:20px;line-height:1.2">${s.icono}</div>
-      <div style="flex:1;min-width:0">
-        <div style="color:#fff;font-weight:800;font-size:13px">${esc(s.nombre||'(sin nombre)')} <span style="color:var(--gray);font-weight:600">· ${esc(s.tel)}</span></div>
-        <div style="font-size:11.5px;color:var(--gray);margin-top:2px">${esc(s.etiqueta)} — ${esc(s.para)}</div>
-        <div style="font-size:11.5px;color:var(--gray);margin-top:2px">${esc(prods.join(', ')||'compra')} · hace ${s.dias} día${s.dias===1?'':'s'} ${atraso}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px">
-        <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;white-space:nowrap" onclick="segEnviar('${id}')">💬 Escribir</button>
-        <button class="btn btn-ghost" style="padding:4px 12px;font-size:11px" onclick="segSaltar('${id}')">Saltar</button>
-      </div>
-    </div>`;
-  };
-  box.innerHTML = `<div class="section">
-    <h3>📞 Pendientes de hoy <span class="badge">${pend.length}</span></h3>
-    <p style="font-size:11.5px;color:var(--gray);margin:0 0 12px">El mensaje se abre escrito en WhatsApp — puedes cambiarlo antes de enviarlo. Lo más atrasado va primero.</p>
-    ${pend.map(fila).join('')}
-  </div>`;
-}
+/* ── Seguimiento post-venta ──────────────────────────────────────────
+   Qué hito toca y con qué texto se decide en js/src/tm-crm.src.js
+   (funciones puras, con tests). Aquí solo se abre WhatsApp: la lista
+   de a quién escribirle se pinta dentro de la tabla de Clientes. */
 /** Abre WhatsApp con el mensaje puesto y da el hito por atendido. Mismo criterio
  *  que avisoWhats() con la lista de espera: si abriste el chat, ya lo trataste. */
 function segEnviar(ventaId){
@@ -3553,7 +3565,7 @@ function segSaltar(ventaId){
   showToast('Saltado', 'Ese seguimiento no volverá a salir');
   renderClientes();
 }
-window.segEnviar=segEnviar; window.segSaltar=segSaltar; window.renderSeguimiento=renderSeguimiento;
+window.segEnviar=segEnviar; window.segSaltar=segSaltar;
 
 /* ── Reviews reales (Firebase /resenas) ── */
 function rtdbBase(){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null); }catch(e){ return null; } }
