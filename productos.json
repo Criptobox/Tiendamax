@@ -3101,5 +3101,34 @@
     ],
     "fechaAgregado": "2026-07-29T00:51:29.086Z",
     "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores.\nGanancia y Cobertura: 📶 Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido.\nConectividad Física: 🔌 Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation M5.\nTipo: CPE Inalámbrico para exteriores (Versión Internacional)."
+  },
+  {
+    "id": 1785866159148,
+    "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
+    "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US.\nFicha Técnica:\nAlimentación y Entrada: ⚡ Voltaje de entrada de corriente alterna de 110V a 60Hz con una potencia máxima de 275W.\nSalida y Rendimiento: 🔌 Tensión de salida nominal de 54.6V con una corriente de carga continua de 5.0A optimizada para baterías de litio de 48V.\nSeguridad y Operación: 🔋 Incorpora advertencias operativas para uso exclusivo en interiores, ventilación adecuada y protección contra sobrecargas o cortocircuitos.\nEspecificaciones (Specs):\nMarca: BIEN.\nModelo: 48V 5A (54.6V) US PIN.\nTipo: Cargador para baterías de litio.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866155608.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866157414.webp"
+    ],
+    "precioActual": 40,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 4,
+    "comisionMoneda": "USD",
+    "categoria": "MOTOS",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Salida de 48V / 5A (54.6V)",
+      "🔌 Conector Tipo US Pin",
+      "🔋 Carga Rápida para Litio-Ion"
+    ],
+    "fechaAgregado": "2026-08-04T17:55:59.149Z"
   }
 ]
