@@ -169,6 +169,20 @@ def revisar_web_vitals(db) -> tuple[Result | None, dict]:
         if isinstance(bucket, dict):
             muestras += [m for m in bucket.values() if isinstance(m, dict)]
 
+    # CERO muestras no es "van pocas": es que no llega ninguna. Con tráfico en
+    # la tienda eso significa que algo está roto y no avisa solo — la causa más
+    # probable es que las reglas de /web_vitals no estén publicadas en la
+    # consola de Firebase, y entonces cada visita escribe contra un 401 que el
+    # snippet se traga en silencio (es fire-and-forget a propósito, para no
+    # molestar al cliente). Sin este aviso, la métrica se queda muerta durante
+    # meses y solo se descubre al ir a mirarla.
+    if not muestras:
+        return (
+            Result("warn", "Web Vitals",
+                   "0 muestras: nadie está reportando. Revisa que las reglas de "
+                   "/web_vitals estén publicadas en Firebase"),
+            {"muestras": 0},
+        )
     if len(muestras) < VITALS_MIN_MUESTRAS:
         return (
             Result("ok", "Web Vitals", f"{len(muestras)} muestras (pocas aún, no se evalúa)"),

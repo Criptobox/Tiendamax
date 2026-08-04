@@ -73,6 +73,22 @@ class RevisarWebVitalsTest(unittest.TestCase):
         self.assertIsNone(res)
         self.assertEqual(resumen, {})
 
+    def test_cero_muestras_avisa_en_vez_de_callarse(self):
+        # Es el estado en el que queda la métrica si las reglas de /web_vitals
+        # no están publicadas: cada visita escribe contra un 401 que el snippet
+        # se traga a propósito (es fire-and-forget para no molestar al cliente).
+        # Sin aviso, se queda muerta meses y solo se descubre al ir a mirarla.
+        res, resumen = wha.revisar_web_vitals(_DbFalsa({}))
+        self.assertEqual(res.level, "warn")
+        self.assertIn("reglas", res.detail)
+        self.assertEqual(resumen["muestras"], 0)
+
+    def test_una_sola_muestra_no_es_lo_mismo_que_ninguna(self):
+        # Con tráfico bajo puede llegar una y ya: eso es "van pocas", no "está
+        # roto". Confundirlos haría sonar Telegram cada media hora sin motivo.
+        res, _ = wha.revisar_web_vitals(_DbFalsa({f"web_vitals/{_dia()}": _muestras(1)}))
+        self.assertEqual(res.level, "ok")
+
     def test_pocas_muestras_no_se_evalua(self):
         db = _DbFalsa({f"web_vitals/{_dia()}": _muestras(3)})
         res, resumen = wha.revisar_web_vitals(db)
