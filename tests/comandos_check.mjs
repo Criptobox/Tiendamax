@@ -114,6 +114,23 @@ ok(/no tengo el plazo|no lo tengo anotado/i.test(gar),
 ok(!/\b(\d+)\s*(mes|a[ñn]o)/i.test(gar),
     'no debe inventarse un plazo de garantía que la ficha no trae');
 
+// ── "¿Qué es X?" — lo primero que Max anuncia en su saludo ───────────────
+// Ninguna forma de preguntarlo llegaba a la explicación: "qué es un inversor"
+// daba la lista de inversores, "qué es MPPT" una búsqueda vacía y "qué es onda
+// pura" la ficha de un producto. La función existía y era inalcanzable.
+for (const q of ['que es un inversor', 'que es mppt', 'que significa mppt',
+                 'explicame que es poe', 'que es lifepo4', 'que es onda pura']) {
+    ok(intent(q) === 'tecnico', `"${q}" → ${intent(q)}, debería explicar el término`);
+}
+// Y la explicación va PRIMERO: quien pregunta qué es algo no preguntó por el
+// inventario, y se le contestaba con "no encontré productos" antes que nada.
+const def = B.responder('que es onda pura').response.replace(/<[^>]+>/g, '');
+ok(def.indexOf('onda pura') < def.indexOf('no tengo productos'),
+    'en una definición, la explicación va antes que el aviso de inventario');
+
+// Los filtros técnicos siguen funcionando: son otra pregunta.
+ok(intent('que router tiene puerto wan') === 'tecnico', 'el filtro técnico sigue igual');
+
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

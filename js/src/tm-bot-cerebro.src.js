@@ -1315,6 +1315,15 @@
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
     if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)) return 'compatibilidad';
 
+    // DEFINICIÓN: "¿qué es MPPT?", "¿para qué sirve un controlador?".
+    // Lo primero que Max anuncia en su saludo es que explica términos técnicos,
+    // y NINGUNA forma de preguntarlo llegaba aquí: "qué es un inversor" daba la
+    // lista de inversores, "qué es MPPT" una búsqueda vacía y "qué es onda
+    // pura" la ficha de un producto. El único camino que funcionaba era
+    // "qué router tiene puerto WAN", que no es una definición sino un filtro.
+    if(/\b(qu[eé] es|qu[eé] son|qu[eé] significa|qu[eé] quiere decir|para qu[eé] sirve|expl[ií]ca(me)?|def[ií]ne(me)?|en qu[eé] consiste)\b/.test(m)
+       && detectTechTerms(text).length > 0) return 'tecnico';
+
     // "¿cuál es el mejor router?" pide una recomendación, no la definición de
     // lo que es un router — que es lo que contestaba al caer en 'tecnico'.
     if(/\b(el|la|los|las) mejor(es)?\b/.test(m) && !/\bvs\b|versus|diferencia/.test(m)){
@@ -3536,11 +3545,15 @@ ${notasHTML}
     products = products.slice(0, 4);
 
     if(products.length === 0){
-      let body = `🔍 No encontré productos disponibles con esa característica${_context.presupuesto ? ` y presupuesto de $${_context.presupuesto}` : ''} ahora mismo.`;
       const explicas = techKeys.map(k => buildTechExplanation(k)).filter(Boolean);
-      if(explicas.length > 0){
-        body += '\n\n' + explicas.join('\n\n');
-      }
+      // Quien pregunta "¿qué es onda pura?" quiere la explicación, no un aviso
+      // de inventario. Empezar por "no encontré productos" contestaba a otra
+      // pregunta antes que a la suya.
+      const esDefinicion = /\b(qu[eé] es|qu[eé] son|qu[eé] significa|qu[eé] quiere decir|para qu[eé] sirve|expl[ií]ca(me)?|def[ií]ne(me)?|en qu[eé] consiste)\b/.test(String(text || '').toLowerCase());
+      const sinStock = `🔍 Ahora mismo no tengo productos disponibles con esa característica${_context.presupuesto ? ` y presupuesto de $${_context.presupuesto}` : ''}.`;
+      let body = esDefinicion
+        ? (explicas.join('\n\n') + (explicas.length ? '\n\n' : '') + sinStock)
+        : (sinStock + (explicas.length ? '\n\n' + explicas.join('\n\n') : ''));
       body += `\n\n¿Quieres ver todos los productos de alguna categoría? Toca una opción:`;
       return {
         response: body,
