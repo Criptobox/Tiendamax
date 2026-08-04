@@ -1253,20 +1253,28 @@
 
     // Saludo
     // ─── COMANDOS ESPECIALES (con /) ───
-    if(/^\/(ayuda|help|comandos)/i.test(m)) return 'ayuda';
-    if(/^\/(limpiar|clear|reset)/i.test(m)) return 'resetCmd';
-    if(/^\/(envios|envíos|envio)/i.test(m)) return 'envios';
-    if(/^\/(pago|pagar)/i.test(m)) return 'pago';
-    if(/^\/(tasa|dolar)/i.test(m)) return 'tasa';
-    if(/^\/(categorias|cat)/i.test(m)) return 'categorias';
-    if(/^\/(ofertas)/i.test(m)) return 'ofertas';
-    if(/^\/(whatsapp|contacto)/i.test(m)) return 'whatsapp';
-    if(/^\/(deseos|favoritos|wishlist|lista)/i.test(m)) return 'wishlist';
+    // Los botones del panel llevan emoji delante ("🤖 /ayuda"), y el ancla ^\/
+    // no casaba con eso: el comando se perdía y caía en 'recomendacion', así
+    // que pedir ayuda devolvía una lista de productos. Se quita lo que haya
+    // antes de la barra para probar los comandos.
+    const mCmd = m.replace(/^[^\w\/]+/, '');
+    if(/^\/(ayuda|help|comandos)/i.test(mCmd)) return 'ayuda';
+    // "ayuda" a secas también es pedir ayuda. Dentro de una frase ("necesito
+    // ayuda con un router") sigue siendo una recomendación, que es lo correcto.
+    if(/^(ayuda|help|comandos|no s[eé] qu[eé] hacer)[\s!?.¿¡]*$/i.test(mCmd)) return 'ayuda';
+    if(/^\/(limpiar|clear|reset)/i.test(mCmd)) return 'resetCmd';
+    if(/^\/(envios|envíos|envio)/i.test(mCmd)) return 'envios';
+    if(/^\/(pago|pagar)/i.test(mCmd)) return 'pago';
+    if(/^\/(tasa|dolar)/i.test(mCmd)) return 'tasa';
+    if(/^\/(categorias|cat)/i.test(mCmd)) return 'categorias';
+    if(/^\/(ofertas)/i.test(mCmd)) return 'ofertas';
+    if(/^\/(whatsapp|contacto)/i.test(mCmd)) return 'whatsapp';
+    if(/^\/(deseos|favoritos|wishlist|lista)/i.test(mCmd)) return 'wishlist';
 
     // ─── CARRITO ───
     // Va antes que deseos porque "quiero pedir todo" es ambiguo y aquí el
     // cliente ya dijo la palabra carrito: eso desempata.
-    if(/\bcarrito\b/i.test(m) || /^\/(carrito|cesta)/i.test(m)) return 'carrito';
+    if(/\bcarrito\b/i.test(m) || /^\/(carrito|cesta)/i.test(mCmd)) return 'carrito';
 
     // ─── LISTA DE DESEOS (intención natural) ───
     if(/\b(lista de deseos|mis favoritos|mi lista|ver mi lista|wishlist|deseos|favoritos|guardar en favoritos|añadir a favoritos|añadir a deseos|añade a mi lista|agrega a favoritos|quita de deseos|sacar de favoritos|vaciar lista|vaciar deseos)\b/i.test(m)) return 'wishlist';
