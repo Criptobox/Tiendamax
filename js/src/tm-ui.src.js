@@ -1818,7 +1818,12 @@ renderizarProductos = function() {
         const _nomHTML = (typeof tmNombreHTML === 'function') ? tmNombreHTML(_nomCorto) : _nom;
         const _img = escapeAttr(producto.imagen);
         const _stk = safeNum(producto.stock);
-        const _txt = escapeHtml(getOfertaDiaTexto());
+        // La etiqueta de la esquina NO lleva el texto libre de la oferta. Ese
+        // texto lo escribe el admin a mano ("🔥🔥🔥 TU MEJOR OPCIÓN 🔥🔥🔥") y en
+        // una pastilla de dos centímetros salía cortado — "🔥🔥🔥 TU MEJOR…" —,
+        // que no dice nada y encima parece roto. Va el descuento si lo hay, y
+        // si no una palabra corta: lo que sí cabe y sí informa.
+        const _txt = 'OFERTA';
         const _cat = escapeHtml(producto.categoria || '');
         const _tieneGarantia = producto.garantia && String(producto.garantia).trim();
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
@@ -1827,7 +1832,7 @@ renderizarProductos = function() {
         const _vendidos = (typeof _tmVendidosCount === 'function') ? _tmVendidosCount(_id) : 0;
         const _tag = esAgotado
             ? '<span class="pv2-tag out">AGOTADO</span>'
-            : (esOfertaDia ? '<span class="pv2-tag oferta">' + _txt + '</span>'
+            : (esOfertaDia ? '<span class="pv2-tag oferta">' + (_hasDescuento ? '-' + _pctDesc + '%' : _txt) + '</span>'
                 : (_hasDescuento ? '<span class="pv2-tag">-' + _pctDesc + '%</span>'
                     : (_stk > 0 && _stk <= 3 ? '<span class="pv2-tag last">' + tmIcoUI('⚡') + ' Últimas ' + _stk + '</span>'
                         : (_vendidos >= 3 ? '<span class="pv2-tag hot">' + tmIcoUI('🔥') + ' ' + _vendidos + ' vendidos</span>'

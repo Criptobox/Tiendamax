@@ -403,7 +403,20 @@
             sessionStorage.setItem('tm_bot_welcome_shown', '1');
             welcome.classList.add('visible');
             bubble.classList.add('has-new');
-            setTimeout(() => { if (!_panelOpen) welcome.classList.remove('visible'); }, 9000);
+            const _cerrar = () => {
+                if (_panelOpen) return;
+                welcome.classList.remove('visible');
+                window.removeEventListener('scroll', _alDesplazar);
+            };
+            // Se quita solo en cuanto el cliente empieza a mirar. El globo se
+            // queda encima del catálogo, y quien ya está desplazando no
+            // necesita que le ofrezcan ayuda: la necesita quien se quedó
+            // parado. Nueve segundos fijos tapaban dos tarjetas mientras las
+            // estaba leyendo.
+            let _y0 = window.scrollY;
+            const _alDesplazar = () => { if (Math.abs(window.scrollY - _y0) > 120) _cerrar(); };
+            window.addEventListener('scroll', _alDesplazar, { passive: true });
+            setTimeout(_cerrar, 9000);
         }, 4000);
     }
 

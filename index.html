@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=ef11fcd8" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b83b442f" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=5dca7c04">
+    <link rel="stylesheet" href="css/bundle.css?v=5643327c">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -1644,7 +1644,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=ef11fcd8" defer></script>
+    <script src="js/tm-bundle.js?v=b83b442f" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1833,7 +1833,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=5f279530" defer></script>
+    <script src="js/tm-bot.js?v=6067af52" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──
