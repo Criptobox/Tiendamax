@@ -416,6 +416,27 @@
       how: 'Solo en controladores de carga básicos. Si el panel es grande o quieres eficiencia, ve por MPPT.',
       related: ['mppt','solar','controlador'],
     },
+    'controlador de carga': {
+      term: 'Controlador de carga solar',
+      what: 'Es la pieza que va entre el panel y la batería. Regula cuánta corriente entra para que la batería se cargue bien y no se pase.',
+      why: 'Sin él, el panel carga a lo bruto: en un día fuerte sobrecarga la batería y la estropea, y de noche la batería se descarga hacia el panel.',
+      how: 'Se conecta primero la batería, después el panel y la carga al final. Los hay PWM (más baratos) y MPPT (aprovechan 20-30 % más).',
+      related: ['mppt','pwm','solar','bateria'],
+    },
+    'ups': {
+      term: 'UPS (respaldo ininterrumpido)',
+      what: 'Un aparato con batería dentro que mantiene encendido lo que tenga enchufado cuando se va la corriente, sin que llegue a apagarse.',
+      why: 'Para lo que no puede irse de golpe: una computadora, un router, una caja registradora. En un apagón te da minutos, no horas.',
+      how: 'Para aguantar horas hace falta un inversor con batería aparte, no un UPS: el UPS está pensado para que te dé tiempo a guardar y apagar.',
+      related: ['inversor','bateria','apagon'],
+    },
+    'ip66': {
+      term: 'IP66 / IP67 (resistencia al agua y al polvo)',
+      what: 'Dos cifras: la primera es el polvo (6 = no entra nada) y la segunda el agua. IP66 aguanta chorros de agua; IP67, quedar sumergido un rato.',
+      why: 'Es lo que decide si una cámara o una lámpara puede ir a la intemperie. Un IP44 puesto fuera aguanta una llovizna, no un aguacero.',
+      how: 'Para exterior en Cuba, busca IP66 como mínimo. Y ojo: la resistencia es del cuerpo, no de los empalmes del cable — esos hay que protegerlos aparte.',
+      related: ['camara','exterior'],
+    },
     'lifepo4': {
       term: 'LiFePO4 (litio hierro fosfato)',
       what: 'Tipo de batería de litio, más segura y duradera que las de plomo-ácido o las de litio traditional.',
@@ -429,6 +450,13 @@
       why: 'No hay que revisar el agua, no se sulfatan, descarga profunda sin daño. Cuesta más pero dura 5-10x más.',
       how: 'Cargar con voltaje y corriente correctos (el inversor/controlador debe ser compatible).',
       related: ['lifepo4','bateria','solar'],
+    },
+    'gel': {
+      term: 'Batería de gel (AGM / sellada)',
+      what: 'Es una plomo-ácido con el electrolito en gel, sellada: no hay que echarle agua ni ventilarla como a la de carro.',
+      why: 'Aguanta mejor la descarga que una de arranque y no bota gases, así que puede ir dentro de la casa. Pero sigue siendo plomo: unos 500-800 ciclos y no le gusta bajar del 50%.',
+      how: 'Buena opción si el presupuesto no llega a litio. Si la vas a ciclar todos los días con apagones largos, el litio sale más barato por año aunque cueste más al inicio.',
+      related: ['plomo acido','litio','lifepo4','bateria'],
     },
     'plomo acido': {
       term: 'Batería de plomo-ácido',
@@ -686,6 +714,13 @@
 
   // Sinónimos → término clave
   const KNOWLEDGE_SYNONYMS = {
+    'controlador de carga':'controlador de carga','controlador solar':'controlador de carga',
+    'regulador de carga':'controlador de carga','regulador solar':'controlador de carga','controlador':'controlador de carga',
+    'ups':'ups','respaldo ininterrumpido':'ups','no break':'ups','nobreak':'ups',
+    // Sin "impermeable"/"resistente al agua": esas palabras están en la ficha
+    // de una capa de moto y una tienda de campaña, y el filtro las listaba
+    // como productos "que cumplen IP66". Aquí solo entran las siglas reales.
+    'ip66':'ip66','ip67':'ip66','ip65':'ip66','ip68':'ip66','grado ip':'ip66',
     'puerto wan':'wan','puertos wan':'wan','port wan':'wan','router con wan':'wan',
     'puerto lan':'lan','puertos lan':'lan','port lan':'lan','ethernet':'lan','cable de red':'rj45',
     'wifi6':'wifi 6','wi-fi 6':'wifi 6','wifi 6':'wifi 6','ax1500':'wifi 6','ax3000':'wifi 6','ax1450':'wifi 6','ax1800':'wifi 6','802.11ax':'wifi 6',
@@ -702,6 +737,7 @@
     'lifepo4':'lifepo4','litio hierro':'lifepo4','litio fosfato':'lifepo4','bateria lifepo4':'lifepo4',
     'litio':'litio','bateria de litio':'litio','litio ion':'litio',
     'plomo acido':'plomo acido','plomo-acido':'plomo acido','plomo acida':'plomo acido',
+    'gel':'gel','de gel':'gel','bateria de gel':'gel','agm':'gel','sellada':'gel','bateria sellada':'gel',
     'inversor':'inversor','inversora':'inversor','invertidor':'inversor',
     'ondas pura':'ondas pura','onda pura':'ondas pura','senoidal':'ondas pura','onda senoidal':'ondas pura','pure sine':'ondas pura',
     'onda modificada':'onda modificada','onda cuadrada':'onda modificada','modified sine':'onda modificada',
@@ -1176,6 +1212,9 @@
       /(?:tengo|presupuesto|gastar|gastarme|invertir|invertirle)\s+(?:de\s+)?(?:hasta\s+)?\$?\s*(\d{2,6})\s*(?:usd|d[oó]lares?|pesos?|mn)?/i,
       /(?:hasta|m[aá]ximo|menos de|no m[aá]s de)\s+\$?\s*(\d{2,6})\s*(?:usd|d[oó]lares?|pesos?|mn)?/i,
       /\$\s*(\d{2,6})\s*(?:usd|d[oó]lares?)/i,
+      // "con 200 usd", "por 150 dólares": la forma más común de decirlo aquí,
+      // y no la cogía ninguno de los patrones de arriba.
+      /(?:con|por|para)\s+\$?\s*(\d{2,6})\s*(?:usd|d[oó]lares?|dolares)\b/i,
       /(?:barato|econ[oó]mico).{0,20}\$?\s*(\d{2,6})/i,
     ];
     for(const pat of patterns){
@@ -1197,15 +1236,44 @@
 
     // Si la frase empieza con saludo + contenido, separar el saludo y procesar el contenido
     // Ej: "hola quiero comprar un router" → detectar como recomendacion (router)
-    const saludoMatch = m.match(/^(hola|buenas|saludos|hey|que tal|buen d[ií]a|buenos d[ií]as|buenas tardes|buenas noches|holi|hola max)[,\s]+(.+)/i);
-    if(saludoMatch && saludoMatch[2] && saludoMatch[2].trim().length > 5){
+    // Las formas de dos palabras van PRIMERO en la alternancia: la regex es
+    // perezosa y con "buenas" delante partía "buenas tardes" en "buenas" +
+    // "tardes", y el saludo entero se buscaba como producto (daba fallback).
+    const saludoMatch = m.match(/^(hola max|buenos d[ií]as|buenas tardes|buenas noches|buen d[ií]a|que tal|hola|buenas|saludos|hey|holi)[,\s]+(.+)/i);
+    // Y si lo que queda tras el saludo es otro trozo de saludo, no hay
+    // contenido que procesar: sigue siendo un saludo a secas.
+    const _restoSaludo = saludoMatch && /^(tardes|noches|d[ií]as|dia|max|tal|amigo|amiga|como estas|c[oó]mo est[aá]s|que tal)[\s!?.¿¡]*$/i.test(saludoMatch[2].trim());
+    if(saludoMatch && !_restoSaludo && saludoMatch[2] && saludoMatch[2].trim().length > 5){
       m = saludoMatch[2].trim();
       t = normalize(m);
     }
 
+    // "q tienen", "ke productos venden", "mandan pa oriente": así se escribe
+    // por el móvil aquí, y sin normalizarlo caía todo en búsqueda o fallback.
+    m = m.replace(/\bq\b/g, 'que').replace(/\bke\b/g, 'que')
+         .replace(/\bpa\b/g, 'para').replace(/\bxq\b|\bpq\b/g, 'porque')
+         .replace(/\btmb\b/g, 'tambien').replace(/\bkiero\b/g, 'quiero');
+    t = normalize(m);
+
     // Actualizar contexto con presupuesto si lo menciona
     const presupuesto = detectPresupuesto(text);
-    if(presupuesto) _context.presupuesto = presupuesto;
+    const _subAhora = _detectarSubcategoria(text);
+    if(presupuesto){
+        _context.presupuesto = presupuesto;
+        _context.presupuestoTurno = _context.conversationStep;
+        _context.presupuestoSub = _subAhora || null;
+    } else if(_context.presupuesto && _subAhora && _context.presupuestoSub && _subAhora !== _context.presupuestoSub){
+        // Cambió de tipo de producto: el presupuesto era para lo otro. Sin
+        // esto, un "tengo $30" para una cámara seguía filtrando la pregunta
+        // siguiente sobre inversores y no salía ni uno.
+        _context.presupuesto = null;
+        _context.presupuestoSub = null;
+    } else if(_context.presupuesto && (_context.conversationStep - (_context.presupuestoTurno || 0)) > 3){
+        // Se olvida solo. Antes, un "tengo $50" al principio dejaba escondido
+        // medio catálogo durante toda la conversación y el cliente no tenía
+        // forma de saber por qué no le salían cosas.
+        _context.presupuesto = null;
+    }
 
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
@@ -1262,6 +1330,14 @@
     // "ayuda" a secas también es pedir ayuda. Dentro de una frase ("necesito
     // ayuda con un router") sigue siendo una recomendación, que es lo correcto.
     if(/^(ayuda|help|comandos|no s[eé] qu[eé] hacer)[\s!?.¿¡]*$/i.test(mCmd)) return 'ayuda';
+    // La regla de arriba solo acepta la palabra sola, así que "¿me puedes
+    // ayudar?" —la forma normal de pedirlo— caía en búsqueda de productos.
+    if(/^(me (puedes|podr[ií]as) ayudar|puedes ayudarme|podr[ií]as ayudarme|me ayudas|ay[uú]dame|necesito ayuda)[\s!?.¿¡]*$/i.test(mCmd)) return 'ayuda';
+    // Preguntar qué sabe hacer es pedir exactamente el menú de ayuda.
+    if(/\b(qu[eé] (puedes|sabes) hacer|en qu[eé] (me )?puedes ayudar|para qu[eé] sirves|qu[eé] cosas puedes hacer)\b/i.test(m)) return 'ayuda';
+    // Un "sí", "ok" o "dale" suelto no es una búsqueda: la palabra puntuaba
+    // dentro de algún nombre de producto y Max devolvía resultados al azar.
+    if(/^(s[ií]|no|ok|okay|oki|vale|dale|claro|listo|aj[aá]|perfecto|entiendo|entendido|bueno)[\s!?.¿¡]*$/i.test(mCmd)) return 'confirmacion';
     if(/^\/(limpiar|clear|reset)/i.test(mCmd)) return 'resetCmd';
     if(/^\/(envios|envíos|envio)/i.test(mCmd)) return 'envios';
     if(/^\/(pago|pagar)/i.test(mCmd)) return 'pago';
@@ -1285,17 +1361,34 @@
     const _catPedida = _detectarCategoriaPedida(m);
     if(_catPedida){ _context.categoriaPedida = _catPedida; return 'categoria'; }
 
+    // Quién es Max. Va antes del saludo porque "¿tú quién eres?" no lleva
+    // ninguna palabra de saludo y terminaba buscando productos.
+    if(/\b(qui[eé]n eres|qui[eé]n sos|c[oó]mo te llamas|eres (un |una )?(bot|robot|humano|persona|ia|m[aá]quina)|eres real|hablo con (un |una )?(bot|persona|humano|robot))\b/i.test(m)) return 'quienEres';
+
     if(/\b(hola|buenas|saludos|hey|que bol[aá]|asere|compay|dime|buenos d[ií]as|buenas tardes|buenas noches|qu[eé] tal|que tal|buen d[ií]a|buen dia|hola max|holi)\b/i.test(m)) return 'saludo';
     if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
     if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
 
     if(/\b(c[oó]mo compro|c[oó]mo pedir|c[oó]mo hago.*pedido|c[oó]mo comprar|quiero comprar|quiero pedir|hacer.*pedido|proceso.*compra)\b/.test(m)) return 'comprar';
-    if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|cobertura|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a)\b/.test(m)) return 'envios';
-    if(/\b(pago|pagar|tarjeta|transferencia|efectivo|contrareembolso|contra entrega|en c[úu]anto.*pago)\b/.test(m)) return 'pago';
+    if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|cobertura|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
+       || /\b(oriente|occidente|centro del pa[ií]s|toda la isla|todo el pa[ií]s)\b/.test(m)
+       || /\b(recoger\w*|recojo|lo busco yo|pasar a buscar|buscarlo yo|recogida)\b/.test(m)) return 'envios';
+    if(/\b(acepta[ns]?|admite[ns]?|reciben|recibe)\b[^.?]{0,20}\b(cup|mn|usd|d[oó]lar|peso|efectivo|tarjeta|transferencia|zelle|enzona|moneda)\b/.test(m)) return 'pago';
+    if(/\b(pago|pagar|pago|tarjeta|transferencia|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
+       || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
-    if(/\b(devoluci[oó]n|devolver|cambiar|return|reembolso)\b/.test(m)) return 'devolucion';
+    // Con \b al final, "devolverlo" y "me lo cambian" —como se pregunta de
+    // verdad— no casaban y se iban a búsqueda de productos.
+    if(/\b(devoluci[oó]n\w*|devolv\w*|devuelv\w*|cambiar|cambian|cambio|return|reembols\w*)\b/.test(m)
+       || /llega (roto|mal|da[ñn]ado|defectuoso)|viene (roto|mal|da[ñn]ado)|sale malo|no sirve al llegar|se rompe/.test(m)) return 'devolucion';
+    // "con 200 usd, ¿qué me llevo?" no pregunta la tasa: trae presupuesto y una
+    // petición. La palabra "usd" se lo llevaba a la conversión del día.
+    if(detectPresupuesto(text) !== null
+       && /\b(qu[eé] me (llevo|recomiendas|aconsejas|compro|sugieres)|qu[eé] (puedo|podr[ií]a) comprar|alcanza para|me alcanza|qu[eé] me alcanza)\b/.test(m)) return 'recomendacion';
     if(/\b(tasa|d[oó]lar|usd|mn|cup|peso|cambio|conversi[oó]n|cu[aá]nto.*cuesta.*peso)\b/.test(m)
-       || /moneda nacional/.test(m)) return 'tasa';
+       || /moneda nacional|en pesos\b/.test(m)) return 'tasa';
+    // (el bloque de pago de arriba ya se quedó con "aceptan cup", que es otra
+    //  pregunta: si aceptan esa moneda, no a cuánto está)
     if(/\b(whatsapp|tel[eé]fono|contacto|n[uú]mero|llamar|les escribo)\b/.test(m)) return 'whatsapp';
     if(/\b(donde est[aá]n|ubicaci[oó]n|direcci[oó]n|donde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)) return 'ubicacion';
     if(/\b(horario|hora.*atienden|qu[eé] hora|abren|abierto|cuando atienden)\b/.test(m)) return 'horario';
@@ -1303,7 +1396,9 @@
     if(/\b(seguimiento|seguir.*pedido|estado.*pedido|mi pedido|rastrear|d[oó]nde est[aá] mi pedido)\b/.test(m)) return 'seguimiento';
 
     // SISTEMA COMPLETO: "arma un sistema solar", "kit de seguridad", "internet para la finca"
-    if(/\b(arma|armar|quiero armar|necesito armar|kit|sistema completo|sistema solar|kit de seguridad|todo lo que necesito para|todo para)\b/.test(m)){
+    if(/\b(arma|armar|quiero armar|necesito armar|kit|sistema completo|sistema solar|sistema de seguridad|sistema de c[aá]maras|sistema de internet|kit de seguridad|todo lo que necesito para|todo para)\b/.test(m)
+       || /\b(internet|wifi|se[ñn]al|c[aá]maras?) en toda la casa\b/.test(m)
+       || /cubrir toda la (casa|finca|nave)/.test(m)){
       if(/\bseguridad|camaras?|vigilar|casa segura|negocio seguro\b/.test(m)) return 'sistemaSeguridad';
       if(/\bsolar|energia|apag[oó]n|planta|panel\b/.test(m)) return 'sistemaSolar';
       if(/\binternet|wifi|finca|casa de campo|zona rural|sin fibra|señal celular\b/.test(m)) return 'sistemaInternet';
@@ -1313,7 +1408,8 @@
     if(/\b(cu[aá]nto dura|cu[aá]ntas horas|autonom[ií]a|duraci[oó]n|cu[aá]nto tiempo aguanta)\b/.test(m) && /\b(bater[ií]a|inversor|sistema|nevera|aire|ventilador)\b/.test(m)) return 'autonomia';
 
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
-    if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)) return 'compatibilidad';
+    if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)
+       || /\bme sirve\b|\bsirve\b[^.?]{0,40}\bpara\b|\balcanza para\b|\baguanta\b[^.?]{0,30}\b(nevera|aire|bomba|tv|refrigerador)\b/.test(m)) return 'compatibilidad';
 
     // DEFINICIÓN: "¿qué es MPPT?", "¿para qué sirve un controlador?".
     // Lo primero que Max anuncia en su saludo es que explica términos técnicos,
@@ -1361,18 +1457,36 @@
       if(verbosNecesidad.test(m) || /\b(quiero (el|la|los|las|un|una)|dame (el|la|los|las|un|una)|ver (el|la|los|las|un|una)|deseo (el|la|los|las|un|una)|necesito (el|la|los|las|un|una))\b/.test(m)){
         return 'detalle';
       }
+      // Preguntar el precio de un producto concreto es pedir su ficha: ahí
+      // está el precio, el stock y el botón de pedir. Devolvía una búsqueda.
+      if(/\bcu[aá]nto (vale|cuesta|sale|es|est[aá])\b|\bqu[eé] precio\b|\bprecio de\b/.test(m)) return 'detalle';
     }
+
+    // "muéstrame el catálogo" / "qué productos tienen" es pedir el índice
+    // entero, no una recomendación. Va ANTES porque "muéstrame" y "qué...tienen"
+    // son verbos de necesidad y se lo llevaban a una lista arbitraria.
+    if(/\b(cat[aá]logo|catalogo)\b/.test(m) || /qu[eé] (productos|cosas|art[ií]culos)\s+(tienen|venden|hay)/.test(m)) return 'categorias';
 
     if(verbosNecesidad.test(m) || mencionaPresupuesto || (mencionaCategoria && /\b(mu[eé]strame|muestrame|muestra|ver|dame|buscar|quiero|tienes|hay)\b/i.test(m))) return 'recomendacion';
 
     // Ofertas (solo si NO hay verbo de necesidad)
-    if(/\b(oferta|ofertas|descuento|rebaja|promoci[oó]n|rebajado)\b/.test(m)) return 'ofertas';
+    // Con \b al final, "descuentos" y "rebajas" en plural no casaban.
+    if(/\b(oferta|ofertas|descuento|rebaja|promoci[oó]n|rebajad)\w*/.test(m)) return 'ofertas';
     if(/\bbarato\b/.test(m) && !verbosNecesidad.test(m)) return 'ofertas';
+
+    // Stock — pero "¿está agotado el inversor Must?" pregunta por UN producto,
+    // no por el inventario entero: la ficha ya dice si queda o no. Contestaba
+    // con el conteo global del catálogo, que no responde nada.
+    if(/\b(stock|disponible|disponibilidad|agotad\w*|queda[n]?)\b/.test(m)
+       && detectProductMentions(text).length === 1) return 'detalle';
+    // Va ANTES de categorías: "qué hay disponible" contiene "qué hay" y se lo
+    // llevaba el índice de categorías, que no dice cuántos quedan.
+    if(/\b(stock|disponibilidad|agotad\w*|existencias?)\b/.test(m)
+       || /qu[eé] (hay|tienen|queda) disponible/.test(m)) return 'stock';
 
     // Categorías
     if(/\b(categor[ií]a|categor[ií]as|secci[oó]n|secciones|qu[eé] tienen|qu[eé] venden|qu[eé] hay|cat[aá]logo)\b/.test(m)) return 'categorias';
 
-    // Stock general
     if(/\b(stock|disponible|disponibilidad|tienen.*existencia|hay.*stock|agotado|cu[aá]les hay|que hay disponible|que tienen disponible)\b/.test(m)) return 'stock';
     if(/\b(usado|usados|segunda mano|reacondicionado)\b/.test(m)) return 'usados';
 
@@ -2084,8 +2198,12 @@
   // niveles a propósito: "pita" o "echa humo" no aparecen nunca en una
   // pregunta de compra, pero "no funciona" sí ("¿no funciona con mi nevera?"),
   // así que las flojas solo cuentan si además se sabe de qué aparato habla.
-  const _AVERIA_FUERTE = /\b(pit(a|ando|ido)|beep|parpade|titila|luz roja|se calienta|hinchad|inflad|abombad|huele|humo|zumb|averi|no da corriente|dura menos)\b/i;
-  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fallo|falla|se ve blanco)\b/i;
+  // OJO con el \b final: lo llevaban y por eso "hinchada" no casaba con la raíz
+  // "hinchad" ni "parpadea" con "parpade" — cinco de siete raíces no servían y
+  // el diagnóstico entero quedaba inalcanzable con las frases más naturales.
+  // Las raíces van con \w* y solo llevan \b las palabras completas.
+  const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calentando|hinchad\w*|inflad\w*|abombad\w*|huele\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos)/i;
+  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fall[ao]\w*|se ve blanco|no da (internet|se[ñn]al|corriente|imagen|video)|no graba|no transmite|no muestra|no llega (internet|se[ñn]al)|no agarra se[ñn]al)/i;
 
   /** ¿Está describiendo una avería? */
   function esAveria(text){
@@ -2152,13 +2270,19 @@
     return m ? m[1].replace(/\s+/g, '').toUpperCase() : null;
   }
 
-  function buscarCodigo(codigo, familia){
+  function buscarCodigo(codigo, familia, texto){
     if(!codigo || !_CODIGOS) return null;
     // El cliente escribe "error 4" y el manual lo imprime "04". Se prueban las
     // dos formas: si no, tener el código en la tabla no serviría de nada.
     const formas = [codigo];
     if(/^\d{1,2}$/.test(codigo)) formas.push(codigo.padStart(2, '0'), String(Number(codigo)));
+    // La marca la tiene que haber dicho el cliente. Sin esto se recorría la
+    // tabla entera y "mi inversor da error 04" se contestaba con el manual de
+    // Powmr a alguien que quizá tiene un Must — que es exactamente lo que este
+    // módulo promete no hacer, dicho encima con el nombre de otra marca.
+    const _t = normalize(String(texto || ''));
     for(const marca in _CODIGOS){
+      if(_t.indexOf(normalize(marca)) === -1) continue;
       const tabla = _CODIGOS[marca] || {};
       for(const forma of formas){
         const entrada = tabla[forma];
@@ -2177,7 +2301,7 @@
     const hallazgos = diagnosticar(text, familia);
 
     // Un código concreto que sí tenemos en el manual manda sobre el síntoma.
-    const delManual = buscarCodigo(codigo, familia);
+    const delManual = buscarCodigo(codigo, familia, text);
     if(delManual){
       let body = `⚠️ <strong>Código ${escapeHtml(delManual.codigo)}</strong> · ${escapeHtml(delManual.marca)}\n\n`;
       body += `${escapeHtml(delManual.significa || '')}\n\n`;
@@ -2190,8 +2314,18 @@
       // Aquí es donde se decide no inventar. Un significado sacado de otra
       // marca puede costarle el equipo al cliente.
       let body = `🔧 <strong>Vamos a ver qué le pasa</strong>\n\n`;
-      if(codigo){
+      const _marcaDicha = codigo && _CODIGOS
+        ? Object.keys(_CODIGOS).find(mk => normalize(text).indexOf(normalize(mk)) !== -1)
+        : null;
+      if(codigo && _marcaDicha){
+        // Sí tenemos el manual de esa marca; lo que falta es ese código.
+        body += `Veo el código <code>${escapeHtml(codigo)}</code>. Tengo el manual de <strong>${escapeHtml(_marcaDicha)}</strong>, pero ese código no está en él y no me lo voy a inventar. Dime el <strong>modelo exacto</strong> y qué hace el equipo, y lo vemos.\n\n`;
+      } else if(codigo && _CODIGOS){
         body += `Veo el código <code>${escapeHtml(codigo)}</code>, pero no tengo el manual de esa marca, y los códigos no significan lo mismo en dos fabricantes distintos. Prefiero no adivinarlo: en eléctrica una suposición puede costarte el equipo. Dime <strong>marca y modelo</strong> y te lo confirmo.\n\n`;
+      } else if(codigo){
+        // La tabla todavía se está bajando. Decir "no tengo el manual" aquí
+        // sería mentir por una carrera de carga, no por falta del dato.
+        body += `Veo el código <code>${escapeHtml(codigo)}</code>. Dime <strong>marca y modelo</strong> del equipo y te lo confirmo — el mismo número significa cosas distintas en cada fabricante y no quiero adivinarlo.\n\n`;
       }
       body += `Cuéntame estas tres cosas y te digo qué es:\n`;
       body += `• Qué aparato es (inversor, controlador, router, cámara, batería)\n`;
@@ -3666,17 +3800,42 @@ ${notasHTML}
 
     let prods = PRODUCTOS
       .filter(p => p.categoria === categoria && p.stock > 0);
+    // Si dijo el tipo exacto ("qué cámara me recomiendas"), no se le enseña la
+    // categoría entera: pedía una cámara y le salían la cerradura y el timbre,
+    // que también son SEGURIDAD. R.busqueda ya afinaba así; aquí no.
+    const _subPedida = _detectarSubcategoria(text);
+    const _porSub = _subPedida ? prods.filter(p => p.subcategoria === _subPedida) : [];
+    if(_porSub.length) prods = _porSub;
     if(_context.presupuesto){
-      prods = prods.filter(p => p.precio <= _context.presupuesto);
+      const _dentro = prods.filter(p => p.precio <= _context.presupuesto);
+      // Si nada del tipo pedido entra en el presupuesto se dice, no se rellena
+      // con otra cosa: "tengo $30, ¿qué inversor me recomiendas?" devolvía un
+      // probador de baterías, que era lo único de ENERGIA bajo ese precio.
+      if(!_dentro.length && _porSub.length){
+        const _barato = _porSub.slice().sort((a,b) => a.precio - b.precio)[0];
+        return {
+          response: `📂 No tengo nada en <strong>${escapeHtml(String(_subPedida))}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtUSD(_barato.precio)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
+          products: _porSub.slice().sort((a,b) => a.precio - b.precio).slice(0, 3),
+          quickReplies: ['📦 Otras categorías','🔥 Ofertas','💬 WhatsApp']
+        };
+      }
+      prods = _dentro;
     }
     prods = prods.sort((a,b) => a.precio - b.precio);
+    if(!prods.length){
+      return {
+        response: `📂 No tengo nada disponible en <strong>${catIcon(categoria)} ${categoria}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Dime otro presupuesto y te busco de nuevo, o mira las ofertas.`,
+        quickReplies: ['🔥 Ofertas','📦 Otras categorías','💬 WhatsApp']
+      };
+    }
 
     const cat = CATEGORIAS.find(c => c.nombre === categoria);
     let body = `🎯 Para lo que me pides, la categoría ideal es <strong>${cat.icono} ${categoria}</strong> (${cat.desc}).\n\n`;
     if(_context.presupuesto){
       body += `💰 Filtrando por tu presupuesto de <strong>${fmtUSD(_context.presupuesto)}</strong>:\n\n`;
     }
-    body += `Te muestro <em>${Math.min(4, prods.length)}</em> opciones disponibles, ordenadas por precio (de menor a mayor). ¿Cuál te llama la atención?\n\n`;
+    const _n = Math.min(4, prods.length);
+    body += `Te muestro <em>${_n}</em> ${_n === 1 ? 'opción disponible' : 'opciones disponibles'}, ordenada${_n === 1 ? '' : 's'} por precio (de menor a mayor). ¿Cuál te llama la atención?\n\n`;
     body += `<strong>Tip:</strong> Si quieres, me dices <em>"compara el A vs el B"</em> y te armo la tabla lado a lado.`;
     return {
       response: body,
@@ -3690,9 +3849,20 @@ ${notasHTML}
     // puntuación difusa por descripción.
     const sub = _detectarSubcategoria(text);
     if(sub){
-      let lista = PRODUCTOS.filter(p => p.subcategoria === sub && p.stock > 0);
+      const _todos = PRODUCTOS.filter(p => p.subcategoria === sub && p.stock > 0)
+                              .sort((a,b) => a.precio - b.precio);
+      let lista = _todos;
       if(_context.presupuesto) lista = lista.filter(p => p.precio <= _context.presupuesto);
-      lista.sort((a,b) => a.precio - b.precio);
+      // Si el presupuesto deja el tipo pedido sin nada, se dice — no se cae a
+      // la búsqueda difusa, que contestaba "qué inversor me recomiendas" con
+      // una raqueta matamoscas porque era lo único bajo ese precio.
+      if(!lista.length && _todos.length){
+        return {
+          response: `📂 No tengo nada en <strong>${escapeHtml(sub)}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtUSD(_todos[0].precio)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
+          products: _todos.slice(0, 3),
+          quickReplies: ['📦 Otras categorías','🔥 Ofertas','💬 WhatsApp']
+        };
+      }
       if(lista.length){
         let body = `📂 <strong>${escapeHtml(sub)}</strong> — tengo <em>${lista.length} disponible${lista.length>1?'s':''}</em>`;
         if(_context.presupuesto) body += ` dentro de tu presupuesto de ${fmtUSD(_context.presupuesto)}`;
@@ -3890,6 +4060,18 @@ ${notasHTML}
   R.ayuda = () => ({
     response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"mi inversor pita y tiene la luz roja"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n\n¿Qué necesitas hacer?`,
     quickReplies: ['💝 Ver mi lista','🔥 Ofertas','📦 Categorías','💬 WhatsApp']
+  });
+
+  // Un "sí"/"ok"/"dale" suelto no dice qué quiere el cliente. Se contesta
+  // corto y se le dan rutas, en vez de devolverle productos que no pidió.
+  R.confirmacion = () => ({
+    response: `👍 Dime qué necesitas y te ayudo: puedo buscarte un producto, comparar dos, explicarte un término técnico o armarte un sistema completo.\n\nSi prefieres verlo todo, escribe <code>/ayuda</code>.`,
+    quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
+  });
+
+  R.quienEres = () => ({
+    response: `🤖 Soy <strong>Max</strong>, el asistente de TiendaMax. No soy una persona: soy un programa que corre aquí mismo, en tu navegador, con el catálogo de la tienda delante.\n\nPor eso te puedo decir precios, disponibilidad y fichas al momento. Y si necesitas hablar con alguien de verdad, te paso con el equipo por WhatsApp.\n\n¿Qué estás buscando?`,
+    quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
   });
 
   R.resetCmd = () => {
@@ -4956,6 +5138,13 @@ ${notasHTML}
     context: _context,
     get tasa(){ return {base: TASA_BASE_MN, margen: MARGEN_MN, total: TASA_MN}; },
   };
+
+  // La tabla de códigos se pedía dentro de R.diagnostico, así que la PRIMERA
+  // avería siempre llegaba antes que el fetch y Max contestaba "no tengo el
+  // manual de esa marca" de un código que sí estaba en la tabla. Se pide aquí,
+  // al cargar el cerebro (que ya es a demanda, al abrir el chat), para que
+  // esté lista mucho antes de que nadie escriba un error.
+  _cargarCodigos();
 
   // Handshake: js/tm-bot.js espera esta señal para soltar el "cargando…"
   // y mostrar el saludo. Se avisa al final, con todo ya definido.

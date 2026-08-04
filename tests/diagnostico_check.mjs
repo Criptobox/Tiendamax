@@ -32,25 +32,61 @@ const win = {
     matchMedia: () => ({ matches: false, addEventListener: noop }),
 };
 const catalogo = JSON.parse(readFileSync(join(RAIZ, 'productos.json'), 'utf8'));
-const sb = {
-    window: win, location: win.location,
-    document: { createElement: el, querySelector: () => el(), querySelectorAll: () => [],
-                addEventListener: noop, body: el(), head: el() },
-    localStorage: { getItem: () => null, setItem: noop, removeItem: noop },
-    navigator: { userAgent: 'node' },
-    productos: catalogo.productos || catalogo,
-    console, setTimeout, clearTimeout,
-    fetch: () => Promise.reject(new Error('sin red en el test')),
-};
-sb.globalThis = sb;
-vm.createContext(sb);
-vm.runInContext(readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8'), sb);
-
-const B = sb.window._tmBot;
-B.sincronizar();
+const codigosJson = readFileSync(join(RAIZ, 'codigos-error.json'), 'utf8');
 const fallos = [];
 const ok = (c, m) => { if (!c) fallos.push(m); };
 const texto = (r) => String(r.response || '').replace(/<[^>]+>/g, '');
+
+/** Un cerebro nuevo. `servirCodigos` decide qué hace el fetch de la tabla. */
+function cargarCerebro(servirCodigos) {
+    const pedidos = [];
+    const sb = {
+        window: Object.assign({}, win), location: win.location,
+        document: { createElement: el, querySelector: () => el(), querySelectorAll: () => [],
+                    addEventListener: noop, body: el(), head: el() },
+        localStorage: { getItem: () => null, setItem: noop, removeItem: noop },
+        navigator: { userAgent: 'node' },
+        productos: catalogo.productos || catalogo,
+        console, setTimeout, clearTimeout,
+        fetch: (u) => {
+            pedidos.push(String(u));
+            if (String(u).includes('codigos-error')) return servirCodigos();
+            return Promise.reject(new Error('sin red en el test'));
+        },
+    };
+    sb.globalThis = sb;
+    vm.createContext(sb);
+    vm.runInContext(readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8'), sb);
+    sb.window._tmBot.sincronizar();
+    return { B: sb.window._tmBot, pedidos };
+}
+
+// La tabla se pide al CARGAR el cerebro, no dentro de R.diagnostico. Se pedía
+// allí, así que la PRIMERA avería llegaba antes que el fetch y Max contestaba
+// "no tengo el manual de esa marca" de un código que sí tenía delante. El
+// cliente no repite la pregunta: se va con la respuesta equivocada.
+const arranque = cargarCerebro(() => Promise.resolve({ ok: true, json: () => Promise.resolve(JSON.parse(codigosJson)) }));
+ok(arranque.pedidos.some(u => u.includes('codigos-error.json')),
+    'la tabla de códigos debe pedirse al cargar el cerebro, antes de la primera pregunta');
+
+const { B } = arranque;
+await new Promise(r => setTimeout(r, 0));   // deja resolver el fetch de la tabla
+
+// Un código que SÍ está en la tabla se contesta a la primera.
+const primeraAveria = texto(B.diagnosticar('me sale error 03 en el inversor powmr'));
+ok(/c[oó]digo\s*03/i.test(primeraAveria) && !/no tengo el manual/i.test(primeraAveria),
+    'un código que está en la tabla debe contestarse a la PRIMERA pregunta');
+
+// Y si la tabla todavía se está bajando (3G lenta), Max no traduce el código
+// pero tampoco afirma que no lo tiene: eso sería mentir por una carrera de
+// carga, no por falta del dato.
+const lento = cargarCerebro(() => new Promise(() => {}));
+const enCarga = texto(lento.B.diagnosticar('me sale error 03 en el inversor powmr'));
+ok(/marca y modelo/i.test(enCarga), 'mientras carga la tabla debe pedir marca y modelo');
+ok(!/no tengo el manual/i.test(enCarga),
+    'con la tabla sin cargar no puede afirmar que no tiene el manual');
+ok(!/bater[ií]a no detectada|no ve la bater[ií]a/i.test(enCarga),
+    'con la tabla sin cargar tampoco puede traducir el código');
 
 // ── La promesa: un código desconocido no se traduce ──────────────────────
 for (const frase of ['mi inversor da error 04', 'el inversor marca F05', 'código 27 en el inversor']) {

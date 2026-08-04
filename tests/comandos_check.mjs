@@ -35,7 +35,7 @@ const sb = {
     localStorage: { getItem: () => null, setItem: noop, removeItem: noop },
     navigator: { userAgent: 'node' },
     productos: catalogo.productos || catalogo,
-    console, setTimeout, clearTimeout,
+    console, setTimeout, clearTimeout, requestAnimationFrame: noop,
     fetch: () => Promise.reject(new Error('sin red en el test')),
 };
 sb.globalThis = sb;
@@ -130,6 +130,112 @@ ok(def.indexOf('onda pura') < def.indexOf('no tengo productos'),
 
 // Los filtros técnicos siguen funcionando: son otra pregunta.
 ok(intent('que router tiene puerto wan') === 'tecnico', 'el filtro técnico sigue igual');
+
+// ── Barrido de 195 preguntas reales ──────────────────────────────────────
+// Ninguna de estas fallaba: todas devolvían una respuesta bien formada, del
+// tema equivocado. Se dejan las que estaban mal encaminadas, agrupadas por la
+// causa, porque cada grupo es un fallo distinto y volver a romper uno no
+// rompería los demás.
+const ENCAMINADAS = [
+    // El saludo se partía mal: la alternancia era perezosa y "buenas tardes"
+    // salía como "buenas" + "tardes", y "tardes" se buscaba como producto.
+    ['buenas tardes', 'saludo'], ['buenos dias', 'saludo'], ['buenas noches', 'saludo'],
+    ['buenas tardes max', 'saludo'], ['buenos dias como estas', 'saludo'],
+    ['hola max', 'saludo'], ['que bola asere', 'saludo'],
+    // Pero un saludo CON contenido sí se parte: es lo que hace esa regla.
+    ['hola quiero un router', 'recomendacion'],
+
+    // Un "sí"/"ok" suelto puntuaba dentro de algún nombre y devolvía productos.
+    ['si', 'confirmacion'], ['no', 'confirmacion'], ['ok', 'confirmacion'],
+    ['vale', 'confirmacion'], ['dale', 'confirmacion'], ['listo', 'confirmacion'],
+
+    // Identidad y capacidades: no existían, caían en búsqueda de productos.
+    ['quien eres', 'quienEres'], ['eres un bot', 'quienEres'],
+    ['hablo con una persona', 'quienEres'], ['como te llamas', 'quienEres'],
+    ['me puedes ayudar', 'ayuda'], ['que puedes hacer', 'ayuda'],
+    ['que sabes hacer', 'ayuda'], ['en que me puedes ayudar', 'ayuda'],
+
+    // Devoluciones: con \b al final, "devolverlo" y "me lo cambian" —como se
+    // pregunta de verdad— no casaban.
+    ['si se rompe me lo cambian', 'devolucion'],
+    ['puedo devolverlo si no me gusta', 'devolucion'],
+    ['y si llega roto que hago', 'devolucion'],
+
+    // Recogida: no estaba contemplada en ningún sitio.
+    ['puedo recogerlo yo mismo', 'envios'],
+    ['llegan hasta holguin', 'envios'], ['reparten en la habana', 'envios'],
+
+    // "usd" se llevaba a la tasa una pregunta que traía presupuesto.
+    ['con 200 usd que me llevo para el internet', 'recomendacion'],
+    // Y preguntar la tasa de verdad sigue siendo la tasa.
+    ['a como esta el dolar hoy', 'tasa'], ['cuanto es en moneda nacional', 'tasa'],
+
+    // Stock: "agotados" en plural no casaba, y "qué hay disponible" se lo
+    // llevaba el índice de categorías, que no dice cuántos quedan.
+    ['cuantos productos tienen agotados', 'stock'], ['que hay disponible', 'stock'],
+    // Preguntar por el stock de UN producto es pedir su ficha, no el conteo
+    // global del catálogo: la ficha ya dice si queda o no.
+    ['esta agotado el inversor must', 'detalle'],
+    ['queda algun powmr 5000w', 'detalle'],
+
+    // Sistemas completos: solo se disparaban con "arma".
+    ['quiero un sistema de seguridad completo', 'sistemaSeguridad'],
+    ['necesito internet en toda la casa', 'sistemaInternet'],
+    ['arma un sistema solar basico', 'sistemaSolar'],
+
+    // "gel" no era un término conocido, así que comparar gel con litio no era
+    // una comparación técnica sino una petición de comparar dos productos.
+    ['diferencia entre gel y litio', 'comparacionTecnologica'],
+    ['cual es mejor wifi 5 o wifi 6', 'comparacionTecnologica'],
+];
+for (const [q, esperado] of ENCAMINADAS) {
+    ok(intent(q) === esperado, `"${q}" → ${intent(q)}, esperaba ${esperado}`);
+}
+
+// ── Lo que sale, no solo a dónde va ──────────────────────────────────────
+// El presupuesto vivía tres turnos, así que un "$30" para una cámara seguía
+// filtrando la pregunta siguiente: "¿qué inversor me recomiendas?" contestaba
+// con una raqueta matamoscas, lo único del catálogo por debajo de $30.
+B.responder('tengo 30 dolares que camara me recomiendas');
+const inv = B.responder('que inversor me recomiendas');
+ok((inv.products || []).every(p => /inversor/i.test(p.nombre)),
+    'al cambiar de tipo de producto el presupuesto anterior no puede seguir filtrando');
+ok(!/30/.test(inv.response),
+    'el presupuesto de la cámara no puede seguir aplicándose a los inversores');
+B.responder('/limpiar');
+
+// Y cuando de verdad no hay nada de ese tipo en el presupuesto, se dice —
+// no se rellena con lo que sea que quepa. Las dos rutas que listan por tipo
+// (recomendación y búsqueda) tienen que decirlo igual.
+const sinNada = B.responder('tengo 30 dolares que inversor me recomiendas');
+ok(/no tengo nada en/i.test(sinNada.response) && /lo m[aá]s barato/i.test(sinNada.response),
+    'si nada del tipo pedido entra en el presupuesto, debe decirlo con el precio real');
+ok((sinNada.products || []).every(p => /inversor/i.test(p.nombre)),
+    'no puede ofrecer otra cosa en lugar de lo que le pidieron');
+B.responder('/limpiar');
+
+// Aquí el presupuesto viene del turno anterior sin tipo, así que sigue vivo:
+// es la misma situación por la ruta de búsqueda.
+B.responder('tengo 30 dolares');
+const sinNada2 = B.responder('que inversor me recomiendas');
+ok(/no tengo nada en/i.test(sinNada2.response),
+    'por la ruta de búsqueda también debe decir que nada de ese tipo entra en el presupuesto');
+ok((sinNada2.products || []).every(p => /inversor/i.test(p.nombre)),
+    'la ruta de búsqueda tampoco puede rellenar con otro producto que sí quepa');
+B.responder('/limpiar');
+
+// Pedir un tipo concreto no puede devolver la categoría entera: "qué cámara me
+// recomiendas" sacaba la cerradura y el timbre, que también son SEGURIDAD.
+const cams = B.responder('tengo 100 dolares que camara me recomiendas');
+ok((cams.products || []).length > 0 && (cams.products || []).every(p => /c[aá]mara/i.test(p.nombre)),
+    'al pedir un tipo concreto no deben salir otros productos de la misma categoría');
+B.responder('/limpiar');
+
+// IP66 listaba una capa de moto y una tienda de campaña como productos "que
+// cumplen": la ficha decía "impermeable", que no es una clasificación IP.
+const ip = B.responder('que es ip66');
+ok(!/capa para moto|tienda de campa/i.test(JSON.stringify(ip.products || [])),
+    'una prenda impermeable no cumple IP66: no puede listarse como que sí');
 
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
