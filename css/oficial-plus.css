@@ -210,10 +210,19 @@ html body #mas-vendidos #masVendidosGrid{
   scroll-behavior:smooth;
 }
 html body #mas-vendidos #masVendidosGrid::-webkit-scrollbar{display:none}
-html body #mas-vendidos #masVendidosGrid > .producto-card{
+/* El esqueleto ocupa exactamente lo que ocupará la tarjeta. La fila es un
+   flex sin envolver y .tm-sk-card no entraba en esta regla: se encogía a tres
+   tiras finas y, al llegar el catálogo, la sección pegaba un salto. */
+html body #mas-vendidos #masVendidosGrid > .producto-card,
+html body #mas-vendidos #masVendidosGrid > .tm-sk-card{
   flex:0 0 300px !important;max-width:300px !important;
   scroll-snap-align:start;
 }
+/* Alto medido de la tarjeta real en esta fila (300px de ancho → 520 de alto).
+   Sin esto el esqueleto quedaba 89px más bajo y la página daba un tirón justo
+   cuando llegaba el catálogo. Si cambia el alto de .producto-card aquí dentro,
+   este número hay que volver a medirlo. */
+html body #mas-vendidos #masVendidosGrid > .tm-sk-card{min-height:520px}
 /* Con pocas tarjetas se centran; con muchas arrancan desde la izquierda */
 html body #mas-vendidos .mv-slider-wrap.mv-sin-controles #masVendidosGrid,
 html body #mas-vendidos #masVendidosGrid{justify-content:safe center !important}
@@ -266,9 +275,12 @@ html body #mas-vendidos .mv-dots button.active::before{
   html body #mas-vendidos #masVendidosGrid{
     gap:12px !important;padding:6px 2px 16px !important;
   }
-  html body #mas-vendidos #masVendidosGrid > .producto-card{
+  html body #mas-vendidos #masVendidosGrid > .producto-card,
+  html body #mas-vendidos #masVendidosGrid > .tm-sk-card{
     flex:0 0 calc(50% - 6px) !important;max-width:calc(50% - 6px) !important;
   }
+  /* Mismo motivo que en escritorio: alto medido de la tarjeta real aquí. */
+  html body #mas-vendidos #masVendidosGrid > .tm-sk-card{min-height:361px}
   html body #mas-vendidos .mv-nav{
     position:absolute;top:38%;z-index:3;width:36px;height:36px;
     background:rgba(20,14,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);

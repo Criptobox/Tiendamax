@@ -70,7 +70,13 @@ function _tmInyectarSkeletons() {
     // OPT 3G: 8 skeletons = mismo count que el render progresivo, transición visual sin salto
     if (grid && !grid.querySelector('.producto-card')) grid.innerHTML = Array(8).fill(sk).join('');
     const mv = document.getElementById('masVendidosGrid');
-    if (mv && !mv.querySelector('.producto-card')) mv.innerHTML = Array(2).fill(sk).join('');
+    // Tres, que es lo que caben en la fila de destacados: con dos, la fila
+    // quedaba a medias. Y si el esqueleto ya está puesto no se vuelve a
+    // escribir: esta función se llama varias veces durante el arranque y cada
+    // reescritura reiniciaba el brillo desde cero.
+    if (mv && !mv.querySelector('.producto-card') && !mv.querySelector('.tm-sk-card')) {
+        mv.innerHTML = Array(3).fill(sk).join('');
+    }
 }
 
 /** Smooth fade-out of skeleton cards before real products render */

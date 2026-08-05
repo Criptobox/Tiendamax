@@ -662,6 +662,18 @@ function renderizarMasVendidos() {
     const vacio = document.getElementById('masVendidosVacio');
     if (!grid) return;
 
+    // El catálogo vacío no es "no hay destacados": es que todavía no ha
+    // llegado. Esta función se llama varias veces durante el arranque, y al
+    // llegar sin datos borraba los esqueletos y ponía "Pronto publicaremos
+    // nuestros destacados" — un mensaje falso, y la sección se quedaba en 24px
+    // de alto: los tres textos pegados, las flechas flotando en el vacío y
+    // Categorías encima. Con el catálogo aún fuera, se deja el esqueleto.
+    if (!Array.isArray(productos) || productos.length === 0) {
+        if (vacio) vacio.style.display = 'none';
+        if (typeof _tmInyectarSkeletons === 'function') _tmInyectarSkeletons();
+        return;
+    }
+
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
     const productosAMostrar = masVendidos.length > 0 ? masVendidos : [...productos].filter(p => p.precioActual > 0 && p.stock > 0).sort((a, b) => b.stock - a.stock).slice(0, 6);
 

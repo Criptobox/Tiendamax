@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=b83b442f" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=c7e5bb7d" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=5643327c">
+    <link rel="stylesheet" href="css/bundle.css?v=8c5c15a0">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -690,7 +690,17 @@
                     <button type="button" class="mv-nav mv-prev" id="mvPrev" aria-label="Destacado anterior">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     </button>
-                    <div class="productos-grid" id="masVendidosGrid"></div>
+                    <!-- Esqueleto en el HTML, igual que en la grilla de
+                         categorías: sin él la sección arranca con 24px de alto,
+                         los tres textos quedan pegados, las flechas flotan en
+                         el vacío y Categorías parece empezar cortando esta.
+                         Lo sustituye renderizarMasVendidos() con las tarjetas
+                         reales; _tmInyectarSkeletons() lo repone si hace falta. -->
+                    <div class="productos-grid" id="masVendidosGrid">
+                        <div class="tm-sk-card"><div class="tm-sk tm-sk-img"></div><div class="tm-sk-body"><div class="tm-sk tm-sk-line" style="width:80%"></div><div class="tm-sk tm-sk-line" style="width:58%"></div><div class="tm-sk tm-sk-line" style="width:40%"></div><div class="tm-sk tm-sk-btn"></div></div></div>
+                        <div class="tm-sk-card"><div class="tm-sk tm-sk-img"></div><div class="tm-sk-body"><div class="tm-sk tm-sk-line" style="width:80%"></div><div class="tm-sk tm-sk-line" style="width:58%"></div><div class="tm-sk tm-sk-line" style="width:40%"></div><div class="tm-sk tm-sk-btn"></div></div></div>
+                        <div class="tm-sk-card"><div class="tm-sk tm-sk-img"></div><div class="tm-sk-body"><div class="tm-sk tm-sk-line" style="width:80%"></div><div class="tm-sk tm-sk-line" style="width:58%"></div><div class="tm-sk tm-sk-line" style="width:40%"></div><div class="tm-sk tm-sk-btn"></div></div></div>
+                    </div>
                     <button type="button" class="mv-nav mv-next" id="mvNext" aria-label="Siguiente destacado">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                     </button>
@@ -1644,7 +1654,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=b83b442f" defer></script>
+    <script src="js/tm-bundle.js?v=c7e5bb7d" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
