@@ -724,7 +724,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1448,7 +1448,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 6,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2879,14 +2879,14 @@
   {
     "id": 1784823616101,
     "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784823614881.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp"
+      "https://tiendamax.org/imagenes/img_1784823614881.webp"
     ],
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
