@@ -1,15 +1,20 @@
 {
-  "generado": "2026-08-04T11:17:06.026120+00:00",
-  "productos": 118,
-  "urgentes": 1,
+  "generado": "2026-08-05T11:12:38.401685+00:00",
+  "productos": 119,
+  "urgentes": 2,
   "advertencias": 44,
   "info": 8,
-  "resumen": "Anoche revisé tus 118 productos y encontré 1 urgente(s), 44 advertencia(s), 8 de info.",
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 44 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "→ 🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
+      "detalle": "→ 🔋cargador de Batería de Litio Bien 48V 5A"
     },
     {
       "tipo": "agotado",
