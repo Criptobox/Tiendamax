@@ -2454,15 +2454,15 @@
   {
     "id": 1783179800783,
     "nombre": "⚡inversor de Corriente Tataliken 4000W (24V)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783179797781.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783179797781.webp"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp"
     ],
-    "precioActual": 170,
+    "precioActual": 180,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
-    "comision": 20,
+    "stock": 6,
+    "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
