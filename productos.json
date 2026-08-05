@@ -753,7 +753,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1509,7 +1509,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 6,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2993,15 +2993,14 @@
   {
     "id": 1784823616101,
     "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
-    "descripcion": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con reconocimiento automático de voltaje, múltiples modos de funcionamiento y una pantalla LCD integrada para el monitoreo completo de la instalación fotovoltaica.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior.\nCompatibilidad de Baterías: 🔋 Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded.\nMonitoreo y Control: 📟 Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables.\nConectividad y Puertos: 🔌 Incluye terminales robustos para paneles, baterías y carga, junto con 2 puertos USB de 5V integrados.\nEspecificaciones (Specs):\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 150A.\nVoltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\nUso: Sistemas solares residenciales y de alta demanda energética.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784823614881.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp"
+      "https://tiendamax.org/imagenes/img_1784823614881.webp"
     ],
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -3017,7 +3016,8 @@
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z",
     "seoTitle": "Controlador de Carga Solar MPPT 150A en Cuba | TiendaMax",
-    "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…"
+    "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…",
+    "descripcion": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con reconocimiento automático de voltaje, múltiples modos de funcionamiento y una pantalla LCD integrada para el monitoreo completo de la instalación fotovoltaica.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior.\nCompatibilidad de Baterías: 🔋 Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded.\nMonitoreo y Control: 📟 Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables.\nConectividad y Puertos: 🔌 Incluye terminales robustos para paneles, baterías y carga, junto con 2 puertos USB de 5V integrados.\nEspecificaciones (Specs):\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 150A.\nVoltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\nUso: Sistemas solares residenciales y de alta demanda energética."
   },
   {
     "id": 1784825579392,
