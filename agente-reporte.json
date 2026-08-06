@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-05T11:12:38.401685+00:00",
+  "generado": "2026-08-06T11:13:00.570555+00:00",
   "productos": 119,
   "urgentes": 2,
-  "advertencias": 44,
-  "info": 8,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 44 advertencia(s), 8 de info.",
+  "advertencias": 48,
+  "info": 7,
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 48 advertencia(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -83,6 +83,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Toldo Para Sombra",
       "detalle": "agotado (stock 0)"
     },
@@ -139,6 +144,16 @@
     {
       "tipo": "agotado",
       "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "⚡ Controlador de Carga Solar MPPT 80A Powmr",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🦟 Raqueta Matamoscas Eléctrica Recargable",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -228,6 +243,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "agotado (stock 0)"
     },
@@ -254,11 +274,6 @@
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "⚡inversor de Corriente Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
     {
