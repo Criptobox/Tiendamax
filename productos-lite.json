@@ -2718,7 +2718,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 8,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2739,14 +2739,14 @@
   {
     "id": 1784569498967,
     "nombre": "☀️ Controlador de Carga Solar MPPT 100A",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825170677.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784825170677.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825170677.webp"
+      "https://tiendamax.org/imagenes/img_1784825170677.webp"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
