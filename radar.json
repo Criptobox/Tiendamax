@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-05T12:52:02.669089+00:00",
-  "fecha": "2026-08-05",
+  "actualizado": "2026-08-06T12:56:01.778486+00:00",
+  "fecha": "2026-08-06",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 20.0,
         "mediana": 39.99,
-        "n": 17
+        "n": 16
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-23",
-          "mediana": 39.99
-        },
         {
           "fecha": "2026-07-24",
           "mediana": 39.99
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-08-05",
           "mediana": 39.99
+        },
+        {
+          "fecha": "2026-08-06",
+          "mediana": 39.99
         }
       ],
       "muestras": [
@@ -98,13 +98,6 @@
           "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
           "precio": 20.0,
           "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Switch Ethernet Gigabit de 8 puertos TP-Link Litewave",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-de-8-puertos-tp-link-litewave-56355222",
           "dias": null
         },
         {
@@ -127,6 +120,13 @@
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
+          "dias": null
         }
       ]
     },
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-23",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-24",
           "mediana": 90.0
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-08-05",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-06",
           "mediana": 90.0
         }
       ],
