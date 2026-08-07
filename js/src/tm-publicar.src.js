@@ -182,12 +182,17 @@ const TM_PUBLOG_MAX = 600;   // ~medio año publicando a diario
 /** Apunta que un producto se publicó en una red. Se llama solo desde las
  *  funciones de copiar: el admin no tiene que registrar nada a mano, que es
  *  justo lo que haría que el registro quedara siempre incompleto. */
-function tmRegistrarPublicacion(productoId, red, destino) {
+/** `ts` solo lo usa la migración del historial viejo del panel: sin él, las
+ *  publicaciones de hace semanas se apuntarían con la fecha de hoy y "hace X
+ *  días" pasaría a decir "hoy" para todo el catálogo. */
+function tmRegistrarPublicacion(productoId, red, destino, ts) {
     if (!productoId || !red) return;
     try {
         const log = tmPublicaciones().slice();
+        const cuando = Number(ts);
         log.push({ pid: String(productoId), red: String(red),
-                   destino: String(destino || ''), ts: Date.now() });
+                   destino: String(destino || ''),
+                   ts: (isFinite(cuando) && cuando > 0) ? cuando : Date.now() });
         localStorage.setItem(TM_PUBLOG_KEY, JSON.stringify(log.slice(-TM_PUBLOG_MAX)));
     } catch (e) {}
 }

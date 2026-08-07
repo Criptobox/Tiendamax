@@ -116,8 +116,12 @@ class InterfazTest(unittest.TestCase):
         self.assertIn("PUB_VIEW==='historial'", self.admin)
 
     def test_no_se_perdio_ninguna_pestana_anterior(self):
-        for v in ("compartir", "categoria", "banners", "oferta"):
+        # "oferta" ya no está a propósito: esa pill no hacía nada más que
+        # enseñar un cartel mandando al tab de Combos, y con siete pills
+        # ninguna cabía entera en el móvil. El resto sí tiene que seguir.
+        for v in ("compartir", "categoria", "banners"):
             self.assertIn(f"pill('{v}'", self.admin)
+        self.assertNotIn("pill('oferta'", self.admin)
 
     def test_los_handlers_llegan_al_onclick(self):
         # Ese <script> va dentro de un IIFE: lo declarado ahí no es global y el
@@ -150,7 +154,7 @@ class WizardTresRedesTest(unittest.TestCase):
     def test_la_pestana_existe_y_no_desplaza_a_las_otras(self):
         self.assertIn("pill('wizard'", self.admin)
         self.assertIn("PUB_VIEW==='wizard'", self.admin)
-        for v in ("compartir", "categoria", "plantillas", "historial", "banners", "oferta"):
+        for v in ("compartir", "categoria", "plantillas", "historial", "banners"):
             self.assertIn(f"pill('{v}'", self.admin)
 
     def test_cubre_las_tres_redes(self):

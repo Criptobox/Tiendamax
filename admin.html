@@ -229,6 +229,23 @@
   .pub-act.estado { background:linear-gradient(135deg,var(--o),var(--gold)); color:#1a1006; }
   .pub-act.ghost { background:rgba(255,255,255,0.07); border:1px solid var(--border); color:#ccc; }
   @media (max-width:380px) { .pub-share-actions { grid-template-columns:repeat(2,1fr); } }
+  /* "Hoy toca publicar": la misma tarjeta, en horizontal y con los tres
+     botones que de verdad se usan. Va arriba del tab, antes de la lista. */
+  .pub-hoy-card { display:flex; gap:12px; align-items:center; background:var(--card);
+    border:1px solid var(--border); border-left:3px solid var(--o,#ff6a1f);
+    border-radius:14px; padding:11px; }
+  .pub-hoy-info { flex:1; min-width:0; }
+  .pub-hoy-info b { display:block; color:#fff; font-size:13.5px; line-height:1.25;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pub-hoy-info small { color:var(--muted); font-size:11px; }
+  .pub-hoy-btns { display:flex; gap:6px; flex-shrink:0; }
+  .pub-hoy-btns .pub-act { padding:9px 10px; white-space:nowrap; }
+  /* En el móvil los botones no caben al lado: pasan debajo, a lo ancho. */
+  @media (max-width:560px) {
+    .pub-hoy-card { flex-wrap:wrap; }
+    .pub-hoy-info { flex:1 1 auto; }
+    .pub-hoy-btns { flex:1 0 100%; display:grid; grid-template-columns:repeat(3,1fr); }
+  }
   .pub-act-wide { width:100%; margin-top:8px; border:none; border-radius:10px; padding:11px; font-size:12.5px; font-weight:800; cursor:pointer; letter-spacing:.2px; }
   .pub-act-wide.rev { background:linear-gradient(135deg,#e67e22,#d35400); color:#fff; }
   .pub-act-wide:hover { filter:brightness(1.08); }
@@ -1553,7 +1570,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=c7e5bb7d"></script>
+<script src="js/tm-bundle.js?v=e1bbc447"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3773,7 +3790,9 @@ function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
-    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('wizard','🪄 3 redes')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+    // Sin "🔥 Oferta del día": no hacía nada, solo mandaba al tab de Combos,
+    // y con siete pills ninguna cabía entera en el móvil.
+    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('wizard','🪄 3 redes')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners'); }
   const body=$('#pub-body'); if(!body) return;
   if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); pubRenderCartelPreview(); }
   else if(PUB_VIEW==='wizard'){ body.innerHTML=pubWizardHTML(); pubWizardInit(); }
@@ -4024,6 +4043,45 @@ function plGuardar(){
    repetir el mismo producto cada dos días y para ver qué llevas olvidado. */
 const PUB_RED_NOM={fb:'📘 Facebook', revolico:'🟠 Revolico', wa:'🟢 WhatsApp', otra:'📣 Otra'};
 
+/* ── Racha y calendario ──────────────────────────────────────────────────
+   tmPublicacionesPorDia() existía desde el principio y no la usaba nadie.
+   Publicar es un hábito: ver los huecos del mes hace más que cualquier aviso. */
+function pubRachaDias(){
+  const dias=tmPublicacionesPorDia();
+  const clave=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  // Si hoy todavía no has publicado, la racha se cuenta desde ayer: si no,
+  // abrir el panel por la mañana la pondría a cero cuando sigue viva.
+  let cursor=new Date(hoy);
+  if(!dias[clave(cursor)]) cursor.setDate(cursor.getDate()-1);
+  let n=0;
+  while(dias[clave(cursor)]){ n++; cursor.setDate(cursor.getDate()-1); }
+  return n;
+}
+function pubCalendarioHTML(){
+  const dias=tmPublicacionesPorDia();
+  const clave=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const celdas=[];
+  let conPubs=0;
+  for(let i=29;i>=0;i--){
+    const d=new Date(hoy); d.setDate(d.getDate()-i);
+    const n=dias[clave(d)]||0; if(n) conPubs++;
+    const tono = n===0 ? 'rgba(255,255,255,.06)' : (n<3 ? 'rgba(255,106,31,.35)' : (n<6 ? 'rgba(255,106,31,.65)' : '#ff6a1f'));
+    celdas.push(`<span title="${d.getDate()}/${d.getMonth()+1} · ${n} publicación(es)" style="width:100%;aspect-ratio:1;border-radius:4px;background:${tono};display:block"></span>`);
+  }
+  const racha=pubRachaDias();
+  return `<div class="section">
+    <h3>🔥 Tu racha</h3>
+    <div style="display:flex;gap:18px;align-items:baseline;margin:-2px 0 12px">
+      <div><b style="font-size:26px;color:#ff6a1f">${racha}</b> <span style="font-size:12px;color:var(--muted)">día(s) seguido(s)</span></div>
+      <div><b style="font-size:26px;color:var(--text)">${conPubs}</b> <span style="font-size:12px;color:var(--muted)">de los últimos 30</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(15,1fr);gap:4px;max-width:420px">${celdas.join('')}</div>
+    <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Un cuadro por día, del más viejo al de hoy. Cuanto más naranja, más publicaste.</p>
+  </div>`;
+}
+
 function pubHistorialHTML(){
   const log=tmPublicacionesRecientes(30);
   const prods=(typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]);
@@ -4036,24 +4094,31 @@ function pubHistorialHTML(){
   };
   const olvidados=tmProductosSinPublicar(prods,21);
 
-  const avisos = olvidados.length
+  // Solo los que tienen stock: listar los agotados aquí es mandar a publicar
+  // lo que no puedes vender. Y cinco, no doce con un "…y 107 más" que no se
+  // podía usar para nada — el trabajo de verdad se hace en 🎯 Hoy toca.
+  const conStock=olvidados.filter(p=>Number(p.stock||0)>0);
+  const avisos = conStock.length
     ? `<div class="section"><h3>⚠️ Llevan 21 días o más sin publicar</h3>
-        <p style="font-size:12px;color:var(--muted);margin:0 0 10px">${olvidados.length} producto(s). Los que nunca se han publicado también cuentan.</p>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 10px"><b>${conStock.length}</b> con stock${olvidados.length>conStock.length?` (y ${olvidados.length-conStock.length} agotados, que no cuentan)`:''}. Los que nunca se publicaron también entran.</p>
         <div style="display:flex;flex-direction:column;gap:6px">${
-          olvidados.slice(0,12).map(p=>{
+          conStock.slice(0,5).map(p=>{
             const d=tmDiasSinPublicar(p.id);
             return `<div style="display:flex;gap:10px;align-items:center;font-size:12.5px">
-              <span style="flex:1;color:var(--text)">${esc(p.nombre||'')}</span>
-              <span style="color:var(--muted)">${d===null?'nunca':(d+' días')}</span>
+              <span style="flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre||'')}</span>
+              <span style="color:var(--muted);white-space:nowrap">${d===null?'nunca':(d+' días')}</span>
             </div>`;
-          }).join('')}${olvidados.length>12?`<div style="font-size:12px;color:var(--muted)">…y ${olvidados.length-12} más</div>`:''}</div></div>`
-    : `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto lleva más de 21 días sin publicar.</div></div>`;
+          }).join('')}</div>
+        <button type="button" class="btn btn-primary" style="width:100%;margin-top:12px;justify-content:center" onclick="pubSwitch('compartir')">🎯 Publicar los más olvidados →</button></div>`
+    : `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto con stock lleva más de 21 días sin publicar.</div></div>`;
 
+  // El calendario va SIEMPRE, también sin historial: la cuadrícula vacía es
+  // justo lo que empuja a empezar. Antes solo salía si ya habías publicado.
   if(!log.length){
-    return avisos+`<div class="section"><div class="empty"><div class="ico">🕐</div><b style="color:#fff">Todavía no hay historial</b><br>Se va llenando solo cada vez que copias un producto para Facebook, Revolico o una plantilla.</div></div>`;
+    return pubCalendarioHTML()+avisos+`<div class="section"><div class="empty"><div class="ico">🕐</div><b style="color:#fff">Todavía no hay historial</b><br>Se va llenando solo cada vez que compartes un producto desde 📲 Compartir o copias una plantilla.</div></div>`;
   }
 
-  return `<div class="section">
+  return pubCalendarioHTML()+`<div class="section">
     <h3>🕐 Últimas publicaciones</h3>
     <p style="font-size:12px;color:var(--muted);margin:0 0 12px">Se registra al copiar. Vive en este dispositivo, no en la nube.</p>
     <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Red</th><th>Cuándo</th></tr></thead><tbody>
@@ -4090,9 +4155,37 @@ function pubTxt(p, src){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.de
    Guarda cuándo se publicó cada producto por última vez. Con ~80 productos en
    stock es fácil repetir siempre los mismos y dejar otros sin publicar nunca;
    el badge en la lista y el filtro "sin publicar" ordenan ese trabajo. */
-function pubHist(){ try{ return JSON.parse(localStorage.getItem('tmPubHist')||'{}')||{}; }catch(e){ return {}; } }
-function pubMarcarPublicado(id){
-  try{ const h=pubHist(); h[String(id)]=Date.now(); localStorage.setItem('tmPubHist', JSON.stringify(h)); }catch(e){}
+/* Había DOS historiales de publicación que no se hablaban: este tab escribía
+   en 'tmPubHist' (id → fecha) y el wizard, las plantillas y el catálogo en
+   'tm_publog_v1' (lista de eventos, la que leen el Historial, el aviso de
+   "21 días sin publicar" y la columna "hace X d"). Publicar desde aquí no se
+   apuntaba allí, así que el Historial se quedaba vacío para siempre y el
+   aviso decía "119 productos llevan 21 días o más" publicaras lo que
+   publicaras. Ahora manda tm_publog_v1 y esto es solo una vista. */
+let _PUB_HIST_MIGRADO=false;
+function _pubMigrarHistViejo(){
+  if(_PUB_HIST_MIGRADO) return; _PUB_HIST_MIGRADO=true;
+  try{
+    const viejo=JSON.parse(localStorage.getItem('tmPubHist')||'{}')||{};
+    const ids=Object.keys(viejo); if(!ids.length) return;
+    // Solo lo que no esté ya: esto corre en cada carga y no puede duplicar.
+    ids.forEach(id=>{
+      const ts=Number(viejo[id])||0;
+      // Con su fecha original: si se apuntara con la de hoy, "hace X días"
+      // pasaría a decir "hoy" para todo lo que ya estaba publicado.
+      if(ts && !tmUltimaPublicacion(id)) tmRegistrarPublicacion(id,'otra','(antes de unificar)',ts);
+    });
+  }catch(e){}
+}
+/** id → fecha de la última publicación. Derivado del log, no un almacén aparte. */
+function pubHist(){
+  _pubMigrarHistViejo();
+  const out={};
+  try{ tmPublicaciones().forEach(e=>{ const k=String(e.pid); if(!out[k]||e.ts>out[k]) out[k]=e.ts; }); }catch(e){}
+  return out;
+}
+function pubMarcarPublicado(id, red, destino){
+  try{ tmRegistrarPublicacion(id, red||'otra', destino||''); }catch(e){}
 }
 function pubHaceTxt(ts){
   if(!ts) return null;
@@ -4111,7 +4204,7 @@ function pubBadgePublicado(id){
 }
 function pubShareCats(){ return [...new Set(PRODUCTOS.map(p=>p.categoria||'General').filter(Boolean))].sort(); }
 let PUB_SOLO_SIN_PUBLICAR=false;
-function pubToggleSinPublicar(){ PUB_SOLO_SIN_PUBLICAR=!PUB_SOLO_SIN_PUBLICAR; const b=$('#pub-filtro-sinpub'); if(b) b.className='btn '+(PUB_SOLO_SIN_PUBLICAR?'btn-primary':'btn-ghost'); pubRenderShareList(); }
+function pubToggleSinPublicar(){ PUB_SOLO_SIN_PUBLICAR=!PUB_SOLO_SIN_PUBLICAR; const b=$('#pub-filtro-sinpub'); if(b) b.className='btn '+(PUB_SOLO_SIN_PUBLICAR?'btn-primary':'btn-ghost'); pubShareReset(); }
 function pubShareFiltered(){
   const q=String(($('#pub-share-q')&&$('#pub-share-q').value)||'').toLowerCase().trim();
   const cat=($('#pub-share-cat')&&$('#pub-share-cat').value)||'';
@@ -4121,9 +4214,16 @@ function pubShareFiltered(){
     .filter(p=>!PUB_SOLO_SIN_PUBLICAR || !h[String(p.id)])
     // Los nunca publicados primero, después los más antiguos: lo que falta por
     // mover queda arriba sin tener que buscarlo.
-    .sort((a,b)=>(h[String(a.id)]||0)-(h[String(b.id)]||0))
-    .slice(0,120);
+    .sort((a,b)=>(h[String(a.id)]||0)-(h[String(b.id)]||0));
 }
+/* La lista pintaba los 75 productos con stock de golpe: 375 botones y 15.000px
+   de scroll en el móvil. Ahora entran de 20 en 20. Cualquier filtro vuelve a
+   empezar por la primera página — si no, buscas algo y la lista aparece
+   vacía porque seguías en la página 4. */
+const PUB_SHARE_PAGINA = 20;
+let PUB_SHARE_VISIBLES = PUB_SHARE_PAGINA;
+function pubShareReset(){ PUB_SHARE_VISIBLES = PUB_SHARE_PAGINA; pubRenderShareList(); }
+function pubShareVerMas(){ PUB_SHARE_VISIBLES += PUB_SHARE_PAGINA; pubRenderShareList(); }
 // Plantilla del cartel que generan "🖼️ Estado" / "📘 Facebook" (per-producto,
 // abajo) y el modal de grupos — se guarda en localStorage y la lee tmCartelHTML()
 // (admin-copilot.js) directamente, así que elegir acá aplica en TODOS lados
@@ -4172,9 +4272,81 @@ function pubRenderCartelPreview(){
   if(!demo){ box.innerHTML=''; return; }
   box.innerHTML = window.tmCartelHTML(demo);
 }
+/* ── 🎯 HOY TOCA ─────────────────────────────────────────────────────────
+   El tab abría con los 75 productos con stock y 5 botones cada uno: 15.000px
+   de scroll y ninguna pista de por dónde empezar. Esto elige tres y los pone
+   arriba. El criterio, en orden: los que nunca se publicaron, después los más
+   olvidados. Se salta lo publicado en los últimos 7 días para no repetir
+   siempre lo mismo, y no toca lo agotado. */
+const PUB_HOY_N = 3;
+const PUB_HOY_DESCANSO_DIAS = 7;
+let PUB_HOY_SALTO = 0;
+/** Los candidatos, del más olvidado al menos. */
+function pubHoyCandidatos(){
+  const h=pubHist();
+  const D=86400000, ahora=Date.now();
+  return PRODUCTOS
+    .filter(p=>p.activo!==false && Number(p.stock||0)>0)
+    .map(p=>({p, ts:h[String(p.id)]||0}))
+    .filter(x=>!x.ts || (ahora-x.ts) >= PUB_HOY_DESCANSO_DIAS*D)
+    .sort((a,b)=>a.ts-b.ts)
+    .map(x=>x.p);
+}
+function pubHoyToca(){
+  const c=pubHoyCandidatos();
+  if(!c.length) return [];
+  // "Dame otros" avanza de tres en tres y da la vuelta al llegar al final:
+  // sin esto el botón repintaba exactamente los mismos tres.
+  const ini=(PUB_HOY_SALTO*PUB_HOY_N) % c.length;
+  const out=[];
+  for(let i=0;i<Math.min(PUB_HOY_N,c.length);i++) out.push(c[(ini+i)%c.length]);
+  return out;
+}
+function pubHoyHTML(){
+  const lista=pubHoyToca();
+  const h=pubHist();
+  const hayMas=pubHoyCandidatos().length>PUB_HOY_N;
+  if(!lista.length){
+    return `<div class="section">
+      <h3>🎯 Hoy toca publicar</h3>
+      <div class="empty" style="padding:18px"><div class="ico">✅</div>
+        Todo lo que tienes con stock se publicó en los últimos ${PUB_HOY_DESCANSO_DIAS} días. Descansa o busca abajo lo que quieras repetir.</div>
+    </div>`;
+  }
+  const total=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0).length;
+  const nunca=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0&&!h[String(p.id)]).length;
+  const filas=lista.map(p=>{
+    const ts=h[String(p.id)];
+    const cuando = ts ? ('último: '+pubHaceTxt(ts)) : 'nunca publicado';
+    return `<div class="pub-hoy-card">
+      <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
+      <div class="pub-hoy-info">
+        <b>${esc(p.nombre||'Producto')}</b>
+        <small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)} · ${esc(cuando)}</small>
+      </div>
+      <div class="pub-hoy-btns">
+        <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
+        <button type="button" class="pub-act fb" onclick="pubShareAct('${esc(p.id)}','fb')">📘 Facebook</button>
+        <button type="button" class="pub-act ghost" onclick="pubShareAct('${esc(p.id)}','rev')">🟠 Revólico</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="section">
+    <h3>🎯 Hoy toca publicar</h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Los más olvidados que tienen stock. ${nunca>0?`<b style="color:var(--gold,#f5a623)">${nunca}</b> de ${total} no se han publicado nunca.`:`De ${total} con stock.`}</p>
+    <div style="display:flex;flex-direction:column;gap:10px">${filas}</div>
+    ${hayMas?`<button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="pubRenderHoy(true)">🔁 Dame otros</button>`:''}
+  </div>`;
+}
+function pubRenderHoy(otros){
+  if(otros) PUB_HOY_SALTO++;
+  const c=$('#pub-hoy'); if(c) c.innerHTML=pubHoyHTML();
+}
+
 function pubCompartirHTML(){
   const variante = pubCartelVariante();
-  return `<div class="section">
+  return `<div id="pub-hoy">${pubHoyHTML()}</div>
+  <div class="section">
     <h3>🎨 Diseño del cartel</h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Elige cómo se ven las imágenes de <b>🖼️ Estado</b>, <b>📘 Facebook</b> y grupos — aplica a todos los productos.</p>
     <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -4197,18 +4369,29 @@ function pubCompartirHTML(){
     <h3>📲 Compartir por producto</h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Estado de WhatsApp (imagen), Facebook (con tus grupos), Revólico (con vista previa) y copia rápida — filtra por categoría.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-      <input class="form-input" id="pub-share-q" placeholder="🔍 Buscar producto…" style="flex:1;min-width:160px" oninput="pubRenderShareList()">
-      <select class="form-select" id="pub-share-cat" style="min-width:170px" onchange="pubRenderShareList()"><option value="">Todas las categorías</option>${pubShareCats().map(c=>`<option>${esc(c)}</option>`).join('')}</select>
+      <input class="form-input" id="pub-share-q" placeholder="🔍 Buscar producto…" style="flex:1;min-width:160px" oninput="pubShareReset()">
+      <select class="form-select" id="pub-share-cat" style="min-width:170px" onchange="pubShareReset()"><option value="">Todas las categorías</option>${pubShareCats().map(c=>`<option>${esc(c)}</option>`).join('')}</select>
     </div>
     <button type="button" id="pub-filtro-sinpub" class="btn ${PUB_SOLO_SIN_PUBLICAR?'btn-primary':'btn-ghost'}" style="width:100%;justify-content:center;margin-bottom:6px" onclick="pubToggleSinPublicar()">✨ Solo los que nunca he publicado</button>
     <div class="banner-info">Tip: usa <b>🖼️ Estado</b> para generar una imagen vertical lista para WhatsApp Estado.</div>
+    <p id="pub-share-agotados" style="font-size:11.5px;color:var(--muted);margin:8px 0 0"></p>
     <div id="pub-share-list" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
   </div>`;
 }
 function pubRenderShareList(){
-  const box=$('#pub-share-list'); if(!box) return; const arr=pubShareFiltered();
+  const box=$('#pub-share-list'); if(!box) return;
+  const todos=pubShareFiltered();
+  const arr=todos.slice(0, PUB_SHARE_VISIBLES);
   try{ renderizarGruposFB(JSON.parse(localStorage.getItem('gruposFB')||'[]')); }catch(e){}
   const gCount=$('#pub-fb-groups-count'); if(gCount){ try{ gCount.textContent=(JSON.parse(localStorage.getItem('gruposFB')||'[]')).length; }catch(e){} }
+  // Los agotados se filtran (publicar lo que no tienes es tiempo perdido),
+  // pero antes no se decía cuántos eran y no había forma de enterarse desde
+  // aquí de que media tienda está sin stock.
+  const agotados=PRODUCTOS.filter(p=>p.activo!==false && Number(p.stock||0)<=0).length;
+  const avisoAgot=$('#pub-share-agotados');
+  if(avisoAgot) avisoAgot.innerHTML = agotados
+    ? `📦 No se enseñan <b>${agotados}</b> producto(s) agotado(s). <a href="#" onclick="go('productos');return false" style="color:var(--accent,#ff6a1f)">Reponer stock →</a>`
+    : '';
   box.innerHTML = arr.length ? arr.map(p=>`<div class="pub-share-card">
       <div class="pub-share-top">
         <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
@@ -4222,6 +4405,14 @@ function pubRenderShareList(){
       </div>
       <button type="button" class="pub-act-wide rev" onclick="pubShareAct('${esc(p.id)}','rev')">🟠 Publicar en Revólico</button>
     </div>`).join('') : '<div class="empty" style="padding:20px"><div class="ico">📦</div>No hay productos con stock para compartir.</div>';
+  const resto=todos.length-arr.length;
+  if(resto>0){
+    box.insertAdjacentHTML('beforeend',
+      `<button type="button" class="btn btn-ghost" style="width:100%;justify-content:center" onclick="pubShareVerMas()">Ver ${Math.min(resto,PUB_SHARE_PAGINA)} más <span style="opacity:.6">· quedan ${resto}</span></button>`);
+  } else if(todos.length>PUB_SHARE_PAGINA){
+    box.insertAdjacentHTML('beforeend',
+      `<p style="text-align:center;font-size:11.5px;color:var(--muted);margin:4px 0 0">Esos son los ${todos.length}.</p>`);
+  }
 }
 /* ── Publicar por categoría: texto + imagen con todos los productos de una categoría ── */
 const _pubCatBag=new Image(); try{ _pubCatBag.src='/iconos/bag.png'; }catch(e){}
@@ -4652,7 +4843,7 @@ async function pubCatGenCarteles(cat, onProgress){
   for(let i=0;i<prods.length;i++){
     if(onProgress) onProgress(i+1, prods.length);
     const blob=await pubGenCartelBlob(prods[i]);
-    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id); }
+    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id,'otra','Cartel por categoría'); }
   }
   return files;
 }
@@ -4760,9 +4951,15 @@ async function pubShareStory(p){
 }
 async function pubShareAct(id,act){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
-  // Queda registrado como publicado (badge "hace X" + orden de la lista).
-  pubMarcarPublicado(p.id);
-  setTimeout(()=>{ try{ pubRenderShareList(); }catch(e){} }, 600);
+  // Queda registrado como publicado (badge "hace X", orden de la lista e
+  // Historial). Se apunta la red de verdad: antes iba todo como "otra" y el
+  // Historial no servía para saber dónde ya habías puesto cada cosa.
+  const _redDe={story:'wa', wa:'wa', fb:'fb', rev:'revolico', copy:'otra'};
+  const _dstDe={story:'Estado WhatsApp', wa:'Chat WhatsApp', fb:'Grupos de Facebook', rev:'Revolico', copy:'Enlace copiado'};
+  pubMarcarPublicado(p.id, _redDe[act]||'otra', _dstDe[act]||'');
+  // También el panel de arriba: si acabas de publicar uno de los tres que
+  // proponía, tiene que dejar de proponerlo.
+  setTimeout(()=>{ try{ pubRenderShareList(); pubRenderHoy(); }catch(e){} }, 600);
   if(act==='story'){ showToast('⏳ Generando imagen…'); await pubShareStory(p); return; }
   if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p,'wa')),'_blank','noopener,noreferrer'); return; }
   if(act==='fb'){
@@ -4857,6 +5054,9 @@ window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManu
 window.renderClientes=renderClientes;
 window.pubCatCartelesLote=pubCatCartelesLote; window.pubAutoColorCat=pubAutoColorCat; window.pubSetAutoColorCat=pubSetAutoColorCat;
 window.pubToggleSinPublicar=pubToggleSinPublicar;
+// Las llaman los onclick del HTML que genera este mismo bloque; sin
+// exportarlas el botón existe pero no hace nada (el bloque es un IIFE).
+window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.pubShareReset=pubShareReset;
 window.anSubsDedup=anSubsDedup; window.anSubsLimpiarTokens=anSubsLimpiarTokens; window.anSubsBorrarTodos=anSubsBorrarTodos; window.anSubsBorrarUno=anSubsBorrarUno;
 })();
 </script>
