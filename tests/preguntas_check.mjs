@@ -21,6 +21,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import vm from 'node:vm';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const REGLAS = JSON.parse(readFileSync(join(RAIZ, 'firebase-rules.json'), 'utf8')).rules;
@@ -34,7 +35,7 @@ const ok = (c, m) => { if (!c) fallos.push(m); };
     const nodo = REGLAS.agente.faq.$faqKey;
     // El bot manda SIEMPRE los mismos campos, la primera vez y las siguientes.
     const bloque = CEREBRO.slice(CEREBRO.indexOf('function _registrarPreguntaFAQ'),
-                                 CEREBRO.indexOf('function _registrarPreguntaFAQ') + 2000);
+                                 CEREBRO.indexOf('function _registrarPreguntaFAQ') + 3500);
     const enviados = ['query', 'intent', 'lastResponse', 'count', 'lastUpdated']
         .filter(c => new RegExp('\\n\\s*' + c + ':').test(bloque));
     ok(enviados.length >= 4, `no reconozco los campos que manda el bot (vi ${enviados.join(', ')})`);
@@ -88,7 +89,7 @@ const ok = (c, m) => { if (!c) fallos.push(m); };
     }
     // Y se aplica a los DOS campos de texto libre, no solo a la pregunta.
     const reg = CEREBRO.slice(CEREBRO.indexOf('function _registrarPreguntaFAQ'),
-                              CEREBRO.indexOf('function _registrarPreguntaFAQ') + 2000);
+                              CEREBRO.indexOf('function _registrarPreguntaFAQ') + 3500);
     ok(/query: _sinDatos\(/.test(reg), 'la pregunta del cliente debe sanearse');
     ok(/lastResponse: _sinDatos\(/.test(reg), 'la respuesta guardada también');
 }
@@ -100,10 +101,6 @@ const ok = (c, m) => { if (!c) fallos.push(m); };
     ok(/function preguntasHtml\(\)/.test(COPI), 'falta la vista');
 
     // Lo que Max NO supo contestar va primero: es lo único accionable.
-    // R.fallback marca el intent como 'desconocido'; si el panel deja de
-    // mirarlo, la lista pierde justo la señal por la que existe.
-    ok(/_registrarPreguntaFAQ\(text, 'desconocido'/.test(CEREBRO),
-        "R.fallback debe marcar la pregunta como 'desconocido'");
     ok(/sinRespuesta: String\(x\.intent \|\| ''\) === 'desconocido'/.test(COPI),
         'el panel debe distinguir lo que Max no supo contestar');
     ok(/\.sort\(\(a, b\) => \(b\.sinRespuesta - a\.sinRespuesta\)/.test(COPI),
@@ -114,6 +111,91 @@ const ok = (c, m) => { if (!c) fallos.push(m); };
     ok(/function pregMarcar\(k\)/.test(COPI) && /localStorage\.setItem\(LS\.pregVistas/.test(COPI),
         '"Hecho" debe guardarse');
     ok(/data-cop="pregReset"/.test(COPI), 'debe poder volverse a ver lo ya revisado');
+}
+
+// ── 5. Una pregunta = un PATCH, con la intención de verdad ───────────────
+// Esto se mira EJECUTANDO el bot y espiando lo que manda, no leyendo el
+// código. Había dos registros por mensaje —uno dentro de R.fallback y otro en
+// el manejador del chat— y la comprobación estática de antes daba las dos por
+// buenas porque cada pieza, por separado, estaba bien escrita. En marcha, el
+// segundo PATCH pisaba 'desconocido' con 'fallback', así que el apartado
+// "🤷 Max no supo contestar" no podía tener nunca nada dentro, y cada
+// pregunta sin respuesta contaba doble.
+{
+    const noop = () => {};
+    const el = () => ({
+        innerHTML: '', textContent: '', value: '', style: {}, dataset: {},
+        classList: { add: noop, remove: noop, toggle: noop, contains: () => false },
+        appendChild: noop, removeChild: noop, remove: noop, insertBefore: noop,
+        addEventListener: noop, removeEventListener: noop, setAttribute: noop,
+        getAttribute: () => null, focus: noop, blur: noop, scrollTo: noop,
+        getBoundingClientRect: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+        querySelector: () => el(), querySelectorAll: () => [],
+    });
+    const catalogo = JSON.parse(readFileSync(join(RAIZ, 'productos.json'), 'utf8'));
+    const escritos = [];
+    const win = { location: { origin: 'https://tiendamax.org' }, addEventListener: noop,
+                  setTimeout, clearTimeout, open: () => null,
+                  matchMedia: () => ({ matches: false, addEventListener: noop }) };
+    const sb = {
+        window: win, location: win.location,
+        document: { createElement: el, querySelector: () => el(), querySelectorAll: () => [],
+                    addEventListener: noop, body: el(), head: el() },
+        localStorage: { getItem: () => null, setItem: noop, removeItem: noop },
+        navigator: { userAgent: 'node' },
+        productos: catalogo.productos || catalogo,
+        console, setTimeout, clearTimeout, requestAnimationFrame: noop,
+        _fbRtdbUrl: () => 'https://ejemplo-default-rtdb.firebaseio.com',
+        fetch: (u, o) => {
+            if (String(u).includes('/agente/faq/')) escritos.push(JSON.parse(o.body));
+            return Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(''),
+                                     json: () => Promise.resolve({}) });
+        },
+    };
+    sb.globalThis = sb;
+    vm.createContext(sb);
+    // Se saca _registrarPreguntaFAQ del cierre para poder llamarlo igual que
+    // lo llama el manejador del chat, sin necesitar DOM.
+    vm.runInContext(CEREBRO.replace('window._tmBot = {',
+        'window._espia = { reg: _registrarPreguntaFAQ, ctx: () => _context };\n  window._tmBot = {'), sb);
+    const B = sb.window._tmBot;
+    B.sincronizar();
+
+    // Exactamente lo que hace el chat al enviar (ver el bloque de envío).
+    const preguntar = (q) => {
+        escritos.length = 0;
+        const data = B.responder(q);
+        sb.window._espia.reg(q, data.sinRespuesta ? 'desconocido' : sb.window._espia.ctx().lastIntent, data.response);
+        return { data, escritos: escritos.slice() };
+    };
+
+    const nada = preguntar('sdfjk asdkjh qwerty zxcvbn');
+    ok(nada.data.sinRespuesta === true, 'la respuesta de fallback debe venir marcada como sin respuesta');
+    ok(nada.escritos.length === 1,
+        `una pregunta debe generar UN PATCH, generó ${nada.escritos.length} (el contador subiría de dos en dos)`);
+    ok(nada.escritos[0] && nada.escritos[0].intent === 'desconocido',
+        `lo que Max no supo contestar debe guardarse como 'desconocido', guardó '${nada.escritos[0] && nada.escritos[0].intent}'`);
+
+    const buena = preguntar('quiero un router tp link');
+    ok(buena.escritos.length === 1, 'una pregunta contestada también genera un solo PATCH');
+    ok(buena.escritos[0] && buena.escritos[0].intent !== 'desconocido',
+        'una pregunta que Max sí contestó no puede marcarse como sin respuesta');
+
+    // El PATCH tiene que cumplir el contrato de la regla o Firebase lo tumba
+    // entero, y eso ya pasó una vez sin dejar rastro en ningún sitio.
+    for (const campo of ['query', 'intent', 'count', 'lastUpdated']) {
+        ok(buena.escritos[0] && buena.escritos[0][campo] !== undefined,
+            `el PATCH debe traer "${campo}": la regla lo exige y sin él se rechaza todo`);
+    }
+
+    // Y el fallo tiene que dejar rastro. Con .catch(()=>{}) a secas, unas
+    // reglas sin publicar dejan el apartado vacío sin una sola pista —es el
+    // mismo agujero mudo que tuvo Web Vitals durante meses.
+    ok(/_recordarFAQ\(/.test(CEREBRO), 'el resultado del PATCH debe apuntarse en algún sitio');
+    ok(/window\.tmPreguntasProbar = function/.test(CEREBRO),
+        'debe haber una prueba de escritura a mano para distinguir "no hay preguntas" de "las reglas rechazan"');
+    ok(/k !== '__prueba_del_panel'/.test(COPI),
+        'la clave de prueba no puede salir en la lista como si fuera una pregunta de un cliente');
 }
 
 if (fallos.length) {

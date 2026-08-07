@@ -288,6 +288,12 @@
           .replace(/\+?\s?(?:53\s?)?[5-9]\d{3}\s?\d{4}\b/g, '[teléfono]')
           .replace(/\b\d{8,}\b/g, '[número]')
           .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[correo]');
+      // El resultado se apunta. Antes esto era un fetch con .catch(()=>{}) y
+      // nada más: si Firebase rechazaba el PATCH —reglas sin publicar, un
+      // campo fuera de rango— no quedaba ni una pista en ningún sitio, y el
+      // apartado del panel salía vacío exactamente igual que si nadie hubiera
+      // escrito nunca. Es el mismo fallo mudo que tuvo Web Vitals durante
+      // meses; se arregla de la misma forma.
       fetch(base + '/agente/faq/' + encodeURIComponent(clave) + '.json', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -298,9 +304,47 @@
           count: { '.sv': { increment: 1 } },       // incremento del lado del servidor
           lastUpdated: Date.now()
         })
-      }).catch(function(){});
+      }).then(function(r){
+        _recordarFAQ(r.ok ? null : ('HTTP ' + r.status));
+      }).catch(function(e){
+        _recordarFAQ('red: ' + ((e && e.message) || 'error'));
+      });
     } catch(e){}
   }
+
+  function _recordarFAQ(error){
+    try {
+      window.tmPreguntasEstado = { ts: Date.now(), ok: !error, error: error || null };
+      localStorage.setItem('tm_faq_envio', JSON.stringify(window.tmPreguntasEstado));
+    } catch(e){}
+  }
+
+  /* Prueba de escritura a mano, desde la consola del navegador:
+         await tmPreguntasProbar()
+     El panel no puede distinguir "nadie ha preguntado nada" de "Firebase
+     rechaza todas las escrituras": las dos cosas se ven como una lista vacía.
+     Esto lo responde en un segundo. Escribe en una clave de prueba aparte,
+     así que no ensucia las preguntas de verdad. */
+  window.tmPreguntasProbar = function(){
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+    if(!base) return Promise.resolve({ ok: false, error: 'sin config de Firebase' });
+    const url = base + '/agente/faq/__prueba_del_panel.json';
+    return fetch(url, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: 'prueba de escritura desde el panel', intent: 'prueba',
+        lastResponse: '', count: { '.sv': { increment: 1 } }, lastUpdated: Date.now()
+      })
+    }).then(r => r.text().then(txt => ({
+      ok: r.ok, status: r.status, respuesta: txt.slice(0, 200),
+      diagnostico: r.ok
+        ? 'Las reglas de /agente/faq aceptan escrituras. Si el panel sigue vacío es que nadie le ha escrito a Max desde que las publicaste. Recarga el admin y mira otra vez tras un par de preguntas reales.'
+        : 'Firebase rechaza la escritura. Copia el bloque "agente" de firebase-rules.json en Reglas de la consola de Firebase y publícalas.'
+    }))).catch(e => ({
+      ok: false, error: String((e && e.message) || e),
+      diagnostico: 'No se pudo ni conectar. Mira la consola por si es CORS o la red.'
+    }));
+  };
 
   // ════════════════════════════════════════════════════════════
   //  BASE DE CONOCIMIENTO EXPERTA (ampliada v3)
@@ -4352,18 +4396,28 @@ ${notasHTML}
     };
   };
 
+  // `sinRespuesta` marca la respuesta, no el mensaje: es lo que hace que la
+  // pregunta llegue al panel como "Max no supo contestar". Antes R.fallback
+  // registraba la pregunta él mismo y el manejador del chat la registraba otra
+  // vez con la intención de detectIntent — dos PATCH por mensaje: el contador
+  // subía de dos en dos y el segundo pisaba 'desconocido' con 'fallback', así
+  // que el apartado "🤷 Max no supo contestar" no podía tener nunca nada
+  // dentro. Además, marcarlo aquí acierta también cuando otro manejador se
+  // rinde por dentro (`return R.fallback(text)`), que antes quedaba anotado
+  // como si hubiera contestado bien.
   R.fallback = (text) => {
-    _registrarPreguntaFAQ(text, 'desconocido', '');
     const prods = findProducts(text, 3);
     if(prods.length > 0){
       return {
         response: `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese algo de esto (todos disponibles). Si no es lo que buscas, dime más detalles: para qué lo necesitas, presupuesto, marca preferida…`,
         products: prods,
+        sinRespuesta: true,
         quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
       };
     }
     return {
       response: `🤔 Disculpa, no estoy seguro de haber entendido tu pregunta.\n\nPuedo ayudarte con:\n\n• <em>Buscar productos</em> en el catálogo\n• <em>Calcular sistemas solares</em> y autonomía\n• <em>Comparar productos</em> lado a lado\n• <em>Resolver dudas técnicas</em> (códigos de error, glosario)\n• <em>Pagos, envíos y garantía</em>\n• <em>Nauta Hogar y equipos de red</em>\n\n¿Puedes reformular tu pregunta? O escribe <code>/ayuda</code> para ver todo lo que sé hacer.`,
+      sinRespuesta: true,
       quickReplies: ['🤖 /ayuda','📦 Categorías','🔥 Ofertas','💬 Hablar con un humano']
     };
   };
@@ -5328,7 +5382,8 @@ ${notasHTML}
       const data = responder(text);
       // Fire-and-forget: si Firebase no está configurado o el PATCH falla, el
       // chat sigue igual. responder() acaba de dejar la intención en _context.
-      _registrarPreguntaFAQ(text, _context.lastIntent, data.response);
+      // Este es el ÚNICO sitio que registra la pregunta: una por mensaje.
+      _registrarPreguntaFAQ(text, data.sinRespuesta ? 'desconocido' : _context.lastIntent, data.response);
       if(data.response) addMessageTyped(data.response, 'bot');
       // Señales del flujo de comparación: en vez de un texto, se pintan las
       // opciones para que el cliente elija tocando cuál va contra cuál.

@@ -853,7 +853,9 @@ async function asesorCargarVoz(){
   // lista dice qué preguntan pero no si Max supo contestar, que es lo único
   // que decide si hay algo que arreglar.
   ASESOR_VOZ.preguntas = faq && typeof faq === 'object'
-    ? Object.entries(faq).filter(([, x]) => x && x.query)
+    // __prueba_del_panel la escribe tmPreguntasProbar() para comprobar si las
+    // reglas dejan escribir; no es una pregunta de nadie y no pinta aquí.
+    ? Object.entries(faq).filter(([k, x]) => x && x.query && k !== '__prueba_del_panel')
         .map(([k, x]) => ({
           k, q: String(x.query), n: num(x.count) || 1,
           intent: String(x.intent || ''), resp: String(x.lastResponse || ''),
@@ -1056,9 +1058,18 @@ function preguntasHtml(){
   }
   if (!todas.length){
     const ocultas = (ASESOR_VOZ.preguntas || []).length;
-    return `<div class="tm-copilot-empty">${ocultas
-      ? `Ya revisaste las ${ocultas} preguntas que hay. <button type="button" class="tmcp-chip" data-cop="pregReset">Ver otra vez</button>`
-      : 'Todavía no hay preguntas registradas. Se llenan solas cuando alguien le escribe a Max.'}</div>`;
+    if (ocultas){
+      return `<div class="tm-copilot-empty">Ya revisaste las ${ocultas} preguntas que hay. <button type="button" class="tmcp-chip" data-cop="pregReset">Ver otra vez</button></div>`;
+    }
+    // Una lista vacía tiene DOS causas que se ven igual: nadie ha preguntado
+    // nada, o la lectura falló (reglas sin publicar, red). Decir "todavía no
+    // hay preguntas" cuando en realidad no se pudo mirar es afirmar algo que
+    // no se sabe, y deja al dueño esperando datos que no van a llegar solos.
+    const e = estadoLecturas();
+    const rotoAqui = e && e.rutas.some(r => r.indexOf('/agente/faq') === 0);
+    return `<div class="tm-copilot-empty">${rotoAqui
+      ? `No pude leer las preguntas: <b>${esc(e.motivo)}</b>.<br>Esto no es "no hay ninguna" — es que no llegué a mirar. Si es de permisos, publica <code>firebase-rules.json</code> en Firebase → Realtime Database → Reglas.`
+      : 'Todavía no hay preguntas registradas. Se llenan solas cuando alguien le escribe a Max.<br><small style="opacity:.7">¿Crees que debería haber? Abre la web, escríbele algo a Max y vuelve aquí. Si sigue vacío, en la consola del navegador: <code>await tmPreguntasProbar()</code>.</small>'}</div>`;
   }
   const sin = todas.filter(p => p.sinRespuesta);
   const con = todas.filter(p => !p.sinRespuesta);
