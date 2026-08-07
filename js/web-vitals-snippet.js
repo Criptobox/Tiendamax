@@ -70,10 +70,10 @@
         } catch(e) { return ''; }
     }
 
-    /* Envía la muestra. sendBeacon sobrevive al cierre de la pestaña, que es
-       justo cuando se dispara esto; fetch con keepalive es el plan B. Va por
-       POST para que Firebase genere la clave: así dos visitas simultáneas no
-       se pisan (nada de leer-modificar-escribir). */
+    /* Envía la muestra por POST para que Firebase genere la clave: así dos
+       visitas simultáneas no se pisan (nada de leer-modificar-escribir).
+       fetch con keepalive sobrevive al cierre de la pestaña igual que
+       sendBeacon, y además dice si el servidor la aceptó. */
     function _enviar() {
         if (!enMuestra) return;
         var base = _rtdbUrl();
@@ -85,24 +85,79 @@
             cls: Math.round(vitals.cls * 1000) / 1000,
             inp: Math.round(vitals.inp),
             ttfb: Math.round(vitals.ttfb),
-            ts: Date.now()
+            // La hora la pone el SERVIDOR. Antes iba Date.now(), o sea el reloj
+            // del visitante, y la regla exige que caiga en una ventana de 5
+            // minutos: cualquier teléfono con la hora desfasada —aquí son
+            // muchos— quedaba fuera y su muestra se perdía sin que nadie se
+            // enterase. {".sv":"timestamp"} lo resuelve Firebase al escribir,
+            // así que también cumple la regla vieja: no hace falta republicar.
+            ts: { '.sv': 'timestamp' }
         };
         var conn = _conexion();
         if (conn) payload.conn = conn;
         var cuerpo = JSON.stringify(payload);
-        try {
-            if (navigator.sendBeacon) {
-                var blob = new Blob([cuerpo], { type: 'application/json' });
-                if (navigator.sendBeacon(url, blob)) return;
-            }
-        } catch(e) {}
+        // fetch va PRIMERO aunque sendBeacon exista: keepalive da la misma
+        // garantía al cerrar la pestaña y además dice si el servidor aceptó.
+        // Con sendBeacon el rechazo era invisible —devuelve true por haberlo
+        // encolado, no por haberlo entregado—, así que un 401 por reglas sin
+        // publicar dejaba la métrica muerta durante meses sin una sola pista.
         try {
             fetch(url, {
                 method: 'POST', keepalive: true,
                 headers: { 'Content-Type': 'application/json' }, body: cuerpo
-            }).catch(function() {});
+            }).then(function(r) {
+                _recordarEnvio(r.ok ? null : ('HTTP ' + r.status));
+            }).catch(function(e) {
+                _recordarEnvio('red: ' + ((e && e.message) || 'error'));
+            });
+            return;
+        } catch(e) {}
+        try {
+            if (navigator.sendBeacon) {
+                var blob = new Blob([cuerpo], { type: 'application/json' });
+                navigator.sendBeacon(url, blob);
+            }
         } catch(e) {}
     }
+
+    /* Deja el resultado del último envío a mano. Queda en el dispositivo del
+       visitante, no en el del admin —sus visitas no reportan a propósito—, así
+       que para diagnosticar está tmWebVitalsProbar() de abajo. */
+    function _recordarEnvio(error) {
+        try {
+            window.tmWebVitalsEstado = { ts: Date.now(), ok: !error, error: error || null };
+            localStorage.setItem('tm_wv_envio', JSON.stringify(window.tmWebVitalsEstado));
+        } catch(e) {}
+    }
+
+    /* Prueba de escritura a mano, desde la consola del navegador:
+           await tmWebVitalsProbar()
+       El agente de salud avisa cuando hay 0 muestras, pero solo puede
+       sospechar la causa: desde el servidor no se distingue "poco tráfico" de
+       "las reglas rechazan todas las escrituras". Esto la responde en un
+       segundo, y funciona también con el panel configurado (el muestreo y la
+       exclusión del admin no aplican aquí: es una prueba, no una muestra). */
+    window.tmWebVitalsProbar = function() {
+        var base = _rtdbUrl();
+        if (!base) return Promise.resolve({ ok: false, error: 'sin config de Firebase' });
+        var dia = new Date().toISOString().slice(0, 10);
+        return fetch(base + '/web_vitals/' + dia + '.json', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lcp: 1, cls: 0, inp: 0, ttfb: 1, ts: { '.sv': 'timestamp' }, conn: 'test' })
+        }).then(function(r) {
+            return r.text().then(function(t) {
+                return {
+                    ok: r.ok, status: r.status, respuesta: t.slice(0, 200),
+                    diagnostico: r.ok
+                        ? 'Las reglas de /web_vitals están publicadas y aceptan escrituras. Si el agente sigue diciendo 0 muestras, es que hay poco tráfico (solo reporta 1 de cada 8 visitas).'
+                        : 'Firebase rechaza la escritura. Copia el bloque "web_vitals" de firebase-rules.json en Reglas de la consola de Firebase y publícalas.'
+                };
+            });
+        }).catch(function(e) {
+            return { ok: false, error: String((e && e.message) || e),
+                     diagnostico: 'No se pudo ni conectar. Mira la consola por si es CORS o la red.' };
+        });
+    };
 
     function _save() {
         try {

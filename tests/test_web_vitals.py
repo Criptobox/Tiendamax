@@ -189,6 +189,38 @@ class ContratoClienteReglasTest(unittest.TestCase):
     def test_el_cliente_muestrea(self):
         self.assertIn("MUESTREO", self.snippet)
 
+    def test_la_hora_la_pone_el_servidor(self):
+        # Iba Date.now(), o sea el reloj del visitante, contra una regla que
+        # exigía caer dentro de una ventana de 5 minutos: cualquier teléfono
+        # con la hora desfasada perdía su muestra y nadie se enteraba, porque
+        # sendBeacon no puede informar de un rechazo.
+        self.assertIn('".sv"', self.snippet.replace("'", '"'),
+                      "el ts de la muestra debe ser {'.sv':'timestamp'}, no Date.now()")
+        i = self.snippet.index("function _enviar()")
+        cuerpo = self.snippet[i:i + 1600]
+        self.assertNotIn("ts: Date.now()", cuerpo)
+        muestra = self.reglas["web_vitals"]["$dia"]["$muestraId"]
+        self.assertIn("now", muestra["ts"][".validate"])
+
+    def test_el_envio_sabe_si_lo_aceptaron(self):
+        # sendBeacon devuelve true por haber encolado, no por haber entregado:
+        # con él, un 401 por reglas sin publicar es invisible para siempre.
+        # fetch+keepalive da la misma garantía al cerrar la pestaña y además
+        # informa del estado, así que va primero.
+        # Se acota por la función siguiente, no por un largo fijo, y se
+        # comparan las LLAMADAS y no la palabra suelta: el comentario que
+        # explica por qué fetch va primero menciona sendBeacon.
+        i = self.snippet.index("function _enviar()")
+        cuerpo = self.snippet[i:self.snippet.index("function _recordarEnvio")]
+        self.assertLess(cuerpo.index("fetch(url"), cuerpo.index("navigator.sendBeacon("),
+                        "fetch debe intentarse antes que sendBeacon")
+        self.assertIn("_recordarEnvio", cuerpo)
+
+    def test_hay_forma_de_probar_las_reglas_a_mano(self):
+        # El agente avisa de "0 muestras" pero desde el servidor no distingue
+        # poco tráfico de escrituras rechazadas. Esto lo responde.
+        self.assertIn("window.tmWebVitalsProbar", self.snippet)
+
 
 class PodarWebVitalsTest(unittest.TestCase):
     def test_borra_viejos_y_conserva_recientes(self):
