@@ -279,13 +279,22 @@
         return r;
       };
       const limpio = String(respuestaHTML || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      // Lo que escribe el cliente puede acabar en faq.html, que es pública y
+      // la indexa Google, y ahora también se lee desde el panel. La gente
+      // mete su teléfono en la misma frase ("soy de Holguín, mi número es
+      // 5354…, ¿tienen routers?"). Se quita antes de guardarlo: una vez
+      // dentro ya no hay forma de sacarlo de la página indexada.
+      const _sinDatos = (txt) => String(txt)
+          .replace(/\+?\s?(?:53\s?)?[5-9]\d{3}\s?\d{4}\b/g, '[teléfono]')
+          .replace(/\b\d{8,}\b/g, '[número]')
+          .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[correo]');
       fetch(base + '/agente/faq/' + encodeURIComponent(clave) + '.json', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: recortar(t, 300),
+          query: _sinDatos(recortar(t, 300)),
           intent: recortar(String(intent || 'desconocido'), 40),
-          lastResponse: recortar(limpio, 300),
+          lastResponse: _sinDatos(recortar(limpio, 300)),
           count: { '.sv': { increment: 1 } },       // incremento del lado del servidor
           lastUpdated: Date.now()
         })

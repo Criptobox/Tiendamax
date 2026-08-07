@@ -202,19 +202,17 @@
       ".read": false,
       ".write": false,
       "faq": {
+        ".read": true,
         "$faqKey": {
           ".write": "newData.exists() && (!data.exists() || newData.child('count').val() === data.child('count').val() + 1)",
           ".validate": "newData.hasChildren(['query','intent','count','lastUpdated'])",
           "query": {
-            ".write": "!data.exists()",
             ".validate": "newData.isString() && newData.val().length <= 300"
           },
           "intent": {
-            ".write": "!data.exists()",
             ".validate": "newData.isString() && newData.val().length <= 40"
           },
           "lastResponse": {
-            ".write": "!data.exists()",
             ".validate": "newData.isString() && newData.val().length <= 300"
           },
           "count": {
@@ -224,7 +222,6 @@
             ".validate": "newData.isNumber()"
           }
         },
-        ".read": true,
         ".write": false,
         ".indexOn": [
           "count"

@@ -11,7 +11,8 @@ const LS = {
   notify: 'tm_copilot_last_notify',
   dismissed: 'tm_copilot_dismissed_tasks',
   memory: 'tm_copilot_memory_v1',
-  view: 'tm_copilot_view'
+  view: 'tm_copilot_view',
+  pregVistas: 'tm_copilot_preguntas_vistas'
 };
 const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false, iaPreviewPid: null, iaPreviewData: null, iaPreviewCargando: false };
@@ -659,7 +660,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['asesor','📊 Asesor'],['chat','💬 Chat'],['marketing','📣 Marketing'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['asesor','📊 Asesor'],['preguntas','❓ Preguntas'],['chat','💬 Chat'],['marketing','📣 Marketing'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 
@@ -848,10 +849,21 @@ async function asesorCargarVoz(){
         .filter(x => x.n > 0).sort((a,b) => b.n - a.n)
         .map(x => ({ ...x, tienes: hayProducto(x.q) })).slice(0, 40)
     : [];
+  // Se guarda la clave, la respuesta que dio Max y cuándo fue: sin eso la
+  // lista dice qué preguntan pero no si Max supo contestar, que es lo único
+  // que decide si hay algo que arreglar.
   ASESOR_VOZ.preguntas = faq && typeof faq === 'object'
-    ? Object.values(faq).filter(x => x && x.query)
-        .map(x => ({ q: String(x.query), n: num(x.count), intent: String(x.intent||'') }))
-        .sort((a,b) => b.n - a.n).slice(0, 25)
+    ? Object.entries(faq).filter(([, x]) => x && x.query)
+        .map(([k, x]) => ({
+          k, q: String(x.query), n: num(x.count) || 1,
+          intent: String(x.intent || ''), resp: String(x.lastResponse || ''),
+          ts: num(x.lastUpdated),
+          // 'desconocido' es literalmente lo que escribe R.fallback: Max no
+          // entendió. Lo demás contestó algo, bien o mal.
+          sinRespuesta: String(x.intent || '') === 'desconocido',
+        }))
+        .sort((a, b) => (b.sinRespuesta - a.sinRespuesta) || (b.n - a.n) || (b.ts - a.ts))
+        .slice(0, 60)
     : [];
   ASESOR_VOZ.cargado = true;
   return ASESOR_VOZ;
@@ -1018,6 +1030,69 @@ function renderAsesor(){
     ${(ASESOR_VOZ.busquedas||[]).length ? `<div class="tm-copilot-smart"><h4>🔍 Lo que buscan tus clientes</h4><small>${ASESOR_VOZ.busquedas.slice(0,15).map(b=>`${esc(b.q)} <b>×${b.n}</b>${b.tienes?'':' <span style="color:#e74c3c">(no lo tienes)</span>'}`).join(' · ')}</small></div>` : ''}
     ${(ASESOR_VOZ.preguntas||[]).length ? `<div class="tm-copilot-smart"><h4>❓ Lo que le preguntan al bot</h4><small>${ASESOR_VOZ.preguntas.slice(0,12).map(p=>`${esc(p.q)} <b>×${p.n}</b>`).join(' · ')}</small></div>` : ''}
   `;
+}
+
+
+/* ── ❓ Preguntas que Max no supo contestar ────────────────────────────────
+   El bot ya apuntaba en Firebase cada pregunta que le hacen (R.fallback
+   marca 'desconocido' cuando no entendió). Lo que faltaba era mirarlo: aquí
+   se enseñan primero las que se quedaron sin respuesta y por veces repetidas,
+   que es el orden en que compensa arreglarlas — una pregunta que se repite y
+   Max no contesta es una venta que se cae todos los días.
+
+   Nota: son textos que escribe el cliente. Se limpian de teléfonos y correos
+   en el propio bot antes de guardarlos, porque acaban en faq.html, que es
+   pública e indexada. */
+function pregVistas(){ try { return new Set(JSON.parse(localStorage.getItem(LS.pregVistas)||'[]')); } catch(e) { return new Set(); } }
+function pregMarcar(k){
+  const s = pregVistas(); s.add(String(k));
+  try { localStorage.setItem(LS.pregVistas, JSON.stringify(Array.from(s).slice(-400))); } catch(e){}
+}
+function preguntasHtml(){
+  const vistas = pregVistas();
+  const todas = (ASESOR_VOZ.preguntas || []).filter(p => !vistas.has(p.k));
+  if (!ASESOR_VOZ.cargado){
+    return `<div class="tm-copilot-empty">Cargando lo que te preguntan…</div>`;
+  }
+  if (!todas.length){
+    const ocultas = (ASESOR_VOZ.preguntas || []).length;
+    return `<div class="tm-copilot-empty">${ocultas
+      ? `Ya revisaste las ${ocultas} preguntas que hay. <button type="button" class="tmcp-chip" data-cop="pregReset">Ver otra vez</button>`
+      : 'Todavía no hay preguntas registradas. Se llenan solas cuando alguien le escribe a Max.'}</div>`;
+  }
+  const sin = todas.filter(p => p.sinRespuesta);
+  const con = todas.filter(p => !p.sinRespuesta);
+  const fila = (p) => `<div class="tm-copilot-task ${p.sinRespuesta ? 'u3' : 'u1'}">
+    <div class="tm-copilot-task-top">
+      <div class="tm-copilot-ico">${p.sinRespuesta ? '🤷' : '💬'}</div>
+      <div class="tm-copilot-task-main">
+        <b>${esc(p.q)}</b>
+        <small>${p.n > 1 ? `preguntada <strong>${p.n} veces</strong>` : 'preguntada 1 vez'}${p.ts ? ` · ${ago(p.ts)}` : ''}${p.sinRespuesta ? ' · <span style="color:#ff9187">Max no supo qué contestar</span>' : ` · Max respondió: ${esc(p.intent)}`}</small>
+        ${!p.sinRespuesta && p.resp ? `<small style="opacity:.7;margin-top:4px">“${esc(p.resp.slice(0,120))}${p.resp.length > 120 ? '…' : ''}”</small>` : ''}
+      </div>
+    </div>
+    <div class="tm-copilot-task-actions">
+      <button type="button" class="tm-copilot-btn primary" data-cop="pregWa" data-q="${esc(p.q)}">💬 Responder por WhatsApp</button>
+      <button type="button" class="tm-copilot-btn" data-cop="pregOk" data-k="${esc(p.k)}">Hecho</button>
+    </div>
+  </div>`;
+  let html = `<div class="tm-copilot-summary tres">
+      <div class="tm-copilot-stat"><small>🤷 Sin respuesta</small><b>${sin.length}</b></div>
+      <div class="tm-copilot-stat"><small>💬 Contestadas</small><b>${con.length}</b></div>
+      <div class="tm-copilot-stat"><small>🔁 Más repetida</small><b>${todas[0] ? '×' + todas[0].n : '—'}</b></div>
+    </div>
+    <div class="tm-copilot-chips" style="margin-bottom:10px">
+      <button type="button" class="tmcp-chip" data-cop="asesorVoz">🔄 Actualizar</button>
+    </div>`;
+  if (sin.length){
+    html += `<div class="tm-copilot-smart" style="border-left:3px solid #e74c3c"><h4>🤷 Max no supo contestar (${sin.length})</h4><small>Son las que más urge arreglar: si se repiten, es una venta que se cae cada vez.</small></div>`;
+    html += sin.slice(0, 20).map(fila).join('');
+  }
+  if (con.length){
+    html += `<div class="tm-copilot-smart"><h4>💬 Contestadas (${con.length})</h4><small>Max respondió algo. Míralas por si contestó de otro tema.</small></div>`;
+    html += con.slice(0, 20).map(fila).join('');
+  }
+  return html;
 }
 
 /* ══════════ CHAT: pregúntale al agente con tus datos reales ══════════ */
@@ -2692,6 +2767,14 @@ function renderCopilotView(view, topTasks){
     }
     return renderAsesor();
   }
+  if(view==='preguntas'){
+    // Misma fuente que el Asesor: se carga una vez y se repinta al llegar.
+    if(!ASESOR_VOZ.cargado){
+      ASESOR_VOZ.cargado = true;
+      asesorCargarVoz().then(()=>{ if(state.view==='preguntas') renderSheet(); }).catch(()=>{});
+    }
+    return preguntasHtml();
+  }
   if(view==='chat') return renderChat();
   if(view==='correcciones') return renderCorreccionesIA();
   if(view==='descripciones') return renderDescripciones();
@@ -2976,6 +3059,15 @@ function bindEvents(){
     if(act==='iaUndo') iaDeshacer();
     if(act==='chatSend'){ const inp=$('#tmChatInput'); if(inp){ chatEnviar(inp.value); } }
     if(act==='chatSug'){ state.view='chat'; chatEnviar(el.dataset.q); }
+    if(act==='pregOk'){ pregMarcar(el.dataset.k); renderSheet(); }
+    if(act==='pregReset'){ try{ localStorage.removeItem(LS.pregVistas); }catch(err){} renderSheet(); }
+    if(act==='pregWa'){
+      // Abre WhatsApp con la pregunta pegada: lo que hace falta casi siempre
+      // es contestarla a mano una vez y luego decidir si Max debe aprenderla.
+      const q = el.dataset.q || '';
+      const num = (localStorage.getItem('whatsappNumero')||'5354320170').replace(/\D/g,'');
+      window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Sobre esto que preguntaron: "'+q+'"'), '_blank', 'noopener,noreferrer');
+    }
     if(act==='asesorVoz'){
       toast('Consultando búsquedas y preguntas…');
       asesorCargarVoz().then(()=>{ state.view='asesor'; renderSheet(); toast('✅ Listo'); })
