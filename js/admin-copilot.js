@@ -63,11 +63,41 @@ async function fbBase(){
   } catch(e) {}
   return '';
 }
+/* Todas las lecturas de Firebase pasan por aquí y todas devolvían null pase
+   lo que pase: sin configuración, 401, timeout de 6s o red caída. Arriba eso
+   se trataba como "no hay datos", así que el panel enseñaba 0 vistas y 0
+   ventas con la misma cara que si de verdad no hubiera ninguna. No había
+   forma de distinguir una tienda tranquila de una lectura rota.
+   Se sigue devolviendo null —quien llama no tiene que cambiar— pero el
+   motivo queda apuntado para poder decirlo. */
+const _lecturas = { ok: 0, fallos: [] };
+function _reiniciarLecturas(){ _lecturas.ok = 0; _lecturas.fallos = []; }
+function _fallo(path, motivo){ _lecturas.fallos.push({ path: path, motivo: motivo }); return null; }
 async function getJson(path){
-  const base = await fbBase(); if (!base) return null;
+  const base = await fbBase(); if (!base) return _fallo(path, 'sin configuración de Firebase');
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), 6000);
-  try { const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now(), {cache:'no-store', signal: ctrl.signal}); return r.ok ? await r.json() : null; } catch(e) { return null; } finally { clearTimeout(tid); }
+  try {
+    const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now(), {cache:'no-store', signal: ctrl.signal});
+    if (!r.ok) return _fallo(path, r.status === 401 || r.status === 403 ? 'sin permiso (revisa las reglas)' : ('HTTP ' + r.status));
+    _lecturas.ok++;
+    return await r.json();
+  } catch(e) {
+    return _fallo(path, (e && e.name === 'AbortError') ? 'tardó más de 6s' : 'no se pudo conectar');
+  } finally { clearTimeout(tid); }
+}
+/* Resumen de la última tanda de lecturas, para poder avisar en vez de
+   enseñar ceros que parecen datos. */
+function estadoLecturas(){
+  if (!_lecturas.fallos.length) return null;
+  const motivos = {};
+  _lecturas.fallos.forEach(f => { motivos[f.motivo] = (motivos[f.motivo] || 0) + 1; });
+  return {
+    fallos: _lecturas.fallos.length,
+    total: _lecturas.fallos.length + _lecturas.ok,
+    motivo: Object.keys(motivos).sort((a,b)=>motivos[b]-motivos[a])[0],
+    rutas: _lecturas.fallos.map(f => f.path)
+  };
 }
 function ago(ts){
   const d = Date.now() - num(ts), m = Math.floor(d/60000), h = Math.floor(d/3600000);
@@ -169,6 +199,18 @@ window.tmCopilotOnVenta = function(items){
 // Etiqueta legible del tipo de empujón
 function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t==='post_ready' ? 'publicación' : t; }
 function money(v){ return '$' + Number(v||0).toLocaleString('es-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+/* Para las tarjetas de KPI, que miden ~90px: ahí "$123,537.00" se partía en
+   "$123,537." y "00". En un titular el orden de magnitud es lo que importa;
+   la cifra exacta sigue entera en el diagnóstico de abajo. */
+function moneyCorto(v){
+  const n = Math.abs(Number(v||0));
+  // Los cortes van sobre el número YA redondeado: con 999.999 el umbral de
+  // 1.000.000 no saltaba y salía "$1000k" en vez de "$1M".
+  if (n >= 999500) return '$' + (Number(v)/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+  if (n >= 9995)   return '$' + Math.round(Number(v)/1000) + 'k';
+  if (n >= 1000)   return '$' + (Number(v)/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+  return money(v);
+}
 function ranking(){
   const ps = products();
   const hot = (state.hot || []).map(x=>({p:x.p, score:x.score, views:x.views, wa:x.wa}));
@@ -241,9 +283,19 @@ function injectStyles(){
   html.tm-copilot-enabled #tmAgenda{display:none!important}html.tm-copilot-enabled #tmBtnPendientes{border-color:rgba(139,92,246,.45)!important;background:rgba(139,92,246,.14)!important;color:#d9c8ff!important}
   .tm-copilot-bubble{position:fixed;right:14px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:99998;width:62px;height:62px;border:0;border-radius:22px;background:linear-gradient(135deg,#8b5cf6,#ff6b35);color:#fff;font-size:27px;box-shadow:0 16px 42px rgba(139,92,246,.35),0 10px 32px rgba(255,107,53,.22);display:flex;align-items:center;justify-content:center;transition:transform .18s,opacity .18s}.tm-copilot-bubble:hover{transform:translateY(-2px)}.tm-copilot-bubble .n{position:absolute;right:-5px;top:-6px;min-width:23px;height:23px;padding:0 6px;border-radius:20px;background:#e74c3c;border:3px solid #121217;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}.tm-copilot-bubble.clean .n{background:#25d366}.tm-copilot-pulse{animation:tmCopPulse 1.2s ease 2}@keyframes tmCopPulse{50%{transform:scale(1.08)}}
   .tm-copilot-sheet{position:fixed;left:50%;bottom:0;z-index:99999;width:min(560px,100%);max-height:88vh;transform:translateX(-50%) translateY(110%);transition:transform .28s cubic-bezier(.2,.9,.2,1);background:#14141b;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:26px 26px 0 0;box-shadow:0 -22px 70px rgba(0,0,0,.6);padding:10px 13px calc(14px + env(safe-area-inset-bottom));overflow:auto}.tm-copilot-sheet.show{transform:translateX(-50%) translateY(0)}.tm-copilot-handle{width:46px;height:5px;background:#3b3b46;border-radius:99px;margin:2px auto 12px}.tm-copilot-head{display:flex;gap:10px;align-items:center;margin-bottom:12px}.tm-copilot-face{width:46px;height:46px;border-radius:17px;background:linear-gradient(135deg,#8b5cf6,#ff6b35);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}.tm-copilot-title{flex:1;min-width:0}.tm-copilot-title b{display:block;font-size:17px}.tm-copilot-title small{display:block;color:#aaa;font-size:12px;margin-top:2px}.tm-copilot-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#ddd;border-radius:12px;padding:8px 10px}
-  .tm-copilot-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 12px}.tm-copilot-stat{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:10px 8px}.tm-copilot-stat small{display:block;color:#888;font-size:10px}.tm-copilot-stat b{display:block;font-size:18px;margin-top:4px}.tm-copilot-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.tm-copilot-btn{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#fff;border-radius:13px;padding:10px 9px;font-size:12px;font-weight:800;cursor:pointer;transition:transform .12s,filter .12s}.tm-copilot-btn:active{transform:scale(.95);filter:brightness(.88)}.tm-copilot-btn.primary{background:linear-gradient(135deg,#ff6b35,#df4a16);border-color:transparent}.tm-copilot-btn.green{background:rgba(37,211,102,.14);border-color:rgba(37,211,102,.35);color:#80f2aa}.tm-copilot-btn.blue{background:rgba(42,171,238,.13);border-color:rgba(42,171,238,.34);color:#78d3ff}.tm-copilot-btn.gold{background:rgba(216,180,106,.14);border-color:rgba(216,180,106,.34);color:#e7c97f}.tm-copilot-btn.danger{background:rgba(231,76,60,.13);border-color:rgba(231,76,60,.34);color:#ff8f83}.tm-copilot-tabs{display:flex;gap:7px;overflow:auto;margin:2px 0 10px;padding-bottom:3px}.tm-copilot-tab{white-space:nowrap;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);color:#bbb;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}.tm-copilot-tab.active{background:rgba(255,107,53,.16);border-color:rgba(255,107,53,.35);color:#ffae8a}.tm-copilot-smart{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:12px;margin:9px 0}.tm-copilot-smart h4{margin:0 0 8px;font-size:13px}.tm-copilot-smart ul{margin:0;padding-left:18px;color:#d8d8df;font-size:12px;line-height:1.55}.tm-copilot-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tm-copilot-mini-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:10px}.tm-copilot-mini-card b{font-size:12px;display:block}.tm-copilot-mini-card small{font-size:10px;color:#aaa;display:block;margin-top:4px;line-height:1.35}.tm-copilot-code{background:#0f0f15;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px;font-size:12px;line-height:1.45;color:#ddd;margin-top:8px;white-space:pre-wrap}.tm-copilot-rank-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);padding:8px 0}.tm-copilot-rank-row:last-child{border-bottom:0}.tm-copilot-rank-row span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}.tm-copilot-rank-row em{font-style:normal;color:#ffae8a;font-size:10px;font-weight:900}@media(max-width:380px){.tm-copilot-mini{grid-template-columns:1fr}}
+  .tm-copilot-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 12px}.tm-copilot-summary.tres{grid-template-columns:repeat(3,1fr)}
+  /* min-width:0 — sin esto una celda de grid no baja de su contenido, así que
+     "$123,537.00" ensanchaba su columna a 118px y dejaba las otras tres en 64:
+     los rótulos partidos en dos líneas y el número saliéndose de la tarjeta.
+     El tamaño acompaña al ancho para que un número largo encoja en vez de
+     desbordar, y overflow-wrap lo parte antes que dejarlo salir. */
+  .tm-copilot-stat{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:10px 8px;min-width:0}.tm-copilot-stat small{display:block;color:#888;font-size:10px;overflow-wrap:anywhere}.tm-copilot-stat b{display:block;font-size:clamp(13px,3.6vw,18px);margin-top:4px;overflow-wrap:anywhere}.tm-copilot-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.tm-copilot-btn{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#fff;border-radius:13px;padding:10px 9px;font-size:12px;font-weight:800;cursor:pointer;transition:transform .12s,filter .12s}.tm-copilot-btn:active{transform:scale(.95);filter:brightness(.88)}.tm-copilot-btn.primary{background:linear-gradient(135deg,#ff6b35,#df4a16);border-color:transparent}.tm-copilot-btn.green{background:rgba(37,211,102,.14);border-color:rgba(37,211,102,.35);color:#80f2aa}.tm-copilot-btn.blue{background:rgba(42,171,238,.13);border-color:rgba(42,171,238,.34);color:#78d3ff}.tm-copilot-btn.gold{background:rgba(216,180,106,.14);border-color:rgba(216,180,106,.34);color:#e7c97f}.tm-copilot-btn.danger{background:rgba(231,76,60,.13);border-color:rgba(231,76,60,.34);color:#ff8f83}.tm-copilot-tabs{display:flex;gap:7px;overflow:auto;margin:2px 0 10px;padding-bottom:3px}.tm-copilot-tab{white-space:nowrap;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);color:#bbb;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}.tm-copilot-tab.active{background:rgba(255,107,53,.16);border-color:rgba(255,107,53,.35);color:#ffae8a}.tm-copilot-smart{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:12px;margin:9px 0}.tm-copilot-smart h4{margin:0 0 8px;font-size:13px}.tm-copilot-smart ul{margin:0;padding-left:18px;color:#d8d8df;font-size:12px;line-height:1.55}.tm-copilot-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tm-copilot-mini-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:10px}.tm-copilot-mini-card b{font-size:12px;display:block}.tm-copilot-mini-card small{font-size:10px;color:#aaa;display:block;margin-top:4px;line-height:1.35}.tm-copilot-code{background:#0f0f15;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px;font-size:12px;line-height:1.45;color:#ddd;margin-top:8px;white-space:pre-wrap}.tm-copilot-rank-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);padding:8px 0}.tm-copilot-rank-row:last-child{border-bottom:0}.tm-copilot-rank-row span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}.tm-copilot-rank-row em{font-style:normal;color:#ffae8a;font-size:10px;font-weight:900}@media(max-width:380px){.tm-copilot-mini{grid-template-columns:1fr}}
   .tm-copilot-task{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:11px;margin-bottom:9px;border-left:3px solid #ff6b35}.tm-copilot-task.u3{border-left-color:#e74c3c}.tm-copilot-task.u2{border-left-color:#ff6b35}.tm-copilot-task.u1{border-left-color:#2aabee}.tm-copilot-task-top{display:flex;gap:10px}.tm-copilot-ico{width:34px;height:34px;border-radius:13px;background:rgba(255,107,53,.13);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}.tm-copilot-task-main{flex:1;min-width:0}.tm-copilot-task-main b{display:block;font-size:13px;line-height:1.25}.tm-copilot-task-main small{display:block;color:#aaa;font-size:11px;line-height:1.35;margin-top:4px}.tm-copilot-task-actions{display:flex;gap:7px;margin-top:10px}.tm-copilot-task-actions .tm-copilot-btn{padding:8px 9px;flex:1}.tm-copilot-agents{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-agent{min-width:154px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-agent.crit{border-color:rgba(231,76,60,.35);background:rgba(231,76,60,.08)}.tm-copilot-agent b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-agent small{display:block;color:#999;font-size:10px;margin-top:4px;line-height:1.25}.tm-copilot-agent .st{display:inline-flex;margin-top:7px;border-radius:99px;padding:3px 7px;font-size:9px;font-weight:900;background:rgba(37,211,102,.13);color:#75f0a1}.tm-copilot-agent.crit .st{background:rgba(231,76,60,.16);color:#ff9187}.tm-copilot-hot{display:flex;gap:9px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-hot-card{min-width:172px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-hot-card b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-hot-card small{display:block;color:#999;font-size:10px;margin-top:4px}.tm-copilot-empty{color:#aaa;text-align:center;padding:18px 8px;font-size:13px}.tm-copilot-chip{display:inline-flex;border-radius:999px;padding:3px 7px;background:rgba(255,107,53,.14);color:#ffae8a;font-size:10px;font-weight:900;margin-top:6px}.tm-copilot-toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120%);z-index:100000;width:calc(min(560px,100%) - 28px);background:#1a1a22;border:1px solid rgba(37,211,102,.32);border-radius:17px;padding:12px;color:#effff3;box-shadow:0 16px 50px rgba(0,0,0,.45);transition:.22s ease;font-size:13px}.tm-copilot-toast.show{transform:translateX(-50%) translateY(0)}
-  @media (min-width: 760px){.tm-copilot-bubble{bottom:24px;right:24px}.tm-copilot-sheet{right:22px;left:auto;bottom:18px;transform:translateY(110%);border-radius:26px;width:430px;max-height:82vh}.tm-copilot-sheet.show{transform:translateY(0)}.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}}@media (max-width:380px){.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}.tm-copilot-actions{grid-template-columns:1fr}.tm-copilot-task-actions{flex-direction:column}}
+  @media (min-width: 760px){.tm-copilot-bubble{bottom:24px;right:24px}.tm-copilot-sheet{right:22px;left:auto;bottom:18px;transform:translateY(110%);border-radius:26px;width:430px;max-height:82vh}.tm-copilot-sheet.show{transform:translateY(0)}.tm-copilot-summary,.tm-copilot-summary.tres{grid-template-columns:repeat(2,1fr)}
+  /* La hoja mide 430px fijos aquí, así que el tamaño ya no puede depender del
+     ancho de la ventana: con clamp(3.6vw) en una pantalla grande el número
+     crecía hasta salirse de una tarjeta que no había crecido con ella. */
+  .tm-copilot-stat b{font-size:17px}}@media (max-width:380px){.tm-copilot-summary,.tm-copilot-summary.tres{grid-template-columns:repeat(2,1fr)}.tm-copilot-actions{grid-template-columns:1fr}.tm-copilot-task-actions{flex-direction:column}}
   body:not(.admin-mode) .tm-copilot-bubble, body:not(.admin-mode) .tm-copilot-sheet, body:not(.admin-mode) .tm-copilot-toast{display:none!important}.tm-copilot-toast:not(.show){opacity:0!important;pointer-events:none!important}
   /* La burbuja flotante (62px, ancla a bottom:76px+safe-area) tapaba el final
      de listas largas (ej. "Avísame cuando vuelva") — reservar espacio real
@@ -516,6 +568,7 @@ function openSheet(){ ensureUI(); renderSheet(); $('#tmCopilotSheet').classList.
 function closeSheet(){ const s=$('#tmCopilotSheet'); if(s) s.classList.remove('show'); }
 
 async function collectFirebaseFacts(ps){
+  _reiniciarLecturas();
   const facts = { interesados: [], avisos: {}, avisosTotal: 0, vistas: {}, whats: {}, ventas: [], tokens: 0 };
   const [interesados, avisos, vistas, whats, ventas, tokens] = await Promise.all([
     getJson('/interesados.json'), getJson('/avisos_stock.json'), getJson('/analytics/vistas.json'), getJson('/analytics/whatsapp.json'), getJson('/ventas.json'), getJson('/tokens.json')
@@ -931,10 +984,10 @@ function renderAsesor(){
   const sinVentas = m.totVentas === 0;
 
   const kpis = `
-    <div class="tm-copilot-summary" style="grid-template-columns:repeat(4,1fr)">
-      <div class="tm-copilot-stat"><small>Inventario</small><b>${money(m.capitalTotal)}</b></div>
+    <div class="tm-copilot-summary">
+      <div class="tm-copilot-stat"><small>Inventario</small><b title="${money(m.capitalTotal)}">${moneyCorto(m.capitalTotal)}</b></div>
       <div class="tm-copilot-stat"><small>Parado</small><b style="color:${m.capitalMuerto>0?'#e74c3c':'#25d366'}">${pct(m.capitalMuerto,m.capitalTotal)}%</b></div>
-      <div class="tm-copilot-stat"><small>Ganancia 30d</small><b>${money(m.ganancia30)}</b></div>
+      <div class="tm-copilot-stat"><small>Ganancia 30d</small><b title="${money(m.ganancia30)}">${moneyCorto(m.ganancia30)}</b></div>
       <div class="tm-copilot-stat"><small>Margen típico</small><b>${m.margenTipico.toFixed(0)}%</b></div>
     </div>`;
 
@@ -1479,7 +1532,7 @@ function renderCorreccionesIA(){
     <div class="tm-copilot-task-actions">${i.fix?`<button type="button" class="tm-copilot-btn primary" data-cop="iaApply" data-key="${esc(i.key)}">✅ ${esc(i.fixLabel||'Aplicar')}</button>`:''}<button type="button" class="tm-copilot-btn" data-cop="iaDismiss" data-key="${esc(i.key)}">Descartar</button></div>
   </div>`;
   const bloque=(t,arr)=>arr.length?`<div class="tm-copilot-smart"><h4>${t} (${arr.length})</h4></div>${arr.slice(0,25).map(fila).join('')}${arr.length>25?`<div class="tm-copilot-empty">…y ${arr.length-25} más (usa el CSV para verlos todos)</div>`:''}`:'';
-  return `<div class="tm-copilot-summary" style="grid-template-columns:repeat(3,1fr)">
+  return `<div class="tm-copilot-summary tres">
       <div class="tm-copilot-stat"><small>🚨 Urgentes</small><b>${g.urgente.length}</b></div>
       <div class="tm-copilot-stat"><small>⚠️ Advertencias</small><b>${g.adv.length}</b></div>
       <div class="tm-copilot-stat"><small>💡 Info</small><b>${g.info.length}</b></div>
@@ -2647,6 +2700,19 @@ function renderCopilotView(view, topTasks){
   if(view==='memoria') return renderMemory();
   return renderToday(topTasks);
 }
+/* Un cero que viene de una lectura rota no puede parecerse a un cero de
+   verdad. Sin esto, "0 vistas" y "0 ventas" salían igual estuviera la tienda
+   tranquila o no llegando ni un dato — y lo segundo hay que arreglarlo. */
+function avisoLecturasHtml(){
+  const e = estadoLecturas();
+  if (!e) return '';
+  return `<div class="tm-copilot-smart" style="border-left:3px solid #e74c3c;background:rgba(231,76,60,.08)">
+    <h4>⚠️ No pude leer ${e.fallos} de ${e.total} datos</h4>
+    <small>Motivo: <b>${esc(e.motivo)}</b>. Los números de abajo están incompletos — un 0 aquí puede ser "no hay" o "no llegué a mirar".</small>
+    <small style="display:block;margin-top:6px;opacity:.75">${esc(e.rutas.join(', '))}</small>
+  </div>`;
+}
+
 function renderSheet(){
   const body = $('#tmCopilotBody'); if(!body) return;
   // El chat se puede re-renderizar por el refreshTimer (cada 90s) mientras
@@ -2661,6 +2727,7 @@ function renderSheet(){
   const view = state.view || 'hoy';
   body.innerHTML = `
     <div class="tm-copilot-head"><div class="tm-copilot-face">🤖</div><div class="tm-copilot-title"><b>Copiloto TiendaMax</b><small>${topTasks.length ? 'Te ordené el admin por prioridad de ventas.' : 'Todo se ve tranquilo por ahora.'}</small></div><button type="button" class="tm-copilot-close" data-cop="close">✕</button></div>
+    ${avisoLecturasHtml()}
     <div class="tm-copilot-summary">
       <div class="tm-copilot-stat"><small>Pendientes</small><b>${topTasks.length}</b></div>
       <div class="tm-copilot-stat"><small>Críticas</small><b>${m.criticas||0}</b></div>
