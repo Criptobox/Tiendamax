@@ -17,10 +17,15 @@ import build_faq as bf  # noqa: E402
 
 
 class BuildPreguntasTest(unittest.TestCase):
-    def test_siempre_incluye_las_5_preguntas_fijas(self):
+    def test_siempre_incluye_todas_las_preguntas_fijas(self):
+        # Contra len(BASE_FAQ), no contra un número escrito aquí: lo que hay
+        # que garantizar es que las fijas SIEMPRE salgan, no que sean cinco.
+        # Con el número a mano, añadir una pregunta rompía el test sin que
+        # nada estuviera mal.
         preguntas = bf.build_preguntas(None)
         fijas = [p for p in preguntas if p["fuente"] == "fija"]
-        self.assertEqual(len(fijas), 5)
+        self.assertEqual(len(fijas), len(bf.BASE_FAQ))
+        self.assertGreater(len(fijas), 0)
 
     def test_incluye_pregunta_real_con_suficiente_repeticion_e_intent_valido(self):
         raw = {
@@ -135,7 +140,7 @@ class MainIntegrationTest(unittest.TestCase):
             rc = bf.main()
         self.assertEqual(rc, 0)
         out = json.loads(self.tmp_json.read_text(encoding="utf-8"))
-        self.assertEqual(len(out["preguntas"]), 5)
+        self.assertEqual(len(out["preguntas"]), len(bf.BASE_FAQ))
         html = self.tmp_html.read_text(encoding="utf-8")
         self.assertIn("¿Cómo compro en TiendaMax?", html)
         self.assertIn("FAQPage", html)
@@ -145,7 +150,41 @@ class MainIntegrationTest(unittest.TestCase):
             rc = bf.main()
         self.assertEqual(rc, 0)
         out = json.loads(self.tmp_json.read_text(encoding="utf-8"))
-        self.assertEqual(len(out["preguntas"]), 5)
+        self.assertEqual(len(out["preguntas"]), len(bf.BASE_FAQ))
+
+
+class FaqYBotDicenLoMismoTest(unittest.TestCase):
+    """La web y el chat no pueden contestar distinto a la misma pregunta.
+
+    Pasó: Max empezó a explicar que la garantía NO es universal y el FAQ
+    seguía diciendo "todos los productos tienen garantía". Justo en la
+    pregunta que más desconfianza genera, y sin que nada fallara.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.cerebro = (ROOT / "js" / "src" / "tm-bot-cerebro.src.js").read_text(encoding="utf-8")
+        cls.faq = " ".join(p["respuesta"] for p in bf.BASE_FAQ).lower()
+
+    def test_la_garantia_no_se_promete_universal(self):
+        for frase in ("todos los productos tienen garantía",
+                      "todos nuestros productos tienen garantía"):
+            self.assertNotIn(frase, self.faq,
+                             "el FAQ promete garantía universal y Max dice lo contrario")
+        self.assertIn("no es universal", self.faq)
+
+    def test_los_metodos_de_pago_coinciden_con_el_bot(self):
+        # Lo que el bot marca como no disponible no puede aparecer en el FAQ
+        # como aceptado.
+        i = self.cerebro.index("const METODOS_PAGO = [")
+        bloque = self.cerebro[i:self.cerebro.index("];", i)]
+        for metodo, marca in (("enzona", "EnZona"), ("transferencia bancaria", "Transferencia bancaria")):
+            no_disponible = ("disponible: false" in
+                             bloque[bloque.lower().index(metodo.split()[0]):][:200])
+            if no_disponible:
+                self.assertIn("no aceptamos" if "transfer" in metodo else "no trabajamos",
+                              self.faq,
+                              f"{marca} está desactivado en el bot; el FAQ tiene que decirlo")
 
 
 if __name__ == "__main__":

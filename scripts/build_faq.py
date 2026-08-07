@@ -46,28 +46,86 @@ HTML_OUT = ROOT / "faq.html"
 TIMEOUT = 25
 SITE = "https://tiendamax.org"
 
-# Mismas 5 preguntas que ya estaban en el FAQPage JSON-LD de index.html —
-# se reusan tal cual para que ninguna respuesta sea inventada de nuevo.
+# Las respuestas fijas del FAQ. Es la ÚNICA fuente: build_faq.py regenera
+# faq.json y faq.html en cada run, así que editar el JSON a mano se pierde en
+# la siguiente ejecución sin que nadie se entere.
+#
+# Tienen que decir lo MISMO que Max. Cuando el bot pasó a explicar que la
+# garantía no es universal, aquí seguía diciendo "todos los productos tienen
+# garantía": la web y el chat contestándose distinto en la pregunta que más
+# desconfianza genera.
 BASE_FAQ = [
     {
         "pregunta": "¿Cómo compro en TiendaMax?",
-        "respuesta": "Navega el catálogo, toca el botón 'Pedir' en cualquier producto y se abre WhatsApp con tu pedido listo. Coordinas pago contra entrega y envío.",
-    },
-    {
-        "pregunta": "¿Hacen entregas a domicilio?",
-        "respuesta": "Sí, contamos con mensajería. El costo y el tiempo de entrega se coordinan por WhatsApp según tu ubicación.",
+        "respuesta": "Navega el catálogo o pídele a Max que te ayude. Dime qué buscas (ej. 'busca una cámara para exterior'), añádelo a tu lista de deseos o carrito desde el chat, y cuando estés listo escribe 'pedir todo mi carrito' para enviarte el pedido completo por WhatsApp.",
     },
     {
         "pregunta": "¿Qué métodos de pago aceptan?",
-        "respuesta": "Aceptamos pago contra entrega en USD o MN (pesos cubanos) según la tasa del día.",
+        "respuesta": "Aceptamos únicamente tres métodos de pago: efectivo en dólares (USD), efectivo en pesos cubanos (MN) y Zelle para pagos desde el extranjero. No aceptamos transferencias bancarias nacionales (BPA, BANMET, Bandec) ni pagos por EnZona o Transfermóvil.",
+    },
+    {
+        "pregunta": "¿Cómo calculan el precio en MN?",
+        "respuesta": "El precio en MN que ves en el catálogo ya está calculado con la tasa de cambio del día (elTOQUE) más un pequeño margen operativo. Ese es el monto exacto que pagarás contra entrega. No hay sorpresas ni cálculo adicional. El precio que ves es el precio que pagas.",
+    },
+    {
+        "pregunta": "¿Puedo pagar con Zelle si estoy en Cuba?",
+        "respuesta": "Sí, si tienes un familiar en Estados Unidos, puede pagar tu pedido por Zelle. Coordinamos el monto y los datos de la cuenta por WhatsApp. Una vez confirmado el pago, te enviamos el producto y tú no pagas nada al recibirlo.",
+    },
+    {
+        "pregunta": "¿Aceptan EnZona o Transfermóvil?",
+        "respuesta": "No, no trabajamos con EnZona ni Transfermóvil. Para mantener nuestros procesos ágiles y seguros, aceptamos únicamente efectivo USD, efectivo MN y Zelle desde el extranjero.",
+    },
+    {
+        "pregunta": "¿Hacen envíos a domicilio?",
+        "respuesta": "Sí, pero nuestra mensajería directa con pago contra entrega opera únicamente en el corredor desde Matanzas hasta Pinar del Río, incluyendo La Habana, Artemisa y Mayabeque. Si vives fuera de esta zona, escríbenos por WhatsApp para coordinar el envío a través de encomiendas externas.",
+    },
+    {
+        "pregunta": "¿Hacen envíos a Santiago de Cuba, Holguín o Camagüey?",
+        "respuesta": "Nuestra ruta de mensajería directa llega hasta Matanzas. Para las provincias del centro y oriente del país, coordinamos el envío por WhatsApp a través de agencias de encomiendas (como VíaCar o transporte por ómnibus) o con el transportista de tu confianza.",
     },
     {
         "pregunta": "¿Los productos tienen garantía?",
-        "respuesta": "Sí, todos los productos tienen garantía. Si algo no funciona, escríbenos por WhatsApp y lo resolvemos.",
+        "respuesta": "La garantía NO es universal. Aplica únicamente a los productos que lo indican específicamente en su ficha técnica. Además, cubre exclusivamente defectos técnicos o desperfectos de fábrica. No cubre daños por mal uso, golpes, quemaduras por variaciones de voltaje ni instalaciones incorrectas.",
+    },
+    {
+        "pregunta": "¿Qué hago si mi producto tiene un defecto de fábrica?",
+        "respuesta": "Si tu producto cuenta con garantía y presenta un defecto técnico de fábrica, escríbenos por WhatsApp dentro de las primeras 24 horas. Te pediremos que describas el problema y, si es posible, que nos envíes una foto o video. Evaluamos tu caso y coordinamos la solución más rápida.",
+    },
+    {
+        "pregunta": "¿Puedo devolver un producto?",
+        "respuesta": "Aceptamos devoluciones dentro de las 24 horas tras la entrega si el producto llega dañado, con defecto de fábrica, o no corresponde a lo pedido. No procede devolución por mal uso, golpes, quemaduras por voltaje o instalación incorrecta. Escríbenos por WhatsApp con fotos del estado.",
+    },
+    {
+        "pregunta": "¿Venden módems para Nauta Hogar (ETECSA)?",
+        "respuesta": "Actualmente no contamos con módem-routers que tengan el puerto RJ11 (la entrada de línea telefónica) necesario para la instalación inicial de Nauta Hogar con ETECSA. Estos equipos ADSL son provistos directamente por ETECSA, como el TP-Link TD-W8901N que ellos entregan. Sin embargo, sí tenemos routers y repetidores Wi-Fi para mejorar y ampliar la señal una vez que ETECSA te haya instalado su equipo.",
+    },
+    {
+        "pregunta": "¿Cómo mejoro la señal de mi Nauta Hogar?",
+        "respuesta": "Si ya tienes el módem-router de ETECSA instalado, puedes conectar uno de nuestros routers por cable a uno de los puertos LAN del equipo de ETECSA para crear una red Wi-Fi más rápida y estable con mejor cobertura. También tenemos repetidores Wi-Fi que amplifican la señal para que llegue a los cuartos donde el equipo de ETECSA no alcanza.",
+    },
+    {
+        "pregunta": "¿Qué equipos son compatibles con Nauta Hogar?",
+        "respuesta": "ETECSA utiliza módem-routers ADSL como el TP-Link TD-W8901N o equipos similares con puerto RJ11 para la conexión inicial. También existen equipos de terceros compatibles como el TP-Link Archer VR300 AC1200, pero actualmente no los tenemos en stock. Lo que sí tenemos son routers adicionales (sin puerto RJ11) que puedes conectar a los puertos LAN de tu equipo ETECSA para ampliar tu red Wi-Fi.",
+    },
+    {
+        "pregunta": "¿Cómo conecto un router a mi equipo de ETECSA?",
+        "respuesta": "Toma un cable de red (RJ45), conecta un extremo a un puerto LAN del módem-router de ETECSA y el otro extremo al puerto WAN de tu router nuevo. Luego configura el router nuevo con nombre de red y contraseña. Ya tienes Wi-Fi mejorado en toda la casa.",
     },
     {
         "pregunta": "¿Cuál es la tasa de cambio USD a MN?",
-        "respuesta": "La tasa se actualiza diariamente. Visita tiendamax.org para ver la tasa actual y convertir precios instantáneamente.",
+        "respuesta": "La tasa se actualiza diariamente desde elTOQUE (la referencia de tasa de cambio en Cuba) más un pequeño margen operativo. El precio en MN que ves en el catálogo ya incluye todo. Visita tiendamax.org para ver la tasa actual.",
+    },
+    {
+        "pregunta": "¿Qué es elTOQUE?",
+        "respuesta": "elTOQUE es la plataforma de referencia en Cuba para la tasa de cambio informal entre USD y MN (pesos cubanos). TiendaMax usa la tasa de elTOQUE como base para calcular los precios en MN, sumando un pequeño margen operativo.",
+    },
+    {
+        "pregunta": "¿Tienen tienda física?",
+        "respuesta": "No, TiendaMax es una tienda 100% online. No tenemos local físico abierto al público. Todo se gestiona por WhatsApp y te enviamos a la puerta de tu casa con mensajería.",
+    },
+    {
+        "pregunta": "¿Cuál es el horario de atención?",
+        "respuesta": "Atendemos de Lunes a Sábado, de 9:00am a 8:00pm (hora de Cuba). Los pedidos online se pueden hacer 24/7, pero las respuestas por WhatsApp son en horario de atención.",
     },
 ]
 

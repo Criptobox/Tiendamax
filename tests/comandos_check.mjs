@@ -192,6 +192,71 @@ for (const [q, esperado] of ENCAMINADAS) {
     ok(intent(q) === esperado, `"${q}" → ${intent(q)}, esperaba ${esperado}`);
 }
 
+// ── Nauta Hogar / ETECSA ─────────────────────────────────────────────────
+// Aquí Nauta Hogar es EL internet de casa y la pregunta llega a diario. La
+// respuesta honesta es que esos módems no se venden —los da ETECSA—, así que
+// lo importante es que Max lo diga y ofrezca lo que sí hay, en vez de soltar
+// una búsqueda de productos que no resuelve el viaje.
+for (const q of ['venden modems para nauta hogar', 'tienen modem para nauta',
+                 'como mejoro la señal de mi nauta hogar', 'equipo de etecsa',
+                 'que router me sirve para nauta hogar', 'necesito un repetidor para nauta hogar']) {
+    ok(intent(q) === 'nautaHogar', `"${q}" → ${intent(q)}, esperaba nautaHogar`);
+}
+// Pero preguntar QUÉ ES uno de esos términos sigue yendo al glosario: las
+// entradas de RJ11/ADSL/Nauta Hogar existen y quedaban inalcanzables detrás
+// de la intención nueva — el mismo fallo que ya tuvo "¿qué es un inversor?".
+for (const q of ['que es rj11', 'que es nauta hogar', 'que es adsl',
+                 'para que sirve un repetidor', 'que significa adsl']) {
+    ok(intent(q) === 'tecnico', `"${q}" → ${intent(q)}, debería explicar el término`);
+}
+{
+    // No se puede prometer lo que no se vende.
+    const r = B.responder('venden modems para nauta hogar');
+    ok(/no los vendemos|no vendemos/i.test(r.response),
+        'Max debe decir claramente que los módems de Nauta Hogar no los vende');
+    ok(/etecsa/i.test(r.response), 'y que los provee ETECSA');
+}
+{
+    // Los repetidores del catálogo están en la subcategoría ACCESORIOS, no en
+    // una llamada REPETIDOR: filtrar por subcategoría no encontraba ninguno y
+    // el botón "Ver Repetidores" que el propio bot ofrece no llevaba a nada.
+    const r = B.responder('quiero un repetidor para nauta hogar');
+    const hayEnCatalogo = (sb.productos || []).some(p =>
+        Number(p.stock) > 0 && /repetidor|extensor/i.test(p.nombre || ''));
+    if (hayEnCatalogo) {
+        ok((r.products || []).length > 0,
+            'hay repetidores con stock y Max no enseña ninguno');
+        ok((r.products || []).every(p => /repetidor|extensor|amplificador/i.test(p.nombre)),
+            'lo que enseña como repetidor tiene que serlo');
+    }
+    // Y el precio sale del campo que el cerebro normaliza: con `precioActual`
+    // —que solo existe en el JSON crudo— salía $0.00 en cada línea.
+    ok(!/\$0\.00|\$undefined/.test(r.response),
+        'los precios de la lista de Nauta Hogar salen vacíos');
+}
+
+// ── Garantía: no se promete lo que no se cumple ──────────────────────────
+{
+    const g = B.responder('tienen garantia').response;
+    ok(/no es universal/i.test(g), 'la garantía general debe decir que NO es universal');
+    for (const excl of ['mal uso', 'golpes', 'voltaje', 'instalaci']) {
+        ok(new RegExp(excl, 'i').test(g), `la política debe nombrar la exclusión "${excl}"`);
+    }
+    ok(!/todos los productos tienen garant/i.test(g),
+        'no puede volver a prometerse garantía para todo');
+}
+
+// ── Pagos: el mensaje sale del dato, no de una lista escrita a mano ──────
+{
+    const pago = B.responder('que metodos de pago aceptan').response;
+    for (const m of B.METODOS_PAGO.filter(x => x.disponible)) {
+        ok(pago.includes(m.metodo), `"${m.metodo}" está activo y no sale en la respuesta`);
+    }
+    for (const m of B.METODOS_PAGO.filter(x => !x.disponible && !/pr[oó]ximamente/i.test(x.nota || ''))) {
+        ok(pago.includes(m.metodo), `"${m.metodo}" está desactivado y debe salir como NO aceptado`);
+    }
+}
+
 // ── Lo que sale, no solo a dónde va ──────────────────────────────────────
 // El presupuesto vivía tres turnos, así que un "$30" para una cámara seguía
 // filtrando la pregunta siguiente: "¿qué inversor me recomiendas?" contestaba

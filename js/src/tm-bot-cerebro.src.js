@@ -710,6 +710,34 @@
       how: 'Configuras cuál SIM se usa para qué (datos por una, llamadas por otra).',
       related: ['sim','4g','lte'],
     },
+    'nauta hogar': {
+      term: 'Nauta Hogar (ETECSA)',
+      what: 'Servicio de internet ADSL sobre línea telefónica que brinda ETECSA en Cuba. Requiere autenticación con usuario y contraseña.',
+      why: 'Requiere un módem-router ADSL con puerto RJ11 (entrada telefónica). ETECSA provee estos equipos como el TP-Link TD-W8901N.',
+      how: 'Si ya tienes el equipo de ETECSA, puedes conectar uno de nuestros routers a los puertos LAN del módem-router para ampliar tu red Wi-Fi.',
+      related: ['rj11','router','repetidor','lan','adsl'],
+    },
+    'rj11': {
+      term: 'Puerto RJ11 (ADSL / Línea Telefónica)',
+      what: 'Conector pequeño usado para la línea telefónica o internet ADSL (Nauta Hogar). Es el puerto que ETECSA usa para dar el servicio inicial.',
+      why: 'Los módem-routers ADSL lo tienen integrado. En TiendaMax no vendemos equipos con este puerto para la conexión principal.',
+      how: 'Para mejorar tu internet, conectas uno de nuestros routers (que tienen puerto WAN RJ45) a los puertos LAN del módem-router que te dio ETECSA.',
+      related: ['nauta hogar','rj45','lan','wan','adsl'],
+    },
+    'adsl': {
+      term: 'ADSL (Línea Digital Asimétrica)',
+      what: 'Tecnología que permite transmitir internet de alta velocidad sobre la línea telefónica tradicional.',
+      why: 'Es la tecnología que usa ETECSA para Nauta Hogar. Requiere un módem-router con puerto RJ11.',
+      how: 'ETECSA instala un módem-router ADSL en tu casa. Puedes ampliar la señal conectando routers adicionales a sus puertos LAN.',
+      related: ['nauta hogar','rj11','modem-router'],
+    },
+    'repetidor': {
+      term: 'Repetidor / Extensor Wi-Fi',
+      what: 'Un dispositivo que capta la señal Wi-Fi de tu router principal y la vuelve a emitir para que llegue más lejos.',
+      why: 'Ideal si el módem-router de ETECSA o tu router principal están en la sala y la señal no llega a los cuartos o al patio.',
+      how: 'Lo enchufas a mitad de camino entre el router y la zona muerta. No necesita cables, solo configuración inalámbrica.',
+      related: ['router','nauta hogar','wifi'],
+    },
   };
 
   // Sinónimos → término clave
@@ -767,6 +795,11 @@
     'qos':'qos','quality of service':'qos',
     'vpn':'vpn','red privada':'vpn',
     'kva':'kv','kilovoltiamper':'kv','kw':'w','kilowatt':'w','watt':'w','vatios':'w',
+    'nauta hogar':'nauta hogar','nautahogar':'nauta hogar','nauta':'nauta hogar','servicio nauta':'nauta hogar','internet de etecsa':'nauta hogar',
+    'rj11':'rj11','puerto rj11':'rj11','conector telefonico':'rj11','linea telefonica':'rj11','entrada telefonia':'rj11',
+    'adsl':'adsl','adsl2':'adsl','xdsl':'adsl',
+    'repetidor':'repetidor','repetidor wifi':'repetidor','extensor wifi':'repetidor','amplificador wifi':'repetidor','amplificador de señal':'repetidor','wifi booster':'repetidor','range extender':'repetidor',
+    'modem-router':'rj11','modem router':'rj11','modem de etecsa':'rj11','equipo de etecsa':'nauta hogar',
   };
 
   // ════════════════════════════════════════════════════════════
@@ -936,14 +969,20 @@
   // ════════════════════════════════════════════════════════════
   //  MÉTODOS DE PAGO DETALLADOS
   // ════════════════════════════════════════════════════════════
+  /* La lista de métodos vive AQUÍ y en ningún otro sitio. R.pago la usa para
+     armar su respuesta: si se escribe la lista a mano en el texto, el dato y
+     el mensaje acaban diciendo cosas distintas y nadie se entera hasta que un
+     cliente intenta pagar con algo que ya no se acepta. */
   const METODOS_PAGO = [
     {metodo: 'Efectivo USD', detalle: 'Billetes USD en efectivo al recibir. Preferible para montos altos.', disponible: true, comision: 0},
-    {metodo: 'Efectivo MN', detalle: `Pesos cubanos (MN) al recibir. Conversión automática a tasa ${TASA_MN} MN = 1 USD (incluye margen de ${MARGEN_MN} MN).`, disponible: true, comision: 0},
+    {metodo: 'Efectivo MN', detalle: `Pesos cubanos (MN) al recibir, a la tasa del día (${TASA_MN} MN = 1 USD, margen ya incluido).`, disponible: true, comision: 0},
     {metodo: 'Efectivo mixto', detalle: 'Combinación USD + MN para completar el monto. El repartidor calcula al recibir.', disponible: true, comision: 0},
-    {metodo: 'EnZona', detalle: 'Transferencia por EnZona en USD. Confirmar pago antes de salida del producto.', disponible: true, comision: 0},
     {metodo: 'Zelle (familiares en USA)', detalle: 'Pago vía Zelle desde familiar en el extranjero. Coordinar con el equipo por WhatsApp.', disponible: true, comision: 0, nota: 'Solo para pedidos prepagados'},
+    {metodo: 'EnZona / Transfermóvil', detalle: 'No se aceptan.', disponible: false, comision: 0},
+    {metodo: 'Transferencia bancaria (BPA, BANMET, Bandec)', detalle: 'No se acepta.', disponible: false, comision: 0},
     {metodo: 'Crypto (USDT, BTC)', detalle: 'Pago en criptomonedas estables. Confirmar wallet y monto con anticipación.', disponible: false, comision: 0, nota: 'Próximamente disponible'},
   ];
+
 
   // ════════════════════════════════════════════════════════════
   //  ESTADO + MEMORIA DE CONTEXTO
@@ -1377,6 +1416,15 @@
     if(/\b(pago|pagar|pago|tarjeta|transferencia|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
+    // Preguntar QUÉ ES algo va al glosario, aunque la palabra sea de esta
+    // familia: "¿qué es RJ11?" tiene su entrada y quedaba inalcanzable detrás
+    // de la charla de Nauta Hogar. Es el mismo fallo que ya se arregló con
+    // "¿qué es un inversor?", y vuelve solo en cuanto se añade una intención
+    // nueva por palabra clave.
+    const _pideDefinicion = /\b(qu[eé] es|qu[eé] son|qu[eé] significa|qu[eé] quiere decir|para qu[eé] sirve|expl[ií]ca(me)?|def[ií]ne(me)?|en qu[eé] consiste)\b/.test(m);
+    // Nauta Hogar / ETECSA va antes que envíos y pago: "¿venden módems para
+    // Nauta Hogar?" lleva palabras que se llevaban esas otras intenciones.
+    if(!_pideDefinicion && /nauta hogar|nautahogar|adsl|rj11|etecsa|m[oó]dem.de.etecsa|m[oó]dem.router|m[oó]dem.para.nauta|ampliar.se[ñn]al.nauta|mejorar.se[ñn]al.nauta/i.test(m)) return 'nautaHogar';
     // Con \b al final, "devolverlo" y "me lo cambian" —como se pregunta de
     // verdad— no casaban y se iban a búsqueda de productos.
     if(/\b(devoluci[oó]n\w*|devolv\w*|devuelv\w*|cambiar|cambian|cambio|return|reembols\w*)\b/.test(m)
@@ -1506,6 +1554,13 @@
     if(mentions.length >= 2 && pideDetalle) return 'detalle';
     if(mentions.length >= 2) return 'busqueda';
 
+    // Va ANTES del scoring difuso: "módem de etecsa" o "señal de nauta" son
+    // preguntas muy concretas que la búsqueda por parecido contestaba con
+    // cualquier producto que compartiera una palabra.
+    if(!_pideDefinicion && /nauta hogar|nautahogar|adsl|rj11|etecsa|m[oó]dem.de.etecsa|m[oó]dem.router|l[ií]nea.telef[oó]nica|m[oó]dem.para.nauta|ampliar.se[ñn]al|mejorar.se[ñn]al|se[ñn]al.de.nauta|router.para.nauta|repetidor.para.nauta|equipo.de.etecsa|instalaci[oó]n.de.nauta/i.test(text)) {
+      return 'nautaHogar';
+    }
+
     const q = cleanForMatch(text);
     const scored = PRODUCTOS
       .map(p => ({p, s: scoreProduct(p, q)}))
@@ -1524,8 +1579,8 @@
   const R = {};
 
   R.saludo = (text) => ({
-    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, ondas pura...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Diagnosticar una avería</em>: "mi inversor pita y tiene la luz roja"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💝 Ver mi lista','🤖 /ayuda']
+    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, RJ11, ADSL...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Diagnosticar una avería</em>: "mi inversor pita y tiene la luz roja"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Nauta Hogar / ETECSA</em>: "¿venden módems para Nauta Hogar?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
+    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💝 Ver mi lista','📶 Nauta Hogar','🤖 /ayuda']
   });
 
   R.despedida = () => ({
@@ -1539,8 +1594,8 @@
   });
 
   R.comprar = () => ({
-    response: `🛒 Comprar en TiendaMax es así de simple:\n\n<strong>1.</strong> Navega el catálogo o pídeme que te busque algo.\n<strong>2.</strong> Toca el botón <code>Pedir</code> en cualquier producto.\n<strong>3.</strong> Se abre WhatsApp con tu pedido ya armado.\n<strong>4.</strong> Coordinas <em>pago contra entrega</em> y el envío.\n\nPagas cuando lo recibes. Sin riesgos. ¿Quieres que te muestre productos para empezar?`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💬 WhatsApp']
+    response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Aceptamos:\n• Efectivo USD (dólares)\n• Efectivo MN (pesos cubanos a la tasa del día)\n• Zelle (si un familiar paga desde USA)\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
+    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp']
   });
 
   R.envios = (text) => {
@@ -1632,120 +1687,113 @@
     }
 
     return {
-      response: `🚚 <strong>Cobertura de mensajería:</strong> desde Pinar del Río hasta Matanzas.\n\n• <strong>La Habana:</strong> todos los municipios\n• <strong>Occidente:</strong> Pinar del Río, Artemisa, Mayabeque, Matanzas\n• <strong>Centro y Oriente:</strong> coordinar por WhatsApp (envío por vía)\n\n⚠️ <em>Para cualquier zona debes escribir por WhatsApp y coordinar.</em>\n\nTodo es <em>pago contra entrega</em>. Dime tu municipio o provincia y te confirmo.`,
-      quickReplies: ['🚚 Envío a La Habana','🚚 Ver cobertura','💬 Coordinar por WhatsApp']
+      response: `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nNuestra mensajería directa con pago contra entrega opera <strong>únicamente en el corredor desde Matanzas hasta Pinar del Río</strong>, incluyendo:\n\n• <strong>La Habana</strong> — todos los municipios\n• <strong>Artemisa</strong>\n• <strong>Mayabeque</strong>\n\n🚫 <strong>Para el Centro y Oriente del país</strong> (Villa Clara, Cienfuegos, Camagüey, Las Tunas, Holguín, Santiago de Cuba, Guantánamo, Isla de la Juventud):\n\nNo contamos con ruta directa. El envío se coordina por WhatsApp a través de agencias de encomiendas externas (VíaCar, transporte por ómnibus) o con el transportista de tu confianza.\n\n⚠️ <em>Para cualquier zona debes escribir por WhatsApp y coordinar.</em>\n\nDime tu municipio o provincia y te confirmo.`,
+      quickReplies: ['🚚 Soy de Occidente (Matanzas-Pinar)','🚚 Soy del Centro/Oriente','💬 Coordinar por WhatsApp']
     };
   };
 
   R.pago = (text) => {
     const m = text.toLowerCase();
-    // Si pregunta por método específico
-    if(/\bzelle|familiares en usa|desde el extranjero\b/.test(m)){
-      return {
-        response: `💳 <strong>Pago vía Zelle (familiares en USA)</strong>\n\nSi un familiar en el extranjero va a pagar tu pedido:\n• Coordinamos el monto y la cuenta Zelle por WhatsApp\n• El familiar envía el pago desde su cuenta bancaria en USA\n• Confirmamos recepción y enviamos el producto\n• Tú recibes el producto sin pagar nada al recibir\n\nIdeal para regalos o cuando el comprador no está en Cuba.`,
-        quickReplies: ['💬 WhatsApp','💵 Ver otros métodos','📦 Ver productos']
-      };
-    }
-    // Nota: No aceptamos transferencia bancaria (BPA/BANMET/etc). Solo EnZona para transferencias digitales.
-    if(/\btransferencia bancaria|bancario|bpa|banmet|bandec|bicsa\b/.test(m)){
-      return {
-        response: `🏦 <strong>Sobre transferencia bancaria</strong>\n\nLo siento, <strong>no aceptamos transferencia bancaria</strong> (BPA, BANMET, Bandec, BICSA).\n\nPara pagos digitales tenemos:\n• <strong>EnZona</strong> (preferida, en USD)\n• <strong>Efectivo USD/MN</strong> contra entrega\n• <strong>Zelle</strong> desde el extranjero\n\n¿Te interesa alguno de estos métodos?`,
-        quickReplies: ['📲 EnZona','💵 Efectivo','💵 Pago con Zelle','💬 WhatsApp']
-      };
-    }
-    if(/\benzona|aisml|transfermovil\b/.test(m)){
-      return {
-        response: `📲 <strong>Pago por EnZona</strong>\n\nAceptamos transferencias digitales por EnZona (preferida para USD).\n\nProceso:\n1. Coordinamos monto y cuenta por WhatsApp\n2. Haces la transferencia por EnZona\n3. Envías captura de confirmación\n4. Enviamos el producto\n\nIdeal si no quieres cargar efectivo.`,
-        quickReplies: ['💬 WhatsApp','💵 Ver otros métodos','📦 Ver productos']
-      };
-    }
+
     if(/\bcripto|crypto|usdt|btc|bitcoin|ethereum\b/.test(m)){
       return {
-        response: `🪙 <strong>Pago en criptomonedas</strong>\n\nActualmente en desarrollo. Próximamente aceptaremos:\n• USDT (Tether) — estable, equivalente a USD\n• BTC (Bitcoin)\n• ETH (Ethereum)\n\nPara enterarte cuando se active, escríbenos por WhatsApp.`,
+        response: `🪙 <strong>Pago en criptomonedas</strong>\n\nActualmente en desarrollo. Próximamente aceptaremos USDT (Tether), BTC (Bitcoin) y ETH (Ethereum).\n\nPara enterarte cuando se active, escríbenos por WhatsApp.`,
         quickReplies: ['💬 WhatsApp','💵 Ver otros métodos','📦 Ver productos']
       };
     }
+
+    if(/\bzelle|familiares en usa|desde el extranjero|pago desde usa\b/.test(m)){
+      return {
+        response: `💸 <strong>Pago vía Zelle (familiares en USA)</strong>\n\nSi un familiar en el extranjero va a pagar tu pedido:\n\n1. Coordinamos el monto y los datos de la cuenta por WhatsApp\n2. Tu familiar envía el pago desde su cuenta bancaria en USA\n3. Confirmamos la recepción del pago\n4. Te enviamos el producto y tú no pagas nada al recibirlo\n\nIdeal para regalos o cuando el comprador no está en Cuba.`,
+        quickReplies: ['💬 WhatsApp','💵 Ver otros métodos','📦 Ver productos']
+      };
+    }
+
+    if(/\benzona|aisml|transfermovil\b/.test(m)){
+      return {
+        response: `🚫 <strong>No trabajamos con EnZona ni Transfermóvil.</strong>\n\nPara mantener nuestros procesos ágiles y seguros, aceptamos únicamente:\n\n• <strong>Efectivo USD</strong> (dólares)\n• <strong>Efectivo MN</strong> (pesos cubanos, a la tasa del día)\n• <strong>Zelle</strong> (para pagos desde USA)\n\n¿Quieres coordinar tu pedido por WhatsApp con alguno de estos métodos?`,
+        quickReplies: ['💬 WhatsApp','💵 Ver métodos aceptados','📦 Ver productos']
+      };
+    }
+
+    if(/\btransferencia bancaria|bancario|bpa|banmet|bandec|bicsa\b/.test(m)){
+      return {
+        response: `🏦 <strong>No aceptamos transferencias bancarias</strong> (BPA, BANMET, Bandec, BICSA).\n\nNuestros únicos métodos aceptados son:\n\n• <strong>Efectivo USD</strong> (dólares)\n• <strong>Efectivo MN</strong> (pesos cubanos, a la tasa del día)\n• <strong>Zelle</strong> (desde el extranjero)\n\n¿Deseas coordinar tu pedido por WhatsApp con alguno de estos métodos?`,
+        quickReplies: ['💬 WhatsApp','💵 Ver métodos aceptados','📦 Ver productos']
+      };
+    }
+
     if(/\bmn|peso cubano|pesos? nacionales?\b/.test(m)){
       return {
-        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nConversión automática:\n• <strong>Tasa base elTOQUE:</strong> ${TASA_BASE_MN} MN\n• <strong>Margen de la tienda:</strong> +${MARGEN_MN} MN\n• <strong>Total al cliente:</strong> <code>1 USD = ${TASA_MN} MN</code>\n\nEjemplo: producto de <code>$100 USD</code> = <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> al recibir.`,
+        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nEl precio en MN que ves en el catálogo ya está calculado con la <strong>tasa de cambio del día</strong> más un pequeño <strong>margen operativo</strong> de la tienda.\n\nEse es el monto exacto que pagarás contra entrega. No hay que sumar nada más.\n\n<em>El precio que ves es el precio que pagas.</em>`,
         quickReplies: ['💵 Ver otros métodos','💬 WhatsApp','📦 Ver productos']
       };
     }
-    // Default: mostrar todos los métodos
-    let body = `💵 <strong>Métodos de pago en TiendaMax</strong>\n\nAceptamos varias formas de pago, todas <strong>contra entrega</strong> (pagas al recibir) o pre-pagadas para envíos a distancia:\n\n`;
-    METODOS_PAGO.forEach(p => {
-      const icon = p.disponible ? '✅' : '🚫';
-      body += `${icon} <strong>${p.metodo}</strong>\n   ${p.detalle}\n`;
-      if(p.nota) body += `   <em>Nota:</em> ${p.nota}\n`;
-      body += '\n';
-    });
-    body += `¿Te interesa un método en específico? Toca una opción o pregúntame por uno:`;
+
+    // Se arma desde METODOS_PAGO, no a mano: escribir la lista aquí es cómo se
+    // llega a que el dato diga una cosa y el mensaje otra.
+    const _si = METODOS_PAGO.filter(x => x.disponible);
+    const _no = METODOS_PAGO.filter(x => !x.disponible && !/pr[oó]ximamente/i.test(x.nota || ''));
+    let body = `💳 <strong>Métodos de pago en TiendaMax</strong>\n\nAceptamos únicamente:\n\n`;
+    _si.forEach(x => { body += `✅ <strong>${x.metodo}</strong>\n   ${x.detalle}\n`; });
+    if(_no.length){
+      body += `\n🚫 <strong>No aceptamos:</strong>\n`;
+      _no.forEach(x => { body += `   • ${x.metodo}\n`; });
+    }
+    body += `\n¿Te interesa un método en específico?`;
+
     return {
       response: body,
-      quickReplies: ['💵 Pago en MN','💵 Pago con Zelle','📲 EnZona','💬 WhatsApp']
+      quickReplies: ['💵 Pago en MN','💸 Pago con Zelle','💬 WhatsApp']
     };
   };
 
   R.garantia = (text) => {
     const mentions = detectProductMentions(text);
-    // "el inversor tataliken tiene garantía" casa con DOS productos del
-    // catálogo (el de 12V y el de 24V) y caía al texto genérico. Si los dos
-    // traen la misma garantía, la pregunta ya tiene respuesta.
-    if(mentions.length > 1){
-      const gs = [...new Set(mentions.map(x => String(x.garantia || '').trim()))];
-      // Todos con la misma garantía escrita: la pregunta ya tiene respuesta.
-      if(gs.length === 1 && gs[0]){
+    const POLICY = `\n\n<strong>⚠️ Importante:</strong> La garantía <strong>NO es universal</strong>.\n• ✅ Cubre <strong>defectos técnicos o de fábrica</strong> exclusivamente.\n• ❌ No cubre: mal uso, golpes, quemaduras por variaciones de voltaje, instalaciones incorrectas.`;
+
+    // Producto identificado con garantía en su ficha
+    if(mentions.length >= 1){
+      const conGar = mentions.filter(x => String(x.garantia || '').trim());
+      if(conGar.length === 1){
+        const p = conGar[0];
         return {
-          response: `🛡️ Los ${mentions.length} modelos que tengo de eso llevan la misma: <strong>${escapeHtml(gs[0])}</strong>.\nSi algo no funciona cuando lo recibes, escríbenos por WhatsApp dentro de las primeras 24 horas y lo resolvemos.`,
-          products: mentions.slice(0, 3),
-          quickReplies: ['💬 WhatsApp','📦 Ver más productos']
+          response: `🛡️ <strong>${escapeHtml(p.nombre)}</strong> tiene <strong>${escapeHtml(String(p.garantia).trim())}</strong>.${POLICY}\n\nSi presenta un defecto de fábrica, escríbenos por WhatsApp dentro de las primeras 24 horas con fotos o video del problema.`,
+          products: [p],
+          quickReplies: ['💬 Contactar Soporte','📦 Ver más productos']
         };
       }
-      // Cada uno con la suya: se enseñan, en vez de un texto general que no
-      // responde por ninguno.
-      if(gs.some(g => g)){
-        let body = `🛡️ Tengo ${mentions.length} modelos de eso, y no llevan la misma garantía:\n\n`;
-        mentions.slice(0, 4).forEach(x => {
-          const g = String(x.garantia || '').trim();
-          body += `• <strong>${escapeHtml(x.nombre)}</strong> — ${g ? escapeHtml(g) : 'sin garantía anotada, te la confirmo por WhatsApp'}\n`;
+      if(conGar.length > 1){
+        let body = `🛡️ Tengo ${conGar.length} modelos con garantía:${POLICY}\n\n`;
+        conGar.slice(0,4).forEach(x => {
+          body += `• <strong>${escapeHtml(x.nombre)}</strong> — ${escapeHtml(String(x.garantia).trim())}\n`;
         });
-        return { response: body, products: mentions.slice(0, 4), quickReplies: ['💬 WhatsApp','📦 Ver más productos'] };
+        return { response: body, products: conGar.slice(0,4), quickReplies: ['💬 Contactar Soporte','📦 Ver más productos'] };
       }
-    }
-    // Producto identificado pero sin garantía escrita en su ficha: se dice, en
-    // vez de contestar con el texto general —que invita a preguntar justo lo
-    // que se acaba de dejar sin responder—. Inventarle un plazo sería peor.
-    if(mentions.length >= 1 && !mentions.some(x => String(x.garantia || '').trim())){
+      // Mención sin garantía anotada
       const nom = mentions.length === 1 ? escapeHtml(mentions[0].nombre) : 'ese producto';
       return {
-        response: `🛡️ De <strong>${nom}</strong> no tengo el plazo de garantía anotado en la ficha, y prefiero no decirte uno por decir.\n\nLo que sí te aseguro: si llega con un defecto de fábrica, escríbenos por WhatsApp dentro de las primeras 24 horas y te lo cambiamos o te devolvemos el dinero.\n\nEscríbeme y te confirmo el plazo exacto del fabricante.`,
-        products: mentions.slice(0, 3),
-        quickReplies: ['💬 WhatsApp','📦 Ver más productos']
+        response: `🛡️ De <strong>${nom}</strong> no tengo el plazo de garantía anotado en la ficha. Prefiero no inventar uno.${POLICY}\n\nEscríbenos por WhatsApp y te confirmamos si tiene garantía y su plazo exacto.`,
+        products: mentions.slice(0,3),
+        quickReplies: ['💬 Contactar Soporte','📦 Ver más productos']
       };
     }
-    if(mentions.length === 1){
-      const p = mentions[0];
-      const g = (p.garantia||'').trim();
-      const gar = g ? g : 'garantía estándar de TiendaMax (cubrimos defectos de fábrica)';
-      return {
-        response: `🛡️ Sobre <strong>${escapeHtml(p.nombre)}</strong>:\nLa ${gar}. Si algo no funciona cuando lo recibes, escríbenos por WhatsApp dentro de las primeras 24 horas y lo resolvemos (cambio o devolución según el caso).`,
-        quickReplies: ['💬 WhatsApp','📦 Ver más productos']
-      };
-    }
+
+    // Sin producto específico → política general
     return {
-      response: `🛡️ Todos los productos tienen garantía. La mayoría cubre <strong>defectos de fábrica</strong> dentro de los primeros días tras la entrega. Si algo llega mal, escríbenos por WhatsApp dentro de 24 horas y te lo cambiamos o devolvemos el dinero. Pregúntame por la garantía específica de cualquier producto.`,
-      quickReplies: ['💬 WhatsApp','📦 Ver productos']
+      response: `🛡️ <strong>Política de Garantía TiendaMax</strong>\n\nLa garantía <strong>NO es universal</strong>. Aplica únicamente a los productos que lo indican específicamente en su ficha técnica.\n\n<strong>Condiciones de cobertura:</strong>\n\n• ✅ Cubre exclusivamente <strong>defectos técnicos o desperfectos de fábrica</strong>.\n• ❌ No cubre daños por <strong>mal uso</strong>.\n• ❌ No cubre <strong>golpes</strong> o daños físicos.\n• ❌ No cubre <strong>quemaduras por variaciones de voltaje</strong> (picos de tensión).\n• ❌ No cubre <strong>instalaciones incorrectas</strong>.\n\nSi tu producto tiene garantía y presenta un defecto técnico, escríbenos por WhatsApp. Te pediremos descripción del problema y, si es posible, foto o video.`,
+      quickReplies: ['💬 Contactar Soporte','📦 Ver productos']
     };
   };
 
   R.devolucion = () => ({
-    response: `↩️ Aceptamos devoluciones dentro de <strong>24 horas</strong> si el producto llega dañado o no corresponde a lo pedido. Escríbenos por WhatsApp con fotos del estado y lo coordinamos.`,
-    quickReplies: ['💬 WhatsApp']
+    response: `↩️ <strong>Política de Devolución TiendaMax</strong>\n\nAceptamos devoluciones dentro de <strong>24 horas</strong> tras la entrega si:\n• El producto llega dañado o con <strong>defecto de fábrica</strong>\n• No corresponde a lo que pediste\n\n<strong>No procede devolución</strong> por:\n• Daños por mal uso, golpes o caídas\n• Quemaduras por variaciones de voltaje\n• Instalación incorrecta\n\nPara iniciar una devolución, escríbenos por WhatsApp con fotos del estado y descripción del problema. Coordinamos recogida y reemplazo o devolución del dinero.`,
+    quickReplies: ['💬 Contactar Soporte','🛡️ Política de garantía','📦 Ver productos']
   });
 
   R.tasa = () => ({
-    response: `💱 Tasa actual de TiendaMax: <code>1 USD = ${TASA_MN} MN</code>\n\nDetalle:\n• Tasa base elTOQUE: <em>${TASA_BASE_MN} MN</em>\n• Margen de la tienda: <em>+${MARGEN_MN} MN</em>\n• <strong>Total al cliente: ${TASA_MN} MN por USD</strong>\n\nTodos los precios están en USD. Ejemplo: un producto de <code>$100 USD</code> = <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> al pagar contra entrega.`,
-    quickReplies: ['📦 Ver productos','💬 WhatsApp']
+    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nDesglose:\n• <strong>Tasa base elTOQUE:</strong> ${TASA_BASE_MN} MN\n  <em>(elTOQUE es la referencia de tasa de cambio en Cuba, se actualiza a diario)</em>\n• <strong>Margen operativo:</strong> +${MARGEN_MN} MN\n• <strong>Total que pagas:</strong> ${TASA_MN} MN por USD\n\nEl precio en MN que ves en el catálogo <strong>ya incluye la tasa + el margen</strong>. No hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+    quickReplies: ['💳 Métodos de pago','📦 Ver productos','💬 WhatsApp']
   });
 
   R.whatsapp = () => ({
@@ -3914,18 +3962,80 @@ ${notasHTML}
     };
   };
 
+  /* ── NAUTA HOGAR / ETECSA ──────────────────────────────────────────────
+     Aquí Nauta Hogar es *el* internet de casa, y la pregunta que llega es
+     siempre la misma: "¿venden módems para Nauta Hogar?". La respuesta honesta
+     es que no —los da ETECSA— pero sí hay con qué mejorar la señal, así que
+     decirlo y ofrecer lo que sí hay vale más que una búsqueda vacía. */
+  R.nautaHogar = (text) => {
+    const m = text.toLowerCase();
+    // Por NOMBRE, no por subcategoría: los repetidores del catálogo están en
+    // ACCESORIOS, así que filtrar por subcategoría "REPETIDOR" no encontraba
+    // ninguno y el botón "Ver Repetidores" no llevaba a nada.
+    const _routers = () => PRODUCTOS.filter(p => Number(p.stock) > 0 &&
+        (/ROUTERS?/i.test(p.subcategoria || '') || /\brouter\b/i.test(p.nombre || '')) &&
+        !/repetidor|extensor/i.test(p.nombre || ''));
+    const _repetidores = () => PRODUCTOS.filter(p => Number(p.stock) > 0 &&
+        /repetidor|extensor|amplificador/i.test((p.nombre || '') + ' ' + (p.subcategoria || '')));
+    // fmtUSD(r.precio): dentro del cerebro el precio ya viene normalizado a
+    // `precio` (ver _sincronizar); `precioActual` solo existe en el JSON crudo
+    // y aquí saldría $0.00 en cada línea.
+    const _lista = (arr) => arr.map(r =>
+        `• <strong>${escapeHtml(r.nombre)}</strong> — ${fmtUSD(r.precio)}\n`).join('');
+    const _COMO = `\n\n<strong>¿Cómo se conecta?</strong>\n1. Toma un cable de red (RJ45)\n2. Un extremo a un puerto <strong>LAN</strong> del módem-router de ETECSA\n3. El otro al puerto <strong>WAN</strong> de tu router nuevo\n4. Configura el router nuevo (nombre de red y contraseña)`;
+
+    if(/\b(repetidor|extensor|amplificador|amplificar)\b/i.test(m)){
+      const rep = _repetidores().slice(0, 4);
+      if(rep.length){
+        return {
+          response: `📡 <strong>Repetidores para amplificar la señal de Nauta Hogar</strong>\n\nSe enchufan a mitad de camino entre el equipo de ETECSA y la zona donde no llega la señal — sin cables:\n\n${_lista(rep)}\n¿Quieres detalles de alguno?`,
+          products: rep, quickReplies: ['📶 Ver Routers','💬 WhatsApp']
+        };
+      }
+      // Decirlo, en vez de caer al texto general como si no se hubiera
+      // preguntado por repetidores.
+      return {
+        response: `📡 Ahora mismo <strong>no tengo repetidores disponibles</strong>. Vuelven a entrar cada poco — escríbeme por WhatsApp y te aviso.\n\nMientras tanto, un router conectado al equipo de ETECSA también mejora bastante la cobertura. ¿Te los enseño?`,
+        quickReplies: ['📶 Ver Routers','💬 WhatsApp']
+      };
+    }
+
+    if(/\b(router|routers|enrutar)\b/i.test(m)){
+      const routers = _routers().slice(0, 4);
+      if(routers.length){
+        return {
+          response: `📶 <strong>Routers para ampliar tu Nauta Hogar</strong>\n\nSe conectan por cable a los puertos LAN del módem-router de ETECSA y crean una red Wi-Fi más rápida y con mejor alcance:\n\n${_lista(routers)}${_COMO}\n\n¿Quieres detalles de alguno?`,
+          products: routers, quickReplies: ['📡 Ver Repetidores','💬 WhatsApp']
+        };
+      }
+    }
+
+    if(/compatible|sirve para nauta|funciona con nauta|puedo usar con/i.test(m)){
+      return {
+        response: `📶 <strong>Equipos compatibles con Nauta Hogar</strong>\n\nETECSA da el servicio con un módem-router ADSL con puerto RJ11 (el de la línea telefónica), tipo TP-Link TD-W8901N.\n\n⚠️ <em>Esos equipos no los vendemos: los provee ETECSA.</em>\n\n✅ <strong>Lo que sí tengo, y sirve para mejorar tu red:</strong>\n• <strong>Routers</strong> → se conectan a los puertos LAN del equipo de ETECSA\n• <strong>Repetidores Wi-Fi</strong> → amplifican la señal, sin cables`,
+        quickReplies: ['📶 Ver Routers','📡 Ver Repetidores','💬 WhatsApp']
+      };
+    }
+
+    return {
+      response: `📶 <strong>Nauta Hogar y equipos ADSL</strong>\n\nNauta Hogar funciona con un <strong>módem-router ADSL</strong> con puerto RJ11 (entrada telefónica), como el TP-Link TD-W8901N que entrega ETECSA.\n\n⚠️ <strong>Esos no los vendemos</strong> — ETECSA los provee directamente. Prefiero decírtelo antes de que pierdas el viaje.\n\n✅ <strong>Lo que sí tengo para mejorar tu señal:</strong>\n• <strong>Routers Wi-Fi</strong>: por cable al equipo de ETECSA, para una red más rápida y con más alcance.\n• <strong>Repetidores Wi-Fi</strong>: llevan la señal a los cuartos donde el equipo de ETECSA no llega.${_COMO}\n\n¿Te enseño los routers o los repetidores?`,
+      quickReplies: ['📶 Ver Routers','📡 Ver Repetidores','📶 Equipos compatibles','💬 WhatsApp']
+    };
+  };
+
   R.fallback = (text) => {
+    _registrarPreguntaFAQ(text, 'desconocido', '');
     const prods = findProducts(text, 3);
     if(prods.length > 0){
       return {
-        response: `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese esto (todos disponibles). Si no es lo que buscas, dime más detalles: para qué lo necesitas, presupuesto, marca preferida…`,
+        response: `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese algo de esto (todos disponibles). Si no es lo que buscas, dime más detalles: para qué lo necesitas, presupuesto, marca preferida…`,
         products: prods,
-        quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+        quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
       };
     }
     return {
-      response: `🤔 Mmm, no tengo claro a qué te refieres. Pero puedo ayudarte con muchas cosas:\n\n• <em>Buscar productos</em>: "quiero algo para tener internet en la finca"\n• <em>Comparar dos productos del mismo tipo</em>: "compara el router Kuwfi vs el Tenda AC1200"\n• <em>Pregunta técnica</em>: "qué router tiene puerto WAN"\n• <em>Armar sistema completo</em>: "arma un sistema solar básico"\n• <em>Calcular autonomía</em>: "cuánto dura una batería con mi nevera"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Lista de deseos</em>: "ver mi lista de deseos"\n• <em>Ayuda</em>: escribe <code>/ayuda</code>\n\n¿Qué necesitas?`,
-      quickReplies: ['📦 Categorías','🔥 Ofertas','❓ Cómo comprar','💬 WhatsApp']
+      response: `🤔 Disculpa, no estoy seguro de haber entendido tu pregunta.\n\nPuedo ayudarte con:\n\n• <em>Buscar productos</em> en el catálogo\n• <em>Calcular sistemas solares</em> y autonomía\n• <em>Comparar productos</em> lado a lado\n• <em>Resolver dudas técnicas</em> (códigos de error, glosario)\n• <em>Pagos, envíos y garantía</em>\n• <em>Nauta Hogar y equipos de red</em>\n\n¿Puedes reformular tu pregunta? O escribe <code>/ayuda</code> para ver todo lo que sé hacer.`,
+      quickReplies: ['🤖 /ayuda','📦 Categorías','🔥 Ofertas','💬 Hablar con un humano']
     };
   };
 
@@ -4058,7 +4168,7 @@ ${notasHTML}
   //  AYUDA — menú de comandos
   // ════════════════════════════════════════════════════════════
   R.ayuda = () => ({
-    response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"mi inversor pita y tiene la luz roja"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n\n¿Qué necesitas hacer?`,
+    response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"mi inversor pita y tiene la luz roja"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n• <em>"¿venden módems para Nauta Hogar?"</em>\n\n¿Qué necesitas hacer?`,
     quickReplies: ['💝 Ver mi lista','🔥 Ofertas','📦 Categorías','💬 WhatsApp']
   });
 
@@ -5133,6 +5243,10 @@ ${notasHTML}
     get ultimoSistema(){ return _ULTIMO_SISTEMA; },
     comparacionTecnologica: R.comparacionTecnologica,
     KNOWLEDGE,
+    // Se expone para que el test pueda cruzar el dato con lo que sale en la
+    // respuesta: escribir la lista de métodos a mano en el texto es cómo se
+    // llega a que el bot ofrezca un pago que ya no se acepta.
+    METODOS_PAGO,
     SISTEMAS,
     ACCESORIOS_AUTOMATICOS,
     context: _context,
