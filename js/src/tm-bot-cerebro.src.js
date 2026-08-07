@@ -1395,6 +1395,66 @@
   }
 
   // ════════════════════════════════════════════════════════════
+  //  EL HILO DE LA CONVERSACIÓN
+  // ════════════════════════════════════════════════════════════
+  // Nadie repite el nombre del producto en cada mensaje. Le enseñas cuatro
+  // routers, el cliente escribe "¿cuánto cuesta?" y sin memoria eso caía en
+  // "no te entendí" — de lejos lo que más salió en las auditorías. Peor:
+  // "dame más info" se buscaba como si fuera un producto y contestaba con
+  // una camioneta de $33 000.
+  //
+  // Aquí se resuelven las preguntas que SOLO tienen sentido referidas a lo
+  // último que se enseñó. Tres guardas, y las tres hacen falta:
+  //
+  //  · Sin nada enseñado antes no hay hilo que seguir: "cuánto cuesta" de
+  //    primeras no se puede contestar y tiene que seguir cayendo al fallback.
+  //  · Si el mensaje nombra un producto, una categoría, una subcategoría o
+  //    un término técnico, es una consulta nueva y va por su camino normal
+  //    — "cuánto cuesta un inversor" no es lo mismo que "cuánto cuesta".
+  //  · Y la frase de hilo tiene que ser el mensaje ENTERO. Esto es lo que más
+  //    importa: por contar palabras y no anclar el final, "cuánto vale el
+  //    envío pa Holguín" contestaba con la lista de precios de unos audífonos,
+  //    y "qué me recomiendas para los apagones" perdía los apagones. Detrás
+  //    solo se admite un pronombre suelto o una muletilla.
+  const _HILO_COLA = '(\\s+(eso|ese|esa|esto|este|esta|estos|estas|el|la|lo|los|las|aqui|ahi|ahora|entonces|max|porfa|por\\s+favor))*\\s*\\.*$';
+  const _HILO_CABEZA = '^(y|ok|pero|entonces|bueno)?\\s*';
+  const _HILO = [
+    ['hiloPrecio', '(cuanto\\s+(cuesta|cuestan|vale|valen|sale|salen|es|son|seria|serian|me\\s+cuesta|me\\s+sale)|que\\s+(precio|valor)(\\s+tienen?)?|a\\s+como\\s+(esta|estan|lo\\s+dan|la\\s+dan|los\\s+dan)|(el\\s+|los\\s+)?precios?|cual\\s+es\\s+el\\s+precio)'],
+    ['hiloCual', '(cual(es)?\\s+(me\\s+)?(recomiendas|aconsejas|conviene|me\\s+conviene|es\\s+mejor|son\\s+mejores|cojo|llevo|compro|escojo|elijo|sirve|seria\\s+mejor)|que\\s+me\\s+(recomiendas|aconsejas)|cual(es)?)'],
+    ['hiloStock', '(estan?\\s+disponibles?|hay\\s+disponibles?|(lo|la|los|las)\\s+tienes|te\\s+quedan?|quedan?|cuantos?\\s+(te\\s+)?(quedan|hay|tienes)|hay\\s+en\\s+stock|tienes\\s+en\\s+stock|en\\s+stock|hay\\s+existencia)'],
+    ['hiloDetalle', '((dame|dime|cuentame|explicame)\\s+mas(\\s+(info|informacion|detalles?|datos|sobre\\s+(eso|ese|esto|este)))?|mas\\s+(info|informacion|detalles?|datos)|que\\s+(trae|incluye)|ficha(\\s+(completa|tecnica))?|caracteristicas|especificaciones|detalles?)'],
+    ['hiloComprar', '((lo|la|los|las)\\s+quiero|me\\s+(lo|la)\\s+llevo|quiero\\s+(ese|esa|este|esta)|dame\\s+(ese|esa|eso|este|esta)|como\\s+(lo|la)\\s+(pido|compro)|(lo|la)\\s+compro|me\\s+interesa)'],
+  ].map(([intent, cuerpo]) => [intent, new RegExp(_HILO_CABEZA + cuerpo + _HILO_COLA)]);
+
+  function _hiloDe(text){
+    if(!_context.lastProduct && !(_lastProductsShown || []).length) return null;
+    const t = cleanForMatch(text);
+    if(!t || t.split(' ').length > 6) return null;
+    if(detectProductMentions(text).length) return null;
+    if(_detectarCategoriaPedida(text)) return null;
+    if(_detectarSubcategoria(text)) return null;
+    if(detectTechTerms(text).length) return null;
+    for(const [intent, re] of _HILO){ if(re.test(t)) return intent; }
+    return null;
+  }
+
+  // A qué se refiere el cliente: si lo último enseñado fue un solo producto
+  // es ese; si fueron varios, la pregunta es sobre el grupo y contestar por
+  // uno solo sería inventar cuál eligió.
+  function _hiloFoco(){
+    const lista = (_lastProductsShown || []).filter(p => p && p.nombre);
+    if(lista.length === 1) return { uno: lista[0], lista: lista };
+    if(lista.length > 1) return { uno: null, lista: lista };
+    const p = _context.lastProduct;
+    return { uno: p || null, lista: p ? [p] : [] };
+  }
+
+  function _precioLinea(p){
+    const mn = fmtMN(p.precio);
+    return fmtUSD(p.precio) + (mn ? ` · <em>${mn}</em>` : '');
+  }
+
+  // ════════════════════════════════════════════════════════════
   //  DETECCIÓN DE INTENCIÓN
   // ════════════════════════════════════════════════════════════
   function detectIntent(text){
@@ -1441,6 +1501,12 @@
         // forma de saber por qué no le salían cosas.
         _context.presupuesto = null;
     }
+
+    // El hilo va antes que nada: "cuál es mejor" a secas, después de enseñar
+    // cuatro routers, es una pregunta sobre esos cuatro, no una comparación
+    // que hay que empezar de cero preguntando cuáles.
+    const hilo = _hiloDe(text);
+    if(hilo) return hilo;
 
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
@@ -4303,6 +4369,129 @@ ${notasHTML}
   };
 
   // ════════════════════════════════════════════════════════════
+  //  RESPUESTAS DEL HILO (ver _hiloDe)
+  // ════════════════════════════════════════════════════════════
+  R.hiloPrecio = (text) => {
+    const { uno, lista } = _hiloFoco();
+    if(uno){
+      let body = `💰 <strong>${escapeHtml(uno.nombre)}</strong> cuesta <strong>${_precioLinea(uno)}</strong>\n`;
+      if(uno.precioOriginal > 0 && uno.precioOriginal > uno.precio){
+        body += `🔥 <em>En oferta:</em> antes ${fmtUSD(uno.precioOriginal)} (-${Math.round((1 - uno.precio/uno.precioOriginal)*100)}%)\n`;
+      }
+      body += `📦 ${uno.stock > 0 ? (uno.stock <= 3 ? `Quedan <strong>solo ${uno.stock}</strong>` : `<strong>${uno.stock}</strong> disponibles`) : '<em>Agotado ahora mismo</em>'}\n`;
+      body += `\nPagas contra entrega, cuando lo tienes en la mano.`;
+      return { response: body, products: [uno], quickReplies: ['🛒 Pedir por WhatsApp','🆚 Comparar con otro','💬 WhatsApp'] };
+    }
+    if(lista.length > 1){
+      const orden = lista.slice().sort((a,b) => a.precio - b.precio);
+      let body = '💰 Los precios de lo que te enseñé, de menor a mayor:\n\n';
+      orden.forEach(p => {
+        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${_precioLinea(p)}${p.stock === 0 ? ' · <em>agotado</em>' : ''}\n`;
+      });
+      body += '\nDime cuál te interesa y te doy la ficha completa.';
+      return { response: body, products: orden.slice(0,4), quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp'] };
+    }
+    return R.fallback(text);
+  };
+
+  R.hiloCual = (text) => {
+    const { uno, lista } = _hiloFoco();
+    const disp = lista.filter(p => p.stock > 0);
+    const pool = disp.length ? disp : lista;
+    if(pool.length < 2){
+      const p = pool[0] || uno;
+      if(!p) return R.fallback(text);
+      return buildDetalle(p);
+    }
+    const orden = pool.slice().sort((a,b) => a.precio - b.precio);
+    const barato = orden[0], caro = orden[orden.length - 1];
+    // Nada de coronar un ganador a ojo: lo único que sé de verdad sin que me
+    // digan el uso es cuál cuesta menos y cuál cuesta más. El veredicto sale
+    // de la comparación lado a lado, que sí mira ficha contra ficha.
+    let body = '🤔 Para decirte cuál con fundamento necesito saber una cosa, pero te adelanto lo que sí puedo afirmar:\n\n';
+    body += `💵 <strong>El más barato:</strong> ${escapeHtml(barato.nombre)} — ${fmtUSD(barato.precio)}\n`;
+    body += `💎 <strong>El más caro:</strong> ${escapeHtml(caro.nombre)} — ${fmtUSD(caro.precio)}\n`;
+    const pocos = pool.filter(p => p.stock > 0 && p.stock <= 3);
+    if(pocos.length) body += `⏳ <em>Quedan pocos de:</em> ${pocos.map(p => escapeHtml(p.nombre)).join(', ')}\n`;
+    if(disp.length < lista.length) body += `⚠️ Dejé fuera ${lista.length - disp.length} que está(n) agotado(s).\n`;
+    body += '\n<strong>¿Para qué lo vas a usar y cuánto quieres gastar?</strong> Con eso te digo cuál, no el que más caro sea.\n\n';
+    body += 'O dime los dos que dudas ("compara el A vs el B") y te los pongo lado a lado con veredicto.';
+    return { response: body, products: orden.slice(0,4), quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp'] };
+  };
+
+  R.hiloStock = (text) => {
+    const { uno, lista } = _hiloFoco();
+    if(uno){
+      if(uno.stock > 0){
+        const cuantos = uno.stock <= 3
+          ? `quedan <strong>solo ${uno.stock}</strong>, se está acabando`
+          : `hay <strong>${uno.stock}</strong> en stock`;
+        return {
+          response: `✅ Sí, <strong>${escapeHtml(uno.nombre)}</strong> está disponible: ${cuantos}.\n\nPrecio ${_precioLinea(uno)}. Pagas cuando lo recibes.`,
+          products: [uno],
+          quickReplies: ['🛒 Pedir por WhatsApp','💬 WhatsApp']
+        };
+      }
+      const alt = findAlternativas(uno, 3);
+      return {
+        response: `❌ <strong>${escapeHtml(uno.nombre)}</strong> está <em>agotado</em> ahora mismo.` +
+          (alt.length ? ' Esto sí lo tengo y es del mismo tipo:' : ' Toca "Avisarme cuando vuelva" en su ficha y te aviso en cuanto entre.'),
+        products: alt,
+        quickReplies: alt.length ? ['🆚 Comparar dos de estos','💬 WhatsApp'] : ['💬 WhatsApp']
+      };
+    }
+    if(lista.length > 1){
+      const disp = lista.filter(p => p.stock > 0);
+      let body = `📦 De los que te enseñé, ${disp.length === lista.length ? 'están <strong>todos</strong> disponibles' : `hay <strong>${disp.length}</strong> de ${lista.length} disponibles`}:\n\n`;
+      lista.forEach(p => {
+        body += `• ${escapeHtml(p.nombre)} — ${p.stock > 0 ? `<strong>${p.stock}</strong> en stock` : '<em>agotado</em>'}\n`;
+      });
+      body += '\nDime cuál quieres y te armo el pedido por WhatsApp.';
+      return { response: body, products: disp.slice(0,4), quickReplies: ['💬 WhatsApp'] };
+    }
+    return R.stock();
+  };
+
+  R.hiloDetalle = (text) => {
+    const { uno, lista } = _hiloFoco();
+    if(uno) return buildDetalle(uno);
+    if(lista.length > 1){
+      let body = '📋 Te enseñé varios, dime de cuál quieres la ficha:\n\n';
+      lista.forEach(p => { body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${_precioLinea(p)}\n`; });
+      body += '\nEscribe su nombre (o parte) y te doy specs, garantía y disponibilidad.';
+      return { response: body, products: lista.slice(0,4), quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp'] };
+    }
+    return R.fallback(text);
+  };
+
+  R.hiloComprar = (text) => {
+    const { uno, lista } = _hiloFoco();
+    if(uno){
+      if(uno.stock === 0){
+        const alt = findAlternativas(uno, 3);
+        return {
+          response: `😕 <strong>${escapeHtml(uno.nombre)}</strong> está agotado, no te lo puedo vender ahora mismo.` +
+            (alt.length ? ' Del mismo tipo sí tengo esto:' : ' Puedes pedir que te avise cuando entre.'),
+          products: alt,
+          quickReplies: alt.length ? ['💬 WhatsApp'] : ['💬 WhatsApp']
+        };
+      }
+      return {
+        response: `🛒 ¡Perfecto! <strong>${escapeHtml(uno.nombre)}</strong> — ${_precioLinea(uno)}\n\n` +
+          `Toca <strong>Pedir</strong> aquí abajo y se abre WhatsApp con el pedido ya escrito. Coordinas la entrega y <strong>pagas cuando lo recibes</strong>: efectivo USD, efectivo MN a la tasa del día, o Zelle.`,
+        products: [uno],
+        quickReplies: ['🛒 Pedir por WhatsApp','🛍️ Añadir al carrito','🚚 Envíos']
+      };
+    }
+    if(lista.length > 1){
+      let body = '🛒 ¿Cuál de estos? Dime el nombre y te armo el pedido:\n\n';
+      lista.forEach(p => { body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${_precioLinea(p)}${p.stock === 0 ? ' · <em>agotado</em>' : ''}\n`; });
+      return { response: body, products: lista.filter(p => p.stock > 0).slice(0,4), quickReplies: ['💬 WhatsApp'] };
+    }
+    return R.comprar();
+  };
+
+  // ════════════════════════════════════════════════════════════
   //  LISTA DE DESEOS (favoritos persistente)
   // ════════════════════════════════════════════════════════════
   // El carrito es el de la tienda, así que aquí solo se lee y se resume: si
@@ -4469,7 +4658,16 @@ ${notasHTML}
     _context.lastIntent = intent;
     _context.conversationStep++;
     const handler = R[intent] || R.fallback;
-    return handler(text);
+    const data = handler(text) || {};
+    // La memoria de "lo que acabo de enseñar" vivía solo en addProducts(), que
+    // es capa DOM. El hilo la necesita aquí: si no, cualquier respuesta que no
+    // pase por el pintado (o cualquier prueba fuera del navegador) se queda sin
+    // contexto y "¿cuánto cuesta?" vuelve a caer en "no te entendí".
+    if(Array.isArray(data.products) && data.products.length){
+      _lastProductsShown = data.products;
+      if(data.products.length === 1) _context.lastProduct = data.products[0];
+    }
+    return data;
   }
 
   // ════════════════════════════════════════════════════════════
