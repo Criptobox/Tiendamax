@@ -192,6 +192,184 @@ for (const [q, esperado] of ENCAMINADAS) {
     ok(intent(q) === esperado, `"${q}" → ${intent(q)}, esperaba ${esperado}`);
 }
 
+// ── Lo que salió de auditar 602 preguntas con cuatro auditores ───────────
+// Ninguna fallaba. Todas devolvían una respuesta bien escrita, de otro tema.
+
+// La palabra suelta que se llevaba la pregunta a otra intención. Cada una
+// dejaba inalcanzable algo que sí existe.
+{
+    // "cobertura" es como se pide un repetidor aquí — y hasta el producto se
+    // llama "Repetidor Wi-fi Extensor de Cobertura". Se iba a la tabla de
+    // provincias de envíos.
+    ok(intent('quiero mejorar la cobertura de mi casa') !== 'envios',
+        'la cobertura del wifi no es la cobertura de los envíos');
+    ok(intent('cual es la cobertura de envio') === 'envios',
+        'pero la cobertura del envío sí sigue siendo envíos');
+    // "cambio" se llevaba "¿a cómo está el cambio?" a devoluciones.
+    ok(intent('cual es la tasa de cambio') === 'tasa', 'la tasa de cambio es la tasa');
+    ok(intent('a como esta el cambio') === 'tasa', 'preguntar por el cambio es la tasa');
+    ok(intent('quiero devolver el producto') === 'devolucion', 'devolver sigue siendo devolución');
+    // "transferencia" dejaba inalcanzables dos productos que se llaman así.
+    const tr = B.responder('tienen transferencia automatica');
+    ok((tr.products || []).some(p => /transferencia/i.test(p.nombre)),
+        'los productos que se llaman "Transferencia" deben poder buscarse por su nombre');
+    ok(intent('aceptan transferencia bancaria') === 'pago',
+        'la transferencia bancaria sí es una pregunta de pago');
+}
+
+// El ruido del scoring: "un" contaba como término de búsqueda y casaba DENTRO
+// de otras palabras ("g-un", "com-un-icador"). Una pistola de masaje sacaba 21
+// puntos con "quiero un inversor powmr", a dos del inversor de verdad.
+{
+    // La lista de palabras vacías se pina por estructura: con la comparación
+    // por principio de palabra ya no hace falta para ESTE caso, pero es la que
+    // evita que un "de" o un "que" sumen puntos en cualquier otra búsqueda.
+    const srcSc = readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8');
+    // Se ancla a la línea de scoreProduct (`let qWords`), no al patrón suelto:
+    // _matchFuerte usa el mismo filtro con `const qWords` y está justo entre
+    // scoreProduct y findProducts, así que cualquier recorte por posición se
+    // lo tragaba y la comprobación pasaba con el scoring ya roto.
+    ok(/let qWords = q\.split\(' '\)\.filter\(w => w\.length > 1 && !_VACIAS\.has\(w\)\);/.test(srcSc),
+        'scoreProduct tiene que descartar las palabras vacías: si no, "de" y "que" puntúan como términos');
+    for (const [q, fuera] of [
+        ['quiero un inversor powmr', /masaje|timbre/i],
+        ['un router bueno', /masaje|timbre/i],
+        ['me hace falta una bateria de litio', /buceo|cerradura/i],
+    ]) {
+        const r = B.responder(q);
+        const nombres = (r.products || []).map(p => p.nombre).join(' | ');
+        ok(!fuera.test(nombres), `"${q}" saca productos de otro mundo: ${nombres}`);
+    }
+}
+
+// Plurales: el catálogo está en singular y la gente pregunta en plural.
+// "tienen neveras" caía en "no te entendí" teniendo una nevera de $250.
+{
+    for (const [q, esperado] of [
+        ['tienen neveras', /nevera/i], ['tienen lavadoras', /lavadora/i],
+        ['tienen televisores', /tv|televis/i], ['tienen repetidores', /repetidor/i],
+    ]) {
+        const r = B.responder(q);
+        const nombres = (r.products || []).map(p => p.nombre).join(' | ');
+        ok(esperado.test(nombres), `"${q}" no encuentra lo que sí hay: ${nombres || '(nada)'}`);
+    }
+}
+
+// Cómo se dice aquí: "bocina" es la palabra cubana y no está en ningún nombre
+// del catálogo, pero la Xiaomi Sound sí está en stock.
+{
+    const r = B.responder('bocina');
+    ok((r.products || []).some(p => /sound|audifono/i.test(p.nombre)),
+        '"bocina" debe llegar al audio que sí hay');
+}
+
+// "para carro" / "para moto": no distinguen nada, y con ellas contando
+// cualquier frase sacaba el "Ventilador Para Carro" como ficha única. Los 12
+// aceites del catálogo eran invisibles a la consulta más natural que existe.
+{
+    const r = B.responder('tienen aceite para carro');
+    const nombres = (r.products || []).map(p => p.nombre).join(' | ');
+    ok(/aceite|mannol|fanfaro/i.test(nombres), `"tienen aceite para carro" da: ${nombres}`);
+    ok(!/ventilador/i.test(nombres), 'y no puede dar el ventilador de carro');
+}
+
+// Lo que NO se vende se dice. Antes la búsqueda difusa contestaba "tienen
+// paneles solares" con un interruptor de transferencia, y el cliente se iba
+// creyendo que sí.
+{
+    for (const q of ['tienen paneles solares', 'venden placas solares',
+                     'cuanto cuesta una laptop', 'tienen cable de red',
+                     'tienen tarjetas sim']) {
+        ok(intent(q) === 'noVendemos', `"${q}" → ${intent(q)}, debería decir que no lo vende`);
+    }
+    const r = B.responder('tienen paneles solares');
+    ok(/no vendo|no manejo/i.test(r.response), 'tiene que decirlo con todas las letras');
+    ok(!(r.products || []).length, 'y no enseñar productos como si fueran eso');
+    // Pero preguntar QUÉ ES sigue siendo una explicación.
+    ok(intent('que es un panel solar') === 'tecnico',
+        'preguntar qué es un panel solar sigue siendo una explicación');
+}
+// Nada de la lista puede estar de verdad en el catálogo: decirle que no a un
+// cliente por algo que sí tienes es peor que el fallo que esto arregla.
+{
+    const catalogo = sb.productos || [];
+    for (const item of B.NO_VENDEMOS) {
+        const encontrado = catalogo.filter(p => Number(p.stock) > 0 && item.re.test(p.nombre || ''));
+        ok(!encontrado.length,
+            `NO_VENDEMOS dice que no hay "${item.que}" pero el catálogo tiene: ${encontrado.map(p => p.nombre).join(', ')}`);
+    }
+}
+
+// "Ese producto lo tenemos" solo si de verdad se parece a lo que pidieron.
+// "tienen bocina JBL" —marca que no existe— contestaba "lo tenemos pero está
+// agotado", y el vendedor quedaba desmentido por WhatsApp.
+{
+    const r = B.responder('tienen bocina jbl');
+    ok(!/lo tenemos/i.test(r.response), 'no puede afirmar tener una marca que no existe');
+    // El guard se pina por estructura además de por comportamiento: hoy esa
+    // pregunta ya encuentra la Xiaomi que sí hay, así que no llega a la rama
+    // del agotado. Si el filtro se quita, vuelve el "ese producto lo tenemos"
+    // ante cualquier coincidencia difusa, y eso no se vería aquí.
+    const src = readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8');
+    ok(/const agotadoReal = agotados\.find\(p => _matchFuerte\(p, _qa\)\)/.test(src),
+        'el agotado que se anuncia tiene que casar de verdad con lo que pidieron');
+    // Y no se promete una lista de alternativas que luego no llega.
+    // Solo la frase que PROMETE una lista a continuación; la ficha de un
+    // producto agotado también dice "alternativas" y ahí es una oferta, no
+    // una promesa incumplida.
+    for (const q of ['tienen linterna', 'tienen toldo', 'bocina', 'que mal servicio']) {
+        const x = B.responder(q);
+        if (/alternativas (similares )?disponibles<\/strong>:|alternativas disponibles<\/strong>:/i.test(x.response)) {
+            ok((x.products || []).length > 0,
+                `"${q}" promete alternativas y no enseña ninguna`);
+        }
+    }
+}
+
+// La autonomía no puede estampar una capacidad supuesta DEBAJO del nombre
+// propio de un producto: ahí no se lee como estimación, se lee como ficha.
+{
+    const r = B.responder('cuanto dura la bateria automotriz lubrim con la tv');
+    ok(/no tengo los ah|no puedo calcularte/i.test(r.response),
+        'sin Ah/V declarados hay que decirlo, no inventar 100Ah bajo su nombre');
+    ok(!/lubrim[^\n]*100ah/i.test(r.response.replace(/<[^>]+>/g, '')),
+        'no puede aparecer "100Ah" en la misma línea que el nombre del producto');
+    // Y los Ah que escribe el cliente mandan.
+    const r2 = B.responder('cuanto dura una bateria de 200ah con la nevera');
+    ok(/200ah/i.test(r2.response), 'si el cliente dice 200Ah, se usan 200Ah');
+    ok(/16\.0 horas|16 horas/i.test(r2.response), `200Ah×12V÷150W = 16h, dio: ${r2.response.slice(0, 200)}`);
+}
+
+// Seguridad: la batería hinchada es la única entrada urgente de la tabla, y
+// en pretérito ("se hinchó") no llegaba — daba un catálogo de baterías.
+{
+    for (const q of ['mi bateria se hincho', 'la bateria se inflo', 'mi bateria esta hinchada']) {
+        const r = B.responder(q);
+        ok(/deja de usarla|no la cargues/i.test(r.response),
+            `"${q}" debe llevar al aviso de seguridad, dio: ${r.response.slice(0, 90)}`);
+    }
+}
+
+// El precio inventado: "Tarjeta microSD — desde $150.00" salía de una funda de
+// asiento de coche, el primer producto de la subcategoría ACCESORIOS.
+{
+    const acc = B.ACCESORIOS_AUTOMATICOS['CÁMARAS'] || [];
+    const sd = acc.find(a => /microsd/i.test(a.que));
+    ok(!sd || !sd.subcat,
+        'la microSD no se vende: con subcat le pone el precio del primer accesorio que pille');
+}
+
+// Y la tasa dentro de los métodos de pago: la plantilla se evaluaba al cargar
+// el módulo, cuando TASA_MN todavía vale 0. La respuesta más consultada decía
+// "0 MN = 1 USD" siempre, en producción.
+{
+    const mn = B.METODOS_PAGO.find(x => /Efectivo MN/i.test(x.metodo));
+    ok(mn && typeof mn.detalle === 'function',
+        'el detalle con la tasa tiene que ser función, o se congela el 0 del arranque');
+    const pago = B.responder('que metodos de pago aceptan').response;
+    ok(!/\b0 MN = 1 USD/.test(pago), 'la respuesta de pagos no puede decir "0 MN = 1 USD"');
+}
+
 // ── Nauta Hogar / ETECSA ─────────────────────────────────────────────────
 // Aquí Nauta Hogar es EL internet de casa y la pregunta llega a diario. La
 // respuesta honesta es que esos módems no se venden —los da ETECSA—, así que

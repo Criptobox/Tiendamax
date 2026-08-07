@@ -884,7 +884,11 @@
       {que: 'Batería', subcat: 'BATERÍAS', por: 'El inversor necesita batería para funcionar'},
     ],
     'CÁMARAS': [
-      {que: 'Tarjeta microSD', subcat: 'ACCESORIOS', por: 'Para grabar localmente (algunas incluidas)'},
+      // SIN subcat: no vendemos microSD, y con 'ACCESORIOS' cogía el primer
+      // producto de esa subcategoría —que aquí es una funda de asiento de
+      // coche— y publicaba "Tarjeta microSD — desde $150.00". Un precio
+      // inventado que puede tumbar la venta de una cámara de $25.
+      {que: 'Tarjeta microSD', por: 'Para grabar localmente — esa no la vendo, cualquiera de 32-128 GB clase 10 sirve'},
     ],
     'CERRADURAS': [
       {que: 'Pilas AA o batería recargable', subcat: null, por: 'Para alimentar la cerradura (suele usar 4-8 pilas)'},
@@ -984,7 +988,11 @@
      cliente intenta pagar con algo que ya no se acepta. */
   const METODOS_PAGO = [
     {metodo: 'Efectivo USD', detalle: 'Billetes USD en efectivo al recibir. Preferible para montos altos.', disponible: true, comision: 0},
-    {metodo: 'Efectivo MN', detalle: `Pesos cubanos (MN) al recibir, a la tasa del día (${TASA_MN} MN = 1 USD, margen ya incluido).`, disponible: true, comision: 0},
+    // El detalle es una FUNCIÓN, no una plantilla: METODOS_PAGO se construye al
+    // cargar el módulo, cuando TASA_MN todavía vale 0 porque la config llega
+    // después (_sincronizar). Con la plantilla, la respuesta de pagos —la más
+    // consultada— decía "0 MN = 1 USD" siempre, en producción.
+    {metodo: 'Efectivo MN', detalle: () => `Pesos cubanos (MN) al recibir, a la tasa del día${TASA_MN > 0 ? ` (${TASA_MN} MN = 1 USD, margen ya incluido)` : ''}.`, disponible: true, comision: 0},
     {metodo: 'Efectivo mixto', detalle: 'Combinación USD + MN para completar el monto. El repartidor calcula al recibir.', disponible: true, comision: 0},
     {metodo: 'Zelle (familiares en USA)', detalle: 'Pago vía Zelle desde familiar en el extranjero. Coordinar con el equipo por WhatsApp.', disponible: true, comision: 0, nota: 'Solo para pedidos prepagados'},
     {metodo: 'EnZona / Transfermóvil', detalle: 'No se aceptan.', disponible: false, comision: 0},
@@ -1072,6 +1080,43 @@
   // ════════════════════════════════════════════════════════════
   //  BÚSQUEDA DE PRODUCTOS
   // ════════════════════════════════════════════════════════════
+  /* Palabras que no dicen nada de lo que se busca. Sin esta lista, "quiero
+     UN inversor" puntuaba "un" como si fuera un término, y como la
+     comparación era por subcadena casaba dentro de "g-UN" y
+     "com-UN-icador": una pistola de masaje sacaba 21 puntos con esa
+     pregunta, a dos del inversor de verdad. */
+  const _VACIAS = new Set([
+    'el','la','los','las','un','una','unos','unas','lo','al','del','de','a','en',
+    'y','o','u','que','qué','se','su','sus','mi','mis','tu','tus','me','te','le',
+    'les','por','para','con','sin','como','cómo','muy','mas','más','pero','si',
+    'no','ya','hay','es','son','esta','está','estan','están','ser','tener','tiene',
+    'tienen','quiero','queria','quería','busco','buscar','necesito','dame','ver',
+    'hola','buenas','porfa','favor','gracias','algo','alguna','alguno','cual','cuál',
+    'donde','dónde','cuando','cuándo','cuanto','cuánto','vendes','venden','tengo',
+  ]);
+  /* Casa por PRINCIPIO de palabra, no por trozo suelto. Así "router" sigue
+     encontrando "routers" y "camara" encuentra "camaras", pero "un" deja de
+     encontrarse dentro de "gun". */
+  function _casaPalabra(texto, w){
+    if(!texto || !w) return false;
+    let i = texto.indexOf(w);
+    while(i !== -1){
+      if(i === 0 || texto.charCodeAt(i - 1) === 32) return true;   // ' '
+      i = texto.indexOf(w, i + 1);
+    }
+    return false;
+  }
+  /* La gente pregunta en plural ("tienen neveras") y el catálogo está en
+     singular ("Nevera Horizontal Milexus"). Como la comparación va de la
+     consulta al texto, el plural no encontraba nada y "tienen neveras",
+     "lavadoras", "televisores" o "repetidores" caían en "no te entendí"
+     teniendo el producto en stock. Se prueba también el singular. */
+  function _casaConPlural(texto, w){
+    if(_casaPalabra(texto, w)) return true;
+    if(w.length > 4 && w.endsWith('es') && _casaPalabra(texto, w.slice(0, -2))) return true;
+    if(w.length > 3 && w.endsWith('s') && _casaPalabra(texto, w.slice(0, -1))) return true;
+    return false;
+  }
   function scoreProduct(p, q){
     if(!q) return 0;
     const nombre = cleanForMatch(p.nombre);
@@ -1081,27 +1126,95 @@
     const specs = cleanForMatch((p.specs||[]).join(' '));
     let score = 0;
     if(nombre === q) score += 100;
-    const qWords = q.split(' ').filter(w => w.length > 1);
-    const allInName = qWords.every(w => nombre.includes(w));
+    let qWords = q.split(' ').filter(w => w.length > 1 && !_VACIAS.has(w));
+    // Si la pregunta era TODA palabras vacías no queda nada que puntuar; se
+    // vuelve a las de antes para no dejar de encontrar lo que sí se pedía.
+    if(!qWords.length) qWords = q.split(' ').filter(w => w.length > 2);
+    if(!qWords.length) return 0;
+    const allInName = qWords.every(w => _casaConPlural(nombre, w));
     if(allInName) score += 50;
-    const someInName = qWords.filter(w => nombre.includes(w)).length;
+    const someInName = qWords.filter(w => _casaConPlural(nombre, w)).length;
     score += someInName * 12;
     if(specs.includes(q)) score += 25;
-    const someInSpecs = qWords.filter(w => specs.includes(w)).length;
+    const someInSpecs = qWords.filter(w => _casaConPlural(specs, w)).length;
     score += someInSpecs * 6;
     if(sub.includes(q)) score += 20;
-    const someInSub = qWords.filter(w => sub.includes(w)).length;
+    const someInSub = qWords.filter(w => _casaConPlural(sub, w)).length;
     score += someInSub * 5;
     if(desc.includes(q)) score += 10;
-    const someInDesc = qWords.filter(w => desc.includes(w)).length;
+    const someInDesc = qWords.filter(w => _casaConPlural(desc, w)).length;
     score += someInDesc * 3;
     if(cat.includes(q)) score += 8;
     return score;
   }
 
+  /* ¿El producto casa con lo que pidieron en algo IDENTIFICATIVO —el nombre,
+     la subcategoría o la ficha— o solo lo menciona de pasada en el texto
+     largo? "Tienen paneles solares" sacaba un interruptor de transferencia
+     como primer resultado, porque su descripción nombra los paneles. Es
+     verdad que está relacionado; no es verdad que sea un panel. La respuesta
+     tiene que decir cuál de las dos cosas es. */
+  function _matchFuerte(p, q){
+    const qWords = String(q || '').split(' ').filter(w => w.length > 1 && !_VACIAS.has(w));
+    if(!qWords.length) return false;
+    const donde = cleanForMatch(p.nombre) + ' ' +
+                  cleanForMatch(p.subcategoria || '') + ' ' +
+                  cleanForMatch((p.specs || []).join(' '));
+    return qWords.some(w => _casaConPlural(donde, w));
+  }
+
+  /* ── LO QUE NO SE VENDE ────────────────────────────────────────────────
+     Cada línea está comprobada contra productos.json: cero coincidencias en
+     el catálogo. Sin esto, la búsqueda difusa contestaba "tienen paneles
+     solares" con un interruptor de transferencia y una cámara que se llama
+     "Solar", y el cliente se iba creyendo que sí. Decir que no también es
+     una respuesta —y ahorra el viaje—; ofrecer lo más cercano de verdad es
+     lo que puede salvar la venta.
+
+     REGLA: antes de añadir una línea aquí, comprobar que de verdad no está en
+     el catálogo. Decirle que no a un cliente por algo que sí tienes es peor
+     que el fallo que esto arregla. */
+  const NO_VENDEMOS = [
+    { re: /\b(panel|paneles|placa|placas)\s+(solar|solares|fotovoltaic\w*)\b|\bpanel solar\b/i,
+      que: 'paneles solares',
+      nota: 'Paneles solares no vendo.',
+      ofrecer: 'Esa pieza la pones tú, pero el resto del sistema sí te lo armo: controlador, batería e inversor.',
+      botones: ['☀️ Arma un sistema solar','💬 WhatsApp'] },
+    { re: /\b(laptop\w*|port[aá]til\w*|notebook\w*)\b/i,
+      que: 'laptops',
+      nota: 'Laptops no manejo.',
+      ofrecer: 'En PC tengo un equipo de escritorio; dime si te sirve.',
+      botones: ['📦 Categorías','💬 WhatsApp'] },
+    { re: /\b(planta el[eé]ctrica|generador\w*|motogenerador\w*)\b/i,
+      que: 'plantas eléctricas',
+      nota: 'Plantas eléctricas y generadores de combustible no vendo.',
+      ofrecer: 'Para el apagón sí tengo inversores con batería, que es la otra forma de resolverlo.',
+      botones: ['⚡ Ver inversores','💬 WhatsApp'] },
+    { re: /\b(cable\w*)\s+(de\s+)?(red|rj45|utp|ethernet)\b|\bcable rj45\b/i,
+      que: 'cables de red',
+      nota: 'Cables de red sueltos no vendo.',
+      ofrecer: 'Se consiguen fácil en cualquier ferretería o tienda de informática.',
+      botones: ['📶 Ver routers','💬 WhatsApp'] },
+    { re: /\b(tarjeta\w*\s+sim|sim card|chip de datos)\b/i,
+      que: 'tarjetas SIM',
+      nota: 'Tarjetas SIM no vendo — esas las da ETECSA.',
+      ofrecer: '',
+      botones: ['📶 Ver routers','💬 WhatsApp'] },
+    { re: /\b(micro\s?sd|tarjeta\w*\s+de\s+memoria|memoria\s+sd)\b/i,
+      que: 'tarjetas de memoria',
+      nota: 'Tarjetas de memoria microSD no vendo.',
+      ofrecer: 'Si es para una cámara, cualquiera de 32-128 GB clase 10 te sirve.',
+      botones: ['🔒 Ver cámaras','💬 WhatsApp'] },
+    { re: /\bont\b|\bmodem de fibra\b|\bm[oó]dem de fibra\b/i,
+      que: 'equipos de fibra (ONT)',
+      nota: 'Equipos de fibra (ONT) no vendo — esos los pone ETECSA.',
+      ofrecer: 'Lo que sí tengo son routers y repetidores para mejorar la red que ya tengas.',
+      botones: ['📶 Ver routers','💬 WhatsApp'] },
+  ];
+
   function findProducts(query, n=4, opts={}){
     const { includeAgotados=false, filterFn=null, presupuesto=null } = opts;
-    const q = cleanForMatch(query);
+    const q = _expandirConsulta(cleanForMatch(query));
     if(!q || q.length < 2) return [];
     let list = PRODUCTOS
       .map(p => ({p, s: scoreProduct(p, q)}))
@@ -1134,6 +1247,12 @@
       'alarma','cerradura','exterior','interior','color','negro','blanco',
       'cable','cables','diseno','calidad','garantia','producto','nuevo','usado',
       'global','version','clasico','plus','max','mini','ultra','super',
+      // "para", "carro" y "moto" no distinguen nada: hay un "Ventilador Para
+      // Carro" y una "Capa Para Moto", y con estas fuera de la lista
+      // cualquier frase con "para carro" sacaba 2 de 3 palabras de su nombre
+      // y ganaba el match. "Tienen aceite para carro" devolvía el ventilador
+      // como ficha única y dejaba invisibles los 12 aceites del catálogo.
+      'para','carro','carros','moto','motos','celular','celulares','auto','autos',
     ]);
     const mentions = [];
     for(const p of PRODUCTOS){
@@ -1418,11 +1537,21 @@
     if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
 
     if(/\b(c[oó]mo compro|c[oó]mo pedir|c[oó]mo hago.*pedido|c[oó]mo comprar|quiero comprar|quiero pedir|hacer.*pedido|proceso.*compra)\b/.test(m)) return 'comprar';
-    if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|cobertura|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
+    // "cobertura" a secas ya NO cuenta: es la palabra con la que se pide un
+    // repetidor ("quiero mejorar la cobertura de mi casa"), y hasta el
+    // producto se llama "Repetidor Wi-fi Extensor de Cobertura". Se llevaba
+    // esas preguntas a la tabla de provincias. Aquí solo cuenta cuando habla
+    // de la cobertura del ENVÍO.
+    if(/cobertura (de )?(env[ií]o|mensajer[ií]a|entrega|reparto)|(env[ií]o|mensajer[ií]a|entrega|reparto)[^.?]{0,15}cobertura|\bcobertura\b[^.?]{0,20}\b(provincia|municipio|pa[ií]s|isla|habana|oriente|occidente)\b/.test(m)) return 'envios';
+    if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
        || /\b(oriente|occidente|centro del pa[ií]s|toda la isla|todo el pa[ií]s)\b/.test(m)
        || /\b(recoger\w*|recojo|lo busco yo|pasar a buscar|buscarlo yo|recogida)\b/.test(m)) return 'envios';
     if(/\b(acepta[ns]?|admite[ns]?|reciben|recibe)\b[^.?]{0,20}\b(cup|mn|usd|d[oó]lar|peso|efectivo|tarjeta|transferencia|zelle|enzona|moneda)\b/.test(m)) return 'pago';
-    if(/\b(pago|pagar|pago|tarjeta|transferencia|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
+    // "transferencia" suelta NO: hay dos productos en stock que se llaman
+    // "Interruptor de Transferencia" y "Transferencia Automática o Manual", y
+    // eran inalcanzables escribiendo su propio nombre.
+    if(/transferencia (bancaria|banc|por banco)|hacer una transferencia|pago por transferencia|acepta[ns]? transferencia/.test(m)) return 'pago';
+    if(/\b(pago|pagar|pago|tarjeta|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
     // Preguntar QUÉ ES algo va al glosario, aunque la palabra sea de esta
@@ -1431,12 +1560,20 @@
     // "¿qué es un inversor?", y vuelve solo en cuanto se añade una intención
     // nueva por palabra clave.
     const _pideDefinicion = /\b(qu[eé] es|qu[eé] son|qu[eé] significa|qu[eé] quiere decir|para qu[eé] sirve|expl[ií]ca(me)?|def[ií]ne(me)?|en qu[eé] consiste)\b/.test(m);
+    // Los botones que ofrece la propia respuesta de Nauta Hogar vuelven como
+    // texto literal. Sin esto caían en la búsqueda difusa: "📶 Equipos
+    // compatibles" contestaba con aceite de motor, y es el clic más probable
+    // de toda la conversación porque lo sugiere Max.
+    if(/^(📶|📡)?\s*(ver routers|ver repetidores|equipos compatibles|c[oó]mo los conecto)\s*\??$/i.test(mCmd)) return 'nautaHogar';
     // Nauta Hogar / ETECSA va antes que envíos y pago: "¿venden módems para
     // Nauta Hogar?" lleva palabras que se llevaban esas otras intenciones.
     if(!_pideDefinicion && /nauta hogar|nautahogar|adsl|rj11|etecsa|m[oó]dem.de.etecsa|m[oó]dem.router|m[oó]dem.para.nauta|ampliar.se[ñn]al.nauta|mejorar.se[ñn]al.nauta/i.test(m)) return 'nautaHogar';
     // Con \b al final, "devolverlo" y "me lo cambian" —como se pregunta de
     // verdad— no casaban y se iban a búsqueda de productos.
-    if(/\b(devoluci[oó]n\w*|devolv\w*|devuelv\w*|cambiar|cambian|cambio|return|reembols\w*)\b/.test(m)
+    // "cambio" suelto NO: "¿a cómo está el cambio?" es la tasa, y se iba a
+    // devoluciones. Aquí solo cuenta cuando habla de cambiar un producto.
+    if(/\b(devoluci[oó]n\w*|devolv\w*|devuelv\w*|cambiar|cambian|return|reembols\w*)\b/.test(m)
+       || /cambio de producto|cambio del producto|me lo cambian|hacer un cambio/.test(m)
        || /llega (roto|mal|da[ñn]ado|defectuoso)|viene (roto|mal|da[ñn]ado)|sale malo|no sirve al llegar|se rompe/.test(m)) return 'devolucion';
     // "con 200 usd, ¿qué me llevo?" no pregunta la tasa: trae presupuesto y una
     // petición. La palabra "usd" se lo llevaba a la conversión del día.
@@ -1563,6 +1700,11 @@
     if(mentions.length >= 2 && pideDetalle) return 'detalle';
     if(mentions.length >= 2) return 'busqueda';
 
+    // Lo que no se vende se dice, en vez de enseñar lo más parecido como si
+    // fuera eso. Va después de las definiciones —"¿qué es un panel solar?"
+    // sigue siendo una explicación— y antes de la búsqueda difusa.
+    if(!_pideDefinicion && NO_VENDEMOS.some(x => x.re.test(text))) return 'noVendemos';
+
     // Va ANTES del scoring difuso: "módem de etecsa" o "señal de nauta" son
     // preguntas muy concretas que la búsqueda por parecido contestaba con
     // cualquier producto que compartiera una palabra.
@@ -1570,7 +1712,7 @@
       return 'nautaHogar';
     }
 
-    const q = cleanForMatch(text);
+    const q = _expandirConsulta(cleanForMatch(text));
     const scored = PRODUCTOS
       .map(p => ({p, s: scoreProduct(p, q)}))
       .filter(x => x.s > 0)
@@ -1744,7 +1886,8 @@
     const _si = METODOS_PAGO.filter(x => x.disponible);
     const _no = METODOS_PAGO.filter(x => !x.disponible && !/pr[oó]ximamente/i.test(x.nota || ''));
     let body = `💳 <strong>Métodos de pago en TiendaMax</strong>\n\nAceptamos únicamente:\n\n`;
-    _si.forEach(x => { body += `✅ <strong>${x.metodo}</strong>\n   ${x.detalle}\n`; });
+    const _det = x => (typeof x.detalle === 'function' ? x.detalle() : x.detalle);
+    _si.forEach(x => { body += `✅ <strong>${x.metodo}</strong>\n   ${_det(x)}\n`; });
     if(_no.length){
       body += `\n🚫 <strong>No aceptamos:</strong>\n`;
       _no.forEach(x => { body += `   • ${x.metodo}\n`; });
@@ -1911,6 +2054,35 @@
   // mencionan "batería" en su texto. Si el cliente nombra un TIPO que existe
   // como subcategoría, se filtra por ella y se acabó la adivinanza.
   // Se deriva del catálogo: una subcategoría nueva funciona sin tocar código.
+  /* Cómo se dice aquí lo que el catálogo escribe de otra forma. Sin esto,
+     "bocina" —la palabra cubana para un bafle— no encontraba la Xiaomi Sound
+     que sí está en stock, y "televisores" no encontraba el "Smart TV Milexus".
+     Se AÑADEN las palabras del catálogo a la búsqueda en vez de mandar a una
+     subcategoría: ACCESORIOS la comparten los repetidores y los espejos de
+     carro, así que mandar ahí devolvía retrovisores a quien pedía un
+     repetidor. */
+  const _COMO_SE_DICE = [
+    [/\b(bocina\w*|bafle\w*|altavoz|altavoces|parlante\w*|corneta\w*)\b/, 'sound audio speaker altavoz'],
+    [/\b(televisor\w*|tele|pantalla)\b/, 'smart tv televisor'],
+    [/\b(nevera\w*|refrigerador\w*|friyider)\b/, 'nevera refrigerador'],
+    [/\b(lavarropa\w*)\b/, 'lavadora'],
+    [/\b(abanico\w*)\b/, 'ventilador'],
+    [/\b(ruter\w*|rauter\w*|enrutador\w*)\b/, 'router'],
+    [/\b(repitidor\w*)\b/, 'repetidor extensor'],
+    [/\b(kamara\w*|camra\w*|camara\w*)\b/, 'camara'],
+    [/\b(lubricante\w*)\b/, 'aceite'],
+    [/\b(inbersor\w*|invasor\w*|inversor\w*)\b/, 'inversor'],
+  ];
+  /* Añade a la consulta las palabras que el catálogo sí usa. No quita nada:
+     solo da más por dónde encontrar. */
+  function _expandirConsulta(q){
+    const t = ' ' + q + ' ';
+    let extra = '';
+    for(const [re, palabras] of _COMO_SE_DICE){
+      if(re.test(t)) extra += ' ' + palabras;
+    }
+    return extra ? (q + extra) : q;
+  }
   function _detectarSubcategoria(text){
     const t = ' ' + cleanForMatch(text) + ' ';
     const subs = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean))];
@@ -2215,7 +2387,9 @@
     {
       familia: 'BATERÍAS', urgente: true,
       titulo: 'Hinchada, caliente o con olor',
-      sintomas: [/hinchad|inflad|abombad|huele|olor|derrame|fuga|muy caliente|humo/],
+      // El pretérito no lleva la d: "se hinchó", "se infló", "se abombó". Es la
+      // única entrada de SEGURIDAD de la tabla y la que peor se puede fallar.
+      sintomas: [/hinchad|hinch[oó]|hincha|inflad|infl[oó]|abombad|abomb[oó]|huele|oli[oó]|olor|derrame|fuga|muy caliente|humo/],
       significa: 'Deja de usarla ahora mismo. Una batería hinchada o que huele es un riesgo real, no una avería que se repara.',
       pasos: [
         '<strong>No la cargues más</strong> y desconéctala.',
@@ -2259,8 +2433,12 @@
   // "hinchad" ni "parpadea" con "parpade" — cinco de siete raíces no servían y
   // el diagnóstico entero quedaba inalcanzable con las frases más naturales.
   // Las raíces van con \w* y solo llevan \b las palabras completas.
-  const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calentando|hinchad\w*|inflad\w*|abombad\w*|huele\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos)/i;
-  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fall[ao]\w*|se ve blanco|no da (internet|se[ñn]al|corriente|imagen|video)|no graba|no transmite|no muestra|no llega (internet|se[ñn]al)|no agarra se[ñn]al)/i;
+  /* "mi batería se hinchó" no casaba con hinchad\w* — el pretérito no lleva
+     la d. Y esa es la avería de SEGURIDAD del módulo: quien la escribe así
+     recibía un catálogo de baterías en vez de "deja de cargarla ahora mismo".
+     Igual con "calienta mucho" (sin el "se") y "no coge carga". */
+  const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calienta\w*|calentando|hinchad\w*|hinch[oó]\b|hincha\b|inflad\w*|infl[oó]\b|abombad\w*|abomb[oó]\b|huele\b|oli[oó]\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos|no coge carga|no agarra carga)/i;
+  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no coge carga|no agarra carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fall[ao]\w*|se ve blanco|no da (internet|se[ñn]al|corriente|imagen|video)|no graba|no transmite|no muestra|no llega (internet|se[ñn]al)|no agarra se[ñn]al)/i;
 
   /** ¿Está describiendo una avería? */
   function esAveria(text){
@@ -2919,17 +3097,36 @@ ${notasHTML}
     }
     // Buscar batería mencionada
     const bat = detectProductMentions(text).find(p => (p.subcategoria||'').toUpperCase() === 'BATERÍAS');
-    let capWh = 1200; // default: 100Ah × 12V
+    /* De dónde sale la capacidad, en este orden:
+       1. Los Ah/V que escribe el cliente — si los dice, mandan.
+       2. Los que declara el producto, leídos con _capacidadBateria(), que es
+          la versión honesta y devuelve null si no están.
+       3. Ninguno: se usa la batería típica y se dice que es típica.
+       Lo que ya no puede pasar: estampar "100Ah × 12V" DEBAJO del nombre
+       propio de un producto que no lo declara. El Bluetti AC 180P es de
+       1.440Wh y salía como 1.200Wh; con la Lubrim (75A) salía "100Ah" en la
+       misma línea que su nombre. Un número supuesto pegado a un nombre real
+       no se lee como estimación, se lee como ficha. */
+    const _delTexto = (() => {
+      const mAh = text.match(/(\d+(?:[.,]\d+)?)\s*a\s?h\b/i);
+      const mV  = text.match(/(\d+(?:[.,]\d+)?)\s*v(?:olt)?\b/i);
+      if(!mAh) return null;
+      const ah = parseFloat(mAh[1].replace(',', '.'));
+      const v  = mV ? parseFloat(mV[1].replace(',', '.')) : 12;
+      return (ah > 0 && v > 0) ? { ah, v, wh: Math.round(ah * v) } : null;
+    })();
+    const _delProducto = bat ? _capacidadBateria(bat) : null;
+    const cap = _delTexto || _delProducto;
+    let capWh = cap ? cap.wh : 1200;
     let batInfo = '';
-    if(bat){
-      // Extraer Ah y V de specs
-      const specsText = (bat.specs||[]).join(' ');
-      const ahMatch = specsText.match(/(\d+(?:\.\d+)?)\s*ah/i);
-      const vMatch = specsText.match(/(\d+(?:\.\d+)?)\s*v/i);
-      const ah = ahMatch ? parseFloat(ahMatch[1]) : 100;
-      const v = vMatch ? parseFloat(vMatch[1]) : 12;
-      capWh = ah * v;
-      batInfo = `<strong>${escapeHtml(bat.nombre)}</strong> (${ah}Ah × ${v}V = ${capWh.toLocaleString()}Wh)\n\n`;
+    if(cap && bat && !_delTexto){
+      batInfo = `<strong>${escapeHtml(bat.nombre)}</strong> (${cap.ah}Ah × ${cap.v}V = ${capWh.toLocaleString()}Wh)\n\n`;
+    } else if(cap && _delTexto){
+      batInfo = `<strong>Batería de ${cap.ah}Ah a ${cap.v}V</strong> (= ${capWh.toLocaleString()}Wh)${bat ? `, como me dices` : ''}\n\n`;
+    } else if(bat){
+      // Producto nombrado que NO declara su capacidad: se dice, y la cuenta
+      // se hace con la batería típica dejando claro que no es la suya.
+      batInfo = `De <strong>${escapeHtml(bat.nombre)}</strong> no tengo los Ah y el voltaje anotados en la ficha, así que no puedo calcularte SU autonomía exacta.\n\nTe hago la cuenta con una <strong>batería típica de 100Ah a 12V</strong> (1.200Wh) para que te hagas una idea:\n\n`;
     } else {
       batInfo = `<strong>Batería típica de 100Ah a 12V</strong> (= 1.200Wh)\n\n`;
     }
@@ -3146,13 +3343,14 @@ ${notasHTML}
     // IMPORTANTE: si hay un producto específico mencionado por nombre, NO tratar como genérico
     const mentionsEspecificas = detectProductMentions(text);
     if(subcatDetectada && esGenerico && mentionsEspecificas.length === 0){
-      const disp = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === subcatDetectada && x.stock > 0).slice(0,4);
+      const disp = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === subcatDetectada && x.stock > 0);
+      const dispMostrar = disp.slice(0, 4);
       const agotados = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === subcatDetectada && x.stock === 0);
       if(disp.length > 0 || agotados.length > 0){
         const accesorios = ACCESORIOS_AUTOMATICOS[subcatDetectada];
         let body = `📦 <strong>${subcatDetectada}</strong> — Tenemos <em>${disp.length} disponible(s)</em>${agotados.length > 0 ? ` y ${agotados.length} agotado(s)` : ''}:\n\n`;
-        if(disp.length > 0){
-          disp.forEach((prod, i) => {
+        if(dispMostrar.length > 0){
+          dispMostrar.forEach((prod, i) => {
             body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtUSD(prod.precio)} · <em>${stockText(prod)}</em>\n`;
           });
         }
@@ -3953,21 +4151,47 @@ ${notasHTML}
     const prods = findProducts(text, 4, {presupuesto: _context.presupuesto});
     if(prods.length === 0){
       const agotados = findProducts(text, 2, {includeAgotados:true});
-      if(agotados.length > 0){
-        const alt = findAlternativas(agotados[0], 3);
-        let body = `🔍 Ese producto lo tenemos pero está <em style="color:#ff8888">agotado</em> ahora mismo. Te muestro <strong>alternativas similares disponibles</strong>:`;
+      // "Ese producto lo tenemos" solo si de verdad casa con lo que pidieron
+      // por nombre, subcategoría o ficha. Con la coincidencia difusa bastaba
+      // que compartieran una palabra suelta: "tienen bocina JBL" —marca que
+      // no existe en el catálogo— contestaba "ese producto lo tenemos pero
+      // está agotado", y el vendedor quedaba desmentido por WhatsApp.
+      const _qa = _expandirConsulta(cleanForMatch(text));
+      const agotadoReal = agotados.find(p => _matchFuerte(p, _qa));
+      if(agotadoReal){
+        const alt = findAlternativas(agotadoReal, 3);
+        // Y no se promete una lista que luego no llega: sin alternativas, se
+        // ofrece avisar cuando vuelva, que es lo único útil que queda.
+        if(!alt.length){
+          return {
+            response: `🔍 <strong>${escapeHtml(agotadoReal.nombre)}</strong> está <em style="color:#ff8888">agotado</em> ahora mismo y no tengo nada parecido disponible.\n\nEscríbeme por WhatsApp y te aviso en cuanto entre.`,
+            quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+          };
+        }
         return {
-          response: body,
+          response: `🔍 <strong>${escapeHtml(agotadoReal.nombre)}</strong> está <em style="color:#ff8888">agotado</em> ahora mismo. Te muestro <strong>alternativas disponibles</strong>:`,
           products: alt,
           quickReplies: ['💬 WhatsApp','📦 Categorías']
         };
       }
       return R.fallback(text);
     }
+    // Si NINGUNO casa por nombre, subcategoría o ficha, esto no es "lo que
+    // buscabas": es lo más parecido que hay. Decirlo de otra forma es lo que
+    // hacía que "¿tienen paneles solares?" —que no vendemos— pareciera un sí.
+    // Expandida, igual que la que se usó para buscar: si no, encuentra el
+    // Smart TV con "televisores" y luego dice "eso exacto no lo tengo".
+    const _q = _expandirConsulta(cleanForMatch(text));
+    const _fuerte = prods.some(p => _matchFuerte(p, _q));
+    const _tope = _context.presupuesto ? ` (hasta ${fmtUSD(_context.presupuesto)})` : '';
     return {
-      response: `🔍 Esto es lo que tengo <em>disponible</em> relacionado con tu búsqueda${_context.presupuesto ? ` (hasta ${fmtUSD(_context.presupuesto)})` : ''}. Toca cualquiera para ver la ficha completa:`,
+      response: _fuerte
+        ? `🔍 Esto es lo que tengo <em>disponible</em> relacionado con tu búsqueda${_tope}. Toca cualquiera para ver la ficha completa:`
+        : `🤔 <strong>Eso exacto no lo tengo</strong>${_tope}. Lo más parecido que manejo es esto — míralo por si te sirve, y si no, escríbeme por WhatsApp y te digo si puedo conseguirlo:`,
       products: prods,
-      quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Categorías']
+      quickReplies: _fuerte
+        ? ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Categorías']
+        : ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
     };
   };
 
@@ -3976,14 +4200,38 @@ ${notasHTML}
      siempre la misma: "¿venden módems para Nauta Hogar?". La respuesta honesta
      es que no —los da ETECSA— pero sí hay con qué mejorar la señal, así que
      decirlo y ofrecer lo que sí hay vale más que una búsqueda vacía. */
+  R.noVendemos = (text) => {
+    const hit = NO_VENDEMOS.find(x => x.re.test(text)) || NO_VENDEMOS[0];
+    // La nota es la frase entera: componerla con el nombre delante daba
+    // "Laptops no los manejo. No manejo laptops." y fallaba el género.
+    let body = `🙅 <strong>${hit.nota}</strong>`;
+    if(hit.ofrecer) body += `\n\n✅ ${hit.ofrecer}`;
+    body += `\n\nSi lo necesitas igual, escríbeme por WhatsApp y te digo si puedo conseguírtelo.`;
+    return { response: body, quickReplies: hit.botones };
+  };
+
   R.nautaHogar = (text) => {
     const m = text.toLowerCase();
     // Por NOMBRE, no por subcategoría: los repetidores del catálogo están en
     // ACCESORIOS, así que filtrar por subcategoría "REPETIDOR" no encontraba
     // ninguno y el botón "Ver Repetidores" no llevaba a nada.
-    const _routers = () => PRODUCTOS.filter(p => Number(p.stock) > 0 &&
-        (/ROUTERS?/i.test(p.subcategoria || '') || /\brouter\b/i.test(p.nombre || '')) &&
-        !/repetidor|extensor/i.test(p.nombre || ''));
+    // Para MEJORAR Nauta Hogar hace falta un router con Wi-Fi y puerto WAN.
+    // Quedan fuera dos familias que sí están en ROUTERS y aquí no sirven:
+    //  · los 4G/LTE con ranura SIM — son para donde NO llega Nauta, no se
+    //    cuelgan del equipo de ETECSA;
+    //  · el Mikrotik hEX, que su propia ficha llama "router cableado" y no
+    //    tiene Wi-Fi: ofrecerlo bajo un texto que promete "red Wi-Fi más
+    //    rápida" es una devolución asegurada.
+    const _routers = () => PRODUCTOS.filter(p => {
+      if(Number(p.stock) <= 0) return false;
+      const nom = p.nombre || '';
+      if(!(/ROUTERS?/i.test(p.subcategoria || '') || /\brouter\b/i.test(nom))) return false;
+      if(/repetidor|extensor/i.test(nom)) return false;
+      const ficha = (nom + ' ' + (p.specs || []).join(' ') + ' ' + (p.descripcion || '')).toLowerCase();
+      if(/\b4g\b|\blte\b|ranura (para )?sim|tarjeta sim/.test(ficha)) return false;
+      if(/cableado|sin wi-?fi/.test(ficha)) return false;
+      return true;
+    });
     const _repetidores = () => PRODUCTOS.filter(p => Number(p.stock) > 0 &&
         /repetidor|extensor|amplificador/i.test((p.nombre || '') + ' ' + (p.subcategoria || '')));
     // fmtUSD(r.precio): dentro del cerebro el precio ya viene normalizado a
@@ -3993,7 +4241,9 @@ ${notasHTML}
         `• <strong>${escapeHtml(r.nombre)}</strong> — ${fmtUSD(r.precio)}\n`).join('');
     const _COMO = `\n\n<strong>¿Cómo se conecta?</strong>\n1. Toma un cable de red (RJ45)\n2. Un extremo a un puerto <strong>LAN</strong> del módem-router de ETECSA\n3. El otro al puerto <strong>WAN</strong> de tu router nuevo\n4. Configura el router nuevo (nombre de red y contraseña)`;
 
-    if(/\b(repetidor|extensor|amplificador|amplificar)\b/i.test(m)){
+    // \b tras la raíz: "repetidor\b" NO casa con "repetidores", que es como
+    // se pregunta la mitad de las veces. Mismo fallo que tuvieron las averías.
+    if(/\b(repetidor\w*|repitidor\w*|extensor\w*|amplificador\w*|amplificar)\b/i.test(m)){
       const rep = _repetidores().slice(0, 4);
       if(rep.length){
         return {
@@ -4009,7 +4259,11 @@ ${notasHTML}
       };
     }
 
-    if(/\b(router|routers|enrutar)\b/i.test(m)){
+    // "módem router adsl" contiene "router" y se colaba en esta rama, que
+    // enseña equipos SIN decir antes que los módems ADSL no se venden — justo
+    // lo que esta función existe para no dejar de decir.
+    const _pideModem = /m[oó]dem|modem|rj11|adsl/i.test(m);
+    if(!_pideModem && /\b(router|routers|enrutar)\b/i.test(m)){
       const routers = _routers().slice(0, 4);
       if(routers.length){
         return {
@@ -5256,6 +5510,9 @@ ${notasHTML}
     // respuesta: escribir la lista de métodos a mano en el texto es cómo se
     // llega a que el bot ofrezca un pago que ya no se acepta.
     METODOS_PAGO,
+    // Para que el test pueda cruzar la lista con el catálogo real: una línea
+    // de más aquí le dice que no a un cliente por algo que sí tienes.
+    NO_VENDEMOS,
     SISTEMAS,
     ACCESORIOS_AUTOMATICOS,
     context: _context,
