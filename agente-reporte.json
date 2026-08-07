@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-06T11:13:00.570555+00:00",
+  "generado": "2026-08-07T09:53:14.606722+00:00",
   "productos": 119,
   "urgentes": 2,
-  "advertencias": 48,
+  "advertencias": 51,
   "info": 7,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 48 advertencia(s), 7 de info.",
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 51 advertencia(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -208,6 +208,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🛜 Router Tp-link Archer A6 (AC1200)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
       "detalle": "agotado (stock 0)"
     },
@@ -229,6 +234,16 @@
     {
       "tipo": "agotado",
       "nombre": "🌐 Mikrotik Sxtsq LITE5",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🛜 Router Inalámbrico Wavlink AC1200 Dual Band",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "☀️ Controlador de Carga Solar MPPT 100A",
       "detalle": "agotado (stock 0)"
     },
     {
