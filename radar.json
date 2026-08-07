@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-06T12:56:01.778486+00:00",
-  "fecha": "2026-08-06",
+  "actualizado": "2026-08-07T11:45:00.982645+00:00",
+  "fecha": "2026-08-07",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -18,9 +18,9 @@
       "nombre": "🌐 Switch Gigabit de 8 Puertos",
       "tuPrecio": 30.0,
       "mercado": {
-        "min": 20.0,
+        "min": 15.0,
         "mediana": 39.99,
-        "n": 16
+        "n": 17
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-24",
-          "mediana": 39.99
-        },
         {
           "fecha": "2026-07-25",
           "mediana": 39.99
@@ -83,9 +79,20 @@
         {
           "fecha": "2026-08-06",
           "mediana": 39.99
+        },
+        {
+          "fecha": "2026-08-07",
+          "mediana": 39.99
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
+          "precio": 15.0,
+          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
+          "dias": null
+        },
         {
           "fuente": "revolico",
           "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
@@ -120,13 +127,6 @@
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
           "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
-          "dias": null
         }
       ]
     },
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-24",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-25",
           "mediana": 90.0
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-08-06",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-07",
           "mediana": 90.0
         }
       ],
