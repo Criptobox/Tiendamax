@@ -198,6 +198,64 @@ for (const [q, esperado] of FORMAS) {
         'responder() debe anotar lo que enseñó, o el hilo solo funciona con DOM delante');
 }
 
+// ── 7. "Sí" a lo que Max acaba de preguntar ─────────────────────────────
+// Max preguntaba "¿te enseño los routers o los repetidores?", el cliente
+// escribía "Si" y le salía el menú de ayuda: la conversación se moría justo
+// cuando el cliente ya había dicho que sí. Llegó así a producción.
+{
+    const NAUTA = 'tengo nauta hogar quiero mejorar el wifi';
+    const oferta = conversar(NAUTA);
+    ok(/¿Te enseño los routers o los repetidores\?/.test(oferta.texto),
+        'este test se apoya en que esa respuesta acaba ofreciendo algo; si cambió el texto, revísalo');
+
+    for (const si of ['si', 'sí', 'dale', 'claro', 'ok']) {
+        const r = conversar(NAUTA, si);
+        ok(r.productos.length > 0, `"${si}" tras la oferta no enseñó nada`);
+        ok(/router/i.test(r.texto), `"${si}" debe llevar a los routers, contestó: ${r.texto.slice(0, 80)}`);
+        // El síntoma exacto que reportó el dueño.
+        ok(!/Dime qué necesitas y te ayudo/.test(r.texto),
+            `"${si}" cae otra vez en el menú de ayuda: la conversación se muere ahí`);
+    }
+
+    // "no" va a la MISMA intención que "sí" en detectIntent. Sin separarlos,
+    // un "no" hacía exactamente lo que el cliente acababa de rechazar.
+    for (const no of ['no', 'no gracias', 'mejor no']) {
+        const r = conversar(NAUTA, no);
+        ok(!r.productos.length && !/Va, te enseño los/.test(r.texto),
+            `"${no}" no puede hacer lo que el cliente acaba de rechazar`);
+    }
+
+    // La oferta caduca. Si no, un "sí" varios turnos después dispara algo que
+    // el cliente ya no recuerda haber pedido.
+    const lejos = conversar(NAUTA, 'cuánto cuesta el envío a holguín', 'si');
+    ok(!/Va, te enseño los <strong>routers/.test(lejos.texto) && !/Va, te enseño los routers/.test(lejos.texto),
+        'una oferta de hace dos turnos no puede dispararse con un "sí" suelto');
+
+    // Sin nada ofrecido y sin nada enseñado, la respuesta de siempre.
+    const seco = conversar('hola', 'si');
+    ok(/Dime qué necesitas y te ayudo/.test(seco.texto),
+        'un "sí" sin contexto ninguno debe seguir dando la respuesta genérica');
+
+    // Y si Max acaba de enseñar varios, "sí" pregunta cuál — no elige por él.
+    const varios = conversar(VARIOS, 'si');
+    ok(/cu[aá]l de estos/i.test(varios.texto),
+        'tras enseñar varios, "sí" debe preguntar cuál en vez de soltar el menú de ayuda');
+    ok(varios.productos.length > 1, 'y debe seguir enseñando los mismos');
+}
+
+// ── 8. Cada oferta declara qué significa "sí" ────────────────────────────
+// El mecanismo es opcional por diseño, así que una respuesta nueva que acabe
+// preguntando puede olvidarse de declararlo y nadie se entera hasta que un
+// cliente dice "sí" y se topa con el menú de ayuda.
+{
+    ok(/_context\.pendiente = \(typeof data\.siDigoSi === 'function'\)/.test(FUENTE),
+        'responder() debe recordar lo que Max acaba de ofrecer');
+    ok(/if\(p\) return p\.fn\(\);/.test(FUENTE),
+        'R.confirmacion debe ejecutar la oferta pendiente');
+    const cuantas = (FUENTE.match(/siDigoSi:/g) || []).length;
+    ok(cuantas >= 8, `solo ${cuantas} respuestas declaran qué significa "sí"; había 9 al escribir esto`);
+}
+
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

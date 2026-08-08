@@ -1060,6 +1060,7 @@
     lastCategory: null,
     categoriaPedida: null,   // la categoría que detectIntent acaba de reconocer
     presupuesto: null,       // si mencionó un presupuesto
+    pendiente: null,         // qué significa "sí" ahora mismo (ver R.confirmacion)
     conversationStep: 0,
   };
   const SESSION_ID = 'tm-bot-' + (Date.now().toString(36) + Math.random().toString(36).slice(2,6));
@@ -1614,7 +1615,10 @@
     if(/\b(qu[eé] (puedes|sabes) hacer|en qu[eé] (me )?puedes ayudar|para qu[eé] sirves|qu[eé] cosas puedes hacer)\b/i.test(m)) return 'ayuda';
     // Un "sí", "ok" o "dale" suelto no es una búsqueda: la palabra puntuaba
     // dentro de algún nombre de producto y Max devolvía resultados al azar.
-    if(/^(s[ií]|no|ok|okay|oki|vale|dale|claro|listo|aj[aá]|perfecto|entiendo|entendido|bueno)[\s!?.¿¡]*$/i.test(mCmd)) return 'confirmacion';
+    // Nadie contesta solo "sí" o solo "no": contesta "dale pues", "mejor no",
+    // "no gracias". Faltando esas formas, "mejor no" se iba a búsqueda y Max
+    // enseñaba productos justo después de que el cliente dijera que no quería.
+    if(/^(s[ií]|no|nop|nel|nah|negativo|ok|okay|oki|vale|va|dale|claro|listo|aj[aá]|perfecto|entiendo|entendido|bueno|de acuerdo|s[ií] por favor|claro que s[ií]|dale pues|por supuesto|no gracias|mejor no|ahora no|todav[ií]a no|as[ií] est[aá] bien)[\s!?.¿¡]*$/i.test(mCmd)) return 'confirmacion';
     if(/^\/(limpiar|clear|reset)/i.test(mCmd)) return 'resetCmd';
     if(/^\/(envios|envíos|envio)/i.test(mCmd)) return 'envios';
     if(/^\/(pago|pagar)/i.test(mCmd)) return 'pago';
@@ -1851,12 +1855,14 @@
 
   R.gracias = () => ({
     response: '¡De nada! 🙌 Para eso estoy. Si necesitas algo más, aquí sigo. ¿Quieres que te muestre algo más del catálogo?',
-    quickReplies: ['🔥 Ofertas','📦 Categorías','💬 WhatsApp']
+    quickReplies: ['🔥 Ofertas','📦 Categorías','💬 WhatsApp'],
+    siDigoSi: () => R.categorias()
   });
 
   R.comprar = () => ({
     response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Aceptamos:\n• Efectivo USD (dólares)\n• Efectivo MN (pesos cubanos a la tasa del día)\n• Zelle (si un familiar paga desde USA)\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp']
+    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp'],
+    siDigoSi: () => R.categorias()
   });
 
   R.envios = (text) => {
@@ -3111,7 +3117,10 @@ ${notasHTML}
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp']
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp'],
+      // Un "sí" a una pregunta de dos no elige: Max toma la primera, la
+      // comparativa, y lo dice — con la otra opción a un toque.
+      siDigoSi: () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores')
     };
   };
 
@@ -3141,7 +3150,8 @@ ${notasHTML}
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: ['📄 Descargar cotización','🆚 Comparar cámaras','💬 WhatsApp','⏱️ Ver alternativas']
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar cámaras','💬 WhatsApp','⏱️ Ver alternativas'],
+      siDigoSi: () => _verSubcat('CÁMARAS', '📹 Va, estas son las <strong>cámaras</strong> que tengo (si preferías filtrarlas por precio, dime tu presupuesto):', 'cámaras')
     };
   };
 
@@ -3170,7 +3180,8 @@ ${notasHTML}
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: ['📄 Descargar cotización','🆚 Comparar routers','📖 Qué router tiene puerto WAN','💬 WhatsApp']
+      quickReplies: ['📄 Descargar cotización','🆚 Comparar routers','📖 Qué router tiene puerto WAN','💬 WhatsApp'],
+      siDigoSi: () => _verSubcat('ROUTERS', '📶 Va, estos son los <strong>routers</strong> que tengo (si querías saber cuáles traen puerto WAN, pregúntamelo y te lo digo):', 'routers')
     };
   };
 
@@ -3615,7 +3626,24 @@ ${notasHTML}
     return {
       response: body,
       products: [p],
-      quickReplies: qrs
+      quickReplies: qrs,
+      // De las tres cosas que ofrece la frase, la única que siempre se puede
+      // dar sin pedir nada más es ver alternativas: comparar necesita un
+      // segundo producto y la autonomía, los equipos del cliente.
+      siDigoSi: () => {
+        const alt = findAlternativas(p, 3);
+        if(!alt.length){
+          return {
+            response: `No tengo otro <strong>${escapeHtml(p.subcategoria || p.categoria)}</strong> disponible para ponerle al lado. Si quieres te lo comparo con algo de otra gama, o dime qué equipos vas a conectar y te calculo la autonomía.`,
+            quickReplies: ['📦 Categorías','💬 WhatsApp']
+          };
+        }
+        return {
+          response: `Te enseño <strong>alternativas parecidas</strong> a ${escapeHtml(p.nombre)}. Si lo que querías era compararlo con uno en concreto, dime cuál; y si era la autonomía, dime qué le vas a conectar.`,
+          products: alt,
+          quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp']
+        };
+      }
     };
   }
 
@@ -4087,7 +4115,14 @@ ${notasHTML}
     return {
       response: body,
       products: products,
-      quickReplies: products.length >= 2 ? ['🆚 Comparar dos de estos','💬 WhatsApp'] : ['💬 WhatsApp','📦 Ver categorías']
+      quickReplies: products.length >= 2 ? ['🆚 Comparar dos de estos','💬 WhatsApp'] : ['💬 WhatsApp','📦 Ver categorías'],
+      // "Sí" a "¿comparo dos de estos?" abre el selector de comparación con
+      // los que se acaban de enseñar, que es lo que se acaba de ofrecer.
+      siDigoSi: () => products.length >= 2
+        ? { response: '🆚 Va. <strong>Toca el primero</strong> que quieras comparar:',
+            elegirComparar: products, tituloComparar: 'De los que te acabo de mostrar' }
+        : { response: 'Para comparar necesito al menos dos del mismo tipo, y aquí solo tengo uno. Dime otro producto y te los pongo lado a lado.',
+            quickReplies: ['📦 Categorías','💬 WhatsApp'] }
     };
   };
 
@@ -4351,6 +4386,24 @@ ${notasHTML}
         `• <strong>${escapeHtml(r.nombre)}</strong> — ${fmtUSD(r.precio)}\n`).join('');
     const _COMO = `\n\n<strong>¿Cómo se conecta?</strong>\n1. Toma un cable de red (RJ45)\n2. Un extremo a un puerto <strong>LAN</strong> del módem-router de ETECSA\n3. El otro al puerto <strong>WAN</strong> de tu router nuevo\n4. Configura el router nuevo (nombre de red y contraseña)`;
 
+    // Enseñar los routers es la salida de varias ramas y también lo que
+    // significa decir "sí" a media docena de preguntas de aquí. Una sola
+    // función para que todas digan lo mismo y ninguna se quede a medias.
+    const _verRouters = (intro) => {
+      const rs = _routers().slice(0, 4);
+      if(!rs.length){
+        return {
+          response: '📶 Ahora mismo no tengo <strong>routers Wi-Fi</strong> disponibles. Entran cada poco: escríbeme por WhatsApp y te aviso en cuanto lleguen.',
+          quickReplies: ['📡 Ver Repetidores','💬 WhatsApp']
+        };
+      }
+      return {
+        response: `${intro}\n\n${_lista(rs)}${_COMO}\n\nToca cualquiera para ver su ficha completa.`,
+        products: rs,
+        quickReplies: ['📡 Ver Repetidores','💬 WhatsApp']
+      };
+    };
+
     // \b tras la raíz: "repetidor\b" NO casa con "repetidores", que es como
     // se pregunta la mitad de las veces. Mismo fallo que tuvieron las averías.
     if(/\b(repetidor\w*|repitidor\w*|extensor\w*|amplificador\w*|amplificar)\b/i.test(m)){
@@ -4358,14 +4411,23 @@ ${notasHTML}
       if(rep.length){
         return {
           response: `📡 <strong>Repetidores para amplificar la señal de Nauta Hogar</strong>\n\nSe enchufan a mitad de camino entre el equipo de ETECSA y la zona donde no llega la señal — sin cables:\n\n${_lista(rep)}\n¿Quieres detalles de alguno?`,
-          products: rep, quickReplies: ['📶 Ver Routers','💬 WhatsApp']
+          products: rep, quickReplies: ['📶 Ver Routers','💬 WhatsApp'],
+          // "Sí" aquí es "dame la ficha", y el más barato es por dónde empieza
+          // casi todo el mundo. Se dice cuál se eligió, no se da por supuesto.
+          siDigoSi: () => {
+            const b = rep.slice().sort((a, c) => a.precio - c.precio)[0];
+            const d = buildDetalle(b);
+            d.response = `Te doy la ficha del más barato, <strong>${escapeHtml(b.nombre)}</strong>. Si querías otro, dime su nombre.\n\n` + d.response;
+            return d;
+          }
         };
       }
       // Decirlo, en vez de caer al texto general como si no se hubiera
       // preguntado por repetidores.
       return {
         response: `📡 Ahora mismo <strong>no tengo repetidores disponibles</strong>. Vuelven a entrar cada poco — escríbeme por WhatsApp y te aviso.\n\nMientras tanto, un router conectado al equipo de ETECSA también mejora bastante la cobertura. ¿Te los enseño?`,
-        quickReplies: ['📶 Ver Routers','💬 WhatsApp']
+        quickReplies: ['📶 Ver Routers','💬 WhatsApp'],
+        siDigoSi: () => _verRouters('📶 Estos son los <strong>routers</strong> que tengo:')
       };
     }
 
@@ -4378,7 +4440,13 @@ ${notasHTML}
       if(routers.length){
         return {
           response: `📶 <strong>Routers para ampliar tu Nauta Hogar</strong>\n\nSe conectan por cable a los puertos LAN del módem-router de ETECSA y crean una red Wi-Fi más rápida y con mejor alcance:\n\n${_lista(routers)}${_COMO}\n\n¿Quieres detalles de alguno?`,
-          products: routers, quickReplies: ['📡 Ver Repetidores','💬 WhatsApp']
+          products: routers, quickReplies: ['📡 Ver Repetidores','💬 WhatsApp'],
+          siDigoSi: () => {
+            const b = routers.slice().sort((a, c) => a.precio - c.precio)[0];
+            const d = buildDetalle(b);
+            d.response = `Te doy la ficha del más barato, <strong>${escapeHtml(b.nombre)}</strong>. Si querías otro, dime su nombre.\n\n` + d.response;
+            return d;
+          }
         };
       }
     }
@@ -4392,7 +4460,12 @@ ${notasHTML}
 
     return {
       response: `📶 <strong>Nauta Hogar y equipos ADSL</strong>\n\nNauta Hogar funciona con un <strong>módem-router ADSL</strong> con puerto RJ11 (entrada telefónica), como el TP-Link TD-W8901N que entrega ETECSA.\n\n⚠️ <strong>Esos no los vendemos</strong> — ETECSA los provee directamente. Prefiero decírtelo antes de que pierdas el viaje.\n\n✅ <strong>Lo que sí tengo para mejorar tu señal:</strong>\n• <strong>Routers Wi-Fi</strong>: por cable al equipo de ETECSA, para una red más rápida y con más alcance.\n• <strong>Repetidores Wi-Fi</strong>: llevan la señal a los cuartos donde el equipo de ETECSA no llega.${_COMO}\n\n¿Te enseño los routers o los repetidores?`,
-      quickReplies: ['📶 Ver Routers','📡 Ver Repetidores','📶 Equipos compatibles','💬 WhatsApp']
+      quickReplies: ['📶 Ver Routers','📡 Ver Repetidores','📶 Equipos compatibles','💬 WhatsApp'],
+      // "Sí" a una pregunta de dos no elige ninguna, así que Max enseña los
+      // routers —que es lo que sirve en casi todos los casos— y lo dice, con
+      // los repetidores a un toque. Callarse y pedir que repita la pregunta
+      // es lo que hacía antes, y ahí se acababa la conversación.
+      siDigoSi: () => _verRouters('Va, te enseño los <strong>routers</strong> (si lo que querías eran los repetidores, tócalo aquí abajo):')
     };
   };
 
@@ -4680,10 +4753,77 @@ ${notasHTML}
 
   // Un "sí"/"ok"/"dale" suelto no dice qué quiere el cliente. Se contesta
   // corto y se le dan rutas, en vez de devolverle productos que no pidió.
-  R.confirmacion = () => ({
-    response: `👍 Dime qué necesitas y te ayudo: puedo buscarte un producto, comparar dos, explicarte un término técnico o armarte un sistema completo.\n\nSi prefieres verlo todo, escribe <code>/ayuda</code>.`,
-    quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
-  });
+  /* "Sí" a secas.
+     Max preguntaba "¿te enseño los routers o los repetidores?", el cliente
+     contestaba "Si" y le salía el menú de ayuda: la conversación se moría de
+     golpe justo cuando el cliente ya había dicho que sí. Ahora cada respuesta
+     que termina ofreciendo algo deja dicho en `siDigoSi` qué significa ese
+     "sí", y aquí se ejecuta.
+
+     Ojo: detectIntent manda "no" a esta misma intención. Sin separarlos, un
+     "no" haría exactamente lo que el cliente acaba de rechazar. */
+  const _ES_NO = /^(no|nop|nel|nah|negativo|ahora no|todavia no|mejor no|no gracias|asi esta bien)\b/;
+
+  /* Enseñar lo disponible de una subcategoría. Es lo que significa "sí" en
+     varias preguntas del bot ("¿te comparo las cámaras?", "¿los inversores?").
+     Si no queda ninguno se dice, en vez de contestar con una lista vacía que
+     parece un error del chat. */
+  function _verSubcat(subcat, intro, comoSeLlaman){
+    const ps = PRODUCTOS
+      .filter(p => (p.subcategoria || '').toUpperCase() === subcat && p.stock > 0)
+      .sort((a, b) => a.precio - b.precio).slice(0, 4);
+    if(!ps.length){
+      return {
+        response: `Ahora mismo no tengo <strong>${comoSeLlaman}</strong> disponibles. Entran cada poco — escríbeme por WhatsApp y te aviso en cuanto lleguen.`,
+        quickReplies: ['📦 Categorías','💬 WhatsApp']
+      };
+    }
+    const extra = ps.length > 1
+      ? '\n\nToca cualquiera para su ficha, o dime "compara el A vs el B" y te los pongo lado a lado.'
+      : '\n\nToca la tarjeta para ver su ficha completa.';
+    return {
+      response: intro + '\n\n' + ps.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}`).join('\n') + extra,
+      products: ps,
+      quickReplies: ps.length > 1 ? ['🆚 Comparar dos de estos','💬 WhatsApp'] : ['💬 WhatsApp']
+    };
+  }
+
+  R.confirmacion = (text) => {
+    const t = cleanForMatch(text);
+    const p = _context.pendiente;
+    if(p && _ES_NO.test(t)){
+      return {
+        response: '👌 Va, sin problema. Dime tú entonces qué buscas y voy directo a eso — o mira las categorías y las ofertas aquí abajo.',
+        quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+      };
+    }
+    if(p) return p.fn();
+    if(_ES_NO.test(t)){
+      return {
+        response: '👌 Entendido. Cuando quieras algo, aquí sigo.',
+        quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+      };
+    }
+    // Red de seguridad: no toda respuesta que acaba en pregunta declara un
+    // `siDigoSi` — "¿cuál te llama la atención?" no es un sí/no. Pero si Max
+    // acaba de enseñar varios productos, contestar con el menú de ayuda es
+    // tirar la conversación; lo que toca es preguntar cuál de esos.
+    const { uno, lista } = _hiloFoco();
+    if(uno) return buildDetalle(uno);
+    if(lista.length > 1){
+      return {
+        response: '👍 Dime cuál de estos y te doy la ficha completa:\n\n' +
+          lista.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}`).join('\n') +
+          '\n\nO si buscabas otra cosa, pídemela y te la busco.',
+        products: lista.slice(0, 4),
+        quickReplies: ['🆚 Comparar dos de estos','📦 Categorías','💬 WhatsApp']
+      };
+    }
+    return {
+      response: `👍 Dime qué necesitas y te ayudo: puedo buscarte un producto, comparar dos, explicarte un término técnico o armarte un sistema completo.\n\nSi prefieres verlo todo, escribe <code>/ayuda</code>.`,
+      quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
+    };
+  };
 
   R.quienEres = () => ({
     response: `🤖 Soy <strong>Max</strong>, el asistente de TiendaMax. No soy una persona: soy un programa que corre aquí mismo, en tu navegador, con el catálogo de la tienda delante.\n\nPor eso te puedo decir precios, disponibilidad y fichas al momento. Y si necesitas hablar con alguien de verdad, te paso con el equipo por WhatsApp.\n\n¿Qué estás buscando?`,
@@ -4712,7 +4852,16 @@ ${notasHTML}
     _context.lastIntent = intent;
     _context.conversationStep++;
     const handler = R[intent] || R.fallback;
+    // El manejador todavía ve en _context.pendiente lo que Max ofreció el
+    // turno anterior — es justo lo que R.confirmacion necesita para saber a
+    // qué dijo "sí" el cliente.
     const data = handler(text) || {};
+    // Y aquí se renueva con lo que Max acaba de ofrecer. Si no ofreció nada se
+    // borra, a propósito: un "sí" cuatro turnos más tarde no puede disparar
+    // una oferta que ya nadie recuerda haber recibido.
+    _context.pendiente = (typeof data.siDigoSi === 'function')
+        ? { fn: data.siDigoSi, turno: _context.conversationStep }
+        : null;
     // La memoria de "lo que acabo de enseñar" vivía solo en addProducts(), que
     // es capa DOM. El hilo la necesita aquí: si no, cualquier respuesta que no
     // pase por el pintado (o cualquier prueba fuera del navegador) se queda sin
