@@ -622,13 +622,31 @@ function _fbRtdbUrl() {
     } catch(e) { return null; }
 }
 
+/* Firma para las rutas que ya no son públicas.
+   /ventas dejó de ser legible por cualquiera: lleva tus ingresos y tus
+   ganancias, y hasta ahora bastaba con saber la URL. Ahora la lectura pide
+   `auth != null`, así que cada llamada tiene que ir firmada con el token de la
+   cuenta. Sin sesión devuelve cadena vacía y la petición dará 401 — quien
+   llama ya trata ese caso como "no hay datos", que es como se comportaba
+   antes de existir Firebase.
+
+   El token se pide fresco cada vez a propósito: caduca a la hora y el SDK lo
+   renueva solo, pero uno guardado aquí se quedaría viejo y daría 401 mudos. */
+async function _fbAuthQS(sep) {
+    try {
+        if (typeof TMAuth === 'undefined') return '';
+        const t = await TMAuth.token();
+        return t ? ((sep || '?') + 'auth=' + encodeURIComponent(t)) : '';
+    } catch (e) { return ''; }
+}
+
 // Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
 function _fbGuardarVenta(venta) {
     (async () => {
         await _fbEnsureConfig();
         const url = _fbRtdbUrl();
         if (!url) return;
-        await fetch(`${url}/ventas/${venta.id}.json`, {
+        await fetch(`${url}/ventas/${venta.id}.json${await _fbAuthQS()}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(venta)
@@ -664,7 +682,7 @@ function _fbBorrarTodasVentas() {
         await _fbEnsureConfig();
         const url = _fbRtdbUrl();
         if (!url) return;
-        const res = await fetch(`${url}/ventas.json`);
+        const res = await fetch(`${url}/ventas.json${await _fbAuthQS()}`);
         if (!res.ok) return;
         const data = await res.json();
         if (!data || typeof data !== 'object') return;
@@ -689,7 +707,7 @@ async function _fbSincronizarVentasAlIniciar() {
     const url = _fbRtdbUrl();
     if (!url) { _fbSyncVentasEnCurso = false; return; }
     try {
-        const res = await fetch(`${url}/ventas.json`);
+        const res = await fetch(`${url}/ventas.json${await _fbAuthQS()}`);
         if (!res.ok) { _fbSyncVentasEnCurso = false; return; }
         const data = await res.json();
         const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));

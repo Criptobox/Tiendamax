@@ -80,16 +80,32 @@ class ValeHistorialTest(unittest.TestCase):
         self.assertIn("Array.isArray(d.vales)", c,
                       "hay que comprobar la forma antes de tocar el historial")
 
-    def test_los_vales_nunca_van_a_firebase(self):
-        """Llevan nombre y teléfono del cliente. En Firebase no hay ningún sitio
-        privado: no existe Firebase Auth en este proyecto, así que toda regla
-        que deje leer al admin deja leer a cualquiera."""
-        for pista in ("firebaseio", "firebasedatabase", "valesMax.json"):
+    def test_los_vales_solo_van_a_la_zona_privada(self):
+        """Llevan nombre y teléfono del cliente. Antes no salían de este
+        navegador porque no había dónde ponerlos a salvo: sin Firebase Auth,
+        toda regla que dejara leer al admin dejaba leer a cualquiera. Con
+        cuenta existe /privado, que pide `auth != null`. Lo que no puede pasar
+        nunca es que acaben en una ruta pública."""
+        rutas = re.findall(r"fetchPrivado\('([^']+)'", VALE)
+        self.assertTrue(rutas, "el historial debe guardarse también en Firebase")
+        for r in rutas:
+            self.assertTrue(
+                r.startswith("/privado/"),
+                f"'{r}' no está bajo /privado: publicaría nombres y teléfonos",
+            )
+        # Nada de fetch a pelo a la base de datos: ese no lleva el token.
+        for pista in ("firebaseio.com", "firebasedatabase.app"):
             self.assertNotIn(
                 pista, VALE,
-                f"vale.html no puede hablar con Firebase (encontrado: {pista}): "
-                "publicaría nombres y teléfonos de clientes",
+                f"vale.html no puede construir URLs de Firebase a mano ({pista}): "
+                "tiene que ir por TMAuth.fetchPrivado, que firma con la cuenta",
             )
+
+    def test_sin_cuenta_el_vale_sigue_funcionando(self):
+        """Cuba, 3G y apagones: el vale no puede depender de que Firebase
+        conteste ni de haber entrado con la cuenta."""
+        self.assertIn("typeofTMAuth==='undefined'", VALE.replace(" ", ""),
+                      "sin cuenta iniciada el historial debe seguir guardándose en local")
 
 
 if __name__ == "__main__":

@@ -313,7 +313,7 @@
       }
     },
     "ventas": {
-      ".read": true,
+      ".read": "auth != null",
       ".write": false,
       "$ventaId": {
         ".write": "!data.exists()",
@@ -423,6 +423,10 @@
       "proof": {
         ".validate": "newData.isString() && newData.val().length == 64"
       }
+    },
+    "privado": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }

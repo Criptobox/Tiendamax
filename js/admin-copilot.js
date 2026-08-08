@@ -74,12 +74,24 @@ async function fbBase(){
 const _lecturas = { ok: 0, fallos: [] };
 function _reiniciarLecturas(){ _lecturas.ok = 0; _lecturas.fallos = []; }
 function _fallo(path, motivo){ _lecturas.fallos.push({ path: path, motivo: motivo }); return null; }
+/* Rutas que dejaron de ser públicas y ahora piden la cuenta del dueño.
+   /ventas lleva ingresos y ganancias; hasta ahora las leía cualquiera que
+   supiera la URL. */
+const _PRIVADAS = ['/ventas', '/privado'];
+async function _firma(path){
+  if (!_PRIVADAS.some(p => path.indexOf(p) === 0)) return '';
+  try {
+    if (typeof TMAuth === 'undefined') return '';
+    const t = await TMAuth.token();
+    return t ? '&auth=' + encodeURIComponent(t) : '';
+  } catch(e) { return ''; }
+}
 async function getJson(path){
   const base = await fbBase(); if (!base) return _fallo(path, 'sin configuración de Firebase');
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), 6000);
   try {
-    const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now(), {cache:'no-store', signal: ctrl.signal});
+    const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now() + (await _firma(path)), {cache:'no-store', signal: ctrl.signal});
     if (!r.ok) return _fallo(path, r.status === 401 || r.status === 403 ? 'sin permiso (revisa las reglas)' : ('HTTP ' + r.status));
     _lecturas.ok++;
     return await r.json();

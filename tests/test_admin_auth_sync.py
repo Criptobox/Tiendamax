@@ -29,10 +29,13 @@ class ReglaAdminAuthTest(unittest.TestCase):
         cls.crudo = REGLAS.read_text(encoding="utf-8")
         cls.admin_auth = cls.reglas["rules"]["admin_auth"]
 
-    def test_no_se_apoya_en_un_auth_que_no_existe(self):
-        # Sin Firebase Auth, "auth != null" no restringe: bloquea a todos,
-        # incluido el propio sitio. En ninguna regla debe volver a aparecer.
-        self.assertNotIn("auth != null", self.crudo)
+    def test_admin_auth_no_se_apoya_en_la_cuenta(self):
+        # Ya existe Firebase Auth (ver tests/test_auth.py), pero /admin_auth
+        # NO puede depender de ella: es la contrasena local, la via de entrada
+        # de quien todavia no ha creado su cuenta. Pedirle auth cerraria la
+        # unica puerta que le queda a ese admin. Que ninguna ruta publica pida
+        # cuenta se comprueba en test_auth.py.
+        self.assertNotIn("auth != null", json.dumps(self.admin_auth))
 
     def test_el_hash_no_es_legible(self):
         self.assertIs(False, self.admin_auth[".read"])

@@ -272,7 +272,10 @@ async function renderizarAnalyticsFirebase() {
     try {
         const _vbase = _tmRtdbUrl();
         if (_vbase) {
-            const _vr = await _tmFetch(`${_vbase}/ventas.json`);
+            // /ventas ya no es público: va firmado con la cuenta del dueño.
+            let _vauth = '';
+            try { if (typeof TMAuth !== 'undefined') { const _t = await TMAuth.token(); if (_t) _vauth = '?auth=' + encodeURIComponent(_t); } } catch(e) {}
+            const _vr = await _tmFetch(`${_vbase}/ventas.json${_vauth}`);
             if (_vr.ok) {
                 const _vraw = await _vr.json();
                 if (_vraw && typeof _vraw === 'object') {

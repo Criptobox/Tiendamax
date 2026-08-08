@@ -155,6 +155,7 @@
       _moverStock(detalle, +1);          // deshacer: sin reserva guardada, el stock no puede quedar descontado
       return { ok: false, msg: 'No se pudo guardar la reserva (navegador sin espacio). El stock se devolvió.' };
     }
+    _espejar();
     return { ok: true, reserva: r };
   }
 
@@ -175,6 +176,7 @@
       if (devolverStock) _moverStock(r.items, -1);   // deshacer la devolución
       return { ok: false, msg: 'No se pudo guardar el cambio.' };
     }
+    _espejar();
     return { ok: true, reserva: r };
   }
 
@@ -189,6 +191,60 @@
   function pendientes() { return reservas().filter(function (r) { return r.estado === 'reservada'; }); }
   function pendientesViejas() { return pendientes().filter(function (r) { return diasDe(r) >= DIAS_AVISO; }); }
 
+  /* ── Espejo en Firebase ────────────────────────────────────────────────
+     localStorage sigue mandando: es instantáneo y funciona sin cobertura, que
+     en Cuba no es un detalle. Firebase es la copia que sobrevive a borrar los
+     datos del navegador y la que hace que veas lo mismo desde el móvil y desde
+     la PC.
+
+     Va a /privado, que pide `auth != null`. Eso importa: una reserva lleva el
+     nombre y el teléfono del cliente, y en las rutas públicas de este proyecto
+     —/pedidos, /ventas hasta hoy— cualquiera con la URL podía leerlas. Sin
+     cuenta iniciada esto no hace nada y todo sigue funcionando en local.
+
+     Se manda la lista entera y no cada cambio: son unos pocos KB, y así una
+     reserva cerrada en el móvil no puede quedarse "pendiente" en la PC porque
+     se perdió justo ese envío. */
+  function _espejar() {
+    try {
+      if (typeof TMAuth === 'undefined') return;
+      TMAuth.fetchPrivado('/privado/reservas.json', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservas())
+      });
+    } catch (e) {}
+  }
+
+  /* Trae lo de Firebase y lo mezcla con lo de aquí. Gana SIEMPRE lo cerrado:
+     si en el móvil se ejecutó la venta y en la PC sigue pendiente, la reserva
+     está cerrada — dar por buena la versión pendiente la dejaría lista para
+     ejecutarse otra vez y venderías dos veces lo mismo. */
+  async function sincronizar() {
+    if (typeof TMAuth === 'undefined') return { ok: false, msg: 'sin cuenta' };
+    var r = await TMAuth.fetchPrivado('/privado/reservas.json');
+    if (!r.ok) return r;
+    var remotas = Array.isArray(r.dato) ? r.dato : [];
+    var locales = reservas();
+    var porId = {};
+    locales.forEach(function (x) { porId[x.id] = x; });
+    var nuevas = 0, cerradas = 0;
+    remotas.forEach(function (x) {
+      if (!x || !x.id) return;
+      var mio = porId[x.id];
+      if (!mio) { locales.push(x); porId[x.id] = x; nuevas++; return; }
+      if (mio.estado === 'reservada' && x.estado !== 'reservada') {
+        mio.estado = x.estado; mio.tsResuelta = x.tsResuelta || Date.now(); cerradas++;
+      }
+    });
+    if (nuevas || cerradas) {
+      locales.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      _guardarReservas(locales);
+    }
+    _espejar();
+    return { ok: true, nuevas: nuevas, cerradas: cerradas };
+  }
+
   window.TMReservas = {
     lista: reservas,
     pendientes: pendientes,
@@ -197,6 +253,7 @@
     crear: crear,
     marcarVendida: marcarVendida,
     cancelar: cancelar,
+    sincronizar: sincronizar,
     dias: diasDe,
     DIAS_AVISO: DIAS_AVISO
   };

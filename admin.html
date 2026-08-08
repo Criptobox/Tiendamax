@@ -7,6 +7,9 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
+<!-- Firebase Auth: la cuenta del dueño. Va lo primero porque el login y
+     todas las lecturas privadas (/ventas, /privado) la necesitan. -->
+<script src="js/auth.js?v=bb07b379"></script>
 <script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <!-- App aparte, con su propio icono y sus accesos directos (mantener pulsado
@@ -880,6 +883,21 @@
 
       <!-- Form (usa verificarPassword del motor real) -->
       <form id="tm2LoginPass" onsubmit="verificarPassword(event)">
+        <!-- Correo: si lo rellenas, se entra con la cuenta de Firebase. Si lo
+             dejas vacío, sigue funcionando la contraseña de siempre guardada
+             en este navegador. Las dos vías conviven a propósito: cambiar el
+             login de golpe deja fuera a quien todavía no ha creado la cuenta. -->
+        <div class="tm2-input-group" style="margin-bottom:12px">
+          <div class="tm2-input-label"><span>Correo <span style="opacity:.6;font-weight:500">— si tienes cuenta</span></span></div>
+          <div class="tm2-input-wrapper">
+            <div class="tm2-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>
+              </svg>
+            </div>
+            <input class="tm2-input-field" id="adminEmail" type="email" placeholder="tu@correo.com" autocomplete="username">
+          </div>
+        </div>
         <div class="tm2-input-group">
           <div class="tm2-input-label">
             <span>Contraseña</span>
@@ -1328,6 +1346,29 @@
              directo", que es un marcador y NO trae menú. Este botón usa el
              evento del navegador, así que o instala de verdad, o dice por qué
              no puede — en vez de dejarte adivinando. -->
+        <!-- Cuenta de Firebase.
+             Es lo que hace que los datos dejen de vivir solo en este
+             navegador: sin una cuenta, las reglas de Firebase no pueden
+             distinguir al dueño de un desconocido, porque un permiso de
+             LECTURA no ve nada de lo que manda el cliente. Por eso /ventas
+             estaba abierto a quien supiera la URL. -->
+        <div class="section" id="tmCuentaBox" style="margin-bottom:16px">
+          <h3>👤 Tu cuenta</h3>
+          <p id="tmCuentaEstado" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Comprobando…</p>
+          <div id="tmCuentaForm">
+            <div class="form-group"><label class="form-label" for="tmCuentaEmail">Correo</label><input class="form-input" id="tmCuentaEmail" type="email" placeholder="tu@correo.com" autocomplete="username"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="tmCuentaPass">Contraseña <span style="color:var(--gray);font-weight:600">— mínimo 6</span></label><input class="form-input" id="tmCuentaPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="btn btn-primary" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaEntrar()">Entrar</button>
+              <button class="btn btn-ghost" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaCrear()">Crear cuenta</button>
+            </div>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaRecuperar()">Olvidé la contraseña</button>
+          </div>
+          <button class="btn btn-ghost" id="tmCuentaSalir" style="width:100%;margin-top:10px;display:none" onclick="tmCuentaSalir()">Cerrar sesión</button>
+          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaProbar()">🔌 Probar acceso a lo privado</button>
+          <p id="tmCuentaMsg" style="font-size:12.5px;line-height:1.5;margin-top:10px"></p>
+        </div>
+
         <div class="section" id="tmInstalarBox" style="margin-bottom:16px">
           <h3>📲 App de gestión</h3>
           <p id="tmInstalarMsg" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px">Comprobando…</p>
@@ -1608,7 +1649,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=81ec9e65"></script>
+<script src="js/tm-bundle.js?v=c8935857"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1618,7 +1659,7 @@
      el badge del topbar y la tarjeta de "suscriptores esperan noticias" solo
      mostraban lo último cacheado en localStorage por una visita anterior a
      index.html en el MISMO navegador — nunca el número real y actualizado. -->
-<script src="js/analytics.js?v=88a94edd"></script>
+<script src="js/analytics.js?v=db8b7f28"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -1632,8 +1673,8 @@
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js"></script>
-<script src="js/admin-copilot.js?v=52698ada"></script>
+<script src="js/reservas.js?v=97db060a"></script>
+<script src="js/admin-copilot.js?v=f7f4c8af"></script>
 
 <script>
 (function(){
@@ -1708,7 +1749,10 @@ function go(view, btn){
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
-  if(view==='reservas'){ try{ renderReservas(); }catch(e){} }
+  if(view==='reservas'){ try{ renderReservas(); }catch(e){}
+    // Traerse lo cerrado desde otro dispositivo antes de enseñar la lista.
+    try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
+  }
   if(typeof tmActualizarPendientes==='function'){ try{ tmActualizarPendientes(); }catch(e){} }
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
@@ -1746,7 +1790,17 @@ function _ventaEsPrueba(v){
 // donde miran las ventas cuando hay uno.
 function lsVentas(){ try{ const v=JSON.parse(localStorage.getItem('registroVentas')||'null'); return Array.isArray(v)?v.filter(x=>!_ventaEsPrueba(x)):[]; }catch(e){ return []; } }
 
-async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; } }
+async function jget(url){
+  // /ventas y /privado ya no son públicos: piden la cuenta del dueño. El resto
+  // (productos.json, categorias.json…) son archivos del repo y van sin firmar.
+  try{
+    if(/\/(ventas|privado)[./]/.test(url) && typeof TMAuth!=='undefined'){
+      const t=await TMAuth.token();
+      if(t) url += (url.includes('?')?'&':'?')+'auth='+encodeURIComponent(t);
+    }
+  }catch(e){}
+  try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; }
+}
 
 // El motor (tm-*.js) usa el bareword global `productos` (un `let` en tm-data),
 // que NO es window.productos. Si no lo unificamos, ajustarStock/guardarProductos/
@@ -2027,6 +2081,72 @@ function tmRestaurarDesdeLogin(){
     const pwd=document.getElementById('adminPassword');
     if(pwd){ try{ pwd.focus(); }catch(e){} }
   }
+}
+
+/* ══════════ CUENTA (Firebase Auth) ══════════ */
+function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
+
+function tmCuentaPintar(u){
+  const est=$('#tmCuentaEstado'), form=$('#tmCuentaForm'), salir=$('#tmCuentaSalir');
+  if(!est) return;
+  if(u){
+    est.innerHTML='✅ Sesión iniciada como <b>'+esc(u.email||'—')+'</b>. Tus reservas, vales y datos de clientes se guardan en Firebase y los ves en cualquier dispositivo.';
+    if(form) form.style.display='none';
+    if(salir) salir.style.display='';
+  } else {
+    est.innerHTML='Sin cuenta, todo vive solo en este navegador: si borras los datos, se pierde. Con cuenta se guarda en Firebase, en una zona que solo lee quien entra con ella.';
+    if(form) form.style.display='';
+    if(salir) salir.style.display='none';
+    const i=$('#tmCuentaEmail'); if(i && !i.value) i.value=localStorage.getItem('tm_admin_email')||'';
+  }
+}
+
+async function tmCuentaEntrar(){
+  const e=($('#tmCuentaEmail')||{}).value||'', p=($('#tmCuentaPass')||{}).value||'';
+  if(!e.trim()||!p){ _cuentaMsg('Escribe el correo y la contraseña.','#f5a623'); return; }
+  _cuentaMsg('⏳ Entrando…');
+  const r=await TMAuth.entrar(e,p);
+  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Listo.','#1DA854'); tmCuentaPintar(r.user); }
+  else _cuentaMsg('❌ '+esc(r.msg),'#e74c3c');
+}
+
+async function tmCuentaCrear(){
+  const e=($('#tmCuentaEmail')||{}).value||'', p=($('#tmCuentaPass')||{}).value||'';
+  if(!e.trim()||p.length<6){ _cuentaMsg('Correo válido y contraseña de 6 o más caracteres.','#f5a623'); return; }
+  // Se avisa antes: la cuenta que se cree aquí es la que va a mandar. Crear
+  // una segunda por error deja los datos privados repartidos entre dos.
+  if(!confirm('Se creará la cuenta '+e.trim()+'.\n\nSerá la que use este panel para guardar y leer lo privado. Usa un correo tuyo al que tengas acceso: es por donde se recupera la contraseña.\n\n¿Seguir?')) return;
+  _cuentaMsg('⏳ Creando…');
+  const r=await TMAuth.crearCuenta(e,p);
+  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Cuenta creada y sesión iniciada.','#1DA854'); tmCuentaPintar(r.user); }
+  else _cuentaMsg('❌ '+esc(r.msg),'#e74c3c');
+}
+
+async function tmCuentaRecuperar(){
+  const e=($('#tmCuentaEmail')||{}).value||'';
+  if(!e.trim()){ _cuentaMsg('Escribe primero tu correo.','#f5a623'); return; }
+  const r=await TMAuth.recuperar(e);
+  _cuentaMsg(r.ok?('📧 Te mandé un correo a '+esc(e.trim())+'. Mira también en spam.'):('❌ '+esc(r.msg)), r.ok?'#1DA854':'#e74c3c');
+}
+
+async function tmCuentaSalir(){
+  if(!confirm('¿Cerrar sesión?\n\nDejarás de ver lo guardado en Firebase hasta que vuelvas a entrar.')) return;
+  await TMAuth.salir(); tmCuentaPintar(null); _cuentaMsg('Sesión cerrada.');
+}
+
+/* Comprobar de verdad que las reglas nuevas están publicadas. Sin esto, unas
+   reglas viejas se ven exactamente igual que "todavía no hay nada guardado" —
+   es el mismo fallo mudo que tuvieron Web Vitals y las preguntas de Max. */
+async function tmCuentaProbar(){
+  _cuentaMsg('⏳ Probando…');
+  if(!TMAuth.usuario()){ _cuentaMsg('Primero entra con tu cuenta.','#f5a623'); return; }
+  const w=await TMAuth.fetchPrivado('/privado/_prueba.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({ts:Date.now()})});
+  if(!w.ok){ _cuentaMsg('❌ Escritura rechazada: '+esc(w.msg)+'<br>Publica el firebase-rules.json del repo en Firebase → Realtime Database → Reglas.','#e74c3c'); return; }
+  const l=await TMAuth.fetchPrivado('/privado/_prueba.json');
+  if(!l.ok){ _cuentaMsg('❌ Lectura rechazada: '+esc(l.msg),'#e74c3c'); return; }
+  const v=await TMAuth.fetchPrivado('/ventas.json');
+  _cuentaMsg('✅ La zona privada funciona: escribe y lee con tu cuenta.'
+    + (v.ok?' Y /ventas también responde firmado.':' <br>⚠️ /ventas no respondió: '+esc(v.msg)), '#1DA854');
 }
 
 /* ══════════ RESERVAS ══════════
@@ -5213,6 +5333,13 @@ window.pubToggleSinPublicar=pubToggleSinPublicar;
 window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.pubShareReset=pubShareReset;
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
+window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
+window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar;
+// La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
+if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(tmCuentaPintar)).catch(()=>{
+  const e=document.getElementById('tmCuentaEstado');
+  if(e) e.textContent='No pude cargar Firebase Auth. Revisa la conexión o la configuración de Firebase en esta misma página.';
+}); }
 window.anSubsDedup=anSubsDedup; window.anSubsLimpiarTokens=anSubsLimpiarTokens; window.anSubsBorrarTodos=anSubsBorrarTodos; window.anSubsBorrarUno=anSubsBorrarUno;
 })();
 </script>

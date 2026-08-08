@@ -182,14 +182,36 @@ const CATALOGO = [
         'tanto al copiar el vale como al mandarlo por WhatsApp');
 }
 
-// ── 9. Nada de datos del cliente en Firebase ─────────────────────────────
-// Una reserva lleva nombre y teléfono. /pedidos es `.read: true` y aquí no hay
-// Firebase Auth: subirlo sería publicarlo.
+// ── 9. Los datos del cliente solo van a la zona privada ──────────────────
+// Una reserva lleva nombre y teléfono. Antes no salía de este navegador porque
+// no había dónde ponerla a salvo: todas las rutas que el admin podía leer las
+// podía leer cualquiera. Con cuenta existe /privado, que pide `auth != null`.
+// Lo que no puede pasar nunca es que acabe en una ruta pública.
 {
-    for (const pista of ['firebaseio', 'firebasedatabase', 'fetch(']) {
-        ok(!RESERVAS_JS.includes(pista),
-            `reservas.js no puede salir a la red (encontrado: ${pista}): publicaría nombres y teléfonos`);
-    }
+    const rutas = [...RESERVAS_JS.matchAll(/fetchPrivado\('([^']+)'/g)].map(m => m[1]);
+    ok(rutas.length > 0, 'las reservas deben guardarse en Firebase, no solo en este navegador');
+    rutas.forEach(r => ok(r.indexOf('/privado/') === 0,
+        `"${r}" no está bajo /privado: publicaría nombres y teléfonos de clientes`));
+    // Y nada de fetch a pelo: ese no lleva el token y acabaría en una ruta
+    // abierta o en un 401 mudo.
+    ok(!/[^d]fetch\(/.test(RESERVAS_JS),
+        'toda salida a la red tiene que ir por TMAuth.fetchPrivado, que firma con la cuenta');
+    // Sin sesión, todo tiene que seguir funcionando en local.
+    ok(/typeof TMAuth === 'undefined'/.test(RESERVAS_JS),
+        'sin cuenta iniciada, reservar y cancelar deben seguir funcionando igual');
+}
+
+// ── 10. La sincronización no puede resucitar una reserva cerrada ─────────
+// Si en el móvil se ejecutó la venta y en la PC sigue pendiente, la reserva
+// está CERRADA. Dar por buena la versión pendiente la dejaría lista para
+// ejecutarse otra vez: venderías dos veces la misma unidad.
+{
+    const f = RESERVAS_JS.slice(RESERVAS_JS.indexOf('async function sincronizar()'),
+                                RESERVAS_JS.indexOf('async function sincronizar()') + 1500);
+    ok(/mio\.estado === 'reservada' && x\.estado !== 'reservada'/.test(f),
+        'lo cerrado en otro dispositivo tiene que ganar a lo pendiente de aquí');
+    ok(!/estado === 'reservada'\s*\)\s*\{\s*mio\.estado = 'reservada'/.test(f),
+        'nunca al revés');
 }
 
 if (fallos.length) {

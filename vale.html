@@ -286,9 +286,12 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="toast" id="toast"></div>
 
+<!-- Firebase Auth: la cuenta del dueño. El historial y las reservas se
+     guardan en /privado, que solo lee quien entra con ella. -->
+<script src="/js/auth.js?v=bb07b379"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
-<script src="/js/reservas.js"></script>
+<script src="/js/reservas.js?v=97db060a"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
 // Margen sobre la tasa elToque (igual que la tienda: getTasaMN = tasaMN + margenMN).
@@ -727,6 +730,43 @@ function guardarHist(){
     try{ localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,30))); toast('⚠️ Poco espacio: recorté el historial a 30 vales'); }
     catch(e2){ toast('❌ No pude guardar el vale en el historial (navegador sin espacio)'); }
   }
+  espejarHist();
+}
+
+/* ── El historial también en Firebase ──────────────────────────────────────
+   Vivía solo aquí y se perdió al borrar los datos del navegador. Ahora, si hay
+   sesión iniciada, se guarda además en /privado/vales — que pide cuenta, y eso
+   es lo que permite guardarlo: un vale lleva nombre y teléfono del cliente, y
+   en una ruta pública sería publicarlos.
+
+   Sin cuenta no hace nada y todo sigue igual que antes, en local. */
+function espejarHist(){
+  try{
+    if(typeof TMAuth==='undefined') return;
+    TMAuth.fetchPrivado('/privado/vales.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(leerHist())});
+  }catch(e){}
+}
+
+/* Mezcla lo de Firebase con lo de aquí, por la misma clave que usa restaurar
+   un archivo: momento + cliente. Nunca borra: un vale que solo está en este
+   móvil tiene que sobrevivir a traerse los de la nube. */
+async function sincronizarHist(){
+  if(typeof TMAuth==='undefined') return {ok:false};
+  const r=await TMAuth.fetchPrivado('/privado/vales.json');
+  if(!r.ok) return r;
+  const remotos=Array.isArray(r.dato)?r.dato:[];
+  const hist=leerHist();
+  const clave=v=>String(v&&v.ts||'')+'|'+String(v&&v.cliente||'');
+  const vistos=new Set(hist.map(clave));
+  let nuevos=0;
+  remotos.forEach(v=>{ if(v&&!vistos.has(clave(v))){ hist.push(v); vistos.add(clave(v)); nuevos++; } });
+  if(nuevos){
+    hist.sort((a,b)=>(b.ts||0)-(a.ts||0));
+    try{ localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,HIST_MAX))); }catch(e){}
+    renderHist();
+  }
+  espejarHist();
+  return {ok:true,nuevos:nuevos};
 }
 
 function exportarHist(){
@@ -813,7 +853,7 @@ function goTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['nuevo','historial'][i]===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(name==='historial') renderHist();
+  if(name==='historial'){ renderHist(); sincronizarHist(); }
 }
 function goStep(n){
   [1,2,3].forEach(i=>{

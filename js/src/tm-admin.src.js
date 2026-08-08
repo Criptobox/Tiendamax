@@ -32,6 +32,7 @@ async function verificarPassword(event) {
     if (rl.until && Date.now() >= rl.until) { rl.count = 0; rl.until = 0; }
 
     const passwordInput = document.getElementById('adminPassword').value.trim();
+    const emailInput = (document.getElementById('adminEmail') || {}).value || '';
 
     // Feedback visual mientras se calcula el hash (PBKDF2 tarda 2-3 s)
     const btn = document.getElementById('btnLoginSubmit');
@@ -47,6 +48,33 @@ async function verificarPassword(event) {
     const ghRepo = localStorage.getItem('githubRepo');
 
     try {
+
+    /* 0. La cuenta de Firebase, si se escribió un correo.
+       Es la única vía que sobrevive a borrar los datos del navegador: hasta
+       ahora la contraseña vivía como hash en localStorage y, borrada esa,
+       NINGUNA contraseña entraba —ni la correcta—, porque el hash de Firebase
+       no se puede leer desde el navegador. Con cuenta hay recuperación por
+       correo de verdad.
+       Las vías de abajo siguen funcionando: quitarlas de golpe dejaría fuera a
+       quien todavía no haya creado su cuenta. */
+    if (emailInput.trim() && typeof TMAuth !== 'undefined') {
+        const r = await TMAuth.entrar(emailInput, passwordInput);
+        if (r.ok) {
+            localStorage.removeItem('admin_rl');
+            try { localStorage.setItem('tm_admin_email', emailInput.trim()); } catch(e) {}
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            return;
+        }
+        // Se avisa con el motivo real de Firebase y NO se sigue probando la
+        // contraseña local: si escribió su correo, quería entrar con la cuenta,
+        // y un "contraseña incorrecta" genérico esconde el motivo verdadero
+        // (cuenta sin crear, proveedor sin activar, sin conexión).
+        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
+        mostrarNotificacion('❌ ' + r.msg, 'error');
+        return;
+    }
 
     // 1. PRIORIDAD: localStorage (refleja cambios inmediatos de contraseña)
     const lsHash = localStorage.getItem(AUTH_HASH_KEY);
