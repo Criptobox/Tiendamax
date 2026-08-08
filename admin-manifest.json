@@ -59,13 +59,13 @@
             ]
         },
         {
-            "name": "Ventas",
-            "short_name": "Ventas",
-            "description": "Registra una venta y mira lo del día",
-            "url": "/admin.html#ventas",
+            "name": "Publicar",
+            "short_name": "Publicar",
+            "description": "Arma el cartel y publica en tus canales",
+            "url": "/admin.html#publicar",
             "icons": [
                 {
-                    "src": "/iconos/atajo-panel-96.png",
+                    "src": "/iconos/atajo-publicar-96.png",
                     "sizes": "96x96",
                     "type": "image/png"
                 }

@@ -21,7 +21,7 @@ sin tocar el antialiasing de los bordes.
 
 Genera, en iconos/:
   admin-icon-192.png, admin-icon-512.png, admin-icon-maskable-512.png
-  atajo-vale-96.png, atajo-panel-96.png, atajo-agregar-96.png
+  atajo-vale-96.png, atajo-publicar-96.png, atajo-agregar-96.png
 """
 from pathlib import Path
 
@@ -155,12 +155,17 @@ def atajo_vale():
     img.save(ICONOS / "atajo-vale-96.png")
 
 
-def atajo_panel():
-    """Cuatro bloques: el gesto universal de "tablero"."""
+def atajo_publicar():
+    """Flecha saliendo de una bandeja: "sacar esto ahí fuera".
+
+    Se probó antes con un megáfono y a 24dp —que es el tamaño real en el menú
+    del icono— el cono y el mango se empastan en una mancha. La flecha se lee
+    entera aunque la encojas.
+    """
     img, d = _lienzo_atajo()
-    for cx, cy, w, h in ((24, 22, 22, 30), (50, 22, 22, 18), (24, 56, 22, 18), (50, 44, 22, 30)):
-        d.rounded_rectangle([cx, cy, cx + w, cy + h], radius=4, fill=ORO)
-    img.save(ICONOS / "atajo-panel-96.png")
+    d.polygon([(48, 18), (66, 40), (56, 40), (56, 56), (40, 56), (40, 40), (30, 40)], fill=ORO)
+    d.rounded_rectangle([24, 62, 72, 74], radius=4, fill=ORO)
+    img.save(ICONOS / "atajo-publicar-96.png")
 
 
 def atajo_agregar():
@@ -176,6 +181,6 @@ if __name__ == "__main__":
         raise SystemExit(f"No encuentro {ORIGEN}")
     icono_app()
     atajo_vale()
-    atajo_panel()
+    atajo_publicar()
     atajo_agregar()
-    print("✅ atajo-vale/panel/agregar-96")
+    print("✅ atajo-vale/publicar/agregar-96")
