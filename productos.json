@@ -3022,15 +3022,14 @@
   {
     "id": 1784825579392,
     "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
-    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.\nFicha Técnica:\nÓptica y Visualización: 📹 Dos lentes independientes integrados en el mismo cuerpo para monitorear dos áreas distintas de forma simultánea desde el celular.\nAlimentación y Batería: ☀️ Panel solar de alta eficiencia para la recarga autónoma del sistema, garantizando funcionamiento continuo en exteriores.\nMovimiento y Cobertura: 🔄 Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos.\nConectividad Inalámbrica: 🌐 Conexión a red Wi-Fi para visualización en tiempo real, control de funciones y recepción de alertas de movimiento.\nEspecificaciones (Specs):\nModelo: QW8-WIFI.\nTipo: Cámara de seguridad solar PTZ de doble lente.\nUso: Vigilancia exterior residencial o comercial.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784825577280.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp"
+      "https://tiendamax.org/imagenes/img_1784825577280.webp"
     ],
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "SEGURIDAD",
@@ -3046,7 +3045,8 @@
     ],
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
-    "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…"
+    "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…",
+    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.\nFicha Técnica:\nÓptica y Visualización: 📹 Dos lentes independientes integrados en el mismo cuerpo para monitorear dos áreas distintas de forma simultánea desde el celular.\nAlimentación y Batería: ☀️ Panel solar de alta eficiencia para la recarga autónoma del sistema, garantizando funcionamiento continuo en exteriores.\nMovimiento y Cobertura: 🔄 Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos.\nConectividad Inalámbrica: 🌐 Conexión a red Wi-Fi para visualización en tiempo real, control de funciones y recepción de alertas de movimiento.\nEspecificaciones (Specs):\nModelo: QW8-WIFI.\nTipo: Cámara de seguridad solar PTZ de doble lente.\nUso: Vigilancia exterior residencial o comercial."
   },
   {
     "id": 1785285424837,
