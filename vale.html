@@ -777,8 +777,8 @@ function _parseItems(txt) {
   return txt.split('\n').map(l=>{
     l = l.trim(); if(!l) return null;
     let qty=1, nombre=l;
-    // "2x Nombre", "Nombre x2", "2. Nombre"
-    const m = l.match(/^(\d+)[xX]\s+(.+)|^(.+?)\s+[xX](\d+)$|^\d+\.\s+(.+)/);
+    // "2x Nombre", "Nombre x2", "Nombre x2 — $10.00 USD c/u" (carrito de la tienda), "2. Nombre"
+    const m = l.match(/^(\d+)[xX]\s+(.+)|^(.+?)\s+[xX](\d+)(?=\s|$)|^\d+\.\s+(.+)/);
     if(m){
       if(m[1]){ qty=parseInt(m[1]); nombre=m[2]; }
       else if(m[4]){ qty=parseInt(m[4]); nombre=m[3]; }
@@ -803,14 +803,19 @@ function drawValeImg() {
   let items      = _parseItems(artTxt);
   if(!items.length) items=[{qty:'',nombre:'(Artículos aparecerán aquí)'}];
 
-  // Total en USD (precio) y su equivalente en MN con la tasa de la tienda (tasa + margen)
+  // Total: el mismo que el total-box del formulario (recalc()) — precio en CUP + mensajería.
+  // Si hay precio USD/Zelle se muestra como principal (con el CUP como referencia debajo);
+  // si la venta es solo en CUP (sin precio USD), el CUP pasa a ser el total principal.
   const usd = parseFloat(document.getElementById('vUSD')?.value)||0;
-  const totalMN = (usd>0 && tasa>0) ? Math.round(usd*(tasa+margenMN)).toLocaleString('es-CU') : null;
+  const cupVal = parseInt(document.getElementById('vCUP')?.value)||0;
+  const totalCup = cupVal + getMens();
+  const totalMN = totalCup>0 ? totalCup.toLocaleString('es-CU') : null;
+  const usdPrincipal = usd>0;
 
   const W=1080, M=64, rowH=72, firstRow=536;
   const dashedY = firstRow + (items.length-1)*rowH + 40;
   const totalY  = dashedY + 84;
-  const mnExtra = totalMN ? 44 : 0;
+  const mnExtra = (usdPrincipal && totalMN) ? 44 : 0;
   const H = totalY + mnExtra + 44 + 96 + 54;
   canvas.width=W; canvas.height=H;
 
@@ -867,8 +872,15 @@ function drawValeImg() {
 
   // ── Total ──
   ctx.textAlign='left';  ctx.fillStyle='#8c8c8c'; ctx.font='700 34px system-ui,Arial,sans-serif'; ctx.fillText('TOTAL A PAGAR', M, totalY);
-  ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='800 64px system-ui,Arial,sans-serif'; ctx.fillText('$'+usd.toFixed(2), W-M, totalY+6);
-  if(totalMN){ ctx.fillStyle='#8c8c8c'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.textAlign='right'; ctx.fillText('≈ '+totalMN+' MN', W-M, totalY+mnExtra); }
+  ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='800 64px system-ui,Arial,sans-serif';
+  if(usdPrincipal){
+    ctx.fillText('$'+usd.toFixed(2), W-M, totalY+6);
+    if(totalMN){ ctx.fillStyle='#8c8c8c'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.textAlign='right'; ctx.fillText('≈ '+totalMN+' MN', W-M, totalY+mnExtra); }
+  } else if(totalMN){
+    ctx.fillText(totalMN+' MN', W-M, totalY+6);
+  } else {
+    ctx.fillText('—', W-M, totalY+6);
+  }
 
   // ── Sello dorado verificado ──
   const sy=H-150;
@@ -900,9 +912,11 @@ function descargarValeImg(){
 
 // Enviar la imagen del vale directo por WhatsApp (el cliente la muestra al llegar).
 async function enviarValeImagenWA(){
+  if(!validarVale()) return;
   const c=document.getElementById('valeImgCanvas');
   if(!c) return;
   drawValeImg(); // datos finales
+  guardarHist();
   const cliente=(document.getElementById('vCliente')?.value||'').trim();
   const texto='🧾 Vale TiendaMax'+(cliente?(' — '+cliente):'')+'\n📍 Muestra este vale al llegar a la tienda.';
   const blob=await new Promise(res=>c.toBlob(res,'image/png',0.95));
