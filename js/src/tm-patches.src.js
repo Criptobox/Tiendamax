@@ -769,6 +769,9 @@ function _procesarDeepLink() {
             if (!r.ok) return false;
             const data = await r.json();
             if (!Array.isArray(data)) return false;
+            // Igual que en tm-data: el stock cambiado aquí y aún sin publicar
+            // no lo puede revivir una descarga de productos.json.
+            if (typeof _tmConservarStockLocal === 'function') _tmConservarStockLocal(data);
             try { localStorage.setItem('productos', JSON.stringify(data)); } catch(e) {}
             if (typeof productos !== 'undefined') { productos.length = 0; productos.push(...data); }
             return abrir();

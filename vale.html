@@ -169,6 +169,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     <div class="sec-body">
       <div class="fld"><div class="lbl">🔸 Artículo y cantidad<span class="la">✓ auto</span></div><textarea id="vArticulo" class="auto" rows="2" placeholder="—"></textarea></div>
       <button class="btn-act" onclick="abrirCatalogo()">🛍️ Elegir del catálogo</button>
+      <div id="reservaPanel" style="display:none;margin-top:12px;padding:11px;border:1px solid rgba(255,107,53,.35);background:rgba(255,107,53,.07);border-radius:10px"></div>
       <div class="fld" style="margin-top:12px"><div class="lbl">🔸 Garantía<span class="lf">✏️</span></div><input type="text" id="vGarantia" class="fill" placeholder="Ej: 3 meses"></div>
     </div>
   </div>
@@ -285,6 +286,9 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="toast" id="toast"></div>
 
+<!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
+     la página para que TMReservas exista cuando se dibuja el vale. -->
+<script src="/js/reservas.js"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
 // Margen sobre la tasa elToque (igual que la tienda: getTasaMN = tasaMN + margenMN).
@@ -688,6 +692,7 @@ function copiarVale(){
   if(!validarVale()) return;
   copiarTexto(construirTextoVale(),'✅ Vale copiado — pégalo en WhatsApp');
   guardarHist();
+  reservarSiToca();
 }
 
 function enviarValeWA(){
@@ -699,6 +704,7 @@ function enviarValeWA(){
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }catch(e){ location.href=waUrl; }
   guardarHist();
+  reservarSiToca();
 }
 
 const HIST_MAX=200;
@@ -1011,6 +1017,16 @@ async function abrirCatalogo(){
   document.getElementById('modalCatalogo').classList.add('open');
   if(_catProductos){ renderCatChips(); renderCatalogo(); return; }
   document.getElementById('catLista').innerHTML='<div class="hist-empty">Cargando catálogo…</div>';
+  // Primero el catálogo de ESTE navegador: es el que ya tiene descontado lo
+  // reservado y los cambios que aún no se han publicado. El de la red enseña
+  // stock que puede estar comprometido, y reservarías algo que no queda.
+  try{
+    const local=JSON.parse(localStorage.getItem('productos')||'null');
+    if(Array.isArray(local)&&local.length){
+      _catProductos=local.filter(p=>Number(p.stock)>0);
+      renderCatChips(); renderCatalogo(); return;
+    }
+  }catch(e){}
   try{
     const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),8000);
     const r=await fetch('/productos.json?t='+Date.now(),{signal:ctrl.signal});
@@ -1048,13 +1064,20 @@ function renderCatalogo(){
     return `<div class="hist-item" style="display:flex;align-items:center;gap:10px">
       <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nm}</div>
       <div style="font-size:12px;color:var(--green-light)">$${precio.toFixed(2)} USD</div></div>
-      <button class="btn-act" style="width:auto;margin:0;padding:8px 14px;font-size:18px" onclick="agregarProductoVale('${nm.replace(/'/g,"\\'")}',${precio})">+</button>
+      <button class="btn-act" style="width:auto;margin:0;padding:8px 14px;font-size:18px" onclick="agregarProductoVale('${nm.replace(/'/g,"\\'")}',${precio},'${String(p.id).replace(/'/g,"\\'")}')">+</button>
     </div>`;
   }).join('');
 }
 
+/* Lo que se eligió DEL CATÁLOGO, con su id. El textarea del artículo es texto
+   libre —se puede escribir a mano o venir del mensaje del cliente— así que su
+   contenido no sirve para descontar stock: hace falta saber exactamente qué
+   producto es. Solo esto se reserva. */
+let _valeItems = [];
+let _valeReservaHecha = null;   // id de la reserva ya creada para este vale
+
 // Agrega/incrementa un producto en el vArticulo y recalcula el precio total USD.
-function agregarProductoVale(nombre, precio){
+function agregarProductoVale(nombre, precio, id){
   const ta=document.getElementById('vArticulo');
   let lineas=(ta.value||'').split('\n').map(s=>s.trim()).filter(l=>l && l!=='—');
   const idx=lineas.findIndex(l=>l.replace(/\s*—\s*\$[\d.,]+.*$/i,'').replace(/^\d+x\s+/i,'').trim().toLowerCase()===nombre.toLowerCase());
@@ -1075,7 +1098,52 @@ function agregarProductoVale(nombre, precio){
   const usdEl=document.getElementById('vUSD');
   usdEl.value=totalUsd?Number(totalUsd.toFixed(2)):''; usdEl.classList.add('auto');
   calcular();
+  if(id){
+    const ya=_valeItems.find(x=>String(x.id)===String(id));
+    if(ya) ya.cantidad=qty; else _valeItems.push({id:id, nombre:nombre, precio:precio, cantidad:qty});
+    _valeReservaHecha=null;      // cambió el pedido: la reserva anterior ya no lo describe
+    renderReservaPanel();
+  }
   toast('✅ '+nombre+' agregado'+(qty>1?(' (x'+qty+')'):''));
+}
+
+/* ── Reserva ──────────────────────────────────────────────────────────────
+   Mandar el vale es comprometer esa unidad: el cliente viene otro día pero ya
+   no se le puede vender a nadie más. El stock baja aquí, y la venta no se
+   registra todavía —puede que no aparezca—. Eso se cierra desde el admin:
+   ✅ ejecutas la venta, o ❌ cancelas y el producto vuelve al stock. */
+function quitarItemVale(id){
+  _valeItems=_valeItems.filter(x=>String(x.id)!==String(id));
+  _valeReservaHecha=null;
+  renderReservaPanel();
+}
+
+function renderReservaPanel(){
+  const box=document.getElementById('reservaPanel');
+  if(!box) return;
+  if(!_valeItems.length){ box.innerHTML=''; box.style.display='none'; return; }
+  box.style.display='';
+  const filas=_valeItems.map(it=>
+    `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+       <div style="flex:1;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.cantidad}× ${String(it.nombre).replace(/[&<>"]/g,'')}</div>
+       <button class="btn-ghost" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="quitarItemVale('${String(it.id).replace(/'/g,"\\'")}')">quitar</button>
+     </div>`).join('');
+  const hecho=_valeReservaHecha
+    ? '<div style="font-size:12px;color:var(--green-light);margin-top:8px">🔒 Ya reservado. Ciérralo desde el admin → Reservas.</div>'
+    : '<div style="font-size:12px;color:var(--muted);margin-top:8px">Al copiar o enviar el vale se descuenta del stock y queda <b>reservado</b> hasta que ejecutes la venta en el admin.</div>';
+  box.innerHTML='<div style="font-size:12px;color:var(--orange);font-weight:600;margin-bottom:6px">🔒 SE RESERVARÁ</div>'+filas+hecho;
+}
+
+/* Se llama al copiar y al enviar. Silencioso si no se eligió nada del
+   catálogo: un vale escrito a mano sigue funcionando igual que siempre. */
+function reservarSiToca(){
+  if(!_valeItems.length || _valeReservaHecha) return;
+  if(typeof TMReservas==='undefined') return;
+  const r=TMReservas.crear(_valeItems,{cliente:g('vCliente'),telefono:g('vTelefono'),nota:g('vArticulo').split('\n')[0]});
+  if(!r.ok){ toast('⚠️ '+r.msg); return; }
+  _valeReservaHecha=r.reserva.id;
+  renderReservaPanel();
+  toast('🔒 Reservado. Ciérralo en el admin cuando el cliente venga.');
 }
 // ═══════════════════════════════════════════════
 

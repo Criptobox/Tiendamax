@@ -101,7 +101,10 @@ class DatosDelClienteTest(unittest.TestCase):
         self.assertNotIn("pill('whatsapp'", self.admin)
 
     def test_el_motor_guarda_lo_que_recibe(self):
-        m = re.search(r"function registrarVentaPedido\(items,\s*cliente\)", self.ui)
+        # Lo que importa es que reciba el cliente, no cuántos parámetros tenga:
+        # las ventas que salen de una reserva pasan un tercero para que no se
+        # vuelva a descontar el stock (ya salió al mandar el vale).
+        m = re.search(r"function registrarVentaPedido\(items,\s*cliente\b[^)]*\)", self.ui)
         self.assertIsNotNone(m, "registrarVentaPedido debe aceptar el cliente")
         self.assertIn("venta.cliente", self.ui, "el nombre debe guardarse en la venta")
         self.assertIn("venta.telefono", self.ui, "el teléfono debe guardarse en la venta")

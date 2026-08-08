@@ -765,7 +765,11 @@ function _ventaItems(venta) {
 // Registra un pedido con uno o varios productos como UNA sola venta (un vale).
 // `cliente` es opcional: {nombre, tel}. Se guarda SOLO en localStorage — ver
 // más abajo, en el bloque que sube el pedido a Firebase.
-function registrarVentaPedido(items, cliente) {
+/* `opts.stockYaDescontado`: la venta viene de una reserva. Al mandar el vale
+   la unidad ya salió del stock —ese es el sentido de reservar— así que
+   restarla otra vez aquí la contaría dos veces y el catálogo diría que quedan
+   menos de las que hay. Cualquier otra venta sigue descontando como siempre. */
+function registrarVentaPedido(items, cliente, opts) {
     items = (items || []).filter(it => it && it.productoId);
     if (!items.length) { mostrarNotificacion('⚠️ Agrega al menos un producto', 'error'); return; }
     const detalle = items.map(it => {
@@ -809,7 +813,7 @@ function registrarVentaPedido(items, cliente) {
         if (tel.length >= 6) venta.telefono = tel;
     }
     guardarVenta(venta);
-    detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
+    if (!(opts && opts.stockYaDescontado)) detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
     renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${detalle.length} producto${detalle.length > 1 ? 's' : ''}`);
 

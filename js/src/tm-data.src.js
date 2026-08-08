@@ -870,6 +870,43 @@ async function hashPassword(password, salt) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+/* El stock que este navegador cambió y todavía no se ha publicado gana
+   siempre al de productos.json.
+
+   Sin esto, cualquier recarga del catálogo desde la red revive stock que ya
+   está comprometido. Se vio con las reservas: mandas el vale, la unidad sale
+   del stock, abres el admin y el motor baja productos.json —donde ese
+   descuento aún no está, porque no se ha sincronizado— y el producto vuelve a
+   aparecer disponible. Lo mismo le pasaba a cualquier ajuste de stock hecho a
+   mano en otra pestaña.
+
+   `productosModificados` es exactamente la lista de "cambiado aquí, no subido
+   todavía", así que para esos ids el número remoto es viejo por definición.
+   Solo se conserva el stock: el resto de campos del remoto sí son los buenos
+   (los rellena la sincronización o el propio admin). */
+function _tmConservarStockLocal(remotos) {
+    let ids = [];
+    try {
+        const raw = JSON.parse(localStorage.getItem('productosModificados') || '[]');
+        if (Array.isArray(raw)) ids = raw.map(String);
+    } catch (e) { return remotos; }
+    if (!ids.length) return remotos;
+    let locales = [];
+    try {
+        const raw = JSON.parse(localStorage.getItem('productos') || '[]');
+        if (Array.isArray(raw)) locales = raw;
+    } catch (e) { return remotos; }
+    if (!locales.length) return remotos;
+    const porId = {};
+    locales.forEach(p => { porId[String(p.id)] = p; });
+    remotos.forEach(p => {
+        if (ids.indexOf(String(p.id)) === -1) return;
+        const l = porId[String(p.id)];
+        if (l && l.stock !== undefined) p.stock = l.stock;
+    });
+    return remotos;
+}
+
 async function cargarDatosDesdeGitHub() {
     // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
     const ghUser = localStorage.getItem('githubUser');
@@ -1026,6 +1063,7 @@ async function cargarDatosDesdeGitHub() {
                 if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
+            _tmConservarStockLocal(productos);
             localStorage.setItem('productos', JSON.stringify(productos));
             // Refrescar categorías con conteos reales ahora que productos está listo
             renderizarCategoriasHomeInstant();

@@ -1055,6 +1055,7 @@
       <button class="side-btn" data-view="qr" title="Código QR para imprimir">🔳<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡</button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
+      <button class="side-btn" data-view="reservas" title="Reservas de vales">🔒</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
       <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
       <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
@@ -1193,6 +1194,18 @@
             <div id="qr-cat-box" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px"></div>
           </div>
         </div>
+      </div>
+
+      <!-- RESERVAS
+           Lo que sale de un vale y todavía no es una venta. El stock ya está
+           descontado desde que se mandó el vale, así que aquí solo se cierra:
+           ✅ la venta se hizo (no se vuelve a tocar el stock, ya estaba fuera)
+           o ❌ el cliente no vino (el producto vuelve). Nunca caduca sola: si
+           el cliente pagó y el sistema devolviera el stock por su cuenta,
+           venderías dos veces la misma unidad. -->
+      <div id="view-reservas" class="view">
+        <div class="ph"><div><h2>🔒 Reservas</h2><p id="reservas-sub">Vales enviados que aún no son venta</p></div></div>
+        <div class="section"><div id="reservasContenido"></div></div>
       </div>
 
       <!-- VENTAS -->
@@ -1595,7 +1608,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=e1bbc447"></script>
+<script src="js/tm-bundle.js?v=81ec9e65"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1618,6 +1631,8 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
+<!-- Reservas: mismo archivo que usa vale.html -->
+<script src="js/reservas.js"></script>
 <script src="js/admin-copilot.js?v=52698ada"></script>
 
 <script>
@@ -1693,6 +1708,7 @@ function go(view, btn){
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
+  if(view==='reservas'){ try{ renderReservas(); }catch(e){} }
   if(typeof tmActualizarPendientes==='function'){ try{ tmActualizarPendientes(); }catch(e){} }
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
@@ -2012,6 +2028,107 @@ function tmRestaurarDesdeLogin(){
     if(pwd){ try{ pwd.focus(); }catch(e){} }
   }
 }
+
+/* ══════════ RESERVAS ══════════
+   Una reserva es un vale mandado cuyo cliente aún no ha venido. El stock ya
+   está descontado (lo hizo vale.html al enviarlo), así que aquí solo hay dos
+   salidas y ninguna es automática:
+
+   ✅ Ejecutar la venta → se registra como cualquier otra venta, PERO sin
+      volver a descontar: la unidad salió del stock cuando se hizo el vale, y
+      restarla otra vez la contaría dos veces.
+   ❌ Cancelar → el producto vuelve al stock y queda a la venta.
+
+   A los 3 días una reserva pendiente se marca en rojo. No se cancela sola a
+   propósito: si el cliente ya pagó y el sistema devolviera el stock por su
+   cuenta, venderías dos veces la misma unidad. */
+function renderReservas(){
+  const cont=document.getElementById('reservasContenido');
+  if(!cont||typeof TMReservas==='undefined') return;
+  const todas=TMReservas.lista();
+  const pend=todas.filter(r=>r.estado==='reservada');
+  const sub=document.getElementById('reservas-sub');
+  if(sub) sub.textContent=pend.length?(pend.length+' pendiente'+(pend.length!==1?'s':'')):'Vales enviados que aún no son venta';
+
+  if(!pend.length){
+    const cerradas=todas.filter(r=>r.estado!=='reservada').length;
+    cont.innerHTML='<p style="color:var(--muted);font-size:14px;line-height:1.6">No hay reservas pendientes.'
+      +(cerradas?(' Se cerraron '+cerradas+' antes.'):'')
+      +'<br><small>Se crean solas: elige el producto del catálogo al armar un vale y, al enviarlo, la unidad queda reservada.</small></p>';
+    return;
+  }
+
+  const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  cont.innerHTML=pend.map(r=>{
+    const d=TMReservas.dias(r);
+    const viejo=d>=TMReservas.DIAS_AVISO;
+    const items=(r.items||[]).map(i=>i.cantidad+'× '+esc(i.nombre)).join(' · ');
+    const wa=String(r.telefono||'').replace(/\D/g,'');
+    return '<div style="padding:12px;border:1px solid '+(viejo?'rgba(231,76,60,.5)':'var(--border)')+';border-left:3px solid '+(viejo?'#e74c3c':'var(--gold)')+';border-radius:10px;margin-bottom:10px;background:var(--card2)">'
+      + '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">'
+      +   '<b style="font-size:14px">'+(esc(r.cliente)||'Sin nombre')+'</b>'
+      +   '<span style="font-size:12px;color:'+(viejo?'#ff8f85':'var(--muted)')+'">'+(d===0?'hoy':(d===1?'ayer':'hace '+d+' días'))+'</span>'
+      + '</div>'
+      + '<div style="font-size:13px;color:var(--text);margin-top:5px">'+items+'</div>'
+      + '<div style="font-size:13px;color:var(--gold);margin-top:3px">'+money(r.total)+'</div>'
+      + (viejo?'<div style="font-size:12px;color:#ff8f85;margin-top:6px">⚠️ Lleva '+d+' días sin cerrar. Ese stock está apartado y nadie más lo puede comprar.</div>':'')
+      + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'
+      +   '<button class="btn btn-success" style="flex:1;min-width:130px;justify-content:center" onclick="reservaVender(\''+r.id+'\')">✅ Ejecutar venta</button>'
+      +   '<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="reservaCancelar(\''+r.id+'\')">❌ Cancelar</button>'
+      +   (wa.length>=8?'<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="window.open(\'https://wa.me/'+wa+'\',\'_blank\')">💬 Escribirle</button>':'')
+      + '</div></div>';
+  }).join('');
+}
+
+function _reservaBuscar(id){ return TMReservas.lista().find(r=>r.id===id); }
+
+function reservaVender(id){
+  const r=_reservaBuscar(id);
+  if(!r) return;
+  if(!confirm('¿El cliente ya pagó y se llevó '+(r.items||[]).map(i=>i.cantidad+'× '+i.nombre).join(', ')+'?\n\nSe registra como venta. El stock no cambia: esa unidad ya salió cuando mandaste el vale.')) return;
+  // Marcar PRIMERO. Si se registrara la venta y luego fallara el guardado de
+  // la reserva, quedaría una venta hecha y la reserva todavía pendiente:
+  // volverías a ejecutarla y venderías dos veces lo mismo.
+  const m=TMReservas.marcarVendida(id);
+  if(!m.ok){ mostrarNotificacion('❌ '+m.msg,'error'); return; }
+  const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, comision:i.comision, comisionMoneda:i.comisionMoneda}));
+  // stockYaDescontado: la unidad salió del stock al mandar el vale.
+  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true});
+  renderReservas();
+}
+
+function reservaCancelar(id){
+  const r=_reservaBuscar(id);
+  if(!r) return;
+  if(!confirm('¿Cancelar la reserva de '+(r.cliente||'este cliente')+'?\n\nEl producto vuelve al stock y se podrá vender a otro.')) return;
+  const c=TMReservas.cancelar(id);
+  if(!c.ok){ mostrarNotificacion('❌ '+c.msg,'error'); return; }
+  if(typeof sincronizarConGitHub==='function'){ try{ sincronizarConGitHub(); }catch(e){} }
+  mostrarNotificacion('↩️ Reserva cancelada. El stock volvió.');
+  renderReservas();
+}
+
+/* El vale corre en otra página y descuenta el stock escribiendo en
+   localStorage. El admin lo tiene en memoria y lo vuelca entero al guardar:
+   sin releerlo al volver, el primer guardado del admin pisaría el descuento y
+   el producto reservado volvería a aparecer disponible. */
+window.addEventListener('focus', function(){
+  try{
+    if(typeof productos==='undefined'||!Array.isArray(productos)) return;
+    const disco=JSON.parse(localStorage.getItem('productos')||'null');
+    if(!Array.isArray(disco)||!disco.length) return;
+    let cambios=0;
+    disco.forEach(function(d){
+      const p=productos.find(x=>String(x.id)===String(d.id));
+      if(p && Number(p.stock)!==Number(d.stock)){ p.stock=Number(d.stock); cambios++; }
+    });
+    if(cambios){
+      if(typeof actualizarListaProductos==='function') actualizarListaProductos();
+      const v=document.querySelector('.view.active');
+      if(v&&v.id==='view-reservas') renderReservas();
+    }
+  }catch(e){}
+});
 
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
@@ -5094,6 +5211,8 @@ window.pubToggleSinPublicar=pubToggleSinPublicar;
 // Las llaman los onclick del HTML que genera este mismo bloque; sin
 // exportarlas el botón existe pero no hace nada (el bloque es un IIFE).
 window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.pubShareReset=pubShareReset;
+// Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
+window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
 window.anSubsDedup=anSubsDedup; window.anSubsLimpiarTokens=anSubsLimpiarTokens; window.anSubsBorrarTodos=anSubsBorrarTodos; window.anSubsBorrarUno=anSubsBorrarUno;
 })();
 </script>
