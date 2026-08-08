@@ -236,6 +236,26 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     <input type="text" id="histBuscar" placeholder="🔍 Buscar por nombre, teléfono o producto" oninput="filtrarHist()" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px;color:#fff;font-size:13px;margin-bottom:12px">
     <div class="sec-body" id="histBody"><div class="hist-empty">Aún no hay vales guardados</div></div>
   </div>
+
+  <!-- Copia de seguridad.
+       El historial vive SOLO en este navegador: no hay servidor donde
+       guardarlo, y subirlo a Firebase lo dejaría público (nombres y teléfonos
+       de clientes incluidos). O sea que borrar los datos del navegador, o
+       cambiar de móvil, se lo lleva entero — y así pasó. Un archivo que te
+       bajas es la única copia que no depende de este navegador. -->
+  <div class="sec" style="margin-top:14px">
+    <div class="sec-hdr"><div class="dot"></div>COPIA DE SEGURIDAD</div>
+    <div class="sec-body">
+      <p style="font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:12px">
+        El historial se guarda <b>solo en este navegador</b>. Si borras los datos o cambias de móvil, se pierde.
+        Bájate el archivo de vez en cuando y guárdalo donde quieras.
+      </p>
+      <button class="btn-ghost" style="margin-top:0" onclick="exportarHist()">📥 Bajar copia del historial</button>
+      <button class="btn-ghost" style="margin-top:8px" onclick="document.getElementById('histImportFile').click()">📤 Restaurar desde una copia</button>
+      <input type="file" id="histImportFile" accept="application/json,.json" style="display:none" onchange="importarHist(this)">
+      <p id="histBackupMsg" style="font-size:12px;line-height:1.5;margin-top:10px"></p>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL FORMULARIO -->
@@ -681,13 +701,74 @@ function enviarValeWA(){
   guardarHist();
 }
 
+const HIST_MAX=200;
+function leerHist(){
+  // Un JSON corrupto reventaba aquí y se llevaba por delante el guardado del
+  // vale que se acababa de enviar, sin decir nada.
+  try{ const h=JSON.parse(localStorage.getItem('valesMax')||'[]'); return Array.isArray(h)?h:[]; }
+  catch(e){ return []; }
+}
 function guardarHist(){
-  const hist=JSON.parse(localStorage.getItem('valesMax')||'[]');
+  const hist=leerHist();
   hist.unshift({cliente:g('vCliente'),telefono:g('vTelefono'),articulo:g('vArticulo').split('\n')[0],total:document.getElementById('vTotal').textContent,fecha:g('vFecha'),ts:Date.now()});
-  localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,30)));
+  // Sin este try, el navegador sin espacio tiraba una excepción y el vale
+  // desaparecía en silencio: el toast de "copiado" ya había salido, así que
+  // parecía que todo había ido bien. Si falla hay que decirlo, porque es un
+  // vale de un cliente real que ya no está en ningún sitio.
+  try{
+    localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,HIST_MAX)));
+  }catch(e){
+    try{ localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,30))); toast('⚠️ Poco espacio: recorté el historial a 30 vales'); }
+    catch(e2){ toast('❌ No pude guardar el vale en el historial (navegador sin espacio)'); }
+  }
+}
+
+function exportarHist(){
+  const hist=leerHist();
+  const out=document.getElementById('histBackupMsg');
+  if(!hist.length){ if(out){ out.textContent='No hay nada que copiar todavía.'; out.style.color='var(--muted)'; } return; }
+  const hoy=new Date().toISOString().slice(0,10);
+  const blob=new Blob([JSON.stringify({tipo:'tiendamax-vales',v:1,exportado:Date.now(),vales:hist},null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='vales-tiendamax-'+hoy+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  if(out){ out.textContent='✅ Bajados '+hist.length+' vales. Guarda ese archivo fuera del móvil.'; out.style.color='var(--green-light)'; }
+}
+
+function importarHist(input){
+  const out=document.getElementById('histBackupMsg');
+  const say=(t,c)=>{ if(out){ out.textContent=t; out.style.color=c||'var(--muted)'; } };
+  const f=input.files&&input.files[0];
+  input.value='';                       // permite reintentar el mismo archivo
+  if(!f) return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    let d=null;
+    try{ d=JSON.parse(fr.result); }catch(e){}
+    const traidos=d&&Array.isArray(d.vales)?d.vales.filter(v=>v&&typeof v==='object'):null;
+    if(!traidos){ say('❌ Ese archivo no es una copia de vales.','#ff6b6b'); return; }
+    // Se MEZCLA, no se reemplaza: restaurar una copia vieja no puede borrar
+    // los vales que se hicieron después de bajarla. La clave es el momento
+    // exacto más el cliente, que es lo único único que tiene un vale.
+    const hist=leerHist();
+    const clave=v=>String(v.ts||'')+'|'+String(v.cliente||'');
+    const vistos=new Set(hist.map(clave));
+    let nuevos=0;
+    traidos.forEach(v=>{ if(!vistos.has(clave(v))){ hist.push(v); vistos.add(clave(v)); nuevos++; } });
+    hist.sort((a,b)=>(b.ts||0)-(a.ts||0));
+    try{
+      localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,HIST_MAX)));
+    }catch(e){ say('❌ El navegador no tiene espacio para guardar la copia.','#ff6b6b'); return; }
+    renderHist();
+    say(nuevos?('✅ Restaurados '+nuevos+' vales que no tenías. Total: '+Math.min(hist.length,HIST_MAX)+'.'):'Ese archivo no traía ningún vale que no tuvieras ya.','#3ddc84');
+  };
+  fr.onerror=()=>say('❌ No pude leer el archivo.','#ff6b6b');
+  fr.readAsText(f);
 }
 function renderHist(filtro){
-  const hist=JSON.parse(localStorage.getItem('valesMax')||'[]');
+  const hist=leerHist();
   const body=document.getElementById('histBody');
   if(!hist.length){body.innerHTML='<div class="hist-empty">Aún no hay vales guardados</div>';return;}
   // Escapa datos del cliente para evitar inyección de HTML/JS al mostrar el historial

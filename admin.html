@@ -1306,6 +1306,21 @@
       <!-- CONFIGURACIÓN -->
       <div id="view-config" class="view">
         <div class="ph"><div><h2>⚙️ Configuración</h2><p>GitHub, tasa MN y WhatsApp</p></div></div>
+
+        <!-- Instalar la app de gestión.
+             Los accesos directos del icono (Nuevo Vale / Agregar producto /
+             Publicar) solo existen si la app está INSTALADA, y Chrome esconde
+             "Instalar app" en el menú de tres puntos, donde no se ve. Peor: si
+             ya tienes instalada la tienda, a veces ofrece "Añadir acceso
+             directo", que es un marcador y NO trae menú. Este botón usa el
+             evento del navegador, así que o instala de verdad, o dice por qué
+             no puede — en vez de dejarte adivinando. -->
+        <div class="section" id="tmInstalarBox" style="margin-bottom:16px">
+          <h3>📲 App de gestión</h3>
+          <p id="tmInstalarMsg" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px">Comprobando…</p>
+          <button class="btn btn-primary" id="tmInstalarBtn" style="width:100%;display:none" onclick="tmInstalarApp()">📲 Instalar app de gestión</button>
+        </div>
+
         <div class="grid-2">
           <div class="section">
             <h3>🔗 GitHub</h3>
@@ -5226,6 +5241,62 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(function(){});
   });
 }
+
+/* Instalación de la app de gestión.
+   El evento beforeinstallprompt es la ÚNICA señal fiable de que Chrome
+   considera la página instalable. Guardarlo y ofrecerlo en un botón evita las
+   dos formas de fallar en silencio: que el dueño no encuentre "Instalar app"
+   en el menú de tres puntos, y que Chrome le ofrezca "Añadir acceso directo"
+   —un marcador sin menú de accesos— porque ya tiene instalada la tienda. */
+(function(){
+  var guardado = null;
+  function msg(txt, mostrarBtn){
+    var p = document.getElementById('tmInstalarMsg');
+    var b = document.getElementById('tmInstalarBtn');
+    if(p) p.innerHTML = txt;
+    if(b) b.style.display = mostrarBtn ? '' : 'none';
+  }
+  var instalada = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    guardado = e;
+    msg('Instálala y tendrás su propio icono: manteniéndolo pulsado salen <b>Nuevo Vale</b>, <b>Agregar producto</b> y <b>Publicar</b>.', true);
+  });
+
+  window.tmInstalarApp = function(){
+    if(!guardado) return;
+    guardado.prompt();
+    guardado.userChoice.then(function(r){
+      if(r && r.outcome === 'accepted'){
+        msg('✅ Instalada. Busca el icono oscuro <b>Gestión</b> en tu pantalla de inicio y mantenlo pulsado.', false);
+      } else {
+        msg('Cancelaste la instalación. Puedes volver a pulsar el botón cuando quieras.', true);
+      }
+      guardado = null;
+    }).catch(function(){});
+  };
+
+  window.addEventListener('appinstalled', function(){
+    msg('✅ Instalada. Busca el icono oscuro <b>Gestión</b> en tu pantalla de inicio y mantenlo pulsado.', false);
+  });
+
+  // Si a los 3 s el navegador no ha dicho nada, es que no la va a ofrecer, y
+  // hay que decir por qué en vez de dejar el botón muerto.
+  setTimeout(function(){
+    if(guardado) return;
+    if(instalada){
+      msg('✅ Ya la estás usando instalada. Mantén pulsado su icono para ver los accesos directos.', false);
+    } else if(!('serviceWorker' in navigator)){
+      msg('Este navegador no puede instalar apps. En Android usa <b>Chrome</b>.', false);
+    } else {
+      msg('Tu navegador no está ofreciendo instalarla. Suele ser una de tres:<br>'
+        + '• <b>Ya está instalada</b> — busca el icono oscuro <b>Gestión</b>.<br>'
+        + '• Estás en <b>iPhone</b>: usa Compartir → <i>Añadir a pantalla de inicio</i>.<br>'
+        + '• Estás en modo <b>incógnito</b> o en un navegador que no es Chrome.', false);
+    }
+  }, 3000);
+})();
 </script>
 </body>
 </html>
