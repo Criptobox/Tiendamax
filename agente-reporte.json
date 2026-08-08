@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-07T09:53:14.606722+00:00",
+  "generado": "2026-08-08T09:29:27.237767+00:00",
   "productos": 119,
   "urgentes": 2,
   "advertencias": 51,
-  "info": 7,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 51 advertencia(s), 7 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 51 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
