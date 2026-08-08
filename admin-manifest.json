@@ -1,0 +1,75 @@
+{
+    "id": "/admin.html",
+    "name": "TiendaMax Gestión",
+    "short_name": "Gestión",
+    "description": "Panel de administración de TiendaMax: productos, ventas, vales y publicaciones.",
+    "start_url": "/admin.html",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a12",
+    "theme_color": "#0a0a12",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "lang": "es",
+    "icons": [
+        {
+            "src": "/iconos/admin-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/iconos/admin-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/iconos/admin-icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Nuevo Vale",
+            "short_name": "Vale",
+            "description": "Arma el vale del cliente y envíalo",
+            "url": "/vale.html",
+            "icons": [
+                {
+                    "src": "/iconos/atajo-vale-96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Agregar producto",
+            "short_name": "Agregar",
+            "description": "Abre el formulario de producto nuevo",
+            "url": "/admin.html#agregar",
+            "icons": [
+                {
+                    "src": "/iconos/atajo-agregar-96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Ventas",
+            "short_name": "Ventas",
+            "description": "Registra una venta y mira lo del día",
+            "url": "/admin.html#ventas",
+            "icons": [
+                {
+                    "src": "/iconos/atajo-panel-96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ]
+}

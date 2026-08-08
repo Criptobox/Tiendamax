@@ -9,6 +9,16 @@
 <title>TiendaMax Admin</title>
 <script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
+<!-- App aparte, con su propio icono y sus accesos directos (mantener pulsado
+     el icono → Nuevo Vale / Agregar producto / Ventas). Es un manifest propio
+     y NO el de la tienda: los accesos del admin no tienen por qué salirle a
+     cada cliente que instala TiendaMax. El icono es oscuro y dorado a
+     propósito, para no confundirlo con el naranja de la tienda. -->
+<link rel="manifest" href="/admin-manifest.json">
+<link rel="apple-touch-icon" href="/iconos/admin-icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gestión">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -1674,6 +1684,18 @@ document.querySelectorAll('.side-btn').forEach(b=>{
   if(!b.dataset.view) return; // botones con acción propia (p.ej. Vale abre vale.html)
   b.addEventListener('click',()=>go(b.dataset.view, b));
 });
+
+/* Abrir directo en una vista: /admin.html#agregar, #ventas, #productos…
+   Es lo que hace que los accesos directos del icono (admin-manifest.json)
+   sirvan de algo: sin esto todos caerían en Inicio y habría que navegar a
+   mano igual. El login es un modal por encima, así que la vista ya queda
+   puesta detrás y al cerrarlo se aterriza donde toca. */
+function _vistaDeLaUrl(){
+  const v = String(location.hash||'').replace(/^#/,'').trim();
+  if(v && document.getElementById('view-'+v)) go(v);
+}
+_vistaDeLaUrl();
+window.addEventListener('hashchange', _vistaDeLaUrl);
 
 /* ============ Carga de datos reales ============ */
 function lsProductos(){ try{ const p=JSON.parse(localStorage.getItem('productos')||'null'); if(Array.isArray(p)&&p.length) return p; }catch(e){} return null; }
@@ -5192,6 +5214,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 // Login: sobreescribir de UNA (no dentro de DOMContentLoaded) para ganar sobre el
 // abrirLoginAdmin del motor, que redirige a admin.html. Así admin2 nunca se sale.
 window.abrirLoginAdmin=function(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('hidden'); var i=document.getElementById('adminPassword'); if(i) setTimeout(function(){ try{i.focus();}catch(e){} },100); } };
+
+/* Service worker: sin uno, Android no ofrece "Instalar app" y sin instalar no
+   hay icono donde colgar los accesos directos. Normalmente ya está activo con
+   scope "/" porque lo registra index.html, pero solo si se ha pasado por la
+   tienda en este navegador — abrir el admin directo se quedaba sin él.
+   Es el MISMO sw.js, que sirve el HTML network-first, así que registrarlo aquí
+   no cambia en nada cómo se carga el panel ni puede dejarlo viejo. */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(function(){});
+  });
+}
 </script>
 </body>
 </html>
