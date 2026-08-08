@@ -2907,14 +2907,14 @@
   {
     "id": 1784825579392,
     "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784825577280.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp"
+      "https://tiendamax.org/imagenes/img_1784825577280.webp"
     ],
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "SEGURIDAD",
