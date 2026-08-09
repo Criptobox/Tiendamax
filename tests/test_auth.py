@@ -177,6 +177,19 @@ class AuthTest(unittest.TestCase):
         self.assertIn("function tmCuentaProbar()", ADMIN)
         self.assertIn("Publica el firebase-rules.json", ADMIN)
 
+    def test_avisa_si_entraste_sin_la_cuenta(self):
+        """La contraseña local sigue valiendo, pero desde que /ventas y
+        /privado piden la cuenta esa puerta ya NO abre lo mismo: se entra al
+        panel y las ventas de Firebase, las reservas y el historial de vales
+        devuelven 401 sin decir nada. El panel se ve entero y funciona a
+        medias, que es la peor forma de fallar."""
+        self.assertIn("function tmAvisoSinCuenta()", ADMIN)
+        self.assertIn("Entrar con mi cuenta", ADMIN, "y con la forma de arreglarlo al lado")
+        ui = (ROOT / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
+        self.assertIn("tmAvisoSinCuenta", ui,
+                      "tiene que saltar al abrir el panel, que es cuando pasa, "
+                      "no solo al cambiar de sesión")
+
     def test_el_login_no_deja_a_nadie_fuera(self):
         """La contraseña local sigue valiendo. Cambiar el login de golpe dejaría
         fuera a quien todavía no haya creado su cuenta — y el panel no tiene

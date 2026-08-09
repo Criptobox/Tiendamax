@@ -1655,7 +1655,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=c8935857"></script>
+<script src="js/tm-bundle.js?v=1ffe66e1"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -2091,6 +2091,33 @@ function tmRestaurarDesdeLogin(){
 
 /* ══════════ CUENTA (Firebase Auth) ══════════ */
 function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
+
+/* Aviso de "entraste por la puerta de atrás".
+   La contraseña vieja sigue valiendo a propósito, para que nadie se quede
+   fuera mientras monta su cuenta. Pero desde que /ventas y /privado piden la
+   cuenta, esa puerta ya NO abre lo mismo: entras al panel y las ventas de
+   Firebase, las reservas y el historial de vales devuelven 401 sin decir nada.
+   El panel se ve entero y a medias funciona, que es la peor forma de fallar.
+   Esto lo dice en la cara, con el botón para arreglarlo al lado. */
+function tmAvisoSinCuenta(){
+  const hay = (typeof TMAuth!=='undefined') && TMAuth.usuario();
+  let box = document.getElementById('tmSinCuenta');
+  if(hay){ if(box) box.remove(); return; }
+  if(box) return;
+  const main = document.querySelector('main.content') || document.body;
+  box = document.createElement('div');
+  box.id = 'tmSinCuenta';
+  box.style.cssText='margin:0 0 14px;padding:12px 14px;border:1px solid rgba(245,166,35,.45);background:rgba(245,166,35,.10);border-radius:12px;font-size:13px;line-height:1.5;display:flex;gap:10px;align-items:center;flex-wrap:wrap';
+  box.innerHTML='<span style="flex:1;min-width:200px">⚠️ Entraste con la <b>contraseña de este navegador</b>, sin tu cuenta. '
+    + 'Tus <b>ventas</b>, <b>reservas</b> e <b>historial de vales</b> guardados en Firebase no se están leyendo.</span>';
+  const btn=document.createElement('button');
+  btn.type='button'; btn.className='btn btn-primary';
+  btn.style.cssText='padding:8px 15px;font-size:12.5px';
+  btn.textContent='Entrar con mi cuenta';
+  btn.onclick=()=>{ if(typeof go==='function') go('config'); const e=document.getElementById('tmCuentaEmail'); if(e) setTimeout(()=>{ try{ e.scrollIntoView({block:'center'}); e.focus(); }catch(x){} },150); };
+  box.appendChild(btn);
+  main.insertBefore(box, main.firstChild);
+}
 
 /* Prueba cada eslabón por separado y enseña el código HTTP de cada uno.
    "Escritura rechazada" puede ser media docena de cosas —reglas sin publicar,
@@ -5433,7 +5460,8 @@ window.renderReservas=renderReservas; window.reservaVender=reservaVender; window
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
 window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas; window.tmCuentaDiagnostico=tmCuentaDiagnostico;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
-if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(tmCuentaPintar)).catch(()=>{
+window.tmAvisoSinCuenta=tmAvisoSinCuenta;
+if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(u=>{ tmCuentaPintar(u); tmAvisoSinCuenta(); })).catch(()=>{
   const e=document.getElementById('tmCuentaEstado');
   if(e) e.textContent='No pude cargar Firebase Auth. Revisa la conexión o la configuración de Firebase en esta misma página.';
 }); }

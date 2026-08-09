@@ -329,6 +329,10 @@ async function _checkPasswordSync() {
 }
 
 function abrirAdminPanel() {
+    /* Si se entró con la contraseña local, no hay sesión de Firebase y las
+       ventas, reservas y vales guardados ahí devuelven 401 en silencio. El
+       aviso se pinta al abrir el panel, no solo al cambiar de sesión. */
+    setTimeout(() => { try { if (typeof tmAvisoSinCuenta === 'function') tmAvisoSinCuenta(); } catch(e) {} }, 400);
     if (!usuarioAutenticado) { abrirLoginAdmin(); return; }
     const panel = document.getElementById('adminPanel');
     if (!panel) return;
