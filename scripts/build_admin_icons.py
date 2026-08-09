@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Iconos de la app de gestión (admin-manifest.json) y de sus accesos directos.
+"""Iconos de la app de gestión y del vale, y de los accesos directos.
 
-Por qué existe este script en vez de tres PNG sueltos en el repo: el icono de
+Por qué existe este script en vez de unos PNG sueltos en el repo: el icono de
 `vale-manifest.json` se hizo copiando el de la tienda y quedó prácticamente
 idéntico — en la pantalla de inicio no se distingue cuál es cuál. La app de
 gestión tiene que verse distinta *de un vistazo*, a 48dp y sin gafas, o no
 sirve de nada tenerla aparte.
+
+El vale arrastró esa misma copia hasta que se generó aquí: `vale-icon-192.png`
+y `vale-icon-512.png` eran el favicon de la tienda byte a byte. Lo que separa
+un icono de otro a 48dp es la SILUETA, no el color —de ahí que el vale lleve el
+recibo con el pie dentado en vez de la bolsa: se distingue de la tienda y del
+panel aunque el móvil lo pinte del tamaño de una uña.
 
 La marca se conserva: se recorta la bolsa y la "M" del icono de la tienda y se
 pega sobre fondo oscuro, con la bolsa en dorado (--gold del admin). Mismo
@@ -21,6 +27,7 @@ sin tocar el antialiasing de los bordes.
 
 Genera, en iconos/:
   admin-icon-192.png, admin-icon-512.png, admin-icon-maskable-512.png
+  vale-icon-192.png, vale-icon-512.png, vale-icon-maskable-512.png
   atajo-vale-96.png, atajo-publicar-96.png, atajo-agregar-96.png
 """
 from pathlib import Path
@@ -36,6 +43,14 @@ FONDO_B = (8, 8, 18)        # #0a0a12
 ORO = (201, 169, 110)       # --gold
 ORO_CLARO = (232, 205, 152)
 ROJO = (218, 24, 28)
+
+# El vale usa su propia paleta (la de vale.html): negro cálido en vez del
+# negro azulado del panel. Aun así el que separa los dos iconos es el dibujo,
+# no estos grados de diferencia — el tono solo ayuda cuando ya los tienes uno
+# al lado del otro en la pantalla de inicio.
+VALE_FONDO_A = (28, 23, 18)
+VALE_FONDO_B = (13, 13, 13)   # --bg de vale.html
+NARANJA = (255, 107, 53)      # #FF6B35, el mismo de los botones del vale
 
 # Umbrales de G-B. Por debajo del bajo es figura segura, por encima del alto es
 # fondo seguro; en medio se interpola para no dejar el borde dentado.
@@ -86,7 +101,7 @@ def _recolorear(src, mask):
     return out
 
 
-def _fondo(lado, radio_frac=0.22):
+def _fondo(lado, radio_frac=0.22, desde=FONDO_A, hasta=FONDO_B):
     """Cuadrado redondeado con degradado vertical oscuro."""
     base = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
     grad = Image.new("RGBA", (lado, lado))
@@ -96,9 +111,9 @@ def _fondo(lado, radio_frac=0.22):
         d.line(
             [(0, y), (lado, y)],
             fill=(
-                int(FONDO_A[0] + (FONDO_B[0] - FONDO_A[0]) * t),
-                int(FONDO_A[1] + (FONDO_B[1] - FONDO_A[1]) * t),
-                int(FONDO_A[2] + (FONDO_B[2] - FONDO_A[2]) * t),
+                int(desde[0] + (hasta[0] - desde[0]) * t),
+                int(desde[1] + (hasta[1] - desde[1]) * t),
+                int(desde[2] + (hasta[2] - desde[2]) * t),
                 255,
             ),
         )
@@ -138,21 +153,76 @@ def _lienzo_atajo():
     return img, ImageDraw.Draw(img)
 
 
-def atajo_vale():
-    """Un recibo con el borde de abajo en zigzag."""
-    img, d = _lienzo_atajo()
-    d.rounded_rectangle([26, 20, 70, 66], radius=4, fill=ORO)
-    dientes = [(26, 66)]
-    x = 26
-    while x < 70:
-        dientes.append((x + 5.5, 76))
-        dientes.append((x + 11, 66))
-        x += 11
-    dientes.append((70, 66))
+def _recibo(d, x0, y0, x1, y1, hueco=FONDO_B, ultima=None):
+    """Un recibo con el borde de abajo en zigzag, dentro de la caja dada.
+
+    Toda la geometría son fracciones de la caja para que el acceso directo de
+    96px y el icono de app de 512 dibujen exactamente la misma figura. Si se
+    tocan a ojo por separado dejan de parecer la misma cosa, que es justo lo
+    que tienen que parecer: abren la misma herramienta.
+
+    `ultima` pinta la tercera raya de otro color (el naranja del vale) — a
+    tamaño de app se lee como la línea del total y mete un segundo color que
+    ayuda a separarlo del icono del panel.
+    """
+    w, h = x1 - x0, y1 - y0
+    radio = max(2, round(w * 4 / 44))
+    d.rounded_rectangle([x0, y0, x1, y1], radius=radio, fill=ORO)
+
+    # 4 dientes exactos a lo ancho, cada uno bajando un 22% del ancho. El
+    # polígono empieza un radio MÁS ARRIBA del borde: si arranca justo en y1
+    # las dos esquinas de abajo ya vienen redondeadas del rectángulo y quedan
+    # dos muescas cuadradas a los lados del zigzag.
+    paso, hondo, techo = w / 4, w * 10 / 44, y1 - radio
+    dientes = [(x0, techo), (x0, y1)]
+    for i in range(4):
+        dientes.append((x0 + paso * i + paso / 2, y1 + hondo))
+        dientes.append((x0 + paso * (i + 1), y1))
+    dientes.append((x1, techo))
     d.polygon(dientes, fill=ORO)
-    for y in (32, 41, 50):
-        d.line([(35, y), (61, y)], fill=FONDO_B, width=4)
+
+    grosor = max(1, round(w * 4 / 44))
+    for i, fy in enumerate((12 / 46, 21 / 46, 30 / 46)):
+        color = ultima if (ultima and i == 2) else hueco
+        d.line([(x0 + w * 9 / 44, y0 + h * fy), (x0 + w * 35 / 44, y0 + h * fy)],
+               fill=color, width=grosor)
+
+
+def atajo_vale():
+    """El recibo, al tamaño del menú de accesos directos."""
+    img, d = _lienzo_atajo()
+    _recibo(d, 26, 20, 70, 66)
     img.save(ICONOS / "atajo-vale-96.png")
+
+
+def icono_vale():
+    """Icono de la app del vale (vale-manifest.json).
+
+    Antes era una copia literal del favicon de la tienda: mismo md5. En la
+    pantalla de inicio salían dos bolas naranjas idénticas y no había forma de
+    saber cuál abría el vale.
+    """
+    # El zigzag son diagonales: dibujado directo a 512 sale dentado. Se dibuja
+    # a 4x sobre transparencia y se baja con LANCZOS, que es lo que le da el
+    # borde limpio.
+    ss, caja = 4, (118, 96, 394, 384)   # ~54% de ancho; el pie dentado llega a y=447
+    figura = Image.new("RGBA", (512 * ss, 512 * ss), (0, 0, 0, 0))
+    _recibo(ImageDraw.Draw(figura), *[v * ss for v in caja],
+            hueco=(0, 0, 0, 0), ultima=NARANJA)
+    figura = figura.resize((512, 512), Image.LANCZOS)
+
+    normal = _fondo(512, desde=VALE_FONDO_A, hasta=VALE_FONDO_B)
+    normal.alpha_composite(figura)
+
+    # `maskable`: Android recorta hasta un 20% por lado, así que la figura va
+    # más pequeña y centrada y el fondo llena el cuadrado sin redondear.
+    mask_icon = _fondo(512, radio_frac=0, desde=VALE_FONDO_A, hasta=VALE_FONDO_B)
+    mask_icon.alpha_composite(figura.resize((330, 330), Image.LANCZOS), (91, 91))
+
+    normal.save(ICONOS / "vale-icon-512.png")
+    normal.resize((192, 192), Image.LANCZOS).save(ICONOS / "vale-icon-192.png")
+    mask_icon.save(ICONOS / "vale-icon-maskable-512.png")
+    print("✅ vale-icon-192/512 + maskable-512")
 
 
 def atajo_publicar():
@@ -180,6 +250,7 @@ if __name__ == "__main__":
     if not ORIGEN.exists():
         raise SystemExit(f"No encuentro {ORIGEN}")
     icono_app()
+    icono_vale()
     atajo_vale()
     atajo_publicar()
     atajo_agregar()

@@ -185,6 +185,47 @@ class ManifiestosTest(unittest.TestCase):
             )
             self.assertTrue(ruta_de(src).exists(), f"no existe {src}")
 
+    def test_cada_app_tiene_su_propio_icono(self):
+        """Las tres apps del mismo origen no pueden verse iguales.
+
+        La comprobación es por CONTENIDO, no por ruta: `vale-icon-192.png` y
+        `favicon-192.png` eran archivos distintos con el mismo md5 —una copia
+        literal del icono de la tienda— y en la pantalla de inicio salían dos
+        bolas naranjas idénticas. Comparar nombres no lo veía.
+
+        Se miran los iconos del manifest y los del <head> a la vez porque
+        Chrome usa unos u otros según instale la app o cree un simple acceso, y
+        el dueño no controla cuál de los dos le toca.
+        """
+        import hashlib
+
+        def iconos_de(manifest, pagina):
+            srcs = [i["src"] for i in cargar(manifest).get("icons", [])]
+            html = (ROOT / pagina).read_text(encoding="utf-8")
+            # `[^"]*` después de la captura: en index.html los href llevan
+            # ?v=hash de cache-busting. Sin eso el patrón no casaba NINGÚN
+            # favicon de la tienda y la prueba pasaba sin mirar nada.
+            srcs += re.findall(
+                r'<link rel="(?:icon|apple-touch-icon)"[^>]*href="([^"?]+)[^"]*"', html)
+            huellas = {}
+            for s in srcs:
+                p = ruta_de(s)
+                self.assertTrue(p.exists(), f"{manifest}/{pagina}: no existe {s}")
+                huellas.setdefault(hashlib.md5(p.read_bytes()).hexdigest(), s)
+            return huellas
+
+        vistos = {}
+        for manifest, pagina in MANIFIESTOS.items():
+            for huella, src in iconos_de(manifest, pagina).items():
+                if huella in vistos:
+                    otra, otro_src = vistos[huella]
+                    self.fail(
+                        f"{pagina} usa {src}, que es byte a byte el mismo dibujo "
+                        f"que {otro_src} de {otra}: en la pantalla de inicio los "
+                        "dos accesos se ven idénticos"
+                    )
+                vistos[huella] = (pagina, src)
+
     def test_admin_abre_la_vista_del_ancla(self):
         """Sin esto los accesos directos con # caen todos en Inicio y no sirven."""
         admin = (ROOT / "admin.html").read_text(encoding="utf-8")
