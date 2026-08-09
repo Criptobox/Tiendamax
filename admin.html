@@ -9,7 +9,7 @@
 <title>TiendaMax Admin</title>
 <!-- Firebase Auth: la cuenta del dueño. Va lo primero porque el login y
      todas las lecturas privadas (/ventas, /privado) la necesitan. -->
-<script src="js/auth.js?v=bb07b379"></script>
+<script src="js/auth.js?v=3781b2ec"></script>
 <script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <!-- App aparte, con su propio icono y sus accesos directos (mantener pulsado
@@ -2107,7 +2107,9 @@ async function tmCuentaEntrar(){
   _cuentaMsg('⏳ Entrando…');
   const r=await TMAuth.entrar(e,p);
   if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Listo.','#1DA854'); tmCuentaPintar(r.user); }
-  else _cuentaMsg('❌ '+esc(r.msg),'#e74c3c');
+  // Sin esc(): los mensajes de auth.js traen negritas y saltos a propósito,
+  // porque uno de ellos son los pasos de la consola de Firebase.
+  else _cuentaMsg('❌ '+r.msg,'#e74c3c');
 }
 
 async function tmCuentaCrear(){
@@ -2119,14 +2121,14 @@ async function tmCuentaCrear(){
   _cuentaMsg('⏳ Creando…');
   const r=await TMAuth.crearCuenta(e,p);
   if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Cuenta creada y sesión iniciada.','#1DA854'); tmCuentaPintar(r.user); }
-  else _cuentaMsg('❌ '+esc(r.msg),'#e74c3c');
+  else _cuentaMsg('❌ '+r.msg,'#e74c3c');
 }
 
 async function tmCuentaRecuperar(){
   const e=($('#tmCuentaEmail')||{}).value||'';
   if(!e.trim()){ _cuentaMsg('Escribe primero tu correo.','#f5a623'); return; }
   const r=await TMAuth.recuperar(e);
-  _cuentaMsg(r.ok?('📧 Te mandé un correo a '+esc(e.trim())+'. Mira también en spam.'):('❌ '+esc(r.msg)), r.ok?'#1DA854':'#e74c3c');
+  _cuentaMsg(r.ok?('📧 Te mandé un correo a '+esc(e.trim())+'. Mira también en spam.'):('❌ '+r.msg), r.ok?'#1DA854':'#e74c3c');
 }
 
 async function tmCuentaSalir(){

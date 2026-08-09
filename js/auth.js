@@ -152,9 +152,19 @@
     if (c === 'auth/email-already-in-use') return 'Ya existe una cuenta con ese correo. Entra en vez de crearla.';
     if (c === 'auth/weak-password') return 'La contraseña es muy corta: mínimo 6 caracteres.';
     if (c === 'auth/network-request-failed') return 'Sin conexión con Firebase. Revisa internet.';
+    // Este es el que sale cuando en la consola se activó otro proveedor
+    // (Google, por ejemplo) pero no el de correo. Son interruptores distintos
+    // y conviven sin problema, así que el mensaje da los pasos en vez de
+    // dejarte adivinando cuál falta.
     if (c === 'auth/operation-not-allowed')
-      return 'Falta activar "Correo/contraseña" en la consola de Firebase → Authentication → Sign-in method.';
-    return (e && e.message) || 'Error desconocido.';
+      return 'Falta activar el proveedor <b>Correo/contraseña</b>. Activar Google no vale: son interruptores distintos.<br>'
+           + 'Consola de Firebase → <b>Authentication</b> → pestaña <b>Sign-in method</b> → <b>Add new provider</b> → '
+           + '<b>Email/Password</b> → activa el primer interruptor (el de <i>Email link</i> déjalo apagado) → Guardar.';
+    // Los de arriba están escritos aquí y llevan negritas a propósito. Este
+    // no: es el texto crudo de Firebase, y va escapado por si algún día trae
+    // algo que el panel no debería interpretar como HTML.
+    return String((e && e.message) || 'Error desconocido.')
+      .replace(/[&<>"]/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; });
   }
 
   /* Token fresco para firmar una llamada REST. null si no hay sesión: quien
