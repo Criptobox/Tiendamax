@@ -59,6 +59,47 @@ class BannerOfertaTest(unittest.TestCase):
             "el nombre debe asignarse con textContent, no dentro del innerHTML",
         )
 
+    def test_la_barra_del_banner_no_recorta_la_sombra(self):
+        """La pastilla de la oferta lleva una sombra naranja que sale ~28px por
+        debajo. Si su contenedor acaba con `overflow:hidden`, la sombra se corta
+        justo en el borde y en el móvil se ve una raya horizontal con dos tonos
+        de fondo a cada lado — no un error, solo algo mal hecho.
+
+        Ya pasó una vez y de la forma más tonta: premium-theme.css tenía CUATRO
+        reglas con el selector `html body .urgencia-banner`, dos de ellas
+        poniendo `overflow` con !important. Como empatan en especificidad gana
+        la última del archivo, así que el `overflow:visible` de arriba no hacía
+        nada. Por eso aquí se mira la ÚLTIMA declaración de toda la cascada, no
+        si existe alguna: buscar `visible` con un grep habría dado verde con la
+        raya puesta.
+        """
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "build_css", ROOT / "scripts" / "build_css.py")
+        build_css = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(build_css)
+
+        declaraciones = []
+        for nombre in build_css.ORDEN:
+            ruta = ROOT / "css" / nombre
+            if not ruta.exists():
+                continue
+            texto = re.sub(r"/\*.*?\*/", "", ruta.read_text(encoding="utf-8"), flags=re.S)
+            for m in re.finditer(r"([^{}]*\.urgencia-banner[^{},]*)\{([^{}]*)\}", texto):
+                o = re.search(r"(?<![-\w])overflow\s*:\s*([a-z]+)", m.group(2))
+                if o:
+                    declaraciones.append((nombre, m.group(1).strip()[-60:], o.group(1)))
+
+        self.assertTrue(declaraciones,
+                        "nadie declara overflow en .urgencia-banner: ¿cambió el nombre de la clase?")
+        archivo, selector, valor = declaraciones[-1]
+        self.assertEqual(
+            valor, "visible",
+            f"la última palabra sobre el overflow de la barra la tiene "
+            f"'{selector}' en {archivo}, y dice '{valor}': eso recorta la sombra "
+            f"de la oferta en una raya. Declaraciones en orden de cascada: {declaraciones}",
+        )
+
     def test_la_rotacion_se_para_con_la_pestana_oculta(self):
         m = re.search(r"_rot = setInterval\(function\(\)\{(.*?)\}, ROTACION_MS\)", self.index, re.S)
         self.assertIsNotNone(m, "no se encontró la rotación")
