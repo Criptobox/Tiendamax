@@ -1659,7 +1659,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3d10db09"></script>
+<script src="js/tm-bundle.js?v=34d32b74"></script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1683,7 +1683,7 @@
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js?v=97db060a"></script>
+<script src="js/reservas.js?v=d5e76abf"></script>
 <script src="js/admin-copilot.js?v=168c8ba6"></script>
 
 <script>
@@ -1777,6 +1777,11 @@ document.querySelectorAll('.side-btn').forEach(b=>{
    puesta detrás y al cerrarlo se aterriza donde toca. */
 function _vistaDeLaUrl(){
   const v = String(location.hash||'').replace(/^#/,'').trim();
+  // El vale es una página aparte, no una vista. Viene por aquí porque el
+  // acceso directo tiene que caer dentro del scope de la app (/admin), y
+  // /vale.html no lo está: si apuntara ahí, Chrome descartaría el acceso sin
+  // decir nada. Se abre igual que el botón del lateral.
+  if(v === 'vale'){ try{ history.replaceState(null,'',location.pathname); }catch(e){} window.open('vale.html','_blank'); return; }
   if(v && document.getElementById('view-'+v)) go(v);
 }
 _vistaDeLaUrl();

@@ -277,7 +277,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 <script src="/js/auth.js?v=4c7b6472"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
-<script src="/js/reservas.js?v=97db060a"></script>
+<script src="/js/reservas.js?v=d5e76abf"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
 // Margen sobre la tasa elToque (igual que la tienda: getTasaMN = tasaMN + margenMN).
@@ -742,9 +742,15 @@ function espejarHist(){
     const mapa={};
     leerHist().forEach(v=>{ if(v && v.ts) mapa[claveVale(v)]=v; });
     if(!Object.keys(mapa).length) return;
-    TMAuth.fetchPrivado('/privado/vales.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(mapa)});
+    TMAuth.fetchPrivado('/privado/vales.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(mapa)}).then(r=>{
+      // Si Firebase lo rechaza, el vale se queda SOLO en este navegador y el
+      // dueño no se entera: lo ve en el historial igual. El día que cambie de
+      // móvil, desaparece. Se avisa una vez por sesión, no en cada vale.
+      if(!r.ok && !r.sinSesion && !_avisoEspejo){ _avisoEspejo=true; toast('⚠️ El vale se guardó solo en este dispositivo: '+(r.msg||'')); }
+    });
   }catch(e){}
 }
+let _avisoEspejo=false;
 
 /* Mezcla lo de Firebase con lo de aquí, por la misma clave que usa restaurar
    un archivo: momento + cliente. Nunca borra: un vale que solo está en este

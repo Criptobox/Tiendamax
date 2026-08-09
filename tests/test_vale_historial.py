@@ -80,6 +80,15 @@ class ValeHistorialTest(unittest.TestCase):
         self.assertNotIn("method:'PUT'", c.replace(" ", ""))
         self.assertIn("claveVale(v)", c)
 
+    def test_avisa_si_firebase_rechaza_el_guardado(self):
+        """Un vale rechazado se queda solo en este navegador y en el historial
+        se ve exactamente igual que uno guardado. El dueño se entera el día que
+        cambia de móvil y ya no está."""
+        c = cuerpo("espejarHist")
+        self.assertIn("!r.ok", c)
+        self.assertIn("toast(", c, "y hay que decirlo, no solo apuntarlo")
+        self.assertIn("_avisoEspejo", c, "una vez por sesión, no en cada vale")
+
     def test_sincronizar_no_borra_lo_que_solo_esta_aqui(self):
         """Un vale hecho en este móvil y aún sin subir tiene que sobrevivir a
         traerse los de la nube."""

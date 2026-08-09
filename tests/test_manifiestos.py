@@ -95,6 +95,17 @@ class ManifiestosTest(unittest.TestCase):
             )
             ids[ident] = nombre
 
+    def test_el_scope_no_pisa_al_de_la_tienda(self):
+        """Con los dos en "/", Chrome ve /admin.html dentro de una app ya
+        instalada y ofrece "añadir acceso directo" —un marcador, sin menú— en
+        vez de instalar. Sin instalar no hay accesos directos."""
+        tienda = cargar("manifest.json")["scope"]
+        gestion = cargar("admin-manifest.json")["scope"]
+        self.assertNotEqual(tienda, gestion, "dos apps del mismo origen no pueden compartir scope")
+        self.assertTrue(gestion.startswith(tienda),
+                        "el scope de gestión debe ser una rama del de la tienda")
+        self.assertNotEqual(gestion, "/", "y no puede ser la raíz entera")
+
     def test_accesos_directos(self):
         man = cargar("admin-manifest.json")
         atajos = man.get("shortcuts", [])
@@ -116,7 +127,13 @@ class ManifiestosTest(unittest.TestCase):
                 camino, _, ancla = url.partition("#")
                 p = ROOT / camino.lstrip("/")
                 self.assertTrue(p.exists(), f"'{camino}' no existe en el repo")
-                if ancla:
+                if ancla == "vale":
+                    # El vale es otra página, fuera del scope de la app. Llega
+                    # por un ancla porque un acceso directo fuera de scope lo
+                    # descarta Chrome sin avisar.
+                    self.assertTrue((ROOT / "vale.html").exists())
+                    self.assertIn("window.open('vale.html'", admin)
+                elif ancla:
                     self.assertIn(
                         ancla, vistas,
                         f"'{url}' apunta a la vista '{ancla}', que no existe en admin.html "

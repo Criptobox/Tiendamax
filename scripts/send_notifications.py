@@ -429,7 +429,10 @@ def procesar_admin_requests(messaging_api, database, cola):
         title = str(req.get("title", "")).strip()
         body  = str(req.get("body",  "")).strip()
         link  = str(req.get("url",   "/")).strip() or "/"
-        imagen = req.get("imagen") or None
+        # El panel manda el campo como "image" (así lo llama la API de push);
+        # aquí se leía solo "imagen" y por eso la foto del producto nunca
+        # llegaba a la notificación. Se aceptan los dos nombres.
+        imagen = req.get("imagen") or req.get("image") or None
         if not title or not body:
             ref.child(req_id).delete()
             continue

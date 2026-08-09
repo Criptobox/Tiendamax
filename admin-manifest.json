@@ -4,7 +4,7 @@
     "short_name": "Gestión",
     "description": "Panel de administración de TiendaMax: productos, ventas, vales y publicaciones.",
     "start_url": "/admin.html",
-    "scope": "/",
+    "scope": "/admin",
     "display": "standalone",
     "background_color": "#0a0a12",
     "theme_color": "#0a0a12",
@@ -36,7 +36,7 @@
             "name": "Nuevo Vale",
             "short_name": "Vale",
             "description": "Arma el vale del cliente y envíalo",
-            "url": "/vale.html",
+            "url": "/admin.html#vale",
             "icons": [
                 {
                     "src": "/iconos/atajo-vale-96.png",

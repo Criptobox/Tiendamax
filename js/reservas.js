@@ -212,9 +212,24 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservas())
+      }).then(function (r) {
+        /* Si Firebase la rechaza, la reserva se queda SOLO en este navegador y
+           el dueño no se entera: la ve en pantalla igual. El día que cambie de
+           móvil o borre los datos, desaparece con el stock ya descontado. Se
+           apunta el motivo y se avisa una vez. */
+        window.tmReservasEstado = { ts: Date.now(), ok: !!r.ok, error: r.ok ? null : (r.msg || 'rechazado') };
+        if (!r.ok && !r.sinSesion && !_avisado) {
+          _avisado = true;
+          if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('⚠️ La reserva se guardó solo en este dispositivo: ' + (r.msg || '') , 'error');
+          } else if (typeof toast === 'function') {
+            toast('⚠️ Reserva solo en este dispositivo: ' + (r.msg || ''));
+          }
+        }
       });
     } catch (e) {}
   }
+  var _avisado = false;
 
   /* Trae lo de Firebase y lo mezcla con lo de aquí. Gana SIEMPRE lo cerrado:
      si en el móvil se ejecutó la venta y en la PC sigue pendiente, la reserva

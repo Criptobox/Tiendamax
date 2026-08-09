@@ -1896,19 +1896,51 @@ window.tmMonedaActual = () => _monedaActual;
     } catch (e) {}
     try {
         if (sessionStorage.getItem('tm_visita_contada')) return;
-        sessionStorage.setItem('tm_visita_contada', '1');
     } catch (e) { return; }
-    // Esperar unos segundos: no bloquear la carga y evitar contar bots que rebotan al instante
+
+    /* La marca de "ya contada" se pone AL FINAL, cuando el conteo se hizo.
+       Ponerla al entrar —como estaba— hacía que un visitante nuevo no se
+       contara NUNCA: al instalarse el service worker toma el control y la
+       página se RECARGA sola (el controllerchange de index.html) uno o dos
+       segundos después de abrir, o sea antes de que venciera este temporizador.
+       La segunda carga veía la marca ya puesta y se iba sin contar nada. Y como
+       cada despliegue cambia el sw.js, eso le pasaba a casi todos.
+
+       Se espera un poco igualmente para no competir con la carga y para no
+       contar al que rebota al instante, pero menos: dos segundos y medio caben
+       antes de esa recarga en la mayoría de los casos, y si no caben, ahora ya
+       no importa. */
     setTimeout(async () => {
         try {
+            if (sessionStorage.getItem('tm_visita_contada')) return;  // otra pestaña se adelantó
             const url = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
             if (!url) return;
             const hoy = new Date().toISOString().slice(0, 10);
-            const inc = JSON.stringify({ '.sv': { 'increment': 1 } });
-            await Promise.all([
-                fetch(url + '/analytics/visitas/count.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: inc }),
-                fetch(url + '/analytics/visitas/dias/' + hoy + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: inc })
-            ]);
+            const okTotal = await _tmSumarUno(url + '/analytics/visitas/count.json');
+            await _tmSumarUno(url + '/analytics/visitas/dias/' + hoy + '.json');
+            if (okTotal) {
+                try { sessionStorage.setItem('tm_visita_contada', '1'); } catch (e) {}
+            }
         } catch (e) {}
-    }, 4000);
+    }, 2500);
 })();
+
+/* Suma uno a un contador de Firebase.
+
+   Primero con el incremento del servidor, que es atómico y no pierde visitas
+   simultáneas. Si la regla lo rechaza, se cae a leer-y-escribir: la regla dice
+   `newData.val() == data.val() + 1` y un número cumple eso sin discusión. Dos
+   visitas en el mismo instante pueden perder una por ahí, pero perder alguna
+   es infinitamente mejor que un contador clavado, que es lo que había. */
+async function _tmSumarUno(url) {
+    try {
+        const inc = JSON.stringify({ '.sv': { 'increment': 1 } });
+        const r = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: inc });
+        if (r.ok) return true;
+        if (r.status !== 401 && r.status !== 403) return false;
+        const actual = await fetch(url).then(x => x.ok ? x.json() : null).catch(() => null);
+        const n = Number(actual) || 0;
+        const r2 = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(n + 1) });
+        return r2.ok;
+    } catch (e) { return false; }
+}

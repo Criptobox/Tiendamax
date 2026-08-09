@@ -214,6 +214,18 @@ const CATALOGO = [
         'nunca al revés');
 }
 
+// ── 11. Una reserva que Firebase rechaza no puede quedarse callada ──────
+// Se ve en pantalla igual que una guardada. El dueño se entera el día que
+// cambia de dispositivo y no está — con el stock ya descontado.
+{
+    const f = RESERVAS_JS.slice(RESERVAS_JS.indexOf('function _espejar()'),
+                                RESERVAS_JS.indexOf('function _espejar()') + 1400);
+    ok(/!r\.ok/.test(f), 'hay que mirar si Firebase la aceptó');
+    ok(/mostrarNotificacion|toast/.test(f), 'y decirlo, no solo apuntarlo');
+    ok(/_avisado/.test(f), 'una vez, no en cada reserva');
+    ok(/!r\.sinSesion/.test(f), 'sin cuenta iniciada no es un fallo: es el modo local de siempre');
+}
+
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));
