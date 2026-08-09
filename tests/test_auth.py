@@ -155,6 +155,21 @@ class AuthTest(unittest.TestCase):
         for codigo in ("auth/user-not-found", "auth/wrong-password", "auth/email-already-in-use"):
             self.assertIn(codigo, AUTH_JS, f"falta traducir {codigo}")
 
+    def test_el_panel_sabe_traerte_las_reglas(self):
+        """firebase-rules.json no se publica con el sitio (pages.yml lo
+        excluye), y copiarlo a mano desde GitHub en un móvil es justo el paso
+        donde la gente se rinde y deja la base a medias."""
+        self.assertIn("function tmCopiarReglas()", ADMIN)
+        self.assertIn("raw.githubusercontent.com", ADMIN)
+        self.assertIn("JSON.parse(txt)", ADMIN,
+                      "pegar medio archivo deja la base sin reglas que valgan: "
+                      "hay que validarlo antes de copiar")
+
+    def test_distingue_reglas_viejas_de_base_sin_reclamar(self):
+        """Son dos problemas distintos con arreglos distintos, y el error de
+        escritura suena igual en los dos casos."""
+        self.assertIn("Firebase todavía tiene las reglas viejas", ADMIN)
+
     def test_hay_forma_de_comprobar_que_las_reglas_estan_publicadas(self):
         """Unas reglas viejas se ven igual que 'todavía no hay nada guardado'.
         Es el mismo fallo mudo que tuvieron Web Vitals y las preguntas de Max:

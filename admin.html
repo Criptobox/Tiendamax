@@ -1366,6 +1366,10 @@
           </div>
           <button class="btn btn-ghost" id="tmCuentaSalir" style="width:100%;margin-top:10px;display:none" onclick="tmCuentaSalir()">Cerrar sesión</button>
           <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaProbar()">🔌 Probar acceso a lo privado</button>
+          <!-- firebase-rules.json no se publica con el sitio (pages.yml lo
+               excluye), así que se trae del repo. Copiarlo a mano desde GitHub
+               en un móvil es justo el paso donde la gente se rinde. -->
+          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCopiarReglas()">📋 Copiar las reglas de Firebase</button>
           <p id="tmCuentaMsg" style="font-size:12.5px;line-height:1.5;margin-top:10px"></p>
         </div>
 
@@ -2086,6 +2090,36 @@ function tmRestaurarDesdeLogin(){
 /* ══════════ CUENTA (Firebase Auth) ══════════ */
 function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
 
+/* Trae firebase-rules.json del repo y lo deja en el portapapeles. El panel ya
+   sabe usuario y repo (Configuración → GitHub) y ya lee de raw en otros
+   sitios, así que no hace falta token ni salir de aquí. */
+async function tmCopiarReglas(){
+  const u=localStorage.getItem('githubUser'), rp=localStorage.getItem('githubRepo');
+  if(!u||!rp){ _cuentaMsg('Configura antes usuario y repositorio de GitHub, aquí abajo.','#f5a623'); return; }
+  _cuentaMsg('⏳ Trayendo las reglas del repo…');
+  try{
+    const r=await fetch('https://raw.githubusercontent.com/'+u+'/'+rp+'/main/firebase-rules.json?_='+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const txt=await r.text();
+    // Que sea JSON válido se comprueba ANTES de copiar: pegar medio archivo en
+    // las reglas de Firebase deja la base sin reglas que valgan.
+    JSON.parse(txt);
+    try{ await navigator.clipboard.writeText(txt); }
+    catch(e){
+      const ta=document.createElement('textarea');
+      ta.value=txt; ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      const ok=document.execCommand('copy'); document.body.removeChild(ta);
+      if(!ok) throw new Error('el navegador no dejó copiar');
+    }
+    _cuentaMsg('📋 Reglas copiadas ('+Math.round(txt.length/1024)+' KB).<br>'
+      +'Consola de Firebase → <b>Realtime Database</b> → pestaña <b>Reglas</b> → selecciona todo lo que haya, pega, y <b>Publicar</b>.<br>'
+      +'Luego vuelve y pulsa <b>Probar acceso a lo privado</b>.','#1DA854');
+  }catch(e){
+    _cuentaMsg('❌ No pude traer las reglas ('+esc(String(e.message||e))+'). Cópialas del archivo <b>firebase-rules.json</b> del repositorio.','#e74c3c');
+  }
+}
+
 /* Reclamar la base para esta cuenta. Es lo que convierte "cualquiera que se
    registre" en "solo yo": la clave de API de Firebase es pública y el registro
    por correo está abierto por defecto, así que sin esto una cuenta creada por
@@ -2159,6 +2193,16 @@ async function tmCuentaProbar(){
   _cuentaMsg('⏳ Probando…');
   if(!TMAuth.usuario()){ _cuentaMsg('Primero entra con tu cuenta.','#f5a623'); return; }
   const d = await TMAuth.estadoDueno();
+  // Si ni siquiera se puede LEER admin_uid, no es que falte reclamar la base:
+  // es que las reglas que están puestas en Firebase son las viejas y no
+  // conocen ninguno de estos nodos. Decirlo aquí ahorra leer un error de
+  // escritura que suena a otra cosa.
+  if(d.error){
+    _cuentaMsg('⚠️ Firebase todavía tiene las reglas viejas: '+esc(d.error)
+      +'<br>Pulsa <b>📋 Copiar las reglas de Firebase</b> aquí abajo, pégalas en la consola '
+      +'(Realtime Database → Reglas) y publícalas. Después vuelve a probar.','#f5a623');
+    return;
+  }
   if(d.libre){ if(!await tmCuentaReclamar(true)) return; }
   else if(d.dueno && !d.soyYo){
     _cuentaMsg('🚨 Esta base está reclamada por OTRA cuenta ('+esc(d.dueno)+'), no por la tuya. '
@@ -5359,7 +5403,7 @@ window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.p
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
-window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar;
+window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
 if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(tmCuentaPintar)).catch(()=>{
   const e=document.getElementById('tmCuentaEstado');
