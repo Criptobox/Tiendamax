@@ -241,6 +241,56 @@
     return { ok: true, uid: _user.uid };
   }
 
+  /* Diagnóstico paso a paso.
+     "Escritura rechazada" puede ser media docena de cosas distintas —reglas sin
+     publicar, publicadas a medias, base reclamada por otra cuenta, sesión
+     caducada— y todas se ven igual desde fuera. Esto prueba cada eslabón por
+     separado y devuelve el código HTTP de cada uno, que es lo único que
+     distingue un "no tienes permiso" de un "eso no existe". */
+  async function diagnostico() {
+    var pasos = [];
+    var apuntar = function (nombre, r, pista) {
+      pasos.push({ paso: nombre, ok: !!r.ok, estado: r.estado || (r.ok ? 200 : null), msg: r.msg || '', pista: pista || '' });
+      return r;
+    };
+    try { await init(); } catch (e) {
+      return { pasos: [{ paso: 'Cargar Firebase', ok: false, msg: String(e.message || e) }] };
+    }
+    apuntar('Configuración de Firebase', _rtdb() ? { ok: true } : { ok: false, msg: 'no encuentro databaseURL' });
+    apuntar('Sesión iniciada', _user ? { ok: true } : { ok: false, msg: 'no has entrado con tu cuenta' },
+            _user ? ('uid ' + _user.uid + ' · ' + (_user.email || '')) : 'Entra arriba con correo y contraseña');
+    if (!_user) return { pasos: pasos, uid: null };
+
+    // 1) ¿Existe la regla de admin_uid? Si NO están publicadas las reglas
+    //    nuevas, este nodo cae en la raíz, que es .read:false → 401.
+    var a = await fetchPrivado('/admin_uid.json');
+    apuntar('Leer admin_uid', a, a.ok
+      ? (a.dato ? ('reclamada por ' + a.dato) : 'libre, nadie la ha reclamado')
+      : 'Un 401 aquí significa que las reglas publicadas NO son las del repo');
+
+    // 2) ¿Puedo reclamarla / ya es mía?
+    if (a.ok && !a.dato) {
+      var c = await fetchPrivado('/admin_uid.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(_user.uid) });
+      apuntar('Reclamar la base', c, c.ok ? 'ahora es tuya' : 'la regla de admin_uid no deja escribir');
+    } else if (a.ok && a.dato && a.dato !== _user.uid) {
+      apuntar('Reclamar la base', { ok: false, msg: 'ya es de otra cuenta' },
+              'Borra el nodo admin_uid en la consola y vuelve a probar');
+    } else if (a.ok) {
+      apuntar('Reclamar la base', { ok: true }, 'ya era tuya');
+    }
+
+    // 3) La zona privada, que es lo que se usa de verdad.
+    var w = await fetchPrivado('/privado/_prueba.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ts: Date.now() }) });
+    apuntar('Escribir en lo privado', w, w.ok ? '' : 'Si admin_uid está bien, revisa que pegaste el archivo ENTERO');
+    var l = await fetchPrivado('/privado/_prueba.json');
+    apuntar('Leer lo privado', l);
+
+    // 4) Y las ventas, que es lo que se cerró.
+    var v = await fetchPrivado('/ventas.json');
+    apuntar('Leer las ventas', v, v.ok ? 'solo tú las lees' : '');
+    return { pasos: pasos, uid: _user.uid, email: _user.email };
+  }
+
   window.TMAuth = {
     init: init,
     usuario: usuario,
@@ -251,6 +301,7 @@
     salir: salir,
     token: token,
     estadoDueno: estadoDueno,
+    diagnostico: diagnostico,
     reclamar: reclamar,
     fetchPrivado: fetchPrivado,
     rtdb: _rtdb

@@ -9,7 +9,7 @@
 <title>TiendaMax Admin</title>
 <!-- Firebase Auth: la cuenta del dueño. Va lo primero porque el login y
      todas las lecturas privadas (/ventas, /privado) la necesitan. -->
-<script src="js/auth.js?v=ecc0cc6c"></script>
+<script src="js/auth.js?v=18338412"></script>
 <script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <!-- App aparte, con su propio icono y sus accesos directos (mantener pulsado
@@ -1370,6 +1370,8 @@
                excluye), así que se trae del repo. Copiarlo a mano desde GitHub
                en un móvil es justo el paso donde la gente se rinde. -->
           <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCopiarReglas()">📋 Copiar las reglas de Firebase</button>
+          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaDiagnostico()">🩺 Diagnóstico paso a paso</button>
+          <div id="tmCuentaDiag" style="margin-top:10px"></div>
           <p id="tmCuentaMsg" style="font-size:12.5px;line-height:1.5;margin-top:10px"></p>
         </div>
 
@@ -2089,6 +2091,32 @@ function tmRestaurarDesdeLogin(){
 
 /* ══════════ CUENTA (Firebase Auth) ══════════ */
 function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
+
+/* Prueba cada eslabón por separado y enseña el código HTTP de cada uno.
+   "Escritura rechazada" puede ser media docena de cosas —reglas sin publicar,
+   pegadas a medias, base de otra cuenta, sesión caducada— y todas se ven
+   iguales desde fuera. Aquí se ve cuál es de un vistazo. */
+async function tmCuentaDiagnostico(){
+  const caja=$('#tmCuentaDiag');
+  if(!caja) return;
+  caja.innerHTML='<p style="font-size:13px;color:var(--muted)">⏳ Probando cada paso…</p>';
+  const d=await TMAuth.diagnostico();
+  const fila=p=>`<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px">
+      <span style="flex:0 0 18px">${p.ok?'✅':'❌'}</span>
+      <span style="flex:1;min-width:0">
+        <b>${esc(p.paso)}</b>${p.estado?` <span style="opacity:.6">· HTTP ${p.estado}</span>`:''}
+        ${p.msg?`<br><span style="color:${p.ok?'var(--muted)':'#ff8f85'}">${esc(p.msg)}</span>`:''}
+        ${p.pista?`<br><span style="opacity:.65">${esc(p.pista)}</span>`:''}
+      </span></div>`;
+  const fallo=(d.pasos||[]).find(p=>!p.ok);
+  const consejo = !fallo ? '<p style="color:#3ddc84;font-size:13px;margin-top:10px">Todo correcto. Tus datos ya se guardan en Firebase y solo los lee tu cuenta.</p>'
+    : fallo.paso==='Leer admin_uid'
+      ? '<p style="color:#ff8f85;font-size:13px;margin-top:10px">Las reglas publicadas <b>no son las del repo</b>. Pulsa «📋 Copiar las reglas», pégalas ENTERAS en Realtime Database → Reglas (borrando lo que haya) y publica.</p>'
+      : '<p style="color:#ff8f85;font-size:13px;margin-top:10px">Se atascó en <b>'+esc(fallo.paso)+'</b>. Mándame esta lista tal cual y lo cierro.</p>';
+  caja.innerHTML='<div style="padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--card2)">'
+    + (d.uid?`<div style="font-size:11.5px;opacity:.7;margin-bottom:6px">${esc(d.email||'')} · uid ${esc(d.uid)}</div>`:'')
+    + (d.pasos||[]).map(fila).join('') + consejo + '</div>';
+}
 
 /* Trae firebase-rules.json del repo y lo deja en el portapapeles. El panel ya
    sabe usuario y repo (Configuración → GitHub) y ya lee de raw en otros
@@ -5403,7 +5431,7 @@ window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.p
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
-window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas;
+window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas; window.tmCuentaDiagnostico=tmCuentaDiagnostico;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
 if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(tmCuentaPintar)).catch(()=>{
   const e=document.getElementById('tmCuentaEstado');
