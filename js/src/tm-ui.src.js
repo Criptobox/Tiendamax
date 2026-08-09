@@ -430,10 +430,12 @@ async function _procesarAvisosStock(productId, nombre) {
         const n = Object.keys(avisos).length;
         if (n === 0) return;
         const reqId = 'req_aviso_' + Date.now();
-        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json', {
+        // Firmada con la cuenta: el `proof` de antes era el hash de la
+        // contraseña local, que ya no existe.
+        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json' + (await _fbAuthQS()), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: '✅ ¡' + nombre + ' está de vuelta!', body: 'El producto que querías ya está disponible. ¡No te quedes sin él!', url: '/', ts: Date.now() })
+            body: JSON.stringify({ title: '✅ ¡' + nombre + ' está de vuelta!', body: 'El producto que querías ya está disponible. ¡No te quedes sin él!', url: '/', ts: Date.now() })
         });
         if (!putRes.ok) return;
         // Uno a uno, no el nodo del producto entero: la regla solo concede
@@ -1501,10 +1503,10 @@ async function _enviarPushOfertaActivada(ofId, ofTxt) {
         const prod = (typeof productos !== 'undefined' ? productos : []).find(p => String(p.id) === String(ofId));
         const prodNombre = prod ? prod.nombre : 'Oferta del Día';
         const reqId = 'req_oferta_' + Date.now();
-        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json', {
+        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json' + (await _fbAuthQS()), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: '🔥 ' + ofTxt, body: '¡' + prodNombre + ' con oferta especial! Solo por tiempo limitado.', url: '/?oferta=1', ts: Date.now() })
+            body: JSON.stringify({ title: '🔥 ' + ofTxt, body: '¡' + prodNombre + ' con oferta especial! Solo por tiempo limitado.', url: '/?oferta=1', ts: Date.now() })
         });
         if (!putRes.ok) return;
         const ghUser  = localStorage.getItem('githubUser');

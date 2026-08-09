@@ -18,6 +18,21 @@ function cerrarLoginModal() {
     document.getElementById('adminPassword').value = '';
 }
 
+/* Entrar al panel: SOLO con la cuenta de Firebase.
+
+   Antes había tres vías —hash en localStorage, /admin_auth y un archivo en
+   GitHub— y ninguna sobrevivía a borrar los datos del navegador: el dueño se
+   quedó fuera de su propia tienda sin poder recuperar nada, porque el hash de
+   Firebase no se puede leer desde el navegador. Y desde que /ventas y
+   /privado piden la cuenta, entrar por aquellas vías dejaba el panel a medias
+   sin decir nada: se veía entero pero sin ventas, sin reservas y sin vales.
+
+   Ahora hay una sola puerta y abre todo lo que hay detrás. Si se pierde la
+   contraseña, Firebase manda un correo de recuperación — que es exactamente
+   lo que no existía antes.
+
+   El bloqueo por intentos se queda: Firebase también lo hace por su cuenta,
+   pero este avisa antes y en español. */
 async function verificarPassword(event) {
     event.preventDefault();
 
@@ -27,148 +42,47 @@ async function verificarPassword(event) {
         mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
         return;
     }
-    // El bloqueo anterior ya expiró: empezar un conteo nuevo (si no, un solo
-    // intento fallido más re-dispara el bloqueo indefinidamente).
     if (rl.until && Date.now() >= rl.until) { rl.count = 0; rl.until = 0; }
 
-    const passwordInput = document.getElementById('adminPassword').value.trim();
-    const emailInput = (document.getElementById('adminEmail') || {}).value || '';
-
-    // Feedback visual mientras se calcula el hash (PBKDF2 tarda 2-3 s)
+    const email = ((document.getElementById('adminEmail') || {}).value || '').trim();
+    const pass = (document.getElementById('adminPassword') || {}).value || '';
     const btn = document.getElementById('btnLoginSubmit');
     const txtOriginal = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Verificando…'; }
-    if (!passwordInput) {
-        mostrarNotificacion('❌ Escribe la contraseña', 'error');
-        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
+
+    if (!email || !pass) {
+        mostrarNotificacion('❌ Escribe tu correo y tu contraseña', 'error');
+        return;
+    }
+    if (typeof TMAuth === 'undefined') {
+        mostrarNotificacion('❌ No cargó Firebase Auth. Revisa la conexión y recarga.', 'error');
         return;
     }
 
-    const ghUser = localStorage.getItem('githubUser');
-    const ghRepo = localStorage.getItem('githubRepo');
-
-    try {
-
-    /* 0. La cuenta de Firebase, si se escribió un correo.
-       Es la única vía que sobrevive a borrar los datos del navegador: hasta
-       ahora la contraseña vivía como hash en localStorage y, borrada esa,
-       NINGUNA contraseña entraba —ni la correcta—, porque el hash de Firebase
-       no se puede leer desde el navegador. Con cuenta hay recuperación por
-       correo de verdad.
-       Las vías de abajo siguen funcionando: quitarlas de golpe dejaría fuera a
-       quien todavía no haya creado su cuenta. */
-    if (emailInput.trim() && typeof TMAuth !== 'undefined') {
-        const r = await TMAuth.entrar(emailInput, passwordInput);
-        if (r.ok) {
-            localStorage.removeItem('admin_rl');
-            try { localStorage.setItem('tm_admin_email', emailInput.trim()); } catch(e) {}
-            usuarioAutenticado = true;
-            cerrarLoginModal();
-            abrirAdminPanel();
-            return;
-        }
-        // Se avisa con el motivo real de Firebase y NO se sigue probando la
-        // contraseña local: si escribió su correo, quería entrar con la cuenta,
-        // y un "contraseña incorrecta" genérico esconde el motivo verdadero
-        // (cuenta sin crear, proveedor sin activar, sin conexión).
-        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
-        mostrarNotificacion('❌ ' + r.msg, 'error');
-        return;
-    }
-
-    // 1. PRIORIDAD: localStorage (refleja cambios inmediatos de contraseña)
-    const lsHash = localStorage.getItem(AUTH_HASH_KEY);
-    const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
-    if (lsHash && lsSalt) {
-        const inputHash = await hashPassword(passwordInput, lsSalt);
-        if (inputHash === lsHash) {
-            localStorage.removeItem('admin_rl');
-            usuarioAutenticado = true;
-            cerrarLoginModal();
-            abrirAdminPanel();
-            _checkPasswordSync();
-            return;
-        }
-    }
-
-    // 2. Firebase RTDB. Hoy admin_auth tiene .read false, así que esto devuelve
-    // 401 y se cae al paso 3: el hash sigue subiéndose porque otras reglas
-    // (almacenes, admin_push_requests) lo comparan contra su proof, pero el
-    // login entre dispositivos por esta vía necesita Firebase Auth de verdad.
-    // No se abre a lectura pública a propósito: con el salt visible, cualquiera
-    // podría probar contraseñas contra esas mismas reglas hasta acertar.
-    let fbHash = null, fbSalt = null;
-    try {
-        const fbCfg = await _fbEnsureConfig();
-        if (fbCfg) {
-            const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
-            const _fbCtrl = new AbortController();
-            const _fbTid = setTimeout(() => _fbCtrl.abort(), 6000);
-            const fbRes = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now(), { signal: _fbCtrl.signal });
-            clearTimeout(_fbTid);
-            if (fbRes.ok) {
-                const fbAuth = await fbRes.json();
-                if (fbAuth && fbAuth.hash && fbAuth.salt) { fbHash = fbAuth.hash; fbSalt = fbAuth.salt; }
-            }
-        }
-    } catch(e) {}
-    if (fbHash && fbSalt) {
-        const inputHash = await hashPassword(passwordInput, fbSalt);
-        if (inputHash === fbHash) {
-            localStorage.removeItem('admin_rl');
-            try { localStorage.setItem(AUTH_SALT_KEY, fbSalt); } catch(e) {}
-            try { localStorage.setItem(AUTH_HASH_KEY, fbHash); } catch(e) {}
-            usuarioAutenticado = true;
-            cerrarLoginModal();
-            abrirAdminPanel();
-            _checkPasswordSync();
-            return;
-        }
-    }
-
-    // 3. FALLBACK: .admin-auth.json en GitHub (solo si localStorage vacío o no coincide)
-    let ghHash = null, ghSalt = null;
-    if (ghUser && ghRepo) {
-        try {
-            const _ctrl = new AbortController();
-            const _tid = setTimeout(() => _ctrl.abort(), 8000);
-            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`, { signal: _ctrl.signal });
-            clearTimeout(_tid);
-            if (cfgRes.ok) {
-                const cfg = await cfgRes.json();
-                if (cfg.hash && cfg.salt) { ghHash = cfg.hash; ghSalt = cfg.salt; }
-            }
-        } catch(e) {}
-    }
-    if (ghHash && ghSalt) {
-        const inputHash = await hashPassword(passwordInput, ghSalt);
-        if (inputHash === ghHash) {
-            localStorage.removeItem('admin_rl');
-            // Sincronizar al localStorage para que próximos logins sean offline
-            try { localStorage.setItem(AUTH_SALT_KEY, ghSalt); } catch(e) {}
-            try { localStorage.setItem(AUTH_HASH_KEY, ghHash); } catch(e) {}
-            usuarioAutenticado = true;
-            cerrarLoginModal();
-            abrirAdminPanel();
-            return;
-        }
-    }
-
-    // 3. Todo falló
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Entrando…'; }
+    const r = await TMAuth.entrar(email, pass);
     if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
-    const newCount = (rl.count || 0) + 1;
-    const lockout = newCount >= 3 ? Date.now() + LOCKOUT_DURATION_MS : rl.until;
-    localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
-    const msg = newCount >= 3
-        ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
-        : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
-    mostrarNotificacion(msg, 'error');
-    document.getElementById('adminPassword').value = '';
 
-    } catch(e) {
-        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
-        mostrarNotificacion('❌ Error al verificar contraseña. Recarga la página.', 'error');
+    if (r.ok) {
+        localStorage.removeItem('admin_rl');
+        try { localStorage.setItem('tm_admin_email', email); } catch(e) {}
+        // Marca de "este dispositivo es del dueño": la usa el contador de
+        // visitas para no contarme a mí navegando mi propia tienda. Antes se
+        // deducía de que existiera el hash de la contraseña local.
+        try { localStorage.setItem('tm_es_admin', '1'); } catch(e) {}
+        usuarioAutenticado = true;
+        cerrarLoginModal();
+        abrirAdminPanel();
+        // Reclamar la base si todavía no lo está, para que lo privado abra.
+        try { if (typeof tmCuentaReclamar === 'function') tmCuentaReclamar(true); } catch(e) {}
+        return;
     }
+
+    const newCount = (rl.count || 0) + 1;
+    const lockout = newCount >= 5 ? Date.now() + LOCKOUT_DURATION_MS : rl.until;
+    localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
+    mostrarNotificacion('❌ ' + r.msg, 'error');
+    const inp = document.getElementById('adminPassword');
+    if (inp) inp.value = '';
 }
 
 // Cambiar contraseña (llamado desde admin.html)

@@ -54,10 +54,15 @@ class ReglaAdminAuthTest(unittest.TestCase):
     def test_la_escritura_sigue_exigiendo_proof(self):
         self.assertIn("newData.child('proof').val()", self.admin_auth[".write"])
 
-    def test_el_hash_sigue_sirviendo_de_proof_donde_toca(self):
-        # admin_push_requests es .read false, asi que ahi el proof no se ve.
+    def test_la_cola_de_push_ya_no_depende_del_hash_local(self):
+        # El `proof` era el hash de la contrasena guardada en localStorage. Al
+        # dejar el login solo en manos de la cuenta de Firebase, ese hash no
+        # existe en un dispositivo nuevo — que es justo el caso que la cuenta
+        # viene a resolver — y las notificaciones se habrian rechazado sin
+        # decir nada. Ahora la cola pide la cuenta del dueno.
         push = self.reglas["rules"]["admin_push_requests"]["$reqId"][".write"]
-        self.assertIn("root.child('admin_auth/hash')", push)
+        self.assertNotIn("admin_auth/hash", push)
+        self.assertIn("root.child('admin_uid').val()", push)
 
     def test_el_hash_no_se_guarda_en_un_nodo_publico(self):
         # almacenes es .read true. Mandar ahi el _proof dejaba el hash del
@@ -131,166 +136,58 @@ class SenalDeVersionTest(unittest.TestCase):
         self.assertIn("config/version.json", cuerpo)
 
 
-class FormularioDeContrasenaTest(unittest.TestCase):
-    """El motor traía cambiarPasswordAdmin desde siempre, pero sin formulario.
+class SinPuertasPintadasTest(unittest.TestCase):
+    """La contraseña local y el código de recuperación ya no existen.
 
-    O sea que no había manera de cambiar la contraseña desde ningún sitio del
-    admin, y la función de sincronizar tampoco se podía disparar nunca.
+    Los dos manejaban el hash de `tm_auth_hash_v3`, que el login dejó de
+    comprobar cuando se pasó a la cuenta de Firebase. Dejar sus formularios
+    habría sido peor que quitarlos: un "🔒 Cambiar contraseña" que cambia algo
+    que nadie mira, y un "código de recuperación" que promete un acceso que ya
+    no recupera nada. La gente los usa, cree que está protegida, y no lo está.
+
+    Lo que sustituye a los dos es real: la contraseña vive en la cuenta y se
+    cambia por correo, y borrar los datos del navegador ya no deja fuera a
+    nadie.
     """
 
     @classmethod
     def setUpClass(cls):
         cls.admin = (RAIZ / "admin.html").read_text(encoding="utf-8")
 
-    def test_estan_los_tres_campos(self):
-        # cambiarPasswordAdmin limpia estos ids por su cuenta al terminar,
-        # así que los nombres no son libres.
-        for campo in ("ci", "ni", "coi"):
-            self.assertIn(f'id="{campo}"', self.admin)
+    def test_no_queda_el_formulario_de_la_contrasena_local(self):
+        for resto in ('id="ci"', 'id="ni"', 'id="coi"', 'onclick="tmCambiarPassword()"'):
+            self.assertNotIn(
+                resto, self.admin,
+                f"{resto} cambia un hash que el login ya no comprueba",
+            )
 
-    def test_esta_el_boton_de_cambiar(self):
-        self.assertIn('onclick="tmCambiarPassword()"', self.admin)
+    def test_no_queda_el_codigo_de_recuperacion(self):
+        for resto in ('id="recCodigo"', 'tmVerCodigoRecuperacion()',
+                      'tmRestaurarCodigoRecuperacion()', 'recCodigoLogin'):
+            self.assertNotIn(
+                resto, self.admin,
+                f"{resto} promete recuperar un acceso que ya no depende de eso",
+            )
 
-    def test_no_hay_boton_de_sincronizar_suelto(self):
-        # Solo podia mandar proof = hash local, y eso deja proof == hash en la
-        # base: a partir de ahi cualquiera escribe /admin_auth/hash sin conocer
-        # nada, porque el merge de la escritura parcial satisface la regla.
-        self.assertNotIn("tmSyncPassword", self.admin)
+    def test_configuracion_dice_donde_esta_la_contrasena_ahora(self):
+        # Quitar una sección sin decir a dónde se fue deja al dueño buscándola.
+        self.assertIn("Tu cuenta", self.admin)
+        self.assertIn("Olvidé la contraseña", self.admin)
 
-    def test_los_wrappers_llegan_al_onclick(self):
-        # Todo ese <script> vive dentro de un IIFE: una función declarada ahí
-        # no es global y el onclick del HTML no la encuentra. Hay que
-        # exponerla a mano, como se hace con probarFirebase y compañía.
-        self.assertIn("window.tmCambiarPassword=tmCambiarPassword", self.admin)
-
-    def test_avisa_de_que_no_hay_recuperacion(self):
-        # La copia de Firebase no se puede leer, así que borrar los datos del
-        # navegador sin recordar la contraseña deja fuera del admin.
-        self.assertIn("pierdes el acceso al admin", self.admin)
-
-
-class CodigoRecuperacionTest(unittest.TestCase):
-    """La vuelta atrás si se borran los datos del navegador.
-
-    La copia de Firebase no se puede leer a propósito, así que sin esto
-    perder el localStorage significaba perder el admin para siempre.
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        cls.admin = (RAIZ / "admin.html").read_text(encoding="utf-8")
-
-    def test_estan_los_tres_botones_y_el_campo(self):
-        self.assertIn('id="recCodigo"', self.admin)
-        for fn in ("tmVerCodigoRecuperacion", "tmCopiarCodigoRecuperacion",
-                   "tmRestaurarCodigoRecuperacion"):
-            self.assertIn(f'onclick="{fn}()"', self.admin)
-            self.assertIn(f"window.{fn}={fn}", self.admin)
-
-    def test_valida_la_forma_de_verdad(self):
-        # Comprobar solo la longitud dejaba pasar 64 caracteres cualesquiera,
-        # y una sal sin tope por arriba (megabytes) podía reventar la cuota
-        # justo entre las dos escrituras.
-        self.assertIn("/^[0-9a-f]{64}$/i.test(d.h)", self.admin)
-        self.assertIn("/^[0-9a-f]{20,128}$/i.test(d.s)", self.admin)
-
-    def test_el_control_de_version_no_se_salta(self):
-        # Era `if(d.i && ...)`: un código sin ese campo se lo saltaba en
-        # silencio, que es justo el caso que el mensaje llama fatal.
-        self.assertIn("Number(d.i)!==AUTH_ITERATIONS", self.admin)
-        self.assertNotIn("if(d.i && Number(d.i)", self.admin)
-
-    def test_las_dos_escrituras_van_juntas_o_ninguna(self):
-        # Si entrara el hash y fallara la sal, quedaría hash nuevo con sal
-        # vieja y NINGUNA contraseña volvería a validar: ni la nueva ni la
-        # anterior. Hace falta deshacer lo escrito antes de rendirse.
-        i = self.admin.index("function _tmAplicarCodigoRec")
-        cuerpo = self.admin[i:self.admin.index("function tmRestaurarCodigoRecuperacion")]
-        self.assertIn("const hPrev", cuerpo)
-        self.assertIn("const sPrev", cuerpo)
-        self.assertIn("_restaurar()", cuerpo)
-        # y se relee para confirmar que entraron las dos
-        self.assertIn("localStorage.getItem(AUTH_HASH_KEY)!==d.h", cuerpo)
-
-    def test_el_cambio_de_password_tambien_revierte(self):
-        src = TM_ADMIN.read_text(encoding="utf-8")
-        i = src.index("async function cambiarPasswordAdmin")
-        cuerpo = src[i:i + 4000]
-        self.assertIn("_hPrev", cuerpo)
-        self.assertIn("_sPrev", cuerpo)
-        # El "éxito" no puede anunciarse si la escritura no entró entera.
-        self.assertIn("Sigue valiendo la anterior", cuerpo)
-
-    def test_rechaza_codigos_de_otra_version(self):
-        # Si cambiara AUTH_ITERATIONS, un código viejo restauraría un hash que
-        # ya no corresponde a lo que calcula hashPassword.
-        self.assertIn("Number(d.i)!==AUTH_ITERATIONS", self.admin)
-
-    def test_no_se_sube_a_ningun_sitio(self):
-        # Todo el sentido de esta vía es que el hash NO se publique: si se
-        # subiera, valdría lo mismo que abrir admin_auth a lectura pública.
-        ini = self.admin.index("const REC_PREFIJO")
-        fin = self.admin.index("function tmRestaurarDesdeLogin")
-        # La rebanada iba al revés (inicio > fin) y salía vacía: el assertNotIn
-        # pasaba siempre, incluso con un fetch exfiltrando el hash dentro.
-        self.assertGreater(fin, ini, "la rebanada no puede quedar vacía")
-        bloque = self.admin[ini:fin]
-        self.assertIn("REC_PREFIJO + btoa", bloque, "no se está mirando el bloque correcto")
-        for prohibido in ("fetch(", "subirArchivoAGitHub", "firebaseio"):
-            self.assertNotIn(prohibido, bloque)
-
-    def test_avisa_de_que_el_codigo_es_sensible(self):
-        self.assertIn("Trátalo como una contraseña", self.admin)
-
-    def test_se_puede_restaurar_desde_el_login(self):
-        # Lo que está dentro del panel queda detrás del propio login: si se
-        # borran los datos del navegador no se puede entrar, así que una
+    def test_se_puede_recuperar_desde_el_login(self):
+        # El motivo original sigue en pie y es el que importa: todo lo que esté
+        # dentro del panel queda detrás del propio login, así que una
         # recuperación que viva solo en Configuración es inalcanzable justo
-        # cuando hace falta.
+        # cuando hace falta. Lo que cambia es CÓMO se recupera: el código TMX1
+        # restauraba un hash local que ya nadie comprueba —una puerta pintada—,
+        # y ahora se manda un correo de verdad, que es lo que no existía el día
+        # que el dueño se quedó fuera.
         i_login = self.admin.index('id="tm2LoginPass"')
-        i_panel = self.admin.index('id="recCodigo"')
-        i_caja = self.admin.index('id="recCodigoLogin"')
-        self.assertLess(i_login, i_caja, "la caja debe estar en el formulario de login")
-        self.assertLess(i_caja, i_panel, "y antes que la de Configuración")
-        self.assertIn('onclick="tmRestaurarDesdeLogin()"', self.admin)
-        self.assertIn("window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin", self.admin)
-
-    def test_las_dos_entradas_validan_igual(self):
-        # Una sola función de validación para las dos: si se duplicara, una
-        # podría acabar aceptando lo que la otra rechaza.
-        self.assertEqual(1, self.admin.count("function _tmAplicarCodigoRec("))
-        for llamante in ("tmRestaurarCodigoRecuperacion", "tmRestaurarDesdeLogin"):
-            i = self.admin.index(f"function {llamante}(")
-            self.assertIn("_tmAplicarCodigoRec(", self.admin[i:i + 600])
-
-    def test_el_codigo_lleva_su_fecha(self):
-        # Un código restaura la contraseña que había CUANDO se generó, no la
-        # actual. Sin la fecha, restaurar uno viejo parece que "no funciona"
-        # cuando lo que ha hecho es devolverte la contraseña de antes.
-        self.assertIn("t:Date.now()", self.admin)
-        self.assertIn("new Date(d.t).toLocaleDateString()", self.admin)
-
-    def test_avisa_antes_de_pisar_otra_contrasena(self):
-        # Pegar un código viejo en un dispositivo que funciona lo dejaría sin
-        # poder entrar con la contraseña de hoy.
-        i_confirm = self.admin.index("¿Seguir?")
-        i_escribe = self.admin.index("localStorage.setItem(AUTH_HASH_KEY, d.h)")
-        self.assertLess(i_confirm, i_escribe, "hay que preguntar ANTES de escribir")
-        self.assertIn("actual && actual !== d.h", self.admin)
-
-    def test_al_cambiar_la_contrasena_avisa_de_regenerar(self):
-        # Es justo el momento en que el código guardado queda obsoleto.
-        self.assertIn('id="recAviso"', self.admin)
-        i = self.admin.index("async function tmCambiarPassword(")
-        cuerpo = self.admin[i:i + 1200]
-        self.assertIn("localStorage.getItem(AUTH_HASH_KEY) !== antes", cuerpo)
-        self.assertIn("recAviso", cuerpo)
-
-    def test_no_promete_un_correo_que_no_existe(self):
-        # El enlace "¿Olvidaste?" decía que se enviaría un enlace al correo
-        # registrado. No hay servidor, ni cuentas, ni correo: engañaba justo
-        # en el momento en que el admin está bloqueado.
-        self.assertNotIn("enlace de recuperación a tu correo", self.admin)
+        i_caja = self.admin.index('id="tm2RecBox"')
+        self.assertLess(i_login, i_caja, "la recuperación debe estar en el login")
+        self.assertIn('onclick="tmRecuperarPorCorreo()"', self.admin)
+        self.assertIn("window.tmRecuperarPorCorreo", self.admin)
+        self.assertIn("TMAuth.recuperar(", self.admin)
 
 
 class ClienteSincronizacionTest(unittest.TestCase):

@@ -190,14 +190,36 @@ class AuthTest(unittest.TestCase):
                       "tiene que saltar al abrir el panel, que es cuando pasa, "
                       "no solo al cambiar de sesión")
 
-    def test_el_login_no_deja_a_nadie_fuera(self):
-        """La contraseña local sigue valiendo. Cambiar el login de golpe dejaría
-        fuera a quien todavía no haya creado su cuenta — y el panel no tiene
-        otra puerta."""
+    def test_una_sola_puerta_y_abre_todo(self):
+        """Ya no hay contraseña local.
+
+        Tenía sentido como red mientras se montaba la cuenta, pero desde que
+        /ventas y /privado la piden, entrar por la vía vieja dejaba el panel a
+        medias: se veía entero, sin ventas, sin reservas y sin vales. Dos
+        puertas donde solo una abre lo de dentro es peor que una.
+
+        Y las tres vías viejas —hash en localStorage, /admin_auth y un archivo
+        en GitHub— no sobrevivían a borrar los datos del navegador. Eso dejó al
+        dueño fuera de su propia tienda sin nada que hacer."""
         ui = (ROOT / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
-        self.assertIn("if (emailInput.trim() && typeof TMAuth !== 'undefined')", ui)
-        self.assertIn("1. PRIORIDAD: localStorage", ui,
-                      "la vía local tiene que seguir existiendo")
+        login = ui[ui.index("async function verificarPassword"):
+                   ui.index("async function cambiarPasswordAdmin")]
+        self.assertIn("TMAuth.entrar(email, pass)", login)
+        for vestigio in ("AUTH_HASH_KEY", "admin_auth.json", ".admin-auth.json"):
+            self.assertNotIn(
+                vestigio, login,
+                f"el login ya no puede apoyarse en {vestigio}: no sobrevive a "
+                "borrar los datos del navegador",
+            )
+
+    def test_el_dueno_sigue_sin_contarse_como_visita(self):
+        """El contador de visitas deducía "este es el dueño" de que existiera el
+        hash de la contraseña local. Sin ese hash, el dueño navegando su propia
+        tienda empezaría a contarse como cliente y las analíticas mentirían."""
+        ui = (ROOT / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
+        self.assertIn("localStorage.setItem('tm_es_admin', '1')", ui)
+        patches = (ROOT / "js" / "src" / "tm-patches.src.js").read_text(encoding="utf-8")
+        self.assertIn("tm_es_admin", patches, "y el contador tiene que mirar esa marca")
 
 
 if __name__ == "__main__":

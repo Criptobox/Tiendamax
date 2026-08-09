@@ -185,23 +185,36 @@ class SinEscrituraLibreTest(unittest.TestCase):
         self.assertIn("newData.exists()", w)
         self.assertIn("data.child('token').val()", w)
 
-    def test_los_nodos_con_prueba_son_de_solo_alta(self):
-        # La prueba vive DENTRO del nodo que protege, asi que mientras se pueda
-        # escribir sobre un nodo existente, el merge se la regala al atacante:
-        # basta un PATCH con los campos suyos y todo lo demas heredado. Exigir
-        # un ts fresco no bastaba — el ts lo manda el atacante en ese mismo
-        # PATCH. Solo-alta lo cierra de raiz: si ya existe, no pasa nada.
+    def test_la_autorizacion_no_vive_dentro_del_dato(self):
+        # Antes, estos nodos se protegian con un `proof` guardado DENTRO del
+        # propio nodo, y por eso tenian que ser de solo-alta: sobre un nodo ya
+        # existente, un PATCH con los campos del atacante heredaba el proof por
+        # merge y la regla se satisfacia sola. Exigir un ts fresco no bastaba,
+        # porque el ts lo mandaba el atacante en ese mismo PATCH.
+        #
+        # Con la cuenta, la autorizacion es el token de la peticion y no un
+        # campo del dato: ya no hay nada que heredar, y por eso el solo-alta
+        # dejo de hacer falta. Lo que NO puede volver es que la llave este
+        # dentro de lo que se escribe.
         for nodo, hijo in (("admin_tokens", "$tokenId"),
                            ("admin_push_requests", "$reqId")):
             w = REGLAS[nodo][hijo][".write"].replace(" ", "")
-            self.assertIn("!data.exists()", w,
-                          f"{nodo}: sobre un nodo existente el merge regala la prueba")
+            with self.subTest(nodo=nodo):
+                self.assertIn("auth.uid===root.child('admin_uid').val()", w,
+                              f"{nodo}: debe pedir la cuenta del dueno")
+                self.assertNotIn("newData.child('proof')", w,
+                                 f"{nodo}: la llave no puede volver a vivir dentro del dato")
 
     def test_la_cola_de_push_no_se_abre_sola(self):
-        # null === null: mientras admin_auth estuviera vacio, la regla dejaba
-        # entrar (y borrar) a cualquiera.
+        # El agujero clasico de estas reglas es null === null: con el nodo de
+        # control vacio, comparar contra el dejaba entrar a cualquiera. Aqui no
+        # puede pasar porque `auth != null` garantiza que auth.uid es una
+        # cadena, y una cadena nunca es igual a null. Se fija para que nadie
+        # quite ese `auth != null` pensando que sobra.
         w = REGLAS["admin_push_requests"]["$reqId"][".write"]
-        self.assertIn("root.child('admin_auth/hash').exists()", w)
+        self.assertIn("auth != null", w,
+                      "sin esto, con admin_uid vacio la comparacion seria null === null")
+        self.assertIn("root.child('admin_uid').val()", w)
 
     def test_el_contador_de_avisos_no_es_un_campo_libre(self):
         # Era .write true: cualquiera fijaba el "N personas esperando" que se

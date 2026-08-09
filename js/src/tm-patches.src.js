@@ -1826,11 +1826,19 @@ async function enviarPushManualAdmin() {
     try {
         // Escribir la solicitud en admin_push_requests (procesada por el script Python)
         const reqId  = 'req_' + Date.now();
-        const reqRes = await fetch(`${rtdbUrl}/admin_push_requests/${reqId}.json`, {
+        // Firmada con la cuenta del dueño. Antes iba un `proof` con el hash de
+        // la contraseña local; al quitar esa contraseña, en un dispositivo
+        // nuevo no existiría y la notificación se rechazaría sin decir nada.
+        const _qs = (typeof _fbAuthQS === 'function') ? await _fbAuthQS() : '';
+        const reqRes = await fetch(`${rtdbUrl}/admin_push_requests/${reqId}.json${_qs}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ proof: (localStorage.getItem('tm_auth_hash_v3')||''), title, body, url, ts: Date.now() })
+            body: JSON.stringify({ title, body, url, ts: Date.now() })
         });
+        if (reqRes.status === 401 || reqRes.status === 403) {
+            if (status) status.textContent = '❌ Firebase rechazó el envío: entra con tu cuenta en Configuración → Tu cuenta.';
+            return;
+        }
         if (!reqRes.ok) {
             if (status) status.textContent = `❌ Error guardando en Firebase: ${reqRes.status}`;
             return;

@@ -2935,9 +2935,13 @@ async function queuePushForProduct(pid, opts){
   const reqId = 'req_copilot_' + Date.now();
   const title = opts.title || '🔥 Producto destacado en TiendaMax';
   const body = opts.body || String(p.nombre||'Oferta disponible').slice(0,120);
-  const payload = { proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: title.slice(0,100), body: body.slice(0,300), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
+  // Sin `proof`: era el hash de la contraseña local, que ya no existe. Ahora
+  // la solicitud va firmada con la cuenta del dueño.
+  const payload = { title: title.slice(0,100), body: body.slice(0,300), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
-    const r = await fetch(base + '/admin_push_requests/' + reqId + '.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const _fx = (typeof TMAuth!=='undefined') ? ((await TMAuth.token()) ? '?auth='+encodeURIComponent(await TMAuth.token()) : '') : '';
+    const r = await fetch(base + '/admin_push_requests/' + reqId + '.json' + _fx, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(r.status===401||r.status===403){ toast('❌ Firebase rechazó el envío: entra con tu cuenta en Configuración → Tu cuenta.'); return; }
     if(!r.ok) throw new Error('HTTP '+r.status);
     const ghUser=localStorage.getItem('githubUser'), ghRepo=localStorage.getItem('githubRepo')||'Tiendamax', ghToken=localStorage.getItem('githubToken');
     if(ghUser && ghToken){ fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,{method:'POST',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},body:JSON.stringify({ref:'main'})}).catch(()=>{}); }
@@ -2969,13 +2973,12 @@ async function tmActivarAlertaAdmin(){
     let token=localStorage.getItem('fcmToken');
     if((!token||/^anon_/.test(token)) && typeof window.inicializarFirebaseFCMClient==='function'){ try{ await window.inicializarFirebaseFCMClient(cfg); token=localStorage.getItem('fcmToken'); }catch(e){} }
     if(!token||/^anon_/.test(token)){ toast('No se pudo obtener el token de este teléfono.'); return; }
-    const pin=prompt('🔐 PIN de admin (créalo la 1ª vez; luego úsalo para activar tus teléfonos):','');
-    if(!pin){ return; }
-    const proof=await _sha256hex(pin); if(!proof){ toast('Necesita HTTPS para activarse.'); return; }
-    // Crear el PIN si no existe (set-once); si ya existe, falla en silencio y seguimos
-    try{ await fetch(url+'/admin_meta/pinHash.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(proof)}); }catch(e){}
-    // Registrar este teléfono (la regla de Firebase valida el PIN)
-    const r=await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,ts:Date.now(),proof:proof,label:(navigator.userAgent||'').slice(0,70)})});
+    // El PIN ya no hace falta: la regla de admin_tokens pide la cuenta del
+    // dueño, que es una prueba mucho mejor que un número de cuatro cifras
+    // guardado en la propia base. Un prompt menos que recordar.
+    const _t = (typeof TMAuth!=='undefined') ? await TMAuth.token() : null;
+    if(!_t){ toast('Entra con tu cuenta en Configuración → Tu cuenta y vuelve a intentarlo.'); return; }
+    const r=await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json?auth='+encodeURIComponent(_t),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,ts:Date.now(),label:(navigator.userAgent||'').slice(0,70)})});
     if(r.ok){ localStorage.setItem('tm_es_admin','1'); toast('✅ Este teléfono recibirá los avisos de administrador.'); }
     else if(r.status===401||r.status===403){
       // El nodo es de solo-alta a proposito: si ya existe, ninguna escritura
@@ -2985,7 +2988,7 @@ async function tmActivarAlertaAdmin(){
       const yaEstaba = await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json')
         .then(x=>x.ok).catch(()=>false);
       if(yaEstaba){ localStorage.setItem('tm_es_admin','1'); toast('✅ Este teléfono ya estaba activado.'); }
-      else { toast('❌ PIN incorrecto: no se activó este teléfono.'); }
+      else { toast('❌ Firebase rechazó la activación. ¿Publicaste las reglas nuevas?'); }
     }
     else { toast('❌ No se pudo activar (error '+r.status+').'); }
   }catch(e){ toast('No se pudo activar: '+e.message); }

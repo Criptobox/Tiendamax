@@ -883,19 +883,19 @@
 
       <!-- Form (usa verificarPassword del motor real) -->
       <form id="tm2LoginPass" onsubmit="verificarPassword(event)">
-        <!-- Correo: si lo rellenas, se entra con la cuenta de Firebase. Si lo
-             dejas vacío, sigue funcionando la contraseña de siempre guardada
-             en este navegador. Las dos vías conviven a propósito: cambiar el
-             login de golpe deja fuera a quien todavía no ha creado la cuenta. -->
+        <!-- Una sola puerta: la cuenta de Firebase. Las tres vías viejas
+             (hash local, /admin_auth, archivo en GitHub) no sobrevivían a
+             borrar los datos del navegador, y desde que /ventas y /privado
+             piden la cuenta dejaban además el panel a medias sin avisar. -->
         <div class="tm2-input-group" style="margin-bottom:12px">
-          <div class="tm2-input-label"><span>Correo <span style="opacity:.6;font-weight:500">— si tienes cuenta</span></span></div>
+          <div class="tm2-input-label"><span>Correo</span></div>
           <div class="tm2-input-wrapper">
             <div class="tm2-input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>
               </svg>
             </div>
-            <input class="tm2-input-field" id="adminEmail" type="email" placeholder="tu@correo.com" autocomplete="username">
+            <input class="tm2-input-field" id="adminEmail" type="email" placeholder="tu@correo.com" autocomplete="username" autofocus>
           </div>
         </div>
         <div class="tm2-input-group">
@@ -910,7 +910,7 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
             </div>
-            <input class="tm2-input-field" id="adminPassword" type="password" placeholder="••••••••••••" autocomplete="current-password" autofocus>
+            <input class="tm2-input-field" id="adminPassword" type="password" placeholder="••••••••••••" autocomplete="current-password">
             <button type="button" class="tm2-input-action" id="tm2TogglePwd" title="Mostrar / ocultar" aria-label="Mostrar u ocultar contraseña">
               <svg id="tm2EyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -937,14 +937,13 @@
         </button>
       </form>
 
-      <!-- Recuperación por código. Va AQUÍ, en el login, y no solo en
-           Configuración: si se borran los datos del navegador no se puede
-           entrar, y todo lo que esté dentro del panel queda detrás de este
-           mismo formulario — o sea, inalcanzable justo cuando hace falta. -->
+      <!-- Recuperación. El código TMX1 de antes restauraba un hash local que
+           ya nadie comprueba, así que dejarlo sería una puerta pintada. Ahora
+           la recuperación es la de Firebase: un correo de verdad, que es
+           justo lo que no existía cuando el dueño se quedó fuera. -->
       <div id="tm2RecBox" style="display:none;margin-top:14px;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:12px">
-        <p style="font-size:12px;line-height:1.5;margin:0 0 10px;opacity:.85">No hay recuperación por correo: tu contraseña nunca sale de este navegador. Si guardaste tu <strong>código de recuperación</strong>, pégalo aquí y podrás entrar con tu contraseña de siempre.</p>
-        <textarea id="recCodigoLogin" rows="3" spellcheck="false" placeholder="TMX1-…" style="width:100%;box-sizing:border-box;resize:vertical;font-family:ui-monospace,monospace;font-size:11px;padding:8px;border-radius:8px"></textarea>
-        <button type="button" class="tm2-login-btn" style="margin-top:10px" onclick="tmRestaurarDesdeLogin()"><span class="tm2-btn-label">📥 Restaurar acceso</span></button>
+        <p style="font-size:12px;line-height:1.5;margin:0 0 10px;opacity:.85">Escribe arriba tu correo y pulsa aquí: Firebase te manda un enlace para ponerte una contraseña nueva.</p>
+        <button type="button" class="tm2-login-btn" style="margin-top:0" onclick="tmRecuperarPorCorreo()"><span class="tm2-btn-label">📧 Mandarme el correo</span></button>
         <p id="tm2RecMsg" style="font-size:12px;line-height:1.45;margin:10px 0 0"></p>
       </div>
 
@@ -1013,6 +1012,18 @@
     });
   })();
 
+  // Recuperación por correo desde el propio login.
+  window.tmRecuperarPorCorreo = async function(){
+    const out = document.getElementById('tm2RecMsg');
+    const em = ((document.getElementById('adminEmail')||{}).value||'').trim();
+    const di = (t,c) => { if(out){ out.innerHTML = t; out.style.color = c || ''; } };
+    if(!em){ di('Escribe primero tu correo arriba.', '#f5a623'); return; }
+    if(typeof TMAuth === 'undefined'){ di('No cargó Firebase. Revisa la conexión.', '#ff6b6b'); return; }
+    di('⏳ Mandando…');
+    const r = await TMAuth.recuperar(em);
+    di(r.ok ? ('📧 Enviado a ' + em + '. Mira también en spam.') : ('❌ ' + r.msg), r.ok ? '#3ddc84' : '#ff6b6b');
+  };
+
   // Forgot link (demo)
   (function(){
     var l = document.getElementById('tm2ForgotLink');
@@ -1025,7 +1036,7 @@
       if(!box) return;
       var cerrado = box.style.display === 'none';
       box.style.display = cerrado ? 'block' : 'none';
-      if(cerrado){ var ta = document.getElementById('recCodigoLogin'); if(ta) ta.focus(); }
+      if(cerrado){ var em = document.getElementById('adminEmail'); if(em && !em.value) em.focus(); }
     });
   })();
 
@@ -1433,28 +1444,21 @@
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
+        <!-- Aquí vivían "Contraseña del admin" y "Código de recuperación".
+             Los dos manejaban el hash local que el login ya no comprueba: eran
+             puertas pintadas, y una puerta pintada es peor que ninguna porque
+             se cree que protege. La contraseña se cambia ahora donde vive de
+             verdad, en la cuenta, y la recuperación es un correo. -->
         <div class="section">
-          <h3>🔒 Contraseña del admin</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El cambio vale en este dispositivo al instante y se sincroniza solo con Firebase, que es lo que mantiene válidas las reglas de escritura de almacenes y notificaciones.</p>
-          <div class="form-group"><label class="form-label" for="ci">Contraseña actual</label><input class="form-input" id="ci" type="password" autocomplete="current-password" placeholder="••••••••"></div>
-          <div class="form-group"><label class="form-label" for="ni">Nueva contraseña</label><input class="form-input" id="ni" type="password" autocomplete="new-password" placeholder="mínimo 4 caracteres"></div>
-          <div class="form-group"><label class="form-label" for="coi">Repite la nueva</label><input class="form-input" id="coi" type="password" autocomplete="new-password" placeholder="otra vez, para no equivocarte"></div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" id="btnCambiarPass" onclick="tmCambiarPassword()">🔒 Cambiar contraseña</button>
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Tu contraseña solo se guarda en este navegador. La copia de Firebase no se puede leer (a propósito: si se pudiera, cualquiera podría probar contraseñas contra ella), así que si borras los datos del navegador y no la recuerdas, pierdes el acceso al admin. Apúntala en un sitio seguro.</p>
-        </div>
-        <div class="section">
-          <h3>🆘 Código de recuperación</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guárdalo una vez (gestor de contraseñas, una nota, una captura). Si cambias de móvil o borras los datos del navegador, lo pegas aquí y este dispositivo vuelve a reconocer tu contraseña. <strong>Seguirás necesitando la contraseña para entrar</strong> — el código solo devuelve lo que el navegador había olvidado.</p>
-          <p id="recAviso" style="display:none;font-size:12.5px;line-height:1.5;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(242,182,50,.12);border:1px solid rgba(242,182,50,.35);color:var(--text)"></p>
-          <div class="form-group"><label class="form-label" for="recCodigo">Código</label><textarea class="form-input" id="recCodigo" rows="3" spellcheck="false" placeholder="Pulsa “Ver mi código” para generarlo, o pega aquí el que guardaste" style="resize:vertical;font-family:ui-monospace,monospace;font-size:11px"></textarea></div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="tmVerCodigoRecuperacion()">🆘 Ver mi código</button>
-            <button class="btn btn-ghost" onclick="tmCopiarCodigoRecuperacion()">📋 Copiar</button>
-            <button class="btn btn-ghost" onclick="tmRestaurarCodigoRecuperacion()">📥 Restaurar con este código</button>
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin-top:10px">🔐 Trátalo como una contraseña: quien lo tenga puede mandar notificaciones push a tus clientes en tu nombre. No lo pegues en chats ni lo subas a ningún sitio público.</p>
+          <h3>🔒 Contraseña</h3>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin:-4px 0 12px">
+            Tu contraseña es la de tu cuenta y vive en Firebase, no en este navegador. Se cambia desde
+            <b>👤 Tu cuenta</b>, aquí arriba: pulsa <b>Olvidé la contraseña</b> y te llega un correo para ponerte una nueva.
+          </p>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin:0">
+            Ya no hay contraseña guardada en el navegador ni código de recuperación que apuntar:
+            borrar los datos de este móvil ya no te deja fuera.
+          </p>
         </div>
         <div class="section">
           <h3>👆 Seguridad biométrica</h3>
@@ -1655,7 +1659,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=1ffe66e1"></script>
+<script src="js/tm-bundle.js?v=9cc2a937"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1680,7 +1684,7 @@
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=97db060a"></script>
-<script src="js/admin-copilot.js?v=f7f4c8af"></script>
+<script src="js/admin-copilot.js?v=c53100bc"></script>
 
 <script>
 (function(){
@@ -1956,138 +1960,12 @@ async function probarFirebase(){
     if(st){ st.style.color=r.ok?'var(--green)':'var(--red)'; st.textContent=r.ok?'✅ Conexión OK con la base de datos.':'❌ La base respondió '+r.status+'. Revisa la URL/reglas.'; }
   }catch(e){ if(st){ st.style.color='var(--red)'; st.textContent='❌ No se pudo conectar: '+e.message; } }
 }
-// El motor (js/tm-bundle.js) ya traía cambiarPasswordAdmin y
-// sincronizarPasswordAFirebase, pero nunca se les hizo formulario: no había
-// forma de cambiar la contraseña desde ningún sitio. Estos dos wrappers solo
-// añaden el aviso de "esto tarda": PBKDF2 va a 310.000 iteraciones y bloquea
-// un par de segundos, y sin feedback parece que el botón no hizo nada.
-async function tmCambiarPassword(){
-  const b=$('#btnCambiarPass'), ci=$('#ci'), ni=$('#ni'), coi=$('#coi');
-  if(!ci||!ni||!coi) return;
-  const t=b?b.textContent:'';
-  const antes=localStorage.getItem(AUTH_HASH_KEY);
-  if(b){ b.disabled=true; b.textContent='⏳ Cambiando…'; }
-  try{ await cambiarPasswordAdmin(ci.value.trim(), ni.value, coi.value); }
-  finally{ if(b){ b.disabled=false; b.textContent=t; } }
-  // Si de verdad cambio, el codigo guardado quedo obsoleto: restaurarlo mas
-  // adelante devolveria la contrasena vieja. Es el momento de regenerarlo, y
-  // el aviso se queda fijo en pantalla porque un toast se lo lleva el tiempo.
-  if(localStorage.getItem(AUTH_HASH_KEY) !== antes){
-    const av=$('#recAviso');
-    if(av){ av.style.display='block'; av.textContent='⚠️ Acabas de cambiar la contraseña: el código que tuvieras guardado ya no sirve (restauraría la anterior). Pulsa “Ver mi código” y guarda el nuevo.'; }
-    try{ $('#recCodigo').value=''; }catch(e){}
-  }
-}
-
-// ── Código de recuperación ──
-// La contraseña solo vive en localStorage y la copia de Firebase no se puede
-// leer a propósito, así que borrar los datos del navegador dejaba fuera del
-// admin para siempre. Esto es la vuelta atrás: el hash y la sal en un texto
-// que el admin guarda por su cuenta, sin publicar nada en ningún servidor.
-// No es un pase de entrada por sí solo — hay que saber la contraseña igual.
-const REC_PREFIJO = 'TMX1-';
-
-function tmVerCodigoRecuperacion(){
-  const hash=localStorage.getItem(AUTH_HASH_KEY), salt=localStorage.getItem(AUTH_SALT_KEY);
-  if(!hash||!salt){ mostrarNotificacion('❌ Este dispositivo no tiene contraseña guardada, así que no hay nada que respaldar','error'); return; }
-  const ta=$('#recCodigo'); if(!ta) return;
-  // Va la fecha dentro: un código restaura la contraseña que habia CUANDO se
-  // genero, no la actual. Sin poder decir de cuando es, restaurar uno viejo
-  // parece que "no funciona" cuando en realidad te devolvio la de antes.
-  ta.value = REC_PREFIJO + btoa(JSON.stringify({ h:hash, s:salt, i:AUTH_ITERATIONS, t:Date.now() }));
-  ta.select();
-  mostrarNotificacion('🆘 Código generado. Guárdalo ahora, en un sitio seguro.','success');
-}
-
-async function tmCopiarCodigoRecuperacion(){
-  const ta=$('#recCodigo'); if(!ta||!ta.value.trim()){ mostrarNotificacion('❌ Primero pulsa “Ver mi código”','error'); return; }
-  try{ await navigator.clipboard.writeText(ta.value.trim()); mostrarNotificacion('📋 Código copiado','success'); }
-  catch(e){ ta.select(); mostrarNotificacion('Selecciónalo y cópialo a mano','info'); }
-}
-
-// Validar y aplicar un código. Devuelve {ok, msg} en vez de avisar por su
-// cuenta porque tiene dos entradas —el login y Configuración— y cada una
-// enseña el resultado a su manera; la comprobación tiene que ser la misma.
-function _tmAplicarCodigoRec(codigo){
-  codigo=(codigo||'').trim();
-  if(!codigo) return {ok:false, msg:'❌ Pega aquí el código que guardaste'};
-  if(!codigo.startsWith(REC_PREFIJO)) return {ok:false, msg:'❌ Eso no parece un código de recuperación (empiezan por '+REC_PREFIJO+')'};
-  let d=null;
-  try{ d=JSON.parse(atob(codigo.slice(REC_PREFIJO.length))); }catch(e){}
-  // Se valida la forma antes de tocar nada: un código a medio copiar podría
-  // dejar guardado un hash inservible y entonces sí no entraría ni con la
-  // contraseña buena.
-  // Hex de verdad y con tope por arriba: comprobar solo la longitud dejaba
-  // pasar 64 caracteres cualesquiera, y una sal sin límite (megabytes) podía
-  // reventar la cuota justo entre las dos escrituras de abajo.
-  if(!d || typeof d.h!=='string' || !/^[0-9a-f]{64}$/i.test(d.h)
-        || typeof d.s!=='string' || !/^[0-9a-f]{20,128}$/i.test(d.s)){
-    return {ok:false, msg:'❌ El código está incompleto o corrupto. Cópialo entero, sin cortarlo.'};
-  }
-  // Antes era `if(d.i && …)`: un código sin ese campo se saltaba el control
-  // de versión en silencio, que es justo el caso que el mensaje llama fatal.
-  if(Number(d.i)!==AUTH_ITERATIONS){
-    return {ok:false, msg:'❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.'};
-  }
-  // Si este dispositivo ya tenia otra contrasena, restaurar la pisa: quien
-  // pegue aqui un codigo viejo por error se quedaria sin poder entrar con la
-  // que usa hoy, sin entender por que. Se avisa antes de tocar nada.
-  const actual = localStorage.getItem(AUTH_HASH_KEY);
-  if(actual && actual !== d.h){
-    const cuando = d.t ? new Date(d.t).toLocaleDateString() : 'una fecha anterior';
-    if(!confirm('Ese código es de ' + cuando + ' y no coincide con la contraseña de este dispositivo.\n\n'
-              + 'Si continúas, volverás a la contraseña que tenías entonces y la actual dejará de servir.\n\n¿Seguir?')){
-      return {ok:false, msg:'Cancelado. No se ha cambiado nada.'};
-    }
-  }
-  // Las dos escrituras van juntas o no van. Si entrara el hash y fallara la
-  // sal (cuota llena, que en este proyecto no es hipotético), quedaría hash
-  // nuevo con sal vieja y NINGUNA contraseña volvería a validar jamás: ni la
-  // nueva ni la anterior. Por eso se deshace lo escrito antes de rendirse.
-  const hPrev = localStorage.getItem(AUTH_HASH_KEY);
-  const sPrev = localStorage.getItem(AUTH_SALT_KEY);
-  const _restaurar = () => {
-    try{
-      if(hPrev===null) localStorage.removeItem(AUTH_HASH_KEY); else localStorage.setItem(AUTH_HASH_KEY, hPrev);
-      if(sPrev===null) localStorage.removeItem(AUTH_SALT_KEY); else localStorage.setItem(AUTH_SALT_KEY, sPrev);
-    }catch(e){}
-  };
-  try{
-    localStorage.setItem(AUTH_HASH_KEY, d.h);
-    localStorage.setItem(AUTH_SALT_KEY, d.s);
-    if(localStorage.getItem(AUTH_HASH_KEY)!==d.h || localStorage.getItem(AUTH_SALT_KEY)!==d.s){
-      throw new Error('no se guardó completo');
-    }
-    localStorage.removeItem('admin_rl');
-  }catch(e){
-    _restaurar();
-    return {ok:false, msg:'❌ No se pudo guardar en este navegador (¿sin espacio?). No se ha cambiado nada; libera espacio e inténtalo otra vez.'};
-  }
-  const fecha = d.t ? ' (código del ' + new Date(d.t).toLocaleDateString() + ')' : '';
-  return {ok:true, msg:'✅ Acceso restaurado' + fecha + '. Escribe arriba la contraseña que usabas en esa fecha.'};
-}
-
-function tmRestaurarCodigoRecuperacion(){
-  const ta=$('#recCodigo'); if(!ta) return;
-  const r=_tmAplicarCodigoRec(ta.value);
-  mostrarNotificacion(r.ok ? '✅ Restaurado. Ya puedes entrar con tu contraseña de siempre.' : r.msg,
-                      r.ok ? 'success' : 'error');
-}
-
-// Versión del login: ahí no hay panel donde enseñar un toast con garantías,
-// y además conviene que el mensaje se quede fijo mientras se reintenta.
-function tmRestaurarDesdeLogin(){
-  const ta=document.getElementById('recCodigoLogin');
-  const out=document.getElementById('tm2RecMsg');
-  if(!ta) return;
-  const r=_tmAplicarCodigoRec(ta.value);
-  if(out){ out.textContent=r.msg; out.style.color=r.ok?'#3ddc84':'#ff6b6b'; }
-  if(r.ok){
-    ta.value='';
-    const pwd=document.getElementById('adminPassword');
-    if(pwd){ try{ pwd.focus(); }catch(e){} }
-  }
-}
+/* Aquí vivían tmCambiarPassword y todo el código de recuperación (TMX1).
+   Manejaban el hash de tm_auth_hash_v3, que el login dejó de comprobar al
+   pasar a la cuenta de Firebase: cambiaban y restauraban algo que ya no abría
+   ninguna puerta. Se van enteros — dejar la función sin su formulario habría
+   sido peor, porque el día que alguien la llamara desde la consola creería
+   haber cambiado su contraseña. */
 
 /* ══════════ CUENTA (Firebase Auth) ══════════ */
 function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
@@ -5438,8 +5316,6 @@ window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subA
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
-window.tmCambiarPassword=tmCambiarPassword;
-window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion; window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;

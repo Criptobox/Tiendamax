@@ -362,8 +362,8 @@
     },
     "admin_push_requests": {
       "$reqId": {
-        ".write": "newData.exists() && !data.exists() && root.child('admin_auth/hash').exists() && newData.child('proof').val() === root.child('admin_auth/hash').val()",
-        ".validate": "newData.hasChildren(['title','body','ts','proof']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
+        ".validate": "newData.hasChildren(['title','body','ts']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
       },
       ".read": false,
       ".write": false
@@ -378,16 +378,13 @@
     },
     "admin_tokens": {
       "$tokenId": {
-        ".write": "newData.exists() && !data.exists() && root.child('admin_meta/pinHash').exists() && newData.child('proof').val() === root.child('admin_meta/pinHash').val()",
-        ".validate": "newData.hasChildren(['token','ts','proof'])",
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
+        ".validate": "newData.hasChildren(['token','ts'])",
         "token": {
           ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
         },
         "ts": {
           ".validate": "newData.isNumber()"
-        },
-        "proof": {
-          ".validate": "newData.isString() && newData.val().length == 64"
         },
         "label": {
           ".validate": "newData.isString() && newData.val().length < 80"
