@@ -2963,8 +2963,8 @@ function maybeBrowserNotify(){
   localStorage.setItem(LS.notify, String(Date.now()));
   try { new Notification('🤖 Copiloto TiendaMax', {body: crit[0].title + (crit.length>1 ? ` (+${crit.length-1} más)` : ''), icon:'/iconos/icon-192.png', tag:'tm-copilot'}); } catch(e) {}
 }
-async function _sha256hex(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s)));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}catch(e){return '';}}
-// Registra ESTE teléfono como admin (recibe avisos del servidor). Protegido con PIN.
+// Registra ESTE teléfono como admin (recibe avisos del servidor). Lo autoriza
+// la cuenta del dueño; antes era un PIN guardado en la propia base.
 async function tmActivarAlertaAdmin(){
   try{
     const cfgRaw=localStorage.getItem('firebaseConfig'); if(!cfgRaw){ toast('Configura Firebase primero.'); return; }

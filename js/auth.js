@@ -183,9 +183,13 @@
      son "si falla, seguimos", y una excepción suelta se traga el resto de la
      función que la llamó. */
   async function fetchPrivado(path, opts) {
+    // init() ANTES de mirar la configuración: en un dispositivo nuevo todavía
+    // no está en localStorage y es init() quien la baja de config.json. Al
+    // revés —que es como estaba— se rendía sin intentarlo, y justo en el caso
+    // que la cuenta viene a resolver: entrar desde otro móvil.
+    var t = await token();
     var base = _rtdb();
     if (!base) return { ok: false, msg: 'sin configuración de Firebase' };
-    var t = await token();
     if (!t) return { ok: false, sinSesion: true, msg: 'no has entrado con tu cuenta' };
     var url = base + path + (path.indexOf('?') === -1 ? '?' : '&') + 'auth=' + encodeURIComponent(t);
     try {

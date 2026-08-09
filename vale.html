@@ -238,25 +238,11 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     <div class="sec-body" id="histBody"><div class="hist-empty">Aún no hay vales guardados</div></div>
   </div>
 
-  <!-- Copia de seguridad.
-       El historial vive SOLO en este navegador: no hay servidor donde
-       guardarlo, y subirlo a Firebase lo dejaría público (nombres y teléfonos
-       de clientes incluidos). O sea que borrar los datos del navegador, o
-       cambiar de móvil, se lo lleva entero — y así pasó. Un archivo que te
-       bajas es la única copia que no depende de este navegador. -->
-  <div class="sec" style="margin-top:14px">
-    <div class="sec-hdr"><div class="dot"></div>COPIA DE SEGURIDAD</div>
-    <div class="sec-body">
-      <p style="font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:12px">
-        El historial se guarda <b>solo en este navegador</b>. Si borras los datos o cambias de móvil, se pierde.
-        Bájate el archivo de vez en cuando y guárdalo donde quieras.
-      </p>
-      <button class="btn-ghost" style="margin-top:0" onclick="exportarHist()">📥 Bajar copia del historial</button>
-      <button class="btn-ghost" style="margin-top:8px" onclick="document.getElementById('histImportFile').click()">📤 Restaurar desde una copia</button>
-      <input type="file" id="histImportFile" accept="application/json,.json" style="display:none" onchange="importarHist(this)">
-      <p id="histBackupMsg" style="font-size:12px;line-height:1.5;margin-top:10px"></p>
-    </div>
-  </div>
+  <!-- Aquí estaba "Copia de seguridad" (bajar/restaurar un archivo). Existía
+       porque el historial vivía solo en este navegador y borrarlo lo perdía
+       todo. Ya no: se guarda en /privado/vales de Firebase, un vale por clave,
+       y se sincroniza al abrir esta pestaña. Pedirle al dueño que se acuerde
+       de bajar un archivo para algo que ya está guardado es trabajo inventado. -->
 </div>
 
 <!-- MODAL FORMULARIO -->
@@ -288,7 +274,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <!-- Firebase Auth: la cuenta del dueño. El historial y las reservas se
      guardan en /privado, que solo lee quien entra con ella. -->
-<script src="/js/auth.js?v=18338412"></script>
+<script src="/js/auth.js?v=4c7b6472"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
 <script src="/js/reservas.js?v=97db060a"></script>
@@ -740,10 +726,23 @@ function guardarHist(){
    en una ruta pública sería publicarlos.
 
    Sin cuenta no hace nada y todo sigue igual que antes, en local. */
+/* Clave de un vale en Firebase. Firebase prohíbe . # $ / [ ] en las claves,
+   y el momento exacto ya identifica al vale: dos no se hacen en el mismo
+   milisegundo. */
+function claveVale(v){ return 'v' + String((v && v.ts) || 0); }
+
+/* Sube SOLO los vales de este dispositivo, cada uno en su clave.
+   Antes se mandaba la lista entera con PUT y eso podía borrar trabajo: si el
+   móvil no se había sincronizado todavía, su lista no incluía los vales
+   hechos en la PC, y al subirla los machacaba. Con una clave por vale, dos
+   dispositivos no pueden pisarse aunque nunca se hablen entre ellos. */
 function espejarHist(){
   try{
     if(typeof TMAuth==='undefined') return;
-    TMAuth.fetchPrivado('/privado/vales.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(leerHist())});
+    const mapa={};
+    leerHist().forEach(v=>{ if(v && v.ts) mapa[claveVale(v)]=v; });
+    if(!Object.keys(mapa).length) return;
+    TMAuth.fetchPrivado('/privado/vales.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(mapa)});
   }catch(e){}
 }
 
@@ -754,7 +753,10 @@ async function sincronizarHist(){
   if(typeof TMAuth==='undefined') return {ok:false};
   const r=await TMAuth.fetchPrivado('/privado/vales.json');
   if(!r.ok) return r;
-  const remotos=Array.isArray(r.dato)?r.dato:[];
+  // Llega como objeto {claveVale: vale}; se tolera la lista de la versión
+  // anterior por si quedó algo escrito así.
+  const d=r.dato;
+  const remotos = Array.isArray(d) ? d : (d && typeof d==='object' ? Object.values(d) : []);
   const hist=leerHist();
   const clave=v=>String(v&&v.ts||'')+'|'+String(v&&v.cliente||'');
   const vistos=new Set(hist.map(clave));
@@ -769,50 +771,6 @@ async function sincronizarHist(){
   return {ok:true,nuevos:nuevos};
 }
 
-function exportarHist(){
-  const hist=leerHist();
-  const out=document.getElementById('histBackupMsg');
-  if(!hist.length){ if(out){ out.textContent='No hay nada que copiar todavía.'; out.style.color='var(--muted)'; } return; }
-  const hoy=new Date().toISOString().slice(0,10);
-  const blob=new Blob([JSON.stringify({tipo:'tiendamax-vales',v:1,exportado:Date.now(),vales:hist},null,1)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='vales-tiendamax-'+hoy+'.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-  if(out){ out.textContent='✅ Bajados '+hist.length+' vales. Guarda ese archivo fuera del móvil.'; out.style.color='var(--green-light)'; }
-}
-
-function importarHist(input){
-  const out=document.getElementById('histBackupMsg');
-  const say=(t,c)=>{ if(out){ out.textContent=t; out.style.color=c||'var(--muted)'; } };
-  const f=input.files&&input.files[0];
-  input.value='';                       // permite reintentar el mismo archivo
-  if(!f) return;
-  const fr=new FileReader();
-  fr.onload=()=>{
-    let d=null;
-    try{ d=JSON.parse(fr.result); }catch(e){}
-    const traidos=d&&Array.isArray(d.vales)?d.vales.filter(v=>v&&typeof v==='object'):null;
-    if(!traidos){ say('❌ Ese archivo no es una copia de vales.','#ff6b6b'); return; }
-    // Se MEZCLA, no se reemplaza: restaurar una copia vieja no puede borrar
-    // los vales que se hicieron después de bajarla. La clave es el momento
-    // exacto más el cliente, que es lo único único que tiene un vale.
-    const hist=leerHist();
-    const clave=v=>String(v.ts||'')+'|'+String(v.cliente||'');
-    const vistos=new Set(hist.map(clave));
-    let nuevos=0;
-    traidos.forEach(v=>{ if(!vistos.has(clave(v))){ hist.push(v); vistos.add(clave(v)); nuevos++; } });
-    hist.sort((a,b)=>(b.ts||0)-(a.ts||0));
-    try{
-      localStorage.setItem('valesMax',JSON.stringify(hist.slice(0,HIST_MAX)));
-    }catch(e){ say('❌ El navegador no tiene espacio para guardar la copia.','#ff6b6b'); return; }
-    renderHist();
-    say(nuevos?('✅ Restaurados '+nuevos+' vales que no tenías. Total: '+Math.min(hist.length,HIST_MAX)+'.'):'Ese archivo no traía ningún vale que no tuvieras ya.','#3ddc84');
-  };
-  fr.onerror=()=>say('❌ No pude leer el archivo.','#ff6b6b');
-  fr.readAsText(f);
-}
 function renderHist(filtro){
   const hist=leerHist();
   const body=document.getElementById('histBody');

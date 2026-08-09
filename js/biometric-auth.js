@@ -66,7 +66,7 @@
         id: cred.id,
         rawId: bufToB64(cred.rawId)
       }));
-      notify('✅ Huella registrada. Ya puedes entrar sin contraseña.', 'success');
+      notify('✅ Huella registrada. Ya puedes entrar sin teclear la contraseña.', 'success');
       refreshAll();
     } catch (e) {
       if (e.name === 'NotAllowedError')
@@ -93,7 +93,7 @@
     }
     var cred = storedCred();
     if (!cred) {
-      notify('Sin huella registrada. Entra con contraseña y ve a Configuración → Seguridad biométrica.', 'info');
+      notify('Sin huella registrada. Entra con tu cuenta y ve a Configuración → Seguridad biométrica.', 'info');
       return;
     }
     try {
@@ -110,6 +110,17 @@
         }
       });
       if (assertion) {
+        /* La huella desbloquea el panel, pero NO da acceso a los datos: eso lo
+           da la sesión de la cuenta. Sin ella se abriría un panel sin ventas,
+           sin reservas y sin vales — exactamente la puerta de atrás que se
+           cerró al quitar la contraseña local. La huella sigue sirviendo para
+           lo que sirve de verdad: no teclear la contraseña cada vez, porque la
+           sesión de Firebase persiste en el dispositivo. */
+        var _sesion = (typeof TMAuth !== 'undefined') && TMAuth.usuario();
+        if (!_sesion) {
+          notify('Entra una vez con tu correo y contraseña. Después la huella te abre sola.', 'info');
+          return;
+        }
         if (typeof window.tmGrantAdminAccess === 'function') {
           window.tmGrantAdminAccess({ ok: true, via: 'biometric', assertionId: assertion.id });
         } else {

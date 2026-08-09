@@ -7,30 +7,13 @@
 
 // ===== CONFIGURACIÓN GLOBAL =====
 // Constantes para autenticacion PBKDF2
-const AUTH_SALT_KEY = 'tm_auth_salt_v3';
-const AUTH_HASH_KEY = 'tm_auth_hash_v3';
-const AUTH_ITERATIONS = 310000;
+/* Aquí vivían AUTH_SALT_KEY, AUTH_HASH_KEY y AUTH_ITERATIONS, con
+   _generarSal, _getSalt, _hashSha256 y hashPassword: el PBKDF2 de la
+   contraseña que se guardaba en este navegador. Nadie los usa desde que el
+   login es la cuenta de Firebase. La cadena 'tm_auth_hash_v3' sigue
+   apareciendo suelta en tm-patches como marca de "este dispositivo es del
+   dueño" para no contar su visita, y eso no necesita nada de esto. */
 
-function _generarSal() {
-    const arr = new Uint8Array(16);
-    crypto.getRandomValues(arr);
-    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function _getSalt() {
-    let salt = localStorage.getItem(AUTH_SALT_KEY);
-    if (!salt) {
-        salt = _generarSal();
-        try { localStorage.setItem(AUTH_SALT_KEY, salt); } catch(e) {}
-    }
-    return salt;
-}
-
-// SHA-256 para migración desde hashes hardcodeados viejos
-async function _hashSha256(password) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 let productos = tmParse(localStorage.getItem('productos'), null) || [];
 let categorias = tmParse(localStorage.getItem('categorias'), null) || ['General'];
@@ -855,20 +838,6 @@ function validarProducto(producto) {
 }
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
-
-// Función para hashear la contraseña (PBKDF2). salt opcional (default: _getSalt())
-async function hashPassword(password, salt) {
-    const s = salt || _getSalt();
-    const keyMaterial = await crypto.subtle.importKey(
-        'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
-    );
-    const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: new TextEncoder().encode(s), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
-        keyMaterial, 256
-    );
-    const hashArray = Array.from(new Uint8Array(bits));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 /* El stock que este navegador cambió y todavía no se ha publicado gana
    siempre al de productos.json.

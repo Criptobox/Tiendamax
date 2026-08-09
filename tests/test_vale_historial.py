@@ -28,7 +28,7 @@ VALE = (ROOT / "vale.html").read_text(encoding="utf-8")
 def cuerpo(nombre):
     """El texto de una función de vale.html, de su firma a la llave de cierre
     en columna 0. Sirve porque el archivo indenta el cuerpo y cierra a cero."""
-    m = re.search(r"^function " + nombre + r"\([^)]*\)\{$(.*?)^\}$",
+    m = re.search(r"^(?:async )?function " + nombre + r"\([^)]*\)\{$(.*?)^\}$",
                   VALE, re.S | re.M)
     if not m:
         raise AssertionError(f"no encuentro function {nombre}() en vale.html")
@@ -55,30 +55,39 @@ class ValeHistorialTest(unittest.TestCase):
             "solo leerHist() puede leer valesMax directamente; el resto debe usarla",
         )
 
-    def test_se_puede_bajar_y_restaurar(self):
-        self.assertIn("function exportarHist()", VALE)
-        self.assertIn("function importarHist(", VALE)
-        self.assertIn('id="histImportFile"', VALE)
-        self.assertRegex(VALE, r"a\.download\s*=", "la copia tiene que descargarse como archivo")
+    def test_el_historial_se_guarda_en_firebase(self):
+        """Ya no hay copia manual que bajarse: se guarda solo.
 
-    def test_restaurar_mezcla_y_no_reemplaza(self):
-        """Cargar una copia de la semana pasada no puede borrar los vales de
-        esta semana."""
-        c = cuerpo("importarHist")
-        self.assertIn("leerHist()", c, "hay que partir de lo que ya hay, no de cero")
-        self.assertRegex(c, r"hist\.push\(", "los vales de la copia se AÑADEN")
-        self.assertNotRegex(
-            c, r"setItem\('valesMax',\s*JSON\.stringify\(traidos",
-            "eso reemplazaría el historial por la copia",
-        )
-        # Y restaurar dos veces no puede duplicar.
-        self.assertIn("Set(", c, "hace falta deduplicar por alguna clave")
-        self.assertRegex(c, r"vistos\.has\(", "los repetidos se saltan")
+        La copia en archivo existía porque el historial vivía únicamente en
+        este navegador. Con la cuenta hay dónde guardarlo de verdad, así que
+        pedirle al dueño que se acuerde de bajar un archivo para algo que ya
+        está a salvo era trabajo inventado — y trabajo que, el día que se le
+        olvida, no sirve de nada."""
+        self.assertIn("function espejarHist()", VALE)
+        self.assertIn("async function sincronizarHist()", VALE)
+        for muerto in ("exportarHist", "importarHist", "histImportFile"):
+            self.assertNotIn(muerto, VALE, f"{muerto} ya no hace falta")
 
-    def test_un_archivo_cualquiera_no_pasa(self):
-        c = cuerpo("importarHist")
-        self.assertIn("Array.isArray(d.vales)", c,
-                      "hay que comprobar la forma antes de tocar el historial")
+    def test_cada_vale_va_en_su_propia_clave(self):
+        """Con dos dispositivos, mandar la LISTA entera pierde vales.
+
+        Si el móvil todavía no se ha sincronizado, su lista no incluye los
+        vales hechos en la PC; subirla con PUT los machaca y no queda rastro.
+        Una clave por vale hace imposible que dos dispositivos se pisen,
+        aunque nunca se hablen entre ellos."""
+        c = cuerpo("espejarHist")
+        self.assertIn("PATCH", c, "PUT reemplaza el nodo entero")
+        self.assertNotIn("method:'PUT'", c.replace(" ", ""))
+        self.assertIn("claveVale(v)", c)
+
+    def test_sincronizar_no_borra_lo_que_solo_esta_aqui(self):
+        """Un vale hecho en este móvil y aún sin subir tiene que sobrevivir a
+        traerse los de la nube."""
+        c = cuerpo("sincronizarHist")
+        self.assertIn("leerHist()", c, "hay que partir de lo local, no de cero")
+        self.assertIn("hist.push(", c, "lo remoto se AÑADE")
+        self.assertIn("vistos.has(", c, "y sin duplicar lo que ya está")
+
 
     def test_los_vales_solo_van_a_la_zona_privada(self):
         """Llevan nombre y teléfono del cliente. Antes no salían de este
