@@ -147,6 +147,27 @@ class ManifiestosTest(unittest.TestCase):
                         "Android pide 96x96 para los iconos de accesos directos",
                     )
 
+    def test_el_panel_no_usa_el_icono_de_la_tienda(self):
+        """Cuando Chrome no instala la app —porque ya está la tienda, porque el
+        dueño usó "Añadir a pantalla de inicio", o por lo que sea— crea un
+        acceso normal y le pone el **favicon** de la página, no el icono del
+        manifest. Con el favicon de la tienda salía en la pantalla de inicio una
+        bola naranja idéntica a la de TiendaMax; al mantenerla pulsada no había
+        accesos directos (un marcador no tiene), y parecía que los accesos
+        estaban rotos cuando lo que pasaba es que esa no era la app."""
+        admin = (ROOT / "admin.html").read_text(encoding="utf-8")
+        iconos = re.findall(r'<link rel="icon"[^>]*href="([^"]+)"', admin)
+        self.assertTrue(iconos, "admin.html se quedó sin favicon")
+        tienda = set(re.findall(r'<link rel="icon"[^>]*href="([^"]+)"',
+                                (ROOT / "index.html").read_text(encoding="utf-8")))
+        for src in iconos:
+            self.assertNotIn(
+                src, tienda,
+                f"{src} es también el favicon de la tienda: en la pantalla de "
+                "inicio los dos accesos se ven igual",
+            )
+            self.assertTrue(ruta_de(src).exists(), f"no existe {src}")
+
     def test_admin_abre_la_vista_del_ancla(self):
         """Sin esto los accesos directos con # caen todos en Inicio y no sirven."""
         admin = (ROOT / "admin.html").read_text(encoding="utf-8")
