@@ -646,9 +646,6 @@ function _tmInitDestacadosSlider() {
 }
 
 function renderizarMasVendidos() {
-    // Siempre actualizar el hero galería, independiente de si el grid existe
-    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
-
     const grid = document.getElementById('masVendidosGrid');
     const vacio = document.getElementById('masVendidosVacio');
     if (!grid) return;

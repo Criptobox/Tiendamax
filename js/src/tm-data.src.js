@@ -1121,7 +1121,6 @@ window.addEventListener('storage', (event) => {
         actualizarListaCategorias();
         renderizarCategoriasHome();
         renderizarProductos();
-        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     }
     if (event.key === 'activeCountdown' || event.key === 'ofertaDiaId' || event.key === 'ofertaDiaTexto') {
         if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();

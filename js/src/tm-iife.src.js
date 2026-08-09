@@ -516,8 +516,6 @@ async function guardarTasaMNAdmin() {
             if (typeof actualizarPreciosMostrados === 'function') actualizarPreciosMostrados();
             if (typeof actualizarBadgeStockBajo === 'function') actualizarBadgeStockBajo();
             if (typeof initScrollAnimations === 'function') initScrollAnimations();
-            if (typeof verificarEstadoBackend === 'function') verificarEstadoBackend();
-            if (typeof cargarEstadoPublicacion === 'function') cargarEstadoPublicacion();
         }, 150);
     });
 })();

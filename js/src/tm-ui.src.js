@@ -402,7 +402,6 @@ function tmToggleMasVendido(id, e) {
     sincronizarConGitHub();
     actualizarListaProductos();
     renderizarMasVendidos();
-    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
     mostrarNotificacion(p.masVendido ? '⭐ ' + p.nombre + ': destacado en Más Vendidos' : ' ' + p.nombre + ': quitado de Más Vendidos');
 }
 

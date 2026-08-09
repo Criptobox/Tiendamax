@@ -119,7 +119,6 @@ function abrirAdminPanel() {
     actualizarListaProductos();
     actualizarSelectCategorias();
     actualizarListaCategorias();
-    verificarEstadoBackend();
     actualizarCountdownProductSelect();
     cargarNumeroWhatsApp();
     cargarEnvioTexto();
@@ -130,286 +129,17 @@ function abrirAdminPanel() {
             renderizarAnalyticsFirebase();
         }
     }, 500);
-    // Briefing de tareas pendientes al entrar
-    setTimeout(_tmMostrarAgenda, 800);
+    // Aquí se llamaba a _tmMostrarAgenda, el briefing de tareas pendientes.
+    // Salía en su primera línea desde siempre: pintaba en #tmAgenda /
+    // #tmAgendaItems, que no existen en ningún HTML. Quien enseña hoy los
+    // pendientes es el Copiloto — de hecho su CSS traía una regla para ocultar
+    // #tmAgenda cuando está activo, por si acaso.
 
     const inputTasa = document.getElementById('adminTasaMN');
     if (inputTasa) {
         const saved = localStorage.getItem('tasaMN');
         if (saved) inputTasa.value = saved;
     }
-}
-
-// Briefing de tareas pendientes — aparece en la tarjeta #tmAgenda al entrar al panel
-async function _tmMostrarAgenda() {
-    const card  = document.getElementById('tmAgenda');
-    const lista = document.getElementById('tmAgendaItems');
-    if (!card || !lista) return;
-
-    const tareas = [];
-
-    // ── 1. Productos agotados ────────────────────────────────────────────────
-    const agotados = productos.filter(p => (p.activo !== false) && safeNum(p.stock) === 0);
-    if (agotados.length) {
-        tareas.push({
-            icon: '🔴', urgencia: 3,
-            titulo: `${agotados.length} producto${agotados.length > 1 ? 's' : ''} agotado${agotados.length > 1 ? 's' : ''}`,
-            detalle: agotados.slice(0, 3).map(p => p.nombre).join(', ') + (agotados.length > 3 ? '…' : ''),
-            accion: 'Gestionar', tab: 'manage-products', cls: ''
-        });
-    }
-
-    // ── 2. Stock bajo (≤ 2 unidades) ────────────────────────────────────────
-    const bajStock = productos.filter(p => (p.activo !== false) && safeNum(p.stock) > 0 && safeNum(p.stock) <= 2);
-    if (bajStock.length) {
-        tareas.push({
-            icon: '⚠️', urgencia: 2,
-            titulo: `${bajStock.length} producto${bajStock.length > 1 ? 's' : ''} con stock bajo (≤2)`,
-            detalle: bajStock.slice(0, 3).map(p => `${p.nombre} (${p.stock})`).join(', ') + (bajStock.length > 3 ? '…' : ''),
-            accion: 'Ver stock', tab: 'manage-products', cls: ''
-        });
-    }
-
-    // ── 3. Productos sin imagen ──────────────────────────────────────────────
-    const sinImg = productos.filter(p => p.activo !== false && !p.imagen);
-    if (sinImg.length) {
-        tareas.push({
-            icon: '🖼️', urgencia: 1,
-            titulo: `${sinImg.length} producto${sinImg.length > 1 ? 's' : ''} sin imagen`,
-            detalle: sinImg.slice(0, 3).map(p => p.nombre).join(', ') + (sinImg.length > 3 ? '…' : ''),
-            accion: 'Agregar fotos', tab: 'manage-products', cls: 'b'
-        });
-    }
-
-    // ── 4. Interesados sin atender ───────────────────────────────────────────
-    try {
-        const atendidos  = tmParseArray(localStorage.getItem('tm_interesados_atendidos'));
-        const atendSet   = new Set(atendidos);
-        const rtdbUrl    = _fbRtdbUrl();
-        if (rtdbUrl) {
-            const rInt = await fetch(`${rtdbUrl}/interesados.json?limitToLast=30`).catch(() => null);
-            if (rInt && rInt.ok) {
-                const dataInt = await rInt.json();
-                if (dataInt && typeof dataInt === 'object') {
-                    const items = Object.values(dataInt).flatMap(v => typeof v === 'object' && !Array.isArray(v) ? Object.values(v) : [v]);
-                    const noAtendidos = items.filter(x => x && x.ts && !atendSet.has(x.ts));
-                    if (noAtendidos.length) {
-                        tareas.push({
-                            icon: '💬', urgencia: 3,
-                            titulo: `${noAtendidos.length} interesado${noAtendidos.length > 1 ? 's' : ''} sin contactar`,
-                            detalle: [...new Set(noAtendidos.map(x => x.producto))].slice(0, 3).join(', '),
-                            accion: 'Ver', tab: 'inicio', cls: 'g'
-                        });
-                    }
-                }
-            }
-        }
-    } catch(e) {}
-
-    // ── 5. Avisos de stock pendientes (clientes esperando reposición) ────────
-    try {
-        const rtdbUrl = _fbRtdbUrl();
-        if (rtdbUrl) {
-            const rAv = await fetch(`${rtdbUrl}/avisos_stock.json`).catch(() => null);
-            if (rAv && rAv.ok) {
-                const dataAv = await rAv.json();
-                if (dataAv && typeof dataAv === 'object') {
-                    const prods = Object.keys(dataAv);
-                    const total = Object.values(dataAv).reduce((s, v) => s + (v && typeof v === 'object' ? Object.keys(v).length : 0), 0);
-                    if (prods.length) {
-                        tareas.push({
-                            icon: '🔔', urgencia: 2,
-                            titulo: `${total} cliente${total > 1 ? 's' : ''} esperan reposición (${prods.length} producto${prods.length > 1 ? 's' : ''})`,
-                            detalle: 'Repone stock para notificarles automáticamente',
-                            accion: 'Gestionar', tab: 'manage-products', cls: ''
-                        });
-                    }
-                }
-            }
-        }
-    } catch(e) {}
-
-    // ── 6. SEO — productos sin descripción ──────────────────────────────────
-    const sinDesc = productos.filter(p => p.activo !== false && (!p.descripcion || p.descripcion.trim().length < 20));
-    if (sinDesc.length) {
-        tareas.push({
-            icon: '📝', urgencia: 2,
-            titulo: `${sinDesc.length} producto${sinDesc.length > 1 ? 's' : ''} sin descripción (SEO)`,
-            detalle: sinDesc.slice(0, 3).map(p => p.nombre).join(', ') + (sinDesc.length > 3 ? '…' : ''),
-            accion: 'Completar', tab: 'manage-products', cls: 'b'
-        });
-    }
-
-    // ── 7. SEO — productos sin categoría ────────────────────────────────────
-    const sinCat = productos.filter(p => p.activo !== false && !p.categoria);
-    if (sinCat.length) {
-        tareas.push({
-            icon: '🏷️', urgencia: 1,
-            titulo: `${sinCat.length} producto${sinCat.length > 1 ? 's' : ''} sin categoría`,
-            detalle: sinCat.slice(0, 3).map(p => p.nombre).join(', ') + (sinCat.length > 3 ? '…' : ''),
-            accion: 'Categorizar', tab: 'manage-products', cls: 'b'
-        });
-    }
-
-    // ── 8. SEO — nombres demasiado cortos o sin palabras clave útiles ────────
-    const nombreCorto = productos.filter(p => p.activo !== false && p.nombre && p.nombre.trim().length < 8);
-    if (nombreCorto.length) {
-        tareas.push({
-            icon: '✍️', urgencia: 1,
-            titulo: `${nombreCorto.length} producto${nombreCorto.length > 1 ? 's' : ''} con nombre muy corto`,
-            detalle: nombreCorto.slice(0, 3).map(p => p.nombre).join(', ') + (nombreCorto.length > 3 ? '…' : ''),
-            accion: 'Mejorar', tab: 'manage-products', cls: 'b'
-        });
-    }
-
-    // ── 9. Campañas con seguimiento vencido (del Centro de tareas IA) ──────
-    try {
-        const camps = tmParseArray(localStorage.getItem('tm_campaigns_v1'));
-        const vencidas = camps.filter(c => c.followUpAt && new Date(c.followUpAt).getTime() <= Date.now() && !/hecho|cerrad|complet/i.test(c.status || ''));
-        if (vencidas.length) {
-            tareas.push({
-                icon: '📌', urgencia: 3,
-                titulo: `${vencidas.length} campaña${vencidas.length > 1 ? 's' : ''} con seguimiento vencido`,
-                detalle: vencidas.slice(0, 2).map(c => c.title || c.productName || '').filter(Boolean).join(', ') + (vencidas.length > 2 ? '…' : ''),
-                accion: 'Ver campañas', tab: 'herramientas', cls: ''
-            });
-        }
-    } catch(e) {}
-
-    // ── 11. Plan semanal de hoy pendiente (del Centro de tareas IA) ─────────
-    try {
-        const plans = tmParseArray(localStorage.getItem('tm_week_plan_v1'));
-        const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-        const hoy = dias[new Date().getDay()];
-        const pendPlans = plans.filter(p => !(p.done && p.done[hoy]));
-        if (pendPlans.length) {
-            tareas.push({
-                icon: '🗓️', urgencia: 2,
-                titulo: `Plan de ${hoy} pendiente`,
-                detalle: pendPlans.slice(0, 2).map(p => p.title || '').filter(Boolean).join(' · '),
-                accion: 'Ver plan', tab: 'herramientas', cls: ''
-            });
-        }
-    } catch(e) {}
-
-    // ── 12. Productos sin SEO title/description (del Centro de tareas IA) ───
-    const sinSEO = productos.filter(p => p.activo !== false && !p.seoTitle && !p.seoDescription);
-    if (sinSEO.length) {
-        tareas.push({
-            icon: '🔎', urgencia: 2,
-            titulo: `${sinSEO.length} producto${sinSEO.length > 1 ? 's' : ''} sin SEO configurado`,
-            detalle: sinSEO.slice(0, 3).map(p => p.nombre).join(', ') + (sinSEO.length > 3 ? '…' : ''),
-            accion: 'IA masiva', tab: 'herramientas', cls: 'b'
-        });
-    }
-
-    // ── 13. Suscriptores push sin campaña reciente ────────────────────────────
-    const subs = Number(localStorage.getItem('tm_subscriber_count') || 0);
-    if (subs > 5) {
-        const camps2 = (() => { try { return tmParseArray(localStorage.getItem('tm_campaigns_v1')); } catch(e) { return []; } })();
-        const ultimaCamp = camps2.reduce((m, c) => Math.max(m, new Date(c.ts || 0).getTime()), 0);
-        const diasSinCamp = Math.floor((Date.now() - ultimaCamp) / 86400000);
-        if (diasSinCamp >= 3) {
-            tareas.push({
-                icon: '🔔', urgencia: 1,
-                titulo: `${subs} suscriptores esperan noticias`,
-                detalle: diasSinCamp > 365 ? 'Sin campaña enviada aún' : `Última campaña hace ${diasSinCamp} día${diasSinCamp !== 1 ? 's' : ''}`,
-                accion: 'Crear campaña', tab: 'herramientas', cls: ''
-            });
-        }
-    }
-
-    // ── 14. Productos con cambios sin publicar ───────────────────────────────
-    try {
-        const mods = tmParseArray(localStorage.getItem('productosModificados'));
-        if (mods.length) {
-            tareas.push({
-                icon: '🔄', urgencia: 3,
-                titulo: `${mods.length} producto${mods.length > 1 ? 's' : ''} con cambios sin publicar`,
-                detalle: 'Ejecuta "Actualizar tienda" para que los cambios sean visibles',
-                accion: 'Publicar', tab: 'publicar-ahora', cls: ''
-            });
-        }
-    } catch(e) {}
-
-    // ── 15. Productos con precio 0 ───────────────────────────────────────────
-    const sinPrecio = productos.filter(p => p.activo !== false && !Number(p.precioActual || 0));
-    if (sinPrecio.length) {
-        tareas.push({
-            icon: '💲', urgencia: 2,
-            titulo: `${sinPrecio.length} producto${sinPrecio.length > 1 ? 's' : ''} sin precio`,
-            detalle: sinPrecio.slice(0, 3).map(p => p.nombre).join(', ') + (sinPrecio.length > 3 ? '…' : ''),
-            accion: 'Completar', tab: 'manage-products', cls: 'b'
-        });
-    }
-
-    // ── 16. Sin recomendaciones IA (solo si IA configurada) ──────────────────
-    const iaKey = localStorage.getItem('anthropicApiKey');
-    if (iaKey) {
-        const sinRecs = productos.filter(p => p.activo !== false && (!Array.isArray(p.recomendados) || !p.recomendados.length));
-        if (sinRecs.length > 3) {
-            tareas.push({
-                icon: '🧲', urgencia: 1,
-                titulo: `${sinRecs.length} producto${sinRecs.length > 1 ? 's' : ''} sin recomendaciones IA`,
-                detalle: 'Mejora el upsell y cross-sell con el recomendador IA masivo',
-                accion: 'IA masiva', tab: 'herramientas', cls: 'b'
-            });
-        }
-    }
-
-    // ── 17. Sin plan semanal creado ──────────────────────────────────────────
-    try {
-        const plansTodos = tmParseArray(localStorage.getItem('tm_week_plan_v1'));
-        if (!plansTodos.length && productos.length > 3) {
-            tareas.push({
-                icon: '🗓️', urgencia: 1,
-                titulo: 'Sin plan semanal de publicaciones',
-                detalle: 'El agente IA puede organizar tus publicaciones de lunes a domingo',
-                accion: 'Crear plan', tab: 'herramientas', cls: ''
-            });
-        }
-    } catch(e) {}
-
-    // ── 18. IA no configurada (si hay suficientes productos) ─────────────────
-    if (!localStorage.getItem('anthropicApiKey') && productos.length > 5) {
-        tareas.push({
-            icon: '🤖', urgencia: 1,
-            titulo: 'IA no configurada',
-            detalle: 'Configura OpenRouter/Gemini/Groq para SEO automático, campañas y recomendaciones',
-            accion: 'Configurar', tab: 'configuracion', cls: 'ia'
-        });
-    }
-
-    // ── Sin tareas → ocultar ─────────────────────────────────────────────────
-    if (!tareas.length) {
-        card.style.display = 'none';
-        return;
-    }
-
-    // Ordenar por urgencia descendente
-    tareas.sort((a, b) => b.urgencia - a.urgencia);
-
-    const urgColor = u => u >= 3 ? '#e74c3c' : u === 2 ? '#FF6B35' : '#2AABEE';
-    const totalCriticas = tareas.filter(t => t.urgencia >= 3).length;
-
-    // Actualizar botón "Pendientes" del grid de acciones rápidas
-    const btnPend = document.getElementById('tmBtnPendientes');
-    if (btnPend) {
-        btnPend.className = 'tm-qc pend' + (totalCriticas ? ' crit' : '');
-        btnPend.innerHTML = `📋 Pendientes<span class="pend-n" style="background:${totalCriticas ? '#e74c3c' : '#FF6B35'}">${tareas.length}</span>`;
-    }
-
-    const hd = card.querySelector('.tmag-title');
-    if (hd) hd.innerHTML = `📋 Tareas pendientes <span style="background:${totalCriticas ? '#e74c3c' : '#FF6B35'};color:#fff;border-radius:20px;padding:1px 8px;font-size:11px;margin-left:6px">${tareas.length}</span>`;
-
-    lista.innerHTML = tareas.map(t => `
-        <div class="tmag-item" style="border-left:3px solid ${urgColor(t.urgencia)}">
-            <span class="tmag-icon">${t.icon}</span>
-            <span class="tmag-txt"><b>${escapeHtml(t.titulo)}</b>${t.detalle ? `<span class="tmag-det">${escapeHtml(t.detalle)}</span>` : ''}</span>
-            <button class="tmag-btn ${t.cls}" onclick="switchTab('${t.tab}');document.getElementById('tmAgenda').style.display='none'">${t.accion}</button>
-        </div>`).join('');
-
-    card.style.display = 'block';
 }
 
 
@@ -423,7 +153,6 @@ function pubSwitchPanel(name) {
     localStorage.setItem('tm_pub_subtab', name);
     if (name === 'publicar') {
         setTimeout(cargarGruposFB, 100);
-        setTimeout(function() { if (typeof window.renderTabPublicar === 'function') window.renderTabPublicar(); }, 250);
     }
     if (name === 'oferta') {
         setTimeout(poblarSelectOfertaDia, 100);
@@ -462,8 +191,6 @@ function switchTab(tabName) {
     if (tabName === 'analytics') setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 150);
     if (tabName === 'manage-subcategories') {
         setTimeout(() => {
-            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
-            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
         }, 50);
     }
     if (tabName === 'configuracion') {

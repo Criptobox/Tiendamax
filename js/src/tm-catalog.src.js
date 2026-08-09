@@ -114,7 +114,6 @@ function agregarCategoria() {
     actualizarBotonesCategorias();
     actualizarListaCategorias();
     renderizarCategoriasHome();
-    if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     mostrarNotificacion('✅ Categoría agregada');
 }
 
@@ -161,7 +160,6 @@ function eliminarCategoria(index) {
         actualizarListaCategorias();
         renderizarCategoriasHome();
         renderizarProductos();
-        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     }
 }
 
@@ -184,40 +182,26 @@ function eliminarProducto(id) {
     mostrarNotificacion('🗑️ Producto eliminado', 'info');
 }
 
-// ===== ESTADO DEL BACKEND =====
-
-async function verificarEstadoBackend() {
-    const statusEl = document.getElementById('backendStatus');
-    if (!statusEl) return;
-    statusEl.innerHTML = '🟠 <strong>Modo manual activo</strong> · Publicación asistida desde el navegador · Sin dependencia de backend roto';
-    statusEl.style.color = '#F39C12';
-}
-
-async function cargarEstadoPublicacion() {
-    const logContainer = document.getElementById('historialPublicaciones');
-    if (!logContainer) return;
-    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automático porque este repo no incluye backend de publicación.</p>';
-}
+// Aquí estaban verificarEstadoBackend y cargarEstadoPublicacion. Las dos solo
+// escribían un aviso fijo ("modo manual activo") en #backendStatus y
+// #historialPublicaciones, que no existen en ningún HTML desde que el panel se
+// fue a admin.html. La primera se llamaba además desde un setInterval cada 30
+// segundos, para no hacer nada.
 
 // ===== SINCRONIZACIÓN CON GITHUB =====
 
+// Detrás de los tres campos de GitHub había cinco líneas que rellenaban
+// #firebaseConfigJson, #firebaseVapidKey y #firebaseServerKey. Esos campos no
+// existen en admin.html —la configuración de Firebase se hace ahora en
+// #fb-config-input / #fb-vapid-input, con su propio cargador—, así que la
+// primera de ellas tiraba un TypeError cada vez que se abría ⚙️ Configuración
+// y cortaba la función ahí. No se veía nada raro porque lo único que quedaba
+// detrás eran las otras cuatro, igual de inútiles; pero cualquier cosa que se
+// añadiera al final de esta función no se habría ejecutado nunca.
 function cargarConfiguracionGitHub() {
     document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
     document.getElementById('githubRepo').value = localStorage.getItem('githubRepo') || 'Tiendamax';
     document.getElementById('githubToken').value = localStorage.getItem('githubToken') || '';
-    
-    const fbConfig = localStorage.getItem('firebaseConfig');
-    if (fbConfig) {
-        try {
-            document.getElementById('firebaseConfigJson').value = JSON.stringify(JSON.parse(fbConfig), null, 2);
-        } catch(e) {
-            document.getElementById('firebaseConfigJson').value = fbConfig;
-        }
-    } else {
-        document.getElementById('firebaseConfigJson').value = '';
-    }
-    document.getElementById('firebaseVapidKey').value = localStorage.getItem('firebaseVapidKey') || '';
-    document.getElementById('firebaseServerKey').value = localStorage.getItem('fcmServerKey') || '';
 }
 
 function guardarConfiguracionGitHub(event) {
