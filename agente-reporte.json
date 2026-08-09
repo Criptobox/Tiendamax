@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-08T09:29:27.237767+00:00",
+  "generado": "2026-08-09T09:30:36.498228+00:00",
   "productos": 119,
   "urgentes": 2,
-  "advertencias": 51,
-  "info": 8,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 51 advertencia(s), 8 de info.",
+  "advertencias": 52,
+  "info": 7,
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 52 advertencia(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -263,6 +263,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "agotado (stock 0)"
     },
@@ -300,11 +305,6 @@
       "tipo": "precio",
       "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
-      "detalle": "quedan 3"
     }
   ]
 }
