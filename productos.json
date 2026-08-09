@@ -3029,7 +3029,7 @@
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "SEGURIDAD",
