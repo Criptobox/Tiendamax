@@ -190,42 +190,41 @@ class SinPuertasPintadasTest(unittest.TestCase):
         self.assertIn("TMAuth.recuperar(", self.admin)
 
 
-class ClienteSincronizacionTest(unittest.TestCase):
+class SinRastroDeLaContrasenaLocalTest(unittest.TestCase):
+    """Ya no queda codigo que maneje la contrasena guardada en el navegador.
+
+    Esta clase probaba cambiarPasswordAdmin, sincronizarPasswordAFirebase y
+    _checkPasswordSync — el mecanismo entero. Se fue con el login: nadie las
+    llamaba, y dejarlas no era gratis. _checkPasswordSync avisaba «contrasena
+    no sincronizada con GitHub: si borras datos del navegador perderas el
+    acceso», que hoy es falso y asusta; las otras dos escribian en /admin_auth
+    un hash que ya no abre ninguna puerta.
+
+    Lo que se fija ahora es que no vuelvan por la puerta de atras.
+    """
 
     @classmethod
     def setUpClass(cls):
-        cls.src = TM_ADMIN.read_text(encoding="utf-8")
+        cls.motor = (RAIZ / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
+        cls.admin = (RAIZ / "admin.html").read_text(encoding="utf-8")
 
-    def test_sync_recibe_el_proof_por_parametro(self):
-        self.assertIn("async function sincronizarPasswordAFirebase(proofHash)",
-                      self.src)
+    def test_no_queda_el_mecanismo_viejo(self):
+        for f in ("function cambiarPasswordAdmin",
+                  "function sincronizarPasswordAFirebase",
+                  "function _checkPasswordSync"):
+            self.assertNotIn(f, self.motor, f"{f} ya no la llama nadie")
 
-    def test_ya_no_intenta_leer_el_hash_para_el_proof(self):
-        # Era el fallo: con .read cerrado ese fetch devuelve 401, se quedaba
-        # sin proof y el PUT se rechazaba.
-        self.assertNotIn("if (d && d.hash) currentHash = d.hash", self.src)
-        # Y tampoco puede caer en el hash local: eso guardaba proof == hash.
-        self.assertNotIn("proofHash || localHash", self.src)
-        self.assertIn("!proofHash || proofHash === localHash", self.src)
+    def test_nadie_avisa_de_perder_el_acceso_por_borrar_datos(self):
+        # Era verdad cuando la contrasena vivia solo aqui. Con la cuenta, no:
+        # repetirlo asusta al dueno por algo que ya esta resuelto.
+        for texto in ("perderás el acceso", "perderas el acceso"):
+            self.assertNotIn(texto, self.motor)
 
-    def test_cambiar_password_pasa_el_hash_viejo(self):
-        # cambiarPasswordAdmin machaca AUTH_HASH_KEY con el hash nuevo antes de
-        # sincronizar; si no pasara `ch` (el viejo, ya verificado contra la
-        # contraseña actual), el proof correcto se habría perdido.
-        self.assertIn("sincronizarPasswordAFirebase(ch)", self.src)
-        i_guarda = self.src.index("localStorage.setItem(AUTH_HASH_KEY, nh)")
-        i_sync = self.src.index("sincronizarPasswordAFirebase(ch)")
-        self.assertLess(i_guarda, i_sync)
-
-    def test_el_rechazo_por_proof_se_explica(self):
-        # 401/403 aquí solo puede significar "este dispositivo tiene una
-        # contraseña vieja"; soltar "HTTP 401" no le dice nada al admin.
-        self.assertIn("res.status === 401 || res.status === 403", self.src)
-
-    def test_no_promete_multidispositivo_que_no_da(self):
-        # El mensaje de éxito decía "Puedes acceder desde cualquier
-        # dispositivo", y con el hash ilegible eso no es cierto.
-        self.assertNotIn("Puedes acceder desde cualquier dispositivo", self.src)
+    def test_el_admin_no_escribe_en_admin_auth(self):
+        # El nodo sigue existiendo en las reglas por si queda algo escrito,
+        # pero el panel ya no lo toca: su hash no autoriza nada.
+        self.assertNotIn("/admin_auth.json", self.motor)
+        self.assertNotIn("/admin_auth.json", self.admin)
 
 
 if __name__ == "__main__":

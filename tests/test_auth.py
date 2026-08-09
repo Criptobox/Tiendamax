@@ -203,7 +203,7 @@ class AuthTest(unittest.TestCase):
         dueño fuera de su propia tienda sin nada que hacer."""
         ui = (ROOT / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
         login = ui[ui.index("async function verificarPassword"):
-                   ui.index("async function cambiarPasswordAdmin")]
+                   ui.index("function abrirAdminPanel")]
         self.assertIn("TMAuth.entrar(email, pass)", login)
         for vestigio in ("AUTH_HASH_KEY", "admin_auth.json", ".admin-auth.json"):
             self.assertNotIn(

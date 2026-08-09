@@ -85,162 +85,17 @@ async function verificarPassword(event) {
     if (inp) inp.value = '';
 }
 
-// Cambiar contraseña (llamado desde admin.html)
-async function cambiarPasswordAdmin(ci, ni, coi) {
-    if (!ci || !ni || !coi) {
-        mostrarNotificacion('❌ Completa todos los campos', 'error');
-        return;
-    }
+/* Aquí vivían cambiarPasswordAdmin, sincronizarPasswordAFirebase y
+   _checkPasswordSync: todo el manejo de la contraseña guardada en este
+   navegador. Ya no las llama nadie desde que el login es la cuenta de
+   Firebase, y dejarlas no era gratis. _checkPasswordSync avisaba «contraseña
+   no sincronizada con GitHub: si borras datos del navegador perderás el
+   acceso», que hoy es falso y asusta; y las otras dos escribían en
+   /admin_auth un hash que ya no abre ninguna puerta. Son 150 líneas menos que
+   viajan a cada móvil por 3G.
 
-    // Detectar sal vigente: Firebase → GitHub → localStorage
-    const ghUser = localStorage.getItem('githubUser');
-    const ghRepo = localStorage.getItem('githubRepo');
-    let ch = null, cs = null;
-    // Firebase RTDB (fuente más confiable entre dispositivos)
-    try {
-        const fbCfg = await _fbEnsureConfig();
-        if (fbCfg) {
-            const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
-            const r = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now());
-            if (r.ok) {
-                const fbAuth = await r.json();
-                if (fbAuth && fbAuth.hash && fbAuth.salt) { ch = fbAuth.hash; cs = fbAuth.salt; }
-            }
-        }
-    } catch(e) {}
-    // GitHub fallback
-    if (!ch || !cs) {
-        if (ghUser && ghRepo) {
-            try {
-                const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
-                if (r.ok) {
-                    const cfg = await r.json();
-                    if (cfg.hash && cfg.salt) { ch = cfg.hash; cs = cfg.salt; }
-                }
-            } catch(e) {}
-        }
-    }
-    if (!ch || !cs) {
-        ch = localStorage.getItem(AUTH_HASH_KEY);
-        cs = localStorage.getItem(AUTH_SALT_KEY);
-    }
-    if (!ch || !cs) {
-        mostrarNotificacion('❌ No hay contraseña configurada. Accede primero o configura GitHub.', 'error');
-        return;
-    }
-
-    const ch2 = await hashPassword(ci, cs);
-    if (ch2 !== ch) { mostrarNotificacion('❌ Contraseña actual incorrecta', 'error'); return; }
-    if (ni.length < 4) { mostrarNotificacion('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error'); return; }
-    if (ni !== coi) { mostrarNotificacion('❌ Las contraseñas nuevas no coinciden', 'error'); return; }
-
-    const ns = _generarSal();
-    const nh = await hashPassword(ni, ns);
-    // Las dos van juntas o no va ninguna. Con un catch mudo cada una, si
-    // entraba la sal y fallaba el hash (o al revés) el dispositivo quedaba con
-    // una pareja incoherente y NINGUNA contraseña volvía a validar — y encima
-    // se anunciaba "cambiada con éxito".
-    const _hPrev = localStorage.getItem(AUTH_HASH_KEY);
-    const _sPrev = localStorage.getItem(AUTH_SALT_KEY);
-    try {
-        localStorage.setItem(AUTH_SALT_KEY, ns);
-        localStorage.setItem(AUTH_HASH_KEY, nh);
-        if (localStorage.getItem(AUTH_SALT_KEY) !== ns || localStorage.getItem(AUTH_HASH_KEY) !== nh) {
-            throw new Error('no se guardó completo');
-        }
-    } catch(e) {
-        try {
-            if (_hPrev === null) localStorage.removeItem(AUTH_HASH_KEY); else localStorage.setItem(AUTH_HASH_KEY, _hPrev);
-            if (_sPrev === null) localStorage.removeItem(AUTH_SALT_KEY); else localStorage.setItem(AUTH_SALT_KEY, _sPrev);
-        } catch(_) {}
-        mostrarNotificacion('❌ No se pudo guardar la contraseña nueva en este navegador (¿sin espacio?). Sigue valiendo la anterior.', 'error');
-        return;
-    }
-
-    // NO se sube a GitHub: .admin-auth.json sería público (readable sin auth vía
-    // raw.githubusercontent por cualquiera), y ese hash serviría para forjar
-    // proof= en admin_push_requests. El multi-dispositivo se cubre abajo con
-    // Firebase (regla admin_auth: hash con .read false, salt legible).
-    mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
-    document.getElementById('ci').value = '';
-    document.getElementById('ni').value = '';
-    document.getElementById('coi').value = '';
-    // Sincronizar automáticamente con Firebase tras cambiar contraseña.
-    // Se pasa `ch` (el hash ANTERIOR, el que acabamos de verificar contra la
-    // contraseña actual) como proof: la regla exige proof == hash guardado, y
-    // arriba ya machacamos AUTH_HASH_KEY con el nuevo, así que si no lo
-    // pasáramos aquí se perdería y la sincronización quedaría rechazada.
-    setTimeout(() => sincronizarPasswordAFirebase(ch), 300);
-}
-
-// Sincroniza el hash LOCAL → Firebase RTDB.
-// `proofHash` es el hash que ya está guardado en Firebase; la regla exige
-// proof == hash actual para dejar sobrescribir. Al cambiar la contraseña lo
-// manda cambiarPasswordAdmin (el hash viejo); si se llama a mano desde el botón
-// "Sincronizar contraseña" se usa el hash local, que es el correcto cuando el
-// dispositivo ya estaba en sync (resincronizar lo mismo es idempotente).
-async function sincronizarPasswordAFirebase(proofHash) {
-    const localHash = localStorage.getItem(AUTH_HASH_KEY);
-    const localSalt = localStorage.getItem(AUTH_SALT_KEY);
-    if (!localHash || !localSalt) {
-        mostrarNotificacion('❌ No hay contraseña guardada en este dispositivo', 'error');
-        return;
-    }
-    const fbCfg = await _fbEnsureConfig();
-    if (!fbCfg) {
-        mostrarNotificacion('❌ Firebase no configurado. Guarda tu firebaseConfig primero.', 'error');
-        return;
-    }
-    const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
-    try {
-        // El proof tiene que ser el hash ANTERIOR, y nunca el que se está
-        // guardando. Antes, si no llegaba proof, se usaba el hash local: un
-        // resync dejaba proof === hash en la base; a partir de ahí cualquiera
-        // podía escribir /admin_auth/hash sin conocer nada, porque en una
-        // escritura parcial `newData` en el padre es el MERGE con el proof ya
-        // guardado y la regla se satisfacía sola. La regla exige ahora que
-        // difieran, así que mandar el local no serviría de nada.
-        if (!proofHash || proofHash === localHash) {
-            mostrarNotificacion('❌ No se puede sincronizar sin la contraseña anterior. Cambia la contraseña y se sincronizará sola.', 'error');
-            return;
-        }
-        const body = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS, proof: proofHash };
-        const res = await fetch(rtdbUrl + '/admin_auth.json', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (res.status === 401 || res.status === 403) {
-            // Único motivo posible: el proof no coincide con el hash guardado,
-            // o sea que este dispositivo tiene una contraseña vieja porque la
-            // cambiaste en otro. Decirlo, en vez de soltar un "HTTP 401" seco.
-            mostrarNotificacion('❌ Firebase tiene otra contraseña más nueva. Entra con la contraseña actual en este dispositivo y vuelve a sincronizar.', 'error');
-            return;
-        }
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        mostrarNotificacion('✅ Contraseña sincronizada con Firebase.', 'success');
-    } catch(e) {
-        mostrarNotificacion(`❌ Error al sincronizar con Firebase: ${e.message}`, 'error');
-    }
-}
-
-// Verifica al abrir el admin si la contraseña local coincide con la de GitHub
-async function _checkPasswordSync() {
-    const ghUser = localStorage.getItem('githubUser');
-    const ghRepo = localStorage.getItem('githubRepo');
-    const localHash = localStorage.getItem(AUTH_HASH_KEY);
-    if (!localHash || !ghUser || !ghRepo) return;
-    try {
-        const res = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
-        if (!res.ok) return;
-        const cfg = await res.json();
-        if (cfg.hash && cfg.hash !== localHash) {
-            setTimeout(() => {
-                mostrarNotificacion('⚠️ Contraseña no sincronizada con GitHub. Si borras datos del navegador perderás el acceso. Ve a Configuración → "Sincronizar contraseña".', 'error');
-            }, 1500);
-        }
-    } catch(e) {}
-}
+   La contraseña se cambia donde vive: Configuración → Tu cuenta → Olvidé la
+   contraseña, que manda un correo de Firebase. */
 
 function abrirAdminPanel() {
     /* Si se entró con la contraseña local, no hay sesión de Firebase y las
