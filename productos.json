@@ -121,7 +121,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836802568.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -340,10 +340,10 @@
     "id": 1778104512761,
     "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
     "precioActual": 260,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 7,
+    "stock": 3,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -358,11 +358,11 @@
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
+      "https://tiendamax.org/imagenes/img_1785284197964.webp",
       "https://tiendamax.org/imagenes/img_1778104512761.webp"
-    ]
+    ],
+    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías."
   },
   {
     "id": 1778104599386,
@@ -2406,7 +2406,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -2421,9 +2421,9 @@
       "🛡️ Protección y Seguridad Eléctrica"
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
-    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.\nFicha Técnica:\nFuncionamiento: 🔄 Permite la conmutación entre una fuente de energía solar (PV) y la red eléctrica (City Power), optimizando el uso de recursos y asegurando el respaldo energético.\nModos de uso: 🛠️ Incluye un selector físico para operación manual o automática, adaptándose a las necesidades específicas de cada instalación eléctrica.\nSeguridad: 🛡️ Construido con materiales resistentes, diseñado para soportar tensiones de impacto y cumplir con estándares internacionales de aislamiento y protección.\nInstalación: ✨ Diseño modular pensado para integrarse fácilmente en cuadros eléctricos, facilitando la conexión de cables y la gestión de circuitos.\nEspecificaciones (Specs):\nMarca: GEYA.\nModelo: W2R-100.\nCorriente nominal: 100A.\nVoltaje nominal: 220V AC.\nFrecuencia: 50-60Hz.\nTipo: Interruptor de transferencia automática (ATS).",
     "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
-    "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…"
+    "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…",
+    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.\nFicha Técnica:\nFuncionamiento: 🔄 Permite la conmutación entre una fuente de energía solar (PV) y la red eléctrica (City Power), optimizando el uso de recursos y asegurando el respaldo energético.\nModos de uso: 🛠️ Incluye un selector físico para operación manual o automática, adaptándose a las necesidades específicas de cada instalación eléctrica.\nSeguridad: 🛡️ Construido con materiales resistentes, diseñado para soportar tensiones de impacto y cumplir con estándares internacionales de aislamiento y protección.\nInstalación: ✨ Diseño modular pensado para integrarse fácilmente en cuadros eléctricos, facilitando la conexión de cables y la gestión de circuitos.\nEspecificaciones (Specs):\nMarca: GEYA.\nModelo: W2R-100.\nCorriente nominal: 100A.\nVoltaje nominal: 220V AC.\nFrecuencia: 50-60Hz.\nTipo: Interruptor de transferencia automática (ATS)."
   },
   {
     "id": 1783179634140,
