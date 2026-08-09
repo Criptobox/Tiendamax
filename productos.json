@@ -1880,9 +1880,9 @@
   {
     "id": 1781365019871,
     "nombre": "🚗 Probador Digital de Baterías Automotrices",
-    "precioActual": 25,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781365018400.webp",
+    "precioActual": 20,
+    "precioOriginal": 25,
+    "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
     "stock": 9,
@@ -1890,20 +1890,20 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 20,
     "slug": "probador-tester-digital-de-baterias",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
     "specs": [
-      "🔋 Diagnóstico Preciso del Sistema Eléctrico ",
-      "⚡ Pruebas Rápidas de Carga y Arranque ",
+      "🔋 Diagnóstico Preciso del Sistema Eléctrico",
+      "⚡ Pruebas Rápidas de Carga y Arranque",
       "🛡️ Interfaz Intuitiva con Pantalla a Color"
     ],
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1781365018400.webp",
-      "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp"
+      "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
+      "https://tiendamax.org/imagenes/img_1781365018400.webp"
     ],
     "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.\nFicha Técnica:\nTecnología: 🔋 Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.\nPantalla: 📱 Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.\nFunciones: ⚡ Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.\nConectividad: 🔌 Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.\nEspecificaciones (Specs):\nTipo: Probador digital de baterías.\nUso: Automotriz y sistemas de 12V.\nInterfaz: Teclado direccional con botones de función dedicados (ESC, F1, V, OK)."
   },
@@ -1935,8 +1935,8 @@
   {
     "id": 1781377297283,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
-    "precioActual": 30,
-    "precioOriginal": 0,
+    "precioActual": 20,
+    "precioOriginal": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
     "subcategoria": "",
@@ -1945,9 +1945,9 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 33,
     "slug": "creatina-monohidratada-luckycare-5000-mg",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
     "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
@@ -1955,7 +1955,8 @@
       "https://tiendamax.org/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
     ],
-    "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular."
+    "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
+    "specs": []
   },
   {
     "id": 1781711154462,
