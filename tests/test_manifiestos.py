@@ -132,7 +132,24 @@ class ManifiestosTest(unittest.TestCase):
                     # por un ancla porque un acceso directo fuera de scope lo
                     # descarta Chrome sin avisar.
                     self.assertTrue((ROOT / "vale.html").exists())
-                    self.assertIn("window.open('vale.html'", admin)
+                    # Y tiene que ir en la MISMA pestaña. El desvío corre al
+                    # cargar la página, sin que nadie haya tocado nada, y Chrome
+                    # bloquea las ventanas emergentes que no nacen de un toque:
+                    # con window.open el acceso abría el panel en Inicio y el
+                    # vale no aparecía nunca, sin ningún error. Comprobado
+                    # lanzando Chromium SIN --disable-popup-blocking, que es la
+                    # bandera que Playwright pone por defecto y que hacía que
+                    # esto pasara la prueba en el navegador y fallara en el móvil.
+                    m = re.search(r"if\(v === 'vale'\)\{([^}]*)\}", admin)
+                    self.assertIsNotNone(m, "no encuentro la rama '#vale' de _vistaDeLaUrl")
+                    rama = m.group(1)
+                    self.assertNotIn(
+                        "window.open", rama,
+                        "el acceso directo del vale no puede abrir una ventana emergente",
+                    )
+                    self.assertIn("location.replace('vale.html')", rama,
+                                  "replace y no assign: con assign, 'atrás' vuelve a #vale "
+                                  "y desvía otra vez, sin salida")
                 elif ancla:
                     self.assertIn(
                         ancla, vistas,

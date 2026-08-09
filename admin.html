@@ -1785,7 +1785,13 @@ function _vistaDeLaUrl(){
   // acceso directo tiene que caer dentro del scope de la app (/admin), y
   // /vale.html no lo está: si apuntara ahí, Chrome descartaría el acceso sin
   // decir nada. Se abre igual que el botón del lateral.
-  if(v === 'vale'){ try{ history.replaceState(null,'',location.pathname); }catch(e){} window.open('vale.html','_blank'); return; }
+  // Se navega en la MISMA pestaña, no con window.open: esto corre al cargar la
+  // página, sin que nadie haya tocado nada, y Chrome bloquea las ventanas
+  // emergentes que no nacen de un toque. Sin decir nada: el acceso directo
+  // abría el panel en Inicio y el vale no aparecía nunca.
+  // Y con replace() y no assign() porque si no, "atrás" vuelve a #vale, que
+  // vuelve a redirigir, y no hay forma de salir.
+  if(v === 'vale'){ location.replace('vale.html'); return; }
   if(v && document.getElementById('view-'+v)) go(v);
 }
 _vistaDeLaUrl();
