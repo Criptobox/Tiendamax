@@ -313,7 +313,7 @@
       }
     },
     "ventas": {
-      ".read": "auth != null",
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
       ".write": false,
       "$ventaId": {
         ".write": "!data.exists()",
@@ -425,8 +425,12 @@
       }
     },
     "privado": {
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
+      ".write": "auth != null && auth.uid === root.child('admin_uid').val()"
+    },
+    "admin_uid": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "!data.exists() && auth != null && newData.isString() && newData.val() === auth.uid"
     }
   }
 }

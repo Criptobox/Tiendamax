@@ -46,18 +46,38 @@ def texto_reglas(nodo):
 
 class AuthTest(unittest.TestCase):
     # ── Lo que se abre ──────────────────────────────────────────────────
-    def test_existe_la_zona_privada(self):
-        p = REGLAS.get("privado")
-        self.assertIsNotNone(p, "falta /privado: es donde van reservas, vales y clientes")
-        self.assertEqual(p.get(".read"), "auth != null")
-        self.assertEqual(p.get(".write"), "auth != null")
+    def test_lo_privado_es_de_UNA_cuenta_no_de_cualquiera(self):
+        """`auth != null` a secas no protege nada en este proyecto.
 
-    def test_ventas_ya_no_la_lee_cualquiera(self):
-        """Lleva ingresos, ganancias y comisiones."""
-        self.assertEqual(
-            REGLAS["ventas"].get(".read"), "auth != null",
-            "/ventas debe pedir cuenta para leerse",
-        )
+        La clave de API de Firebase es PÚBLICA —va servida en el propio sitio,
+        dentro de firebase-messaging-sw.js— y el registro por correo está
+        abierto por defecto. Cualquiera puede crearse una cuenta contra este
+        proyecto y quedar autenticado: con `auth != null` leería las ventas y
+        la zona privada igual que el dueño. Tiene que ser SU uid."""
+        for ruta, nodo in (("privado", REGLAS.get("privado")), ("ventas", REGLAS.get("ventas"))):
+            self.assertIsNotNone(nodo, f"falta /{ruta}")
+            with self.subTest(ruta=ruta):
+                self.assertIn(
+                    "root.child('admin_uid').val()", nodo.get(".read", ""),
+                    f"/{ruta} se conforma con cualquier cuenta autenticada",
+                )
+        self.assertIn("root.child('admin_uid').val()", REGLAS["privado"].get(".write", ""),
+                      "escribir en lo privado también es solo del dueño")
+
+    def test_el_dueno_se_reclama_una_sola_vez_y_con_su_propio_uid(self):
+        """Si se pudiera reescribir, quien entrara después se quedaría la base;
+        y si se pudiera poner un uid ajeno, se la regalaría a otro."""
+        w = REGLAS["admin_uid"][".write"]
+        self.assertIn("!data.exists()", w, "una vez reclamada, no se cambia desde el navegador")
+        self.assertIn("newData.val() === auth.uid", w, "solo puedes poner TU uid, no el de otro")
+        self.assertIn("auth != null", w)
+
+    def test_el_panel_reclama_y_avisa_si_la_base_es_de_otro(self):
+        """Sin reclamar, las reglas de arriba dejan lo privado inaccesible: hay
+        que hacerlo solo, y decirlo si ya la tiene otra cuenta."""
+        self.assertIn("function tmCuentaReclamar(", ADMIN)
+        self.assertIn("reclamada por OTRA cuenta", AUTH_JS)
+        self.assertIn("admin_uid", ADMIN, "el aviso debe decir qué nodo borrar en la consola")
 
     def test_la_escritura_de_ventas_no_se_toca(self):
         """Solo se cierra la LECTURA, que es lo que exponía los ingresos.
@@ -84,6 +104,10 @@ class AuthTest(unittest.TestCase):
                     f"/{nombre} la usa la web pública sin cuenta: pedirle auth "
                     "rechazaría a los propios clientes, no solo a un atacante",
                 )
+
+    def test_admin_uid_no_es_publico(self):
+        self.assertEqual(REGLAS["admin_uid"][".read"], "auth != null",
+                         "el uid del dueño no tiene por qué verlo un visitante")
 
     def test_la_raiz_sigue_cerrada(self):
         self.assertIs(REGLAS.get(".read"), False)

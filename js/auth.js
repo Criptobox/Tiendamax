@@ -204,6 +204,43 @@
     }
   }
 
+  /* ── Quién es el dueño de esta base ─────────────────────────────────────
+     `auth != null` a secas no protege nada aquí. La clave de API de Firebase
+     es PÚBLICA —va en el propio sitio, en firebase-messaging-sw.js— y el
+     registro por correo está abierto por defecto, así que cualquiera puede
+     crearse una cuenta contra este proyecto y quedar autenticado. Con esa
+     regla habría podido leer /ventas y /privado igual que el dueño.
+
+     Por eso las reglas comparan contra /admin_uid, que se reclama UNA vez y
+     solo con el uid propio: ni se puede cambiar después, ni apuntar a otro.
+     El primero que entre se queda la base, y ese eres tú si lo haces ahora
+     mismo. Cerrar el registro en la consola (Authentication → Settings →
+     User actions → quitar "Enable create") elimina la ventana del todo. */
+  async function estadoDueno() {
+    await init();
+    if (!_user) return { sesion: false };
+    var r = await fetchPrivado('/admin_uid.json');
+    if (!r.ok) return { sesion: true, uid: _user.uid, error: r.msg };
+    var dueno = (typeof r.dato === 'string') ? r.dato : null;
+    return { sesion: true, uid: _user.uid, dueno: dueno, soyYo: dueno === _user.uid, libre: !dueno };
+  }
+
+  async function reclamar() {
+    var e = await estadoDueno();
+    if (!e.sesion) return { ok: false, msg: 'entra con tu cuenta primero' };
+    if (e.soyYo) return { ok: true, yaEra: true };
+    if (e.dueno) {
+      return { ok: false, ajeno: true, msg: 'Esta base ya está reclamada por OTRA cuenta (' + e.dueno + '). '
+        + 'Si no la reconoces, bórrala desde la consola de Firebase (nodo admin_uid) y vuelve a reclamarla.' };
+    }
+    var w = await fetchPrivado('/admin_uid.json', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(_user.uid)
+    });
+    if (!w.ok) return { ok: false, msg: w.msg };
+    return { ok: true, uid: _user.uid };
+  }
+
   window.TMAuth = {
     init: init,
     usuario: usuario,
@@ -213,6 +250,8 @@
     recuperar: recuperar,
     salir: salir,
     token: token,
+    estadoDueno: estadoDueno,
+    reclamar: reclamar,
     fetchPrivado: fetchPrivado,
     rtdb: _rtdb
   };

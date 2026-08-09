@@ -9,7 +9,7 @@
 <title>TiendaMax Admin</title>
 <!-- Firebase Auth: la cuenta del dueño. Va lo primero porque el login y
      todas las lecturas privadas (/ventas, /privado) la necesitan. -->
-<script src="js/auth.js?v=3781b2ec"></script>
+<script src="js/auth.js?v=ecc0cc6c"></script>
 <script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <!-- App aparte, con su propio icono y sus accesos directos (mantener pulsado
@@ -2086,6 +2086,22 @@ function tmRestaurarDesdeLogin(){
 /* ══════════ CUENTA (Firebase Auth) ══════════ */
 function _cuentaMsg(t,c){ const e=$('#tmCuentaMsg'); if(e){ e.innerHTML=t; e.style.color=c||'var(--muted)'; } }
 
+/* Reclamar la base para esta cuenta. Es lo que convierte "cualquiera que se
+   registre" en "solo yo": la clave de API de Firebase es pública y el registro
+   por correo está abierto por defecto, así que sin esto una cuenta creada por
+   un desconocido leería /ventas y /privado igual que tú. */
+async function tmCuentaReclamar(silencioso){
+  const r = await TMAuth.reclamar();
+  if(r.ok){
+    if(!silencioso) _cuentaMsg(r.yaEra?'✅ Esta base ya era tuya.':'🔐 Base reclamada para tu cuenta. Ya nadie más puede leer tus ventas.','#1DA854');
+    return true;
+  }
+  // Que otra cuenta tenga la base es lo más grave que puede salir aquí: hay
+  // que decirlo siempre, aunque la llamada fuera en segundo plano.
+  _cuentaMsg('⚠️ '+r.msg, r.ajeno?'#e74c3c':'#f5a623');
+  return false;
+}
+
 function tmCuentaPintar(u){
   const est=$('#tmCuentaEstado'), form=$('#tmCuentaForm'), salir=$('#tmCuentaSalir');
   if(!est) return;
@@ -2106,7 +2122,7 @@ async function tmCuentaEntrar(){
   if(!e.trim()||!p){ _cuentaMsg('Escribe el correo y la contraseña.','#f5a623'); return; }
   _cuentaMsg('⏳ Entrando…');
   const r=await TMAuth.entrar(e,p);
-  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Listo.','#1DA854'); tmCuentaPintar(r.user); }
+  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} tmCuentaPintar(r.user); _cuentaMsg('✅ Listo.','#1DA854'); tmCuentaReclamar(); }
   // Sin esc(): los mensajes de auth.js traen negritas y saltos a propósito,
   // porque uno de ellos son los pasos de la consola de Firebase.
   else _cuentaMsg('❌ '+r.msg,'#e74c3c');
@@ -2120,7 +2136,7 @@ async function tmCuentaCrear(){
   if(!confirm('Se creará la cuenta '+e.trim()+'.\n\nSerá la que use este panel para guardar y leer lo privado. Usa un correo tuyo al que tengas acceso: es por donde se recupera la contraseña.\n\n¿Seguir?')) return;
   _cuentaMsg('⏳ Creando…');
   const r=await TMAuth.crearCuenta(e,p);
-  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} _cuentaMsg('✅ Cuenta creada y sesión iniciada.','#1DA854'); tmCuentaPintar(r.user); }
+  if(r.ok){ try{localStorage.setItem('tm_admin_email',e.trim());}catch(x){} tmCuentaPintar(r.user); _cuentaMsg('✅ Cuenta creada y sesión iniciada.','#1DA854'); tmCuentaReclamar(); }
   else _cuentaMsg('❌ '+r.msg,'#e74c3c');
 }
 
@@ -2142,12 +2158,19 @@ async function tmCuentaSalir(){
 async function tmCuentaProbar(){
   _cuentaMsg('⏳ Probando…');
   if(!TMAuth.usuario()){ _cuentaMsg('Primero entra con tu cuenta.','#f5a623'); return; }
+  const d = await TMAuth.estadoDueno();
+  if(d.libre){ if(!await tmCuentaReclamar(true)) return; }
+  else if(d.dueno && !d.soyYo){
+    _cuentaMsg('🚨 Esta base está reclamada por OTRA cuenta ('+esc(d.dueno)+'), no por la tuya. '
+      +'Tus ventas y lo privado NO son tuyos ahora mismo. Borra el nodo <b>admin_uid</b> en la consola de Firebase y vuelve a probar.','#e74c3c');
+    return;
+  }
   const w=await TMAuth.fetchPrivado('/privado/_prueba.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({ts:Date.now()})});
   if(!w.ok){ _cuentaMsg('❌ Escritura rechazada: '+esc(w.msg)+'<br>Publica el firebase-rules.json del repo en Firebase → Realtime Database → Reglas.','#e74c3c'); return; }
   const l=await TMAuth.fetchPrivado('/privado/_prueba.json');
   if(!l.ok){ _cuentaMsg('❌ Lectura rechazada: '+esc(l.msg),'#e74c3c'); return; }
   const v=await TMAuth.fetchPrivado('/ventas.json');
-  _cuentaMsg('✅ La zona privada funciona: escribe y lee con tu cuenta.'
+  _cuentaMsg('✅ La zona privada funciona y esta base es tuya: nadie más la lee.'
     + (v.ok?' Y /ventas también responde firmado.':' <br>⚠️ /ventas no respondió: '+esc(v.msg)), '#1DA854');
 }
 
@@ -5336,7 +5359,7 @@ window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.p
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
-window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar;
+window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
 if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(tmCuentaPintar)).catch(()=>{
   const e=document.getElementById('tmCuentaEstado');
