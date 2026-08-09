@@ -1084,18 +1084,10 @@ html body:not(.light-mode) #productDetailModal .detail-price-main{ color:#FF8A3D
 /* Modo claro: precio del sticky CTA (footer fijo) en oscuro, no blanco */
 html body.light-mode #productDetailModal .detail-sticky-cta .dsc-price-main{ color:#1A1A1A !important; }
 html body.light-mode #productDetailModal .detail-sticky-cta .dsc-price-sub{ color:#6B6B7A !important; }
-
-/* Botones de cantidad: feedback táctil en ambos temas */
-#productDetailModal .detail-qty-btn,
-#productDetailModal .dsc-qty-btn,
 .carrito-qty-btn{
   transition:background-color .15s,border-color .15s,color .15s,transform .12s !important;
 }
-#productDetailModal .detail-qty-btn:hover,
-#productDetailModal .dsc-qty-btn:hover,
 .carrito-qty-btn:hover{ transform:scale(1.05); }
-#productDetailModal .detail-qty-btn:active,
-#productDetailModal .dsc-qty-btn:active,
 .carrito-qty-btn:active{ transform:scale(.95); }
 html body.light-mode .carrito-qty-btn{
   background:#FFFFFF !important;
@@ -1262,7 +1254,6 @@ html body:not(.light-mode) #productDetailModal .detail-modal-content {
 #productDetailModal .detail-sticky-cta {
   box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.25) !important;
 }
-
 
 /* Prefers-reduced-motion: desactivar shine y animaciones del modal */
 @media(prefers-reduced-motion:reduce){

@@ -1683,8 +1683,6 @@ html body .dgal-nav:hover{
   background:linear-gradient(135deg,#FF6A1F,#D24E0F);border-color:transparent;
   box-shadow:0 8px 20px rgba(255,106,31,.4);
 }
-html body .dgal-prev{left:10px}
-html body .dgal-next{right:10px}
 html body.light-mode .dgal-nav{
   background:rgba(255,255,255,.82);color:var(--op-ink);border-color:rgba(0,0,0,.12);
 }
@@ -2020,7 +2018,6 @@ html body.light-mode #productDetailModal .detail-share-pill:hover{
 
 /* Favorito / carrito y el paso de cantidad: misma piel que las píldoras */
 html body #productDetailModal .detail-cta-fav,
-html body #productDetailModal .detail-cta-cart,
 html body #productDetailModal .detail-qty-stepper{
   border-radius:var(--tm-radius-btn,14px) !important;
   background:rgba(255,255,255,.045) !important;
@@ -2275,8 +2272,7 @@ html body.light-mode .mas-vendidos{
 /* ═══════════════════════════════════════════════════════════════
    DESTACADOS: las tarjetas 4+ estaban ocultas por CSS
    styles.fixes.css trae `#masVendidosGrid .producto-card:nth-child(n+4)
-   {display:none}` con su pareja `.mv-expandido` para volver a mostrarlas.
-   Eso era del diseño viejo, cuando la sección era una parrilla con botón de
+   {display:none} cuando la sección era una parrilla con botón de
    "ver más"; ahora es un carrusel y NADIE pone ya esa clase, así que de 6
    destacados solo se veían 3 —y encima el carrusel pintaba 6 puntos, tres
    de ellos a páginas vacías—. Se anula el recorte.
@@ -2293,7 +2289,6 @@ html body #mas-vendidos #masVendidosGrid .producto-card:nth-child(n+4){
    distinguirse del fondo. El gris las separa, que es su trabajo. Lo que sí
    había que arreglar —las sombras negras neutras que pintaban una banda gris
    entre tarjetas— está resuelto más abajo, tiñéndolas de marrón cálido. */
-
 
 /* Las sombras de las tarjetas eran negro neutro —rgba(0,0,0,.10) y .22—.
    Sobre una página crema cálida, un gris neutro se lee FRÍO, y con dos
@@ -2420,7 +2415,6 @@ html body:not(.light-mode) .header{ background:rgba(12,8,6,.96) !important; }
   html body.light-mode .header{ background:#FFFCF8 !important; }
   html body:not(.light-mode) .header{ background:#0C0806 !important; }
 }
-
 
 /* ==========================================================================
    FONDO DE LA PÁGINA — una sola capa, sin costuras

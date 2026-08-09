@@ -100,11 +100,9 @@ html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:
 .nd-btn-wa:hover{opacity:1}
 #ndHeroBody,#ndHeroImg{transition:opacity .26s ease}
 #ndHeroImg img{display:block}
-.nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:background-color .3s ease}
 .nd-hero-dot.active{width:18px;border-radius:100px;background:linear-gradient(90deg,#FF6B35,var(--coral))}
 body.light-mode .nd-hero-dot{background:rgba(0,0,0,.18)}
 body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,var(--coral))}
-.nd-cl{position:absolute;border-radius:24px}
 body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,var(--coral));opacity:0.45;border:none}
 body.light-mode .nd-cl2{background:linear-gradient(135deg,var(--coral),#FF6B35);opacity:0.6;border:none}
 body.light-mode .nd-cl1{background:#fff;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08);background:rgba(10,10,14,0.85)}
@@ -637,21 +635,6 @@ body:not(.light-mode) .cta-final .btn-large.tm-btn-wa{background:linear-gradient
 body:not(.light-mode) .cta-final .btn-large.tm-btn-wa:hover{box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
 html body.light-mode .cta-final .btn-large.tm-btn-wa,html body.light-mode .cta-final .btn-large.tm-btn-wa:not(:hover){background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;box-shadow:0 8px 32px rgba(37,211,102,.3) !important;border-color:transparent !important}
 html body.light-mode .cta-final .btn-large.tm-btn-wa:hover{background:linear-gradient(135deg,#20c45d,#0e7a6e) !important;box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
-
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
-
-/* ── Canvas de partículas para el efecto de desintegración ── */
-.nd-particulas-canvas {
-    position: absolute !important;
-    inset: 0 !important;
-    z-index: 50 !important;
-    pointer-events: none !important;
-    border-radius: 28px !important;
-    width: 100% !important;
-    height: 100% !important;
-}
 @media(max-width:900px){
   .nd-h1{text-align:center !important}
   .nd-hero-btns{justify-content:center}
@@ -803,7 +786,7 @@ body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,2
 
 /* Respeta usuarios con movimiento reducido */
 @media(prefers-reduced-motion:reduce){
-  .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3{animation:none !important}
+  .nd-orb{animation:none !important}
 }
 
 /* Modo claro */
@@ -1051,9 +1034,7 @@ body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;col
 
 /* Extender prefers-reduced-motion a todas las animaciones */
 @media(prefers-reduced-motion:reduce){
-  .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3,
-  .nd-card3d,
-  .nd-hero-dot,
+  .nd-orb,
   #productosGrid .producto-card,
   .categoria-card,
   .tmplus-toggle-thumb::before{
@@ -1245,10 +1226,6 @@ html body:not(.light-mode) .hsb-panel{
 
 /* Extender prefers-reduced-motion a animaciones de badges y transiciones hover */
 @media(prefers-reduced-motion:reduce){
-  .nd-fbadge,.nd-hero-dot,.nd-cl1,.nd-cl2,.nd-cl3{
-    animation:none !important;
-    transition:none !important;
-  }
 }
 
 /* Transicion skeleton -> contenido real */
@@ -1263,10 +1240,10 @@ html body:not(.light-mode) .hsb-panel{
 
 /* === FIX RENDIMIENTO: prefers-reduced-motion desactiva todas las decorativas === */
 @media (prefers-reduced-motion: reduce){
-  .nd-orb,.nd-fbadge,.flash-deal,.urgencia-banner,
-  .badge,.skeleton,.tm-float,.tm-shimmer,
+  .nd-orb,.flash-deal,.urgencia-banner,
+  .badge,.skeleton,.tm-shimmer,
   [class*="anim"],[class*="pulse"],[class*="shimmer"],[class*="float"],
-  .nd-o1,.nd-o2,.nd-o3,.nd-o4,.nd-fb1,.nd-fb2,.nd-fb3{
+  .nd-o1,.nd-o2,.nd-o3,.nd-o4{
     animation:none !important;
     transition:none !important;
   }
