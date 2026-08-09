@@ -307,7 +307,7 @@ window.addEventListener('popstate', function(e) {
 
 // Stubs de compatibilidad
 function inicializarSliderPrecios() {}
-function actualizarSliderPrecio() {}
+
 
 // Búsqueda local rápida
 function busquedaLocal(q) {
@@ -554,22 +554,6 @@ function aplicarBusquedaHero() {
     mostrarVistaCategoria('Todas');
 }
 
-
-function exportarBackupCompleto() {
-    const claves = ['heroBanners','heroTagline','monedaActual','tasaMN','tiendaNombre',
-        'carrito_v2','wishlist_v1','activeCountdown','ofertaDiaId','ofertaDiaTexto',
-        'revolico_config','tm_busquedas_v1'];
-    const datos = {};
-    claves.forEach(k => { try { datos[k] = localStorage.getItem(k); } catch(e) {} });
-    const backup = { fecha: new Date().toISOString(), version: '2.0', localStorage: datos };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = 'tiendamax-backup-' + new Date().toISOString().slice(0,10) + '.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-    mostrarNotificacion('✅ Backup descargado');
-}
 
 function seleccionarSugerencia(id) {
     cerrarPanelBusqueda();

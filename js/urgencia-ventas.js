@@ -11,27 +11,7 @@ function _carrito(){
     return Date.now()>(d.expires||0)?[]:(d.items||[]);
   }catch(e){return[];}
 }
-function _productos(){
-  try{if(Array.isArray(window.productos))return window.productos;}catch(e){}
-  try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return[];}
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 1. BADGE "¡Solo N!" cuando stock ≤ 3
-// ─────────────────────────────────────────────────────────────────────────────
-function _stockDe(card){
-  // Primero intenta por data-product-id y el array global de productos
-  const id = card.dataset.productId;
-  if(id){
-    const ps = _productos();
-    const p = ps.find(x=>String(x.id)===id);
-    if(p) return Number(p.stock)||0;
-  }
-  // Fallback: parsear texto ".stock-count"
-  const el = card.querySelector('.stock-count');
-  if(el){ const m=el.textContent.match(/\d+/); if(m) return parseInt(m[0]); }
-  return -1;
-}
 
 // Badge overlay centrado eliminado — la señal de stock bajo queda solo
 // en la pastilla badge-stock-urgente de la esquina superior izquierda.

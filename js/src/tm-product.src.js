@@ -25,7 +25,6 @@ function _tmTruncar2Lineas(texto, maxChars) {
 }
 
 
-
 // ===== COMPRESIÓN DE IMÁGENES =====
 // Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
 function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
@@ -83,11 +82,6 @@ function descargarProductosJSON() {
     mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
 }
 
-async function sincronizarConBackend() {
-    // Backend eliminado en esta versión del repo.
-    // Dejamos esta función como no-op para evitar errores y mantener compatibilidad.
-    return false;
-}
 
 // ===== RENDERIZAR PRODUCTOS =====
 
@@ -245,7 +239,6 @@ function renderizarProductos(isLoadMore = false) {
         productosGrid.appendChild(loadMoreBtn);
     }
 }
-
 
 
 // ===== GALERÍA DE PRODUCTO =====
@@ -1081,9 +1074,6 @@ function compartirNativo() {
     }
 }
 
-function compartirProducto() {
-    abrirPanelCompartir();
-}
 
 function copiarLinkProducto() {
     const p = _detalleProductoActual;

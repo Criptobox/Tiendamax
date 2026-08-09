@@ -26,23 +26,6 @@ if (typeof agregarAlCarrito === 'function') {
     };
 }
 
-// ── 2. SKELETON LOADING en grids de productos ──
-function mostrarSkeletons(containerId, cantidad = 6) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    const skeletonHTML = Array(cantidad).fill(0).map(() => `
-        <div class="skeleton-card">
-            <div class="skeleton-img"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line short"></div>
-            <div class="skeleton-line price"></div>
-            <div style="margin:12px 16px 16px;height:36px;border-radius:10px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2da 50%,#f0ebe4 75%);background-size:200% auto;animation:skeletonPulse 1.5s ease-in-out infinite;"></div>
-        </div>
-    `).join('');
-
-    container.innerHTML = skeletonHTML;
-}
 
 // ── 3. ANALYTICS COUNTER ANIMADO ──
 function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
@@ -65,7 +48,6 @@ function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
 
 // Patch stat() para usar contadores animados
 if (typeof stat === 'function') {
-const _origStat = stat;
 stat = function(icon, label, value, color) {
     const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.startsWith('$'));
     const id = 'tm-stat-' + Math.random().toString(36).slice(2,7);
@@ -1329,28 +1311,6 @@ async function cargarTasaDesdeGitHub() {
     if (inputM && !inputM.matches(':focus')) inputM.value = getMargenMN();
 }
 
-async function tmRefrescarTasaElToque() {
-    const btn = document.getElementById('btnRefrescarTasa');
-    const status = document.getElementById('tasaMNStatus');
-    const fuente = document.getElementById('tasaElToqueFuente');
-    if (btn) { btn.textContent = '⏳ Consultando elTOQUE…'; btn.disabled = true; }
-    const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
-    try {
-        await cargarTasaDesdeGitHub();
-        const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
-        if (newTasa > 0) {
-            const cambio = prevTasa > 0 ? (newTasa > prevTasa ? ` ▲ subió ${Math.round(newTasa - prevTasa)}` : newTasa < prevTasa ? ` ▼ bajó ${Math.round(prevTasa - newTasa)}` : ' · sin cambio') : '';
-            if (status) { status.textContent = `✅ Tasa actualizada: ${newTasa} MN/USD${cambio}`; status.style.color = '#2ECC71'; }
-            if (fuente) fuente.textContent = `Fuente: config.json · ${new Date().toLocaleTimeString('es-CU')}`;
-        } else {
-            if (status) { status.textContent = '⚠️ No se pudo obtener la tasa. Revisa la conexión.'; status.style.color = '#e74c3c'; }
-        }
-    } catch(e) {
-        if (status) { status.textContent = '⚠️ Error al consultar. Intenta de nuevo.'; status.style.color = '#e74c3c'; }
-    } finally {
-        if (btn) { btn.textContent = '🔄 Refrescar desde elTOQUE'; btn.disabled = false; }
-    }
-}
 
 function setCurrency(moneda) {
     _monedaActual = moneda;
@@ -1685,194 +1645,6 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     }
 }
 
-async function guardarConfigFirebaseAdmin() {
-    const jsonInput = document.getElementById('firebaseConfigJson');
-    const vapidInput = document.getElementById('firebaseVapidKey');
-    const serverInput = document.getElementById('firebaseServerKey');
-    const status = document.getElementById('firebaseConfigStatus');
-    
-    if (!jsonInput || !vapidInput) return;
-    
-    const rawJson = jsonInput.value.trim();
-    const vapidKey = vapidInput.value.trim();
-    const serverKey = serverInput.value.trim();
-    
-    if (!rawJson) {
-        if (status) status.textContent = '⚠️ El JSON de configuración de Firebase es requerido.';
-        return;
-    }
-    if (!vapidKey) {
-        if (status) status.textContent = '⚠️ La Clave VAPID de Web Push es requerida.';
-        return;
-    }
-    
-    let parsedConfig = null;
-    try {
-        let text = rawJson.replace(/\xa0/g, ' ').trim();
-        // Limpiar declaraciones si copiaron el código entero
-        text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
-        text = text.replace(/;$/, '');
-        // Parseo seguro: intentar JSON.parse después de normalizar claves sin comillas
-        let jsonText = text;
-        // Si parece un objeto JS (claves sin comillas), añadir comillas
-        if (!/^\s*\{[\s\S]*\}\s*$/.test(jsonText)) {
-            throw new Error('Configuración no es un objeto');
-        }
-        // claves sin comillas -> con comillas
-        jsonText = jsonText.replace(/([\{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":');
-        // comillas simples -> dobles (solo valores tipo string)
-        jsonText = jsonText.replace(/'([^'\\]*)'/g, '"$1"');
-        // Quitar comas finales antes de } o ]
-        jsonText = jsonText.replace(/,(\s*[\}\]])/g, '$1');
-        parsedConfig = JSON.parse(jsonText);
-    } catch (e) {
-        console.warn('[FCM] Falló parseo JSON, intentando fallback regex...', e);
-    }
-    
-    // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
-    let fallbackUsed = false;
-    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
-        fallbackUsed = true;
-        parsedConfig = {};
-        const lines = rawJson.split('\n');
-        for (const line of lines) {
-            const cleanLine = line.replace(/\xa0/g, ' ').trim();
-            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para números)
-            const match = cleanLine.match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);
-            if (match) {
-                const key = match[1];
-                let val = match[2];
-                // Limpiar enlaces de chat tipo [texto](url)
-                if (val.includes('[') && val.includes(']')) {
-                    const cleanMatch = val.match(/\[([^\]]+)\]/);
-                    if (cleanMatch) val = cleanMatch[1];
-                }
-                parsedConfig[key] = val;
-            }
-        }
-    }
-    
-    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
-        if (status) {
-            status.textContent = '❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
-        }
-        return;
-    }
-    
-    // Guardar vapidKey dentro del objeto de configuración para consistencia
-    parsedConfig.vapidKey = vapidKey;
-    
-    localStorage.setItem('firebaseConfig', JSON.stringify(parsedConfig));
-    localStorage.setItem('firebaseVapidKey', vapidKey);
-    if (serverKey) {
-        localStorage.setItem('fcmServerKey', serverKey);
-    } else {
-        localStorage.removeItem('fcmServerKey');
-    }
-    
-    if (status) status.textContent = '⏳ Guardando y subiendo a GitHub...';
-    
-    const user = localStorage.getItem('githubUser');
-    const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
-    
-    if (!user || !repo || !token) {
-        if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
-        inicializarFirebaseFCMClient(parsedConfig);
-        return;
-    }
-    
-    try {
-        const existing = await fetch(
-            `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
-        ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-        
-        existing.firebaseConfig = parsedConfig;
-        delete existing.fcmServerKey; // no subir server key a GitHub
-        existing.actualizado = new Date().toISOString();
-        
-        await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
-        if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
-        mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
-        inicializarFirebaseFCMClient(parsedConfig);
-    } catch (e) {
-        console.error(e);
-        if (status) status.textContent = '❌ Error: ' + e.message;
-    }
-}
-
-async function enviarPushManualAdmin() {
-    const title = document.getElementById('manualPushTitle').value.trim();
-    const body  = document.getElementById('manualPushBody').value.trim();
-    const url   = document.getElementById('manualPushUrl').value.trim() || '/';
-    const status = document.getElementById('manualPushStatus');
-
-    if (!title || !body) {
-        if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
-        return;
-    }
-
-    const fbConfigRaw = localStorage.getItem('firebaseConfig');
-    if (!fbConfigRaw) {
-        if (status) status.textContent = '⚠️ Configura Firebase primero.';
-        return;
-    }
-
-    const fbConfig = JSON.parse(fbConfigRaw);
-    const rtdbUrl  = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
-
-    if (status) status.textContent = '⏳ Encolando notificación...';
-
-    try {
-        // Escribir la solicitud en admin_push_requests (procesada por el script Python)
-        const reqId  = 'req_' + Date.now();
-        // Firmada con la cuenta del dueño. Antes iba un `proof` con el hash de
-        // la contraseña local; al quitar esa contraseña, en un dispositivo
-        // nuevo no existiría y la notificación se rechazaría sin decir nada.
-        const _qs = (typeof _fbAuthQS === 'function') ? await _fbAuthQS() : '';
-        const reqRes = await fetch(`${rtdbUrl}/admin_push_requests/${reqId}.json${_qs}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, body, url, ts: Date.now() })
-        });
-        if (reqRes.status === 401 || reqRes.status === 403) {
-            if (status) status.textContent = '❌ Firebase rechazó el envío: entra con tu cuenta en Configuración → Tu cuenta.';
-            return;
-        }
-        if (!reqRes.ok) {
-            if (status) status.textContent = `❌ Error guardando en Firebase: ${reqRes.status}`;
-            return;
-        }
-
-        // Disparar el workflow flush-push-queue.yml para envío inmediato
-        const ghUser  = localStorage.getItem('githubUser');
-        const ghRepo  = localStorage.getItem('githubRepo') || 'Tiendamax';
-        const ghToken = localStorage.getItem('githubToken');
-        let dispatched = false;
-        if (ghUser && ghToken) {
-            try {
-                const dispRes = await fetch(
-                    `https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,
-                    {
-                        method: 'POST',
-                        headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ref: 'main' })
-                    }
-                );
-                dispatched = dispRes.ok || dispRes.status === 204;
-            } catch (_) {}
-        }
-
-        if (dispatched) {
-            if (status) status.textContent = '✅ Notificación encolada y workflow disparado — llegará en ~1 minuto.';
-        } else {
-            if (status) status.textContent = '✅ Notificación encolada — se enviará en el próximo ciclo automático (máx 30 min). Configura GitHub Token para envío inmediato.';
-        }
-    } catch (e) {
-        console.error(e);
-        if (status) status.textContent = '❌ Error de conexión.';
-    }
-}
 
 window.tmMonedaActual = () => _monedaActual;
 

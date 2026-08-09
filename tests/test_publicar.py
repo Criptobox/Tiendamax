@@ -76,23 +76,46 @@ class ModuloTest(unittest.TestCase):
 
 
 class RegistroAutomaticoTest(unittest.TestCase):
-    """El log se rellena solo. Uno que haya que rellenar a mano acaba vacío."""
+    """El log se rellena solo. Uno que haya que rellenar a mano acaba vacío.
+
+    Esto se comprobaba sobre copiarParaFacebook/copiarParaRevolico, en
+    tm-catalog. Las dos estaban muertas: los botones que las llamaban se fueron
+    cuando el panel pasó a admin.html, así que el test daba verde sobre código
+    que ningún navegador ejecutaba. Ahora mira las rutas vivas — las del
+    asistente y las de las plantillas, ambas en admin.html.
+    """
 
     def test_copiar_para_una_red_queda_registrado(self):
-        src = CATALOG.read_text(encoding="utf-8")
-        for fn, red in (("copiarParaFacebook", "'fb'"),
-                        ("copiarParaRevolico", "'revolico'")):
-            i = src.index("function " + fn)
-            cuerpo = src[i:i + 1600]
+        admin = ADMIN.read_text(encoding="utf-8")
+        for fn in ("wzCopiar", "plCopiar"):
+            i = admin.index("async function " + fn)
+            cuerpo = admin[i:i + 1200]
             self.assertIn("tmRegistrarPublicacion", cuerpo, f"{fn} no registra")
-            self.assertIn(red, cuerpo)
+
+    def test_nadie_copia_para_una_red_sin_registrarlo(self):
+        """Una tercera vía de copiar que no apunte nada dejaría el historial
+        incompleto sin dar ningún error: los dos tests de arriba seguirían en
+        verde y el aviso de "llevas X días sin publicar esto" mentiría."""
+        admin = ADMIN.read_text(encoding="utf-8")
+        # Cuerpo real de cada función: admin.html indenta el cuerpo y cierra la
+        # llave en columna 0. Recortar por número de caracteres se colaba en la
+        # función siguiente y señalaba a wzRenderSalida, que solo previsualiza.
+        cuerpos = re.findall(r"^(?:async )?function (\w+)\([^)]*\)\{$(.*?)^\}$",
+                             admin, re.S | re.M)
+        copian = {n: c for n, c in cuerpos
+                  if "tmAplicarPlantilla" in c and "clipboard.writeText" in c}
+        self.assertTrue(copian, "no encuentro ninguna función que copie un post")
+        for fn, cuerpo in copian.items():
+            self.assertIn("tmRegistrarPublicacion", cuerpo,
+                          f"{fn} copia un post para una red y no lo apunta")
 
     def test_se_registra_aunque_falle_el_portapapeles(self):
-        # Va ANTES del writeText: si el navegador bloquea el portapapeles, el
-        # admin igual abre la red y publica, y el registro debe reflejarlo.
-        src = CATALOG.read_text(encoding="utf-8")
-        i = src.index("function copiarParaFacebook")
-        cuerpo = src[i:i + 1600]
+        # En wzCopiar va ANTES del writeText: esa ruta abre la red después, así
+        # que si el navegador bloquea el portapapeles el admin publica igual a
+        # mano y el registro tiene que reflejarlo.
+        admin = ADMIN.read_text(encoding="utf-8")
+        i = admin.index("async function wzCopiar")
+        cuerpo = admin[i:i + 1200]
         self.assertLess(cuerpo.index("tmRegistrarPublicacion"),
                         cuerpo.index("clipboard.writeText"))
 

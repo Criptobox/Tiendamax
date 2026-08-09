@@ -1890,10 +1890,7 @@ function renderMemory(){
   <div class="tm-copilot-smart"><h4>🧠 Memoria del agente</h4><ul><li>Ventas tras empujón: ${wins.length}</li><li>Producto más impulsado: ${top?esc(top[0])+' ('+top[1]+' veces)':'aún sin datos'}</li><li>Última acción: ${m.last?esc(_empLabel(m.last.type))+' · '+ago(m.last.ts):'sin acciones registradas'}</li></ul></div>
   <div class="tm-copilot-smart"><h4>Historial reciente</h4>${actions.slice(0,8).map(a=>`<div class="tm-copilot-rank-row"><span>${esc(_empLabel(a.type))} ${a.productName?'· '+esc(a.productName):''}</span><em>${ago(a.ts)}</em></div>`).join('')||'<div class="tm-copilot-empty">El agente aprenderá cuando guardes campañas o marques acciones.</div>'}</div>`;
 }
-// ── PROMO ─────────────────────────────────────────────────────────
-function promoParseChips(text) {
-  return text.split(/[|\n]/).map(s => s.trim()).filter(Boolean).slice(0, 9);
-}
+
 // ── Helpers del Cartel Pro (mapeo producto → cartel) ──
 function _cStrip(s){ return String(s==null?'':s).replace(/^[\s​]*(?:[\p{Extended_Pictographic}☀-➿️‍]+\s*)+/u,'').trim(); }
 function _cClip(s,n){ s=String(s==null?'':s).trim(); return s.length<=n ? s : s.slice(0,n).replace(/\s+\S*$/,'')+'…'; }
@@ -2573,76 +2570,8 @@ function promoSetProduct(id) {
   Object.entries(map).forEach(([elId, key]) => { const el = document.getElementById(elId); if(el) el.value = promoData[key]||''; });
   promoScheduleDraw();
 }
-function promoWrapText(ctx, text, maxW) {
-  const words = text.split(/\s+/).filter(Boolean);
-  const lines = []; let line = '';
-  for (const w of words) {
-    const test = line ? line + ' ' + w : w;
-    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
-    else line = test;
-  }
-  if (line) lines.push(line);
-  return lines;
-}
-function promoRoundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-}
-async function promoLoadLogo() {
-  if (promoData._logoEl) return promoData._logoEl;
-  return new Promise(resolve => {
-    const img = new Image(); img.crossOrigin = 'anonymous';
-    img.onload = () => { promoData._logoEl = img; resolve(img); };
-    img.onerror = () => resolve(null);
-    img.src = '/iconos/icon-192.png';
-  });
-}
-function promoDrawBagBg(ctx, W, H, accent, textColor) {
-  const bagW = W * 0.78, bH = bagW * 1.18;
-  const cx = W * 0.72, cy = H * 0.54;
-  const bx = cx - bagW / 2, by = cy - bH / 2;
-  ctx.save();
-  ctx.globalAlpha = 0.07;
-  const hcx1 = bx + bagW * 0.3, hcx2 = bx + bagW * 0.7;
-  const hcy = by + bagW * 0.06, hrx = bagW * 0.11, hry = bagW * 0.22;
-  ctx.lineWidth = bagW * 0.065; ctx.lineCap = 'round'; ctx.strokeStyle = accent;
-  [hcx1, hcx2].forEach(hx => {
-    ctx.beginPath(); ctx.ellipse(hx, hcy, hrx, hry, 0, Math.PI, 0, false); ctx.stroke();
-  });
-  promoRoundRect(ctx, bx, by + bagW * 0.14, bagW, bH * 0.86, bagW * 0.072);
-  ctx.fillStyle = accent; ctx.fill();
-  ctx.globalAlpha = 0.10;
-  ctx.font = `900 ${bagW * 0.55}px 'Arial Black', Arial, sans-serif`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillStyle = textColor;
-  ctx.fillText('M', cx, by + bagW * 0.14 + bH * 0.86 * 0.52);
-  ctx.restore();
-}
-function promoDrawChips(ctx, chips, startX, startY, maxW, accent, isDark) {
-  if (!chips.length) return startY;
-  const fs = 32, padX = 26, padY = 16, chipH = fs + padY * 2, gap = 14;
-  ctx.font = `600 ${fs}px Arial, sans-serif`;
-  let x = startX, y = startY;
-  chips.forEach(chip => {
-    const cw = ctx.measureText(chip).width + padX * 2;
-    if (x + cw > startX + maxW && x > startX) { x = startX; y += chipH + gap; }
-    promoRoundRect(ctx, x, y, cw, chipH, chipH / 2);
-    ctx.fillStyle = isDark ? 'rgba(18,8,2,0.88)' : 'rgba(35,12,0,0.85)'; ctx.fill();
-    promoRoundRect(ctx, x, y, cw, chipH, chipH / 2);
-    ctx.strokeStyle = accent; ctx.lineWidth = 2.5; ctx.stroke();
-    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.92)' : '#fff';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-    ctx.fillText(chip, x + padX, y + chipH / 2);
-    x += cw + gap;
-  });
-  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-  return y + chipH;
-}
+
+
 function _cartelHTML(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
   const tf=_cTitleFont(w1,w2);

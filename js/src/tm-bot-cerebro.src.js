@@ -1063,7 +1063,6 @@
     pendiente: null,         // qué significa "sí" ahora mismo (ver R.confirmacion)
     conversationStep: 0,
   };
-  const SESSION_ID = 'tm-bot-' + (Date.now().toString(36) + Math.random().toString(36).slice(2,6));
 
   // ════════════════════════════════════════════════════════════
   //  HELPERS
@@ -3851,7 +3850,6 @@ ${notasHTML}
     const diff = Math.abs(p1.precio - p2.precio);
     const diffPct = Math.round((diff / Math.max(p1.precio, p2.precio)) * 100);
     if(diff > 0){
-      const masBarato = p1.precio < p2.precio ? p1 : p2;
       rows.push({
         label:'Diferencia',
         v1: p1.precio < p2.precio ? `${diffPct}% más barato` : `${diffPct}% más caro`,
@@ -3932,8 +3930,6 @@ ${notasHTML}
     // cuántas frases escribió el admin no mide nada del producto: tres
     // viñetas escuetas ganaban a dos detalladas. Se quita.
     // Para comparar de verdad se usan las características extraídas arriba.
-    const car1 = Object.keys(a1).length, car2 = Object.keys(a2).length;
-
     // ─── VEREDICTO INTELIGENTE ───
     let verdict = '';
     const mismoTipo = p1.subcategoria === p2.subcategoria;
@@ -5638,7 +5634,6 @@ ${notasHTML}
   // ════════════════════════════════════════════════════════════
   const STORAGE_KEY = 'tm_bot_history_v1';
   const CONTEXT_KEY = 'tm_bot_context_v1';
-  const WISHLIST_KEY = 'tm_bot_wishlist_v1';
   const MAX_STORED = 30; // máximo mensajes a persistir
 
   // ─── LISTA DE DESEOS (favoritos) ───

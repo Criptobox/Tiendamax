@@ -136,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
 // ===== PATCH actualizarListaProductos to also update countdown select =====
 if (typeof actualizarListaProductos === 'function') {
     const _origActualizarListaProductos = actualizarListaProductos;
@@ -203,16 +202,6 @@ if (typeof mostrarVistaCategoria === 'function') {
 
 let _filtroFavoritos = false;
 
-function tmToggleFiltroFavoritos() {
-    _filtroFavoritos = !_filtroFavoritos;
-    const btn = document.getElementById('btnFiltroFavoritos');
-    if (btn) {
-        btn.style.background = _filtroFavoritos ? 'rgba(201,169,110,.55)' : 'rgba(201,169,110,.12)';
-        btn.style.color      = _filtroFavoritos ? '#fff' : '#c9a96e';
-        btn.style.borderColor= _filtroFavoritos ? '#c9a96e' : 'rgba(201,169,110,.3)';
-    }
-    actualizarListaProductos();
-}
 
 let _tmBulkSelected = new Set();
 
@@ -545,74 +534,6 @@ async function _fbEnsureConfig() {
 /* (eliminado) El generador de reseñas de ejemplo se quitó: eran textos con
    autores inventados y además viajaban a cada cliente de la tienda. */
 
-// Diagnóstico Firebase RTDB — llamado desde el botón en admin Configuración
-async function tmDiagnosticarFirebase() {
-    const box  = document.getElementById('fbDiagResult');
-    const hint = document.getElementById('fbRulesHint');
-
-    // append helper — funciona con o sin el div
-    let log = '';
-    const add = (line) => {
-        log += line + '\n';
-        if (box) { box.style.display = 'block'; box.innerHTML = log; }
-        else mostrarNotificacion(line.replace(/<[^>]+>/g,'').substring(0,120), 'info');
-    };
-
-    if (hint) hint.style.display = 'none';
-    add('⏳ Probando conexión Firebase…');
-
-    const base = _fbRtdbUrl();
-    if (!base) { add('❌ No hay Firebase configurado. Pega el firebaseConfig JSON y guarda.'); return; }
-    add('📡 URL: ' + base);
-
-    const rutas = [
-        { path: '/resenas.json?shallow=true', label: 'Reseñas (/resenas)' },
-        { path: '/interesados.json?shallow=true', label: 'Alertas (/interesados)' },
-        { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
-    ];
-
-    let hayBloqueados = false;
-    for (const { path, label } of rutas) {
-        try {
-            const r = await fetch(base + path);
-            if (r.ok) {
-                const data = await r.json();
-                if (path.includes('resenas') && data && typeof data === 'object') {
-                    const n = Object.keys(data).length;
-                    add(`✅ ${label}: OK — ${n > 0 ? n + ' producto(s) con reseñas en Firebase' : '⚠️ SIN DATOS (se guardaron solo en el dispositivo o nadie ha reseñado)'}`);
-                } else {
-                    add(`✅ ${label}: OK`);
-                }
-            } else if (r.status === 401 || r.status === 403) {
-                add(`🔴 ${label}: BLOQUEADO (${r.status})`);
-                hayBloqueados = true;
-            } else if (r.status === 404) {
-                add(`⚠️ ${label}: Vacío/no existe aún`);
-            } else {
-                add(`⚠️ ${label}: Error ${r.status}`);
-            }
-        } catch(e) {
-            add(`⚠️ ${label}: Sin red`);
-        }
-    }
-
-    // Reseñas en localStorage
-    const lsKeys = Object.keys(localStorage).filter(k => k.startsWith('resenas_'));
-    if (lsKeys.length > 0) {
-        const total = lsKeys.reduce((s,k) => s + (tmParseArray(localStorage.getItem(k)).length), 0);
-        add(`💾 LocalStorage: ${total} reseña(s) — SOLO en ESTE dispositivo`);
-    }
-
-    if (hayBloqueados && hint) {
-        hint.style.display = 'block';
-        // NOTA: nunca pegar un ruleset simplificado con ".write": true a mano —
-        // eso abre TODO (incluida admin_auth) sin validación. Usar siempre el
-        // archivo real del repo, que ya trae límites de tamaño/tipo por campo.
-        hint.innerHTML = `<b style="color:#FF6B35">🔧 Reglas de Firebase RTDB bloqueando lecturas</b><br><br>
-Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega el contenido completo de <b>firebase-rules.json</b> (en la raíz del repo). No pegues un ruleset simplificado a mano: ese archivo ya trae validación por campo (longitudes, tipos, límites) — un ruleset "de prueba" con <code>".write": true</code> deja la base de datos completamente abierta, incluida la contraseña del admin.<br><br>
-Después haz clic en <b>Publicar</b> y recarga el admin.`;
-    }
-}
 
 // Helper: obtiene la URL base de Firebase RTDB desde config guardada
 function _fbRtdbUrl() {
@@ -1412,11 +1333,6 @@ function actualizarRevolicoCat(idProducto, categoria) {
     localStorage.setItem('revolicoConfig', JSON.stringify(config));
 }
 
-function guardarRevolicoConfig() {
-    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
-    const asignados = Object.keys(config).length;
-    mostrarNotificacion(`✅ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
-}
 
 // ── Grupos FB persistentes (carga al abrir pestaña) ──
 
@@ -1437,7 +1353,6 @@ guardarGruposFB = function() {
         try { _origGuardarGrupos(); } catch(e) { console.warn('Error en _origGuardarGrupos:', e); }
     }
 };
-
 
 
 // ═══════════════════════════════════════════════════════
@@ -1600,9 +1515,7 @@ async function _leerConfigActual() {
 function getOfertaDiaId() {
     return localStorage.getItem('ofertaDiaId') || null;
 }
-function getOfertaDiaTexto() {
-    return localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
-}
+
 
 // Renderizar lista de productos agotados en el panel
 function renderizarListaAgotados() {

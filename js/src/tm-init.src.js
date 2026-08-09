@@ -294,7 +294,7 @@ function renderOfertaDelDia() {
 
     // Textos y producto
     const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
     setTxt('ndDealBadge', texto);
     setTxt('ndDealTitle', prod.nombre);
     setTxt('ndDealSub', prod.descripcion ? String(prod.descripcion).replace(/<[^>]*>/g, '').slice(0, 110) : 'Aprovecha este precio por tiempo limitado.');

@@ -58,7 +58,6 @@ const TM_SEGUIMIENTOS = [
     }
 ];
 
-function _tmSegNum(x) { const n = Number(x); return isFinite(n) ? n : 0; }
 
 /** Fecha de una venta. El id es el Date.now() del registro; `fecha` es texto
  *  ya formateado en es-ES y no se puede parsear fiable. */

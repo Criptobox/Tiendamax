@@ -343,7 +343,6 @@ async function renderizarAnalyticsFirebase() {
             const p = prods.find(x => String(x.id) === String(id));
             return { id, count, nombre: p ? p.nombre : `Producto ${id}`, v: vistas[id] || 0 };
         });
-    const maxWA = topWA.length ? topWA[0].count : 1;
 
     // Conversión por categoría
     const convCat = {};
@@ -734,10 +733,6 @@ function _inventarioItem(icon, label, value, color = '#c9a96e') {
     </div>`;
 }
 
-// ── _statCard legacy (compatibilidad con código externo) ─
-function _statCard(icon, label, value, color) {
-    return _kpi(icon, label, value, color || '#c9a96e');
-}
 
 // ── Limpiar tokens muertos de Firebase ──────────────────
 // Usa dry_run=true: FCM valida los tokens sin enviar nada.

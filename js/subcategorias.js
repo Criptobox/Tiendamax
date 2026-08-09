@@ -31,39 +31,6 @@ function guardarSubcategorias() {
     localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
 }
 
-function agregarSubcategoria() {
-    const categoriaSelect = document.getElementById('subcategoryParentCategory');
-    const subcatInput = document.getElementById('newSubcategoryName');
-    
-    const categoria = categoriaSelect.value;
-    const subcategoria = subcatInput.value.trim();
-
-    if (!categoria) {
-        mostrarNotificacion('Selecciona una categoría', 'error');
-        return;
-    }
-    if (!subcategoria) {
-        mostrarNotificacion('Ingresa el nombre de la subcategoría', 'error');
-        return;
-    }
-
-    if (!subcategorias[categoria]) {
-        subcategorias[categoria] = [];
-    }
-
-    if (subcategorias[categoria].includes(subcategoria)) {
-        mostrarNotificacion('Esta subcategoría ya existe', 'error');
-        return;
-    }
-
-    subcategorias[categoria].push(subcategoria);
-    guardarSubcategorias();
-    subcatInput.value = '';
-    actualizarListaSubcategorias();
-    actualizarSelectSubcategorias();
-    mostrarNotificacion('✅ Subcategoría agregada');
-    sincronizarSubcategoriasConGitHub();
-}
 
 function eliminarSubcategoria(categoria, subcategoria) {
     if (confirm(`¿Eliminar la subcategoría "${subcategoria}"?`)) {
@@ -177,16 +144,6 @@ function actualizarSelectSubcategorias() {
     });
 }
 
-function descargarSubcategoriasJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(subcategorias, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "subcategorias.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo subcategorias.json generado. Súbelo a tu GitHub.');
-}
 
 // ===== INTEGRACIÓN CON PRODUCTOS =====
 

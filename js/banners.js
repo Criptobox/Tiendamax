@@ -123,48 +123,6 @@
         }
     }
 
-    window.guardarTagline = function() {
-        var val = document.getElementById('heroTaglineInput').value.trim();
-        if (!val) return;
-        _lsSet('heroTagline', val);
-        var el = document.getElementById('heroTaglineText');
-        if (el) el.textContent = val;
-        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Texto guardado');
-    };
-
-    window.agregarBanner = async function() {
-        var fileInput = document.getElementById('nuevoBannerFile');
-        var urlInput  = document.getElementById('nuevoBannerUrl');
-        var link      = document.getElementById('nuevoBannerLink').value.trim();
-
-        function guardarYRenderizar(url) {
-            banners.unshift({ url: url, link: link });
-            _lsSet('heroBanners', JSON.stringify(banners));
-            fileInput.value = '';
-            urlInput.value = '';
-            document.getElementById('nuevoBannerLink').value = '';
-            renderSlider();
-            renderAdminBannerList();
-            _syncBannersGH();
-            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
-        }
-
-        if (fileInput.files && fileInput.files[0]) {
-            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⏳ Comprimiendo imagen...');
-            try {
-                var comprimida = await comprimirImagen(fileInput.files[0], 150, 1200, 600);
-                guardarYRenderizar(comprimida);
-            } catch(e) {
-                var reader = new FileReader();
-                reader.onload = function(ev) { guardarYRenderizar(ev.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        } else {
-            var url = urlInput.value.trim();
-            if (!url) { if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ Selecciona una imagen o pega una URL', 'error'); return; }
-            guardarYRenderizar(url);
-        }
-    };
 
     window.editarBanner = function(idx) {
         var el = document.getElementById('banner-edit-' + idx);
@@ -227,7 +185,6 @@
             var link = typeof b === 'string' ? '' : (b.link || '');
             var urlSafe  = _escA(url);
             var linkSafe = _escA(link);
-            var urlThumb = url.length > 200 ? _escA(url.substring(0,50)) + '...' : urlSafe;
             return '<div id="banner-item-' + i + '" style="display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,0.05);padding:10px;border-radius:8px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;">' +
                     '<img src="' + urlSafe + '" style="width:60px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;">' +
@@ -267,16 +224,6 @@
         renderAdminBannerList();
     };
 
-    window.exportarBannersJSON = function() {
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(banners, null, 2));
-        var a = document.createElement('a');
-        a.setAttribute('href', dataStr);
-        a.setAttribute('download', 'banners.json');
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ banners.json descargado. Súbelo a GitHub.');
-    };
 
     document.addEventListener('DOMContentLoaded', function() {
         if (sliderListo) renderSlider();

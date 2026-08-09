@@ -45,15 +45,6 @@ function getNumeroWhatsApp() {
     return localStorage.getItem('whatsappNumero') || '5354320170';
 }
 
-function guardarNumeroWhatsApp() {
-    const input = document.getElementById('adminWhatsappNum');
-    if (!input) return;
-    const num = input.value.trim().replace(/\D/g, '');
-    if (!num || num.length < 6) return;
-    localStorage.setItem('whatsappNumero', num);
-    localStorage.setItem('whatsappNumber', num);
-    mostrarNotificacion('✅ WhatsApp guardado: +' + num);
-}
 
 function cargarNumeroWhatsApp() {
     const saved = localStorage.getItem('whatsappNumero') || localStorage.getItem('whatsappNumber');

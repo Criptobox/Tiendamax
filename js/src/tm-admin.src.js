@@ -412,14 +412,6 @@ async function _tmMostrarAgenda() {
     card.style.display = 'block';
 }
 
-function cerrarAdminPanel() {
-    const panel = document.getElementById('adminPanel');
-    if (!panel) return;
-    panel.classList.add('hidden');
-    panel.classList.remove('visible');
-    panel.style.removeProperty('display');
-    document.body.classList.remove('admin-mode');
-}
 
 function pubSwitchPanel(name) {
     document.querySelectorAll('.pub-panel').forEach(function(p) { p.classList.remove('active'); });

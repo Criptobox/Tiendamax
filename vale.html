@@ -245,18 +245,6 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
        de bajar un archivo para algo que ya está guardado es trabajo inventado. -->
 </div>
 
-<!-- MODAL FORMULARIO -->
-<div class="modal-bg" id="modalForm" onclick="if(event.target===this)document.getElementById('modalForm').classList.remove('open')">
-  <div class="modal">
-    <div style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:14px">📲 Enviar formulario</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Elige cómo enviarle el formulario al cliente:</p>
-    <div id="modalFormUrl" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px;font-size:11px;color:var(--dim);word-break:break-all;margin-bottom:14px;font-family:monospace"></div>
-    <button class="btn-gold" style="margin-top:0" onclick="abrirFormWA()">📱 Enviar por WhatsApp</button>
-    <button class="btn-ghost" style="margin-top:8px" onclick="copiarEnlaceForm()">📋 Copiar enlace</button>
-    <button class="btn-ghost" style="margin-top:6px" onclick="document.getElementById('modalForm').classList.remove('open')">Cerrar</button>
-  </div>
-</div>
-
 <!-- MODAL CATÁLOGO -->
 <div class="modal-bg" id="modalCatalogo" onclick="if(event.target===this)cerrarCatalogo()">
   <div class="modal" style="max-height:88vh;display:flex;flex-direction:column;padding-bottom:18px">
@@ -590,36 +578,6 @@ function enviarFormularioCliente(){
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }catch(e){ location.href = waUrl; }
 }
-function abrirModalFormulario(){
-  document.getElementById('modalFormUrl').textContent = construirUrlFormulario();
-  document.getElementById('modalForm').classList.add('open');
-}
-
-function abrirWhatsApp(url){
-  // Método fiable en móvil/PWA: navegar directo. El navegador lo entrega a WhatsApp.
-  // Se hace de inmediato dentro del gesto del usuario, sin tocar el DOM antes.
-  try{
-    var a = document.createElement('a');
-    a.href = url; a.target = '_blank'; a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }catch(e){
-    location.href = url;
-  }
-}
-function abrirFormWA(){
-  const url = document.getElementById('modalFormUrl').textContent;
-  // Abrir WhatsApp PRIMERO (dentro del gesto), cerrar el modal después.
-  abrirWhatsApp('https://wa.me/?text=' + encodeURIComponent(mensajeFormulario(url)));
-  setTimeout(function(){ document.getElementById('modalForm').classList.remove('open'); }, 100);
-}
-function copiarEnlaceForm(){
-  const url = document.getElementById('modalFormUrl').textContent;
-  copiarTexto(url, '📋 Enlace copiado');
-  document.getElementById('modalForm').classList.remove('open');
-}
-
 function copiarSolicitud(){
   const art=document.getElementById('vArticulo').value.trim();
   let pl='';
@@ -977,16 +935,6 @@ function _precargarLogoVale(){
   _valeLogo.onload = () => { try{ drawValeImg(); }catch(e){} };
   _valeLogo.onerror = () => { _valeLogo = null; };
   _valeLogo.src = '/iconos/icon-512.png';
-}
-
-function descargarValeImg(){
-  drawValeImg(); // redibujar con datos finales
-  const c=document.getElementById('valeImgCanvas');
-  if(!c) return;
-  const a=document.createElement('a');
-  a.download='vale-tiendamax-'+Date.now()+'.jpg';
-  a.href=c.toDataURL('image/jpeg',0.95);
-  a.click();
 }
 
 // Enviar la imagen del vale directo por WhatsApp (el cliente la muestra al llegar).

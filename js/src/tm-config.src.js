@@ -721,7 +721,6 @@ function actualizarBotonesCarrito() {
 //  ⭐ RESEÑAS
 // ═══════════════════════════════════════════════════════
 let _estrellasSeleccionadas = 0;
-let _productoResena = null;
 let _resenaFotoData = null;
 
 // Rating labels in Spanish
@@ -1296,11 +1295,6 @@ function registrarVisto(id) {
     setTimeout(renderizarRecientes, 100);
 }
 
-function limpiarRecientes() {
-    try { localStorage.removeItem('recientes_v2'); } catch(e) {}
-    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versión vieja
-    renderizarRecientes();
-}
 
 // Renderiza los productos vistos en la sección "seccionRecientes" (home)
 // y en "detailVistosGrid" (modal de detalle). Si no hay productos, oculta las secciones.
@@ -1353,16 +1347,6 @@ function _renderCardRecientes(p) {
     return '';
 }
 
-// ═══════════════════════════════════════════════════════
-//  🔔 NOTIFICACIONES PUSH
-// ═══════════════════════════════════════════════════════
-async function solicitarNotificaciones() {
-    if (!('Notification' in window)) return false;
-    if (Notification.permission === 'granted') return true;
-    if (Notification.permission === 'denied') return false;
-    const perm = await Notification.requestPermission();
-    return perm === 'granted';
-}
 
 function mostrarNotificacionPush(titulo, cuerpo, icono) {
     if (Notification.permission !== 'granted') return;

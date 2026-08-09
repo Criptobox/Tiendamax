@@ -407,7 +407,6 @@ async function guardarTasaMNAdmin() {
     }
 
     if (typeof filtrarPorCategoria === 'function') {
-    const _origFiltrar = filtrarPorCategoria;
     filtrarPorCategoria = function(cat) {
         categoriaSeleccionada = cat;
         const container = document.getElementById('categoriaFiltro');

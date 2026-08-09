@@ -35,9 +35,9 @@ ORDEN = [
     "tm-crm.js",
     "tm-product.js",
     "tm-catalog.js",
-    # Va después de tm-catalog porque copiarParaFacebook/Revolico llaman a
-    # tmRegistrarPublicacion; como son funciones (se elevan), el orden no es
-    # crítico, pero mantenerlo aquí deja el módulo junto a quien lo usa.
+    # Registro de publicaciones. Quien lo llama hoy es admin.html (wzCopiar,
+    # plCopiar); dentro del bundle ya no lo usa nadie desde que se fueron
+    # copiarParaFacebook/Revolico, que estaban muertas.
     "tm-publicar.js",
     "tm-init.js",
     "tm-ui.js",

@@ -5,101 +5,10 @@
    Este archivo es código fuente. Se minifica via build_css/minify_js.
    ============================================================ */
 
-// ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
-
-function copiarParaRevolico(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-
-    const texto = `
-${producto.nombre}
-
-${producto.descripcion}
-
-💰 Precio: $${producto.precioActual} USD
-${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '❌ Agotado'}
-
-📞 Contacto: +53 54320170
-    `.trim();
-
-    // Se apunta al copiar, no al publicar: es lo más cerca que se puede estar
-    // del momento real sin pedirle al admin que registre nada a mano — y un
-    // registro que hay que rellenar a mano acaba siempre incompleto.
-    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'revolico', 'Revolico');
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
-        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 500);
-    }).catch(() => { 
-        window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer');
-    });
-}
-
-function copiarParaFacebook(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-
-    const texto = `
-🛍️ ${producto.nombre}
-
-${producto.descripcion}
-
-💰 Precio: $${producto.precioActual} USD
-${producto.descuento > 0 ? `🔥 ¡OFERTA! (-${producto.descuento}%)` : ''}
-${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
-
-📞 Interesado? Contáctame por WhatsApp: +53 54320170
-
-#TiendaMax #VentasCuba #GruposFacebook #Oferta
-    `.trim();
-
-    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'fb', 'Grupos de Facebook');
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
-        setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); }, 500);
-    }).catch(() => { 
-        window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer');
-    });
-}
-
-// ===== PUBLICACIÓN EN REVOLICO =====
-
-function prepararPublicacionManual(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-    const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
-    // Se apunta al copiar, no al publicar: es lo más cerca que se puede estar
-    // del momento real sin pedirle al admin que registre nada a mano — y un
-    // registro que hay que rellenar a mano acaba siempre incompleto.
-    if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(id, 'revolico', 'Revolico');
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
-        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 1000);
-    }).catch(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); });
-}
-
-async function publicarEnRevolico(id) {
-    if (typeof copiarYAbrirRevolico === 'function') {
-        copiarYAbrirRevolico(id);
-        return;
-    }
-    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
-}
-
-async function publicarEnFacebook(id) {
-    if (typeof copiarYAbrirFacebook === 'function') {
-        copiarYAbrirFacebook(id);
-        return;
-    }
-    mostrarNotificacion('⚠️ El asistente de Facebook no está disponible', 'error');
-}
-
-async function publicarAhora() {
-    if (typeof mostrarSelectorAsistenteRevolico === 'function') {
-        mostrarSelectorAsistenteRevolico();
-        return;
-    }
-    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
-}
+// Aquí vivían copiarParaFacebook/copiarParaRevolico y los tres envoltorios de
+// publicación. Nadie los llamaba: los botones que los usaban se fueron cuando
+// el panel pasó a admin.html, y ahora quien copia y apunta la publicación son
+// wzCopiar() y plCopiar() allí.
 
 // ===== CATEGORÍAS (GESTIÓN) =====
 
@@ -179,16 +88,6 @@ function actualizarListaCategorias() {
     });
 }
 
-function descargarCategoriasJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(categorias, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "categorias.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo categorias.json generado. Súbelo a tu GitHub.');
-}
 
 function agregarCategoria() {
     const input = document.getElementById('newCategoryName');
@@ -330,7 +229,6 @@ function guardarConfiguracionGitHub(event) {
 }
 
 
-
 // ===== SISTEMA DE DELTA SYNC =====
 // Registra qué productos fueron modificados desde la última sincronización
 function marcarProductoModificado(id) {
@@ -365,9 +263,7 @@ function marcarCategoriaEliminada(nombre) {
     const el = tmParseArray(localStorage.getItem('categoriasEliminadas'));
     if (!el.includes(nombre)) { el.push(nombre); localStorage.setItem('categoriasEliminadas', JSON.stringify(el)); }
 }
-function obtenerCategoriasEliminadas() {
-    return tmParseArray(localStorage.getItem('categoriasEliminadas'));
-}
+
 
 // ── Anti-pisado: fusiona el catálogo en memoria con el productos.json del repo ──
 // Los productos que el admin cambió esta sesión (productosModificados) mandan; los
