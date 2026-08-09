@@ -1806,9 +1806,9 @@
   {
     "id": 1781365019871,
     "nombre": "🚗 Probador Digital de Baterías Automotrices",
-    "precioActual": 25,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781365018400.webp",
+    "precioActual": 20,
+    "precioOriginal": 25,
+    "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
     "stock": 9,
@@ -1816,20 +1816,20 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 20,
     "slug": "probador-tester-digital-de-baterias",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
     "specs": [
-      "🔋 Diagnóstico Preciso del Sistema Eléctrico ",
-      "⚡ Pruebas Rápidas de Carga y Arranque ",
+      "🔋 Diagnóstico Preciso del Sistema Eléctrico",
+      "⚡ Pruebas Rápidas de Carga y Arranque",
       "🛡️ Interfaz Intuitiva con Pantalla a Color"
     ],
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1781365018400.webp",
-      "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp"
+      "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
+      "https://tiendamax.org/imagenes/img_1781365018400.webp"
     ]
   },
   {
@@ -1859,8 +1859,8 @@
   {
     "id": 1781377297283,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
-    "precioActual": 30,
-    "precioOriginal": 0,
+    "precioActual": 20,
+    "precioOriginal": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
     "subcategoria": "",
@@ -1869,16 +1869,17 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 33,
     "slug": "creatina-monohidratada-luckycare-5000-mg",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
     "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
-    ]
+    ],
+    "specs": []
   },
   {
     "id": 1781711154462,
