@@ -99,13 +99,60 @@ class NuevosVigentesTest(unittest.TestCase):
         self.assertEqual(1, len(r))
 
 
+class OfertasVisiblesTest(unittest.TestCase):
+    """El número del título tiene que ser el que el cliente cuenta al entrar.
+
+    La cola y la tienda dicen cosas distintas y las dos son correctas: la cola
+    son los que CAMBIARON de precio desde la última pasada del cron; la tienda
+    enseña todos los que están rebajados, cambiaran hoy o hace tres días. El
+    aviso decía 2 mientras en la tienda había 3, y el cliente cuenta lo que ve.
+    """
+
+    def con_oferta(self, pid, stock=5, original=100.0, actual=80.0):
+        return {"id": pid, "nombre": f"P{pid}", "stock": stock,
+                "precioOriginal": original, "precioActual": actual}
+
+    def test_cuenta_los_que_se_ven_rebajados(self):
+        cat = [self.con_oferta(1), self.con_oferta(2), prod(3)]
+        self.assertEqual([1, 2], [p["id"] for p in sn.ofertas_visibles(cat)])
+
+    def test_un_agotado_no_es_una_oferta(self):
+        """No se puede mandar a nadie a ver algo que no puede comprar."""
+        cat = [self.con_oferta(1), self.con_oferta(2, stock=0)]
+        self.assertEqual([1], [p["id"] for p in sn.ofertas_visibles(cat)])
+
+    def test_usa_la_misma_regla_que_la_tarjeta_de_la_tienda(self):
+        """tm-ui.src.js: precioOriginal > 0 && precioOriginal > precioActual."""
+        cat = [
+            self.con_oferta(1, original=0, actual=80),      # sin precio anterior
+            self.con_oferta(2, original=80, actual=80),     # mismo precio
+            self.con_oferta(3, original=70, actual=80),     # subió
+            self.con_oferta(4, original=100, actual=99),    # bajó un peso: cuenta
+        ]
+        self.assertEqual([4], [p["id"] for p in sn.ofertas_visibles(cat)])
+
+    def test_no_revienta_con_basura(self):
+        cat = [None, "x", {}, self.con_oferta(1)]
+        self.assertEqual([1], [p["id"] for p in sn.ofertas_visibles(cat)])
+
+    def test_el_titulo_cuenta_el_catalogo_y_no_la_cola(self):
+        """La cola dispara el aviso; el catálogo pone el número."""
+        src = (ROOT / "scripts" / "send_notifications.py").read_text(encoding="utf-8")
+        i = src.index("# 2. Rebajas")
+        bloque = src[i:i + 1400]
+        self.assertIn("ofertas_visibles(catalogo)", bloque)
+        self.assertNotIn('len(cola["rebajas_pendientes"])', bloque,
+                         "contar la cola es justo lo que daba un número más bajo "
+                         "que el que el cliente ve en la tienda")
+
+
 class ElFiltroSeAplicaDeVerdadTest(unittest.TestCase):
     """Que las funciones existan no sirve de nada si el envío no las llama."""
 
     def test_el_envio_depura_la_cola_antes_de_contar(self):
         src = (ROOT / "scripts" / "send_notifications.py").read_text(encoding="utf-8")
         envio = src.index("# Lógica de envío")
-        cuenta = src.index("n_reb = len(cola[\"rebajas_pendientes\"])")
+        cuenta = src.index("# 2. Rebajas")
         for fn in ("rebajas_vigentes(", "nuevos_vigentes("):
             with self.subTest(funcion=fn):
                 pos = src.rfind(fn, 0, cuenta)

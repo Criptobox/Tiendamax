@@ -280,6 +280,32 @@ def rebajas_vigentes(pendientes, productos):
     return list(vivas.values())
 
 
+def ofertas_visibles(productos):
+    """Lo que el cliente va a CONTAR si abre la tienda ahora mismo.
+
+    Es la misma condición que pinta el descuento en la tarjeta
+    (`precioOriginal > 0 && precioOriginal > precioActual`, tm-ui.src.js), más
+    tener stock: un agotado no es una oferta a la que se pueda ir.
+
+    La cola no sirve para esto. La cola son los productos que CAMBIARON de
+    precio desde la última pasada del cron, y eso es otro número: uno rebajado
+    ayer sigue rebajado en la tienda y no está en la cola de hoy. El título
+    decía "🏷️ 2 productos rebajados" mientras en la tienda había 3, y las dos
+    cifras eran correctas cada una en lo suyo — solo que el cliente cuenta lo
+    que ve, no lo que cambió.
+    """
+    fuera = []
+    for p in productos:
+        if not isinstance(p, dict):
+            continue
+        if int(_num(p.get("stock"))) <= 0:
+            continue
+        original, actual = _num(p.get("precioOriginal")), _num(p.get("precioActual"))
+        if original > 0 and original > actual:
+            fuera.append(p)
+    return fuera
+
+
 def nuevos_vigentes(pendientes, productos):
     """Lo mismo para los productos nuevos: sin stock no se anuncian, y uno solo
     cuenta una vez aunque el cron lo haya encolado en varias pasadas."""
@@ -618,13 +644,27 @@ def main():
         avisos.append({"tipo": "tasa", "title": title, "body": txt, "link": "/", "imagen": None})
 
     # 2. Rebajas (Inmediato si diurno)
+    #
+    # La cola dice CUÁNDO avisar —algo bajó de precio desde la última pasada—,
+    # pero el número que va en el título sale del catálogo: es lo que el cliente
+    # va a contar al abrir la tienda. Contar la cola daba un número más bajo (un
+    # producto rebajado ayer sigue rebajado y no está en la cola de hoy) y el
+    # aviso parecía equivocado aunque la cola estuviera bien.
     if cola["rebajas_pendientes"] and diurno:
-        n_reb = len(cola["rebajas_pendientes"])
-        if n_reb == 1:
-            r = cola["rebajas_pendientes"][0]
-            avisos.append({"tipo": "rebajas", "title": "🏷️ ¡Rebaja!", "body": f"{r['nombre']} ahora a ${r['ahora']}", "link": f"/p/producto-{r['id']}.html", "imagen": r['imagen']})
+        visibles = ofertas_visibles(catalogo) if catalogo else cola["rebajas_pendientes"]
+        if len(visibles) == 1:
+            v = visibles[0]
+            avisos.append({"tipo": "rebajas", "title": "🏷️ ¡Rebaja!",
+                           "body": f"{v.get('nombre')} ahora a ${int(_num(v.get('precioActual')))}",
+                           "link": f"/p/producto-{v.get('id')}.html", "imagen": v.get("imagen")})
+        elif len(visibles) > 1:
+            avisos.append({"tipo": "rebajas", "title": f"🏷️ {len(visibles)} productos rebajados",
+                           "body": "Revisa las nuevas ofertas en la tienda", "link": "/", "imagen": None})
         else:
-            avisos.append({"tipo": "rebajas", "title": f"🏷️ {n_reb} productos rebajados", "body": "Revisa las nuevas ofertas en la tienda", "link": "/", "imagen": None})
+            # Bajó de precio y se agotó antes de que abriera el horario de envío:
+            # no hay nada que ir a ver.
+            print("ℹ️ Rebajas en cola pero ninguna oferta disponible ahora; no se avisa.")
+            cola["rebajas_pendientes"] = []
 
     # 3. Nuevos productos (Inmediato si diurno, igual que rebajas)
     if cola["nuevos_pendientes"] and diurno and cola.get("ultimo_lote_fecha") != fecha_hoy:
