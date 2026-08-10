@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-09T09:30:36.498228+00:00",
+  "generado": "2026-08-10T10:09:35.848001+00:00",
   "productos": 119,
   "urgentes": 2,
-  "advertencias": 52,
-  "info": 7,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 52 advertencia(s), 7 de info.",
+  "advertencias": 54,
+  "info": 8,
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 54 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -34,6 +34,11 @@
     {
       "tipo": "agotado",
       "nombre": "📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Switch Gigabit de 8 Puertos",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -203,6 +208,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "⚙️ Interruptor de Transferencia Automática Geya (220V)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
       "detalle": "agotado (stock 0)"
     },
@@ -283,6 +293,11 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
       "detalle": "quedan 1"
     },
@@ -290,21 +305,6 @@
       "tipo": "stock_bajo",
       "nombre": "🔊 Xiaomi Sound Outdoor (30W)",
       "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "precio",
-      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
-      "detalle": "precio: 33000"
     }
   ]
 }
