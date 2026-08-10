@@ -1066,7 +1066,7 @@
     <div class="logo">M</div>
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
-      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
+      <button class="icon-btn" title="Suscriptores push" onclick="irASuscriptores()">🔔<span class="dot" id="tb-subs">0</span></button>
       <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
     </div>
   </div>
@@ -1768,6 +1768,24 @@ function go(view, btn){
     try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
   }
   if(typeof tmActualizarPendientes==='function'){ try{ tmActualizarPendientes(); }catch(e){} }
+}
+
+/* La campana del topbar lleva el contador de suscriptores encima, así que al
+   tocarla se va a los suscriptores. Antes abría el Copiloto: los menciona, sí,
+   pero entre otras diez cosas, y no había forma de llegar a la lista desde el
+   número que la anunciaba. El Copiloto sigue a un toque en su burbuja flotante.
+   Se repinta al entrar porque el contador del topbar es una copia guardada en
+   este navegador y puede venir de otro día. */
+function irASuscriptores(){
+  go('analytics');
+  try{ if(typeof cargarAnalyticsAvanzado==='function') cargarAnalyticsAvanzado(); }catch(e){}
+  // go() sube al principio de la vista y el panel está bastante más abajo, así
+  // que sin esto aterrizas en Analytics sin ver lo que venías a ver.
+  setTimeout(function(){
+    const s=document.getElementById('an-subs');
+    const sec=s && s.closest ? s.closest('.section') : s;
+    if(sec && sec.scrollIntoView) sec.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 140);
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
   if(!b.dataset.view) return; // botones con acción propia (p.ej. Vale abre vale.html)
@@ -5318,7 +5336,7 @@ cargarDatos();
 
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
-window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
+window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
