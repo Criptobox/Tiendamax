@@ -73,7 +73,6 @@
     },
     "tokens": {
       "$tokenId": {
-        ".read": false,
         ".write": "!data.exists() || !newData.exists() || newData.child('token').val() === data.child('token').val()",
         ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 900000 && newData.child('timestamp').val() <= now + 900000",
         "token": {
@@ -92,7 +91,7 @@
           ".validate": "newData.isString()"
         }
       },
-      ".read": true,
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
       ".write": false
     },
     "errores_js": {

@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=304989eb" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=158b5ee0" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1649,12 +1649,12 @@
     })();
     </script>
     <!-- analytics: carga en reposo (no bloquea el primer pintado) — lo inyecta el cargador #tm-lazy-js -->
-    <script type="lazyload" src="js/analytics.js?v=fd09de6d"></script>
+    <script type="lazyload" src="js/analytics.js?v=882559f2"></script>
     <script src="js/seo-dynamico.js?v=b028959a" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=304989eb" defer></script>
+    <script src="js/tm-bundle.js?v=158b5ee0" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1663,7 +1663,7 @@
          dependencias (usa globals del bundle: productos, agregarAlCarrito…). -->
     
 
-    <script src="js/push-fix.js?v=7278889b" defer></script>
+    <script src="js/push-fix.js?v=25d3e9c4" defer></script>
     <script src="js/subcategorias.js?v=9bc64200" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
     <script src="js/tienda-plus.js?v=ba354dad" defer></script>

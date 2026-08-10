@@ -13,6 +13,8 @@
   var _onMsgSet = false;
   var LS_PENDING = "tm_push_token_pending";
   var DID_LS    = "tm_did";            // clave en localStorage y cookie
+  var LS_ESCRITO = "tm_push_escrito";  // qué token se dejó escrito, y cuándo
+  var REFRESCO_MS = 7 * 24 * 60 * 60 * 1000;
   var DID_IDB   = "tm_device_prefs";  // nombre de la base IndexedDB
 
   // ── Carga de scripts ─────────────────────────────────────────
@@ -159,37 +161,34 @@
     var deviceId = await getDeviceId();
     var fp       = deviceFingerprint();
 
-    // Limpiar entradas anteriores del mismo dispositivo
-    var _alreadyStored = false;
+    // Aquí se leía /tokens ENTERO para borrar entradas viejas de este mismo
+    // dispositivo. Esa lectura era la única razón por la que /tokens tenía que
+    // ser público, y con ella cualquiera podía descargarse la lista completa de
+    // suscriptores —token, huella y navegador de cada cliente— escribiendo la
+    // URL en el navegador. No hacía falta: la clave de escritura ES el
+    // deviceId, así que el PUT de abajo ya pisa la entrada anterior de este
+    // aparato. Las de formatos antiguos las limpia el panel, que sí entra con
+    // la cuenta ("Limpiar duplicados" y "Limpiar tokens inválidos").
+    //
+    // Sin la lectura tampoco se puede preguntar "¿ya está escrito?", así que se
+    // apunta aquí. Se reescribe igualmente cada semana: el panel borra por
+    // "más de 45 días sin tocar", y un aparato que sigue activo no puede
+    // parecer abandonado solo porque su token no cambie.
+    var marca = deviceId + "|" + token;
     try {
-      var _listCtrl = new AbortController();
-      var _listTid = setTimeout(function () { _listCtrl.abort(); }, 6000);
-      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store", signal: _listCtrl.signal });
-      clearTimeout(_listTid);
-      if (allRes.ok) {
-        var allData = await allRes.json();
-        if (allData && typeof allData === "object") {
-          // Si el token ya existe con la misma clave y valor, no volver a escribir
-          if (allData[deviceId] && allData[deviceId].token === token) { _alreadyStored = true; }
-          var deletes = [];
-          Object.keys(allData).forEach(function (k) {
-            if (k === deviceId) return; // es la entrada actual, no tocar
-            var t = allData[k];
-            if (!t) return;
-            // Eliminar si es este mismo dispositivo con formato viejo o duplicado
-            if (k === fp ||                                                    // clave legacy fp_XXXXX
-                (t.fingerprint && t.fingerprint === fp) ||                     // datos con mismo fingerprint
-                t.token === token ||                                            // mismo token FCM
-                (t.userAgent === navigator.userAgent && !t.fingerprint && !t.deviceId)) { // legacy sin dedup
-              deletes.push(fetch(dbURL + "/tokens/" + k + ".json", { method: "DELETE" }).catch(function () {}));
-            }
-          });
-          if (deletes.length) await Promise.allSettled(deletes);
-        }
+      var previo = JSON.parse(localStorage.getItem(LS_ESCRITO) || "null");
+      if (previo && previo.marca === marca && (Date.now() - previo.ts) < REFRESCO_MS) {
+        return true;
       }
     } catch (e) {}
 
-    if (_alreadyStored) return true; // ya registrado, no escribir de nuevo
+    // Borrar antes de escribir. La regla de Firebase deja crear y deja borrar,
+    // pero NO deja cambiar el token de una entrada que ya existe —y eso está
+    // bien: es lo que impide que alguien ponga su token en el registro de otro—.
+    // El problema es que FCM rota los tokens, y con la entrada ya puesta el PUT
+    // salía rechazado sin que nadie se enterara: el aparato dejaba de recibir
+    // avisos para siempre. Borrando primero, la escritura entra como alta.
+    try { await fetch(dbURL + "/tokens/" + deviceId + ".json", { method: "DELETE" }); } catch (e) {}
 
     var _putCtrl = new AbortController();
     var _putTid = setTimeout(function () { _putCtrl.abort(); }, 6000);
@@ -200,8 +199,9 @@
       body: JSON.stringify({
         token:     token,
         timestamp: Date.now(),
-        // Minimización: /tokens es legible (lo iteran dedup/borrado del admin),
-        // así que no subimos el userAgent completo del cliente.
+        // Minimización: aunque /tokens ya solo lo lee el dueño con su cuenta,
+        // el userAgent completo identifica a un cliente mucho mejor de lo que
+        // hace falta para saber desde qué aparato se suscribió.
         userAgent: String(navigator.userAgent || '').slice(0, 40),
         fingerprint: fp,
         deviceId:  deviceId
@@ -214,6 +214,7 @@
       throw new Error("Firebase rechazó el token (HTTP " + resp.status + ")" + (t ? ": " + t : ""));
     }
     try { localStorage.removeItem(LS_PENDING); } catch (e) {}
+    try { localStorage.setItem(LS_ESCRITO, JSON.stringify({ marca: marca, ts: Date.now() })); } catch (e) {}
     return true;
   }
 

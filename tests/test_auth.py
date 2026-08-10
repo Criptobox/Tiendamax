@@ -32,8 +32,14 @@ ADMIN = (ROOT / "admin.html").read_text(encoding="utf-8")
 
 # Rutas que usa la web pública sin haber entrado con ninguna cuenta. Si alguna
 # de estas pide `auth`, se rompe para todos los clientes.
+# `tokens` estuvo aquí y se fue: llevaba dentro el token de push, la huella y
+# el navegador de cada cliente, y con .read true cualquiera se bajaba la lista
+# entera escribiendo la URL. Estaba abierta porque el registro leía la lista
+# completa para borrar entradas viejas del propio aparato; ya no hace falta,
+# porque la clave de escritura es el deviceId y el PUT pisa la suya. La tienda
+# pública sigue escribiendo y borrando SU entrada sin cuenta — eso no cambia.
 PUBLICAS = [
-    "analytics", "tokens", "errores_js", "web_vitals", "auditoria_productos",
+    "analytics", "errores_js", "web_vitals", "auditoria_productos",
     "avisos_stock", "wishlist_avisos", "resenas", "pedidos", "lista_espera",
     "interesados", "configuracion", "config", "avisos_count", "almacenes",
     "agente",
@@ -132,6 +138,73 @@ class AuthTest(unittest.TestCase):
                     f"{nombre} lee /ventas pero no firma con la cuenta: "
                     "recibirá 401 y lo tratará como 'no hay datos'",
                 )
+
+    # ── /tokens: la lista de suscriptores ───────────────────────────────
+    # Cerrar la lectura solo aguanta mientras nadie vuelva a necesitarla. Estas
+    # dos pruebas cuidan cada mitad: que el camino de push no vuelva a listar, y
+    # que quien sí lista lo firme.
+    def test_la_lista_de_suscriptores_es_solo_del_dueno(self):
+        """Con .read true, /tokens.json se lo bajaba cualquiera escribiendo la
+        URL: el token de push, la huella y el navegador de cada cliente que
+        activó las notificaciones.
+
+        Se comprueba el nodo padre porque los permisos de la Realtime Database
+        heredan hacia abajo y NO se pueden recortar más adentro: aquí mismo había
+        un `.read: false` en $tokenId que no servía absolutamente de nada, tapado
+        por el `.read: true` del padre.
+        """
+        nodo = REGLAS["tokens"]
+        self.assertEqual(
+            "auth != null && auth.uid === root.child('admin_uid').val()",
+            nodo.get(".read"),
+            "la lista de suscriptores solo la puede leer la cuenta del dueño",
+        )
+        self.assertNotIn(
+            ".read", nodo["$tokenId"],
+            "un .read aquí dentro no puede recortar lo que conceda el padre: "
+            "o engaña al que lo lea, o no hace nada",
+        )
+
+    def test_el_registro_de_push_no_lista_los_suscriptores(self):
+        """El camino que corre en el móvil de un cliente, sin cuenta.
+
+        Volver a leer /tokens.json aquí obliga a reabrir la lista a todo el
+        mundo — que es exactamente como estaba. Cada aparato escribe y borra su
+        propia entrada, cuya clave es su deviceId: no necesita ver las demás.
+        Las entradas de formatos viejos las barre el panel, con la cuenta.
+        """
+        for rel in ("js/push-fix.js", "js/src/tm-iife.src.js",
+                    "js/src/tm-patches.src.js"):
+            with self.subTest(archivo=rel):
+                src = (ROOT / rel).read_text(encoding="utf-8")
+                self.assertNotIn(
+                    "tokens.json", src,
+                    f"{rel} corre sin cuenta: si lee la lista entera se lleva un "
+                    "401, y la única forma de arreglarlo sería volver a dejar "
+                    "/tokens abierto a cualquiera",
+                )
+
+    def test_todo_el_que_lee_la_lista_de_tokens_la_firma(self):
+        """Sin firmar, la Realtime Database responde 401 y el panel enseña
+        cero suscriptores con la misma cara que si no hubiera ninguno."""
+        # Ayudantes que firman por dentro. getJson lo hace con _firma(), que
+        # mira su propia lista de rutas privadas — por eso /tokens tuvo que
+        # entrar también ahí.
+        FIRMAS = ("_tmFirmar(", "jget(", "_tmFetch(", "getJson(", "TMAuth.token()")
+        for p in sorted(ROOT.glob("js/*.js")) + sorted(ROOT.glob("js/src/*.src.js")) \
+                + [ROOT / "admin.html", ROOT / "index.html"]:
+            if p.name == "tm-bundle.js" or not p.exists():
+                continue
+            for n, linea in enumerate(p.read_text(encoding="utf-8",
+                                                  errors="replace").split("\n"), 1):
+                if "tokens.json" not in linea or linea.lstrip().startswith(("//", "*")):
+                    continue
+                with self.subTest(archivo=p.name, linea=n):
+                    self.assertTrue(
+                        any(f in linea for f in FIRMAS),
+                        f"{p.name}:{n} lee la lista de tokens sin firmarla:\n"
+                        f"      {linea.strip()[:110]}",
+                    )
 
     # ── El SDK y los mensajes ───────────────────────────────────────────
     def test_usa_el_mismo_sdk_que_el_resto(self):

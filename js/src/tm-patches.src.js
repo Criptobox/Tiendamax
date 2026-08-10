@@ -1303,31 +1303,22 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
             const legacyTokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
             const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
 
-            // Limpia entradas anteriores del mismo dispositivo/token antes de guardar.
-            let alreadyStored = false;
-            try {
-                const allRes = await fetch(`${rtdbUrl}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
-                if (allRes.ok) {
-                    const allData = await allRes.json();
-                    if (allData && typeof allData === 'object') {
-                        // Si el token ya está guardado con la misma clave y valor, no escribir de nuevo.
-                        if (allData[tokenId] && allData[tokenId].token === token) {
-                            alreadyStored = true;
-                        }
-                        const deletes = [];
-                        Object.keys(allData).forEach(k => {
-                            const t = allData[k];
-                            if (k !== tokenId && (k === legacyTokenId || (t && (t.fingerprint === fingerprint || t.token === token || t.userAgent === navigator.userAgent)))) {
-                                deletes.push(fetch(`${rtdbUrl}/tokens/${k}.json`, { method: 'DELETE' }).catch(() => null));
-                            }
-                        });
-                        if (deletes.length) await Promise.allSettled(deletes);
-                    }
-                }
-            } catch(e) {}
-
-            // Evitar escribir si el token ya está registrado correctamente (previene spam al admin)
-            if (alreadyStored) return;
+            // Este camino no se ejecuta: push-fix.js sustituye por completo
+            // tmRegistrarTokenFCMSiPermitido e inicializarFirebaseFCMClient, que son
+            // sus dos únicas puertas. Se mantiene al día igualmente porque es lo que
+            // corre si ese archivo alguna vez no carga, y porque una copia que
+            // todavía leyera /tokens entero se llevaría un 403 en cuanto la lista
+            // deje de ser pública, sin decir nada.
+            //
+            // Se borra la clave vieja a ciegas en vez de listarlo todo, y se escribe
+            // sobre la propia: el PUT pisa lo que hubiera.
+            if (legacyTokenId !== tokenId) {
+                await fetch(`${rtdbUrl}/tokens/${legacyTokenId}.json`, { method: 'DELETE' }).catch(() => null);
+            }
+            // Y la propia antes de escribirla: la regla no deja cambiar el token
+            // de una entrada existente, así que sin esto la rotación de token de
+            // FCM se quedaba fuera en silencio.
+            await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, { method: 'DELETE' }).catch(() => null);
 
             await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
                 method: 'PUT',
@@ -1335,8 +1326,11 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                 body: JSON.stringify({
                     token: token,
                     timestamp: Date.now(),
-                    userAgent: navigator.userAgent,
-                    fingerprint: fingerprint
+                    // Recortado como en push-fix.js: el userAgent entero identifica
+                    // al cliente mucho más de lo que hace falta.
+                    userAgent: String(navigator.userAgent || '').slice(0, 40),
+                    fingerprint: fingerprint,
+                    deviceId: tokenId
                 })
             });
             if (typeof tmRegistrarSuscriptor === 'function') tmRegistrarSuscriptor();

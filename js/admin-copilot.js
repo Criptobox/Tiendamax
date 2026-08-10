@@ -77,7 +77,10 @@ function _fallo(path, motivo){ _lecturas.fallos.push({ path: path, motivo: motiv
 /* Rutas que dejaron de ser públicas y ahora piden la cuenta del dueño.
    /ventas lleva ingresos y ganancias; hasta ahora las leía cualquiera que
    supiera la URL. */
-const _PRIVADAS = ['/ventas', '/privado'];
+// /tokens se suma a la lista: dejó de ser público al cerrar la lectura de la
+// lista de suscriptores. Sin firmar, getJson recibe 401 y el Copiloto contaría
+// cero suscriptores como si no hubiera ninguno.
+const _PRIVADAS = ['/ventas', '/privado', '/tokens'];
 async function _firma(path){
   if (!_PRIVADAS.some(p => path.indexOf(p) === 0)) return '';
   try {

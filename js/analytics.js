@@ -146,13 +146,28 @@ function tmRegistrarSuscriptor() { tmRefrescarConteoSuscriptores(); }
 function tmDesregistrarSuscriptor() { tmRefrescarConteoSuscriptores(); }
 
 // ── Fetch con timeout ───────────────────────────────────
-function _tmFetch(url, ms = 6000) {
+// /tokens dejó de ser público: leerlo pide la cuenta del dueño, igual que
+// /ventas. La API REST de la Realtime Database quiere el token de sesión en
+// `?auth=`; sin él responde 401 y la lista de suscriptores sale vacía sin decir
+// por qué. Este archivo solo lo carga admin.html, así que la sesión está ahí.
+async function _tmFirmar(url) {
+    try {
+        if (/\/tokens[./]/.test(url) && typeof TMAuth !== 'undefined') {
+            const t = await TMAuth.token();
+            if (t) return url + (url.includes('?') ? '&' : '?') + 'auth=' + encodeURIComponent(t);
+        }
+    } catch (e) {}
+    return url;
+}
+
+async function _tmFetch(url, ms = 6000) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), ms);
     // Anti-caché: lee siempre la lista fresca de Firebase (antes el navegador/SW
     // servía una copia vieja y los suscriptores dados de baja seguían apareciendo).
     const sep = url.includes('?') ? '&' : '?';
-    return fetch(url + sep + '_=' + Date.now(), { signal: ctrl.signal, cache: 'no-store' }).finally(() => clearTimeout(t));
+    const firmada = await _tmFirmar(url + sep + '_=' + Date.now());
+    return fetch(firmada, { signal: ctrl.signal, cache: 'no-store' }).finally(() => clearTimeout(t));
 }
 
 // ── Parsear userAgent simple ────────────────────────────
@@ -201,6 +216,7 @@ async function tmLeerAnalytics() {
     ]);
 
     let vistas = {}, whatsapp = {}, tokensData = {};
+    let leyoTokens = false;
 
     if (results[0].status === 'fulfilled' && results[0].value.ok) {
         try { vistas = await results[0].value.json() || {}; } catch(e) {}
@@ -209,7 +225,7 @@ async function tmLeerAnalytics() {
         try { whatsapp = await results[1].value.json() || {}; } catch(e) {}
     }
     if (results[2].status === 'fulfilled' && results[2].value.ok) {
-        try { tokensData = await results[2].value.json() || {}; } catch(e) {}
+        try { tokensData = await results[2].value.json() || {}; leyoTokens = true; } catch(e) {}
     }
 
     // Convertir contadores (acepta {count: N} o N directamente)
@@ -223,8 +239,15 @@ async function tmLeerAnalytics() {
 
     // Suscriptores: Firebase como fuente de verdad, contando dispositivos únicos
     const suscriptores = tmContarSuscriptoresUnicos(tokensData);
-    // Sincronizar caché local con el valor real
-    try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
+    // Solo se guarda si /tokens se pudo leer de verdad. Este archivo también
+    // corre en la tienda pública —al suscribirse a las notificaciones—, y allí
+    // /tokens responde 401 porque pide la cuenta del dueño. Sin esta condición,
+    // el móvil del dueño navegando su propia tienda escribía un 0 encima del
+    // número bueno y el panel enseñaba "0 suscriptores" hasta el siguiente
+    // refresco.
+    if (leyoTokens) {
+        try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
+    }
 
     return { vistas: vistasCont, whatsapp: whatsappCont, suscriptores, tokensData };
 }
@@ -287,7 +310,7 @@ window.tmLimpiarTokensInvalidos = tmLimpiarTokensInvalidos;
 async function tmBorrarSuscriptor(fbKey, fingerprint, token) {
     const base = _tmRtdbUrl();
     if (!base) return;
-    const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(await _tmFirmar(`${base}/tokens.json?_=${Date.now()}`), { cache: 'no-store' });
     if (!res.ok) return;
     const tokensData = await res.json() || {};
     const toDelete = Object.entries(tokensData).filter(([k, t]) => {
@@ -314,7 +337,7 @@ async function tmBorrarTodosSuscriptores() {
     const btn = document.getElementById('tm-btn-borrar-todos');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Borrando…'; }
     try {
-        const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+        const res = await fetch(await _tmFirmar(`${base}/tokens.json?_=${Date.now()}`), { cache: 'no-store' });
         if (!res.ok) throw new Error('No se pudo leer la base de datos');
         const tokensData = await res.json() || {};
         const keys = Object.keys(tokensData);
@@ -344,7 +367,7 @@ async function tmLimpiarDuplicados() {
     const btnDedup = document.getElementById('tm-btn-dedup');
     if (btnDedup) { btnDedup.disabled = true; btnDedup.textContent = '⏳ Limpiando…'; }
     try {
-        const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+        const res = await fetch(await _tmFirmar(`${base}/tokens.json?_=${Date.now()}`), { cache: 'no-store' });
         if (!res.ok) throw new Error('No se pudo leer la base de datos');
         const tokensData = await res.json() || {};
         const entries = Object.entries(tokensData).filter(([, t]) => t && t.token);

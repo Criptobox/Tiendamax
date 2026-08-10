@@ -815,24 +815,22 @@ async function guardarTasaMNAdmin() {
                     if (r.ok) fbConfig = (await r.json()).firebaseConfig;
                 }
                 if (fbConfig && fbConfig.databaseURL) {
+                    // Las tres claves con las que este navegador puede haberse
+                    // registrado a lo largo del tiempo: el deviceId de ahora, la
+                    // huella (formato intermedio) y el token en base64 (el más
+                    // viejo). Se borran las tres a ciegas; la que no exista no
+                    // molesta.
                     const legacyTokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
                     const fingerprint = (typeof tmPushDeviceFingerprint === 'function') ? tmPushDeviceFingerprint() : null;
-                    const ids = new Set([legacyTokenId, fingerprint].filter(Boolean));
-                    // Borrar también tokens viejos/legacy del mismo navegador. Si no,
-                    // al desactivar se elimina el registro nuevo con fingerprint pero queda
-                    // uno viejo sin fingerprint y el contador parece subir en vez de bajar.
-                    try {
-                        const allRes = await fetch(fbConfig.databaseURL + '/tokens.json?_=' + Date.now(), { cache: 'no-store' });
-                        if (allRes.ok) {
-                            const allData = await allRes.json();
-                            if (allData && typeof allData === 'object') {
-                                Object.keys(allData).forEach(k => {
-                                    const t = allData[k];
-                                    if (t && (t.fingerprint === fingerprint || t.token === tokenLocal || t.userAgent === navigator.userAgent)) ids.add(k);
-                                });
-                            }
-                        }
-                    } catch(e) {}
+                    let deviceId = null;
+                    try { if (typeof tmGetDeviceId === 'function') deviceId = await tmGetDeviceId(); } catch(e) {}
+                    const ids = new Set([deviceId, legacyTokenId, fingerprint].filter(Boolean));
+                    // Antes esto leía /tokens entero para cazar además entradas
+                    // sueltas del mismo navegador. Esa lectura obligaba a dejar la
+                    // lista de suscriptores abierta a cualquiera, y a cambio solo
+                    // cubría registros de formatos que ya no se escriben. Lo que
+                    // quede suelto lo barre el panel con "Limpiar duplicados",
+                    // que entra con la cuenta del dueño.
                     await Promise.allSettled(Array.from(ids).map(id => fetch(fbConfig.databaseURL + '/tokens/' + id + '.json', { method: 'DELETE' })));
                 }
             } catch(e) {
@@ -842,6 +840,10 @@ async function guardarTasaMNAdmin() {
 
         // 2. Borrar de localStorage
         localStorage.removeItem('fcmToken');
+        // La marca de "ya escrito" tiene que irse con el token: si no, al volver
+        // a activar las notificaciones el registro se salta el PUT creyendo que
+        // sigue puesto, y el aparato queda sin entrada en Firebase.
+        localStorage.removeItem('tm_push_escrito');
         // [FIX] Marcar que el usuario se desuscribió manualmente para evitar re-registro al recargar
         localStorage.setItem('tm_push_desuscrito', '1');
         // Notificar al SW para que guarde el flag en IndexedDB (localStorage no disponible en SW)
