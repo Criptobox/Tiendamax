@@ -1663,7 +1663,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=158b5ee0"></script>
+<script src="js/tm-bundle.js?v=410b0fc9"></script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
 <script src="js/revolico_integration.js?v=091bc1dc"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1688,7 +1688,7 @@
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=d5e76abf"></script>
-<script src="js/admin-copilot.js?v=981ecf4d"></script>
+<script src="js/admin-copilot.js?v=f9f45c1f"></script>
 
 <script>
 (function(){
@@ -1821,7 +1821,7 @@ async function jget(url){
   // firmar. Sin la firma, la Realtime Database responde 401 y la pantalla se
   // queda en blanco sin explicar por qué.
   try{
-    if(/\/(ventas|privado|tokens)[./]/.test(url) && typeof TMAuth!=='undefined'){
+    if(/\/(ventas|privado|tokens|avisos_stock|wishlist_avisos)[./]/.test(url) && typeof TMAuth!=='undefined'){
       const t=await TMAuth.token();
       if(t) url += (url.includes('?')?'&':'?')+'auth='+encodeURIComponent(t);
     }
@@ -4063,7 +4063,7 @@ function avisoLimpiar(pid, nombre){
   if(base){
     (async () => {
       try{
-        const r = await fetch(base+'/avisos_stock/'+pid+'.json',{cache:'no-store'});
+        const r = await fetch(base+'/avisos_stock/'+pid+'.json'+(await _fbAuthQS()),{cache:'no-store'});
         const avisos = r.ok ? (await r.json()) : null;
         if(!avisos || typeof avisos!=='object'){ showToast('🔔 La lista ya estaba vacía', nombre); return; }
         const ids = Object.keys(avisos);

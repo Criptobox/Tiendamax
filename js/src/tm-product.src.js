@@ -1174,9 +1174,11 @@ async function suscribirAvisoStock(productId, nombreProducto) {
         });
 
         // El telefono va aparte, a lista_espera, que es .read false. En
-        // avisos_stock no cabe: ese nodo es de lectura publica (el propio panel
-        // lo lee sin autenticacion), asi que guardar ahi el WhatsApp del
-        // cliente era publicarlo. El admin los sigue recibiendo: al reponer
+        // avisos_stock no cabe: ese nodo estuvo abierto a cualquiera, asi que
+        // guardar ahi el WhatsApp del cliente era publicarlo. Ya pide la cuenta
+        // del dueno, pero el telefono sigue fuera: cuantos menos sitios lleven
+        // datos personales, menos hay que acertar. El admin los sigue
+        // recibiendo: al reponer
         // stock, send_notifications.py le manda la lista por push privado.
         if (telCliente) {
             fetch(rtdbUrl + '/lista_espera/' + productId + '/' + Date.now() + '.json', {

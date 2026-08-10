@@ -34,13 +34,16 @@ python -m unittest discover -s tests -v     # what CI actually runs (run-tests.y
 node tests/smoke-web.mjs                     # Playwright smoke test of the live site (smoke-web.yml)
 ```
 
-`tests/` holds ~280 unit tests. `test_build_completeness.py` asserts every `css/*.css`/`js/src/*.src.js` file is actually listed in `build_css.py`'s `ORDEN` / `build_js_bundle.py`'s `ORDEN` — add new source files there or they'll silently never ship. There is still no coverage for `admin.html`'s inline `<script>` logic beyond the smoke test.
+`tests/` holds ~375 unit tests. `test_build_completeness.py` asserts every `css/*.css`/`js/src/*.src.js` file is actually listed in `build_css.py`'s `ORDEN` / `build_js_bundle.py`'s `ORDEN` — add new source files there or they'll silently never ship. There is still no coverage for `admin.html`'s inline `<script>` logic beyond the smoke test.
 
 Several tests exist because the failure they catch is **silent** — nothing errors, the page renders, and the damage only shows up in the live site or in Google. Read these before "simplifying" them away:
 
 - `test_imagen_en_uso.py` (+ `imagen_en_uso_check.mjs`) — guards the check that decides whether a photo can be deleted from the repo. It got this wrong once and deleted a product's only photo.
 - `test_enlazado_interno.py` — asserts no `/c/` or `/p/` page is left without incoming links and no product page is a dead end. Orphan pages serve fine and break nothing; they just rank badly.
 - `test_contraste.py` — WCAG ratios for the generated pages, plus a check that the colours it validates are still the ones the generator writes.
+- `test_alcance.py` — walks from the roots (HTML `onclick`/`data-action`, plus each file's top-level code) and follows the calls. `test_codigo_muerto.py` only counts *references*, which cannot see a clique: 23 functions in `revolico_integration.js` kept each other "referenced" while the only door into the group rendered into a container that does not exist. Nothing errored; the bundle just shipped them to every phone.
+- `test_ids_fantasma.py` — `getElementById('x').algo` where no HTML creates `#x`. A null that gets checked is fine and common on purpose (one bundle serves index/admin/product pages); a null dereferenced immediately throws and silently truncates the rest of the function. That is how `cargarConfiguracionGitHub` filled three fields and then died, invisibly, on every ⚙️ Configuración.
+- `test_cola_vigente.py` + `notificaciones_check.mjs` — a push sits in the customer's tray with frozen text until they swipe it away, so "🏷️ 4 productos rebajados" has to be true *at send time* and cannot be corrected afterwards. The queue fills every cron run but only drains in daylight hours, and in between products sell out, discounts get reverted by `revertir_ofertas.py`, and the same product gets `extend`ed in twice.
 - `test_llamadas_vs_reglas.py` — crosses every browser→RTDB call with the rule governing its path. Note it only sees literal `fetch('.../x.json')` calls: a URL built in a variable, or a `navigator.sendBeacon`, is invisible to it (that's why `/web_vitals` has its own contract test inside `test_web_vitals.py`).
 
 `node tests/lighthouse-report.mjs` is not part of the unittest suite — it needs network and Chrome, and runs weekly from `lighthouse.yml`.
@@ -51,11 +54,12 @@ Several tests exist because the failure they catch is **silent** — nothing err
 
 `js/src/*.src.js` are **not ES modules** — they're classic scripts sharing one global scope, so a function defined in one file is a bareword global callable from any other, including from `onclick="..."` attributes in the HTML. **Careful: top-level `let`/`const` do NOT become `window` properties** — `productos`, `categorias` and `wishlist` are `let`, so `window.productos` is `undefined` and reading it that way silently yields nothing. Reference them by bareword (guarded with `typeof`) instead.
 
-There are 12 modules in the bundle, and **concatenation order is load order and matters** when two modules define the same function name (last one in the list wins):
+There are 14 modules in the bundle, and **concatenation order is load order and matters** when two modules define the same function name (last one in the list wins):
 
 ```
-tm-iconos → tm-config → tm-data → tm-state → tm-admin → tm-product →
-tm-catalog → tm-init → tm-ui → tm-toast → tm-iife → tm-patches
+tm-iconos → tm-config → tm-data → tm-state → tm-admin → tm-crm →
+tm-product → tm-catalog → tm-publicar → tm-init → tm-ui → tm-toast →
+tm-iife → tm-patches
 ```
 
 (exact order lives in `scripts/build_js_bundle.py`'s `ORDEN`). `tm-patches.src.js` loads last specifically so it can override/monkey-patch functions defined earlier — check there first if a function's behavior doesn't match what its "definition" in an earlier module suggests.
@@ -86,9 +90,12 @@ Similarly, `css/*.css` source files get concatenated (not merged/deduped) into `
 
 ### Firebase Realtime Database and firebase-rules.json
 
-There is **no Firebase Authentication anywhere in this codebase** (confirmed: no `signInAnonymously`/`getAuth` calls exist). Every RTDB read/write from the browser is a plain unauthenticated `fetch`. Because of this:
-- `firebase-rules.json` rules that say `"auth != null"` will **reject the site's own legitimate requests**, not just attackers. There are none left in the file (`/admin_auth` used to have one and it silently broke password sync across devices); don't reintroduce the pattern without also wiring up real Firebase Auth.
-- **Read rules cannot see anything the client sends.** The `proof` trick below only works for writes, because the client *sends* the hash in the payload. A read is just a GET — there is nothing to check against. Consequence: while `admin.html` has no authentication, there is no rule that means "only the admin can read this". Any rule that lets the admin read lets everyone read. That is why `/tokens` and `/ventas` are still `".read": true`: `/tokens` is also read by the public site (the push-registration dedupe reads the whole list to delete this device's old entries) and `/ventas` is read by the admin panel. Closing either one requires Firebase Auth, and the rules change and the client change have to land together or push notifications break for every customer.
+The **owner signs in with a Firebase Authentication account** (`js/auth.js`, `TMAuth`); the storefront is still anonymous, and every RTDB call from a customer is a plain unauthenticated `fetch`. That split is where this file's rules get dangerous in both directions:
+- `firebase-rules.json` rules that say `"auth != null"` on a path the **public site** uses will reject the site's own customers, not just attackers. `/admin_auth` had one and it silently broke password sync across devices. `tests/test_auth.py` keeps the list of paths the storefront touches without an account; check it before adding `auth` anywhere.
+- `auth != null` **on its own protects nothing here.** The Firebase Web API key is public — it ships inside `firebase-messaging-sw.js` — so anyone can create an account against this project and be authenticated. Private paths pin the owner's uid instead: `auth != null && auth.uid === root.child('admin_uid').val()`, claimed once via `/admin_uid` (`.write` requires `!data.exists()` and `newData.val() === auth.uid`).
+- **Read rules cannot see anything the client sends.** The `proof` trick below only works for writes, because the client *sends* the hash in the payload. A read is just a GET — there is nothing to check against. So a read rule can only ask *who* is asking, never *what* they are asking for: there is no way to say "you may read your own row". Closing a path for reading therefore means the public site must stop reading it at all, not read less of it.
+- That is exactly what happened to `/tokens`, `/avisos_stock` and `/wishlist_avisos`, which each store a customer's push token and were `".read": true` — anyone could type the URL and get the list of who follows the shop. They are now owner-only. The storefront still **writes and deletes its own entry without an account**, which is what keeps push registration working; it just never lists. The push registration used to read the whole `/tokens` list to clean up its old rows, and that single read was what forced the node open — unnecessary, because the write key *is* the device id, so a PUT overwrites the device's own row.
+- **Closing a read without signing the panel's calls leaves the admin staring at zeros**, indistinguishable from having no data. The signing helpers are `TMAuth.fetchPrivado` (js/auth.js), `jget` (admin.html), `_fbAuthQS` (tm-ui.src.js), `_tmFirmar` (analytics.js) and `_firma`/`_PRIVADAS` (admin-copilot.js) — each with its own list of which paths get `?auth=`. Add a newly-closed path to all of them, not just the one you are looking at.
 - Write protection instead uses a **knowledge-based proof pattern**: the client sends a `proof` field that must equal a stored hash (e.g. `newData.child('proof').val() === root.child('admin_auth/hash').val()`), checked server-side in the rule. This works without any auth system because Firebase security rules can read `root.child(...)` regardless of that path's own `.read` rule.
 - RTDB rules cascade like directory permissions: a `.read`/`.write` grant on an ancestor path applies to all descendants and **cannot be revoked by a stricter rule on a child** — a deeply-nested `.read: false` under a node whose parent is `.read: true` has no effect.
 - `firebase-admin` (Python, via `scripts/*.py`) uses a service account and bypasses all of the above rules entirely — the rules only constrain the browser.

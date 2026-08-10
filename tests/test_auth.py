@@ -32,6 +32,12 @@ ADMIN = (ROOT / "admin.html").read_text(encoding="utf-8")
 
 # Rutas que usa la web pública sin haber entrado con ninguna cuenta. Si alguna
 # de estas pide `auth`, se rompe para todos los clientes.
+# `avisos_stock` y `wishlist_avisos` se fueron con `tokens` y por lo mismo:
+# guardaban el token de push de cada cliente que pidió "avísame cuando vuelva" o
+# el aviso de bajada de precio. La tienda pública nunca los LEE —solo escribe y
+# borra su propia entrada, que sigue sin pedir cuenta—; los únicos que listaban
+# eran el panel y el Copiloto.
+#
 # `tokens` estuvo aquí y se fue: llevaba dentro el token de push, la huella y
 # el navegador de cada cliente, y con .read true cualquiera se bajaba la lista
 # entera escribiendo la URL. Estaba abierta porque el registro leía la lista
@@ -40,7 +46,7 @@ ADMIN = (ROOT / "admin.html").read_text(encoding="utf-8")
 # pública sigue escribiendo y borrando SU entrada sin cuenta — eso no cambia.
 PUBLICAS = [
     "analytics", "errores_js", "web_vitals", "auditoria_productos",
-    "avisos_stock", "wishlist_avisos", "resenas", "pedidos", "lista_espera",
+    "resenas", "pedidos", "lista_espera",
     "interesados", "configuracion", "config", "avisos_count", "almacenes",
     "agente",
 ]
@@ -164,6 +170,29 @@ class AuthTest(unittest.TestCase):
             "un .read aquí dentro no puede recortar lo que conceda el padre: "
             "o engaña al que lo lea, o no hace nada",
         )
+
+    def test_ningun_nodo_con_tokens_de_push_es_publico(self):
+        """Los tres guardan el token de push de un cliente.
+
+        /tokens es la lista de suscriptores; /avisos_stock es quien pidió
+        "avísame cuando vuelva"; /wishlist_avisos, el aviso de bajada de precio
+        de lo que tiene en ❤️. Los tres estuvieron con `.read: true`, así que
+        bastaba escribir la URL para saber quién sigue la tienda y desde qué
+        aparato. La tienda pública nunca los lee — solo escribe y borra SU
+        entrada, y eso sigue sin pedir cuenta.
+        """
+        for nombre in ("tokens", "avisos_stock", "wishlist_avisos"):
+            with self.subTest(nodo=nombre):
+                nodo = REGLAS[nombre]
+                self.assertEqual(
+                    "auth != null && auth.uid === root.child('admin_uid').val()",
+                    nodo.get(".read"),
+                    f"/{nombre} guarda tokens de clientes: solo lo lee el dueño",
+                )
+                self.assertNotIn(
+                    '".read": true', texto_reglas(nodo),
+                    f"/{nombre}: un .read true en un hijo vuelve a abrirlo entero",
+                )
 
     def test_el_registro_de_push_no_lista_los_suscriptores(self):
         """El camino que corre en el móvil de un cliente, sin cuenta.

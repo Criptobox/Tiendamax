@@ -222,7 +222,10 @@ async function _procesarAvisosStock(productId, nombre) {
         if (!fbCfgRaw) return;
         const fbCfg = JSON.parse(fbCfgRaw);
         const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
-        const res = await fetch(rtdbUrl + '/avisos_stock/' + productId + '.json');
+        // Firmada: /avisos_stock guarda el token de push de cada cliente que
+        // pidió el aviso, así que dejó de ser de lectura pública. Esto corre en
+        // el panel, al reponer stock, y allí hay sesión.
+        const res = await fetch(rtdbUrl + '/avisos_stock/' + productId + '.json' + (await _fbAuthQS()));
         if (!res.ok) return;
         const avisos = await res.json();
         if (!avisos || typeof avisos !== 'object') return;

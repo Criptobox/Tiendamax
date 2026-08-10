@@ -228,7 +228,18 @@ if __name__ == "__main__":
 
 
 class SinTelefonosPublicosTest(unittest.TestCase):
-    """avisos_stock lo lee cualquiera: ahí no puede vivir un teléfono."""
+    """En avisos_stock no puede vivir un telefono.
+
+    Esto nacio cuando el nodo lo leia cualquiera. Ya no: pide la cuenta del
+    dueno, como /tokens. Pero la prohibicion se queda, y por dos razones que no
+    dependen de aquello.
+
+    La escritura sigue siendo `.write: true` — tiene que serlo, porque quien se
+    apunta a "avisame cuando vuelva" es un cliente sin cuenta—, asi que
+    cualquiera puede meter ahi lo que pase el validate. Y el telefono ya tiene
+    su sitio, /lista_espera, que es `.read: false` de arriba abajo. Un dato
+    personal en dos nodos es dos reglas que hay que acertar en vez de una.
+    """
 
     def test_avisos_stock_no_admite_telefono(self):
         n = REGLAS["avisos_stock"]["$productId"]["$tokenId"]
@@ -236,8 +247,6 @@ class SinTelefonosPublicosTest(unittest.TestCase):
         self.assertIn("!newData.hasChild('tel')", n[".validate"],
                       "hay que rechazarlo, no solo no declararlo: un hijo sin "
                       "regla se acepta sin validar ninguna")
-        self.assertIs(True, REGLAS["avisos_stock"][".read"],
-                      "si dejara de ser publico, este test sobra")
 
     def test_el_cliente_manda_el_telefono_al_nodo_privado(self):
         src = (RAIZ / "js" / "src" / "tm-product.src.js").read_text(encoding="utf-8")

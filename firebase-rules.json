@@ -191,10 +191,9 @@
           "producto": {
             ".validate": "newData.isString() && newData.val().length < 200"
           }
-        },
-        ".read": true
+        }
       },
-      ".read": true,
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
       ".write": false
     },
     "agente": {
@@ -252,10 +251,9 @@
           "ts": {
             ".validate": "newData.isNumber()"
           }
-        },
-        ".read": true
+        }
       },
-      ".read": true,
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
       ".write": false
     },
     "resenas": {
