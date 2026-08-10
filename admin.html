@@ -1663,17 +1663,17 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=483b7188"></script>
+<script src="js/tm-bundle.js?v=304989eb"></script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=6095d36c"></script>
+<script src="js/revolico_integration.js?v=091bc1dc"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
-     (tmLeerAnalytics/renderizarAnalyticsFirebase, llamado desde abrirAdminPanel)
+     (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
      (typeof check en el llamado hacía que fuera un no-op silencioso), así que
      el badge del topbar y la tarjeta de "suscriptores esperan noticias" solo
      mostraban lo último cacheado en localStorage por una visita anterior a
      index.html en el MISMO navegador — nunca el número real y actualizado. -->
-<script src="js/analytics.js?v=81afdbae"></script>
+<script src="js/analytics.js?v=fd09de6d"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -2260,7 +2260,7 @@ window.addEventListener('focus', function(){
       if(p && Number(p.stock)!==Number(d.stock)){ p.stock=Number(d.stock); cambios++; }
     });
     if(cambios){
-      if(typeof actualizarListaProductos==='function') actualizarListaProductos();
+      if(typeof actualizarCountdownProductSelect==='function') actualizarCountdownProductSelect();
       const v=document.querySelector('.view.active');
       if(v&&v.id==='view-reservas') renderReservas();
     }

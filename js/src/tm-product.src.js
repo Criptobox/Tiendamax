@@ -71,17 +71,6 @@ function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
     });
 }
 
-function descargarProductosJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(productos, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "productos.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
-}
-
 
 // ===== RENDERIZAR PRODUCTOS =====
 
@@ -1240,7 +1229,6 @@ function _verificarSuscripcionAviso(productId) {
     } catch(e) {}
 }
 
-// actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
 
 // Re-renderizar cards al rotar móvil o redimensionar ventana (para que el
 // truncado responsive se recalcule con el nuevo ancho de card).

@@ -71,23 +71,6 @@ function filtrarPorCategoria(cat) {
     }
 }
 
-function actualizarListaCategorias() {
-    const list = document.getElementById('categoryList');
-    if (!list) return;
-
-    list.innerHTML = '';
-
-    categorias.forEach((cat, index) => {
-        const item = document.createElement('div');
-        item.className = 'category-item';
-        item.innerHTML = `
-            <span>${obtenerIconoCategoria(cat)} ${cat}</span>
-            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">🗑️</button>` : ''}
-        `;
-        list.appendChild(item);
-    });
-}
-
 
 function agregarCategoria() {
     const input = document.getElementById('newCategoryName');
@@ -112,7 +95,6 @@ function agregarCategoria() {
     
     actualizarSelectCategorias();
     actualizarBotonesCategorias();
-    actualizarListaCategorias();
     renderizarCategoriasHome();
     mostrarNotificacion('✅ Categoría agregada');
 }
@@ -142,45 +124,9 @@ function guardarCategorias() {
     }, 2000);
 }
 
-function eliminarCategoria(index) {
-    const nombre = categorias[index];
-    if (nombre === 'General') return;
-    if (confirm(`¿Eliminar la categoría "${nombre}"?`)) {
-        // Eliminar icono personalizado si existe
-        if (iconosPersonalizados[nombre]) {
-            delete iconosPersonalizados[nombre];
-            localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
-        }
-
-        marcarCategoriaEliminada(nombre);
-        categorias.splice(index, 1);
-        guardarCategorias();
-        actualizarSelectCategorias();
-        actualizarBotonesCategorias();
-        actualizarListaCategorias();
-        renderizarCategoriasHome();
-        renderizarProductos();
-    }
-}
 
 // ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
 
-function eliminarProducto(id) {
-    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
-    marcarProductoEliminado(id);
-    productos = productos.filter(p => p.id !== id);
-    guardarProductos();
-    // Una eliminación requiere sincronizar todos los productos
-    localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
-    localStorage.setItem('ultimaModificacion', Date.now().toString());
-    sincronizarConGitHub();
-    renderizarCategoriasHome();
-    renderizarMasVendidos();
-    renderizarProductos();
-    actualizarListaProductos();
-    verificarOfertasYMostrarBanner();
-    mostrarNotificacion('🗑️ Producto eliminado', 'info');
-}
 
 // Aquí estaban verificarEstadoBackend y cargarEstadoPublicacion. Las dos solo
 // escribían un aviso fijo ("modo manual activo") en #backendStatus y
@@ -239,13 +185,6 @@ function marcarProductoEliminado(id) {
 }
 function obtenerProductosEliminados() {
     return tmParseArray(localStorage.getItem('productosEliminados'));
-}
-
-// Igual que marcarProductoEliminado, pero para categorías: sin esto, una
-// categoría borrada podía resucitar al fusionar con categorias.json del repo.
-function marcarCategoriaEliminada(nombre) {
-    const el = tmParseArray(localStorage.getItem('categoriasEliminadas'));
-    if (!el.includes(nombre)) { el.push(nombre); localStorage.setItem('categoriasEliminadas', JSON.stringify(el)); }
 }
 
 

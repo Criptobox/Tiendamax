@@ -136,16 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ===== PATCH actualizarListaProductos to also update countdown select =====
-if (typeof actualizarListaProductos === 'function') {
-    const _origActualizarListaProductos = actualizarListaProductos;
-    actualizarListaProductos = function() {
-        _origActualizarListaProductos();
-        if (typeof actualizarCountdownProductSelect === 'function') {
-            actualizarCountdownProductSelect();
-        }
-    };
-}
+// actualizarListaProductos pintaba la lista del panel viejo en #productsList y,
+// por un envoltorio que estaba aquí, refrescaba de paso el <select> del
+// countdown. La lista se fue con el panel; el select sigue en admin.html, así
+// que sus llamadas pasaron a llamar directamente a actualizarCountdownProductSelect.
 
 // ===== FIX: Subcategories showing only General =====
 // Override renderizarSubcategoriaTabs to also load from GitHub subcategorias.json
@@ -205,165 +199,6 @@ let _filtroFavoritos = false;
 
 let _tmBulkSelected = new Set();
 
-function tmBulkToggle(id, checked) {
-    if (checked) _tmBulkSelected.add(id);
-    else _tmBulkSelected.delete(id);
-    const tb = document.getElementById('tmBulkToolbar');
-    const cnt = document.getElementById('tmBulkCount');
-    if (tb) tb.style.display = _tmBulkSelected.size > 0 ? 'flex' : 'none';
-    if (cnt) cnt.textContent = _tmBulkSelected.size + ' seleccionado' + (_tmBulkSelected.size !== 1 ? 's' : '');
-}
-function tmBulkClear() {
-    _tmBulkSelected.clear();
-    document.querySelectorAll('.tm-bulk-check').forEach(cb => { cb.checked = false; });
-    const tb = document.getElementById('tmBulkToolbar');
-    if (tb) tb.style.display = 'none';
-}
-function tmBulkSetPrecio() {
-    if (_tmBulkSelected.size === 0) return;
-    const val = prompt('Nuevo precio (USD) para los ' + _tmBulkSelected.size + ' productos seleccionados:');
-    if (val === null) return;
-    const precio = parseFloat(val);
-    if (isNaN(precio) || precio < 0) { mostrarNotificacion('⚠️ Precio inválido', 'error'); return; }
-    _tmBulkSelected.forEach(id => {
-        const p = productos.find(x => x.id === id);
-        if (p) p.precioActual = precio;
-    });
-    const nPrecio = _tmBulkSelected.size;
-    guardarProductos();
-    _tmBulkSelected.forEach(id => marcarProductoModificado(id));
-    sincronizarConGitHub();
-    tmBulkClear();
-    actualizarListaProductos();
-    mostrarNotificacion('✅ Precio actualizado en ' + nPrecio + ' productos');
-}
-function tmBulkSetStock() {
-    if (_tmBulkSelected.size === 0) return;
-    const val = prompt('Nuevo stock para los ' + _tmBulkSelected.size + ' productos seleccionados:');
-    if (val === null) return;
-    const stock = parseInt(val);
-    if (isNaN(stock) || stock < 0) { mostrarNotificacion('⚠️ Stock inválido', 'error'); return; }
-    _tmBulkSelected.forEach(id => {
-        const p = productos.find(x => x.id === id);
-        if (p) p.stock = stock;
-    });
-    guardarProductos();
-    _tmBulkSelected.forEach(id => marcarProductoModificado(id));
-    sincronizarConGitHub();
-    const n = _tmBulkSelected.size;
-    tmBulkClear();
-    actualizarListaProductos();
-    mostrarNotificacion('✅ Stock actualizado en ' + n + ' productos');
-}
-function tmBulkEliminar() {
-    if (_tmBulkSelected.size === 0) return;
-    if (!confirm('¿Eliminar ' + _tmBulkSelected.size + ' producto(s) seleccionados? Esta acción no se puede deshacer.')) return;
-    _tmBulkSelected.forEach(id => {
-        const idx = productos.findIndex(x => x.id === id);
-        if (idx !== -1) productos.splice(idx, 1);
-    });
-    guardarProductos();
-    sincronizarConGitHub();
-    const n = _tmBulkSelected.size;
-    tmBulkClear();
-    actualizarListaProductos();
-    mostrarNotificacion('🗑️ ' + n + ' producto(s) eliminados');
-}
-
-function actualizarListaProductos() {
-    const productsList = document.getElementById('productsList');
-    if (!productsList) return;
-
-    const busqueda  = (document.getElementById('searchProductos')?.value || '').toLowerCase().trim();
-    const filtroCat = document.getElementById('filtroCategoria')?.value || '';
-
-    // Actualizar opciones del filtro de categoría
-    const selectFiltro = document.getElementById('filtroCategoria');
-    if (selectFiltro) {
-        const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
-        const valorActual = selectFiltro.value;
-        selectFiltro.innerHTML = '<option value="">Todas las categorías</option>' +
-            cats.map(c => `<option value="${c}" ${c === valorActual ? 'selected' : ''}>${c}</option>`).join('');
-        selectFiltro.value = valorActual; // FIX: restaurar el filtro
-    }
-
-    let filtrados = productos.filter(p => {
-        const matchBusq = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda) || (p.descripcion||'').toLowerCase().includes(busqueda);
-        const matchCat  = !filtroCat || p.categoria === filtroCat;
-        const matchFav  = !_filtroFavoritos || p.masVendido;
-        return matchBusq && matchCat && matchFav;
-    });
-
-    if (filtrados.length === 0) {
-        productsList.innerHTML = '<p class="no-products">No se encontraron productos</p>';
-        return;
-    }
-
-    // Agrupar por categoría — agotados al final dentro de cada grupo
-    const porCategoria = {};
-    filtrados.forEach(p => {
-        const cat = p.categoria || 'General';
-        if (!porCategoria[cat]) porCategoria[cat] = [];
-        porCategoria[cat].push(p);
-    });
-    Object.values(porCategoria).forEach(arr => arr.sort((a, b) => (a.stock > 0 ? 0 : 1) - (b.stock > 0 ? 0 : 1)));
-
-    const _bulkCount = _tmBulkSelected.size;
-    let html = `<div id="tmBulkToolbar" style="display:${_bulkCount > 0 ? 'flex' : 'none'};position:sticky;top:0;z-index:10;padding:10px 14px;background:rgba(10,10,10,0.97);border:1px solid rgba(201,169,110,.4);border-radius:10px;margin-bottom:10px;align-items:center;gap:8px;flex-wrap:wrap">
-        <span id="tmBulkCount" style="font-size:13px;font-weight:700;color:#c9a96e;flex:1">${_bulkCount} seleccionado${_bulkCount !== 1 ? 's' : ''}</span>
-        <button type="button" onclick="tmBulkSetPrecio()" style="padding:6px 12px;background:rgba(52,152,219,.2);border:1px solid rgba(52,152,219,.4);color:#3498db;border-radius:8px;font-size:12px;cursor:pointer">💰 Precio</button>
-        <button type="button" onclick="tmBulkSetStock()" style="padding:6px 12px;background:rgba(39,174,96,.2);border:1px solid rgba(39,174,96,.4);color:#27ae60;border-radius:8px;font-size:12px;cursor:pointer">📦 Stock</button>
-        <button type="button" onclick="tmBulkEliminar()" style="padding:6px 12px;background:rgba(231,76,60,.2);border:1px solid rgba(231,76,60,.4);color:#e74c3c;border-radius:8px;font-size:12px;cursor:pointer">🗑️ Eliminar</button>
-        <button type="button" onclick="tmBulkClear()" style="padding:6px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:8px;font-size:12px;cursor:pointer">✕ Cancelar</button>
-    </div>
-    <div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-        <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
-        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>
-    </div>`;
-
-    Object.entries(porCategoria).forEach(([cat, prods]) => {
-        html += `<div style="margin-bottom:24px;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--primary);border-radius:10px;">
-                <span style="font-size:16px;font-weight:700;color:white;">${escapeHtml(cat)}</span>
-                <span style="font-size:12px;color:rgba(255,255,255,0.8);margin-left:auto;">${safeNum(prods.length)} producto${prods.length>1?'s':''}</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">`;
-
-        prods.forEach(producto => {
-            const _id = safeNum(producto.id);
-            const _nm = escapeHtml(producto.nombre);
-            const _im = escapeAttr(producto.imagen);
-            const stock = producto.stock || 0;
-            const stockClass = stock === 0 ? 'out' : stock <= 3 ? 'low' : 'ok';
-            const stockLabel = stock === 0 ? 'Agotado' : stock + ' uds';
-            html += `<div class="tm-prod-card">
-                <div class="tm-prod-card-header">
-                    <input type="checkbox" class="tm-bulk-check" data-id="${_id}" onchange="tmBulkToggle(${_id},this.checked)" ${_tmBulkSelected.has(_id) ? 'checked' : ''} style="width:16px;height:16px;accent-color:#c9a96e;cursor:pointer;flex-shrink:0;margin-right:4px">
-                    <img src="${_im}" alt="" loading="lazy" decoding="async" class="tm-prod-thumb" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
-                    <div class="tm-prod-info">
-                        <div class="tm-prod-name">${_nm}${producto.masVendido ? ' 🔥' : ''}</div>
-                        <div class="tm-prod-meta">$${Number(producto.precioActual).toFixed(2)} USD${producto.descuento > 0 ? ' · <span style="color:#e74c3c;">−'+safeNum(producto.descuento)+'%</span>' : ''}</div>
-                        ${producto.comision > 0 ? `<div class="tm-prod-commission">💰 Comisión: ${producto.comisionMoneda === 'MN' ? '' : '$'}${Number(producto.comision).toFixed(2)} ${producto.comisionMoneda || 'USD'}</div>` : ''}
-                    </div>
-                    <button type="button" class="tm-prod-icon-btn edit" onclick="abrirEditModal(${_id})" title="Editar">✏️</button>
-                    <button type="button" class="tm-prod-icon-btn star${producto.masVendido ? ' active' : ''}" onclick="tmToggleMasVendido(${_id},event)" title="${producto.masVendido ? 'Quitar de Más Vendidos' : 'Destacar en Más Vendidos'}">⭐</button>
-                    <button type="button" class="tm-prod-icon-btn del" onclick="eliminarProducto(${_id})" title="Eliminar">🗑️</button>
-                </div>
-                <div class="tm-prod-stock-row">
-                    <button type="button" class="tm-stock-btn minus" onclick="ajustarStock(${_id},-1)">−</button>
-                    <button type="button" class="tm-stock-btn plus"  onclick="ajustarStock(${_id}, 1)">+</button>
-                    <span class="tm-stock-label">Stock:</span>
-                    <span class="tm-stock-value ${stockClass}">${stockLabel}</span>
-                    ${stock > 0 ? `<button type="button" class="tm-stock-btn zero" onclick="fijarStockCero(${_id})" title="Marcar agotado">→0</button>` : ''}
-                </div>
-            </div>`;
-        });
-
-        html += `</div></div>`;
-    });
-
-    productsList.innerHTML = html;
-}
 
 // ── Ajustar stock desde gestionar ──────────────────
 // Si el producto que se agota es el de la Oferta del Día, la desactiva automáticamente
@@ -377,33 +212,9 @@ function _quitarOfertaSiAgotado(id) {
     } catch(e) {}
 }
 
-function fijarStockCero(id) {
-    const p = productos.find(p => p.id === id);
-    if (!p || p.stock === 0) return;
-    p.stock = 0;
-    guardarProductos();
-    marcarProductoModificado(id);
-    sincronizarConGitHub();
-    actualizarListaProductos();
-    mostrarNotificacion(`🔴 ${p.nombre}: marcado como agotado`, 'warning');
-    _quitarOfertaSiAgotado(id);
-}
 
 // desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
 
-// ── Toggle rápido de Más Vendido desde la lista de productos ──
-function tmToggleMasVendido(id, e) {
-    if (e) { e.stopPropagation(); e.preventDefault(); }
-    const p = productos.find(x => x.id === id);
-    if (!p) return;
-    p.masVendido = !p.masVendido;
-    guardarProductos();
-    marcarProductoModificado(id);
-    sincronizarConGitHub();
-    actualizarListaProductos();
-    renderizarMasVendidos();
-    mostrarNotificacion(p.masVendido ? '⭐ ' + p.nombre + ': destacado en Más Vendidos' : ' ' + p.nombre + ': quitado de Más Vendidos');
-}
 
 async function _procesarAvisosStock(productId, nombre) {
     try {
@@ -458,7 +269,7 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
     // Debounce: espera 2s tras el último clic para no disparar múltiples syncs
     clearTimeout(_ajustarStockSyncTimer);
     _ajustarStockSyncTimer = setTimeout(() => sincronizarConGitHub(), 2000);
-    actualizarListaProductos();
+    actualizarCountdownProductSelect();
     // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
     if (!desdeVenta) {
         mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
@@ -598,19 +409,6 @@ function _fbEliminarVenta(id) {
     } catch(e) {}
 }
 
-// Anula todas las ventas. Igual que arriba: local, no se toca Firebase.
-function _fbBorrarTodasVentas() {
-    (async () => {
-        await _fbEnsureConfig();
-        const url = _fbRtdbUrl();
-        if (!url) return;
-        const res = await fetch(`${url}/ventas.json${await _fbAuthQS()}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data || typeof data !== 'object') return;
-        Object.values(data).forEach(v => { if (v && v.id) _fbEliminarVenta(v.id); });
-    })().catch(() => {}); // OPT 3G: silencioso
-}
 
 // Nota: aquí vivía _fbMigrarVentasRaiz, que movía ventas guardadas por error en
 // la raíz de Firebase (0,1,2…) a /ventas/{id}. Se eliminó porque ya no podía
@@ -622,41 +420,7 @@ function _fbBorrarTodasVentas() {
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
 // OPT 3G: silencioso — si Firebase no responde (común en 3G cubano), no spamear la consola.
 let _fbSyncVentasEnCurso = false;
-async function _fbSincronizarVentasAlIniciar() {
-    if (_fbSyncVentasEnCurso) return;
-    _fbSyncVentasEnCurso = true;
-    await _fbEnsureConfig();
-    const url = _fbRtdbUrl();
-    if (!url) { _fbSyncVentasEnCurso = false; return; }
-    try {
-        const res = await fetch(`${url}/ventas.json${await _fbAuthQS()}`);
-        if (!res.ok) { _fbSyncVentasEnCurso = false; return; }
-        const data = await res.json();
-        const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
-        const _esPrueba = v => {
-            const n = String(v.producto || '').trim().toLowerCase();
-            return n.length <= 1 || ['a','b','test','prueba','producto a','producto b','aa','bb'].includes(n);
-        };
-        const todasFB = data && typeof data === 'object'
-            ? Object.values(data).filter(v => v && !_elimSet.has(v.id) && !_esPrueba(v))
-            : [];
-        const ventasLocales = tmParseArray(localStorage.getItem('registroVentas'));
-        const idsFB = new Set(todasFB.map(v => v.id));
-        const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id) && !_esPrueba(v));
-        soloLocales.forEach(v => _fbGuardarVenta(v));
-        const merged = [...todasFB, ...soloLocales]
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 500);
-        if (merged.length) {
-            localStorage.setItem('registroVentas', JSON.stringify(merged));
-            renderizarVentas();
-        }
-    } catch(e) {
-        // OPT 3G: silencioso — no logear errores de red de Firebase a la consola
-    } finally {
-        _fbSyncVentasEnCurso = false;
-    }
-}
+
 
 function cargarVentas() {
     try {
@@ -678,29 +442,6 @@ function guardarVenta(venta) {
     _fbGuardarVenta(venta);
 }
 
-function exportarVentasCSV() {
-    const ventas = cargarVentas();
-    if (!ventas.length) { mostrarNotificacion('No hay ventas que exportar', 'info'); return; }
-    const header = 'Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia';
-    const rows = ventas.map(v =>
-        `"${v.fecha}","${v.producto}",${v.cantidad},${v.precio},${v.comision || 0},${v.total},${v.ganancia || 0}`
-    );
-    const csv = [header, ...rows].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    mostrarNotificacion('✅ Historial exportado como CSV', 'success');
-}
-
-// Normaliza los productos de una venta (soporta ventas viejas de 1 producto)
-function _ventaItems(venta) {
-    if (venta && Array.isArray(venta.items) && venta.items.length) return venta.items;
-    return [{ producto: venta.producto, productoId: venta.productoId, cantidad: venta.cantidad || 1, precio: venta.precio || 0 }];
-}
 
 // Registra un pedido con uno o varios productos como UNA sola venta (un vale).
 // `cliente` es opcional: {nombre, tel}. Se guarda SOLO en localStorage — ver
@@ -754,7 +495,6 @@ function registrarVentaPedido(items, cliente, opts) {
     }
     guardarVenta(venta);
     if (!(opts && opts.stockYaDescontado)) detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
-    renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${detalle.length} producto${detalle.length > 1 ? 's' : ''}`);
 
     // Guardar también como pedido en Firebase para seguimiento del cliente (multi-item).
@@ -793,246 +533,18 @@ function registrarVenta(productoId, cantidad) {
     registrarVentaPedido([{ productoId: p.id, producto: p.nombre, cantidad: cantidad || 1, precio: p.precioActual, comision: p.comision || 0, comisionMoneda: p.comisionMoneda || 'USD' }]);
 }
 
-// Generar ticket de venta para enviar al cliente por WhatsApp (con link de seguimiento)
-// El vale visual completo (imagen) vive en /vale.html — aquí solo el ticket de texto.
-function enviarTicketCliente(ventaId) {
-    const ventas = cargarVentas();
-    const venta = ventas.find(v => v.id === ventaId);
-    if (!venta) { mostrarNotificacion('⚠️ Venta no encontrada', 'error'); return; }
-
-    const items = _ventaItems(venta).map(it => ({ nombre: it.producto, precio: it.precio, cantidad: it.cantidad }));
-    const msg = _mensajeOrdenWA(items, {
-        ticket: true,
-        numeroCorto: String(venta.id).slice(-6),
-        fecha: venta.fecha,
-        pedidoId: venta.id
-    });
-    window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
-    mostrarNotificacion('📤 Ticket enviado al cliente');
-}
 
 // Página actual del historial de ventas
 let _ventasPagina = 0;
 const _VENTAS_POR_PAGINA = 20;
 
-function renderizarVentas(pagina) {
-    const cont = document.getElementById('ventasContenido');
-    if (!cont) return;
-    let ventas = cargarVentas();
-    // Si aún no hay ventas locales, dispara una lectura real de Firebase.
-    // Esto evita que el admin muestre “No hay ventas” en sesiones nuevas.
-    if (!ventas.length && !window.__tmVentasSyncing) {
-        window.__tmVentasSyncing = true;
-        _fbSincronizarVentasAlIniciar()
-            .catch(() => null)
-            .finally(() => { window.__tmVentasSyncing = false; });
-    }
-    if (typeof pagina === 'number') _ventasPagina = pagina;
-    // Asegurar que la página sea válida
-    const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
-    if (_ventasPagina >= totalPaginas) _ventasPagina = totalPaginas - 1;
-    if (_ventasPagina < 0) _ventasPagina = 0;
-
-    const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
-    const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
-    const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
-    // Paginación
-    const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
-    const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
-
-    let html = `
-    <div style="margin-bottom:16px;">
-        <h4 class="admin-section-title">📦 Registrar venta manual</h4>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-
-            <!-- Buscador -->
-            <div class="admin-search-box">
-                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
-                    class="admin-search-input">
-                <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
-                    class="admin-search-clear">✕</button>
-            </div>
-
-            <!-- Filtro por categorías (chips) -->
-            <div id="ventaCategoriaChips" class="admin-chips">
-                <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
-                    class="chip-cat chip-cat-activo admin-chip active"
-                    style="">
-                    Todas
-                </button>
-                ${[...new Set(productos.map(p => p.categoria).filter(Boolean))].map(cat =>
-                    `<button onclick="filtrarVentaPorCategoria('${cat.replace(/'/g,"&#39;")}')" type="button" data-cat="${cat}"
-                        class="chip-cat admin-chip"
-                        style="">
-                        ${cat}
-                    </button>`
-                ).join('')}
-            </div>
-
-            <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
-            <select id="ventaProductoSelect" class="admin-hidden">
-                <option value="">— Selecciona producto —</option>
-                ${productos.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('')}
-            </select>
-
-            <!-- Lista de productos filtrados -->
-            <div id="ventaProductosLista" class="admin-product-list">
-                ${productos.filter(p => p.stock > 0).map(p => `
-                <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${escapeHtml(p.nombre.toLowerCase())}" data-cat="${escapeHtml(p.categoria||'')}"
-                    onclick="seleccionarProductoVenta(${p.id})">
-                    ${p.imagen ? `<img src="${p.imagen}" loading="lazy" decoding="async" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
-                    <div class="info">
-                        <div class="name">${escapeHtml(p.nombre)}</div>
-                        <div class="meta">${escapeHtml(p.categoria||'')} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
-                    </div>
-                    <div class="price">$${p.precioActual}</div>
-                </div>`).join('')}
-                ${productos.filter(p => p.stock > 0).length === 0 ? '<p class="admin-empty">Sin productos con stock</p>' : ''}
-            </div>
-
-            <!-- Tarjeta del producto seleccionado -->
-            <div id="ventaProductoSeleccionado" class="admin-selected-card">
-                <img id="ventaSelImg" loading="lazy" decoding="async" src="" onerror="this.style.display='none'">
-                <div class="info">
-                    <div id="ventaSelNombre" class="name"></div>
-                    <div id="ventaSelInfo" class="meta"></div>
-                </div>
-                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
-            </div>
-
-            <div class="admin-input-row">
-                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
-                <button onclick="agregarAlCarritoVenta()" type="button" class="btn" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#eee">➕ Agregar</button>
-                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
-            </div>
-            <div id="ventaCarritoBox" style="display:none;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px"></div>
-        </div>
-    </div>
-
-    <div class="admin-dash-header">
-        <h4>📋 Historial de ventas</h4>
-        <div class="admin-dash-actions">
-          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>
-          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>
-        </div>
-    </div>`;
-
-    if (ventas.length === 0) {
-        html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
-    } else {
-        html += '<div style="display:flex;flex-direction:column;gap:8px;">';
-        ventasPagina.forEach(v => {
-            html += `<div class="admin-history-item">
-                <div class="info">
-                    <div class="title">${(Array.isArray(v.items) && v.items.length > 1) ? (v.items.length + ' productos · ' + v.cantidad + ' uds') : v.producto}</div>
-                    <div class="meta">${v.fecha}${(Array.isArray(v.items) && v.items.length > 1) ? ' · ' + v.items.map(it => it.cantidad + 'x ' + it.producto).join(', ') : ' · ' + v.cantidad + ' unidad(es)'}</div>
-                </div>
-                <div style="text-align:right;flex-shrink:0;">
-                    <div class="total">$${v.total.toFixed(2)}</div>
-                    ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
-                </div>
-                <button onclick="enviarTicketCliente(${v.id})" type="button" title="Enviar ticket al cliente" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;margin-right:4px;">📤 Ticket</button>
-                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
-            </div>`;
-        });
-        html += '</div>';
-    }
-
-    // Controles de paginación
-    let paginacion = '';
-    if (totalPaginas2 > 1) {
-        paginacion = `<div class="admin-pagination">
-          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >«</button>
-          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >‹</button>
-          <span>Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
-          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >›</button>
-          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >»</button>
-        </div>`;
-    }
-    cont.innerHTML = html + paginacion;
-    if (typeof renderCarritoVenta === 'function') renderCarritoVenta();
-}
 
 // Carrito del pedido (varios productos en una sola venta)
 let _ventaCarrito = [];
-function _limpiarSeleccionVenta() {
-    if (typeof deseleccionarProductoVenta === 'function') deseleccionarProductoVenta();
-    const b = document.getElementById('ventaBuscador'); if (b) { b.value = ''; if (typeof filtrarProductosVenta === 'function') filtrarProductosVenta(); }
-    const cantEl = document.getElementById('ventaCantidad'); if (cantEl) cantEl.value = '1';
-}
-function agregarAlCarritoVenta() {
-    const sel = document.getElementById('ventaProductoSelect');
-    const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
-    const id = parseInt(sel?.value);
-    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
-    const p = productos.find(x => x.id === id); if (!p) return;
-    const ex = _ventaCarrito.find(c => c.productoId === id);
-    if (ex) ex.cantidad += cant;
-    else _ventaCarrito.push({ productoId: id, producto: p.nombre, cantidad: cant, precio: p.precioActual, comision: p.comision || 0, comisionMoneda: p.comisionMoneda || 'USD' });
-    _limpiarSeleccionVenta();
-    renderCarritoVenta();
-    mostrarNotificacion('🛒 Agregado al pedido: ' + p.nombre);
-}
-function quitarDelCarritoVenta(idx) { _ventaCarrito.splice(idx, 1); renderCarritoVenta(); }
-function renderCarritoVenta() {
-    const cont = document.getElementById('ventaCarritoBox');
-    if (!cont) return;
-    if (!_ventaCarrito.length) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
-    cont.style.display = 'block';
-    const total = _ventaCarrito.reduce((s, c) => s + c.precio * c.cantidad, 0);
-    cont.innerHTML = `<div style="font-size:12px;color:#888;font-weight:700;letter-spacing:.06em;margin-bottom:8px">🛒 PEDIDO (${_ventaCarrito.length})</div>` +
-        _ventaCarrito.map((c, i) => `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)">
-            <span style="background:#2a2a2a;color:#fff;font-weight:700;border-radius:7px;padding:3px 9px;font-size:12px">${c.cantidad}x</span>
-            <span style="flex:1;font-size:13px;color:#eee;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(c.producto)}</span>
-            <span style="color:#FF6B35;font-weight:700;font-size:13px">$${(c.precio * c.cantidad).toFixed(2)}</span>
-            <button onclick="quitarDelCarritoVenta(${i})" type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:16px;line-height:1">✕</button>
-        </div>`).join('') +
-        `<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:800;font-size:15px"><span style="color:#888">Total pedido</span><span style="color:#fff">$${total.toFixed(2)}</span></div>`;
-}
-function registrarVentaDesdeForm() {
-    // Si hay productos en el carrito, registra todo el pedido como UNA venta (un vale)
-    if (_ventaCarrito.length) {
-        const items = _ventaCarrito.slice();
-        _ventaCarrito = [];
-        registrarVentaPedido(items);
-        return;
-    }
-    // Si no, registra el producto seleccionado (modo simple)
-    const sel = document.getElementById('ventaProductoSelect');
-    const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
-    const id = parseInt(sel?.value);
-    if (!id) { mostrarNotificacion('⚠️ Agrega o selecciona un producto', 'error'); return; }
-    registrarVenta(id, cant);
-    _limpiarSeleccionVenta();
-}
 
-function eliminarVenta(id) {
-    const ventas = cargarVentas().filter(v => v.id !== id);
-    localStorage.setItem('registroVentas', JSON.stringify(ventas));
-    // Registrar como eliminada para que el sync de Firebase no la reimporte
-    const elim = tmParseArray(localStorage.getItem('_tmVentasElim'));
-    if (!elim.includes(id)) { elim.push(id); if (elim.length > 300) elim.splice(0, elim.length - 300); }
-    localStorage.setItem('_tmVentasElim', JSON.stringify(elim));
-    renderizarVentas();
-    _fbEliminarVenta(id);
-}
-
-function borrarHistorialVentas() {
-    if (!confirm('¿Borrar todo el historial de ventas?')) return;
-    // Guardar IDs en _tmVentasElim ANTES de limpiar para que el sync no los reimporte desde Firebase
-    const actuales = cargarVentas();
-    const elim = tmParseArray(localStorage.getItem('_tmVentasElim'));
-    actuales.forEach(v => { if (v.id && !elim.includes(v.id)) elim.push(v.id); });
-    if (elim.length) localStorage.setItem('_tmVentasElim', JSON.stringify(elim.slice(-300)));
-    localStorage.removeItem('registroVentas');
-    renderizarVentas();
-    mostrarNotificacion('🗑️ Historial borrado');
-    _fbBorrarTodasVentas();
-}
 
 // ── Grupos de Facebook con selección de productos ────
 
-// cargarGruposFB está definida más abajo (versión completa con renderizarRevolicoConfig)
 
 function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
@@ -1252,93 +764,12 @@ const REVOLICO_CATS = [
 
 // ── Revolico Config ──────────────────────────────────
 
-function renderizarRevolicoConfig() {
-    const cont = document.getElementById('listaRevolicoConfig');
-    if (!cont) return;
-
-    cont.innerHTML = '';
-    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
-
-    if (productos.length === 0) {
-        const empty = document.createElement('p');
-        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
-        empty.textContent = 'No hay productos cargados aún.';
-        cont.appendChild(empty);
-        return;
-    }
-
-    const ordenados = [...productos].sort((a, b) => {
-        const aAgo = !a.stock || a.stock <= 0;
-        const bAgo = !b.stock || b.stock <= 0;
-        return aAgo - bAgo;
-    });
-
-    ordenados.forEach(p => {
-        const agotado = !p.stock || p.stock <= 0;
-        const catActual = config[p.id] || '';
-
-        const row = document.createElement('div');
-        row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 12px;
-            background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);
-            flex-wrap:wrap;opacity:${agotado ? '0.38' : '1'};`;
-
-        const img = document.createElement('img');
-        img.src = p.imagen || '';
-        img.style.cssText = 'width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;';
-        img.onerror = () => { img.style.display = 'none'; };
-
-        const nombre = document.createElement('span');
-        nombre.style.cssText = 'flex:1;font-size:13px;font-weight:600;min-width:120px;';
-        nombre.textContent = p.nombre;
-
-        if (agotado) {
-            const badge = document.createElement('span');
-            badge.style.cssText = 'font-size:11px;color:#e74c3c;font-weight:700;flex:2;min-width:180px;';
-            badge.textContent = '🚫 Agotado — no se publicará';
-            row.appendChild(img);
-            row.appendChild(nombre);
-            row.appendChild(badge);
-        } else {
-            const sel = document.createElement('select');
-            sel.style.cssText = 'flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);';
-            const optDefault = document.createElement('option');
-            optDefault.value = '';
-            optDefault.textContent = '— No publicar en Revolico —';
-            sel.appendChild(optDefault);
-            REVOLICO_CATS.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                if (c === catActual) opt.selected = true;
-                sel.appendChild(opt);
-            });
-            sel.addEventListener('change', () => actualizarRevolicoCat(p.id, sel.value));
-            row.appendChild(img);
-            row.appendChild(nombre);
-            row.appendChild(sel);
-        }
-
-        cont.appendChild(row);
-    });
-}
-
-function actualizarRevolicoCat(idProducto, categoria) {
-    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
-    if (categoria) {
-        config[idProducto] = categoria;
-    } else {
-        delete config[idProducto];
-    }
-    localStorage.setItem('revolicoConfig', JSON.stringify(config));
-}
-
 
 // ── Grupos FB persistentes (carga al abrir pestaña) ──
 
 function cargarGruposFB() {
     const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     renderizarGruposFB(grupos);
-    renderizarRevolicoConfig();
 }
 
 // ── Patch guardarGruposFB para también actualizar localStorage limpio ──
@@ -1515,26 +946,6 @@ function getOfertaDiaId() {
     return localStorage.getItem('ofertaDiaId') || null;
 }
 
-
-// Renderizar lista de productos agotados en el panel
-function renderizarListaAgotados() {
-    const el = document.getElementById('productosAgotadosList');
-    if (!el) return;
-    const agotados = productos.filter(p => p.stock === 0);
-    if (agotados.length === 0) {
-        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
-        return;
-    }
-    // FIX BUG #8: sanitización anti-XSS
-    el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
-            '<img src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
-            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
-            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
-            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
-        '</div>'
-    ).join('');
-}
 
 // ── Meta real en las tarjetas: reseñas (resenas-cache.json) + vistas (Firebase) ──
 window._tmRatingMap = window._tmRatingMap || null;   // { id: {avg, count} }

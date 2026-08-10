@@ -973,7 +973,6 @@ async function cargarDatosDesdeGitHub() {
                     renderizarCategoriasHome();
                     actualizarSelectCategorias();
                     actualizarBotonesCategorias();
-                    actualizarListaCategorias();
                 }
             } catch(e) {}
         }, 1500);
@@ -983,7 +982,6 @@ async function cargarDatosDesdeGitHub() {
         renderizarCategoriasHome();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
-        actualizarListaCategorias();
 
         // ── PASO 2: Cargar productos PRIMERO (lo que el usuario quiere ver) ──
         // OPT 3G: cargar productos-lite.json (39KB) en vez de productos.json (148KB).
@@ -1027,10 +1025,9 @@ async function cargarDatosDesdeGitHub() {
         renderizarMasVendidos();
         renderizarRecientes();  // 👀 Vistos recientemente
         _observarTestimonios(); // 🌟 Testimonios reales (lazy: solo cuando el bloque es visible)
-        actualizarListaProductos();
+        actualizarCountdownProductSelect();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
-        actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
         // Si el admin está abierto, actualizar el select de oferta del día
         // con los productos frescos recién cargados
@@ -1112,13 +1109,12 @@ window.addEventListener('storage', (event) => {
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarProductos();
-        actualizarListaProductos();
+        actualizarCountdownProductSelect();
     }
     if (event.key === 'categorias') {
         categorias = tmParse(event.newValue, null) || ['General'];
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
-        actualizarListaCategorias();
         renderizarCategoriasHome();
         renderizarProductos();
     }

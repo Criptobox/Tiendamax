@@ -116,19 +116,11 @@ function abrirAdminPanel() {
         document.head.appendChild(_rs);
     }
 
-    actualizarListaProductos();
     actualizarSelectCategorias();
-    actualizarListaCategorias();
     actualizarCountdownProductSelect();
     cargarNumeroWhatsApp();
     cargarEnvioTexto();
     poblarSelectOfertaDia();
-    // FIX: Cargar analytics cuando se abre el panel admin
-    setTimeout(() => {
-        if (typeof renderizarAnalyticsFirebase === 'function') {
-            renderizarAnalyticsFirebase();
-        }
-    }, 500);
     // Aquí se llamaba a _tmMostrarAgenda, el briefing de tareas pendientes.
     // Salía en su primera línea desde siempre: pintaba en #tmAgenda /
     // #tmAgendaItems, que no existen en ningún HTML. Quien enseña hoy los
@@ -156,7 +148,6 @@ function pubSwitchPanel(name) {
     }
     if (name === 'oferta') {
         setTimeout(poblarSelectOfertaDia, 100);
-        setTimeout(renderizarListaAgotados, 100);
     }
     if (name === 'promo') setTimeout(() => { if (typeof window.pubMountPromo === 'function') window.pubMountPromo(); }, 150);
 }
@@ -186,9 +177,7 @@ function switchTab(tabName) {
         const saved = localStorage.getItem('tm_pub_subtab') || 'publicar';
         setTimeout(() => pubSwitchPanel(saved), 50);
     }
-    if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
-    if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
-    if (tabName === 'analytics') setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 150);
+    if (tabName === 'manage-products') setTimeout(actualizarCountdownProductSelect, 100);
     if (tabName === 'manage-subcategories') {
         setTimeout(() => {
         }, 50);
@@ -429,7 +418,7 @@ async function agregarProductoForm(event) {
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarProductos();
-        actualizarListaProductos();
+        actualizarCountdownProductSelect();
         verificarOfertasYMostrarBanner();
     } catch (e) {
         console.error('Error subiendo imágenes:', e);

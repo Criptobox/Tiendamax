@@ -17,10 +17,6 @@
     var current = 0;
     var timer = null;
 
-    // Helper local para escapar atributos/HTML
-    function _escA(s) {
-        return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    }
 
     function renderSlider() {
         var track = document.getElementById('heroBannerTrack');
