@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 // Cambiar esta versión fuerza la descarga de index/CSS/JS nuevos en instalaciones PWA.
-const CACHE_NAME = 'tiendamax-202608101824';
+const CACHE_NAME = 'tiendamax-202608101935';
 // Solo recursos de la TIENDA que se piden SIN ?v=. Los del admin se cargan
 // bajo demanda. Los .js/.css referenciados con ?v=hash NO se precachean:
 // el cache-first matchea por URL exacta (query incluida), así que un precache
@@ -172,13 +172,20 @@ self.addEventListener('push', function(e) {
         image = data.image  || '';
     }
 
+    // tag + fechaRecibida como en firebase-messaging-sw.js: sin tag cada push
+    // apila una notificación nueva en vez de reemplazar la anterior, y sin
+    // fecha no hay forma de saber cuál caducó. Este camino es un respaldo —el
+    // push normal lo atiende el worker de Firebase— pero si alguna vez entra
+    // por aquí tiene que comportarse igual.
     const options = {
         body: body,
         icon: '/iconos/icon-192.png',
         badge: '/iconos/icon-192.png',
         image: image || undefined,
         vibrate: [100, 50, 100],
-        data: { url: url },
+        tag: (data.data && data.data.tag) || data.tag || 'tiendamax',
+        renotify: true,
+        data: { url: url, fechaRecibida: Date.now() },
         actions: [
             { action: 'open', title: 'Ver oferta' },
             { action: 'dismiss', title: 'Cerrar' }

@@ -230,6 +230,72 @@ def detectar_cambios(config_actual, config_anterior, prod_actual, prod_anterior)
                     pass
     return res
 
+def _num(v, por_defecto=0.0):
+    try:
+        return float(v or 0)
+    except (TypeError, ValueError):
+        return por_defecto
+
+
+def rebajas_vigentes(pendientes, productos):
+    """Deja en la cola solo las rebajas que siguen siendo verdad AHORA.
+
+    Tres cosas la ensucian entre que algo entra y sale:
+
+      · El producto se agota. La cola guarda id, nombre y precio, no stock, así
+        que sin volver a mirar el catálogo el aviso sigue contándolo.
+      · La rebaja se revierte. `revertir_ofertas.py` devuelve el precio de las
+        ofertas con fecha, y nadie avisaba a la cola.
+      · El mismo producto baja de precio dos veces en el día. La cola hace
+        `extend` en cada ejecución del cron, así que entraba dos veces y el
+        contador decía 2 productos donde hay uno. Se deja una entrada por
+        producto: el precio de partida más alto y el más bajo de ahora, que es
+        la rebaja real vista de punta a punta.
+
+    Importa porque el número va en el TÍTULO, y un aviso ya mostrado no se
+    puede corregir: se queda en la pantalla del cliente hasta que lo aparte.
+    """
+    por_id = {p["id"]: p for p in productos if isinstance(p, dict) and "id" in p}
+    vivas = {}
+    for r in pendientes:
+        if not isinstance(r, dict):
+            continue
+        p = por_id.get(r.get("id"))
+        if p is None:
+            continue                                  # ya no está en el catálogo
+        if int(_num(p.get("stock"))) <= 0:
+            continue                                  # se agotó esperando en la cola
+        ahora = _num(p.get("precioActual"))
+        antes = _num(r.get("antes"))
+        if ahora <= 0 or ahora >= antes:
+            continue                                  # la rebaja ya no existe
+        previa = vivas.get(r["id"])
+        vivas[r["id"]] = {
+            "id": r["id"],
+            "nombre": p.get("nombre") or r.get("nombre"),
+            "antes": max(antes, _num(previa.get("antes"))) if previa else antes,
+            "ahora": ahora,
+            "imagen": p.get("imagen") or r.get("imagen"),
+        }
+    return list(vivas.values())
+
+
+def nuevos_vigentes(pendientes, productos):
+    """Lo mismo para los productos nuevos: sin stock no se anuncian, y uno solo
+    cuenta una vez aunque el cron lo haya encolado en varias pasadas."""
+    por_id = {p["id"]: p for p in productos if isinstance(p, dict) and "id" in p}
+    vivos = {}
+    for n in pendientes:
+        if not isinstance(n, dict):
+            continue
+        p = por_id.get(n.get("id"))
+        if p is None or int(_num(p.get("stock"))) <= 0:
+            continue
+        vivos[n["id"]] = {**n, "nombre": p.get("nombre") or n.get("nombre"),
+                          "imagen": p.get("imagen") or n.get("imagen")}
+    return list(vivos.values())
+
+
 # ============================================================
 # ENVÍO
 # ============================================================
@@ -520,6 +586,24 @@ def main():
                 procesar_avisos_precio(msg_api, db_api, cambios["rebajas"])
             except Exception as e:
                 print(f"⚠️ Error procesando avisos de precio (wishlist): {e}")
+
+    # Antes de anunciar nada, volver a mirar el catálogo. La cola se llena en
+    # cada ejecución del cron pero solo se vacía en horario diurno, así que
+    # entre que algo entra y sale pueden pasar horas — y lo que se manda es un
+    # texto congelado que el teléfono deja en pantalla hasta que alguien lo
+    # aparta. Un aviso que dice "4 productos rebajados" cuando uno ya se agotó
+    # no se corrige solo: se queda mintiendo todo el día.
+    try:
+        catalogo = json.loads((ROOT / "productos.json").read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, FileNotFoundError, OSError):
+        catalogo = []
+    if catalogo:
+        antes_reb, antes_nue = len(cola["rebajas_pendientes"]), len(cola["nuevos_pendientes"])
+        cola["rebajas_pendientes"] = rebajas_vigentes(cola["rebajas_pendientes"], catalogo)
+        cola["nuevos_pendientes"] = nuevos_vigentes(cola["nuevos_pendientes"], catalogo)
+        if antes_reb != len(cola["rebajas_pendientes"]) or antes_nue != len(cola["nuevos_pendientes"]):
+            print(f"🧹 Cola depurada: rebajas {antes_reb}→{len(cola['rebajas_pendientes'])}, "
+                  f"nuevos {antes_nue}→{len(cola['nuevos_pendientes'])}")
 
     # Lógica de envío
     avisos = []

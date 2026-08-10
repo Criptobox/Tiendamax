@@ -1,5 +1,9 @@
 // ════════════════════════════════════════════════════════════════
-//  TiendaMax — Firebase Messaging Service Worker v6
+//  TiendaMax — Firebase Messaging Service Worker v7
+//  v7: los avisos ya mostrados caducan. Un push de la web se queda en la
+//      bandeja del teléfono hasta que alguien lo aparta, con el texto
+//      congelado: "4 productos rebajados" seguía puesto de noche con uno
+//      agotado. Se cierran al abrir la tienda y a las 8 h.
 //  v6: bump para refrescar SW junto con fix de suscriptores únicos.
 //  v5: [FIX] bloquea re-registro automático de token cuando el
 //      usuario se desuscribió manualmente (tm_push_desuscrito).
@@ -59,9 +63,50 @@ async function idbSet(key, value) {
   } catch(e) {}
 }
 
+// ── Caducidad de los avisos ya mostrados ────────────────────────
+// Un push de la web no se va solo: se queda en la pantalla del teléfono hasta
+// que alguien lo aparta, con el texto congelado del momento en que se mandó.
+// Un "🏷️ 4 productos rebajados" de la mañana seguía ahí por la noche, y para
+// entonces uno de los cuatro ya estaba agotado.
+//
+// No hay forma de programar un cierre a futuro desde un service worker: no
+// corre si nadie lo despierta. Así que se limpia en los dos momentos en que sí
+// está despierto — cuando llega otro push, y cuando el cliente abre la tienda
+// (ahí el aviso ya cumplió: la persona está dentro).
+const MAX_EDAD_MS = 8 * 60 * 60 * 1000;
+
+// Los avisos del dueño (admin-*) no se tocan: son recordatorios de trabajo, no
+// ofertas, y no caducan porque él abra la tienda.
+function esDeLaTienda(n) {
+  return !String((n && n.tag) || '').startsWith('admin');
+}
+
+async function cerrarAvisosViejos(edadMs = MAX_EDAD_MS) {
+  try {
+    const abiertas = await self.registration.getNotifications();
+    const limite = Date.now() - edadMs;
+    for (const n of abiertas) {
+      const recibida = (n.data && n.data.fechaRecibida) || 0;
+      if (esDeLaTienda(n) && recibida && recibida < limite) n.close();
+    }
+  } catch (e) {}
+}
+
+async function cerrarAvisosDeLaTienda() {
+  try {
+    const abiertas = await self.registration.getNotifications();
+    for (const n of abiertas) if (esDeLaTienda(n)) n.close();
+  } catch (e) {}
+}
+
 // ── Recibir mensajes de script.js para sincronizar el flag ──
 self.addEventListener('message', (event) => {
   if (!event.data) return;
+
+  // La tienda quedó abierta delante del cliente: el aviso ya no pinta nada.
+  if (event.data.type === 'TM_TIENDA_ABIERTA') {
+    event.waitUntil(cerrarAvisosDeLaTienda());
+  }
 
   if (event.data.type === 'TM_SET_DESUSCRITO') {
     // El usuario desactivó las notificaciones
@@ -79,7 +124,7 @@ self.addEventListener('message', (event) => {
 });
 
 // ── Función auxiliar para construir y mostrar notificación ──
-function mostrarNotificacionTM(payload) {
+async function mostrarNotificacionTM(payload) {
   console.log('[firebase-messaging-sw v6] Payload recibido:', payload);
 
   const notif = payload.notification || {};
@@ -116,6 +161,9 @@ function mostrarNotificacionTM(payload) {
     opciones.image = imagen;
   }
 
+  // Aprovechar que el worker está despierto para barrer lo caducado. El `tag`
+  // ya reemplaza el aviso anterior del mismo tipo, pero no toca los de otros.
+  await cerrarAvisosViejos();
   return self.registration.showNotification(titulo, opciones);
 }
 

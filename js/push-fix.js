@@ -316,7 +316,42 @@
   window.tmRegistrarTokenFCMSiPermitido = function () { return _wrap(); };
   window.inicializarFirebaseFCMClient   = function (cfg) { return _wrap(cfg); };
 
+  // ── Apagar los avisos ya vistos ─────────────────────────────
+  // Un push de la web se queda en la pantalla del teléfono hasta que alguien
+  // lo aparta a mano, con el texto congelado del momento en que se mandó. Si
+  // el cliente ya está mirando la tienda, ese aviso no dice nada que no tenga
+  // delante — y además envejece mal: "4 productos rebajados" seguía puesto por
+  // la noche con uno de los cuatro ya agotado.
+  //
+  // Los avisos los pinta firebase-messaging-sw.js, que vive en su propio
+  // ámbito, así que no basta con navigator.serviceWorker.ready (ese es el sw.js
+  // de la raíz y no ve esas notificaciones): hay que recorrer los registros.
+  // Los del dueño (tag admin-*) no se tocan; de eso se encarga el propio worker.
+  async function apagarAvisosVistos() {
+    try {
+      if (!navigator.serviceWorker || !navigator.serviceWorker.getRegistrations) return;
+      var regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(async function (reg) {
+        try {
+          if (reg.active) reg.active.postMessage({ type: "TM_TIENDA_ABIERTA" });
+          var abiertas = await reg.getNotifications();
+          abiertas.forEach(function (n) {
+            if (!String(n.tag || "").startsWith("admin")) n.close();
+          });
+        } catch (e) {}
+      }));
+    } catch (e) {}
+  }
+  window.tmApagarAvisosVistos = apagarAvisosVistos;
+
   function autoRecuperar() {
+    // Al abrir la tienda, y también al volver a ella desde otra app: si el
+    // aviso llegó con la pestaña abierta detrás, sigue en la bandeja.
+    setTimeout(apagarAvisosVistos, 1500);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") apagarAvisosVistos();
+    });
+
     try {
       if (!("Notification" in window) || Notification.permission !== "granted") return;
       if (localStorage.getItem("tm_push_desuscrito") === "1") return;
