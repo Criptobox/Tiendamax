@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-11T11:43:19.407055+00:00",
-  "fecha": "2026-08-11",
+  "actualizado": "2026-08-12T11:45:02.897592+00:00",
+  "fecha": "2026-08-12",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-29",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-30",
           "mediana": 90.0
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-08-11",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-12",
           "mediana": 90.0
         }
       ],
