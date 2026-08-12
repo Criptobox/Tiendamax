@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-11T09:52:39.296401+00:00",
+  "generado": "2026-08-12T09:54:04.595470+00:00",
   "productos": 119,
   "urgentes": 2,
-  "advertencias": 55,
-  "info": 8,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 55 advertencia(s), 8 de info.",
+  "advertencias": 59,
+  "info": 7,
+  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 59 advertencia(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -54,6 +54,11 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador 10 Amperes",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -109,6 +114,11 @@
     {
       "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Ventilador Para Carro",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -208,7 +218,17 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🛜 Router Tp-link Archer AX1450 (Wi-fi 6)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Panel Decorativo de Hojas Artificiales",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Transferencia Automática o Manual",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -285,26 +305,6 @@
       "tipo": "agotado",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "📡 Cpe Exterior Kuwfi 4G/WIFI",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
-      "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
-      "detalle": "quedan 1"
     }
   ]
 }
