@@ -456,25 +456,32 @@
   },
   {
     "id": 1778104924836,
-    "nombre": "Estación de Carga Portátil",
-    "precioActual": 665,
+    "nombre": "​⚡ Generador Solar Portátil BLUETTI AC180",
+    "precioActual": 700,
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 0,
+    "stock": 10,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "estacion-de-carga-portatil",
-    "comision": 20,
+    "comision": 15,
     "specs": [
-      "1800W",
-      "2700W"
+      "​⚡ 1800W de Potencia / 1152Wh Capacidad",
+      "​🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
+      "​🔋 Estación de Energía Portátil de Alta Capacidad ​",
+      "⚡ Generador Solar Portátil BLUETTI AC180"
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
-    "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…"
+    "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778104924836.webp"
+    ]
   },
   {
     "id": 1778104985977,
