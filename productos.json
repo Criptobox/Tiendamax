@@ -3222,5 +3222,32 @@
       "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
     ],
     "fechaAgregado": "2026-08-13T14:44:15.672Z"
+  },
+  {
+    "id": 1786632573985,
+    "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
+    "descripcion": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes mediante tecnología Mesh. Su diseño compacto y resistente a la intemperie permite una instalación flexible en paredes o postes.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 802.11ac de doble banda simultánea para garantizar velocidades rápidas de transferencia y menor congestión de red.\nCobertura y Antenas: 📶 Antenas omnidireccionales ajustables de alta ganancia integradas para una distribución uniforme de la señal en exteriores.\nConectividad y Gestión: 🔌 Puerto Ethernet con soporte para alimentación PoE (Power over Ethernet), administrado de forma centralizada mediante el software UniFi Network.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: UniFi AC Mesh (UAP-AC-M).\nTipo: Punto de acceso Wi-Fi para exteriores.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi AC Doble Banda de Alto Rendimiento",
+      "📶 Cobertura Omnidireccional para Exteriores",
+      "🔌 Alimentación PoE con Puerto Ethernet Gigante"
+    ],
+    "fechaAgregado": "2026-08-13T14:49:33.985Z"
   }
 ]
