@@ -3100,5 +3100,31 @@
       "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
     ],
     "fechaAgregado": "2026-08-13T14:44:15.672Z"
+  },
+  {
+    "id": 1786632573985,
+    "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi AC Doble Banda de Alto Rendimiento",
+      "📶 Cobertura Omnidireccional para Exteriores",
+      "🔌 Alimentación PoE con Puerto Ethernet Gigante"
+    ],
+    "fechaAgregado": "2026-08-13T14:49:33.985Z"
   }
 ]
