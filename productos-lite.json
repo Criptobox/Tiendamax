@@ -3019,5 +3019,31 @@
       "🔋 Carga Rápida para Litio-Ion"
     ],
     "fechaAgregado": "2026-08-04T17:55:59.149Z"
+  },
+  {
+    "id": 1786631549331,
+    "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp"
+    ],
+    "precioActual": 220,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi AC de Alta Velocidad",
+      "📶 Antena Sectorial de 90°",
+      "🌐 Licencia RouterOS Level 4"
+    ],
+    "fechaAgregado": "2026-08-13T14:32:29.331Z"
   }
 ]
