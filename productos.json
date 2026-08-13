@@ -3165,5 +3165,33 @@
       "🌐 Licencia RouterOS Level 4"
     ],
     "fechaAgregado": "2026-08-13T14:32:29.331Z"
+  },
+  {
+    "id": 1786631968221,
+    "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 5 de doble banda simultánea (2.4 GHz y 5 GHz) para una distribución rápida y estable del tráfico de red.\nCobertura y Antenas: 📶 Dos antenas externas de alta ganancia que mejoran la propagación de la señal y minimizan los obstáculos en el entorno doméstico u de oficina.\nConectividad y Sistema: 🌐 Puertos Gigabit Ethernet para conexiones por cable ultrarrápidas, operando bajo el sistema operativo RouterOS para configuraciones avanzadas de red.\nEspecificaciones (Specs):\nMarca: MikroTik.\nModelo: hAP ac3 (RouterBOARD / RBD53iG-5HacD2HnD).\nTipo: Router inalámbrico de doble banda para interiores.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631964826.webp"
+    ],
+    "precioActual": 260,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento",
+      "📶 Dos Antenas Externas de Alta Ganancia",
+      "🌐 Puertos Gigabit Ethernet y RouterOS"
+    ],
+    "fechaAgregado": "2026-08-13T14:39:28.222Z"
   }
 ]
