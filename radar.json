@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-12T11:45:02.897592+00:00",
-  "fecha": "2026-08-12",
+  "actualizado": "2026-08-13T11:45:57.937716+00:00",
+  "fecha": "2026-08-13",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 13
+        "n": 12
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-30",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-31",
           "mediana": 90.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-08-12",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-13",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -98,13 +98,6 @@
           "titulo": "70 USD Antorcha para soldadura TIG",
           "precio": 70.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-54388265",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "70 USD Antorcha para soldar TIG - soldadura - soldar - pistola de soldar - pistola para so",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldar-tig-soldadura-soldar-pistola-de-soldar-pistola-para-soldar-55384481",
           "dias": null
         },
         {
@@ -126,6 +119,13 @@
           "titulo": "90 USD Antorcha para soldadura TIG",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56512139",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
           "dias": null
         }
       ]
