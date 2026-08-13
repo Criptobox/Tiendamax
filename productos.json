@@ -3249,5 +3249,32 @@
       "🔌 Alimentación PoE con Puerto Ethernet Gigante"
     ],
     "fechaAgregado": "2026-08-13T14:49:33.985Z"
+  },
+  {
+    "id": 1786633494382,
+    "nombre": "⚡ Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
+    "descripcion": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo real. Corta el suministro eléctrico ante fluctuaciones peligrosas o sobrecargas, protegiendo los electrodomésticos y equipos conectados.\nFicha Técnica:\nTecnología y Monitoreo: ⚡ Monitoreo digital continuo de voltaje y corriente con doble pantalla LED independiente para lectura clara de los parámetros.\nCapacidad de Protección: 🔌 Soporta una corriente nominal de hasta 63A, con funciones ajustables para protección contra alto voltaje, bajo voltaje y sobrecorriente.\nInterfaz y Configuración: 📟 Panel frontal con indicadores LED de estado y cuatro botones de navegación/control para configurar los umbrales de protección.\nEspecificaciones (Specs):\nMarca: TOMZN.\nModelo: TOVPD1-60.\nCorriente Máxima (IN): 63A.\nTipo: Protector ajustable de voltaje y sobrecorriente para riel DIN.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp"
+    ],
+    "precioActual": 20,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 1500,
+    "comisionMoneda": "MN",
+    "categoria": "ENERGIA",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Protección de Voltaje y Corriente 63A",
+      "📟 Pantalla LED Dual y Botones de Control",
+      "🔌 Montaje en Riel DIN"
+    ],
+    "fechaAgregado": "2026-08-13T15:04:54.383Z"
   }
 ]
