@@ -3276,5 +3276,37 @@
       "🔌 Montaje en Riel DIN"
     ],
     "fechaAgregado": "2026-08-13T15:04:54.383Z"
+  },
+  {
+    "id": 1786633899405,
+    "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
+    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta capacidad de la marca Y&H, diseñado para gestionar eficientemente la energía desde paneles solares de alto voltaje (hasta 230VDC) hacia el banco de baterías. Cuenta con una pantalla LCD central y botones de navegación integrados para supervisar y configurar los parámetros del sistema en tiempo real.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT avanzado para maximizar el rendimiento energético y soportar un voltaje máximo fotovoltaico de hasta 230VDC.\nCapacidad de Corriente: 🔌 Diseñado para manejar una corriente máxima de carga de 120A, ideal para sistemas solares robustos.\nInterfaz y Monitoreo: 📟 Pantalla LCD con indicadores gráficos de estado (PV, CHARGE, LOAD, ALARM) y botones de control (SET, UP, DOWN, CONFIRM).\nEspecificaciones (Specs):\nMarca: Y&H.\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 120A.\nVoltaje Máximo PV: 230VDC.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633896602.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633897707.webp"
+    ],
+    "precioActual": 260,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 120A MPPT / Max PV 230VDC",
+      "🔋 Pantalla LCD con Botones de Control (SET",
+      "UP",
+      "DOWN",
+      "CONFIRM)",
+      "🔌 Carcasa Robusta para Instalación en Pared"
+    ],
+    "fechaAgregado": "2026-08-13T15:11:39.405Z"
   }
 ]
