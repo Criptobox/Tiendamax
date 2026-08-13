@@ -3152,5 +3152,36 @@
       "🔌 Montaje en Riel DIN"
     ],
     "fechaAgregado": "2026-08-13T15:04:54.383Z"
+  },
+  {
+    "id": 1786633899405,
+    "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633896602.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633897707.webp"
+    ],
+    "precioActual": 260,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 120A MPPT / Max PV 230VDC",
+      "🔋 Pantalla LCD con Botones de Control (SET",
+      "UP",
+      "DOWN",
+      "CONFIRM)",
+      "🔌 Carcasa Robusta para Instalación en Pared"
+    ],
+    "fechaAgregado": "2026-08-13T15:11:39.405Z"
   }
 ]
