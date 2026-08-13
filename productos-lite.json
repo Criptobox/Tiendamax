@@ -3126,5 +3126,31 @@
       "🔌 Alimentación PoE con Puerto Ethernet Gigante"
     ],
     "fechaAgregado": "2026-08-13T14:49:33.985Z"
+  },
+  {
+    "id": 1786633494382,
+    "nombre": "⚡ Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp"
+    ],
+    "precioActual": 20,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 1500,
+    "comisionMoneda": "MN",
+    "categoria": "ENERGIA",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Protección de Voltaje y Corriente 63A",
+      "📟 Pantalla LED Dual y Botones de Control",
+      "🔌 Montaje en Riel DIN"
+    ],
+    "fechaAgregado": "2026-08-13T15:04:54.383Z"
   }
 ]
