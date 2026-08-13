@@ -1,11 +1,16 @@
 {
-  "generado": "2026-08-12T09:54:04.595470+00:00",
+  "generado": "2026-08-13T09:55:08.699193+00:00",
   "productos": 119,
-  "urgentes": 2,
-  "advertencias": 59,
+  "urgentes": 3,
+  "advertencias": 58,
   "info": 7,
-  "resumen": "Anoche revisé tus 119 productos y encontré 2 urgente(s), 59 advertencia(s), 7 de info.",
+  "resumen": "Anoche revisé tus 119 productos y encontré 3 urgente(s), 58 advertencia(s), 7 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "​⚡ Generador Solar Portátil BLUETTI AC180",
+      "detalle": "→ ​⚡ Generador Solar Portátil Bluetti AC180"
+    },
     {
       "tipo": "nombre",
       "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
@@ -78,11 +83,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Estación de Carga Portátil",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Bluetti AC 180P",
       "detalle": "agotado (stock 0)"
     },
@@ -114,6 +114,11 @@
     {
       "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -299,11 +304,6 @@
     {
       "tipo": "agotado",
       "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
       "detalle": "agotado (stock 0)"
     }
   ]
