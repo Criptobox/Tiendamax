@@ -3193,5 +3193,34 @@
       "🌐 Puertos Gigabit Ethernet y RouterOS"
     ],
     "fechaAgregado": "2026-08-13T14:39:28.222Z"
+  },
+  {
+    "id": 1786632255672,
+    "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2 Internacional",
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores.\nGanancia y Cobertura: 📶 Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables.\nConectividad Física: 🔌 Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation Loco M2.\nTipo: CPE Inalámbrico para exteriores de 2.4 GHz.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632251413.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632251413.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632253167.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632254307.webp"
+    ],
+    "precioActual": 230,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 2.4 GHz airMAX de Alto Rendimiento",
+      "📶 Antena Direccional Integrada de Doble Polarización",
+      "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
+    ],
+    "fechaAgregado": "2026-08-13T14:44:15.672Z"
   }
 ]
