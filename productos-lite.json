@@ -3045,5 +3045,32 @@
       "🌐 Licencia RouterOS Level 4"
     ],
     "fechaAgregado": "2026-08-13T14:32:29.331Z"
+  },
+  {
+    "id": 1786631968221,
+    "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631964826.webp"
+    ],
+    "precioActual": 260,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento",
+      "📶 Dos Antenas Externas de Alta Ganancia",
+      "🌐 Puertos Gigabit Ethernet y RouterOS"
+    ],
+    "fechaAgregado": "2026-08-13T14:39:28.222Z"
   }
 ]
