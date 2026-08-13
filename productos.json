@@ -3138,5 +3138,32 @@
       "🔋 Carga Rápida para Litio-Ion"
     ],
     "fechaAgregado": "2026-08-04T17:55:59.149Z"
+  },
+  {
+    "id": 1786631549331,
+    "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
+    "descripcion": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP). Cuenta con tecnología 802.11ac de alta velocidad y una antena sectorial integrada que ofrece una cobertura amplia en un ángulo de 90 grados.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 802.11ac de alta eficiencia para transferencias rápidas y estables en la banda de 5 GHz.\nPatrón de Cobertura: 📶 Antena sectorial integrada con apertura de 90 grados, optimizada para conectar múltiples clientes simultáneamente en una misma zona.\nSistema y Licencia: 🌐 Funciona con el sistema RouterOS e incluye licencia Level 4, permitiendo su uso directo como punto de acceso base sectorial.\nDiseño Físico: 🔌 Carcasa robusta para exteriores con montaje integrado en mástil y protección contra condiciones climáticas adversas.\nEspecificaciones (Specs):\nMarca: MikroTik.\nModelo: SXT SA5 ac.\nTipo: Access Point Sectorial para exteriores.\nApertura de Antena: 90 grados.\nLicencia RouterOS: Level 4.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp"
+    ],
+    "precioActual": 220,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Wi-Fi AC de Alta Velocidad",
+      "📶 Antena Sectorial de 90°",
+      "🌐 Licencia RouterOS Level 4"
+    ],
+    "fechaAgregado": "2026-08-13T14:32:29.331Z"
   }
 ]
