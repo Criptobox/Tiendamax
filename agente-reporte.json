@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-13T09:55:08.699193+00:00",
-  "productos": 119,
-  "urgentes": 3,
+  "generado": "2026-08-14T09:52:30.833471+00:00",
+  "productos": 125,
+  "urgentes": 9,
   "advertencias": 58,
-  "info": 7,
-  "resumen": "Anoche revisé tus 119 productos y encontré 3 urgente(s), 58 advertencia(s), 7 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 125 productos y encontré 9 urgente(s), 58 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -20,6 +20,36 @@
       "tipo": "nombre",
       "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
       "detalle": "→ 🔋cargador de Batería de Litio Bien 48V 5A"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
+      "detalle": "→ 🌐 Access Point Sectorial Exterior Mikrotik Sxt SA5 AC"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+      "detalle": "→ 🌐 Router Inalámbrico de Escritorio Mikrotik Hap AC3"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2 Internacional",
+      "detalle": "→ 🌐 Antena Cpe Inalámbrica Ubiquiti Nanostation Loco M2 Internacional"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
+      "detalle": "→ 🌐 Punto de Acceso Unifi AC Mesh Ubiquiti"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "⚡ Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
+      "detalle": "→ ⚡ Protector de Voltaje y Sobrecorriente Tomzn TOVPD1-60"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
+      "detalle": "→ ⚡ Controlador de Carga Solar MPPT 120A Y&h"
     },
     {
       "tipo": "agotado",
@@ -274,36 +304,6 @@
     {
       "tipo": "agotado",
       "nombre": "🌐 Mikrotik Sxtsq LITE5",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Inalámbrico Wavlink AC1200 Dual Band",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "☀️ Controlador de Carga Solar MPPT 100A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🔥 Soldadora Inverter MMA-300",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Wi-fi 6 AX3000 Tp-link Archer AX55",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
       "detalle": "agotado (stock 0)"
     }
   ]
