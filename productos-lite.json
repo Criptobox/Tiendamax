@@ -2496,7 +2496,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
