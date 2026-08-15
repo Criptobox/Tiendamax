@@ -3308,5 +3308,33 @@
       "🔌 Carcasa Robusta para Instalación en Pared"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z"
+  },
+  {
+    "id": 1786807706672,
+    "nombre": "🏋️Creatina Monohid \"@/span>ar Hearthy Foods 500g",
+    "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.\nFicha Técnica:\nRendimiento y Dosificación: ⚡ Aporta 5g de creatina micronizada por porción, con un total de 100 porciones por bolsa.\nBeneficios Principales: 💪 Ayuda a respaldar el rendimiento deportivo, la fuerza y la recuperación posterior al entrenamiento.\nCaracterísticas del Producto: 🌿 Fórmula vegana, sin gluten, sometida a pruebas de terceros (3rd party tested) y completamente unflavored (sin sabor).\nEspecificaciones (Specs):\nMarca: Hearthy Foods.\nTipo: Suplemento dietético de creatina monohidratada.\nContenido Neto: 500g (17.637 OZ).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp"
+    ],
+    "precioActual": 25,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 11,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 5g por Porción / 100 Porciones",
+      "💪 Micronizada y Sin Sabor (Unflavored)",
+      "🌿 Vegana",
+      "Sin Gluten y Probada por Terceros"
+    ],
+    "fechaAgregado": "2026-08-15T15:28:26.673Z"
   }
 ]
