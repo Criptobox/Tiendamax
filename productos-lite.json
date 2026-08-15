@@ -3183,5 +3183,32 @@
       "🔌 Carcasa Robusta para Instalación en Pared"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z"
+  },
+  {
+    "id": 1786807706672,
+    "nombre": "🏋️Creatina Monohid \"@/span>ar Hearthy Foods 500g",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp"
+    ],
+    "precioActual": 25,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 11,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 5g por Porción / 100 Porciones",
+      "💪 Micronizada y Sin Sabor (Unflavored)",
+      "🌿 Vegana",
+      "Sin Gluten y Probada por Terceros"
+    ],
+    "fechaAgregado": "2026-08-15T15:28:26.673Z"
   }
 ]
