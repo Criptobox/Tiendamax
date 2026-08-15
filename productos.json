@@ -3363,5 +3363,32 @@
       "🇺🇸 Probado por Terceros (Third Party Tested)"
     ],
     "fechaAgregado": "2026-08-15T15:30:59.245Z"
+  },
+  {
+    "id": 1786808152310,
+    "nombre": "🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
+    "descripcion": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y recuperación muscular. Presenta un delicioso sabor a helado de coco (Coconut Ice Cream), sin colorantes artificiales y con un contenido neto de 962 gramos.\nFicha Técnica:\nRendimiento y Nutrición: ⚡ Aporta 23 gramos de proteína y 5.0 gramos de BCAAs por porción para el desarrollo y recuperación muscular.\nPerfil de la Fórmula: 🌿 Compuesta por 100% proteína de suero de alta calidad (Whey Protein Concentrate + Whey Protein Isolate) con saborizante y sin colorantes artificiales.\nPresentación: 🥥 Envase con un peso neto de 962 g (2.12 lbs) en sabor Coconut Ice Cream.\nEspecificaciones (Specs):\nMarca: 1UP Nutrition.\nTipo: Suplemento dietético de proteína de suero (Whey Protein).\nSabor: Coconut Ice Cream.\nPeso Neto: 962 g (2.12 lbs).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp"
+    ],
+    "precioActual": 35,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🍚 23g de Proteína / 5.0g de BCAAs",
+      "🥥 Sabor Coconut Ice Cream (Helado de Coco)",
+      "🌿 100% Whey Protein (Concentrada + Aislada) sin colorantes artificiales"
+    ],
+    "fechaAgregado": "2026-08-15T15:35:52.310Z"
   }
 ]
