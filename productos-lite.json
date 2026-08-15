@@ -3236,5 +3236,31 @@
       "🇺🇸 Probado por Terceros (Third Party Tested)"
     ],
     "fechaAgregado": "2026-08-15T15:30:59.245Z"
+  },
+  {
+    "id": 1786808152310,
+    "nombre": "🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp"
+    ],
+    "precioActual": 35,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🍚 23g de Proteína / 5.0g de BCAAs",
+      "🥥 Sabor Coconut Ice Cream (Helado de Coco)",
+      "🌿 100% Whey Protein (Concentrada + Aislada) sin colorantes artificiales"
+    ],
+    "fechaAgregado": "2026-08-15T15:35:52.310Z"
   }
 ]
