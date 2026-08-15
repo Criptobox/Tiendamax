@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-14T09:52:30.833471+00:00",
+  "generado": "2026-08-15T09:18:04.856189+00:00",
   "productos": 125,
   "urgentes": 9,
-  "advertencias": 58,
+  "advertencias": 59,
   "info": 8,
-  "resumen": "Anoche revisé tus 125 productos y encontré 9 urgente(s), 58 advertencia(s), 8 de info.",
+  "resumen": "Anoche revisé tus 125 productos y encontré 9 urgente(s), 59 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -288,6 +288,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🔌 Cargador Inteligente Corebox 12V 15A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🔌 Cargador Inteligente Ntrc 20A",
       "detalle": "agotado (stock 0)"
     },
@@ -299,11 +304,6 @@
     {
       "tipo": "agotado",
       "nombre": "🌐 Nanostation AC Loco",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Mikrotik Sxtsq LITE5",
       "detalle": "agotado (stock 0)"
     }
   ]
