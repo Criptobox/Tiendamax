@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-14T11:42:48.530385+00:00",
-  "fecha": "2026-08-14",
+  "actualizado": "2026-08-15T11:19:50.858816+00:00",
+  "fecha": "2026-08-15",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-01",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-02",
           "mediana": 90.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-08-14",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-15",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -109,6 +109,13 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "75 USD Antorcha FEMEROL para soldadura",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/antorcha-femerol-para-soldadura-56521672",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
           "titulo": "90 USD 🔥 ANTORCHA TIG PROFESIONAL – PRECISIÓN DE ALTA GAMA 🔥 AX | E01 | $90 USD",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/antorcha-tig-profesional-precision-de-alta-gama-e01-90-usd-56444885",
@@ -119,13 +126,6 @@
           "titulo": "90 USD Antorcha para soldadura TIG",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56512139",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
           "dias": null
         }
       ]
