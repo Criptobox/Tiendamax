@@ -3210,5 +3210,31 @@
       "Sin Gluten y Probada por Terceros"
     ],
     "fechaAgregado": "2026-08-15T15:28:26.673Z"
+  },
+  {
+    "id": 1786807859244,
+    "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp"
+    ],
+    "precioActual": 23,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🍚 5g por Porción / 60 Porciones",
+      "💪 Polvo Micronizado y Sin Sabor (Unflavored)",
+      "🇺🇸 Probado por Terceros (Third Party Tested)"
+    ],
+    "fechaAgregado": "2026-08-15T15:30:59.245Z"
   }
 ]
