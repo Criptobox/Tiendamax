@@ -3336,5 +3336,32 @@
       "Sin Gluten y Probada por Terceros"
     ],
     "fechaAgregado": "2026-08-15T15:28:26.673Z"
+  },
+  {
+    "id": 1786807859244,
+    "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
+    "descripcion": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva. Se presenta en un envase con 60 porciones, sin sabor y verificado mediante pruebas de terceros.\nFicha Técnica:\nRendimiento y Dosificación: ⚡ Aporta 5g por porción, con un contenido total de 300g por envase que rinde para 60 porciones.\nCaracterísticas del Polvo: 💪 Fórmula micronizada en polvo completamente unflavored (sin sabor), ideal para mezclar con agua u otras bebidas.\nCalidad y Verificación: 🇺🇸 Cuenta con etiqueta de pruebas de terceros (Third Party Tested) para garantizar estándares de pureza.\nEspecificaciones (Specs):\nMarca: Dorado Nutrition.\nTipo: Suplemento dietético de creatina monohidratada.\nContenido Neto: 10.5 OZ (300g).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp"
+    ],
+    "precioActual": 23,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🍚 5g por Porción / 60 Porciones",
+      "💪 Polvo Micronizado y Sin Sabor (Unflavored)",
+      "🇺🇸 Probado por Terceros (Third Party Tested)"
+    ],
+    "fechaAgregado": "2026-08-15T15:30:59.245Z"
   }
 ]
