@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-15T09:18:04.856189+00:00",
-  "productos": 125,
-  "urgentes": 9,
-  "advertencias": 59,
+  "generado": "2026-08-16T09:18:58.642944+00:00",
+  "productos": 128,
+  "urgentes": 12,
+  "advertencias": 55,
   "info": 8,
-  "resumen": "Anoche revisé tus 125 productos y encontré 9 urgente(s), 59 advertencia(s), 8 de info.",
+  "resumen": "Anoche revisé tus 128 productos y encontré 12 urgente(s), 55 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -52,6 +52,21 @@
       "detalle": "→ ⚡ Controlador de Carga Solar MPPT 120A Y&h"
     },
     {
+      "tipo": "nombre",
+      "nombre": "🏋️Creatina Monohid \"@/span>ar Hearthy Foods 500g",
+      "detalle": "→ 🏋️creatina Monohid \"@/span>ar Hearthy Foods 500G"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
+      "detalle": "→ 🏋️ Creatina Monohidrato Dorado Nutrition 300G"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
+      "detalle": "→ 🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962G"
+    },
+    {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
       "detalle": "agotado (stock 0)"
@@ -69,11 +84,6 @@
     {
       "tipo": "agotado",
       "nombre": "📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Switch Gigabit de 8 Puertos",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -118,11 +128,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "🌐 Switch Gigabit de 5 Puertos",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)",
       "detalle": "agotado (stock 0)"
     },
@@ -144,11 +149,6 @@
     {
       "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -303,7 +303,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "🌐 Nanostation AC Loco",
+      "nombre": "🌐 Mikrotik Sxtsq LITE5",
       "detalle": "agotado (stock 0)"
     }
   ]
