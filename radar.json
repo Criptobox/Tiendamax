@@ -1,18 +1,83 @@
 {
-  "actualizado": "2026-08-15T11:19:50.858816+00:00",
-  "fecha": "2026-08-15",
+  "actualizado": "2026-08-16T11:19:20.095506+00:00",
+  "fecha": "2026-08-16",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 1,
+    "vigilados": 2,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
+    {
+      "id": 1778102214012,
+      "nombre": "🌐 Switch Gigabit de 8 Puertos",
+      "tuPrecio": 30.0,
+      "mercado": {
+        "min": 15.0,
+        "mediana": 30.0,
+        "n": 18
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-08-16",
+          "mediana": 30.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
+          "precio": 15.0,
+          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD Switch Ethernet Gigabit BZIZU de 16 Puertos silencioso y Plug & Play 0km garantia so",
+          "precio": 16.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-bzizu-de-16-puertos-silencioso-y-plug-play-0km-garantia-somos-tienda-fisica-50755485-52188899",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD 🌐 Switch Ethernet Gigabit de 5 Puertos 🌐 AX | E01 | 20 USD",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-de-5-puertos-e01-20-usd-56437212",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
+          "precio": 29.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
+          "dias": null
+        }
+      ]
+    },
     {
       "id": 1778102582909,
       "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
@@ -20,7 +85,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 12
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -28,10 +93,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-02",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-03",
           "mediana": 90.0
@@ -83,6 +144,10 @@
         {
           "fecha": "2026-08-15",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-16",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -102,6 +167,13 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "75 USD Antorcha para soldadura TIG",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56827872",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
           "titulo": "75 USD Antorcha para Soldadura TIG – Alta Precisión. Interesados al 53998989 o 54981957",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-alta-precision-interesados-al-53998989-o-54981957-56272365",
@@ -109,23 +181,16 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "75 USD Antorcha para soldadura",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56821155",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
           "titulo": "75 USD Antorcha FEMEROL para soldadura",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/antorcha-femerol-para-soldadura-56521672",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD 🔥 ANTORCHA TIG PROFESIONAL – PRECISIÓN DE ALTA GAMA 🔥 AX | E01 | $90 USD",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-tig-profesional-precision-de-alta-gama-e01-90-usd-56444885",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD Antorcha para soldadura TIG",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56512139",
           "dias": null
         }
       ]
