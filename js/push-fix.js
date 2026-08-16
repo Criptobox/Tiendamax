@@ -14,6 +14,7 @@
   var LS_PENDING = "tm_push_token_pending";
   var DID_LS    = "tm_did";            // clave en localStorage y cookie
   var LS_ESCRITO = "tm_push_escrito";  // qué token se dejó escrito, y cuándo
+  var LS_ERROR  = "tm_push_error";     // por qué no se pudo dejar escrito
   var REFRESCO_MS = 7 * 24 * 60 * 60 * 1000;
   var DID_IDB   = "tm_device_prefs";  // nombre de la base IndexedDB
 
@@ -198,7 +199,13 @@
       signal: _putCtrl.signal,
       body: JSON.stringify({
         token:     token,
-        timestamp: Date.now(),
+        // Marca de tiempo DEL SERVIDOR, no del teléfono. La regla de /tokens
+        // exige que `timestamp` caiga dentro de ±15 minutos de `now`, y `now`
+        // es la hora de Firebase: un móvil con el reloj desajustado —cosa
+        // corriente en un teléfono que pasa días sin datos— veía su alta
+        // rechazada con un 401 que aquí se anotaba en la consola y nada más.
+        // Con {".sv":"timestamp"} lo pone Firebase al escribir y siempre entra.
+        timestamp: { ".sv": "timestamp" },
         // Minimización: aunque /tokens ya solo lo lee el dueño con su cuenta,
         // el userAgent completo identifica a un cliente mucho mejor de lo que
         // hace falta para saber desde qué aparato se suscribió.
@@ -214,6 +221,7 @@
       throw new Error("Firebase rechazó el token (HTTP " + resp.status + ")" + (t ? ": " + t : ""));
     }
     try { localStorage.removeItem(LS_PENDING); } catch (e) {}
+    try { localStorage.removeItem(LS_ERROR); } catch (e) {}
     try { localStorage.setItem(LS_ESCRITO, JSON.stringify({ marca: marca, ts: Date.now() })); } catch (e) {}
     return true;
   }
@@ -273,18 +281,36 @@
     try { localStorage.setItem("fcmToken", token); } catch (e) {}
     try { localStorage.removeItem("tm_push_desuscrito"); } catch (e) {}
 
+    // Tener el token de FCM NO es estar suscrito: mientras no quede escrito en
+    // /tokens, el envío no sabe que este teléfono existe. Se devuelve false
+    // cuando la escritura no entra, para que quien llamó no cante un "🔔
+    // ¡Notificaciones activadas!" que no es verdad — que es lo que pasaba: el
+    // fallo se anotaba en la consola y el cliente se quedaba tan tranquilo
+    // creyendo que iba a recibir los avisos.
     try {
       await escribirTokenRTDB(cfg, token);
       if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
     } catch (e) {
       try { localStorage.setItem(LS_PENDING, JSON.stringify({ token: token, cfg: cfg, ts: Date.now() })); } catch (e2) {}
+      try { localStorage.setItem(LS_ERROR, String(e.message || e)); } catch (e2) {}
       console.warn("[push-fix v8] Token FCM OK, RTDB pendiente:", e.message);
+      return false;
     }
-
-    var did = await getDeviceId();
 
     return true;
   }
+
+  // ¿Está este aparato realmente dado de alta en /tokens? No se puede
+  // preguntar a la base —/tokens ya no es de lectura pública— así que la
+  // respuesta es lo que dejó apuntado la última escritura.
+  function registroConfirmado() {
+    try {
+      if (localStorage.getItem(LS_PENDING)) return false;
+      var previo = JSON.parse(localStorage.getItem(LS_ESCRITO) || "null");
+      return !!(previo && previo.marca);
+    } catch (e) { return false; }
+  }
+  window.tmPushRegistrado = registroConfirmado;
 
   async function reintentarPendiente() {
     var raw = null;

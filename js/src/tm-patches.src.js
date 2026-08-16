@@ -766,9 +766,13 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
                 try {
                     await tmRegistrarTokenFCMSiPermitido();
                 } catch(e) {}
-                // 3. Esperar a que el token se guarde y mostrar resultado
+                // 3. Esperar a que el token se guarde y mostrar resultado.
+                //    Tener el token de FCM no es estar suscrito: hace falta que
+                //    la entrada haya entrado en /tokens, o el servidor no sabrá
+                //    a quién mandarle nada.
                 await new Promise(r => setTimeout(r, 1500));
-                const token = localStorage.getItem('fcmToken');
+                const token = localStorage.getItem('fcmToken') &&
+                    (typeof tmPushRegistrado !== 'function' || tmPushRegistrado());
                 if (token) {
                     mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
                     try {
@@ -1325,7 +1329,10 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     token: token,
-                    timestamp: Date.now(),
+                    // Hora del SERVIDOR, como en push-fix.js: la regla exige que
+                    // caiga a ±15 min de `now` y un móvil con el reloj torcido
+                    // se quedaba fuera sin enterarse.
+                    timestamp: { '.sv': 'timestamp' },
                     // Recortado como en push-fix.js: el userAgent entero identifica
                     // al cliente mucho más de lo que hace falta.
                     userAgent: String(navigator.userAgent || '').slice(0, 40),

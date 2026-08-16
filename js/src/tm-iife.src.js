@@ -567,6 +567,11 @@ async function guardarTasaMNAdmin() {
         // permission === 'granted'
         const tokenLocal = localStorage.getItem('fcmToken');
         if (!tokenLocal) return 'sin-token';
+        // Tener el token no basta: si no llegó a escribirse en /tokens, el
+        // servidor no sabe que este teléfono existe y no le manda nada. La
+        // campana decía "activas" igualmente y el cliente no recibía un aviso
+        // en su vida sin que nada se lo indicara.
+        if (typeof tmPushRegistrado === 'function' && !tmPushRegistrado()) return 'sin-token';
         return 'activo';
     }
 
@@ -781,7 +786,13 @@ async function guardarTasaMNAdmin() {
                 } catch(e) {}
             } else {
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('⚠️ No se pudo completar. Reintenta.', 'error');
+                    // El caso frecuente ya no es "no hay token" sino "hay token
+                    // pero no llegó a la base". Decirlo, en vez de un genérico:
+                    // el reintento automático al volver a entrar lo arregla solo.
+                    const pendiente = !!localStorage.getItem('tm_push_token_pending');
+                    mostrarNotificacion(pendiente
+                        ? '⚠️ Sin conexión con el servidor. Vuelve a entrar en un rato y se completa solo.'
+                        : '⚠️ No se pudo completar. Reintenta.', 'error');
                 }
             }
         } catch(e) {

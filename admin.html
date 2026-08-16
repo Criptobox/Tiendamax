@@ -1663,7 +1663,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=410b0fc9"></script>
+<script src="js/tm-bundle.js?v=3d136a79"></script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
 <script src="js/revolico_integration.js?v=091bc1dc"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -3828,6 +3828,7 @@ function renderClientes(){
   // clave de aquí y la de allí salen del mismo teléfono normalizado.
   const pend=(typeof tmSeguimientosPendientes==='function')?tmSeguimientosPendientes(VENTAS):[];
   pend.forEach(s=>{ const c=cli['tel:'+s.tel]; if(c) c.seg=s; });
+  try{ segSincronizarTodos(); }catch(e){}
   // Primero a quien hay que escribirle, y dentro de eso lo más atrasado.
   const list=Object.values(cli).sort((a,b)=>
     (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0) || b.total-a.total);
@@ -3878,6 +3879,47 @@ function renderClientes(){
    Qué hito toca y con qué texto se decide en js/src/tm-crm.src.js
    (funciones puras, con tests). Aquí solo se abre WhatsApp: la lista
    de a quién escribirle se pinta dentro de la tabla de Clientes. */
+/** Le dice a la base que ese hito ya está atendido, para que el recordatorio
+ *  por push (scripts/send_notifications.py) deje de contarlo.
+ *
+ *  Solo viajan la fecha de la venta y el nombre del hito. El nombre y el
+ *  WhatsApp del cliente se quedan aquí: la regla de /seguimientos rechaza
+ *  cualquier campo que no sea `ts` o `hecho`. */
+/** Sube de una vez las ventas que ya estaban registradas antes de que
+ *  existiera /seguimientos. Sin esto el recordatorio por push solo contaría a
+ *  partir de la próxima venta y el histórico —que es donde están los
+ *  seguimientos que tocan hoy— quedaría fuera para siempre.
+ *
+ *  Una vez por sesión: son PUTs de dos campos y no hay nada que reintentar. */
+let _segBackfillHecho=false;
+function segSincronizarTodos(){
+  if(_segBackfillHecho) return;
+  if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return;
+  if(typeof tmVentaTs!=='function' || typeof tmTelDe!=='function') return;
+  _segBackfillHecho=true;
+  const hechos=(typeof tmSeguimientosHechos==='function')?tmSeguimientosHechos():{};
+  VENTAS.forEach(v=>{
+    if(!tmTelDe(v)) return;                       // sin número no hay a quién escribir
+    const ts=tmVentaTs(v); if(!ts) return;
+    // El hito más avanzado ya atendido en este navegador.
+    let hecho='';
+    (typeof TM_SEGUIMIENTOS!=='undefined'?TM_SEGUIMIENTOS:[]).forEach(s=>{
+      if(hechos[String(v.id)+'|'+s.hito]) hecho=s.hito;
+    });
+    segSincronizar(v.id, hecho, ts);
+  });
+}
+
+function segSincronizar(ventaId, hito, ts){
+  if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return;
+  const marca = Number(ts)||Number(ventaId);
+  if(!marca) return;
+  TMAuth.fetchPrivado('/seguimientos/'+ventaId+'.json', {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ts: marca, hecho: String(hito||'') })
+  }).catch(()=>{});
+}
+
 /** Abre WhatsApp con el mensaje puesto y da el hito por atendido. Mismo criterio
  *  que avisoWhats() con la lista de espera: si abriste el chat, ya lo trataste. */
 function segEnviar(ventaId){
@@ -3886,6 +3928,7 @@ function segEnviar(ventaId){
   if(!seg){ showToast('Ese seguimiento ya no aplica'); renderClientes(); return; }
   window.open(tmWaSeguimiento(seg, 'TiendaMax'), '_blank', 'noopener,noreferrer');
   tmMarcarSeguimiento(ventaId, seg.hito);
+  segSincronizar(ventaId, seg.hito, tmVentaTs(v));
   // Descanso para ese número: si el cliente tiene otra compra con un hito
   // vencido, esperará unos días en vez de aparecer con su botón al instante.
   tmRegistrarContacto(seg.tel);
@@ -3895,10 +3938,11 @@ function segSaltar(ventaId){
   const v = VENTAS.find(x=>String(x.id)===String(ventaId)); if(!v) return;
   const seg = tmSeguimientoDe(v, tmSeguimientosHechos()); if(!seg) return;
   tmMarcarSeguimiento(ventaId, seg.hito);
+  segSincronizar(ventaId, seg.hito, tmVentaTs(v));
   showToast('Saltado', 'Ese seguimiento no volverá a salir');
   renderClientes();
 }
-window.segEnviar=segEnviar; window.segSaltar=segSaltar;
+window.segEnviar=segEnviar; window.segSaltar=segSaltar; window.segSincronizarTodos=segSincronizarTodos;
 
 /* ── Reviews reales (Firebase /resenas) ── */
 function rtdbBase(){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null); }catch(e){ return null; } }

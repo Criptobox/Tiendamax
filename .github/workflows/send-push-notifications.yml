@@ -29,8 +29,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 20
+        # fetch-depth: 1 basta. El script comparaba el catálogo contra el commit
+        # anterior que tocó productos.json, y con `fetch-depth: 20` casi nunca lo
+        # tenía: entre dos ediciones del catálogo se cuelan decenas de commits
+        # automáticos (sync_resenas.py solo ya mete varios por hora). Ahora el
+        # estado anterior vive en la Realtime Database y no en git.
 
       - name: Setup Python
         uses: actions/setup-python@v5
