@@ -1919,7 +1919,7 @@
     "nombre": "Ventilador de Techo",
     "precioActual": 35,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838929527.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 24,
@@ -1929,15 +1929,16 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "ventilador-de-techo",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "VENTILADOR DE TECHO en Cuba | TiendaMax",
     "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
-    "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
+      "https://tiendamax.org/imagenes/img_1783838929527.webp",
       "https://tiendamax.org/imagenes/img_1781365133963.webp"
-    ]
+    ],
+    "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
+    "specs": []
   },
   {
     "id": 1781377297283,
@@ -2176,7 +2177,7 @@
     "precioActual": 4,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 60,
     "comision": 1,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -2567,7 +2568,7 @@
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2577,14 +2578,14 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🚀 Wi-Fi 6 (AX1800) ",
+      "🚀 Wi-Fi 6 (AX1800)",
       "⚡ Gigabit",
       "🛡️ WPA3"
     ],
     "fechaAgregado": "2026-07-07T19:50:57.635Z",
-    "descripcion": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una seguridad de red avanzada.\nFicha Técnica:\nVelocidad: 🚀 Hasta 1800 Mbps totales (1201 Mbps en 5GHz + 574 Mbps en 2.4GHz).\nTecnología: ⚙️ Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO; gestiona más dispositivos sin saturación.\nPuertos: 🔌 1 puerto WAN Gigabit + 4 puertos LAN Gigabit para máxima velocidad cableada.\nCobertura: 📡 4 antenas de alta ganancia con tecnología Beamforming para un alcance superior.\nSeguridad: 🛡️ Incluye el estándar WPA3, la protección más moderna para tu red doméstica.\nEspecificaciones (Specs):\nProcesador: CPU de núcleo cuádruple para un procesamiento de datos rápido.\nGestión: Control total desde la app TP-Link Tether (iOS/Android).\nEficiencia: Tecnología Target Wake Time que ayuda a ahorrar batería en tus dispositivos conectados.\nModos: Router Wi-Fi, Punto de Acceso (AP Mode).\nUso: Ideal para teletrabajo, gaming competitivo y streaming de contenido en ultra alta definición (4K).",
     "seoTitle": "Router Tp-link Archer AX21 (Wi-fi 6) en Cuba | TiendaMax",
-    "seoDescription": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una…"
+    "seoDescription": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una…",
+    "descripcion": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una seguridad de red avanzada.\nFicha Técnica:\nVelocidad: 🚀 Hasta 1800 Mbps totales (1201 Mbps en 5GHz + 574 Mbps en 2.4GHz).\nTecnología: ⚙️ Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO; gestiona más dispositivos sin saturación.\nPuertos: 🔌 1 puerto WAN Gigabit + 4 puertos LAN Gigabit para máxima velocidad cableada.\nCobertura: 📡 4 antenas de alta ganancia con tecnología Beamforming para un alcance superior.\nSeguridad: 🛡️ Incluye el estándar WPA3, la protección más moderna para tu red doméstica.\nEspecificaciones (Specs):\nProcesador: CPU de núcleo cuádruple para un procesamiento de datos rápido.\nGestión: Control total desde la app TP-Link Tether (iOS/Android).\nEficiencia: Tecnología Target Wake Time que ayuda a ahorrar batería en tus dispositivos conectados.\nModos: Router Wi-Fi, Punto de Acceso (AP Mode).\nUso: Ideal para teletrabajo, gaming competitivo y streaming de contenido en ultra alta definición (4K)."
   },
   {
     "id": 1783473894756,
