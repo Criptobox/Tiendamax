@@ -1844,7 +1844,7 @@
     "nombre": "Ventilador de Techo",
     "precioActual": 35,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838929527.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 24,
@@ -1854,14 +1854,15 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "ventilador-de-techo",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "VENTILADOR DE TECHO en Cuba | TiendaMax",
     "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
+      "https://tiendamax.org/imagenes/img_1783838929527.webp",
       "https://tiendamax.org/imagenes/img_1781365133963.webp"
-    ]
+    ],
+    "specs": []
   },
   {
     "id": 1781377297283,
@@ -2091,7 +2092,7 @@
     "precioActual": 4,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 60,
     "comision": 1,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -2468,7 +2469,7 @@
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2478,7 +2479,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🚀 Wi-Fi 6 (AX1800) ",
+      "🚀 Wi-Fi 6 (AX1800)",
       "⚡ Gigabit",
       "🛡️ WPA3"
     ],
