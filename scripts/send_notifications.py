@@ -379,6 +379,24 @@ def ofertas_visibles(productos):
     return fuera
 
 
+def mas_rebajado(productos):
+    """El de mayor descuento en porcentaje, para ponerle cara al aviso de
+    'N productos rebajados'. Se usa el porcentaje y no los pesos ahorrados: un
+    20% en un cargador se lee como ganga, 20 USD menos en un inversor de 900
+    no."""
+    mejor, mejor_pct = None, 0.0
+    for p in productos or []:
+        if not isinstance(p, dict):
+            continue
+        original, actual = _num(p.get("precioOriginal")), _num(p.get("precioActual"))
+        if original <= 0 or actual <= 0 or actual >= original:
+            continue
+        pct = (original - actual) / original
+        if pct > mejor_pct:
+            mejor, mejor_pct = p, pct
+    return mejor
+
+
 def nuevos_vigentes(pendientes, productos):
     """Lo mismo para los productos nuevos: sin stock no se anuncian, y uno solo
     cuenta una vez aunque el cron lo haya encolado en varias pasadas."""
@@ -497,6 +515,52 @@ def tokens_de_suscriptores(database):
     if not isinstance(data, dict):
         return []
     return [v["token"] for v in data.values() if isinstance(v, dict) and v.get("token")]
+
+
+def contar_dispositivos(tokens_data) -> int:
+    """Aparatos distintos en /tokens.
+
+    Mismo criterio que tmContarSuscriptoresUnicos (js/analytics.js): manda el
+    carnet (deviceId), luego la huella, y solo si no hay ninguno de los dos se
+    cuenta por token. Un mismo móvil puede tener varias filas —cambió el token,
+    se registró con el código viejo— y contarlas todas infla el número.
+    """
+    if not isinstance(tokens_data, dict):
+        return 0
+    filas = [v for v in tokens_data.values() if isinstance(v, dict) and v.get("token")]
+    uas_con_huella = {v.get("userAgent") for v in filas
+                      if v.get("fingerprint") and v.get("userAgent")}
+    claves = set()
+    for v in filas:
+        if v.get("deviceId"):
+            claves.add("did:" + str(v["deviceId"]))
+        elif v.get("fingerprint"):
+            claves.add("fp:" + str(v["fingerprint"]))
+        elif v.get("userAgent") in uas_con_huella:
+            continue                      # el mismo aparato, ya contado arriba
+        else:
+            claves.add("tk:" + str(v["token"]))
+    return len(claves)
+
+
+def apuntar_suscriptores_del_dia(database, fecha):
+    """Deja el número de suscriptores de hoy en /analytics/suscriptores/{día}.
+
+    Sin esto el panel solo sabe cuántos hay AHORA, y un número suelto no dice
+    nada: si pone 30 no hay forma de saber si ayer eran 40 y algo se rompió, o
+    si nunca pasaron de 30. Con la serie, una caída se ve de un vistazo.
+
+    Lo escribe el cron y no el panel: el cron corre nueve veces al día pase lo
+    que pase, y el panel solo cuando al dueño le da por abrirlo — que es
+    justamente cuando no hace falta, porque ya está mirando.
+    """
+    try:
+        n = contar_dispositivos(database.reference("tokens").get())
+        database.reference(f"analytics/suscriptores/{fecha}").set(n)
+        return n
+    except Exception as e:
+        print(f"⚠️ No se pudo apuntar el conteo de suscriptores: {e}", file=sys.stderr)
+        return None
 
 
 # Un producto puede entrar y salir de stock varias veces en un día (una unidad
@@ -895,6 +959,12 @@ def main():
     except Exception as e:
         print(f"⚠️ Error procesando seguimientos: {e}", file=sys.stderr)
 
+    # Serie diaria de suscriptores, para que el panel pueda enseñar si sube o
+    # baja en vez de un número suelto sin contexto.
+    n_subs = apuntar_suscriptores_del_dia(db_api, hora_local_cuba().strftime("%Y-%m-%d"))
+    if n_subs is not None:
+        print(f"👥 Suscriptores hoy: {n_subs}")
+
     # Antes de anunciar nada, volver a mirar el catálogo. La cola se llena en
     # cada ejecución del cron pero solo se vacía en horario diurno, así que
     # entre que algo entra y sale pueden pasar horas — y lo que se manda es un
@@ -960,10 +1030,19 @@ def main():
             v = visibles[0]
             avisos.append({"tipo": "rebajas", "title": "🏷️ ¡Rebaja!",
                            "body": f"{v.get('nombre')} ahora a ${int(_num(v.get('precioActual')))}",
-                           "link": f"/p/producto-{v.get('id')}.html", "imagen": v.get("imagen")})
+                           "link": f"/p/producto-{v.get('id')}.html", "imagen": v.get("imagen"),
+                           "icono": v.get("imagen")})
         elif len(visibles) > 1:
+            # El aviso también entra por los ojos: se enseña el que MÁS ha
+            # bajado, que es el que da ganas de abrir la tienda. Sin foto, "3
+            # productos rebajados" es una línea de texto entre otras veinte.
+            gancho = mas_rebajado(visibles)
             avisos.append({"tipo": "rebajas", "title": f"🏷️ {len(visibles)} productos rebajados",
-                           "body": "Revisa las nuevas ofertas en la tienda", "link": "/", "imagen": None})
+                           "body": (f"Empezando por {gancho.get('nombre')} a "
+                                    f"${int(_num(gancho.get('precioActual')))}. Míralos en la tienda."
+                                    if gancho else "Revisa las nuevas ofertas en la tienda"),
+                           "link": "/", "imagen": gancho.get("imagen") if gancho else None,
+                           "icono": gancho.get("imagen") if gancho else None})
         else:
             # Bajó de precio y se agotó antes de que abriera el horario de envío:
             # no hay nada que ir a ver.
@@ -974,10 +1053,16 @@ def main():
     if (cola["nuevos_pendientes"] and diurno
             and cola.get("ultimo_lote_fecha") != fecha_hoy
             and not _en_descanso("nuevos")):
-        n = len(cola["nuevos_pendientes"])
-        titulo = f"🆕 ¡Nuevo producto!" if n == 1 else f"🆕 {n} Productos Nuevos"
-        cuerpo = f"{cola['nuevos_pendientes'][0]['nombre']}" if n == 1 else "Llegaron novedades, entra a verlas."
-        avisos.append({"tipo": "nuevos", "title": titulo, "body": cuerpo, "link": "/", "imagen": cola["nuevos_pendientes"][0].get("imagen") if n == 1 else None})
+        pendientes = cola["nuevos_pendientes"]
+        n = len(pendientes)
+        primero = pendientes[0]
+        titulo = "🆕 ¡Nuevo producto!" if n == 1 else f"🆕 {n} Productos Nuevos"
+        cuerpo = (primero.get("nombre") or "Entra a verlo") if n == 1 else \
+                 f"Llegó {primero.get('nombre')} y {n - 1} más. Entra a verlos."
+        # Con foto también cuando son varios: se enseña el primero.
+        avisos.append({"tipo": "nuevos", "title": titulo, "body": cuerpo,
+                       "link": f"/p/producto-{primero.get('id')}.html" if n == 1 else "/",
+                       "imagen": primero.get("imagen"), "icono": primero.get("imagen")})
 
     # Ejecutar envíos. Cada lista que se vacía se anota en `consumidos`: sin eso
     # el guardado la encontraba en `current` y la devolvía a su sitio, que es lo
@@ -992,7 +1077,8 @@ def main():
             ]
             print(f"🔑 Tokens en base: {len(tokens_data)} | Válidos: {len(tokens)}")
             for a in avisos:
-                enviar_push_fcm(msg_api, db_api, tokens, [], a["title"], a["body"], a["link"], a["imagen"])
+                enviar_push_fcm(msg_api, db_api, tokens, [], a["title"], a["body"],
+                                a["link"], a["imagen"], icono=a.get("icono"))
                 ultimo_push["tipo_" + a["tipo"]] = ahora_s
                 if a["tipo"] == "tasa":
                     ta_enviada = cola["tasa_pendiente"][0] if cola["tasa_pendiente"] else None

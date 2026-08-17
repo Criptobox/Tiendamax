@@ -1507,6 +1507,7 @@
         </div>
         <div class="section"><h3>🔔 Suscriptores push <span class="badge" id="an-subs-badge">…</span></h3>
           <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Quién está registrado para notificaciones — y herramientas para mantener la lista limpia.</p>
+          <div id="an-subs-serie"></div>
           <div id="an-subs"></div>
         </div>
         <div class="section"><h3>🐛 Errores recientes en la tienda <span class="badge">registro real</span></h3>
@@ -3752,7 +3753,7 @@ async function cargarAnalyticsAvanzado(){
     }
   }
 
-  if(boxes.subs) _anRenderSubs(suscriptores,tokensData);
+  if(boxes.subs){ _anRenderSubs(suscriptores,tokensData); _anRenderSerieSubs(); }
 }
 
 // Panel de suscriptores dentro de Analytics: reusa las funciones de mantenimiento
@@ -3776,6 +3777,7 @@ function _anRenderSubs(suscriptores,tokensData){
     .slice(0,20)
     .map(([k,t])=>({...t,_fbKey:k}));
   const botones=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+    <button id="tm-btn-probar" class="btn btn-ghost" onclick="anSubsProbar()">🔔 Probar notificaciones</button>
     <button id="tm-btn-dedup" class="btn btn-ghost" onclick="anSubsDedup()">🔁 Limpiar duplicados</button>
     <button id="tm-btn-limpiar" class="btn btn-ghost" onclick="anSubsLimpiarTokens()">🧹 Tokens inválidos</button>
     <button id="tm-btn-borrar-todos" class="btn btn-ghost" style="color:#e74c3c" onclick="anSubsBorrarTodos()">🗑 Borrar todos</button>
@@ -3795,6 +3797,136 @@ function _anRenderSubs(suscriptores,tokensData){
   }).join('');
   box.innerHTML=botones+`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${chips}</div>`+lista;
 }
+/* ── Serie diaria de suscriptores ──────────────────────────────────────
+   Un número suelto no dice nada: 30 suscriptores puede ser "creciendo bien"
+   o "eran 45 y algo se rompió hace una semana". La serie la escribe el cron
+   (scripts/send_notifications.py) en /analytics/suscriptores/{día}, que corre
+   nueve veces al día pase lo que pase — el panel solo cuando lo abres, que es
+   justo cuando no hace falta. Es de lectura pública y no lleva más que
+   números, así que va sin firmar. */
+async function _anRenderSerieSubs(){
+  const box=$('#an-subs-serie'); if(!box) return;
+  const base=(typeof _fbRtdbUrl==='function')?_fbRtdbUrl():null;
+  if(!base){ box.innerHTML=''; return; }
+  let serie=null;
+  try{
+    const r=await fetch(base+'/analytics/suscriptores.json?_='+Date.now(),{cache:'no-store'});
+    if(r.ok) serie=await r.json();
+  }catch(e){}
+  const dias=Object.keys(serie||{}).sort().slice(-30);
+  if(dias.length<2){
+    box.innerHTML=`<div style="font-size:11.5px;color:var(--muted);margin:0 0 12px">📈 El historial se llena solo: el primer punto se apunta hoy y la línea aparece cuando haya dos días.</div>`;
+    return;
+  }
+  const vals=dias.map(d=>Number(serie[d])||0);
+  const max=Math.max(...vals,1), hoy=vals[vals.length-1], ayer=vals[vals.length-2];
+  const primero=vals[0];
+  const dif=hoy-primero;
+  // La barra más alta es el máximo del periodo, no un porcentaje del total:
+  // lo que importa es la FORMA de la línea, si sube o si cae.
+  const barras=dias.map((d,i)=>{
+    const alto=Math.max(2,Math.round(vals[i]/max*40));
+    const col=(i===dias.length-1)?'#25d366':'rgba(79,195,247,.55)';
+    return `<div title="${esc(d)}: ${vals[i]}" style="flex:1;min-width:3px;height:${alto}px;background:${col};border-radius:2px 2px 0 0"></div>`;
+  }).join('');
+  const flecha=dif>0?`<span style="color:#25d366">▲ +${dif}</span>`
+              :dif<0?`<span style="color:#e74c3c">▼ ${dif}</span>`
+              :`<span style="color:var(--muted)">sin cambios</span>`;
+  const alerta=(hoy<ayer)
+    ? `<div style="font-size:11px;color:#f39c12;margin-top:6px">⚠️ Hoy hay ${ayer-hoy} menos que ayer. Si la caída sigue, mira “🐛 Errores recientes”: un alta que falla se reporta ahí.</div>`
+    : '';
+  box.innerHTML=`<div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:0 0 12px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+      <span style="font-size:11.5px;color:var(--muted)">Últimos ${dias.length} días</span>
+      <span style="font-size:12px;font-weight:700">${hoy} hoy · ${flecha}</span>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:2px;height:42px">${barras}</div>
+    ${alerta}</div>`;
+}
+
+/* ── Probar notificaciones ─────────────────────────────────────────────
+   Antes, para saber si las notificaciones funcionaban había que esperar a
+   que cambiara el catálogo y a que llegara la hora del cron. Esto responde
+   en cinco segundos: repasa la cadena eslabón por eslabón y termina
+   enseñando un aviso de verdad.
+
+   Lo que NO comprueba: la entrega desde los servidores de Google. Eso solo
+   se ve en un envío real — pero si todo lo de aquí está en verde, el
+   teléfono está en la lista y le va a llegar. */
+async function anSubsProbar(){
+  const btn=$('#tm-btn-probar'), info=$('#tm-limpiar-info');
+  const filas=[];
+  const ok=(t,d)=>filas.push(`<div style="color:#25d366">✅ ${t}${d?` <span style="color:var(--muted)">— ${d}</span>`:''}</div>`);
+  const mal=(t,d)=>filas.push(`<div style="color:#e74c3c">❌ ${t}${d?` <span style="color:var(--muted)">— ${d}</span>`:''}</div>`);
+  const ojo=(t,d)=>filas.push(`<div style="color:#f39c12">⚠️ ${t}${d?` <span style="color:var(--muted)">— ${d}</span>`:''}</div>`);
+  const pintar=()=>{ if(info) info.innerHTML=`<div style="display:grid;gap:3px;font-size:11.5px;line-height:1.5">${filas.join('')}</div>`; };
+
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Probando…'; }
+  try{
+    // 1. El navegador
+    if(!('Notification' in window)) { mal('Este navegador no soporta notificaciones'); pintar(); return; }
+    ok('El navegador las soporta');
+
+    // 2. El permiso
+    if(Notification.permission==='denied'){
+      mal('Permiso bloqueado','ajustes del navegador → este sitio → Notificaciones → Permitir');
+      pintar(); return;
+    }
+    if(Notification.permission!=='granted'){
+      const p=await Notification.requestPermission();
+      if(p!=='granted'){ mal('No diste permiso','sin permiso este aparato no puede recibir nada'); pintar(); return; }
+    }
+    ok('Permiso concedido');
+
+    // 3. El service worker, que es quien pinta el aviso
+    let reg=null;
+    try{
+      const regs=await navigator.serviceWorker.getRegistrations();
+      reg=regs.find(r=>r.active&&/firebase-messaging-sw/.test(r.active.scriptURL))
+          || await navigator.serviceWorker.ready;
+    }catch(e){}
+    if(!reg){ mal('El service worker de avisos no está activo','recarga la página y vuelve a probar'); pintar(); return; }
+    ok('Service worker activo');
+
+    // 4. Este aparato, ¿está en la lista?
+    const tieneToken=!!localStorage.getItem('fcmToken');
+    const escrito=(typeof tmPushRegistrado==='function')?tmPushRegistrado():tieneToken;
+    if(!tieneToken){
+      ojo('Este aparato no tiene token','normal si nunca activaste avisos AQUÍ; no impide que los clientes los reciban');
+    }else if(!escrito){
+      const err=localStorage.getItem('tm_push_error')||'';
+      mal('Token obtenido pero NO guardado en la base', esc(err.slice(0,120))||'se reintenta solo al volver a entrar');
+    }else{
+      ok('Este aparato está dado de alta');
+    }
+
+    // 5. Cuánta gente hay al otro lado
+    try{
+      const d=await tmLeerAnalytics();
+      if(d && d.suscriptores>0) ok(`${d.suscriptores} suscriptor${d.suscriptores>1?'es':''} en la base`);
+      else ojo('No hay ningún suscriptor todavía','los avisos se envían, pero no hay a quién');
+    }catch(e){ ojo('No se pudo leer la lista','¿entraste con tu cuenta de Firebase?'); }
+
+    // 6. Un aviso de verdad, con la pinta que tienen los buenos
+    const prod=(PRODUCTOS||[]).find(p=>p.imagen);
+    await reg.showNotification('🔔 Prueba de TiendaMax', {
+      body:'Si ves esto, los avisos se muestran bien en este aparato.',
+      icon: (prod&&prod.imagen)||'/iconos/icon-192.png',
+      badge:'/iconos/icon-192.png',
+      vibrate:[200,100,200],
+      tag:'admin-prueba',
+      data:{ url:'/admin.html' }
+    });
+    ok('Aviso de prueba enviado','mira la bandeja de notificaciones');
+    filas.push(`<div style="color:var(--muted);margin-top:4px">La entrega desde Google solo se comprueba en un envío real, pero con todo esto en verde el aparato está en la lista.</div>`);
+  }catch(e){
+    mal('Error inesperado', esc(String(e&&e.message||e)).slice(0,140));
+  }finally{
+    pintar();
+    if(btn){ btn.disabled=false; btn.textContent='🔔 Probar notificaciones'; }
+  }
+}
+
 async function anSubsDedup(){ await tmLimpiarDuplicados(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
 async function anSubsLimpiarTokens(){ await tmLimpiarTokensInvalidos(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
 async function anSubsBorrarTodos(){ await tmBorrarTodosSuscriptores(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
@@ -5422,6 +5554,7 @@ if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(u=>{ tm
   if(e) e.textContent='No pude cargar Firebase Auth. Revisa la conexión o la configuración de Firebase en esta misma página.';
 }); }
 window.anSubsDedup=anSubsDedup; window.anSubsLimpiarTokens=anSubsLimpiarTokens; window.anSubsBorrarTodos=anSubsBorrarTodos; window.anSubsBorrarUno=anSubsBorrarUno;
+window.anSubsProbar=anSubsProbar;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->

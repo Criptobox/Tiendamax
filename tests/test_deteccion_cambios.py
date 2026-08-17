@@ -146,6 +146,60 @@ class LaColaSeVaciaDeVerdadTest(unittest.TestCase):
         self.assertIn("guardar_cola(db_api, cola, consumidos)", cuerpo)
 
 
+class ConteoDeSuscriptoresTest(unittest.TestCase):
+    """El número que se apunta cada día tiene que ser el mismo que enseña el
+    panel, o la línea del gráfico contradice al badge de al lado."""
+
+    def test_un_aparato_con_varias_filas_cuenta_una_vez(self):
+        # Pasa de verdad: el token de FCM rota y el código viejo escribía con
+        # otra clave. Contando filas, un solo móvil parecían tres.
+        datos = {
+            "a": {"token": "T1", "deviceId": "did_1"},
+            "b": {"token": "T2", "deviceId": "did_1"},
+            "c": {"token": "T3", "deviceId": "did_2"},
+        }
+        self.assertEqual(2, sn.contar_dispositivos(datos))
+
+    def test_sin_carnet_manda_la_huella(self):
+        datos = {"a": {"token": "T1", "fingerprint": "fp_x"},
+                 "b": {"token": "T2", "fingerprint": "fp_x"}}
+        self.assertEqual(1, sn.contar_dispositivos(datos))
+
+    def test_una_fila_antigua_no_suma_si_su_aparato_ya_se_reregistro(self):
+        datos = {"viejo": {"token": "T1", "userAgent": "UA"},
+                 "nuevo": {"token": "T2", "userAgent": "UA", "fingerprint": "fp_x"}}
+        self.assertEqual(1, sn.contar_dispositivos(datos))
+
+    def test_aguanta_nodos_vacios_o_con_basura(self):
+        self.assertEqual(0, sn.contar_dispositivos(None))
+        self.assertEqual(0, sn.contar_dispositivos({"a": None, "b": {}, "c": "x"}))
+
+    def test_cuenta_igual_que_el_panel(self):
+        # js/analytics.js hace lo mismo en el navegador; si las dos cuentas se
+        # separan, el gráfico y el badge dicen cosas distintas.
+        js = (ROOT / "js" / "analytics.js").read_text(encoding="utf-8")
+        for marca in ("'did:' + t.deviceId", "'fp:' + t.fingerprint", "'tk:' + t.token"):
+            self.assertIn(marca, js, "cambió el criterio del panel; ajusta contar_dispositivos")
+
+
+class ElAvisoGeneralLlevaFotoTest(unittest.TestCase):
+
+    def test_se_elige_el_de_mayor_descuento_en_porcentaje(self):
+        # Por porcentaje y no por pesos: un 20 % en un cargador se lee como
+        # ganga, 20 USD menos en un inversor de 900 no.
+        cat = [{"id": 1, "precioOriginal": 900, "precioActual": 880},   # -2 %
+               {"id": 2, "precioOriginal": 100, "precioActual": 60}]    # -40 %
+        self.assertEqual(2, sn.mas_rebajado(cat)["id"])
+
+    def test_sin_ofertas_no_devuelve_nada(self):
+        self.assertIsNone(sn.mas_rebajado([{"id": 1, "precioActual": 50}]))
+        self.assertIsNone(sn.mas_rebajado([]))
+
+    def test_no_revienta_con_basura(self):
+        self.assertEqual(1, sn.mas_rebajado(
+            [None, "x", {}, {"id": 1, "precioOriginal": 10, "precioActual": 5}])["id"])
+
+
 class SeguimientosVencidosTest(unittest.TestCase):
 
     def _reg(self, dias, hecho=""):

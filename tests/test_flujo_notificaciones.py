@@ -108,8 +108,10 @@ class FlujoTest(unittest.TestCase):
         """Una pasada del script. Devuelve los push enviados a los clientes."""
         enviados = []
 
-        def _fake_envio(msg, db, tokens, keys, title, body, link, imagen=None, tag=None):
-            enviados.append({"title": title, "body": body, "tokens": list(tokens), "tag": tag})
+        def _fake_envio(msg, db, tokens, keys, title, body, link,
+                        imagen=None, tag=None, icono=None):
+            enviados.append({"title": title, "body": body, "tokens": list(tokens),
+                             "tag": tag, "imagen": imagen, "icono": icono})
 
         with patch.object(sn, "init_firebase", return_value=(MagicMock(), self.db)), \
              patch.object(sn, "ROOT", self.tmp), \
@@ -205,6 +207,33 @@ class FlujoTest(unittest.TestCase):
         for _ in range(3):
             self.assertEqual([], [a for a in self._correr()
                                   if str(a["tag"]).startswith("restock")])
+
+    # ── Los avisos generales entran por los ojos ────────────────────────
+    def test_el_aviso_de_varias_rebajas_lleva_la_foto_de_la_mayor(self):
+        self._correr()
+        self.catalogo[0].update(precioActual=90, precioOriginal=100)   # -10 %
+        self.catalogo.append(_producto(5, precio=50, original=100))    # -50 %
+        self._escribir()
+        # El 5 entra como producto nuevo Y como oferta visible; lo que se mira
+        # aquí es el aviso de rebajas.
+        avisos = self._correr()
+        reb = [a for a in avisos if "rebajad" in a["title"]]
+        self.assertEqual(1, len(reb))
+        self.assertEqual("5.jpg", reb[0]["icono"], "la foto tiene que ser la del más rebajado")
+        self.assertIn("Producto 5", reb[0]["body"])
+
+    def test_el_aviso_de_productos_nuevos_lleva_foto(self):
+        self._correr()
+        self.catalogo.append(_producto(3))
+        self._escribir()
+        nuevos = [a for a in self._correr() if "Nuevo" in a["title"]]
+        self.assertEqual("3.jpg", nuevos[0]["icono"])
+
+    # ── Serie diaria de suscriptores ────────────────────────────────────
+    def test_apunta_cuantos_suscriptores_hay_hoy(self):
+        self._correr()
+        serie = self.datos["analytics"]["suscriptores"]
+        self.assertEqual([2], list(serie.values()), "dos aparatos en /tokens")
 
     # ── Un cambio que llega cuando el push falló ────────────────────────
     def test_el_cron_recoge_lo_que_la_corrida_por_push_no_vio(self):
