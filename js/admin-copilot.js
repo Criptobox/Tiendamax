@@ -80,7 +80,7 @@ function _fallo(path, motivo){ _lecturas.fallos.push({ path: path, motivo: motiv
 // /tokens se suma a la lista: dejó de ser público al cerrar la lectura de la
 // lista de suscriptores. Sin firmar, getJson recibe 401 y el Copiloto contaría
 // cero suscriptores como si no hubiera ninguno.
-const _PRIVADAS = ['/ventas', '/privado', '/tokens', '/avisos_stock', '/wishlist_avisos'];
+const _PRIVADAS = ['/ventas', '/privado', '/tokens', '/avisos_stock', '/wishlist_avisos', '/seguimientos'];
 async function _firma(path){
   if (!_PRIVADAS.some(p => path.indexOf(p) === 0)) return '';
   try {

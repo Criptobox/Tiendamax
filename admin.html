@@ -1690,7 +1690,7 @@
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=d5e76abf"></script>
-<script src="js/admin-copilot.js?v=96dfbb25"></script>
+<script src="js/admin-copilot.js?v=83a97497"></script>
 
 <script>
 (function(){
@@ -1841,7 +1841,7 @@ async function jget(url){
   // firmar. Sin la firma, la Realtime Database responde 401 y la pantalla se
   // queda en blanco sin explicar por qué.
   try{
-    if(/\/(ventas|privado|tokens|avisos_stock|wishlist_avisos)[./]/.test(url) && typeof TMAuth!=='undefined'){
+    if(/\/(ventas|privado|tokens|avisos_stock|wishlist_avisos|seguimientos)[./]/.test(url) && typeof TMAuth!=='undefined'){
       const t=await TMAuth.token();
       if(t) url += (url.includes('?')?'&':'?')+'auth='+encodeURIComponent(t);
     }
@@ -4013,7 +4013,7 @@ function renderClientes(){
   // clave de aquí y la de allí salen del mismo teléfono normalizado.
   const pend=(typeof tmSeguimientosPendientes==='function')?tmSeguimientosPendientes(VENTAS):[];
   pend.forEach(s=>{ const c=cli['tel:'+s.tel]; if(c) c.seg=s; });
-  try{ segSincronizarTodos(); }catch(e){}
+  try{ segSincronizarTodos().catch(()=>{}); }catch(e){}
   // Primero a quien hay que escribirle, y dentro de eso lo más atrasado.
   const list=Object.values(cli).sort((a,b)=>
     (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0) || b.total-a.total);
@@ -4077,10 +4077,19 @@ function renderClientes(){
  *
  *  Una vez por sesión: son PUTs de dos campos y no hay nada que reintentar. */
 let _segBackfillHecho=false;
-function segSincronizarTodos(){
+async function segSincronizarTodos(){
   if(_segBackfillHecho) return;
   if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return;
   if(typeof tmVentaTs!=='function' || typeof tmTelDe!=='function') return;
+  // LEER antes de escribir, y no al revés: cada segSincronizar es un PUT que
+  // reemplaza el registro entero. En un móvil nuevo el localStorage está vacío,
+  // así que subir primero mandaría hecho:'' para cada venta y borraría de
+  // Firebase justo lo que veníamos a recuperar.
+  await segTraerDeFirebase();
+  // Solo se sube si la lectura entró. Si no hay sesión todavía, subir vaciaría
+  // en Firebase los seguimientos hechos desde otro móvil; mejor no tocar nada y
+  // volver a intentarlo cuando el dueño haya entrado.
+  if(!_segRemotosCargados) return;
   _segBackfillHecho=true;
   const hechos=(typeof tmSeguimientosHechos==='function')?tmSeguimientosHechos():{};
   VENTAS.forEach(v=>{
@@ -4094,6 +4103,59 @@ function segSincronizarTodos(){
     segSincronizar(v.id, hecho, ts);
   });
 }
+
+/* Trae de Firebase los seguimientos ya atendidos en OTRO dispositivo.
+ *
+ * Las ventas sí viajan: cargarVentasFirebase() las baja de /ventas, que además
+ * lleva el nombre y el WhatsApp del cliente (ese nodo solo lo lees tú). Pero el
+ * "a este ya le escribí" vivía únicamente en el localStorage del aparato donde
+ * pulsaste el botón, y /seguimientos se escribía sin que nadie lo leyera. En un
+ * móvil nuevo, o después de limpiar el navegador, las ventas llegaban enteras y
+ * TODOS los seguimientos volvían a salir como pendientes: el mismo cliente
+ * recibía el mensaje dos veces.
+ *
+ * Va aparte de /ventas y no dentro porque ese nodo es inmutable a propósito
+ * (".write": "!data.exists()"): una venta no se puede editar, y un seguimiento
+ * cambia de estado cada vez que le escribes.
+ *
+ * Solo suma: si aquí ya estaba marcado, se respeta. Marcar de más significa no
+ * escribirle a alguien; marcar de menos, escribirle dos veces — y de los dos
+ * errores solo uno molesta al cliente. */
+let _segRemotosCargados = false;
+async function segTraerDeFirebase(){
+  if(_segRemotosCargados) return;
+  if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return;
+  if(typeof tmSeguimientosHechos!=='function' || typeof TM_SEGUIMIENTOS==='undefined') return;
+  let r;
+  try{ r = await TMAuth.fetchPrivado('/seguimientos.json'); }catch(e){ return; }
+  if(!r || !r.ok) return;   // sin sesión todavía: se reintenta en el próximo render
+  // La marca de "ya está" se pone al LOGRARLO, no al intentarlo. Cuando el
+  // panel pinta por primera vez el dueño aún no ha entrado con su cuenta, así
+  // que la primera llamada devuelve "no has entrado": dándola por hecha, los
+  // seguimientos de los otros dispositivos no se bajaban nunca.
+  _segRemotosCargados = true;
+  if(!r.dato || typeof r.dato!=='object') return;
+  const hechos = tmSeguimientosHechos();
+  let nuevos = 0;
+  Object.keys(r.dato).forEach(ventaId=>{
+    const v = r.dato[ventaId];
+    const hito = v && v.hecho;
+    if(!hito) return;
+    const i = TM_SEGUIMIENTOS.findIndex(s=>s.hito===hito);
+    if(i<0) return;
+    // El hito guardado es el MÁS AVANZADO que se atendió, así que los
+    // anteriores también están hechos (mismo criterio que tmMarcarSeguimiento).
+    for(let j=0; j<=i; j++){
+      const k = String(ventaId)+'|'+TM_SEGUIMIENTOS[j].hito;
+      if(!hechos[k]){ hechos[k] = Number(v.ts) || Date.now(); nuevos++; }
+    }
+  });
+  if(nuevos){
+    try{ localStorage.setItem('tm_seguimientos_v1', JSON.stringify(hechos)); }catch(e){}
+    renderClientes();
+  }
+}
+window.segTraerDeFirebase = segTraerDeFirebase;
 
 function segSincronizar(ventaId, hito, ts){
   if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return;
