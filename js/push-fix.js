@@ -64,6 +64,26 @@
   }
 
   // ── IndexedDB helpers ────────────────────────────────────────
+  //
+  // TODO lo de aquí lleva plazo. IndexedDB tiene una forma de fallar que no es
+  // fallar: `indexedDB.open` puede quedarse sin disparar ni onsuccess ni
+  // onerror —otra pestaña con una versión distinta abierta (`onblocked`), modo
+  // privado en iOS, el almacenamiento desalojado a media faena— y entonces el
+  // `await` de abajo no vuelve NUNCA. Sin plazo eso colgaba a getDeviceId(), y
+  // con él a todo el alta: ni token escrito, ni excepción, ni un aviso en la
+  // consola. El aparato se quedaba fuera de la lista para siempre.
+  //
+  // Y le tocaba justo a los aparatos NUEVOS: uno que ya venía registrado tiene
+  // su carnet en localStorage y ni llega a preguntarle a IndexedDB.
+  var IDB_PLAZO_MS = 1500;
+
+  function _conPlazo(promesa, siNoLlega) {
+    return Promise.race([
+      promesa,
+      new Promise(function (resolve) { setTimeout(function () { resolve(siNoLlega); }, IDB_PLAZO_MS); })
+    ]);
+  }
+
   function _idbOpen() {
     return new Promise(function (resolve, reject) {
       try {
@@ -71,31 +91,36 @@
         req.onupgradeneeded = function (e) { e.target.result.createObjectStore('prefs'); };
         req.onsuccess = function (e) { resolve(e.target.result); };
         req.onerror   = function () { reject(); };
+        // Otra pestaña tiene la base abierta con otra versión: sin esto la
+        // petición se queda esperando a que la cierren, que puede no pasar.
+        req.onblocked = function () { reject(); };
       } catch (e) { reject(); }
     });
   }
 
   async function _idbGet(key) {
     try {
-      var db = await _idbOpen();
-      return new Promise(function (resolve) {
+      var db = await _conPlazo(_idbOpen(), null);
+      if (!db) return null;
+      return await _conPlazo(new Promise(function (resolve) {
         var tx = db.transaction('prefs', 'readonly');
         var r  = tx.objectStore('prefs').get(key);
         r.onsuccess = function (e) { resolve(e.target.result || null); };
         r.onerror   = function () { resolve(null); };
-      });
+      }), null);
     } catch (e) { return null; }
   }
 
   async function _idbSet(key, value) {
     try {
-      var db = await _idbOpen();
-      return new Promise(function (resolve) {
+      var db = await _conPlazo(_idbOpen(), null);
+      if (!db) return;
+      return await _conPlazo(new Promise(function (resolve) {
         var tx = db.transaction('prefs', 'readwrite');
         tx.objectStore('prefs').put(value, key);
         tx.oncomplete = resolve;
         tx.onerror    = resolve;
-      });
+      }), null);
     } catch (e) {}
   }
 
@@ -143,6 +168,9 @@
 
     // 4. Generación de nuevo carnet: fingerprint de hardware + aleatorio
     //    El fingerprint garantiza cierta estabilidad entre reinicios totales.
+    //    Se llega aquí siempre que el aparato es nuevo, así que este camino
+    //    tiene que terminar sí o sí: las tres capas de arriba son mejoras, no
+    //    requisitos. Si ninguna responde, se sigue igual con un carnet nuevo.
     var fp   = deviceFingerprint();
     var rand = Math.random().toString(36).slice(2, 8);
     var newId = 'did_' + fp.replace('fp_', '') + rand;
@@ -294,10 +322,23 @@
       try { localStorage.setItem(LS_PENDING, JSON.stringify({ token: token, cfg: cfg, ts: Date.now() })); } catch (e2) {}
       try { localStorage.setItem(LS_ERROR, String(e.message || e)); } catch (e2) {}
       console.warn("[push-fix v8] Token FCM OK, RTDB pendiente:", e.message);
+      avisarDelFallo("alta en /tokens", e);
       return false;
     }
 
     return true;
+  }
+
+  // Un alta que no entra no la ve nadie: el cliente cree que se suscribió y el
+  // dueño ve el contador quieto sin saber por qué. Se manda a /errores_js, que
+  // es lo que el panel enseña en Analytics.
+  function avisarDelFallo(paso, e) {
+    try {
+      if (typeof window.tmReportarError === "function") {
+        window.tmReportarError("[push] falló " + paso + ": " + String((e && e.message) || e),
+                               e && e.stack);
+      }
+    } catch (e2) {}
   }
 
   // ¿Está este aparato realmente dado de alta en /tokens? No se puede
@@ -335,6 +376,7 @@
       return ok;
     }).catch(function (e) {
       console.error("[push-fix v8]", e.message);
+      avisarDelFallo("el registro", e);
       return false;
     });
   }

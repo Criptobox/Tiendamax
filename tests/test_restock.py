@@ -111,6 +111,19 @@ class RestockAvisaATodosTest(unittest.TestCase):
         self.assertEqual(1, envio.call_count)
         self.assertIn("restock_7", memoria)
 
+    def test_el_aviso_de_quien_lo_pidio_lleva_la_foto_de_miniatura(self):
+        # `icon` es la imagen pequeña que sale al lado del texto. Al que pidió
+        # el aviso se le enseña el producto, no el logo de la tienda.
+        db = _FakeDatabase({
+            "tokens": {"d": {"token": "PIDIO"}},
+            "avisos_stock/7": {"k": {"token": "PIDIO", "ts": 1}},
+        })
+        with patch.object(sn, "enviar_push_fcm") as envio:
+            sn.procesar_restock(MagicMock(), db, [ITEM], {})
+        dirigido = envio.call_args_list[0]
+        self.assertEqual("inv.jpg", dirigido.kwargs.get("icono"))
+        self.assertIn("Inversor 3kW", dirigido[0][4], "el título nombra el producto")
+
     def test_sin_suscriptores_no_revienta(self):
         db = _FakeDatabase({})
         with patch.object(sn, "enviar_push_fcm") as envio:

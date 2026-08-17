@@ -53,8 +53,20 @@ class ProcesarAvisosPrecioTest(unittest.TestCase):
         args = mock_send.call_args
         tokens_enviados = args[0][2]
         self.assertCountEqual(tokens_enviados, ["TOKEN_A", "TOKEN_B"])
-        self.assertIn("Router X", args[0][5])  # body menciona el producto
-        self.assertIn("35", args[0][5])
+        titulo, cuerpo = args[0][4], args[0][5]
+        self.assertIn("Router X", titulo)          # se nombra el producto
+        self.assertIn("35", cuerpo)                # y el precio nuevo
+        self.assertIn("30", titulo)                # -30%: de 50 a 35
+
+    def test_el_aviso_dirigido_lleva_la_foto_del_producto_de_miniatura(self):
+        # `icon` es la miniatura que sale AL LADO del texto en la bandeja. En
+        # los avisos dirigidos va la foto del producto, no el logo de la
+        # tienda: así se reconoce sin desplegar el aviso.
+        db = _FakeDatabase({"wishlist_avisos/100": {"t": {"token": "TOK", "ts": 1}}})
+        with patch.object(sn, "enviar_push_fcm") as mock_send:
+            sn.procesar_avisos_precio(MagicMock(), db, [
+                {"id": 100, "nombre": "Router X", "antes": 50, "ahora": 35, "imagen": "img.jpg"}])
+        self.assertEqual("img.jpg", mock_send.call_args.kwargs.get("icono"))
 
     def test_sin_suscriptores_no_envia_nada(self):
         db = _FakeDatabase({})

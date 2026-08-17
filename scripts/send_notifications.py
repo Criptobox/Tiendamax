@@ -409,7 +409,14 @@ _FCM_DEAD_TOKEN_ERRORS = (
     "registration-token-not-registered",
 )
 
-def enviar_push_fcm(messaging_api, database, tokens, keys, title, body, link, imagen=None, tag=None):
+def enviar_push_fcm(messaging_api, database, tokens, keys, title, body, link,
+                    imagen=None, tag=None, icono=None):
+    """`icono` es la miniatura cuadrada que sale AL LADO del texto; `imagen` es
+    la foto grande de debajo. Los avisos generales llevan el logo de la tienda
+    en el icono —son de la tienda, no de un producto—, pero los dirigidos (te
+    volvió el equipo que pediste, bajó el que tienes en favoritos) pasan la foto
+    del producto: se reconoce de un vistazo en la bandeja, como la tarjeta de la
+    tienda, sin tener que desplegar el aviso para ver de qué va."""
     if not tokens: return
     full_link = f"{SITE_URL}{link}" if not link.startswith("http") else link
 
@@ -430,7 +437,8 @@ def enviar_push_fcm(messaging_api, database, tokens, keys, title, body, link, im
         message = messaging_api.MulticastMessage(
             data={
                 "url": full_link, "title": title, "body": body,
-                "image": imagen or "", "icon": ICONO_PUSH, "tag": tag or "tiendamax",
+                "image": imagen or "", "icon": icono or ICONO_PUSH,
+                "tag": tag or "tiendamax",
             },
             tokens=batch,
             webpush=messaging_api.WebpushConfig(
@@ -551,12 +559,18 @@ def procesar_restock(messaging_api, database, restock_items, ultimo_push=None):
         tels = [str(v.get("tel")).strip() for v in espera.values()
                 if isinstance(v, dict) and v.get("tel")]
 
-        title = "🎉 ¡Volvió al stock!"
-        body = f"{item.get('nombre', 'Un producto que te interesa')} ya está disponible. ¡Pídelo antes de que se agote!"
+        # A quien lo pidió se le habla de lo suyo: su nombre en el título, la
+        # foto del producto de miniatura y el texto al lado. El aviso general
+        # (más abajo) es el genérico de la tienda.
+        nombre = item.get("nombre", "El producto que esperabas")
+        title = f"🎉 Llegó {nombre}"
+        body = ("Pediste que te avisáramos y ya está aquí. "
+                "Toca para verlo antes de que se agote otra vez.")
         link = f"/p/producto-{pid}.html"
         if tokens:
             enviar_push_fcm(messaging_api, database, tokens, [], title, body, link,
-                            item.get("imagen"), tag=f"restock-{pid}")
+                            item.get("imagen"), tag=f"restock-{pid}",
+                            icono=item.get("imagen"))
         # Avisar al ADMIN qué clientes esperan este producto (con su WhatsApp)
         if tels:
             lista = ", ".join(dict.fromkeys(tels))
@@ -598,13 +612,16 @@ def procesar_avisos_precio(messaging_api, database, rebajas_items):
         if not tokens:
             continue
 
-        title = "🏷️ ¡Bajó de precio!"
-        antes = item.get("antes")
-        ahora = item.get("ahora")
-        body = f"{item.get('nombre', 'Un producto de tu lista')} bajó de ${antes} a ${ahora}. ¡Corre antes que se agote!"
+        antes = int(_num(item.get("antes")))
+        ahora = int(_num(item.get("ahora")))
+        pct = int(round((antes - ahora) / antes * 100)) if antes > 0 else 0
+        title = (f"🏷️ -{pct}% en {item.get('nombre', 'tu favorito')}"
+                 if pct > 0 else f"🏷️ Bajó {item.get('nombre', 'tu favorito')}")
+        body = f"De ${antes} a ${ahora}. Lo tienes en ❤️ Me Gusta — corre antes de que se agote."
         link = f"/p/producto-{pid}.html"
         enviar_push_fcm(messaging_api, database, tokens, [], title, body, link,
-                        item.get("imagen"), tag=f"wishlist-rebaja-{pid}")
+                        item.get("imagen"), tag=f"wishlist-rebaja-{pid}",
+                        icono=item.get("imagen"))
         print(f"🏷️ Rebaja de {item.get('nombre')} notificada a {len(tokens)} que lo tienen en favoritos")
 
 # ============================================================
