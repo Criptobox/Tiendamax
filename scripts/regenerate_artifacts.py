@@ -234,6 +234,29 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-btn:hover{{opacity:.85}}
   .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}}
   .tm-btn-w{{background:#25D366;color:#062B14}}
+  /* Botón secundario para las fichas agotadas: el de WhatsApp deja de ser la
+     acción principal —no se puede pedir lo que no hay— y se queda como "por si
+     quieres preguntar otra cosa". */
+  .tm-btn-s{{background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.35)}}
+  /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
+  .tm-aviso{{display:none;flex-direction:column;gap:10px;background:rgba(255,107,53,.07);
+    border:1px solid rgba(255,107,53,.28);border-radius:12px;padding:14px}}
+  .tm-aviso.abierto{{display:flex}}
+  .tm-aviso p{{font-size:13px;color:#c4b5a4;line-height:1.5}}
+  .tm-aviso-row{{display:flex;gap:8px}}
+  .tm-aviso input{{flex:1;min-width:0;background:#161010;border:1px solid rgba(201,169,110,.28);
+    border-radius:10px;padding:12px 13px;color:#fff;font-size:15px;font-family:inherit}}
+  .tm-aviso input:focus{{outline:2px solid #FF6B35;outline-offset:1px;border-color:transparent}}
+  .tm-aviso button{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00;border:none;
+    border-radius:10px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;
+    font-family:inherit;white-space:nowrap}}
+  .tm-aviso button:disabled{{opacity:.55;cursor:default}}
+  .tm-aviso .msg{{font-size:13px;line-height:1.5}}
+  .tm-aviso .msg.ok{{color:#4ade80}}
+  .tm-aviso .msg.err{{color:#ff8a6b}}
+  .tm-aviso .luego{{font-size:12px;color:#8a8078}}
+  .tm-aviso .luego a{{color:#C9A96E;text-decoration:underline}}
+  @media (prefers-reduced-motion:reduce){{*{{transition:none !important}}}}
   .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
   .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
   /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
@@ -294,8 +317,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <p class="tm-desc">{desc_full}</p>
     {stock_html}
     <div class="tm-actions">
-      <a href="{app_url}" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>
-      <a href="{wa_link}" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
+      {acciones_html}
     </div>
   </div>
 </main>
@@ -305,10 +327,80 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
 </footer>
-
+{aviso_js}
 </body>
 </html>
 """
+
+
+# ── "Avísame cuando vuelva" en las fichas agotadas ──────────────────────────
+# JavaScript suelto, sin dependencias: una escritura a /lista_espera y ya. La
+# regla de ese nodo (".write": "!data.exists()") deja crear sin cuenta y no deja
+# leer a nadie salvo al dueño, así que el número del cliente no queda expuesto.
+#
+# Deliberadamente NO se usa el SDK de Firebase ni se piden notificaciones: estas
+# páginas son la entrada desde Google y viven de cargar rápido en 3G. Pedirle
+# permiso de avisos a alguien que aterriza por primera vez es la mejor forma de
+# perderlo; el número, además, vale más — a un token le mandas un aviso, a un
+# número le vendes.
+AVISO_JS = """
+<script>
+(function(){{
+  var BASE = {rtdb_json};
+  var PID  = {pid_json};
+  var btn  = document.getElementById('tmAvisarBtn');
+  var caja = document.getElementById('tmAviso');
+  var tel  = document.getElementById('tmAvisoTel');
+  var ok   = document.getElementById('tmAvisoOk');
+  var msg  = document.getElementById('tmAvisoMsg');
+  if(!btn || !caja || !tel || !ok || !msg) return;
+
+  var YA = 'tm_espera_' + PID;
+  function decir(t, clase){{ msg.textContent = t; msg.className = 'msg ' + (clase||''); }}
+
+  // Ya lo pidió desde este teléfono: no se le vuelve a preguntar.
+  try{{ if(localStorage.getItem(YA)){{
+    caja.classList.add('abierto');
+    btn.setAttribute('aria-expanded','true');
+    decir('\\u2705 Ya tienes el aviso puesto. Te escribo apenas entre.','ok');
+    tel.style.display = ok.style.display = 'none';
+  }} }}catch(e){{}}
+
+  btn.addEventListener('click', function(){{
+    var abierto = caja.classList.toggle('abierto');
+    btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    if(abierto) try{{ tel.focus(); }}catch(e){{}}
+  }});
+
+  tel.addEventListener('keydown', function(e){{ if(e.key === 'Enter') ok.click(); }});
+
+  ok.addEventListener('click', function(){{
+    // Los dos extremos los exige la regla de /lista_espera (6 a 25). Pasarse
+    // por arriba daba un rechazo mudo: el cliente veía "guardando" y nada más.
+    var n = (tel.value || '').replace(/[^0-9+]/g, '').slice(0, 25);
+    if(n.length < 6){{ decir('Escribe un WhatsApp v\\u00e1lido, con el c\\u00f3digo si es de fuera.','err'); return; }}
+    if(!BASE){{ decir('No se pudo guardar. Escr\\u00edbeme por WhatsApp y te apunto.','err'); return; }}
+    ok.disabled = true; decir('Guardando\\u2026','');
+    // Clave con azar además de la hora: la regla es "solo si no existe", y dos
+    // personas en el mismo milisegundo harían que la segunda se perdiera callada.
+    var clave = Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    var ctrl = new AbortController();
+    var tid = setTimeout(function(){{ ctrl.abort(); }}, 8000);
+    fetch(BASE + '/lista_espera/' + PID + '/' + clave + '.json', {{
+      method:'PUT', headers:{{'Content-Type':'application/json'}}, signal: ctrl.signal,
+      body: JSON.stringify({{ tel:n, productoId:String(PID), ts:Date.now() }})
+    }}).then(function(r){{
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      try{{ localStorage.setItem(YA,'1'); }}catch(e){{}}
+      decir('\\u2705 Listo. Te escribo apenas entre.','ok');
+      tel.style.display = ok.style.display = 'none';
+    }}).catch(function(){{
+      ok.disabled = false;
+      decir('No se pudo guardar. Rev\\u00edsa tu conexi\\u00f3n o escr\\u00edbeme por WhatsApp.','err');
+    }}).then(function(){{ clearTimeout(tid); }});
+  }});
+}})();
+</script>"""
 
 
 def read_json(path: Path, default):
@@ -444,7 +536,21 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
     )
 
 
-def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[int, list[str]]:
+def rtdb_url(config: dict) -> str:
+    """La URL de la Realtime Database, sacada de config.json.
+
+    Sin ella el formulario de "avísame" no tiene dónde escribir, así que se
+    devuelve "" y el JS lo dice en vez de fallar callado.
+    """
+    fb = (config or {}).get("firebaseConfig") or {}
+    url = str(fb.get("databaseURL") or "").strip()
+    if not url and fb.get("projectId"):
+        url = f"https://{fb['projectId']}-default-rtdb.firebaseio.com"
+    return url.rstrip("/")
+
+
+def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
+                     rtdb: str = "") -> tuple[int, list[str]]:
     """Crea/actualiza páginas /p/ y borra las huérfanas."""
     P_DIR.mkdir(exist_ok=True)
     written = 0
@@ -541,8 +647,50 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         else:
             stock_html = '<div class="tm-stok-n">Agotado</div>'
 
-        wa_msg  = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
-        wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
+        # ── Los botones dependen del stock ──────────────────────────────────
+        # Antes eran los mismos hubiera existencias o no: sobre un "Agotado" se
+        # ofrecía "Ver en TiendaMax" —que no promete nada a quien acaba de leer
+        # que no lo tienes— y un WhatsApp escrito como "me interesa", o sea
+        # pedir algo que no se puede vender. El dueño recibía la pregunta de
+        # cuándo vuelve, que tampoco sabe contestar.
+        if stock > 0:
+            wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
+            wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
+            acciones_html = (
+                f'<a href="{app_url}" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>\n'
+                f'      <a href="{wa_link}" class="tm-btn tm-btn-w" target="_blank" '
+                f'rel="noopener noreferrer">💬 Pedir por WhatsApp</a>'
+            )
+        else:
+            # Sin stock la pregunta se le da la vuelta: en vez de que el cliente
+            # pregunte cuándo vuelve, deja su número y AVISA LA TIENDA cuando
+            # vuelve. Esa otra mitad ya existe — al reponer, send_notifications.py
+            # lee /lista_espera, se la manda al dueño por push y la borra.
+            wa_msg = urllib.parse.quote(f"Hola, te escribo por: {name}. {page_url}")
+            wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
+            acciones_html = (
+                f'<button type="button" class="tm-btn tm-btn-p" id="tmAvisarBtn" '
+                f'aria-expanded="false" aria-controls="tmAviso">🔔 Avísame cuando vuelva</button>\n'
+                f'      <div class="tm-aviso" id="tmAviso">\n'
+                f'        <p>Déjame tu WhatsApp y te escribo apenas entre. Nada más: '
+                f'ni correo, ni registro.</p>\n'
+                f'        <div class="tm-aviso-row">\n'
+                f'          <input id="tmAvisoTel" type="tel" inputmode="tel" maxlength="25" '
+                f'autocomplete="tel" placeholder="5355551234" aria-label="Tu WhatsApp">\n'
+                f'          <button type="button" id="tmAvisoOk">Avisarme</button>\n'
+                f'        </div>\n'
+                f'        <div class="msg" id="tmAvisoMsg" role="status" aria-live="polite"></div>\n'
+                f'        <div class="luego">¿Prefieres el aviso automático en el móvil? '
+                f'<a href="{app_url}">Actívalo en la tienda</a>.</div>\n'
+                f'      </div>\n'
+                f'      <a href="{wa_link}" class="tm-btn tm-btn-s" target="_blank" '
+                f'rel="noopener noreferrer">💬 Escríbeme</a>'
+            )
+
+        # El JS solo viaja en las fichas agotadas. Las que tienen stock siguen
+        # sin una línea de más: son la mayoría y lo que las hace rápidas.
+        aviso_js = "" if stock > 0 else AVISO_JS.format(
+            rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid)))
 
         cat_slug = slugify(cat) if cat else ""
         breadcrumb_html, json_breadcrumb = _breadcrumb(cat, cat_slug, name, page_url)
@@ -572,7 +720,8 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
             precio_orig_html=precio_orig_html,
             pct_desc_html=pct_desc_html,
             stock_html=stock_html,
-            wa_link=wa_link,
+            acciones_html=acciones_html,
+            aviso_js=aviso_js,
             breadcrumb_html=breadcrumb_html,
             json_breadcrumb=json_breadcrumb,
             related_html=related_html,
@@ -852,7 +1001,12 @@ def main() -> int:
         config.get("numeroWhatsApp") or "5354320170"
     ).replace("+", "").replace(" ", "").replace("-", "")
 
-    n_written, removed = regenerate_pages(products, wa_num)
+    rtdb = rtdb_url(config)
+    if not rtdb:
+        print("⚠️  Sin databaseURL en config.json: el 'avísame' de las fichas "
+              "agotadas no podrá guardar nada.", file=sys.stderr)
+
+    n_written, removed = regenerate_pages(products, wa_num, rtdb)
     print(f"   Páginas /p/ actualizadas: {n_written}, borradas: {len(removed)}")
 
     n_cat_written, cat_removed = regenerate_category_pages(products)

@@ -119,6 +119,29 @@
   .tm-btn:hover{opacity:.85}
   .tm-btn-p{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}
   .tm-btn-w{background:#25D366;color:#062B14}
+  /* Botón secundario para las fichas agotadas: el de WhatsApp deja de ser la
+     acción principal —no se puede pedir lo que no hay— y se queda como "por si
+     quieres preguntar otra cosa". */
+  .tm-btn-s{background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.35)}
+  /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
+  .tm-aviso{display:none;flex-direction:column;gap:10px;background:rgba(255,107,53,.07);
+    border:1px solid rgba(255,107,53,.28);border-radius:12px;padding:14px}
+  .tm-aviso.abierto{display:flex}
+  .tm-aviso p{font-size:13px;color:#c4b5a4;line-height:1.5}
+  .tm-aviso-row{display:flex;gap:8px}
+  .tm-aviso input{flex:1;min-width:0;background:#161010;border:1px solid rgba(201,169,110,.28);
+    border-radius:10px;padding:12px 13px;color:#fff;font-size:15px;font-family:inherit}
+  .tm-aviso input:focus{outline:2px solid #FF6B35;outline-offset:1px;border-color:transparent}
+  .tm-aviso button{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00;border:none;
+    border-radius:10px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;
+    font-family:inherit;white-space:nowrap}
+  .tm-aviso button:disabled{opacity:.55;cursor:default}
+  .tm-aviso .msg{font-size:13px;line-height:1.5}
+  .tm-aviso .msg.ok{color:#4ade80}
+  .tm-aviso .msg.err{color:#ff8a6b}
+  .tm-aviso .luego{font-size:12px;color:#8a8078}
+  .tm-aviso .luego a{color:#C9A96E;text-decoration:underline}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
   .tm-ftr{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}
   .tm-ftr a{color:#C9A96E;text-decoration:underline}
   /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
