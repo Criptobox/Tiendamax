@@ -1209,23 +1209,55 @@ const IA_TYPOS = {
   'ENRUTADOR':'Enrutador','REPETIDOR':'Repetidor'
 };
 // Siglas/modelos que se conservan tal cual (no title-case)
-const IA_SIGLAS = new Set(['WIFI','USB','HDMI','LED','RGB','TV','PC','TIG','MPPT','POE','AC','DC','CCTV','GPS','LCD','USD','MN','KIT','PRO','MAX','MINI','PLUS','ULTRA','LITE','XL','II','III','4K','2K','HD','FHD','UHD','5G','4G','3G','2T','4T','SHPD','RX','AX']);
+// Idéntica a SIGLAS en scripts/nightly_agent.py; un test las cruza. Estaban
+// descuadradas y por eso el reporte nocturno proponía "CPE" y este botón
+// aplicaba "Cpe".
+const IA_SIGLAS = new Set(['WIFI','USB','HDMI','LED','RGB','TV','PC','TIG','MPPT','POE','AC','DC','CCTV','GPS','LCD','USD','MN','KIT','PRO','MAX','MINI','PLUS','ULTRA','LITE','XL','II','III','4K','2K','HD','FHD','UHD','5G','4G','3G','2T','4T','SHPD','RX','AX','CPE','SXT','LTE','PV','UPS','BMS','IP','SSD','RAM','OTG']);
 const IA_SIGLA_FORMA = { 'WIFI':'WiFi' };
+// Marcas y términos cuya grafía la fija el fabricante, no el castellano. Sin
+// esta tabla la regla general escribía bien una palabra normal y destrozaba un
+// nombre propio: "UniFi"→"Unifi", "MikroTik"→"Mikrotik", "TP-Link"→"Tp-link",
+// "BLUETTI"→"Bluetti", "LiFePO4"→"LIFEPO4". Y como el botón "🔤 Normalizar
+// nombres" lo aplica a TODO el catálogo de una vez, 24 productos acabaron así.
+// Tiene que seguir en pie con la tabla de scripts/nightly_agent.py — hay un
+// test que cruza las dos.
+const IA_MARCAS = {
+  'UNIFI':'UniFi','MIKROTIK':'MikroTik','NANOSTATION':'NanoStation',
+  'TP-LINK':'TP-Link','TPLINK':'TP-Link','UBIQUITI':'Ubiquiti',
+  'BLUETTI':'BLUETTI','POWMR':'POWMR','TOMZN':'TOMZN','BIEN':'BIEN',
+  'LIFEPO4':'LiFePO4','LIITOKALA':'LiitoKala','AIRFIBER':'AirFiber',
+  'XIAOMI':'Xiaomi','IPHONE':'iPhone','IPAD':'iPad','AIRPODS':'AirPods',
+  'MANNOL':'Mannol','TATALIKEN':'Tataliken','MUST':'Must',
+  'HAP':'hAP','HEX':'hEX','SXTSQ':'SXTsq'
+};
 
 function iaNormalizarNombre(raw){
   const nombre = String(raw||'').trim().replace(/\s+/g,' ');
   if(!nombre) return nombre;
   const sinAcentos = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const capitalizar = s => s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
   const tokens = nombre.split(' ').map(tok=>{
     const m = tok.match(/^([("¡¿]*)(.*?)([)".,:;!?]*)$/) || [,'',tok,''];
-    const pre=m[1]||'', core=m[2]||'', post=m[3]||'';
+    let pre=m[1]||'', core=m[2]||''; const post=m[3]||'';
     if(!core) return tok;
+    // Emoji o símbolo pegado delante ("⚡Inversor"): se aparta, o la palabra se
+    // juzga como continuación del emoji y su primera letra cae a minúscula.
+    const corte = core.search(/[\p{L}\p{N}]/u);
+    if(corte > 0){ pre += core.slice(0,corte); core = core.slice(corte); }
+    if(!core) return pre+post;
+
     const KEY = sinAcentos(core).toUpperCase();
     if(IA_TYPOS[KEY]) return pre+IA_TYPOS[KEY]+post;
+    if(IA_MARCAS[KEY]) return pre+IA_MARCAS[KEY]+post;
     if(IA_SIGLAS.has(KEY)) return pre+(IA_SIGLA_FORMA[KEY]||KEY)+post;
-    if(/\d/.test(core)) return pre+core.toUpperCase()+post;       // modelos: M100, R14, 5W30, 84V
+    // Con dígitos, como esté: "500g" no es "500G" (los gramos van minúscula) y
+    // "100Ah" no es "100AH". Un modelo o una unidad los copia el dueño.
+    if(/\d/.test(core)) return pre+core+post;
+    // Mayúsculas por dentro o entero en mayúsculas: nadie escribe "hAP" ni
+    // "BLUETTI" por descuido.
+    if(core !== core.toLowerCase() && core !== capitalizar(core)) return pre+core+post;
     if(core.length<=2) return pre+core.toLowerCase()+post;        // de, la, y…
-    return pre+core.charAt(0).toUpperCase()+core.slice(1).toLowerCase()+post;
+    return pre+capitalizar(core)+post;
   });
   if(tokens[0] && /^[a-záéíóúñ]/.test(tokens[0])) tokens[0]=tokens[0].charAt(0).toUpperCase()+tokens[0].slice(1);
   return tokens.join(' ');

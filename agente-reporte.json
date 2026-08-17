@@ -1,310 +1,60 @@
 {
-  "generado": "2026-08-16T09:18:58.642944+00:00",
+  "generado": "2026-08-17T04:04:22.358791+00:00",
   "productos": 128,
-  "urgentes": 12,
-  "advertencias": 55,
-  "info": 8,
-  "resumen": "Anoche revisé tus 128 productos y encontré 12 urgente(s), 55 advertencia(s), 8 de info.",
+  "urgentes": 1,
+  "advertencias": 0,
+  "info": 9,
+  "resumen": "Anoche revisé tus 128 productos y encontré 1 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
-      "nombre": "​⚡ Generador Solar Portátil BLUETTI AC180",
-      "detalle": "→ ​⚡ Generador Solar Portátil Bluetti AC180"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
-      "detalle": "→ 🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
-      "detalle": "→ 🔋cargador de Batería de Litio Bien 48V 5A"
-    },
-    {
-      "tipo": "nombre",
       "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
-      "detalle": "→ 🌐 Access Point Sectorial Exterior Mikrotik Sxt SA5 AC"
+      "detalle": "→ 🌐 Access Point Sectorial Exterior MikroTik SXT SA5 AC"
     },
     {
-      "tipo": "nombre",
-      "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
-      "detalle": "→ 🌐 Router Inalámbrico de Escritorio Mikrotik Hap AC3"
+      "tipo": "stock_bajo",
+      "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
+      "detalle": "quedan 1"
     },
     {
-      "tipo": "nombre",
-      "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2 Internacional",
-      "detalle": "→ 🌐 Antena Cpe Inalámbrica Ubiquiti Nanostation Loco M2 Internacional"
+      "tipo": "stock_bajo",
+      "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
+      "detalle": "quedan 1"
     },
     {
-      "tipo": "nombre",
-      "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
-      "detalle": "→ 🌐 Punto de Acceso Unifi AC Mesh Ubiquiti"
+      "tipo": "stock_bajo",
+      "nombre": "🔊 Xiaomi Sound Outdoor (30W)",
+      "detalle": "quedan 3"
     },
     {
-      "tipo": "nombre",
-      "nombre": "⚡ Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
-      "detalle": "→ ⚡ Protector de Voltaje y Sobrecorriente Tomzn TOVPD1-60"
+      "tipo": "stock_bajo",
+      "nombre": "PC Gaming Setup Premium",
+      "detalle": "quedan 1"
     },
     {
-      "tipo": "nombre",
+      "tipo": "stock_bajo",
+      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "precio",
+      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "detalle": "precio: 33000"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
-      "detalle": "→ ⚡ Controlador de Carga Solar MPPT 120A Y&h"
+      "detalle": "quedan 3"
     },
     {
-      "tipo": "nombre",
-      "nombre": "🏋️Creatina Monohid \"@/span>ar Hearthy Foods 500g",
-      "detalle": "→ 🏋️creatina Monohid \"@/span>ar Hearthy Foods 500G"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
-      "detalle": "→ 🏋️ Creatina Monohidrato Dorado Nutrition 300G"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
-      "detalle": "→ 🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962G"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Batería Must Tipo LIFEPO4",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Router Wavlink AC1200 Dual Band",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚖️ Báscula Digital de Alta Definición",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador Inteligente de 15 Amperes:",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador 10 Amperes",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Inversor Solar Híbrido Inteligente MPPT de 3.6KW",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚡ Inversor Solar Híbrido Powmr 5000W",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "✅️controlador de Carga Solar MPPT - 100A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Bluetti AC 180P",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Toldo Para Sombra",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cámaras de Seguridad (V380 PRO )",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Portacelulares",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Linterna de Cabeza",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Ventilador Para Carro",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador Portátil Solar",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Gamesir X5 LITE",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "KIT de 4 Cámaras Zosi ( Con su Disco Duro )",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Linterna Marca Registrada \"Hecloud\"",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargadores Inteligentes de 25A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚡ Controlador de Carga Solar MPPT 80A Powmr",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🦟 Raqueta Matamoscas Eléctrica Recargable",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Sistema de Seguridad Zosi Para el Hogar - 8 Canales",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🎶 Audífonos Inalámbricos Tws",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Router Fenvi AX3000 WiFi 6",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Fenvi AC1200",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Altavoz Bluetooth Portátil RGB",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Beat Boom F10! 🎶🔥",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Wi-fi AC1200 Tp-link Archer C54",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "📟 Inversor Solar Must PV15-1524 lv",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Tp-link Archer AX1450 (Wi-fi 6)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Panel Decorativo de Hojas Artificiales",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Transferencia Automática o Manual",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚙️ Interruptor de Transferencia Automática Geya (220V)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🛜 Router Tp-link Archer A6 (AC1200)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🔌 Cargador Inteligente Corebox 12V 15A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🔌 Cargador Inteligente Ntrc 20A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🔌 Cargador Inteligente Ntrc 35A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "🌐 Mikrotik Sxtsq LITE5",
-      "detalle": "agotado (stock 0)"
+      "tipo": "agotados",
+      "nombre": "53 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, ⚡ Inversor de Corriente Tataliken 4000W, 🌐 Router Wavlink AC1200 Dual Band y 50 más"
     }
   ]
 }

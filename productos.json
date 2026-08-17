@@ -1,7 +1,7 @@
 [
   {
     "id": 1778104115783,
-    "nombre": "Batería Must Tipo LIFEPO4",
+    "nombre": "Batería Must Tipo LiFePO4",
     "precioActual": 300,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1778104115783.webp",
@@ -287,7 +287,7 @@
   },
   {
     "id": 1778104287395,
-    "nombre": "📡 Cpe Exterior Kuwfi 4G/WIFI",
+    "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
     "categoria": "WIFI",
@@ -338,7 +338,7 @@
   },
   {
     "id": 1778104512761,
-    "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
+    "nombre": "♻️ Controlador Solar POWMR M100 PRO - MPPT de 100 Amp♻️",
     "precioActual": 260,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
@@ -391,7 +391,7 @@
   },
   {
     "id": 1778104662477,
-    "nombre": "⚡ Inversor Solar Híbrido Powmr 5000W",
+    "nombre": "⚡ Inversor Solar Híbrido POWMR 5000W",
     "precioActual": 900,
     "imagen": "https://tiendamax.org/imagenes/img_1783838193521.webp",
     "categoria": "ENERGIA",
@@ -420,7 +420,7 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "📡 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
+    "nombre": "📡 Router Kuwfi 4G LTE (Wi-fi de Alta Velocidad)",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
     "categoria": "WIFI",
@@ -450,7 +450,7 @@
   },
   {
     "id": 1778104850733,
-    "nombre": "✅️controlador de Carga Solar MPPT - 100A",
+    "nombre": "✅️ Controlador de Carga Solar MPPT - 100A",
     "precioActual": 70,
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "categoria": "ENERGIA",
@@ -503,7 +503,7 @@
   },
   {
     "id": 1778104985977,
-    "nombre": "Bluetti AC 180P",
+    "nombre": "BLUETTI AC 180P",
     "precioActual": 695,
     "imagen": "https://tiendamax.org/imagenes/img_1778104985977.webp",
     "categoria": "ENERGIA",
@@ -1357,7 +1357,7 @@
   },
   {
     "id": 1778906455757,
-    "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
+    "nombre": "Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector us Pin",
     "precioActual": 40,
     "imagen": "https://tiendamax.org/imagenes/img_1778906453441.webp",
     "categoria": "MOTOS",
@@ -1483,7 +1483,7 @@
   },
   {
     "id": 1779208523952,
-    "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
+    "nombre": "Controlador Solar de 60 Amp POWMR M60 ULTRA",
     "precioActual": 180,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1779208523952.webp",
@@ -1510,7 +1510,7 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 80A Powmr",
+    "nombre": "⚡ Controlador de Carga Solar MPPT 80A POWMR",
     "precioActual": 220,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
@@ -1968,7 +1968,7 @@
   },
   {
     "id": 1781711154462,
-    "nombre": "📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)",
+    "nombre": "📶 Repetidor Wi-fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
     "precioActual": 30,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
@@ -1993,7 +1993,7 @@
   },
   {
     "id": 1781711424820,
-    "nombre": "🛜 Router Wi-fi AC1200 Tp-link Archer C54",
+    "nombre": "🛜 Router Wi-fi AC1200 TP-Link Archer C54",
     "precioActual": 60,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
@@ -2109,7 +2109,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "🛜 Router Tp-link Archer AX1450 (Wi-fi 6)",
+    "nombre": "🛜 Router TP-Link Archer AX1450 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
@@ -2462,7 +2462,7 @@
   },
   {
     "id": 1783179800783,
-    "nombre": "⚡inversor de Corriente Tataliken 4000W (24V)",
+    "nombre": "⚡ Inversor de Corriente Tataliken 4000W (24V)",
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp"
@@ -2530,7 +2530,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "🛜 Router Tp-link Archer A6 (AC1200)",
+    "nombre": "🛜 Router TP-Link Archer A6 (AC1200)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.webp",
@@ -2559,7 +2559,7 @@
   },
   {
     "id": 1783453857635,
-    "nombre": "🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
+    "nombre": "🌐 Router TP-Link Archer AX21 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453857635_d53e54.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453857635_d53e54.webp",
@@ -2678,7 +2678,7 @@
   },
   {
     "id": 1783474747296,
-    "nombre": "🌐 Mikrotik Hex (RB750GR3)",
+    "nombre": "🌐 MikroTik hEX (RB750GR3)",
     "imagen": "https://tiendamax.org/imagenes/img_1783474741055.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474741055.webp",
@@ -2736,7 +2736,7 @@
   },
   {
     "id": 1784403677390,
-    "nombre": "🌐 Nanostation AC Loco",
+    "nombre": "🌐 NanoStation AC Loco",
     "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784403674704.webp",
@@ -2767,7 +2767,7 @@
   },
   {
     "id": 1784404666988,
-    "nombre": "🌐 Mikrotik Sxtsq LITE5",
+    "nombre": "🌐 MikroTik SXTsq LITE5",
     "imagen": "https://tiendamax.org/imagenes/img_1784404663965.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784404663965.webp",
@@ -2972,7 +2972,7 @@
   },
   {
     "id": 1784732715417,
-    "nombre": "🛜 Router Wi-fi 6 AX3000 Tp-link Archer AX55",
+    "nombre": "🛜 Router Wi-fi 6 AX3000 TP-Link Archer AX55",
     "imagen": "https://tiendamax.org/imagenes/img_1784732713920.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784732713920.webp"
@@ -3059,7 +3059,7 @@
   },
   {
     "id": 1785285424837,
-    "nombre": "🌐 Antena Cpe Mikrotik Sxtsq 5 AX",
+    "nombre": "🌐 Antena CPE MikroTik SXTsq 5 AX",
     "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785285422394.webp"
@@ -3086,7 +3086,7 @@
   },
   {
     "id": 1785286289086,
-    "nombre": "🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional",
+    "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
     "imagen": "https://tiendamax.org/imagenes/img_1785286287536.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785286287536.webp"
@@ -3312,7 +3312,7 @@
   },
   {
     "id": 1786807706672,
-    "nombre": "🏋️Creatina Monohid \"@/span>ar Hearthy Foods 500g",
+    "nombre": "🏋️ Creatina Monohidrato Hearthy Foods 500g",
     "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.\nFicha Técnica:\nRendimiento y Dosificación: ⚡ Aporta 5g de creatina micronizada por porción, con un total de 100 porciones por bolsa.\nBeneficios Principales: 💪 Ayuda a respaldar el rendimiento deportivo, la fuerza y la recuperación posterior al entrenamiento.\nCaracterísticas del Producto: 🌿 Fórmula vegana, sin gluten, sometida a pruebas de terceros (3rd party tested) y completamente unflavored (sin sabor).\nEspecificaciones (Specs):\nMarca: Hearthy Foods.\nTipo: Suplemento dietético de creatina monohidratada.\nContenido Neto: 500g (17.637 OZ).",
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp",
     "imagenes": [
