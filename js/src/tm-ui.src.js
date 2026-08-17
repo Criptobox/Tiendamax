@@ -526,6 +526,24 @@ function registrarVentaPedido(items, cliente, opts) {
             });
         } catch(e) {}
     })();
+
+    // Seguimiento post-venta: dejar apuntada la FECHA de la venta para que el
+    // cron (scripts/send_notifications.py) pueda recordarte por push a cuántos
+    // clientes toca escribirles hoy. Sin esto el seguimiento solo existía si al
+    // dueño se le ocurría abrir Clientes → Seguimiento, que es justo lo que no
+    // pasa: los hitos se calculaban bien y no avisaban de nada.
+    //
+    // Lo ÚNICO que sube es el timestamp. Ni nombre ni teléfono: la regla de
+    // /seguimientos tiene "$otro": {".validate": false}, así que cualquier otro
+    // campo lo rechaza la base — el dato personal no puede acabar ahí ni por
+    // descuido. A quién escribirle lo resuelve el panel con su localStorage.
+    if (venta.telefono && typeof TMAuth !== 'undefined' && TMAuth.fetchPrivado) {
+        TMAuth.fetchPrivado('/seguimientos/' + venta.id + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ts: venta.id })
+        }).catch(() => {});
+    }
     return venta;
 }
 

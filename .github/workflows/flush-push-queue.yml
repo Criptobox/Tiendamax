@@ -43,8 +43,12 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install -r scripts/requirements.txt
+      # Ya no se pasa SOLO_FLUSH: la detección corre en todas las pasadas.
+      # Compara contra el estado guardado en la base, así que es idempotente —
+      # y así un cambio del catálogo que se perdiera en la corrida disparada por
+      # el push (commit con [skip ci], fallo de red) lo recoge el siguiente cron
+      # en vez de no verse nunca.
       - name: Procesar cola y enviar
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          SOLO_FLUSH: "1"
         run: python scripts/send_notifications.py

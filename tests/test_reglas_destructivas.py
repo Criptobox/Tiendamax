@@ -264,6 +264,10 @@ class SinTelefonosPublicosTest(unittest.TestCase):
         # los WhatsApp al reponer stock y no se enteraria.
         src = (RAIZ / "scripts" / "send_notifications.py").read_text(encoding="utf-8")
         i = src.index("def procesar_restock")
-        cuerpo = src[i:i + 2500]
+        # Hasta el siguiente def de primer nivel, no un número fijo de
+        # caracteres: la función creció y el recorte dejaba fuera el final,
+        # que es donde estaba lo que este test vigila.
+        fin = src.index("\ndef ", i + 1)
+        cuerpo = src[i:fin]
         self.assertIn('lista_espera/{pid}', cuerpo)
         self.assertIn("espera_ref.delete()", cuerpo, "hay que limpiarlos tras avisar")

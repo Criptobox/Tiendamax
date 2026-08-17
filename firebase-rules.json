@@ -390,6 +390,27 @@
       ".read": false,
       ".write": false
     },
+    "seguimientos": {
+      "$ventaId": {
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
+        ".validate": "newData.hasChild('ts')",
+        "ts": {
+          ".validate": "newData.isNumber()"
+        },
+        "hecho": {
+          ".validate": "newData.isString() && newData.val().length < 24"
+        },
+        "$otro": {
+          ".validate": false
+        }
+      },
+      ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
+      ".write": false
+    },
+    "notificaciones_estado": {
+      ".read": false,
+      ".write": false
+    },
     "avisos_count": {
       "$productId": {
         "count": {

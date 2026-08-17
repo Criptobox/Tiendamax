@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 // Cambiar esta versión fuerza la descarga de index/CSS/JS nuevos en instalaciones PWA.
-const CACHE_NAME = 'tiendamax-202608101942';
+const CACHE_NAME = 'tiendamax-202608170159';
 // Solo recursos de la TIENDA que se piden SIN ?v=. Los del admin se cargan
 // bajo demanda. Los .js/.css referenciados con ?v=hash NO se precachean:
 // el cache-first matchea por URL exacta (query incluida), así que un precache

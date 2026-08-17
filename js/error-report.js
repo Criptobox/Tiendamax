@@ -24,7 +24,11 @@
         var payload = {
             mensaje: String(mensaje || 'Error desconocido').slice(0, 300),
             pagina: location.pathname.slice(0, 200),
-            ts: Date.now(),
+            // Hora del SERVIDOR. La regla exige que `ts` caiga en una ventana
+            // alrededor de `now`, y `now` es la hora de Firebase: mandando la
+            // del teléfono, un móvil con el reloj desajustado veía su reporte
+            // rechazado — justo el aparato del que más falta hace saber algo.
+            ts: { '.sv': 'timestamp' },
             ua: (navigator.userAgent || '').slice(0, 200)
         };
         if (stack) payload.stack = String(stack).slice(0, 500);
@@ -37,6 +41,11 @@
             signal: ctrl.signal
         }).catch(function () {}).finally(function () { clearTimeout(tid); });
     }
+
+    // Para que otros módulos puedan contar un fallo que se tragan a propósito.
+    // El caso que lo pide: el alta de notificaciones falla en silencio y el
+    // dueño no tiene forma de enterarse de por qué.
+    window.tmReportarError = reportar;
 
     window.addEventListener('error', function (e) {
         reportar(e.message, e.error && e.error.stack);
