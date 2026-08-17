@@ -310,7 +310,7 @@ def detectar_tasa(config_actual, tasa_anterior=None):
     return (ta, tp) if abs(ta - tp) >= 0.01 else None
 
 
-def rebajas_vigentes(pendientes, productos):
+def rebajas_vigentes(pendientes, productos, ahora_ms=None):
     """Deja en la cola solo las rebajas que siguen siendo verdad AHORA.
 
     Tres cosas la ensucian entre que algo entra y sale:
@@ -328,10 +328,11 @@ def rebajas_vigentes(pendientes, productos):
     Importa porque el número va en el TÍTULO, y un aviso ya mostrado no se
     puede corregir: se queda en la pantalla del cliente hasta que lo aparte.
     """
+    ahora_ms = ahora_ms if ahora_ms is not None else time.time() * 1000
     por_id = {p["id"]: p for p in productos if isinstance(p, dict) and "id" in p}
     vivas = {}
     for r in pendientes:
-        if not isinstance(r, dict):
+        if not isinstance(r, dict) or _stale(r, ahora_ms):
             continue
         p = por_id.get(r.get("id"))
         if p is None:
@@ -349,6 +350,12 @@ def rebajas_vigentes(pendientes, productos):
             "antes": max(antes, _num(previa.get("antes"))) if previa else antes,
             "ahora": ahora,
             "imagen": p.get("imagen") or r.get("imagen"),
+            # La fecha tiene que sobrevivir a esta reconstrucción: sin ella la
+            # entrada se descartaría por caducidad en la pasada siguiente y la
+            # rebaja encolada de noche no se anunciaría por la mañana. Se queda
+            # la MÁS RECIENTE: si el precio vuelve a bajar, eso es noticia otra
+            # vez y el reloj empieza de nuevo.
+            "_ts": max(_num(r.get("_ts")), _num(previa.get("_ts"))) if previa else _num(r.get("_ts")),
         }
     return list(vivas.values())
 
@@ -397,16 +404,55 @@ def mas_rebajado(productos):
     return mejor
 
 
-def nuevos_vigentes(pendientes, productos):
-    """Lo mismo para los productos nuevos: sin stock no se anuncian, y uno solo
-    cuenta una vez aunque el cron lo haya encolado en varias pasadas."""
+# Cuánto aguanta una entrada en la cola antes de dejar de ser noticia. Se
+# encola de noche y se manda por la mañana, así que tiene que cubrir eso; más
+# allá, "🆕 producto nuevo" de algo de anteayer no es un aviso, es ruido.
+COLA_CADUCIDAD_MS = 36 * 3600 * 1000
+
+# Y un producto solo es nuevo si se dio de alta hace poco. El id ES la fecha de
+# alta (`Date.now()` cuando se creó), así que esto no depende de la cola: es un
+# segundo par de ojos sobre lo mismo, y el que habría evitado el aviso de
+# "🆕 10 Productos Nuevos" con productos de hace tres meses.
+NUEVO_MAX_DIAS = 7
+
+
+def _stale(item, ahora_ms):
+    """Una entrada sin fecha, o vieja, ya no vale.
+
+    Sin fecha = la encoló una versión anterior del script. Ese es justamente el
+    caso que hizo daño: la cola llevaba semanas sin poder vaciarse por un fallo
+    en la fusión, y al arreglarlo salió de golpe todo el atasco acumulado —diez
+    productos "nuevos" que llevaban meses en la tienda—. Lo que no se sabe
+    cuándo entró se descarta, no se anuncia.
+    """
+    ts = _num(item.get("_ts"), None) if isinstance(item, dict) else None
+    return not ts or (ahora_ms - ts) > COLA_CADUCIDAD_MS
+
+
+def estampar(items, ahora_ms):
+    """Marca cuándo se detectó cada cosa, para poder caducarla luego."""
+    return [{**i, "_ts": ahora_ms} for i in items if isinstance(i, dict)]
+
+
+def nuevos_vigentes(pendientes, productos, ahora_ms=None):
+    """Lo mismo para los productos nuevos: sin stock no se anuncian, uno solo
+    cuenta una vez aunque el cron lo haya encolado en varias pasadas, y ni la
+    cola ni el catálogo pueden hacer pasar por nuevo algo que lleva meses."""
+    ahora_ms = ahora_ms if ahora_ms is not None else time.time() * 1000
     por_id = {p["id"]: p for p in productos if isinstance(p, dict) and "id" in p}
     vivos = {}
     for n in pendientes:
         if not isinstance(n, dict):
             continue
+        if _stale(n, ahora_ms):
+            continue
         p = por_id.get(n.get("id"))
         if p is None or int(_num(p.get("stock"))) <= 0:
+            continue
+        # El id es la fecha de alta. Si no lo parece, no se descarta por eso:
+        # mejor un aviso de más que callar por un dato con otra forma.
+        alta = _num(p.get("id"), None)
+        if alta and alta > 1_500_000_000_000 and (ahora_ms - alta) > NUEVO_MAX_DIAS * 86400000:
             continue
         vivos[n["id"]] = {**n, "nombre": p.get("nombre") or n.get("nombre"),
                           "imagen": p.get("imagen") or n.get("imagen")}
@@ -929,8 +975,9 @@ def main():
             cola["tasa_pendiente"] = list(tasa)
         else:
             print(f"ℹ️ Tasa {ta_nueva} ya fue notificada anteriormente. Se omite.")
-    cola["nuevos_pendientes"].extend(cambios["nuevos"])
-    cola["rebajas_pendientes"].extend(cambios["rebajas"])
+    ahora_ms = time.time() * 1000
+    cola["nuevos_pendientes"].extend(estampar(cambios["nuevos"], ahora_ms))
+    cola["rebajas_pendientes"].extend(estampar(cambios["rebajas"], ahora_ms))
 
     # Restock: notificación inmediata, no pasa por la cola ni espera al lote.
     if cambios["restock"]:
@@ -972,10 +1019,24 @@ def main():
     # aparta. Un aviso que dice "4 productos rebajados" cuando uno ya se agotó
     # no se corrige solo: se queda mintiendo todo el día.
     catalogo = p_act if isinstance(p_act, list) else []
+    # Qué sale de la cola en esta pasada, por lo que sea: enviado, caducado o ya
+    # sin sentido. Todo tiene que anotarse, o _fusionar_cola lo devuelve a su
+    # sitio al guardar (ver esa función).
+    consumidos = {}
+
+    def _anotar_bajas(clave, antes_lista, despues_lista):
+        quedan = {_clave_item(x) for x in despues_lista}
+        caidos = {_clave_item(x) for x in antes_lista} - quedan
+        if caidos:
+            consumidos.setdefault(clave, set()).update(caidos)
+
     if catalogo:
-        antes_reb, antes_nue = len(cola["rebajas_pendientes"]), len(cola["nuevos_pendientes"])
+        prev_reb, prev_nue = list(cola["rebajas_pendientes"]), list(cola["nuevos_pendientes"])
+        antes_reb, antes_nue = len(prev_reb), len(prev_nue)
         cola["rebajas_pendientes"] = rebajas_vigentes(cola["rebajas_pendientes"], catalogo)
         cola["nuevos_pendientes"] = nuevos_vigentes(cola["nuevos_pendientes"], catalogo)
+        _anotar_bajas("rebajas_pendientes", prev_reb, cola["rebajas_pendientes"])
+        _anotar_bajas("nuevos_pendientes", prev_nue, cola["nuevos_pendientes"])
         if antes_reb != len(cola["rebajas_pendientes"]) or antes_nue != len(cola["nuevos_pendientes"]):
             print(f"🧹 Cola depurada: rebajas {antes_reb}→{len(cola['rebajas_pendientes'])}, "
                   f"nuevos {antes_nue}→{len(cola['nuevos_pendientes'])}")
@@ -985,12 +1046,10 @@ def main():
     diurno = es_hora_diurna()
     fecha_hoy = hora_local_cuba().strftime("%Y-%m-%d")
     ahora_s = time.time()
-    # Qué se saca de la cola en esta pasada, para que el guardado no lo reponga
-    # desde el nodo (ver _fusionar_cola).
-    consumidos = {}
 
     def _vaciar(clave):
-        consumidos[clave] = {_clave_item(x) for x in _fb_to_list(cola.get(clave))}
+        consumidos.setdefault(clave, set()).update(
+            _clave_item(x) for x in _fb_to_list(cola.get(clave)))
         cola[clave] = []
 
     def _en_descanso(tipo):

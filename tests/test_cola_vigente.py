@@ -19,6 +19,7 @@ las tres se vieron en la tienda de verdad:
 De ahí que antes de armar el aviso se vuelva a mirar productos.json.
 """
 import sys
+import time
 import unittest
 from pathlib import Path
 
@@ -28,14 +29,27 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import send_notifications as sn  # noqa: E402
 
 
+# Alta reciente: `nuevos_vigentes` descarta lo que se dio de alta hace mucho
+# (el id ES la fecha de alta), y aquí lo que se prueba es otra cosa.
+AHORA = time.time() * 1000
+
+
 def prod(pid, nombre="Cosa", stock=5, precio=80.0):
     return {"id": pid, "nombre": nombre, "stock": stock, "precioActual": precio,
             "imagen": f"img{pid}.jpg"}
 
 
+def enc(p):
+    """El producto tal y como queda en la cola: con la marca de cuándo entró."""
+    return {**p, "_ts": AHORA}
+
+
 def encolada(pid, antes=100.0, ahora=80.0, nombre="Cosa"):
+    """Una entrada de la cola tal y como la deja el script: con `_ts`, la marca
+    de cuándo se detectó. Sin ella se descarta por caducidad — es lo que purga
+    los atascos de versiones anteriores."""
     return {"id": pid, "nombre": nombre, "antes": antes, "ahora": ahora,
-            "imagen": f"img{pid}.jpg"}
+            "imagen": f"img{pid}.jpg", "_ts": AHORA}
 
 
 class RebajasVigentesTest(unittest.TestCase):
@@ -91,11 +105,12 @@ class RebajasVigentesTest(unittest.TestCase):
 
 class NuevosVigentesTest(unittest.TestCase):
     def test_un_nuevo_agotado_no_se_anuncia(self):
-        r = sn.nuevos_vigentes([prod(1), prod(2, stock=0)], [prod(1), prod(2, stock=0)])
+        r = sn.nuevos_vigentes([enc(prod(1)), enc(prod(2, stock=0))],
+                               [prod(1), prod(2, stock=0)])
         self.assertEqual([1], [x["id"] for x in r])
 
     def test_el_mismo_nuevo_dos_veces_cuenta_una(self):
-        r = sn.nuevos_vigentes([prod(1), prod(1)], [prod(1)])
+        r = sn.nuevos_vigentes([enc(prod(1)), enc(prod(1))], [prod(1)])
         self.assertEqual(1, len(r))
 
 

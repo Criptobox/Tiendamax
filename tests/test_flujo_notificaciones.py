@@ -13,6 +13,7 @@ justamente lo que hace el cron nueve veces al día.
 import copy
 import json
 import sys
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -207,6 +208,51 @@ class FlujoTest(unittest.TestCase):
         for _ in range(3):
             self.assertEqual([], [a for a in self._correr()
                                   if str(a["tag"]).startswith("restock")])
+
+    # ── El atasco heredado ──────────────────────────────────────────────
+    def test_no_anuncia_como_nuevo_lo_que_dejo_una_version_anterior(self):
+        """Pasó de verdad, en producción: '🆕 10 Productos Nuevos' con productos
+        de hacía meses.
+
+        La cola llevaba semanas sin poder vaciarse por el fallo de la fusión, así
+        que había ido acumulando todo lo detectado alguna vez. Al arreglar el
+        desagüe salió el atasco entero de golpe. El log de esa corrida no traía
+        ni una línea de 'Cambios detectados': no se detectó nada, solo se vació
+        lo que ya estaba.
+
+        Dos cosas lo paran, y cada una sola bastaría: la entrada no lleva fecha
+        (la puso una versión anterior) y el producto se dio de alta hace meses
+        —el id ES la fecha de alta—.
+        """
+        self._correr()                                   # apunta el catálogo
+        viejo = self.catalogo[0]
+        # Tal cual lo dejaba el código de antes: sin `_ts`.
+        self.datos["notification_queue"]["nuevos_pendientes"] = [dict(viejo)]
+        self._sin_descanso()
+        self.datos["notification_queue"]["ultimo_lote_fecha"] = ""
+
+        avisos = self._correr()
+        self.assertEqual([], [a for a in avisos if "Nuevo" in a["title"]],
+                         "se anunció como nuevo algo que llevaba meses en la tienda")
+        self.assertEqual([], self.datos["notification_queue"]["nuevos_pendientes"],
+                         "y además hay que limpiar el atasco, no arrastrarlo")
+
+    def test_un_producto_dado_de_alta_hace_meses_nunca_es_nuevo(self):
+        # Cinturón y tirantes: aunque la entrada venga con fecha fresca, el id
+        # dice cuándo se dio de alta y manda.
+        hace_tres_meses = int((time.time() - 90*86400) * 1000)
+        antiguo = _producto(hace_tres_meses)
+        self.assertEqual([], sn.nuevos_vigentes(
+            [{**antiguo, "_ts": time.time()*1000}], [antiguo]))
+
+    def test_una_entrada_vieja_de_la_cola_caduca(self):
+        reciente = _producto(int(time.time()*1000))
+        viejo_ts = (time.time() - 3*86400) * 1000        # tres días en la cola
+        self.assertEqual([], sn.nuevos_vigentes(
+            [{**reciente, "_ts": viejo_ts}], [reciente]))
+        self.assertEqual([], sn.rebajas_vigentes(
+            [{"id": reciente["id"], "antes": 100, "ahora": 50, "_ts": viejo_ts}],
+            [{**reciente, "precioActual": 50}]))
 
     # ── Los avisos generales entran por los ojos ────────────────────────
     def test_el_aviso_de_varias_rebajas_lleva_la_foto_de_la_mayor(self):
