@@ -67,7 +67,14 @@ function nuevoBot() {
 
 const fallos = [];
 const ok = (c, m) => { if (!c) fallos.push(m); };
-const plano = (h) => String(h || '').replace(/<[^>]+>/g, '');
+// El texto TAL COMO LO LEE el cliente: sin etiquetas y con las entidades
+// deshechas. Sin lo segundo, un producto con "&" en el nombre (el bot lo
+// escapa a "&amp;", como debe) no coincidía nunca al buscarlo en la respuesta,
+// y el fallo parecía del bot en vez de del test.
+const plano = (h) => String(h || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(amp|lt|gt|quot|#39|nbsp);/g,
+             (_, e) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", nbsp: ' ' }[e]));
 
 // Habla con Max de corrido y devuelve la última respuesta, como un cliente.
 function conversar(...turnos) {
@@ -78,7 +85,42 @@ function conversar(...turnos) {
     return { intent, texto: plano(r.response), productos: r.products || [] };
 }
 
-const UNO = '🛜 Router Tp-link Archer AX1450 (Wi-fi 6)';   // $80, 7 en stock
+/* La ficha con la que se prueba el hilo NO puede ir escrita a mano.
+ *
+ * Estuvo fija en un router concreto y el día que se agotó este archivo se puso
+ * en rojo — no porque el hilo se hubiera roto, sino porque el bot hacía lo
+ * correcto: de un agotado enseña alternativas. Media hora de buscar un fallo
+ * que no existía, y la siguiente vez que pase será igual, porque el catálogo lo
+ * edita el dueño todas las semanas.
+ *
+ * Lo que se prueba aquí es el HILO —que tras enseñar un producto, "cuánto
+ * cuesta" hable de ESE—, no un producto en particular. Así que la ficha se
+ * elige del catálogo al arrancar: uno con stock que el bot resuelva él solo a
+ * un único resultado. Si no hubiera ninguno, eso sí es un fallo de verdad y se
+ * dice con todas las letras en vez de dejar el resto sin comprobar.
+ */
+// El modelo (letras+números, tipo "ax21") es el trozo del nombre que un
+// cliente teclea de verdad cuando busca algo concreto.
+const MODELO = /\b[a-z]{1,6}[- ]?\d{2,5}[a-z]*\b/i;
+
+function elegirFicha() {
+    const candidatos = (CATALOGO.productos || CATALOGO)
+        .filter(p => p && Number(p.stock) > 0 && p.nombre && MODELO.test(p.nombre))
+        .slice(0, 40);
+    for (const p of candidatos) {
+        const consulta = 'tienes el ' + p.nombre.match(MODELO)[0].toLowerCase();
+        // Bot NUEVO en cada tanteo, como en el resto del archivo: el hilo es
+        // estado. Reutilizando uno, el tercer tanteo contesta condicionado por
+        // los dos anteriores y se elige una ficha que luego no se reproduce.
+        const salida = (nuevoBot().responder(consulta) || {}).products || [];
+        if (salida.length === 1 && salida[0].nombre === p.nombre) {
+            return { nombre: p.nombre, consulta };
+        }
+    }
+    return null;
+}
+
+const FICHA = elegirFicha();
 const VARIOS = 'tienes routers wifi';                       // enseña 4 de golpe
 
 // ── 1. Con UN producto enseñado, la pregunta suelta habla de ESE ─────────
@@ -87,31 +129,49 @@ const VARIOS = 'tienes routers wifi';                       // enseña 4 de golp
 {
     // El precio se lee del producto YA normalizado por el bot (el JSON crudo
     // lo llama precioActual), no del archivo.
-    const ficha = conversar('tienes el archer ax1450');
-    const p = ficha.productos[0];
-    ok(p && p.nombre === UNO, `esperaba la ficha de "${UNO}", dio "${p && p.nombre}"`);
-    if (p && p.nombre === UNO) {
-        const precio = conversar('tienes el archer ax1450', 'cuánto cuesta');
-        ok(precio.intent === 'hiloPrecio', `"cuánto cuesta" tras un producto → ${precio.intent}`);
-        ok(precio.texto.includes(p.nombre), 'el precio debe decir de QUÉ producto habla');
-        ok(precio.texto.includes(p.precio.toFixed(2)),
-            `debe decir el precio real (${p.precio}), dijo: ${precio.texto.slice(0, 120)}`);
+    ok(FICHA, 'ningún producto con stock del catálogo se resuelve a una ficha única: ' +
+              'eso no es cosa de este test, es que la búsqueda por modelo dejó de funcionar');
+    if (FICHA) {
+        const ficha = conversar(FICHA.consulta);
+        const p = ficha.productos[0];
+        ok(p && p.nombre === FICHA.nombre,
+            `esperaba la ficha de "${FICHA.nombre}", dio "${p && p.nombre}"`);
+        if (p && p.nombre === FICHA.nombre) {
+            const precio = conversar(FICHA.consulta, 'cuánto cuesta');
+            ok(precio.intent === 'hiloPrecio', `"cuánto cuesta" tras un producto → ${precio.intent}`);
+            ok(precio.texto.includes(p.nombre), 'el precio debe decir de QUÉ producto habla');
+            ok(precio.texto.includes(p.precio.toFixed(2)),
+                `debe decir el precio real (${p.precio}), dijo: ${precio.texto.slice(0, 120)}`);
 
-        const stock = conversar('tienes el archer ax1450', 'está disponible');
-        ok(stock.intent === 'hiloStock', `"está disponible" tras un producto → ${stock.intent}`);
-        ok(stock.texto.includes(p.nombre), 'la disponibilidad debe ser la de ESE producto');
-        ok(stock.texto.includes(String(p.stock)),
-            `debe decir cuántos quedan de verdad (${p.stock})`);
-        // El fallo original: "está disponible" contestaba con el recuento
-        // global del catálogo ("68 disponibles, 51 agotados"), que no
-        // responde nada de lo que se preguntó.
-        ok(!/productos disponibles/.test(stock.texto),
-            '"está disponible" no puede contestar con el estado del catálogo entero');
+            const stock = conversar(FICHA.consulta, 'está disponible');
+            ok(stock.intent === 'hiloStock', `"está disponible" tras un producto → ${stock.intent}`);
+            ok(stock.texto.includes(p.nombre), 'la disponibilidad debe ser la de ESE producto');
+            ok(stock.texto.includes(String(p.stock)),
+                `debe decir cuántos quedan de verdad (${p.stock})`);
+            // El fallo original: "está disponible" contestaba con el recuento
+            // global del catálogo ("68 disponibles, 51 agotados"), que no
+            // responde nada de lo que se preguntó.
+            ok(!/productos disponibles/.test(stock.texto),
+                '"está disponible" no puede contestar con el estado del catálogo entero');
 
-        const comprar = conversar('tienes el archer ax1450', 'lo quiero');
-        ok(comprar.intent === 'hiloComprar', `"lo quiero" tras un producto → ${comprar.intent}`);
-        ok(comprar.productos.some(x => x.nombre === p.nombre),
-            'al pedirlo hay que enseñar la tarjeta del producto, que es la que trae el botón Pedir');
+            const comprar = conversar(FICHA.consulta, 'lo quiero');
+            ok(comprar.intent === 'hiloComprar', `"lo quiero" tras un producto → ${comprar.intent}`);
+            ok(comprar.productos.some(x => x.nombre === p.nombre),
+                'al pedirlo hay que enseñar la tarjeta del producto, que es la que trae el botón Pedir');
+        }
+    }
+}
+
+// Un agotado no rompe el hilo: se dice que está agotado y se ofrecen otros.
+// Esto es lo que el test anterior confundía con un fallo.
+{
+    const B = nuevoBot();
+    const agotado = (B.PRODUCTOS || []).find(p => Number(p.stock) === 0 && p.nombre);
+    const modelo = agotado && (agotado.nombre.match(/\b[a-z]{1,6}[- ]?\d{2,5}[a-z]*\b/i) || [])[0];
+    if (modelo) {
+        const r = conversar('tienes el ' + modelo.toLowerCase());
+        ok(/agotado|sin stock|no queda/i.test(r.texto),
+            `de un agotado hay que decir que lo está, dijo: ${r.texto.slice(0, 120)}`);
     }
 }
 

@@ -1224,15 +1224,21 @@
       nota: 'Paneles solares no vendo.',
       ofrecer: 'Esa pieza la pones tú, pero el resto del sistema sí te lo armo: controlador, batería e inversor.',
       botones: ['☀️ Arma un sistema solar','💬 WhatsApp'] },
-    { re: /\b(laptop\w*|port[aá]til\w*|notebook\w*)\b/i,
+    // "portátil" a secas se salió de madre: el catálogo tiene un "Generador
+    // Solar Portátil BLUETTI" y a quien preguntaba por él se le contestaba
+    // "laptops no manejo". Aquí solo caben las formas que hablan de una
+    // computadora, no cualquier cosa que se pueda cargar.
+    { re: /\b(laptop\w*|notebook\w*|(computador\w*|ordenador\w*|pc)\s+port[aá]til\w*)\b/i,
       que: 'laptops',
       nota: 'Laptops no manejo.',
       ofrecer: 'En PC tengo un equipo de escritorio; dime si te sirve.',
       botones: ['📦 Categorías','💬 WhatsApp'] },
-    { re: /\b(planta el[eé]ctrica|generador\w*|motogenerador\w*)\b/i,
+    // Lo que no se vende son los de COMBUSTIBLE. "generador" a secas dejaba
+    // fuera al generador solar que sí está en la tienda, y con stock.
+    { re: /\b(planta el[eé]ctrica|motogenerador\w*|generador\w*\s+(de\s+)?(gasolina|di[eé]sel|diesel|combustible|gas)\b|planta\s+(de\s+)?(gasolina|di[eé]sel|diesel))/i,
       que: 'plantas eléctricas',
       nota: 'Plantas eléctricas y generadores de combustible no vendo.',
-      ofrecer: 'Para el apagón sí tengo inversores con batería, que es la otra forma de resolverlo.',
+      ofrecer: 'Para el apagón sí tengo inversores con batería y estaciones de energía, que es la otra forma de resolverlo.',
       botones: ['⚡ Ver inversores','💬 WhatsApp'] },
     { re: /\b(cable\w*)\s+(de\s+)?(red|rj45|utp|ethernet)\b|\bcable rj45\b/i,
       que: 'cables de red',
@@ -1255,6 +1261,27 @@
       ofrecer: 'Lo que sí tengo son routers y repetidores para mejorar la red que ya tengas.',
       botones: ['📶 Ver routers','💬 WhatsApp'] },
   ];
+
+  /* La entrada de NO_VENDEMOS que aplica a este mensaje, o null.
+   *
+   * Decir "eso no lo vendo" de algo que SÍ está en la tienda es peor que el
+   * fallo que NO_VENDEMOS vino a arreglar: al cliente se le cierra la puerta y
+   * se va. Y no es hipotético — pasó con "generador", que descartaba al
+   * Generador Solar Portátil BLUETTI teniéndolo con stock.
+   *
+   * Los patrones se afinan arriba, pero el catálogo lo edita el dueño desde el
+   * panel cada semana y una lista fija aquí no puede seguirle el ritmo: mañana
+   * entra un producto que encaja con un patrón de estos y nadie se acuerda de
+   * venir a tocarlo. Por eso la última palabra la tiene el catálogo — si hay
+   * algo con stock que se llame así, esto no contesta y la pregunta sigue su
+   * camino a la búsqueda normal, que enseñará el producto.
+   */
+  function noVendemosPara(text){
+    const hit = NO_VENDEMOS.find(x => x.re.test(text));
+    if(!hit) return null;
+    const loTengo = PRODUCTOS.some(p => p && Number(p.stock) > 0 && hit.re.test(p.nombre || ''));
+    return loTengo ? null : hit;
+  }
 
   function findProducts(query, n=4, opts={}){
     const { includeAgotados=false, filterFn=null, presupuesto=null } = opts;
@@ -1816,7 +1843,7 @@
     // Lo que no se vende se dice, en vez de enseñar lo más parecido como si
     // fuera eso. Va después de las definiciones —"¿qué es un panel solar?"
     // sigue siendo una explicación— y antes de la búsqueda difusa.
-    if(!_pideDefinicion && NO_VENDEMOS.some(x => x.re.test(text))) return 'noVendemos';
+    if(!_pideDefinicion && noVendemosPara(text)) return 'noVendemos';
 
     // Va ANTES del scoring difuso: "módem de etecsa" o "señal de nauta" son
     // preguntas muy concretas que la búsqueda por parecido contestaba con
@@ -4342,7 +4369,11 @@ ${notasHTML}
      es que no —los da ETECSA— pero sí hay con qué mejorar la señal, así que
      decirlo y ofrecer lo que sí hay vale más que una búsqueda vacía. */
   R.noVendemos = (text) => {
-    const hit = NO_VENDEMOS.find(x => x.re.test(text)) || NO_VENDEMOS[0];
+    // noVendemosPara y no un find suelto: si el catálogo tiene con stock lo
+    // que el patrón describe, esto no debe contestar (ver la función). Solo
+    // llega aquí cuando detectIntent ya lo dio por bueno, pero un botón o una
+    // llamada directa pueden entrar por la puerta de al lado.
+    const hit = noVendemosPara(text) || NO_VENDEMOS[0];
     // La nota es la frase entera: componerla con el nombre delante daba
     // "Laptops no los manejo. No manejo laptops." y fallaba el género.
     let body = `🙅 <strong>${hit.nota}</strong>`;
