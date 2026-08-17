@@ -1068,6 +1068,7 @@
     <div class="tb-actions">
       <button class="icon-btn" title="Suscriptores push" onclick="irASuscriptores()">🔔<span class="dot" id="tb-subs">0</span></button>
       <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
+      <button class="icon-btn" title="Traer el catálogo publicado (descarta cambios locales sin publicar)" onclick="traerDelRepo()">⬇️</button>
     </div>
   </div>
 
@@ -1860,6 +1861,58 @@ async function jget(url){
 function syncProductos(){
   window.PRODUCTOS = _PRODUCTOS;
 }
+
+/* ── ⬇️ Traer el catálogo publicado ────────────────────────────────────
+   Hasta ahora no había forma de hacer esto, y el 🔄 de al lado engaña: dice
+   "Recargar datos" pero cargarDatos() lee `lsProductos() || productos.json`,
+   o sea que mientras haya copia local NUNCA mira el repo. Pulsarlo cien veces
+   deja el catálogo exactamente igual.
+
+   Hace falta cuando el repo cambió por fuera del panel —un script, otro
+   dispositivo, una corrección hecha a mano— porque entonces este navegador
+   tiene una copia vieja y, al publicar, la sube encima y deshace el cambio.
+
+   No vale con "borrar los datos del sitio": en el mismo localStorage viven
+   registroVentas, los seguimientos y el token de GitHub. Eso se lleva por
+   delante el historial de ventas. Aquí se toca UNA clave: `productos`.
+
+   Se avisa de lo que se va a perder antes de tocar nada — es la única acción
+   del panel que descarta trabajo sin poder deshacerlo. */
+async function traerDelRepo(){
+  const local = lsProductos();
+  const repo = await jget('productos.json?_='+Date.now());
+  const arr = Array.isArray(repo) ? repo : (repo && repo.productos) || null;
+  if(!arr || !arr.length){
+    showToast('❌ No se pudo bajar', 'Revisa la conexión e inténtalo de nuevo');
+    return;
+  }
+  // Qué se va a perder, en concreto: un "¿seguro?" a secas no deja decidir.
+  let aviso = `Se van a traer ${arr.length} productos tal y como están publicados.`;
+  if(local && local.length){
+    const enRepo = new Set(arr.map(p=>String(p.id)));
+    const soloLocales = local.filter(p=>!enRepo.has(String(p.id)));
+    const distintos = local.filter(p=>{
+      const r = arr.find(x=>String(x.id)===String(p.id));
+      return r && JSON.stringify(r)!==JSON.stringify(p);
+    });
+    if(soloLocales.length || distintos.length){
+      aviso += `\n\nSe DESCARTA lo que tengas aquí sin publicar:`;
+      if(soloLocales.length) aviso += `\n· ${soloLocales.length} producto(s) que solo existen en este navegador`;
+      if(distintos.length)   aviso += `\n· ${distintos.length} con cambios sin publicar`;
+      aviso += `\n\nEsto no se puede deshacer.`;
+    } else {
+      aviso += `\n\nTu copia local ya coincide: no perderás nada.`;
+    }
+  }
+  if(!confirm(aviso)) return;
+
+  PRODUCTOS = arr;
+  tmGuardarLS('productos', arr);
+  syncProductos();
+  renderTodo();
+  showToast('⬇️ Catálogo traído del repo', arr.length+' productos');
+}
+window.traerDelRepo = traerDelRepo;
 
 async function cargarDatos(recargar){
   // Productos: localStorage real primero, si no productos.json
