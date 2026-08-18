@@ -3325,18 +3325,18 @@
   {
     "id": 1787079480177,
     "nombre": "🌐 Controlador de Carga Solar MPPT Boost 1200W",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787079474093.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079475572.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079476581.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079477837.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079479174.webp"
+      "https://tiendamax.org/imagenes/img_1787079474093.webp",
+      "https://tiendamax.org/imagenes/img_1787079475572.webp",
+      "https://tiendamax.org/imagenes/img_1787079476581.webp",
+      "https://tiendamax.org/imagenes/img_1787079477837.webp",
+      "https://tiendamax.org/imagenes/img_1787079479174.webp"
     ],
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 8,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
