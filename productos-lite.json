@@ -27,13 +27,13 @@
   },
   {
     "id": 1777924118004,
-    "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
+    "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
     "precioActual": 180,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 0,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -170,7 +170,7 @@
   {
     "id": 1778102582909,
     "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
-    "precioActual": 90,
+    "precioActual": 75,
     "imagen": "https://tiendamax.org/imagenes/img_1784007359011.webp",
     "categoria": "UTILES",
     "subcategoria": "HERRAMIENTAS",
@@ -179,13 +179,13 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 17,
     "slug": "antorcha-tig-para-soldadura",
-    "comision": 10,
+    "comision": 5,
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
     "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
     "radar": true,
-    "precioOriginal": 0,
+    "precioOriginal": 90,
     "comisionMoneda": "USD",
     "specs": [
       "🎯 Precisión Profesional",
@@ -221,7 +221,7 @@
     ],
     "specs": [
       "🔋 Energía Automotriz Confiable",
-      "⚡ Potencia de Arranque Estable ",
+      "⚡ Potencia de Arranque Estable",
       "🛡️ Tecnología Duradera y Resistente"
     ]
   },
@@ -326,12 +326,12 @@
   },
   {
     "id": 1778104512761,
-    "nombre": "♻️ Controlador Solar POWMR M100 PRO - MPPT de 100 Amp♻️",
+    "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
     "precioActual": 260,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -340,7 +340,9 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
     "comision": 10,
     "specs": [
-      "100V"
+      "​⚡ Tecnología MPPT de Alta Eficiencia (100A)",
+      "​🔋 Compatibilidad Universal (12V/24V/36V/48V) ​",
+      "🔌 Pantalla LCD y Control Inteligente"
     ],
     "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
@@ -673,10 +675,10 @@
     "id": 1778336613589,
     "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
     "precioActual": 35,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784008477390.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
-    "stock": 1,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -693,7 +695,7 @@
       "🛠️ 8 Cabezales de Masaje"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
+      "https://tiendamax.org/imagenes/img_1784008477390.webp",
       "https://tiendamax.org/imagenes/img_1778336613589.webp"
     ]
   },
@@ -913,19 +915,24 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
     "categoria": "UTILES",
     "subcategoria": "ILUMINACIÓN",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "linterna-cabeza-30w-superbrillante",
-    "comision": 1.8,
+    "comision": 1500,
     "specs": [
       "30w"
     ],
     "seoTitle": "LINTERNA DE CABEZA en Cuba | TiendaMax",
-    "seoDescription": "Linterna de cabeza : Largo alcance Luz blanca superbrillante de 30w de potencia. Viene con 3 baterias de litio recargables. Angulo de iluminación…"
+    "seoDescription": "Linterna de cabeza : Largo alcance Luz blanca superbrillante de 30w de potencia. Viene con 3 baterias de litio recargables. Angulo de iluminación…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778384507302_ext.webp"
+    ]
   },
   {
     "id": 1778384646214,
@@ -1825,7 +1832,7 @@
     "devolucion": false,
     "descuento": 20,
     "slug": "probador-tester-digital-de-baterias",
-    "comision": 1500,
+    "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
@@ -1867,7 +1874,7 @@
   {
     "id": 1781377297283,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
-    "precioActual": 20,
+    "precioActual": 25,
     "precioOriginal": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
@@ -1877,9 +1884,9 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 33,
+    "descuento": 17,
     "slug": "creatina-monohidratada-luckycare-5000-mg",
-    "comision": 1500,
+    "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
     "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
@@ -1897,7 +1904,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 7,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2366,10 +2373,10 @@
   },
   {
     "id": 1783179800783,
-    "nombre": "⚡ Inversor de Corriente Tataliken 4000W (24V)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp",
+    "nombre": "⚡ Inversor Tataliken 4000W (24V)",
+    "imagen": "https://tiendamax.org/imagenes/img_1785946325577.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp"
+      "https://tiendamax.org/imagenes/img_1785946325577.webp"
     ],
     "precioActual": 180,
     "precioOriginal": 0,
@@ -3156,12 +3163,12 @@
   },
   {
     "id": 1786633899405,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+    "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
+    "imagen": "https://tiendamax.org/imagenes/img_1786633894922.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633896602.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633897707.webp"
+      "https://tiendamax.org/imagenes/img_1786633894922.webp",
+      "https://tiendamax.org/imagenes/img_1786633896602.webp",
+      "https://tiendamax.org/imagenes/img_1786633897707.webp"
     ],
     "precioActual": 260,
     "precioOriginal": 0,
@@ -3176,12 +3183,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ 120A MPPT / Max PV 230VDC",
-      "🔋 Pantalla LCD con Botones de Control (SET",
-      "UP",
-      "DOWN",
-      "CONFIRM)",
-      "🔌 Carcasa Robusta para Instalación en Pared"
+      "​⚡ Tecnología MPPT de Alta Eficiencia (120A) ​",
+      "🔋 Rango de Compatibilidad: Sistemas de 12V hasta 96V",
+      "​🔌 Entrada PV: Máximo 230VDC"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z"
   },
@@ -3263,5 +3267,33 @@
       "🌿 100% Whey Protein (Concentrada + Aislada) sin colorantes artificiales"
     ],
     "fechaAgregado": "2026-08-15T15:35:52.310Z"
+  },
+  {
+    "id": 1787071784077,
+    "nombre": "🔌 Cargador y Mantenedor de Baterías VEVOR 35A",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071783066.webp"
+    ],
+    "precioActual": 145,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 12,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Cargador Inteligente de Alta Corriente (35A)",
+      "🔋 Pantalla Digital a Color con Modos de Carga Múltiples",
+      "🔌 Compatibilidad con AGM",
+      "LiFePO4 y Litio"
+    ],
+    "fechaAgregado": "2026-08-18T16:49:44.078Z"
   }
 ]
