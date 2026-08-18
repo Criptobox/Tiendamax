@@ -2006,7 +2006,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 10,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -2017,7 +2017,7 @@
     "comisionMoneda": "USD",
     "specs": [
       "⚡ AC1200 Doble Banda",
-      "📶 4 Antenas Externas ",
+      "📶 4 Antenas Externas",
       "🌐 Puertos Fast Ethernet"
     ],
     "seoTitle": "ROUTER WIFI INALÁMBRICO D - LINK AVANZADO DE DOBLE BANDA",
