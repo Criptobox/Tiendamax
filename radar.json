@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-17T11:25:05.318463+00:00",
-  "fecha": "2026-08-17",
+  "actualizado": "2026-08-18T11:24:18.208954+00:00",
+  "fecha": "2026-08-18",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -34,6 +34,10 @@
         },
         {
           "fecha": "2026-08-17",
+          "mediana": 30.0
+        },
+        {
+          "fecha": "2026-08-18",
           "mediana": 30.0
         }
       ],
@@ -89,7 +93,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 14
+        "n": 15
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -97,10 +101,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-04",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-05",
           "mediana": 90.0
@@ -152,6 +152,10 @@
         {
           "fecha": "2026-08-17",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-18",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -187,14 +191,14 @@
           "fuente": "revolico",
           "titulo": "75 USD Antorcha para soldadura",
           "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56821155",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56866151",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Antorcha FEMEROL para soldadura",
+          "titulo": "75 USD Antorcha para soldadura",
           "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-femerol-para-soldadura-56521672",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56821155",
           "dias": null
         }
       ]
