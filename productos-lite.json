@@ -3321,5 +3321,36 @@
       "🔌 Diseño Compacto y Portátil con Accesorios Incluidos"
     ],
     "fechaAgregado": "2026-08-18T16:54:00.178Z"
+  },
+  {
+    "id": 1787079480177,
+    "nombre": "🌐 Controlador de Carga Solar MPPT Boost 1200W",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079475572.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079476581.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079477837.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079479174.webp"
+    ],
+    "precioActual": 90,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Controlador MPPT Solar Boost de 1200W",
+      "🔋 Entrada de 12-60V / Carga para 48V",
+      "60V y 72V",
+      "📟 Pantalla Digital a Color y Botón Set Frontal"
+    ],
+    "fechaAgregado": "2026-08-18T18:58:00.178Z"
   }
 ]
