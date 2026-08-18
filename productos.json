@@ -28,13 +28,13 @@
   },
   {
     "id": 1777924118004,
-    "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
+    "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
     "precioActual": 180,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 0,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -176,7 +176,7 @@
   {
     "id": 1778102582909,
     "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
-    "precioActual": 90,
+    "precioActual": 75,
     "imagen": "https://tiendamax.org/imagenes/img_1784007359011.webp",
     "categoria": "UTILES",
     "subcategoria": "HERRAMIENTAS",
@@ -185,13 +185,13 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 17,
     "slug": "antorcha-tig-para-soldadura",
-    "comision": 10,
+    "comision": 5,
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
     "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
     "radar": true,
-    "precioOriginal": 0,
+    "precioOriginal": 90,
     "comisionMoneda": "USD",
     "specs": [
       "🎯 Precisión Profesional",
@@ -228,7 +228,7 @@
     ],
     "specs": [
       "🔋 Energía Automotriz Confiable",
-      "⚡ Potencia de Arranque Estable ",
+      "⚡ Potencia de Arranque Estable",
       "🛡️ Tecnología Duradera y Resistente"
     ],
     "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.\nFicha Técnica:\nTecnología: 🔋 Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.\nArranque: ⚡ Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.\nConstrucción: 🛡️ Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.\nCompatibilidad: 🚗 Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.\nEspecificaciones (Specs):\nMarca: LUBRIM.\nVoltaje nominal: 12V.\nAplicación: Automotriz.\nTecnología: Calcio-Calcio (Ca/Ca)."
@@ -338,12 +338,12 @@
   },
   {
     "id": 1778104512761,
-    "nombre": "♻️ Controlador Solar POWMR M100 PRO - MPPT de 100 Amp♻️",
+    "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
     "precioActual": 260,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -352,7 +352,9 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
     "comision": 10,
     "specs": [
-      "100V"
+      "​⚡ Tecnología MPPT de Alta Eficiencia (100A)",
+      "​🔋 Compatibilidad Universal (12V/24V/36V/48V) ​",
+      "🔌 Pantalla LCD y Control Inteligente"
     ],
     "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
@@ -362,7 +364,7 @@
       "https://tiendamax.org/imagenes/img_1785284197964.webp",
       "https://tiendamax.org/imagenes/img_1778104512761.webp"
     ],
-    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías."
+    "descripcion": "Este controlador MPPT de alta capacidad (100A) de PowMr es una solución robusta y versátil, capaz de gestionar sistemas de baterías desde 12V hasta 48V de forma automática o configurada. Gracias a su tecnología MPPT, maximiza la extracción de energía de los paneles solares, asegurando una carga eficiente y protegida para tu banco de baterías.\n​Ficha Técnica:\n​Versatilidad de Voltaje: 🔋 Soporta configuraciones de sistemas de baterías de 12V, 24V, 36V y 48V, adaptándose a diversas necesidades energéticas.\n​Rendimiento MPPT: ⚡ Alta eficiencia de seguimiento del punto de máxima potencia, lo que garantiza una carga optimizada incluso en condiciones variables de luz.\n​Interfaz de Usuario: 🔌 Cuenta con una pantalla LCD intuitiva y botones de configuración frontal (PV/SET, BAT/▲, BAT/▼) para un monitoreo preciso de los parámetros de carga en tiempo real.\n​Especificaciones (Specs):\n​Marca: PowMr.\n​Tipo: Controlador de carga solar MPPT.\n​Capacidad: 100A.\n​Compatibilidad de Sistema: 12V/24V/36V/48V."
   },
   {
     "id": 1778104599386,
@@ -700,10 +702,10 @@
     "id": 1778336613589,
     "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
     "precioActual": 35,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784008477390.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
-    "stock": 1,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -713,7 +715,6 @@
     "comision": 1500,
     "seoTitle": "PISTOLA DE MASAJE PROFESIONAL en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje PROFESIONAL inalámbrica: Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. Incluye…",
-    "descripcion": "Pistola de masaje de percusión con diseño ergonómico avanzado. Ideal para atletas y personas que buscan una recuperación muscular completa, gracias a su gran variedad de cabezales que permiten personalizar el tratamiento para cada zona del cuerpo.\nFicha Técnica:\nVersatilidad Total: 💆♂️ Incluye un set completo de 9 cabezales intercambiables para adaptarse a cualquier grupo muscular.\nDiseño Ergonómico: 📐 Empuñadura triangular única que facilita un agarre firme y cómodo, permitiendo alcanzar zonas de difícil acceso con menos esfuerzo.\nPotencia de Percusión: ⚡ Diseñada para llegar a las capas más profundas del tejido muscular para un alivio efectivo.\nUso Profesional: ✨ Apta tanto para uso personal en casa como para rutinas de recuperación en gimnasios.\nEspecificaciones (Specs):\nTipo: Masajeador de percusión de alto rendimiento.\nAccesorios: 8 cabezales distintos incluidos.\nUso: Recuperación post-entrenamiento, relajación miofascial y tratamiento de tensiones musculares.",
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
@@ -721,9 +722,10 @@
       "🛠️ 8 Cabezales de Masaje"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
+      "https://tiendamax.org/imagenes/img_1784008477390.webp",
       "https://tiendamax.org/imagenes/img_1778336613589.webp"
-    ]
+    ],
+    "descripcion": "Pistola de masaje de percusión con diseño ergonómico avanzado. Ideal para atletas y personas que buscan una recuperación muscular completa, gracias a su gran variedad de cabezales que permiten personalizar el tratamiento para cada zona del cuerpo.\nFicha Técnica:\nVersatilidad Total: 💆♂️ Incluye un set completo de 9 cabezales intercambiables para adaptarse a cualquier grupo muscular.\nDiseño Ergonómico: 📐 Empuñadura triangular única que facilita un agarre firme y cómodo, permitiendo alcanzar zonas de difícil acceso con menos esfuerzo.\nPotencia de Percusión: ⚡ Diseñada para llegar a las capas más profundas del tejido muscular para un alivio efectivo.\nUso Profesional: ✨ Apta tanto para uso personal en casa como para rutinas de recuperación en gimnasios.\nEspecificaciones (Specs):\nTipo: Masajeador de percusión de alto rendimiento.\nAccesorios: 8 cabezales distintos incluidos.\nUso: Recuperación post-entrenamiento, relajación miofascial y tratamiento de tensiones musculares."
   },
   {
     "id": 1778336689684,
@@ -949,20 +951,25 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
     "categoria": "UTILES",
     "subcategoria": "ILUMINACIÓN",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "linterna-cabeza-30w-superbrillante",
-    "comision": 1.8,
+    "comision": 1500,
     "specs": [
       "30w"
     ],
     "seoTitle": "LINTERNA DE CABEZA en Cuba | TiendaMax",
     "seoDescription": "Linterna de cabeza : Largo alcance Luz blanca superbrillante de 30w de potencia. Viene con 3 baterias de litio recargables. Angulo de iluminación…",
-    "descripcion": "Linterna de cabeza (headlamp) de 30W LED, recargable por USB Type-C, incluye 3 baterías 18650. Zoom ajustable, indicador de batería con porcentaje, hasta 12 horas de luz, ajuste de 90°. Ideal para apagones o trabajar de noche."
+    "descripcion": "Linterna de cabeza (headlamp) de 30W LED, recargable por USB Type-C, incluye 3 baterías 18650. Zoom ajustable, indicador de batería con porcentaje, hasta 12 horas de luz, ajuste de 90°. Ideal para apagones o trabajar de noche.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778384507302_ext.webp"
+    ]
   },
   {
     "id": 1778384646214,
@@ -1899,7 +1906,7 @@
     "devolucion": false,
     "descuento": 20,
     "slug": "probador-tester-digital-de-baterias",
-    "comision": 1500,
+    "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
@@ -1943,7 +1950,7 @@
   {
     "id": 1781377297283,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
-    "precioActual": 20,
+    "precioActual": 25,
     "precioOriginal": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
@@ -1953,9 +1960,9 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 33,
+    "descuento": 17,
     "slug": "creatina-monohidratada-luckycare-5000-mg",
-    "comision": 1500,
+    "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
     "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
@@ -1963,8 +1970,8 @@
       "https://tiendamax.org/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
     ],
-    "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
-    "specs": []
+    "specs": [],
+    "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular."
   },
   {
     "id": 1781711154462,
@@ -1974,7 +1981,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 7,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2462,10 +2469,10 @@
   },
   {
     "id": 1783179800783,
-    "nombre": "⚡ Inversor de Corriente Tataliken 4000W (24V)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp",
+    "nombre": "⚡ Inversor Tataliken 4000W (24V)",
+    "imagen": "https://tiendamax.org/imagenes/img_1785946325577.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785946325577.webp"
+      "https://tiendamax.org/imagenes/img_1785946325577.webp"
     ],
     "precioActual": 180,
     "precioOriginal": 0,
@@ -3280,13 +3287,12 @@
   },
   {
     "id": 1786633899405,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
-    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta capacidad de la marca Y&H, diseñado para gestionar eficientemente la energía desde paneles solares de alto voltaje (hasta 230VDC) hacia el banco de baterías. Cuenta con una pantalla LCD central y botones de navegación integrados para supervisar y configurar los parámetros del sistema en tiempo real.\nFicha Técnica:\nTecnología de Carga: ⚡ Sistema MPPT avanzado para maximizar el rendimiento energético y soportar un voltaje máximo fotovoltaico de hasta 230VDC.\nCapacidad de Corriente: 🔌 Diseñado para manejar una corriente máxima de carga de 120A, ideal para sistemas solares robustos.\nInterfaz y Monitoreo: 📟 Pantalla LCD con indicadores gráficos de estado (PV, CHARGE, LOAD, ALARM) y botones de control (SET, UP, DOWN, CONFIRM).\nEspecificaciones (Specs):\nMarca: Y&H.\nTipo: Controlador de carga solar MPPT.\nCorriente Máxima de Carga: 120A.\nVoltaje Máximo PV: 230VDC.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
+    "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
+    "imagen": "https://tiendamax.org/imagenes/img_1786633894922.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633894922.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633896602.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633897707.webp"
+      "https://tiendamax.org/imagenes/img_1786633894922.webp",
+      "https://tiendamax.org/imagenes/img_1786633896602.webp",
+      "https://tiendamax.org/imagenes/img_1786633897707.webp"
     ],
     "precioActual": 260,
     "precioOriginal": 0,
@@ -3301,14 +3307,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ 120A MPPT / Max PV 230VDC",
-      "🔋 Pantalla LCD con Botones de Control (SET",
-      "UP",
-      "DOWN",
-      "CONFIRM)",
-      "🔌 Carcasa Robusta para Instalación en Pared"
+      "​⚡ Tecnología MPPT de Alta Eficiencia (120A) ​",
+      "🔋 Rango de Compatibilidad: Sistemas de 12V hasta 96V",
+      "​🔌 Entrada PV: Máximo 230VDC"
     ],
-    "fechaAgregado": "2026-08-13T15:11:39.405Z"
+    "fechaAgregado": "2026-08-13T15:11:39.405Z",
+    "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.\n​Ficha Técnica:\n​Rendimiento y Potencia: ⚡ Capacidad de carga continua de 120A, ideal para gestionar bancos de baterías de gran capacidad en sistemas de energía solar fuera de la red.\n​Margen de Voltaje de Entrada (PV): 🔌 Admite un voltaje máximo de circuito abierto de paneles (Voc) de hasta 230VDC, facilitando configuraciones serie eficientes.\n​Amplia Compatibilidad de Sistema: 🔋 Soporta una escala operativa que abarca desde sistemas de 12V, 24V, 36V, 48V, 60V, 72V, 84V hasta 96V, ofreciendo una flexibilidad inigualable para proyectos de diferentes voltajes.\n​Interfaz de Usuario: 📟 Pantalla LCD central con visualización detallada de parámetros (flujo PV, carga de batería, consumo de carga) y botones de configuración rápida (SET, UP, DOWN, CONFIRM).\n​Especificaciones (Specs):\n​Marca: Y&H.\n​Tipo: Controlador de carga solar MPPT.\n​Corriente Máxima: 120A.\n​Voltaje Máximo de Entrada (Voc): 230VDC.\n​Compatibilidad de Baterías: 12V a 96V."
   },
   {
     "id": 1786807706672,
@@ -3391,5 +3395,34 @@
       "🌿 100% Whey Protein (Concentrada + Aislada) sin colorantes artificiales"
     ],
     "fechaAgregado": "2026-08-15T15:35:52.310Z"
+  },
+  {
+    "id": 1787071784077,
+    "nombre": "🔌 Cargador y Mantenedor de Baterías VEVOR 35A",
+    "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.\nFicha Técnica:\nRendimiento y Corriente: ⚡ Capacidad de salida de hasta 35A para una carga rápida y eficiente de bancos de baterías exigentes.\nCompatibilidad de Baterías: 🔋 Soporta múltiples tecnologías de química de baterías, incluyendo AGM/Lead, LiFePO4 y Litio, configurables desde su interfaz.\nPanel de Control y Pantalla: 📟 Pantalla LCD a color que muestra métricas en tiempo real (voltaje y amperaje) junto con botones laterales dedicados para funciones de mantenimiento, desulfatación, selección de voltaje (6V/12V/24V) y corriente (Auto/10A/20A/35A).\nEspecificaciones (Specs):\nMarca: VEVOR.\nTipo: Cargador y mantenedor inteligente de baterías.\nCorriente Máxima: 35A.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071783066.webp"
+    ],
+    "precioActual": 145,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 12,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Cargador Inteligente de Alta Corriente (35A)",
+      "🔋 Pantalla Digital a Color con Modos de Carga Múltiples",
+      "🔌 Compatibilidad con AGM",
+      "LiFePO4 y Litio"
+    ],
+    "fechaAgregado": "2026-08-18T16:49:44.078Z"
   }
 ]
