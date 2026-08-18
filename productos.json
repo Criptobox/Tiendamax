@@ -3455,19 +3455,18 @@
   {
     "id": 1787079480177,
     "nombre": "🌐 Controlador de Carga Solar MPPT Boost 1200W",
-    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.\nFicha Técnica:\nTecnología y Potencia: ⚡ Sistema MPPT con capacidad de elevación (Boost) de hasta 1200W de potencia para optimizar el rendimiento energético.\nRangos de Operación: 🔋 Especificado para aceptar un voltaje de entrada (Input) de 12-60V y entregar un voltaje de carga (Charging) adaptado para sistemas de 48V, 60V y 72V.\nInterfaz de Monitoreo: 📟 Pantalla LCD a color integrada que muestra parámetros en tiempo real como voltaje fotovoltaico, corriente, voltaje de carga, potencia en vatios y estado de la batería.\nEspecificaciones (Specs):\nTipo: Controlador de carga solar MPPT Boost.\nPotencia: 1200W.\nRango de Entrada (Input): 12-60V.\nVoltaje de Carga (Charging): 48V, 60V, 72V.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787079474093.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079474093.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079475572.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079476581.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079477837.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787079479174.webp"
+      "https://tiendamax.org/imagenes/img_1787079474093.webp",
+      "https://tiendamax.org/imagenes/img_1787079475572.webp",
+      "https://tiendamax.org/imagenes/img_1787079476581.webp",
+      "https://tiendamax.org/imagenes/img_1787079477837.webp",
+      "https://tiendamax.org/imagenes/img_1787079479174.webp"
     ],
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 8,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -3482,6 +3481,7 @@
       "60V y 72V",
       "📟 Pantalla Digital a Color y Botón Set Frontal"
     ],
-    "fechaAgregado": "2026-08-18T18:58:00.178Z"
+    "fechaAgregado": "2026-08-18T18:58:00.178Z",
+    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.\nFicha Técnica:\nTecnología y Potencia: ⚡ Sistema MPPT con capacidad de elevación (Boost) de hasta 1200W de potencia para optimizar el rendimiento energético.\nRangos de Operación: 🔋 Especificado para aceptar un voltaje de entrada (Input) de 12-60V y entregar un voltaje de carga (Charging) adaptado para sistemas de 48V, 60V y 72V.\nInterfaz de Monitoreo: 📟 Pantalla LCD a color integrada que muestra parámetros en tiempo real como voltaje fotovoltaico, corriente, voltaje de carga, potencia en vatios y estado de la batería.\nEspecificaciones (Specs):\nTipo: Controlador de carga solar MPPT Boost.\nPotencia: 1200W.\nRango de Entrada (Input): 12-60V.\nVoltaje de Carga (Charging): 48V, 60V, 72V."
   }
 ]
