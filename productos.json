@@ -425,7 +425,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 37,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2687,7 +2687,7 @@
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2701,9 +2701,9 @@
       "⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
-    "descripcion": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y configuración de red.\nFicha Técnica:\nCapacidad: ⚙️ Potente procesador dual-core de 880 MHz para manejar configuraciones complejas (VPN, firewall, colas de tráfico).\nPuertos: ⚡ 5 puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable.\nAlmacenamiento: 💾 Ranura para tarjeta microSD que permite almacenar archivos de usuario y bases de datos.\nVersatilidad: 🛡️ Incluye puerto USB para módems 4G/LTE u otros periféricos.\nSistema: 🧠 Ejecuta RouterOS, el sistema operativo líder para la gestión profesional de redes.\nEspecificaciones (Specs):\nTipo: Router cableado (sin Wi-Fi integrado).\nCPU: Dual-core 880 MHz.\nRAM: 256 MB.\nPuertos: 5x 10/100/1000 Mbps Ethernet.\nUso: Ideal para administración de ISPs, gestión de ancho de banda, VPNs y redes corporativas pequeñas.",
     "seoTitle": "Mikrotik Hex (RB750GR3) en Cuba | TiendaMax",
-    "seoDescription": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y…"
+    "seoDescription": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y…",
+    "descripcion": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y configuración de red.\nFicha Técnica:\nCapacidad: ⚙️ Potente procesador dual-core de 880 MHz para manejar configuraciones complejas (VPN, firewall, colas de tráfico).\nPuertos: ⚡ 5 puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable.\nAlmacenamiento: 💾 Ranura para tarjeta microSD que permite almacenar archivos de usuario y bases de datos.\nVersatilidad: 🛡️ Incluye puerto USB para módems 4G/LTE u otros periféricos.\nSistema: 🧠 Ejecuta RouterOS, el sistema operativo líder para la gestión profesional de redes.\nEspecificaciones (Specs):\nTipo: Router cableado (sin Wi-Fi integrado).\nCPU: Dual-core 880 MHz.\nRAM: 256 MB.\nPuertos: 5x 10/100/1000 Mbps Ethernet.\nUso: Ideal para administración de ISPs, gestión de ancho de banda, VPNs y redes corporativas pequeñas."
   },
   {
     "id": 1783543451116,
@@ -3169,12 +3169,11 @@
   },
   {
     "id": 1786631968221,
-    "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
-    "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 5 de doble banda simultánea (2.4 GHz y 5 GHz) para una distribución rápida y estable del tráfico de red.\nCobertura y Antenas: 📶 Dos antenas externas de alta ganancia que mejoran la propagación de la señal y minimizan los obstáculos en el entorno doméstico u de oficina.\nConectividad y Sistema: 🌐 Puertos Gigabit Ethernet para conexiones por cable ultrarrápidas, operando bajo el sistema operativo RouterOS para configuraciones avanzadas de red.\nEspecificaciones (Specs):\nMarca: MikroTik.\nModelo: hAP ac3 (RouterBOARD / RBD53iG-5HacD2HnD).\nTipo: Router inalámbrico de doble banda para interiores.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
+    "nombre": "​🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "imagen": "https://tiendamax.org/imagenes/img_1786631962109.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631962109.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631964826.webp"
+      "https://tiendamax.org/imagenes/img_1786631962109.webp",
+      "https://tiendamax.org/imagenes/img_1786631964826.webp"
     ],
     "precioActual": 260,
     "precioOriginal": 0,
@@ -3189,11 +3188,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento",
-      "📶 Dos Antenas Externas de Alta Ganancia",
+      "​⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento ​",
+      "📶 Dos Antenas Externas de Alta Ganancia ​",
       "🌐 Puertos Gigabit Ethernet y RouterOS"
     ],
-    "fechaAgregado": "2026-08-13T14:39:28.222Z"
+    "fechaAgregado": "2026-08-13T14:39:28.222Z",
+    "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.\n​Ficha Técnica:\n​Tecnología Inalámbrica: ⚡ Conectividad Wi-Fi 5 de doble banda simultánea (2.4 GHz y 5 GHz) para una distribución rápida y estable del tráfico de red.\n​Cobertura y Antenas: 📶 Dos antenas externas de alta ganancia que mejoran la propagación de la señal y minimizan los obstáculos en el entorno doméstico u de oficina.\n​Conectividad y Sistema: 🌐 Puertos Gigabit Ethernet para conexiones por cable ultrarrápidas, operando bajo el sistema operativo RouterOS para configuraciones avanzadas de red.\n​Especificaciones (Specs):\n​Marca: MikroTik.\n​Modelo: hAP ac3 (RouterBOARD / RBD53iG-5HacD2HnD).\n​Tipo: Router inalámbrico de doble banda para interiores."
   },
   {
     "id": 1786632255672,
@@ -3227,15 +3227,14 @@
   {
     "id": 1786632573985,
     "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
-    "descripcion": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes mediante tecnología Mesh. Su diseño compacto y resistente a la intemperie permite una instalación flexible en paredes o postes.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 802.11ac de doble banda simultánea para garantizar velocidades rápidas de transferencia y menor congestión de red.\nCobertura y Antenas: 📶 Antenas omnidireccionales ajustables de alta ganancia integradas para una distribución uniforme de la señal en exteriores.\nConectividad y Gestión: 🔌 Puerto Ethernet con soporte para alimentación PoE (Power over Ethernet), administrado de forma centralizada mediante el software UniFi Network.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: UniFi AC Mesh (UAP-AC-M).\nTipo: Punto de acceso Wi-Fi para exteriores.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786632572981.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786632572981.webp"
+      "https://tiendamax.org/imagenes/img_1786632572981.webp"
     ],
     "precioActual": 250,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -3249,7 +3248,8 @@
       "📶 Cobertura Omnidireccional para Exteriores",
       "🔌 Alimentación PoE con Puerto Ethernet Gigante"
     ],
-    "fechaAgregado": "2026-08-13T14:49:33.985Z"
+    "fechaAgregado": "2026-08-13T14:49:33.985Z",
+    "descripcion": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes mediante tecnología Mesh. Su diseño compacto y resistente a la intemperie permite una instalación flexible en paredes o postes.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Conectividad Wi-Fi 802.11ac de doble banda simultánea para garantizar velocidades rápidas de transferencia y menor congestión de red.\nCobertura y Antenas: 📶 Antenas omnidireccionales ajustables de alta ganancia integradas para una distribución uniforme de la señal en exteriores.\nConectividad y Gestión: 🔌 Puerto Ethernet con soporte para alimentación PoE (Power over Ethernet), administrado de forma centralizada mediante el software UniFi Network.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: UniFi AC Mesh (UAP-AC-M).\nTipo: Punto de acceso Wi-Fi para exteriores."
   },
   {
     "id": 1786633494382,
