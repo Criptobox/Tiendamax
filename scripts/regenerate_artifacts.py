@@ -30,6 +30,7 @@ SUBS = ROOT / "subcategorias.json"
 CATS = ROOT / "categorias.json"
 P_DIR = ROOT / "p"
 C_DIR = ROOT / "c"
+OG_MANIFEST = ROOT / "og" / "manifiesto.json"
 SITEMAP = ROOT / "sitemap.xml"
 INDEX = ROOT / "index.html"
 
@@ -556,6 +557,17 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
     written = 0
     valid_files = set()
 
+    # Huella (sha256 recortado) de cada tarjeta OG, calculada por
+    # build_og_images.py a partir de nombre/precio/stock/foto. Sin adjuntarla
+    # a la URL, la tarjeta cambia de contenido pero no de dirección, y
+    # WhatsApp/Facebook/Telegram cachean la vista previa por URL: un producto
+    # que pasa de agotado a repuesto (o cambia de precio o de foto) sigue
+    # mostrando en el chat la tarjeta vieja indefinidamente aunque el JPEG en
+    # og/ ya esté al día.
+    og_manifest = read_json(OG_MANIFEST, {})
+    if not isinstance(og_manifest, dict):
+        og_manifest = {}
+
     # Índice por categoría para los "relacionados". Se arma una vez: hacerlo
     # dentro del bucle serían 118 recorridos del catálogo entero.
     por_categoria: dict[str, list[dict]] = {}
@@ -586,6 +598,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         img = p.get("imagen") or f"{SITE}/og-image.jpg"
         if (ROOT / "og" / f"producto-{pid}.jpg").exists():
             og_img = f"{SITE}/og/producto-{pid}.jpg"
+            huella_og = og_manifest.get(str(pid))
+            if huella_og:
+                og_img += f"?v={huella_og}"
         else:
             og_img = img
         # Tipo MIME real de la tarjeta para og:image:type (antes siempre jpeg)

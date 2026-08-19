@@ -174,8 +174,10 @@ class EstadoDelRepoTest(unittest.TestCase):
             if not (anchura and altura):
                 continue
             decl = (int(anchura.group(1)), int(altura.group(1)))
-            # Solo se puede comprobar lo que vive en el repo.
-            rel = url.replace("https://tiendamax.org/", "")
+            # Solo se puede comprobar lo que vive en el repo. La URL lleva un
+            # ?v=<huella> de cache-busting (ver regenerate_artifacts.py) que
+            # no es parte de la ruta del fichero.
+            rel = url.replace("https://tiendamax.org/", "").split("?", 1)[0]
             fichero = ROOT / rel
             if not fichero.exists():
                 continue
