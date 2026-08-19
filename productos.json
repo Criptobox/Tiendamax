@@ -3513,5 +3513,32 @@
     "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.\nFicha Técnica:\nTecnología y Potencia: ⚡ Sistema MPPT con capacidad de elevación (Boost) de hasta 1200W de potencia para optimizar el rendimiento energético.\nRangos de Operación: 🔋 Especificado para aceptar un voltaje de entrada (Input) de 12-60V y entregar un voltaje de carga (Charging) adaptado para sistemas de 48V, 60V y 72V.\nInterfaz de Monitoreo: 📟 Pantalla LCD a color integrada que muestra parámetros en tiempo real como voltaje fotovoltaico, corriente, voltaje de carga, potencia en vatios y estado de la batería.\nEspecificaciones (Specs):\nTipo: Controlador de carga solar MPPT Boost.\nPotencia: 1200W.\nRango de Entrada (Input): 12-60V.\nVoltaje de Carga (Charging): 48V, 60V, 72V.",
     "seoTitle": "Controlador de Carga Solar MPPT Boost 1200W | TiendaMax",
     "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…"
+  },
+  {
+    "id": 1787157254207,
+    "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.\nFicha Técnica:\nTecnología Inalámbrica: ⚡ Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores.\nGanancia y Cobertura: 📶 Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables.\nConectividad Física: 🔌 Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation Loco M2.\nTipo: CPE Inalámbrico para exteriores de 2.4 GHz.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787157252895.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787157252895.webp"
+    ],
+    "precioActual": 150,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ 2.4 GHz airMAX de Alto Rendimiento",
+      "📶 Antena Direccional Integrada de Doble Polarización",
+      "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
+    ],
+    "fechaAgregado": "2026-08-19T16:34:14.208Z"
   }
 ]
