@@ -811,7 +811,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784572922212.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -897,7 +897,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1657,7 +1657,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
     ],
-    "descripcion": "Cámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en exteriores. Su estructura robusta y resistente a la intemperie incorpora LEDs infrarrojos para garantizar un rendimiento óptimo de vigilancia incluso en total oscuridad.\nFicha Técnica:\nTecnología: 📹 Captura de video de alta definición con lentes de precisión para obtener detalles claros y precisos.\nVisión Nocturna: 🌙 Sistema de iluminación infrarroja integrado que asegura una visibilidad excelente durante la noche o en condiciones de baja iluminación.\nDiseño: 🛡️ Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes.\nConectividad: 🔌 Cableado integrado con conectores estándar para una fácil conexión a sistemas de grabación DVR compatibles.\nEspecificaciones (Specs):\nMarca: ZOSI.\nTipo: Cámara de seguridad bullet.\nUso: Videovigilancia residencial y comercial (interior/exterior)."
+    "descripcion": "COLORES   ⬛  ⬜\n\nCámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en exteriores. Su estructura robusta y resistente a la intemperie incorpora LEDs infrarrojos para garantizar un rendimiento óptimo de vigilancia incluso en total oscuridad.\nFicha Técnica:\nTecnología: 📹 Captura de video de alta definición con lentes de precisión para obtener detalles claros y precisos.\nVisión Nocturna: 🌙 Sistema de iluminación infrarroja integrado que asegura una visibilidad excelente durante la noche o en condiciones de baja iluminación.\nDiseño: 🛡️ Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes.\nConectividad: 🔌 Cableado integrado con conectores estándar para una fácil conexión a sistemas de grabación DVR compatibles.\nEspecificaciones (Specs):\nMarca: ZOSI.\nTipo: Cámara de seguridad bullet.\nUso: Videovigilancia residencial y comercial (interior/exterior)."
   },
   {
     "id": 1780510681519,
