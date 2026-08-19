@@ -1,11 +1,21 @@
 {
-  "generado": "2026-08-18T09:23:24.983878+00:00",
-  "productos": 128,
-  "urgentes": 1,
+  "generado": "2026-08-19T09:25:02.118028+00:00",
+  "productos": 131,
+  "urgentes": 3,
   "advertencias": 0,
   "info": 9,
-  "resumen": "Anoche revisé tus 128 productos y encontré 1 urgente(s), 9 de info.",
+  "resumen": "Anoche revisé tus 131 productos y encontré 3 urgente(s), 9 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
+      "detalle": "→ ⚡ Inversor Tataliken 4000W ( 12V )"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
+      "detalle": "→ 📟 Controlador Solar POWMR M100 PRO - MPPT de 100 a"
+    },
     {
       "tipo": "nombre",
       "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
@@ -18,8 +28,8 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
-      "detalle": "quedan 1"
+      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
+      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
@@ -48,13 +58,13 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "⚡ Controlador de Carga Solar MPPT 120A Y&H",
+      "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
       "nombre": "56 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, ⚡ Inversor de Corriente Tataliken 4000W, 🌐 Router Wavlink AC1200 Dual Band y 53 más"
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 53 más"
     }
   ]
 }
