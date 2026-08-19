@@ -1,18 +1,83 @@
 {
-  "actualizado": "2026-08-18T11:24:18.208954+00:00",
-  "fecha": "2026-08-18",
+  "actualizado": "2026-08-19T11:24:35.123612+00:00",
+  "fecha": "2026-08-19",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 2,
+    "vigilados": 3,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
+    {
+      "id": 1777924118004,
+      "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
+      "tuPrecio": 180.0,
+      "mercado": {
+        "min": 70.0,
+        "mediana": 180.0,
+        "n": 14
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-08-19",
+          "mediana": 180.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Inverdor híbrido 4kw, Controlador Solar, Bateria 12v, 24v y 48v 100a, Inversor 4kw,",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/controlador-solar-80a-voltaje-12v-36v48v-mensajeria-opcional-cerca-de-la-ceguera-51752405?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "140 USD Inversor Tataliken 4000w",
+          "precio": 140.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-55465882",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "140 USD INVERSOR MARCA \"TATALIKEN\" DE. (   24 V ) Y 4000 W PICO",
+          "precio": 140.0,
+          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24-v-y-4000-w-pico-56268741",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
+          "precio": 178.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "180 USD Inversor tataliken de 12V 4000W",
+          "precio": 180.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-56828077",
+          "dias": null
+        }
+      ]
+    },
     {
       "id": 1778102214012,
       "nombre": "🌐 Switch Gigabit de 8 Puertos",
@@ -38,6 +103,10 @@
         },
         {
           "fecha": "2026-08-18",
+          "mediana": 30.0
+        },
+        {
+          "fecha": "2026-08-19",
           "mediana": 30.0
         }
       ],
@@ -89,7 +158,7 @@
     {
       "id": 1778102582909,
       "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
-      "tuPrecio": 90.0,
+      "tuPrecio": 75.0,
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
@@ -101,10 +170,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-05",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-06",
           "mediana": 90.0
@@ -155,6 +220,10 @@
         },
         {
           "fecha": "2026-08-18",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-19",
           "mediana": 90.0
         }
       ],
