@@ -1,13 +1,13 @@
 {
-  "actualizado": "2026-08-19T11:24:35.123612+00:00",
-  "fecha": "2026-08-19",
+  "actualizado": "2026-08-20T11:26:24.451845+00:00",
+  "fecha": "2026-08-20",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 3,
+    "vigilados": 2,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
@@ -20,9 +20,9 @@
       "mercado": {
         "min": 70.0,
         "mediana": 180.0,
-        "n": 14
+        "n": 16
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -30,6 +30,10 @@
       "historial": [
         {
           "fecha": "2026-08-19",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-20",
           "mediana": 180.0
         }
       ],
@@ -79,83 +83,6 @@
       ]
     },
     {
-      "id": 1778102214012,
-      "nombre": "🌐 Switch Gigabit de 8 Puertos",
-      "tuPrecio": 30.0,
-      "mercado": {
-        "min": 15.0,
-        "mediana": 30.0,
-        "n": 18
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-08-16",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-08-17",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-08-18",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-08-19",
-          "mediana": 30.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
-          "precio": 15.0,
-          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "1 USD Switch Ethernet Gigabit BZIZU de 16 Puertos silencioso y Plug & Play 0km garantia so",
-          "precio": 16.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-bzizu-de-16-puertos-silencioso-y-plug-play-0km-garantia-somos-tienda-fisica-50755485-52188899",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD 🌐 Switch Ethernet Gigabit de 5 Puertos 🌐 AX | E01 | 20 USD",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-de-5-puertos-e01-20-usd-56437212",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
-          "precio": 29.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
-          "dias": null
-        }
-      ]
-    },
-    {
       "id": 1778102582909,
       "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 75.0,
@@ -170,10 +97,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-06",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-07",
           "mediana": 90.0
@@ -224,6 +147,10 @@
         },
         {
           "fecha": "2026-08-19",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-20",
           "mediana": 90.0
         }
       ],
