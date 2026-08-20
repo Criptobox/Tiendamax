@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-19T09:25:02.118028+00:00",
-  "productos": 131,
+  "generado": "2026-08-20T09:25:25.966604+00:00",
+  "productos": 132,
   "urgentes": 3,
   "advertencias": 0,
-  "info": 9,
-  "resumen": "Anoche revisé tus 131 productos y encontré 3 urgente(s), 9 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 132 productos y encontré 3 urgente(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -25,11 +25,6 @@
       "tipo": "stock_bajo",
       "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
       "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
-      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
@@ -63,8 +58,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "56 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 53 más"
+      "nombre": "60 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 57 más"
     }
   ]
 }
