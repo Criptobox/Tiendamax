@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-20T11:26:24.451845+00:00",
-  "fecha": "2026-08-20",
+  "actualizado": "2026-08-21T11:25:01.868479+00:00",
+  "fecha": "2026-08-21",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 180.0,
-        "n": 16
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -34,6 +34,10 @@
         },
         {
           "fecha": "2026-08-20",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-21",
           "mediana": 180.0
         }
       ],
@@ -54,13 +58,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "140 USD Inversor Tataliken 4000w",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-55465882",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "140 USD INVERSOR MARCA \"TATALIKEN\" DE. (   24 V ) Y 4000 W PICO",
           "precio": 140.0,
           "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24-v-y-4000-w-pico-56268741",
@@ -75,9 +72,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor tataliken de 12V 4000W",
+          "titulo": "180 USD Inversor marca Tataliken de 24v 4000w pico",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-56828077",
+          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24v-4000w-pico-56164540",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "180 USD Inversor tataliken 12 v 4000 w",
+          "precio": 180.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12-v-4000-w-56820966",
           "dias": null
         }
       ]
@@ -97,10 +101,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-07",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-08",
           "mediana": 90.0
@@ -151,6 +151,10 @@
         },
         {
           "fecha": "2026-08-20",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-21",
           "mediana": 90.0
         }
       ],
