@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-21T11:25:01.868479+00:00",
-  "fecha": "2026-08-21",
+  "actualizado": "2026-08-22T11:20:33.075760+00:00",
+  "fecha": "2026-08-22",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -39,6 +39,10 @@
         {
           "fecha": "2026-08-21",
           "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-22",
+          "mediana": 180.0
         }
       ],
       "muestras": [
@@ -72,16 +76,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor marca Tataliken de 24v 4000w pico",
+          "titulo": "180 USD Inversor Tataliken de 12V 4000W",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24v-4000w-pico-56164540",
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-56942193",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor tataliken 12 v 4000 w",
+          "titulo": "180 USD Inversor marca Tataliken de 24v 4000w pico",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-12-v-4000-w-56820966",
+          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24v-4000w-pico-56164540",
           "dias": null
         }
       ]
@@ -93,7 +97,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 15
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -101,10 +105,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-08",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-09",
           "mediana": 90.0
@@ -156,6 +156,10 @@
         {
           "fecha": "2026-08-21",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-08-22",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -196,9 +200,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Antorcha para soldadura",
+          "titulo": "75 USD Antorcha FEMEROL para soldadura",
           "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56821155",
+          "url": "https://www.revolico.com/item/antorcha-femerol-para-soldadura-56521672",
           "dias": null
         }
       ]
