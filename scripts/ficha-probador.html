@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Probador de fichas — TiendaMax</title>
+<link rel="stylesheet" href="../css/bundle.css">
+<style>
+:root{--co:#FF6B35;--bg:#0d0f14;--pa:#141821;--bd:rgba(255,255,255,.10);--mu:#9aa1ab;--tx:#e8e8ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);
+font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px}
+.top{position:sticky;top:0;z-index:20;background:var(--pa);border-bottom:1px solid var(--bd);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.top b{font-size:15px}
+.tabs{display:flex;gap:4px;background:rgba(0,0,0,.35);padding:3px;border-radius:9px}
+.tabs button{background:transparent;border:0;color:var(--mu);padding:6px 13px;border-radius:7px;
+font:600 13px inherit;cursor:pointer}
+.tabs button.on{background:var(--co);color:#fff}
+.top .sp{margin-left:auto;display:flex;gap:8px}
+button.act{background:var(--co);color:#fff;border:0;border-radius:9px;padding:8px 14px;
+font:700 13px inherit;cursor:pointer}
+button.gh{background:transparent;color:var(--tx);border:1px solid var(--bd);border-radius:9px;
+padding:8px 14px;font:600 13px inherit;cursor:pointer}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 56px)}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.pane{padding:16px;min-width:0}
+.pane.izq{border-right:1px solid var(--bd);background:#10131a}
+.pane>h3{font:800 11.5px inherit;text-transform:uppercase;letter-spacing:.09em;color:var(--mu);
+margin:0 0 10px}
+textarea#raw{width:100%;min-height:440px;background:#0a0c11;color:var(--tx);
+border:1px solid var(--bd);border-radius:11px;padding:13px;font:13px/1.6 ui-monospace,Menlo,monospace;
+resize:vertical}
+textarea#raw:focus,input:focus{outline:2px solid var(--co);outline-offset:-1px}
+.hint{color:var(--mu);font-size:12.5px;line-height:1.55;margin:9px 0 0}
+.hint code{color:#ffd1b3;background:rgba(255,107,53,.10);padding:1px 5px;border-radius:4px}
+/* formulario */
+.fset{margin:0 0 15px}
+.fset>h4{font:800 11.5px inherit;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);
+margin:0 0 7px;display:flex;gap:6px;align-items:center}
+.fr{display:flex;gap:6px;margin-bottom:5px}
+.fr input{flex:1;min-width:0;background:#0a0c11;color:var(--tx);border:1px solid var(--bd);
+border-radius:8px;padding:8px 10px;font:14px inherit}
+.fr input.k{flex:0 0 33%}
+.fr button{flex:none;width:30px;background:transparent;color:var(--mu);border:1px solid var(--bd);
+border-radius:8px;cursor:pointer}
+.addb{width:100%;background:transparent;color:var(--co);border:1px dashed var(--bd);
+border-radius:8px;padding:6px;font:700 12.5px inherit;cursor:pointer}
+/* ---- preview: reproduce el modal real ---- */
+.marco{background:var(--pa);border:1px solid var(--bd);border-radius:16px;padding:16px;
+position:sticky;top:72px}
+.pnom{font:800 18px inherit;margin:0 0 3px}
+.ppre{color:var(--co);font:800 24px inherit;margin:0 0 14px}
+#productDetailModal .detail-info>.tmf-ficha{order:10}
+#productDetailModal .detail-info>.tmf-cars{order:11}
+#productDetailModal .detail-info>.tmf-para{order:12}
+#productDetailModal .detail-info>.tmf-caja-sec{order:13}
+.tmf-sec{margin:16px 0 0;width:100%}
+.tmf-sec>h4{display:flex;align-items:center;gap:7px;font:800 12px inherit;text-transform:uppercase;
+letter-spacing:.06em;color:var(--mu);margin:0 0 8px}
+.tmf-tabla{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.tmf-tabla .r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tmf-tabla .r:last-child{border-bottom:0}
+.tmf-tabla .k{font:600 12.5px inherit;color:var(--mu);flex:0 0 auto}
+.tmf-tabla .v{font:800 13.5px inherit;color:#f4f4f7;text-align:right}
+.tmf-tabla .n{display:block;font:italic 500 11.5px inherit;color:var(--mu);margin-top:2px;text-align:right}
+.tmf-car{display:grid;gap:9px}
+.tmf-car .c{background:rgba(255,255,255,.03);border-left:3px solid var(--co);
+border-radius:0 9px 9px 0;padding:9px 12px}
+.tmf-car .t{display:block;font:800 13px inherit;color:#ffd1b3;margin-bottom:2px}
+.tmf-car .d{font:12.8px/1.45 inherit;color:#c8ccd4}
+.tmf-lista{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.tmf-lista li{position:relative;padding-left:22px;font:13px/1.45 inherit;color:#c8ccd4}
+.tmf-lista li::before{position:absolute;left:0;top:0}
+.tmf-ideal li::before{content:"🎯"}
+.tmf-caja li::before{content:"📦"}
+.tmf-caja li{color:var(--tx);font-weight:600}
+.vacio{color:var(--mu);font-size:13px;text-align:center;padding:26px;
+border:1px dashed var(--bd);border-radius:11px}
+#json{width:100%;min-height:220px;background:#0a0c11;color:#8ee6b0;border:1px solid var(--bd);
+border-radius:11px;padding:12px;font:12px/1.55 ui-monospace,Menlo,monospace;display:none}
+#msg{color:#6ee7b7;font:700 13px inherit;align-self:center}
+</style></head><body>
+
+<div class="top">
+ <b>🔬 Probador</b>
+ <div class="tabs">
+  <button id="tPeg" class="on">Pegar texto</button>
+  <button id="tForm">Formulario</button>
+ </div>
+ <div class="sp">
+  <button class="gh" id="ejemplo">Cargar ejemplo</button>
+  <button class="gh" id="limpiar">Vaciar</button>
+  <button class="gh" id="verJson">Ver JSON</button>
+  <button class="act" id="copiar">📋 Copiar JSON</button>
+  <span id="msg"></span>
+ </div>
+</div>
+
+<div class="split">
+ <div class="pane izq">
+  <div id="paneRaw">
+   <h3>Pegá la ficha tal cual la escribís</h3>
+   <textarea id="raw" spellcheck="false" placeholder="Pegá acá el texto de la ficha…"></textarea>
+   <p class="hint">Reconoce los encabezados por su nombre — <code>Especificaciones Clave</code>,
+   <code>Ficha Técnica</code>, <code>Características</code>, <code>Ideal Para</code>,
+   <code>Incluye la caja</code> — con o sin emoji. Adentro, cada línea
+   <code>Etiqueta: Valor</code> es un dato; lo que vaya entre paréntesis al final
+   del valor se guarda como <b>nota</b> aparte. La primera línea es el nombre y
+   <code>Precio: $180</code> el precio. Se actualiza mientras escribís.</p>
+  </div>
+  <div id="paneForm" style="display:none"></div>
+  <textarea id="json" spellcheck="false" readonly></textarea>
+ </div>
+
+ <div class="pane">
+  <h3>Así se ve en el sitio</h3>
+  <div class="marco">
+   <div id="productDetailModal"><div class="detail-body"><div class="detail-info" id="pv"></div></div></div>
+  </div>
+ </div>
+</div>
+
+<script>
+const EJEMPLO=`Inversor de Corriente Tataliken 4000W (12V a 110V/220V)
+Precio: $180.00 USD
+
+📊 Especificaciones Clave:
+Potencia: 4000W Pico / 2000W Continuos
+Voltaje: Entrada 12V DC ➔ Salida 110V / 220V AC
+Tipo de Onda: Modificada
+Uso: Ideal para respaldo y sistemas solares
+
+⚙️ Ficha Técnica Detallada
+Marca: Tataliken
+Potencia Máxima (Pico): 4000W (para arranques)
+Potencia Real (Continua): 2000W
+Voltaje de Entrada: 12V DC (requiere batería de 12V)
+Voltaje de Salida: 110V / 220V AC (según toma seleccionada)
+Tipo de Onda: Sinusoidal Modificada (Nota: ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados)
+
+⚡ Características Principales
+Capacidad de respaldo: Mantiene operativos electrodomésticos medianos y esenciales como ventiladores, televisores, bombillos LED y carga de dispositivos.
+Sistema de enfriamiento: Carcasa de aluminio diseñada con disipación térmica eficiente y ventilador integrado contra sobrecalentamiento.
+Seguridad: Protecciones incorporadas contra cortocircuitos, bajo voltaje e inversión de polaridad.
+
+🎯 Ideal Para
+Hogares en Cuba que buscan una alternativa de respaldo eficiente ante los cortes de electricidad utilizando un banco de baterías de 12V.
+Sistemas fotovoltaicos pequeños o medianos que operan bajo este mismo voltaje.
+
+📦 ¿Qué incluye la caja?
+1x Inversor Tataliken 4000W (12V).
+1x Juego de pinzas de conexión directa a batería.
+1x Manual de usuario.`;
+
+let D={nombre:'',precio:'',clave:[],ficha:[],caracteristicas:[],idealPara:[],incluye:[]};
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lim=s=>String(s||'').replace(/\s+/g,' ').trim();
+const sinPunto=s=>lim(s).replace(/\s*\.\s*$/,'');
+
+const SEC=[
+ [/especificaciones\s+clave/i,'clave'],
+ [/ficha\s+t[eé]cnica/i,'ficha'],
+ [/caracter[ií]sticas/i,'caracteristicas'],
+ [/ideal\s+para/i,'idealPara'],
+ [/(incluye|contenido).*caja|qu[eé]\s+incluye/i,'incluye'],
+ [/especificaciones(\s*\(specs\))?\s*:?\s*$/i,'ficha'],
+];
+
+// El paréntesis FINAL del valor es una aclaración, no parte del dato:
+// "4000W (para arranques)" -> valor 4000W + nota. Se separa para que el valor
+// siga siendo comparable entre productos.
+function partirNota(v){
+  const m=lim(v).match(/^(.*?)\s*\(\s*(?:nota\s*:\s*)?([^()]{4,})\)\s*\.?\s*$/i);
+  if(m && m[1].trim()) return {v:sinPunto(m[1]), nota:sinPunto(m[2])};
+  return {v:sinPunto(v), nota:''};
+}
+
+function parsear(txt){
+  const R={nombre:'',precio:'',clave:[],ficha:[],caracteristicas:[],idealPara:[],incluye:[]};
+  let sec=null;
+  for(let linea of String(txt||'').split('\n')){
+    const l=lim(linea);
+    if(!l) continue;
+    const cab=SEC.find(([re])=>re.test(l.replace(/^[^\p{L}]+/u,'')));
+    // Un encabezado es una línea corta y sin datos propios ("⚙️ Ficha Técnica
+    // Detallada"), no una línea que además trae un valor ("Marca: Tataliken").
+    if(cab && l.length<48 && !/:\s*\S/.test(l.replace(/:\s*$/,''))){ sec=cab[1]; continue; }
+    const mp=l.match(/^precio\s*:\s*(.+)$/i);
+    if(mp && !sec){ R.precio=sinPunto(mp[1]); continue; }
+    if(!sec){ if(!R.nombre) R.nombre=sinPunto(l); continue; }
+    if(sec==='idealPara'||sec==='incluye'){
+      R[sec].push(sinPunto(l.replace(/^[-•*▪]\s*/,'')));
+      continue;
+    }
+    const m=l.match(/^([^:]{2,46}):\s*(.+)$/);
+    if(!m) continue;
+    const k=sinPunto(m[1]);
+    if(sec==='caracteristicas'){ R.caracteristicas.push({t:k,d:sinPunto(m[2])}); }
+    else { const {v,nota}=partirNota(m[2]); const it={k,v}; if(nota) it.nota=nota; R[sec].push(it); }
+  }
+  return R;
+}
+
+function pintar(){
+  const has=D.clave.length||D.ficha.length||D.caracteristicas.length||D.idealPara.length||D.incluye.length;
+  if(!has && !D.nombre){ pv.innerHTML='<div class="vacio">Pegá o escribí la ficha y aparece acá.</div>'; return; }
+  let h='';
+  if(D.nombre) h+=`<p class="pnom" style="order:-9">${esc(D.nombre)}</p>`;
+  if(D.precio) h+=`<p class="ppre" style="order:-8">${esc(D.precio)}</p>`;
+  if(D.clave.length) h+=`<div class="detail-spec-badges detail-spec-table" style="display:block;order:4">`+
+    D.clave.map(c=>c.k
+      ?`<div class="dsr-row"><span class="dsr-label"><span>${esc(c.k)}</span></span><span class="dsr-value">${esc(c.v)}</span></div>`
+      :`<div class="dsr-row dsr-nolabel"><span class="dsr-value"><span>${esc(c.v)}</span></span></div>`).join('')+`</div>`;
+  if(D.ficha.length) h+=`<div class="tmf-sec tmf-ficha"><h4>⚙️ Ficha técnica detallada</h4><div class="tmf-tabla">`+
+    D.ficha.map(f=>`<div class="r"><span class="k">${esc(f.k)}</span><span class="v">${esc(f.v)}`+
+      (f.nota?`<span class="n">${esc(f.nota)}</span>`:'')+`</span></div>`).join('')+`</div></div>`;
+  if(D.caracteristicas.length) h+=`<div class="tmf-sec tmf-cars"><h4>⚡ Características principales</h4><div class="tmf-car">`+
+    D.caracteristicas.map(c=>`<div class="c"><span class="t">${esc(c.t)}</span><span class="d">${esc(c.d)}</span></div>`).join('')+`</div></div>`;
+  if(D.idealPara.length) h+=`<div class="tmf-sec tmf-para"><h4>🎯 Ideal para</h4><ul class="tmf-lista tmf-ideal">`+
+    D.idealPara.map(t=>`<li>${esc(t)}</li>`).join('')+`</ul></div>`;
+  if(D.incluye.length) h+=`<div class="tmf-sec tmf-caja-sec"><h4>📦 ¿Qué incluye la caja?</h4><ul class="tmf-lista tmf-caja">`+
+    D.incluye.map(t=>`<li>${esc(t)}</li>`).join('')+`</ul></div>`;
+  pv.innerHTML=h;
+  if(json.style.display==='block') json.value=salida();
+}
+
+function salida(){
+  const o={specs:D.clave.map(c=>c.k?`${c.k}: ${c.v}`:c.v)};
+  if(D.ficha.length) o.ficha=D.ficha;
+  if(D.caracteristicas.length) o.caracteristicas=D.caracteristicas;
+  if(D.idealPara.length) o.idealPara=D.idealPara;
+  if(D.incluye.length) o.incluye=D.incluye;
+  return JSON.stringify(o,null,2);
+}
+
+/* ---------- formulario ---------- */
+const BLQ=[['clave','📊 Especificaciones clave','kv','Potencia','4000W Pico / 2000W Cont.'],
+           ['ficha','⚙️ Ficha técnica detallada','kv','Voltaje de Entrada','12V DC'],
+           ['caracteristicas','⚡ Características principales','td','Seguridad','Protección contra…'],
+           ['idealPara','🎯 Ideal para','t','','Hogares con baterías de 12V…'],
+           ['incluye','📦 ¿Qué incluye la caja?','t','','1x Manual de usuario']];
+function form(){
+  paneForm.innerHTML='<h3>Cargá los datos a mano</h3>'+
+  `<div class="fset"><h4>Producto</h4>
+    <div class="fr"><input id="fNom" placeholder="Nombre del producto" value="${esc(D.nombre)}"></div>
+    <div class="fr"><input id="fPre" placeholder="Precio: $180.00 USD" value="${esc(D.precio)}"></div></div>`+
+  BLQ.map(([b,tit,tipo,p1,p2])=>`<div class="fset"><h4>${tit}</h4>`+
+    D[b].map((it,i)=>`<div class="fr" data-b="${b}" data-i="${i}">`+
+      (tipo==='t'?`<input class="v" placeholder="${p2}" value="${esc(it)}">`
+       :`<input class="k" placeholder="${p1}" value="${esc(tipo==='td'?it.t:it.k)}">
+         <input class="v" placeholder="${p2}" value="${esc(tipo==='td'?it.d:it.v)}">`)+
+      `<button class="x">✕</button></div>`).join('')+
+    `<button class="addb" data-add="${b}" data-t="${tipo}">+ agregar</button></div>`).join('');
+}
+paneForm.addEventListener('click',e=>{
+  const a=e.target.dataset.add;
+  if(a){ D[a].push(e.target.dataset.t==='t'?'':e.target.dataset.t==='td'?{t:'',d:''}:{k:'',v:''});
+         form(); pintar(); return; }
+  if(e.target.classList.contains('x')){
+    const r=e.target.closest('.fr'); D[r.dataset.b].splice(+r.dataset.i,1); form(); pintar(); }
+});
+paneForm.addEventListener('input',e=>{
+  if(e.target.id==='fNom'){D.nombre=e.target.value;return pintar();}
+  if(e.target.id==='fPre'){D.precio=e.target.value;return pintar();}
+  const r=e.target.closest('.fr'); if(!r) return;
+  const b=r.dataset.b, i=+r.dataset.i, v=e.target.value, k=e.target.classList.contains('k');
+  if(typeof D[b][i]==='string') D[b][i]=v;
+  else if(b==='caracteristicas') D[b][i][k?'t':'d']=v;
+  else D[b][i][k?'k':'v']=v;
+  pintar();
+});
+
+/* ---------- tabs / acciones ---------- */
+const aviso=t=>{msg.textContent=t;setTimeout(()=>msg.textContent='',2200);};
+function tab(peg){
+  tPeg.classList.toggle('on',peg); tForm.classList.toggle('on',!peg);
+  paneRaw.style.display=peg?'':'none'; paneForm.style.display=peg?'none':'';
+  if(!peg) form();
+}
+tPeg.onclick=()=>tab(true);
+tForm.onclick=()=>tab(false);
+raw.addEventListener('input',()=>{D=parsear(raw.value);pintar();});
+ejemplo.onclick=()=>{raw.value=EJEMPLO;D=parsear(EJEMPLO);tab(true);pintar();aviso('cargado');};
+limpiar.onclick=()=>{raw.value='';D=parsear('');form();pintar();};
+verJson.onclick=()=>{const v=json.style.display!=='block';json.style.display=v?'block':'none';
+  if(v)json.value=salida();};
+copiar.onclick=async()=>{try{await navigator.clipboard.writeText(salida());aviso('copiado');}
+  catch(e){json.style.display='block';json.value=salida();json.select();aviso('seleccioná y copiá');}};
+
+raw.value=EJEMPLO; D=parsear(EJEMPLO); pintar();
+</script></body></html>
