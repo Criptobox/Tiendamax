@@ -1,0 +1,326 @@
+<title>Probador de Fichas TiendaMax</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* ── Paleta del taller (se adapta al tema del lector) ─────────────── */
+:root{
+  --paper:#f2f4f6; --surf:#ffffff; --ink:#181b21; --mut:#6c7480; --rule:#dee2e8;
+  --field:#f7f8fa; --coral:#E85A1F; --coral-soft:rgba(232,90,31,.10);
+  --ok:#0f7d55;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#14171d; --surf:#1b1f27; --ink:#e6e9ee; --mut:#98a1ae; --rule:#2b313b;
+    --field:#0f1217; --coral:#FF6B35; --coral-soft:rgba(255,107,53,.13);
+    --ok:#4ade80;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14171d; --surf:#1b1f27; --ink:#e6e9ee; --mut:#98a1ae; --rule:#2b313b;
+  --field:#0f1217; --coral:#FF6B35; --coral-soft:rgba(255,107,53,.13);
+  --ok:#4ade80;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 15px/1.55 Archivo,system-ui,-apple-system,Segoe UI,sans-serif;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+
+/* ── Barra ────────────────────────────────────────────────────────── */
+.bar{position:sticky;top:0;z-index:30;background:var(--surf);border-bottom:1px solid var(--rule);
+  padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font:700 15px Archivo,sans-serif;letter-spacing:-.01em;display:flex;gap:7px;align-items:center}
+.brand span{width:9px;height:9px;border-radius:2px;background:var(--coral);display:block}
+.seg{display:flex;background:var(--field);border:1px solid var(--rule);border-radius:9px;padding:2px}
+.seg button{background:none;border:0;color:var(--mut);padding:6px 14px;border-radius:7px;
+  font:600 13px Archivo,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--coral);color:#fff}
+.acts{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+button.gh{background:var(--surf);color:var(--ink);border:1px solid var(--rule);border-radius:9px;
+  padding:8px 13px;font:600 13px Archivo,sans-serif;cursor:pointer}
+button.gh:hover{border-color:var(--coral);color:var(--coral)}
+button.pr{background:var(--coral);color:#fff;border:0;border-radius:9px;padding:8px 15px;
+  font:700 13px Archivo,sans-serif;cursor:pointer}
+:where(button,textarea,input):focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+#flash{color:var(--ok);font:700 13px Archivo,sans-serif;min-width:64px}
+
+/* ── Dos paneles ──────────────────────────────────────────────────── */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+@media(max-width:940px){.split{grid-template-columns:1fr}}
+.pane{padding:18px 16px;min-width:0}
+.pane.in{border-right:1px solid var(--rule)}
+@media(max-width:940px){.pane.in{border-right:0;border-bottom:1px solid var(--rule)}}
+.eyebrow{font:600 11px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--mut);margin:0 0 9px}
+
+textarea#raw{width:100%;min-height:46vh;background:var(--field);color:var(--ink);
+  border:1px solid var(--rule);border-radius:11px;padding:13px;
+  font:400 12.5px/1.65 "IBM Plex Mono",ui-monospace,Menlo,monospace;resize:vertical}
+.hint{color:var(--mut);font-size:12.5px;line-height:1.6;margin:10px 0 0}
+.hint kbd{font:500 11.5px "IBM Plex Mono",monospace;background:var(--coral-soft);
+  color:var(--coral);padding:2px 6px;border-radius:4px;border:0}
+
+/* formulario */
+.fset{margin:0 0 16px}
+.fset h4{font:700 11px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--mut);margin:0 0 8px}
+.fr{display:flex;gap:6px;margin-bottom:5px}
+.fr input{flex:1;min-width:0;background:var(--field);color:var(--ink);border:1px solid var(--rule);
+  border-radius:8px;padding:8px 10px;font:400 14px Archivo,sans-serif}
+.fr input.k{flex:0 0 34%}
+.fr .del{flex:none;width:32px;background:none;color:var(--mut);border:1px solid var(--rule);
+  border-radius:8px;cursor:pointer;font-size:13px}
+.fr .del:hover{color:#e5484d;border-color:#e5484d}
+.addb{width:100%;background:none;color:var(--coral);border:1px dashed var(--rule);border-radius:8px;
+  padding:7px;font:700 12.5px Archivo,sans-serif;cursor:pointer}
+.addb:hover{border-color:var(--coral)}
+
+/* ── El panel de vista previa es SIEMPRE oscuro: el sitio es oscuro,
+      así que imitar el tema del lector daría una vista falsa. ─────── */
+.sitio{background:#0d0f14;border:1px solid #262b35;border-radius:16px;padding:18px;
+  position:sticky;top:74px;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media(max-width:940px){.sitio{position:static}}
+.sitio .pnom{font:800 18px/1.3 system-ui,sans-serif;color:#e8e8ee;margin:0 0 3px}
+.sitio .ppre{font:800 23px system-ui,sans-serif;color:#FF6B35;margin:0 0 15px}
+.info{display:flex;flex-direction:column}
+
+/* Reglas medidas del sitio en vivo (modal-v4.css gana la cascada).
+   Etiqueta y valor salen IDÉNTICOS: mismo color, tamaño y peso. */
+.specs{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;width:100%;margin:6px 0 8px;order:4}
+.specs .dsr-row{display:inline-flex;align-items:center;justify-content:flex-start;flex:0 1 auto;
+  width:auto;max-width:100%;min-width:0;gap:6px;padding:10px 14px;
+  border:1.5px solid rgba(255,107,53,.55);border-radius:10px;
+  background:linear-gradient(135deg,rgba(255,107,53,.14),rgba(255,77,0,.08));
+  box-shadow:0 2px 8px rgba(255,107,53,.15);line-height:1.3;overflow-wrap:break-word}
+.specs .dsr-label,.specs .dsr-value{color:#ffd1b3;font-size:13.5px;font-weight:700}
+.specs .dsr-row.sep .dsr-label::after{content:"·";margin-left:6px;opacity:.5}
+
+/* Bloques nuevos. El order importa: .detail-info es flex column y el sitio
+   ya usa -3..9; sin order propio caerían arriba de las specs. */
+.tmf{width:100%;margin:16px 0 0}
+.tmf-ficha{order:10} .tmf-cars{order:11} .tmf-para{order:12} .tmf-caja-sec{order:13}
+.tmf h4{display:flex;gap:7px;align-items:center;font:800 12px system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.06em;color:#9aa1ab;margin:0 0 8px}
+.tbl{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;overflow:hidden}
+.tbl .r{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 13px;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.tbl .r:last-child{border-bottom:0}
+.tbl .k{font:600 12.5px system-ui,sans-serif;color:#9aa1ab;flex:0 0 auto}
+.tbl .v{font:800 13.5px system-ui,sans-serif;color:#f4f4f7;text-align:right;
+  font-variant-numeric:tabular-nums}
+.tbl .n{display:block;font:italic 500 11.5px system-ui,sans-serif;color:#9aa1ab;
+  margin-top:3px;text-align:right}
+.cars{display:grid;gap:9px}
+.cars .c{background:rgba(255,255,255,.03);border-left:3px solid #FF6B35;
+  border-radius:0 9px 9px 0;padding:9px 12px}
+.cars .t{display:block;font:800 13px system-ui,sans-serif;color:#ffd1b3;margin-bottom:2px}
+.cars .d{font:400 12.8px/1.45 system-ui,sans-serif;color:#c8ccd4}
+.lst{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.lst li{position:relative;padding-left:23px;font:400 13px/1.45 system-ui,sans-serif;color:#c8ccd4}
+.lst li::before{position:absolute;left:0;top:0}
+.ideal li::before{content:"🎯"}
+.caja li::before{content:"📦"} .caja li{color:#e8e8ee;font-weight:600}
+.nada{color:#8b93a0;font-size:13px;text-align:center;padding:34px 16px;
+  border:1px dashed #2b313b;border-radius:12px}
+
+#json{width:100%;min-height:200px;margin-top:12px;background:var(--field);color:var(--ink);
+  border:1px solid var(--rule);border-radius:11px;padding:12px;
+  font:400 12px/1.6 "IBM Plex Mono",ui-monospace,monospace;display:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="bar">
+  <div class="brand"><span></span>Probador de fichas</div>
+  <div class="seg" role="group" aria-label="Modo de carga">
+    <button id="tPeg" aria-pressed="true">Pegar texto</button>
+    <button id="tForm" aria-pressed="false">Formulario</button>
+  </div>
+  <div class="acts">
+    <button class="gh" id="ejemplo">Ejemplo</button>
+    <button class="gh" id="vaciar">Vaciar</button>
+    <button class="gh" id="verJson">Ver JSON</button>
+    <button class="pr" id="copiar">Copiar JSON</button>
+    <span id="flash" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<div class="split">
+  <section class="pane in">
+    <div id="paneRaw">
+      <p class="eyebrow">Pegá la ficha tal cual la escribís</p>
+      <textarea id="raw" spellcheck="false" aria-label="Texto de la ficha"></textarea>
+      <p class="hint">Reconoce los encabezados por su nombre — <kbd>Especificaciones Clave</kbd>,
+      <kbd>Ficha Técnica</kbd>, <kbd>Características</kbd>, <kbd>Ideal Para</kbd>,
+      <kbd>Incluye la caja</kbd> — con o sin emoji. Adentro, cada línea
+      <kbd>Etiqueta: Valor</kbd> es un dato. Lo que vaya entre paréntesis al final del
+      valor se guarda como <b>nota</b> aparte, para que el valor siga siendo comparable
+      entre productos. La primera línea es el nombre; <kbd>Precio: $180</kbd>, el precio.</p>
+    </div>
+    <div id="paneForm" hidden></div>
+    <textarea id="json" spellcheck="false" readonly aria-label="JSON generado"></textarea>
+  </section>
+
+  <section class="pane">
+    <p class="eyebrow">Así se ve en el sitio</p>
+    <div class="sitio"><div class="info" id="pv"></div></div>
+  </section>
+</div>
+
+<script>
+const EJEMPLO=`Inversor de Corriente Tataliken 4000W (12V a 110V/220V)
+Precio: $180.00 USD
+
+📊 Especificaciones Clave:
+Potencia: 4000W Pico / 2000W Continuos
+Voltaje: Entrada 12V DC ➔ Salida 110V / 220V AC
+Tipo de Onda: Modificada
+Uso: Ideal para respaldo y sistemas solares
+
+⚙️ Ficha Técnica Detallada
+Marca: Tataliken
+Potencia Máxima (Pico): 4000W (para arranques)
+Potencia Real (Continua): 2000W
+Voltaje de Entrada: 12V DC (requiere batería de 12V)
+Voltaje de Salida: 110V / 220V AC (según toma seleccionada)
+Tipo de Onda: Sinusoidal Modificada (Nota: ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados)
+
+⚡ Características Principales
+Capacidad de respaldo: Mantiene operativos electrodomésticos medianos y esenciales como ventiladores, televisores, bombillos LED y carga de dispositivos.
+Sistema de enfriamiento: Carcasa de aluminio diseñada con disipación térmica eficiente y ventilador integrado contra sobrecalentamiento.
+Seguridad: Protecciones incorporadas contra cortocircuitos, bajo voltaje e inversión de polaridad.
+
+🎯 Ideal Para
+Hogares en Cuba que buscan una alternativa de respaldo eficiente ante los cortes de electricidad utilizando un banco de baterías de 12V.
+Sistemas fotovoltaicos pequeños o medianos que operan bajo este mismo voltaje.
+
+📦 ¿Qué incluye la caja?
+1x Inversor Tataliken 4000W (12V).
+1x Juego de pinzas de conexión directa a batería.
+1x Manual de usuario.`;
+
+const VACIO=()=>({nombre:'',precio:'',clave:[],ficha:[],caracteristicas:[],idealPara:[],incluye:[]});
+let D=VACIO();
+
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lim=s=>String(s||'').replace(/\s+/g,' ').trim();
+const sp=s=>lim(s).replace(/\s*\.\s*$/,'');
+
+const SEC=[[/especificaciones\s+clave/i,'clave'],[/ficha\s+t[eé]cnica/i,'ficha'],
+ [/caracter[ií]sticas/i,'caracteristicas'],[/ideal\s+para/i,'idealPara'],
+ [/(incluye|contenido).*caja|qu[eé]\s+incluye/i,'incluye'],
+ [/especificaciones(\s*\(specs\))?\s*:?\s*$/i,'ficha']];
+
+function partirNota(v){
+  const m=lim(v).match(/^(.*?)\s*\(\s*(?:nota\s*:\s*)?([^()]{4,})\)\s*\.?\s*$/i);
+  return (m&&m[1].trim())?{v:sp(m[1]),nota:sp(m[2])}:{v:sp(v),nota:''};
+}
+function parsear(txt){
+  const R=VACIO(); let sec=null;
+  for(const linea of String(txt||'').split('\n')){
+    const l=lim(linea); if(!l) continue;
+    const cab=SEC.find(([re])=>re.test(l.replace(/^[^\p{L}]+/u,'')));
+    if(cab&&l.length<48&&!/:\s*\S/.test(l.replace(/:\s*$/,''))){sec=cab[1];continue;}
+    const mp=l.match(/^precio\s*:\s*(.+)$/i);
+    if(mp&&!sec){R.precio=sp(mp[1]);continue;}
+    if(!sec){if(!R.nombre)R.nombre=sp(l);continue;}
+    if(sec==='idealPara'||sec==='incluye'){R[sec].push(sp(l.replace(/^[-•*▪]\s*/,'')));continue;}
+    const m=l.match(/^([^:]{2,46}):\s*(.+)$/); if(!m) continue;
+    const k=sp(m[1]);
+    if(sec==='caracteristicas')R.caracteristicas.push({t:k,d:sp(m[2])});
+    else{const{v,nota}=partirNota(m[2]);const it={k,v};if(nota)it.nota=nota;R[sec].push(it);}
+  }
+  return R;
+}
+
+const pv=document.getElementById('pv');
+function pintar(){
+  const algo=D.clave.length||D.ficha.length||D.caracteristicas.length||D.idealPara.length||D.incluye.length;
+  if(!algo&&!D.nombre){pv.innerHTML='<p class="nada">Pegá o escribí la ficha y aparece acá.</p>';return;}
+  let h='';
+  if(D.nombre)h+=`<p class="pnom" style="order:-9">${esc(D.nombre)}</p>`;
+  if(D.precio)h+=`<p class="ppre" style="order:-8">${esc(D.precio)}</p>`;
+  if(D.clave.length)h+=`<div class="specs">`+D.clave.map(c=>c.k
+    ?`<div class="dsr-row sep"><span class="dsr-label">${esc(c.k)}</span><span class="dsr-value">${esc(c.v)}</span></div>`
+    :`<div class="dsr-row"><span class="dsr-value">${esc(c.v)}</span></div>`).join('')+`</div>`;
+  if(D.ficha.length)h+=`<div class="tmf tmf-ficha"><h4>⚙️ Ficha técnica detallada</h4><div class="tbl">`+
+    D.ficha.map(f=>`<div class="r"><span class="k">${esc(f.k)}</span><span class="v">${esc(f.v)}`+
+    (f.nota?`<span class="n">${esc(f.nota)}</span>`:'')+`</span></div>`).join('')+`</div></div>`;
+  if(D.caracteristicas.length)h+=`<div class="tmf tmf-cars"><h4>⚡ Características principales</h4><div class="cars">`+
+    D.caracteristicas.map(c=>`<div class="c"><span class="t">${esc(c.t)}</span><span class="d">${esc(c.d)}</span></div>`).join('')+`</div></div>`;
+  if(D.idealPara.length)h+=`<div class="tmf tmf-para"><h4>🎯 Ideal para</h4><ul class="lst ideal">`+
+    D.idealPara.map(t=>`<li>${esc(t)}</li>`).join('')+`</ul></div>`;
+  if(D.incluye.length)h+=`<div class="tmf tmf-caja-sec"><h4>📦 ¿Qué incluye la caja?</h4><ul class="lst caja">`+
+    D.incluye.map(t=>`<li>${esc(t)}</li>`).join('')+`</ul></div>`;
+  pv.innerHTML=h;
+  if(json.style.display==='block')json.value=salida();
+  try{localStorage.setItem('tm_probador',raw.value);}catch(e){}
+}
+function salida(){
+  const o={specs:D.clave.map(c=>c.k?`${c.k}: ${c.v}`:c.v)};
+  if(D.ficha.length)o.ficha=D.ficha;
+  if(D.caracteristicas.length)o.caracteristicas=D.caracteristicas;
+  if(D.idealPara.length)o.idealPara=D.idealPara;
+  if(D.incluye.length)o.incluye=D.incluye;
+  return JSON.stringify(o,null,2);
+}
+
+const BLQ=[['clave','📊 Especificaciones clave','kv','Potencia','4000W Pico / 2000W Cont.'],
+ ['ficha','⚙️ Ficha técnica detallada','kv','Voltaje de Entrada','12V DC'],
+ ['caracteristicas','⚡ Características principales','td','Seguridad','Protección contra…'],
+ ['idealPara','🎯 Ideal para','t','','Hogares con baterías de 12V…'],
+ ['incluye','📦 ¿Qué incluye la caja?','t','','1x Manual de usuario']];
+function form(){
+  paneForm.innerHTML='<p class="eyebrow">Cargá los datos a mano</p>'+
+   `<div class="fset"><h4>Producto</h4>
+     <div class="fr"><input id="fNom" placeholder="Nombre del producto" value="${esc(D.nombre)}"></div>
+     <div class="fr"><input id="fPre" placeholder="$180.00 USD" value="${esc(D.precio)}"></div></div>`+
+   BLQ.map(([b,tit,tipo,p1,p2])=>`<div class="fset"><h4>${tit}</h4>`+
+     D[b].map((it,i)=>`<div class="fr" data-b="${b}" data-i="${i}">`+
+       (tipo==='t'?`<input class="v" placeholder="${p2}" value="${esc(it)}">`
+        :`<input class="k" placeholder="${p1}" value="${esc(tipo==='td'?it.t:it.k)}">
+          <input class="v" placeholder="${p2}" value="${esc(tipo==='td'?it.d:it.v)}">`)+
+       `<button class="del" aria-label="Borrar">✕</button></div>`).join('')+
+     `<button class="addb" data-add="${b}" data-t="${tipo}">+ agregar</button></div>`).join('');
+}
+paneForm.addEventListener('click',e=>{
+  const a=e.target.dataset.add;
+  if(a){D[a].push(e.target.dataset.t==='t'?'':e.target.dataset.t==='td'?{t:'',d:''}:{k:'',v:''});
+    form();pintar();return;}
+  if(e.target.classList.contains('del')){
+    const r=e.target.closest('.fr');D[r.dataset.b].splice(+r.dataset.i,1);form();pintar();}
+});
+paneForm.addEventListener('input',e=>{
+  if(e.target.id==='fNom'){D.nombre=e.target.value;return pintar();}
+  if(e.target.id==='fPre'){D.precio=e.target.value;return pintar();}
+  const r=e.target.closest('.fr'); if(!r)return;
+  const b=r.dataset.b,i=+r.dataset.i,v=e.target.value,k=e.target.classList.contains('k');
+  if(typeof D[b][i]==='string')D[b][i]=v;
+  else if(b==='caracteristicas')D[b][i][k?'t':'d']=v;
+  else D[b][i][k?'k':'v']=v;
+  pintar();
+});
+
+const flash=t=>{document.getElementById('flash').textContent=t;
+  setTimeout(()=>document.getElementById('flash').textContent='',2200);};
+function modo(peg){
+  tPeg.setAttribute('aria-pressed',peg); tForm.setAttribute('aria-pressed',!peg);
+  paneRaw.hidden=!peg; paneForm.hidden=peg; if(!peg)form();
+}
+tPeg.onclick=()=>modo(true);
+tForm.onclick=()=>modo(false);
+raw.addEventListener('input',()=>{D=parsear(raw.value);pintar();});
+ejemplo.onclick=()=>{raw.value=EJEMPLO;D=parsear(EJEMPLO);modo(true);pintar();flash('cargado');};
+vaciar.onclick=()=>{raw.value='';D=VACIO();form();pintar();flash('vacío');};
+verJson.onclick=()=>{const v=json.style.display!=='block';
+  json.style.display=v?'block':'none';if(v)json.value=salida();};
+copiar.onclick=async()=>{
+  try{await navigator.clipboard.writeText(salida());flash('copiado');}
+  catch(e){json.style.display='block';json.value=salida();json.select();flash('seleccioná y copiá');}
+};
+
+let guardado=''; try{guardado=localStorage.getItem('tm_probador')||'';}catch(e){}
+raw.value=guardado||EJEMPLO; D=parsear(raw.value); pintar();
+</script>

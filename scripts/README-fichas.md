@@ -5,7 +5,8 @@ del deploy, así que nada de esto se publica en el sitio.
 
 | Archivo | Para qué |
 |---|---|
-| `ficha-probador.html` | **Empezá acá.** Pegás la ficha y la ves renderizada al instante. |
+| `ficha-probador.html` | **Empezá acá.** Pegás la ficha y la ves renderizada al instante. Usa el `bundle.css` real del repo. |
+| `ficha-probador-web.html` | La misma herramienta pero **autocontenida** (sin depender del repo), para publicarla como página. |
 | `ficha-editor.html` | Cargar los 132 productos uno por uno, precargado desde el catálogo. |
 | `ficha-preview.html` | Comparación fija antes/después del Tataliken. |
 
@@ -21,6 +22,17 @@ Doble clic y listo (funciona con `file://`, sin servidor ni internet).
   aparte — `4000W (para arranques)` → valor `4000W` + nota. Así el valor sigue
   siendo comparable entre productos.
 - **Copiar JSON** te da el fragmento listo para pegar en `productos.json`.
+
+### Sobre el chip de las specs clave
+
+`modal-v4.css` iguala `.dsr-label` y `.dsr-value` con `!important` (mismo color
+`#ffd1b3`, mismo tamaño 13.5px, mismo peso 700). Sin separador el chip se lee
+`Potencia 4000W Pico / 2000W Continuos` de corrido, sin distinguir el nombre del
+dato. Los dos probadores agregan un `·` con un `::after` — no toca
+`modal-v4.css`, que por convención gana todo.
+
+Ojo: el contenedor tiene que llevar `id="detailSpecBadges"`, no solo la clase.
+Sin el `id` las reglas de `modal-v4.css` no aplican y la vista previa miente.
 
 ---
 

@@ -53,6 +53,10 @@ position:sticky;top:72px}
 #productDetailModal .detail-info>.tmf-cars{order:11}
 #productDetailModal .detail-info>.tmf-para{order:12}
 #productDetailModal .detail-info>.tmf-caja-sec{order:13}
+/* modal-v4.css iguala .dsr-label y .dsr-value (#ffd1b3, 700, 13.5px) con
+   !important: sin separador el chip se lee "Potencia 4000W Pico" de corrido.
+   Un ::after no toca modal-v4.css ni compite con sus reglas. */
+#pv .dsr-row.sep .dsr-label::after{content:"·";margin-left:6px;opacity:.5}
 .tmf-sec{margin:16px 0 0;width:100%}
 .tmf-sec>h4{display:flex;align-items:center;gap:7px;font:800 12px inherit;text-transform:uppercase;
 letter-spacing:.06em;color:var(--mu);margin:0 0 8px}
@@ -208,9 +212,9 @@ function pintar(){
   let h='';
   if(D.nombre) h+=`<p class="pnom" style="order:-9">${esc(D.nombre)}</p>`;
   if(D.precio) h+=`<p class="ppre" style="order:-8">${esc(D.precio)}</p>`;
-  if(D.clave.length) h+=`<div class="detail-spec-badges detail-spec-table" style="display:block;order:4">`+
+  if(D.clave.length) h+=`<div id="detailSpecBadges" class="detail-spec-badges detail-spec-table" style="display:block;order:4">`+
     D.clave.map(c=>c.k
-      ?`<div class="dsr-row"><span class="dsr-label"><span>${esc(c.k)}</span></span><span class="dsr-value">${esc(c.v)}</span></div>`
+      ?`<div class="dsr-row sep"><span class="dsr-label"><span>${esc(c.k)}</span></span><span class="dsr-value">${esc(c.v)}</span></div>`
       :`<div class="dsr-row dsr-nolabel"><span class="dsr-value"><span>${esc(c.v)}</span></span></div>`).join('')+`</div>`;
   if(D.ficha.length) h+=`<div class="tmf-sec tmf-ficha"><h4>⚙️ Ficha técnica detallada</h4><div class="tmf-tabla">`+
     D.ficha.map(f=>`<div class="r"><span class="k">${esc(f.k)}</span><span class="v">${esc(f.v)}`+
