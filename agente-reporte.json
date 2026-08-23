@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-22T09:18:42.537151+00:00",
+  "generado": "2026-08-23T09:19:48.508431+00:00",
   "productos": 132,
   "urgentes": 3,
   "advertencias": 0,
-  "info": 8,
-  "resumen": "Anoche revisé tus 132 productos y encontré 3 urgente(s), 8 de info.",
+  "info": 7,
+  "resumen": "Anoche revisé tus 132 productos y encontré 3 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -48,18 +48,13 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
-      "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
       "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
-      "nombre": "62 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 59 más"
+      "nombre": "64 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 61 más"
     }
   ]
 }
