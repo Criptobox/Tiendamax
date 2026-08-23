@@ -133,13 +133,28 @@ migrar hay que confirmar cuál manda.
 
 | Dato | Catálogo hoy | Plantilla | Comentario |
 |---|---|---|---|
-| Potencia | "Potencia **nominal** de 4000W" | "4000W **Pico** / 2000W Continuos" | Se contradicen. La plantilla es la correcta: en estos equipos los 4000W son pico. |
+| Potencia | "Potencia **nominal** de 4000W" | "4000W **Pico** / 2000W Continuos" | ✅ **CONFIRMADO por el dueño sobre el equipo físico: 2000W continuos / 4000W pico.** El catálogo estaba mal. (Tataliken vende además variantes de 1200W y 1500W continuos — por eso el modelo exacto importa.) |
 | Electrodomésticos | `seoDescription`: "un **refrigerador**, ventiladores, televisores" | ventiladores, TV, LED, carga de dispositivos — **sin refrigerador** | Un refrigerador es motor inductivo con pico de arranque. Con 2000W continuos y **onda modificada** es justo lo que no conviene prometer. |
 | Tipo de onda | no está | Sinusoidal Modificada | Dato ausente y decisivo: el catálogo tiene otros inversores de **onda pura** (Unizuki 3000W, POWMR 5000W) y hoy el cliente no puede distinguirlos. |
 | Salida | no está | 110V / 220V AC | dato nuevo |
 | Nombre | `⚡ Inversor  Tataliken 4000W ( 12V )` (doble espacio) | `Inversor de Corriente Tataliken 4000W (12V a 110V/220V)` | |
 
 ---
+
+## 6-bis. El `order` del modal — trampa de implementación
+
+`#productDetailModal .detail-info` es **flex column** y `modal-v4.css` le asigna
+un `order` explícito a cada hijo (`-3` a `9`, ver L715-727). Un bloque nuevo sin
+`order` propio vale `0` y aparece **arriba de las specs**, no donde se lo puso en
+el HTML. Los bloques nuevos van `10..13`, o sea **después del botón de compra**:
+si la ficha larga va antes, empuja el CTA fuera de pantalla, y el que baja hasta
+ahí ya está investigando el producto.
+
+Segundo detalle: `modal-v4.css` gana sobre `rediseno-cards.css` y convierte
+`.dsr-row` de fila de tabla a **chip inline naranja**. O sea que la "tabla
+prolija" que describe el comentario de `tm-product.src.js` **no es lo que se ve
+en producción** — se ven chips. Decidir si las specs clave siguen siendo chips
+(consistente con el sitio) o pasan a tabla como la ficha detallada.
 
 ## 7. Plan sugerido
 
