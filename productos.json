@@ -17,8 +17,8 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "12.8V",
-      "100Ah"
+      "Voltaje: 12.8V",
+      "Capacidad: 100Ah"
     ],
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
@@ -47,7 +47,7 @@
       "https://tiendamax.org/imagenes/img_1777924118004.webp"
     ],
     "specs": [
-      "⚡ 4000W de Potencia",
+      "⚡ Potencia: 4000W",
       "🔋 Conversión 12V DC a AC"
     ],
     "recomendados": [],
@@ -279,7 +279,7 @@
     "slug": "cargador-inteligente-15a",
     "comision": 5,
     "specs": [
-      "12v"
+      "Voltaje: 12V"
     ],
     "seoTitle": "CARGADOR INTELIGENTE DE 15 AMPERES: en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…",
@@ -329,8 +329,7 @@
     "slug": "cargador-10-amperes",
     "comision": 5,
     "specs": [
-      "12V",
-      "24V"
+      "Voltaje: 12V / 24V"
     ],
     "seoTitle": "CARGADOR 10 AMPERES en Cuba | TiendaMax",
     "seoDescription": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y…",
@@ -382,9 +381,9 @@
     "slug": "inversor-solar-hibrido-mppt-3-6kw",
     "comision": 25,
     "specs": [
-      "3.6kW",
-      "24v",
-      "120A",
+      "Potencia: 3.6kW",
+      "Corriente: 120A",
+      "24V",
       "110V"
     ],
     "seoTitle": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW | TiendaMax",
@@ -407,8 +406,8 @@
     "slug": "inversor-de-onda-sinusoidal-pura-fuera-de-la-red",
     "comision": 35,
     "specs": [
-      "☀️ Inversor Solar Híbrido",
-      "⚡ Alta Capacidad: 5000W"
+      "⚡ Alta Capacidad: 5000W",
+      "☀️ Inversor Solar Híbrido"
     ],
     "seoTitle": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED | TiendaMax",
     "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…",
@@ -466,8 +465,8 @@
     "slug": "controlador-carga-solar-mppt-100a",
     "comision": 5,
     "specs": [
-      "100A",
-      "48V"
+      "Corriente: 100A",
+      "Voltaje: 48V"
     ],
     "seoTitle": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A en Cuba | TiendaMax",
     "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…",
@@ -519,7 +518,7 @@
     "slug": "bluetti-ac-180p",
     "comision": 20,
     "specs": [
-      "1,800W"
+      "Potencia: 1800W"
     ],
     "seoTitle": "BLUETTI AC 180P en Cuba | TiendaMax",
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…",
@@ -1481,8 +1480,8 @@
     "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
-      "25A",
-      "24v"
+      "Corriente: 25A",
+      "Voltaje: 24V"
     ],
     "seoTitle": "CARGADORES INTELIGENTES DE 25A en Cuba | TiendaMax",
     "seoDescription": "Cargadores inteligentes de 25A autovolt a12V y 24v Amperaje ajustable para carga lenta, media o rápida segun su preferencia. Compatible con baterías de…",
@@ -1505,10 +1504,7 @@
     "slug": "controlador-solar-60a-mppt-ultra",
     "comision": 10,
     "specs": [
-      "12V",
-      "24V",
-      "36V",
-      "48V"
+      "Voltaje: 12V / 24V / 36V / 48V"
     ],
     "seoTitle": "CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA | TiendaMax",
     "seoDescription": "♻️CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA♻️ 🔴PARA BATERIAS DE 12V,24V,36V,48V🔴 ♻️Características Principales y Técnicas♻️ 1. ♻️Tecnología MPPT…",
@@ -2221,8 +2217,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "110v",
-      "100A"
+      "Voltaje: 110V",
+      "Corriente: 100A"
     ],
     "fechaAgregado": "2026-06-26T02:08:08.529Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -2460,7 +2456,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "12V / 3000W"
+      "Voltaje: 12V",
+      "Potencia: 3000W"
     ],
     "fechaAgregado": "2026-07-04T15:40:34.140Z",
     "descripcion": "Inversor de corriente de onda senoidal pura UNIZUKI, modelo DA 3000W, entrada de 12V. La onda senoidal pura entrega corriente estable y segura para equipos electrónicos sensibles. Incluye cables con pinzas para batería. Convierte la energía de tu batería en corriente alterna para mantener tu casa o negocio funcionando durante los apagones.",
@@ -2487,7 +2484,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ 4000W de Potencia",
+      "⚡ Potencia: 4000W",
       "🔋 Conversión 24V DC a AC"
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
@@ -3323,9 +3320,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "​⚡ Tecnología MPPT de Alta Eficiencia (120A) ​",
       "🔋 Rango de Compatibilidad: Sistemas de 12V hasta 96V",
-      "​🔌 Entrada PV: Máximo 230VDC"
+      "​🔌 Entrada PV: Máximo 230VDC",
+      "​⚡ Tecnología MPPT de Alta Eficiencia (120A) ​"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z",
     "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.\n​Ficha Técnica:\n​Rendimiento y Potencia: ⚡ Capacidad de carga continua de 120A, ideal para gestionar bancos de baterías de gran capacidad en sistemas de energía solar fuera de la red.\n​Margen de Voltaje de Entrada (PV): 🔌 Admite un voltaje máximo de circuito abierto de paneles (Voc) de hasta 230VDC, facilitando configuraciones serie eficientes.\n​Amplia Compatibilidad de Sistema: 🔋 Soporta una escala operativa que abarca desde sistemas de 12V, 24V, 36V, 48V, 60V, 72V, 84V hasta 96V, ofreciendo una flexibilidad inigualable para proyectos de diferentes voltajes.\n​Interfaz de Usuario: 📟 Pantalla LCD central con visualización detallada de parámetros (flujo PV, carga de batería, consumo de carga) y botones de configuración rápida (SET, UP, DOWN, CONFIRM).\n​Especificaciones (Specs):\n​Marca: Y&H.\n​Tipo: Controlador de carga solar MPPT.\n​Corriente Máxima: 120A.\n​Voltaje Máximo de Entrada (Voc): 230VDC.\n​Compatibilidad de Baterías: 12V a 96V.",

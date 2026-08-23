@@ -66,3 +66,36 @@ sin servidor y sin internet).
 
 `extraer_ficha.py` **no escribe `productos.json`**. Solo lee. La carga al
 catálogo es un paso aparte, después de revisar el JSON exportado.
+
+---
+
+# `migrar_specs.py` — pasar `specs` a "Etiqueta: Valor"
+
+```bash
+python3 scripts/migrar_specs.py --categoria ENERGIA            # dry-run
+python3 scripts/migrar_specs.py --categoria ENERGIA --aplicar
+```
+
+Solo reetiqueta lo que ya está escrito; **no inventa datos**. Lo que no puede
+resolver con certeza queda intacto y se lista al final para revisión manual.
+
+Cuatro reglas que costaron un bug cada una:
+
+1. **El emoji se conserva al frente de la etiqueta.** `⚡ 4000W de Potencia`
+   pasa a `⚡ Potencia: 4000W`, no a `Potencia: 4000W`. `tm-product.src.js`
+   corre `tmPartirEmoji`/`tmIconoSVG` sobre cada spec y lo dibuja como ícono de
+   línea: borrarlo pierde el ícono en silencio.
+2. **Solo se aceptan etiquetas conocidas** (Potencia, Capacidad, Voltaje,
+   Corriente, Carga, Autonomía). Sin esto `⚡ 80A MPPT` se convertía en
+   `Mppt: 80A` — MPPT es la tecnología, no el nombre del dato.
+3. **Varios valores de la misma unidad se fusionan solo si son TODO el producto.**
+   `12V, 24V, 36V, 48V` en un controlador es la lista de lo soportado y va en una
+   fila; pero el `24V` y el `110V` de un inversor son entrada y salida, y unirlos
+   inventaría un significado. Mirar solo los sueltos no alcanza: en la segunda
+   pasada los ya etiquetados salen por otra rama y los sueltos quedaban solos,
+   fusionándose de más (rompía la idempotencia).
+4. **Escribe `productos.json` y `productos-lite.json`**, solo el campo `specs`.
+   Lite es full sin `descripcion` — ese contrato hay que respetarlo.
+
+No corras `build_js_bundle.py` sin necesidad: sube la versión de caché en
+`sw.js` por timestamp aunque el bundle no haya cambiado.
