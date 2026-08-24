@@ -1205,10 +1205,18 @@ async function suscribirAvisoStock(productId, nombreProducto) {
         }
 
         // 1b. Pedir el WhatsApp del cliente para poder avisarle también por mensaje
+        // La regla de /lista_espera exige entre 6 y 25 caracteres. Sin validar
+        // acá, un número corto salía rechazado con 401 y nadie se enteraba: el
+        // fetch de abajo se tragaba el error y el cliente veía "listo".
         let telCliente = '';
+        let telInvalido = false;
         try {
             const ingresado = prompt('📲 Déjanos tu WhatsApp y te avisamos apenas vuelva (opcional, ej: 5XXXXXXX):', '');
-            if (ingresado) telCliente = String(ingresado).replace(/[^0-9+]/g, '').slice(0, 20);
+            if (ingresado) {
+                const limpio = String(ingresado).replace(/[^0-9+]/g, '').slice(0, 25);
+                if (limpio.length >= 6) telCliente = limpio;
+                else telInvalido = true;
+            }
         } catch(e) {}
 
         // 2. Guardar suscripción en Firebase: /avisos_stock/{productId}/{token} = { ts, nombre, tel }
@@ -1237,11 +1245,25 @@ async function suscribirAvisoStock(productId, nombreProducto) {
         // recibiendo: al reponer
         // stock, send_notifications.py le manda la lista por push privado.
         if (telCliente) {
-            fetch(rtdbUrl + '/lista_espera/' + productId + '/' + Date.now() + '.json', {
+            // Clave con azar además de la hora: la regla es "solo si no existe",
+            // y dos personas en el mismo milisegundo perdían la segunda entrada.
+            const clave = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+            fetch(rtdbUrl + '/lista_espera/' + productId + '/' + clave + '.json', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tel: telCliente, productoId: String(productId), ts: Date.now() })
-            }).catch(() => {});
+            }).then(r => {
+                // El aviso por push ya quedó guardado; lo que falló es el número.
+                // Decirlo es mejor que dejar al cliente esperando un WhatsApp
+                // que nunca va a llegar.
+                if (!r.ok) {
+                    mostrarNotificacion('⚠️ Te avisaremos por notificación, pero tu WhatsApp no se pudo guardar.', 'warning');
+                }
+            }).catch(() => {
+                mostrarNotificacion('⚠️ Te avisaremos por notificación, pero tu WhatsApp no se pudo guardar.', 'warning');
+            });
+        } else if (telInvalido) {
+            mostrarNotificacion('⚠️ Ese WhatsApp no parece válido, así que no lo guardamos. Te avisaremos por notificación.', 'warning');
         }
 
         if (!res.ok) {

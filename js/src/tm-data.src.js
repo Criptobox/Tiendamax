@@ -221,8 +221,13 @@ function cerrarPanelBusqueda() {
         // Only go back if we're still on our pushed state
         if (history.state && history.state.searchPanel) {
             history.back();
+            // Devuelve que se pidió un history.back(): su popstate llega en el
+            // próximo tick y el handler de arriba cierra todos los overlays
+            // abiertos. Quien abra algo justo después necesita esperarlo.
+            return true;
         }
     }
+    return false;
 }
 
 // Handle browser back button / popstate: close overlays instead of exiting page
@@ -556,8 +561,22 @@ function aplicarBusquedaHero() {
 
 
 function seleccionarSugerencia(id) {
-    cerrarPanelBusqueda();
-    abrirDetalleProducto(id);
+    // Tocar una sugerencia abría la ficha y el cliente terminaba en el inicio:
+    // cerrarPanelBusqueda() hace history.back(), el modal se abría enseguida y
+    // el popstate —que llega después— lo cerraba junto con los demás overlays.
+    // Abrir la ficha recién cuando ese popstate ya pasó rompe la carrera.
+    if (cerrarPanelBusqueda()) {
+        let abierto = false;
+        const abrir = () => {
+            if (abierto) return;
+            abierto = true;
+            abrirDetalleProducto(id);
+        };
+        window.addEventListener('popstate', abrir, { once: true });
+        setTimeout(abrir, 250);   // por si el popstate no llega
+    } else {
+        abrirDetalleProducto(id);
+    }
 }
 
 function resaltarTexto(texto, query) {
