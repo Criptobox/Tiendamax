@@ -61,6 +61,7 @@
   /* Sidebar */
   .body { display:grid; grid-template-columns:60px 1fr; }
   .sidebar { background:rgba(10,10,18,0.6); border-right:1px solid var(--border); padding:14px 0; display:flex; flex-direction:column; gap:6px; align-items:center; }
+  .side-btn svg.tm-ico-tab { width:21px; height:21px; }
   .side-btn { width:42px; height:42px; border-radius:9px; background:rgba(255,255,255,0.03); border:1px solid transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:18px; position:relative; }
   .side-btn:hover { background:rgba(255,107,53,0.12); color:var(--o); }
   .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:#fff; box-shadow:0 2px 8px rgba(255,107,53,0.3); }
@@ -70,7 +71,11 @@
   .side-sep { width:30px; height:1px; background:var(--border); margin:6px 0; }
 
   /* Content */
-  .content { padding:18px 24px 50px; max-width:1200px; margin:0 auto; width:100%; }
+  /* El padding de abajo deja pasar la burbuja del Copiloto, que es fixed y
+     no empuja nada: mide 62px y se apoya a 24px del borde (86px en total).
+     Con los 50px de antes, el último botón de cada vista quedaba debajo de
+     ella y no se podía tocar. */
+  .content { padding:18px 24px 110px; max-width:1200px; margin:0 auto; width:100%; }
   .view { display:none; animation:fadeIn 0.3s; }
   .view.active { display:block; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
@@ -298,7 +303,9 @@
     .sidebar { position:sticky; top:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-bottom:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; -webkit-overflow-scrolling:touch; }
     .side-btn { flex-shrink:0; }
     .side-sep { display:none !important; }
-    .content { padding:14px 12px 24px !important; }
+    /* En móvil la burbuja sube a bottom:76px, así que tapa hasta 138px del
+       final. Se reserva ese alto más el área segura del teléfono. */
+    .content { padding:14px 12px calc(150px + env(safe-area-inset-bottom)) !important; }
     .kpis { grid-template-columns:repeat(2,1fr) !important; }
     .grid-2, .grid-3 { grid-template-columns:1fr !important; }
     .topbar h1 small { display:none; }
@@ -1676,7 +1683,55 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=7bbe3bab"></script>
+<script src="js/tm-bundle.js?v=487696ed"></script>
+<script>
+// Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
+// con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
+// tienda. Sin esto el panel mezclaba emoji planos del sistema con los íconos
+// del sitio, y esa mezcla es lo que lo hacía ver de otra época.
+(function(){
+  function pintarIconosPestanas(){
+    if (typeof tmIconoSVG !== 'function') return false;
+    var btns = document.querySelectorAll('.side-btn');
+    if (!btns.length) return false;
+    var hechos = 0;
+    btns.forEach(function(b){
+      if (b.dataset.tmIco) return;
+      var emo = (b.textContent || '').trim();
+      if (!emo) return;
+      var svg = tmIconoSVG(emo, 'tm-ico-tab');
+      if (!svg) return;                     // sin ícono: se deja el emoji
+      var badge = b.querySelector('.badge'); // el contador no se pierde
+      b.innerHTML = svg;
+      if (badge) b.appendChild(badge);
+      b.dataset.tmIco = '1';
+      hechos++;
+    });
+    return hechos > 0;
+  }
+  // No alcanza con una pasada al arrancar: ensureTab() agrega pestañas después
+  // (Herramientas es una) y esas quedaban con el emoji plano. Un observador
+  // sobre la barra las pinta a medida que aparecen; dataset.tmIco evita
+  // repetir trabajo sobre las ya hechas.
+  function observarBarra(){
+    var barra = document.querySelector('.sidebar');
+    if (!barra || barra._tmIcoObs) return;
+    barra._tmIcoObs = true;
+    new MutationObserver(function(){ pintarIconosPestanas(); })
+      .observe(barra, { childList: true, subtree: true });
+  }
+  var intentos = 0;
+  (function probar(){
+    pintarIconosPestanas();
+    observarBarra();
+    if (++intentos > 12) return;
+    setTimeout(probar, 300);
+  })();
+  document.addEventListener('DOMContentLoaded', function(){
+    pintarIconosPestanas(); observarBarra();
+  });
+})();
+</script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
 <script src="js/revolico_integration.js?v=091bc1dc"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
