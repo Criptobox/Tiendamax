@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=3d136a79" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=1afae4c8" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=24ab48bd">
+    <link rel="stylesheet" href="css/bundle.css?v=9fb7e362">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -1280,6 +1280,15 @@
                         <!-- Spec badges (editables desde admin: campo 'specs' del producto) -->
                         <div id="detailSpecBadges" class="detail-spec-badges" style="display:none;" role="list" aria-label="Especificaciones del producto"></div>
 
+                        <!-- Ficha ampliada (campos ficha/caracteristicas/idealPara/incluye
+                             del producto). Cada bloque se oculta si el producto no lo trae.
+                             El `order` lo pone css/ficha-producto.css: .detail-info es flex
+                             column y sin order propio caerían arriba de las specs. -->
+                        <div id="detailFicha" class="tmf-sec" style="display:none;"></div>
+                        <div id="detailCaracteristicas" class="tmf-sec" style="display:none;"></div>
+                        <div id="detailIdealPara" class="tmf-sec" style="display:none;"></div>
+                        <div id="detailIncluye" class="tmf-sec" style="display:none;"></div>
+
                         <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
 
@@ -1654,7 +1663,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=3d136a79" defer></script>
+    <script src="js/tm-bundle.js?v=1afae4c8" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

@@ -1,0 +1,92 @@
+/* ============================================================
+   ficha-producto.css — bloques ampliados del modal de detalle:
+   ficha técnica, características, ideal para y qué incluye.
+
+   ORDEN (clave): #productDetailModal .detail-info es flex column y
+   modal-v4.css ya reparte order -3..9 entre sus hijos. Un bloque sin
+   order propio vale 0 y aparecería ARRIBA de las specs. Van 10..13,
+   o sea después del botón de compra: una ficha larga antes del CTA
+   lo empuja fuera de pantalla, y quien baja hasta acá ya está
+   investigando el producto, no decidiendo.
+
+   Las clases son propias (tmf-*), así que no compiten con nada.
+   ============================================================ */
+#productDetailModal .detail-info > #detailFicha           { order: 10; }
+#productDetailModal .detail-info > #detailCaracteristicas { order: 11; }
+#productDetailModal .detail-info > #detailIdealPara       { order: 12; }
+#productDetailModal .detail-info > #detailIncluye         { order: 13; }
+
+.tmf-sec { width: 100%; margin: 16px 0 0; }
+.tmf-sec > h4 {
+  display: flex; align-items: center; gap: 7px;
+  margin: 0 0 8px; font-size: 12px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; color: #9aa1ab;
+}
+.tmf-sec > h4 svg { width: 15px; height: 15px; flex: none; }
+
+/* Ficha técnica: tabla etiqueta | valor */
+.tmf-tabla {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 12px; overflow: hidden;
+}
+.tmf-tabla .tmf-r {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+  padding: 10px 13px; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.tmf-tabla .tmf-r:last-child { border-bottom: 0; }
+.tmf-tabla .tmf-k { flex: 0 0 auto; font-size: 12.5px; font-weight: 600; color: #9aa1ab; }
+.tmf-tabla .tmf-k svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 5px; }
+.tmf-tabla .tmf-v {
+  font-size: 13.5px; font-weight: 800; color: #f4f4f7; text-align: right;
+  font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+}
+/* La aclaración va aparte del valor para que el valor siga siendo comparable
+   entre productos ("Sinusoidal Modificada" se puede filtrar; con la nota pegada, no). */
+.tmf-tabla .tmf-n {
+  display: block; margin-top: 3px; font-size: 11.5px; font-weight: 500;
+  font-style: italic; color: #9aa1ab; text-align: right;
+}
+
+/* Características: título + frase */
+.tmf-cars { display: grid; gap: 9px; }
+.tmf-cars .tmf-c {
+  background: rgba(255,255,255,.03); border-left: 3px solid var(--coral, #FF6B35);
+  border-radius: 0 9px 9px 0; padding: 9px 12px;
+}
+.tmf-cars .tmf-t { display: block; margin-bottom: 2px; font-size: 13px; font-weight: 800; color: #ffd1b3; }
+.tmf-cars .tmf-t svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 5px; }
+.tmf-cars .tmf-d { font-size: 12.8px; line-height: 1.45; color: #c8ccd4; }
+
+/* Listas */
+.tmf-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.tmf-lista li {
+  position: relative; padding-left: 23px;
+  font-size: 13px; line-height: 1.45; color: #c8ccd4;
+}
+.tmf-lista li::before { position: absolute; left: 0; top: 0; }
+.tmf-ideal li::before { content: "\1F3AF"; }
+.tmf-caja  li::before { content: "\1F4E6"; }
+.tmf-caja  li { color: #e8e8ee; font-weight: 600; }
+
+/* Modo claro */
+html body.light-mode #productDetailModal .tmf-tabla { background: rgba(0,0,0,.02); border-color: rgba(0,0,0,.10); }
+html body.light-mode #productDetailModal .tmf-tabla .tmf-r { border-bottom-color: rgba(0,0,0,.07); }
+html body.light-mode #productDetailModal .tmf-tabla .tmf-k,
+html body.light-mode #productDetailModal .tmf-tabla .tmf-n,
+html body.light-mode #productDetailModal .tmf-sec > h4 { color: #5a5a68; }
+html body.light-mode #productDetailModal .tmf-tabla .tmf-v { color: #1a1a22; }
+html body.light-mode #productDetailModal .tmf-cars .tmf-c { background: rgba(0,0,0,.02); }
+html body.light-mode #productDetailModal .tmf-cars .tmf-t { color: #B23A0E; }
+html body.light-mode #productDetailModal .tmf-cars .tmf-d,
+html body.light-mode #productDetailModal .tmf-lista li { color: #3a3a46; }
+html body.light-mode #productDetailModal .tmf-caja li { color: #1a1a22; }
+
+/* Celular: la fila de dos columnas deja ~110px para la etiqueta y cada una
+   parte en dos líneas. Apiladas se leen de un vistazo. */
+@media (max-width: 560px) {
+  .tmf-tabla .tmf-r { flex-direction: column; align-items: stretch; gap: 3px; padding: 10px 12px; }
+  .tmf-tabla .tmf-k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+  .tmf-tabla .tmf-v, .tmf-tabla .tmf-n { text-align: left; }
+  .tmf-tabla .tmf-v { font-size: 14px; }
+}

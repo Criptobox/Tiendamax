@@ -52,7 +52,47 @@
     "recomendados": [],
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
     "seoDescription": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de…",
-    "radar": true
+    "radar": true,
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "Tataliken"
+      },
+      {
+        "k": "⚡ Potencia real (continua)",
+        "v": "2000W",
+        "nota": "lo que sostiene de forma permanente"
+      },
+      {
+        "k": "⚡ Potencia máxima (pico)",
+        "v": "4000W",
+        "nota": "solo para el arranque de motores"
+      },
+      {
+        "k": "🔋 Voltaje de entrada",
+        "v": "12V DC",
+        "nota": "requiere banco de baterías de 12V"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "🛡️ Seguridad",
+        "d": "Incluye cables de conexión robustos para una transferencia de energía segura y eficiente."
+      },
+      {
+        "t": "🔌 Versatilidad",
+        "d": "Equipado con tomas de corriente estándar para conexión directa de electrodomésticos y equipos electrónicos."
+      }
+    ],
+    "idealPara": [
+      "Respaldo energético para el hogar durante los apagones.",
+      "Oficinas y negocios que necesitan mantener equipos esenciales encendidos.",
+      "Sistemas solares pequeños o medianos que trabajan a 12V."
+    ],
+    "incluye": [
+      "1x Inversor Tataliken 4000W (12V)",
+      "1x Juego de cables de conexión a batería"
+    ]
   },
   {
     "id": 1777924248270,

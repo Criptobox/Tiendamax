@@ -636,6 +636,62 @@ if (_detailPrecioMNEl) {
         }
     }
 
+    // ── Ficha ampliada ────────────────────────────────────────────────
+    // Cuatro bloques opcionales del producto. Cada uno se oculta si el
+    // producto no lo trae, así que un catálogo a medio cargar no muestra
+    // secciones vacías. El emoji inicial de una etiqueta se cambia por su
+    // ícono de línea, igual que en las specs.
+    function _tmIcoDe(txt) {
+        const p = (typeof tmPartirEmoji === 'function')
+            ? tmPartirEmoji(txt) : { emoji: '', texto: String(txt || '').trim() };
+        const ico = (p.emoji && typeof tmIconoSVG === 'function')
+            ? tmIconoSVG(p.emoji, 'tm-ico-spec') : '';
+        return { ico: ico, texto: p.texto };
+    }
+    function _tmPintarBloque(id, filas, titulo, armar) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const lista = Array.isArray(filas) ? filas.filter(Boolean) : [];
+        if (!lista.length) { el.innerHTML = ''; el.style.display = 'none'; return; }
+        el.innerHTML = '<h4>' + titulo + '</h4>' + armar(lista);
+        el.style.display = 'block';
+    }
+
+    _tmPintarBloque('detailFicha', p.ficha, 'Ficha técnica', function (filas) {
+        return '<div class="tmf-tabla">' + filas.map(function (f) {
+            const k = _tmIcoDe(f && f.k);
+            const v = String((f && f.v) || '').trim();
+            if (!k.texto || !v) return '';
+            const nota = String((f && f.nota) || '').trim();
+            return '<div class="tmf-r"><span class="tmf-k">' + k.ico + escapeHtml(k.texto) + '</span>'
+                 + '<span class="tmf-v">' + escapeHtml(v)
+                 + (nota ? '<span class="tmf-n">' + escapeHtml(nota) + '</span>' : '')
+                 + '</span></div>';
+        }).join('') + '</div>';
+    });
+
+    _tmPintarBloque('detailCaracteristicas', p.caracteristicas, 'Características', function (filas) {
+        return '<div class="tmf-cars">' + filas.map(function (c) {
+            const t = _tmIcoDe(c && c.t);
+            const d = String((c && c.d) || '').trim();
+            if (!t.texto || !d) return '';
+            return '<div class="tmf-c"><span class="tmf-t">' + t.ico + escapeHtml(t.texto) + '</span>'
+                 + '<span class="tmf-d">' + escapeHtml(d) + '</span></div>';
+        }).join('') + '</div>';
+    });
+
+    _tmPintarBloque('detailIdealPara', p.idealPara, 'Ideal para', function (filas) {
+        return '<ul class="tmf-lista tmf-ideal">' + filas.map(function (t) {
+            return '<li>' + escapeHtml(String(t).trim()) + '</li>';
+        }).join('') + '</ul>';
+    });
+
+    _tmPintarBloque('detailIncluye', p.incluye, 'Qué incluye', function (filas) {
+        return '<ul class="tmf-lista tmf-caja">' + filas.map(function (t) {
+            return '<li>' + escapeHtml(String(t).trim()) + '</li>';
+        }).join('') + '</ul>';
+    });
+
     // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
     // garantía/devolución solo si el producto los tiene de verdad).
     // La garantía se resume a su duración para que una descripción larga no
