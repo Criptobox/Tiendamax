@@ -205,6 +205,8 @@ const TM_ICONOS = {
     '🔊': '<polygon points=\'10.5 5 5.5 9 2 9 2 15 5.5 15 10.5 19 10.5 5\'/><path d=\'M14.5 8.8a4.6 4.6 0 0 1 0 6.4\'/><path d=\'M17.8 5.5a9.2 9.2 0 0 1 0 13\'/>',
     '🔋': '<rect x=\'2\' y=\'7\' width=\'17\' height=\'10\' rx=\'2.2\'/><path d=\'M22 10.5v3\'/><rect x=\'4.6\' y=\'9.6\' width=\'7\' height=\'4.8\' rx=\'.8\'/>',
     '🔌': '<path d=\'M9 2v6M15 2v6\'/><path d=\'M6 8h12v3a6 6 0 0 1-12 0z\'/><path d=\'M12 17v5\'/>',
+    '〰️': '<path d=\'M2 12c2.5-5 5-5 7.5 0s5 5 7.5 0 2.5-5 5-5\'/>',
+    '〰': '<path d=\'M2 12c2.5-5 5-5 7.5 0s5 5 7.5 0 2.5-5 5-5\'/>',
     '🔍': '<circle cx=\'10.5\' cy=\'10.5\' r=\'7\'/><path d=\'m20.5 20.5-5-5\'/>',
     '🔎': '<circle cx=\'10.5\' cy=\'10.5\' r=\'7\'/><path d=\'m20.5 20.5-5-5\'/><path d=\'M8 10.5h5M10.5 8v5\'/>',
     '🔐': '<rect x=\'4\' y=\'11\' width=\'16\' height=\'10\' rx=\'2\'/><path d=\'M8 11V7a4 4 0 0 1 8 0v4\'/><path d=\'M12 15v2\'/>',
@@ -332,6 +334,9 @@ function tmEsEmojiCP(cp) {
            (cp >= 0x2B00 && cp <= 0x2BFF)  ||    // ⭐ ⬆ …
            (cp >= 0x2600 && cp <= 0x26FF)  ||    // misceláneos (☀ ⚠ ⛑…)
            cp === 0x203C || cp === 0x2049  ||
+           cp === 0x3030 || cp === 0x303D  ||    // 〰 〽 — sueltos en un bloque
+                                                 // de puntuación CJK, por eso van
+                                                 // uno por uno y no como rango
            cp === 0xFE0F || cp === 0xFE0E || cp === 0x200D ||
            (cp >= 0x1F3FB && cp <= 0x1F3FF);
 }
