@@ -1903,19 +1903,39 @@
     "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Hogar"
+        "k": "📐 Medidas",
+        "v": "3m x 6m"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🎨 Color",
+        "v": "Beige"
+      },
+      {
+        "k": "🧵 Tela",
+        "v": "Transpirable"
+      },
+      {
+        "k": "☀️ Bloqueo UV",
+        "v": "90%"
+      },
+      {
+        "k": "🔷 Forma",
+        "v": "Rectangular"
       }
     ],
     "idealPara": [
-      "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
+      "Patios, piscinas y terrazas que necesitan sombra sin obra."
     ],
     "incluye": [
-      "1x Toldo Para Sombra"
+      "1x Toldo de sombra 3m x 6m"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tela transpirable: deja pasar el aire en vez de acumular calor debajo."
+      },
+      {
+        "d": "Se instala amarrado a postes o paredes, sin estructura fija."
+      }
     ]
   },
   {
@@ -2009,30 +2029,57 @@
     ],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Cámaras"
+        "k": "🔌 Montaje",
+        "v": "Rosca estándar E27",
+        "nota": "se enrosca en cualquier sócalo de lámpara"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "⚡ Alimentación",
+        "v": "110V / 220V"
+      },
+      {
+        "k": "📹 Resolución",
+        "v": "Full HD 1080p"
+      },
+      {
+        "k": "🔄 Movimiento",
+        "v": "PTZ: 360° horizontal / 90° vertical"
+      },
+      {
+        "k": "🌙 Visión nocturna",
+        "v": "LEDs infrarrojos + luz blanca",
+        "nota": "la luz blanca permite ver a color de noche"
+      },
+      {
+        "k": "🎤 Audio",
+        "v": "Bidireccional",
+        "nota": "micrófono y altavoz para hablar y escuchar"
+      },
+      {
+        "k": "📶 Conexión",
+        "v": "Wi-Fi 2.4 GHz"
+      },
+      {
+        "k": "📱 Aplicación",
+        "v": "V380 PRO"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Captura de imagen en alta resolución con visión nocturna clara."
+        "d": "Se instala en el sócalo de una lámpara: no hace falta tirar cable ni fuente aparte."
       },
       {
-        "d": "Estructura robusta resistente para monitoreo continuo 24/7."
+        "d": "Giro motorizado de 360°, así que una sola cámara cubre toda la habitación."
       },
       {
-        "d": "Alertas en tiempo real y fácil visualización desde el teléfono móvil."
+        "d": "Audio de ida y vuelta desde el celular, para hablar con quien esté del otro lado."
       }
     ],
     "idealPara": [
-      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      "Vigilar la casa, un portal o un negocio sin instalación eléctrica adicional."
     ],
     "incluye": [
-      "1x Cámaras de Seguridad (V380 PRO )"
+      "1x Cámara Wi-Fi V380 PRO tipo bombillo"
     ]
   },
   {
@@ -2340,19 +2387,27 @@
     "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Accesorios"
+        "k": "🔢 Cabezales",
+        "v": "3"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🔌 Alimentación",
+        "v": "Toma del encendedor (cigarrera)"
       }
     ],
     "idealPara": [
-      "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado."
+      "Refrescar el carro en días de calor sin depender del aire acondicionado."
     ],
     "incluye": [
-      "1x Ventilador Para Carro"
+      "1x Ventilador de 3 cabezales para carro"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Refresca el interior sin encender el aire acondicionado, así que no consume combustible extra."
+      },
+      {
+        "d": "Tres cabezales orientables para repartir el aire por el habitáculo."
+      }
     ]
   },
   {
@@ -2439,30 +2494,35 @@
     "descripcion": "Cargador portátil (power bank) resistente, con panel solar integrado, carga inalámbrica y linterna LED incorporada. Ideal para apagones o salidas al campo — se recarga con corriente normal o con el sol.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Accesorios"
+        "k": "🔌 Tipo",
+        "v": "Power bank con panel solar integrado"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "☀️ Recarga",
+        "v": "Corriente eléctrica o panel solar"
+      },
+      {
+        "k": "📱 Carga inalámbrica",
+        "v": "Sí"
+      },
+      {
+        "k": "🔦 Linterna LED",
+        "v": "Incorporada"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Panel solar integrado de alta eficiencia para recarga autónoma en exteriores y emergencias."
+        "d": "Se recarga con corriente o con el sol, así que sirve aunque el apagón se alargue."
       },
       {
-        "d": "Power bank resistente con carga inalámbrica Qi, puertos USB múltiples y linterna LED de emergencia."
-      },
-      {
-        "d": "Carcasa robusta a prueba de polvo y salpicaduras, ideal para camping, viajes y apagones."
+        "d": "Carga inalámbrica además de los puertos, para los teléfonos que la soportan."
       }
     ],
     "idealPara": [
-      "Cargador portátil (power bank) resistente, con panel solar integrado, carga inalámbrica y linterna LED incorporada. Ideal para apagones o salidas al campo — se recarga con corriente normal o con el sol."
+      "Apagones largos y salidas al campo, donde no hay dónde enchufar."
     ],
     "incluye": [
-      "1x Cargador Portátil Solar"
+      "1x Cargador portátil solar"
     ]
   },
   {
@@ -2901,16 +2961,40 @@
     ],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Hombre"
+        "k": "🧵 Material",
+        "v": "Nylon deportivo",
+        "nota": "de secado rápido"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "👖 Cintura",
+        "v": "Elástica con cordón"
+      },
+      {
+        "k": "🎒 Bolsillos",
+        "v": "Bolsillo lateral con cierre"
+      },
+      {
+        "k": "🦺 Seguridad",
+        "v": "Franja reflectiva en la pierna"
+      },
+      {
+        "k": "🎨 Colores",
+        "v": "Verde olivo, gris oscuro, azul marino, gris claro"
       }
     ],
     "incluye": [
-      "1x Shorts Deportivos Casuales de Secado Rápido"
+      "1x Short deportivo"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Franja reflectiva en la pierna: se ve al correr de noche o con poca luz."
+      },
+      {
+        "d": "Bolsillo con cierre, para que el teléfono o las llaves no se salgan al moverse."
+      }
+    ],
+    "idealPara": [
+      "Entrenar, correr o el día a día, con secado rápido después del sudor."
     ]
   },
   {
@@ -3152,19 +3236,29 @@
     "descripcion": "Espejos retrovisores deportivos tipo Stealth, acabado fibra de carbón premium. Incluye tornillería para instalación.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Accesorios"
+        "k": "✨ Diseño",
+        "v": "Tipo Stealth (alerón)"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🎨 Acabado",
+        "v": "Fibra de carbón premium"
+      },
+      {
+        "k": "🔩 Instalación",
+        "v": "Incluye tornillería"
       }
     ],
     "idealPara": [
       "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
     ],
     "incluye": [
-      "1x Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium"
+      "1x Par de espejos retrovisores Stealth",
+      "1x Juego de tornillería"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
+      }
     ]
   },
   {
@@ -3187,19 +3281,32 @@
     "descripcion": "Espejos retrovisores deportivos tipo Stealth, diseño poligonal aerodinámico premium, cristal con tinte. Incluye tornillería para instalación.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Accesorios"
+        "k": "✨ Diseño",
+        "v": "Poligonal aerodinámico (alerón Stealth)"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🕶️ Cristal",
+        "v": "Con tinte"
+      },
+      {
+        "k": "🔩 Instalación",
+        "v": "Incluye tornillería"
       }
     ],
     "idealPara": [
       "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
     ],
     "incluye": [
-      "1x Espejos Alerón Deportivos Stealth Poligonales | Diseño Aerodinámico Premium"
+      "1x Par de espejos retrovisores poligonales",
+      "1x Juego de tornillería"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Cristal con tinte, que corta el reflejo de los faros de atrás por la noche."
+      },
+      {
+        "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
+      }
     ]
   },
   {
@@ -3228,19 +3335,38 @@
     ],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Electrodomésticos"
+        "k": "🚿 Tipo",
+        "v": "Calentador instantáneo de agua",
+        "nota": "sin tanque de acumulación"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "📟 Control",
+        "v": "Panel digital"
+      },
+      {
+        "k": "🎨 Color",
+        "v": "Negro con blanco"
+      },
+      {
+        "k": "🔧 Conexión",
+        "v": "Directo a la tubería de agua"
       }
     ],
     "idealPara": [
-      "Uso doméstico y confort en el hogar para conservación de alimentos, climatización de cuartos y tareas diarias."
+      "Baños sin calentador de tanque, donde no hay lugar para uno grande."
     ],
     "incluye": [
-      "1x Calentador Eléctrico"
+      "1x Calentador eléctrico instantáneo",
+      "1x Ducha de mano",
+      "1x Manguera flexible"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Calienta al momento en vez de guardar agua caliente: no gasta mientras no se usa."
+      },
+      {
+        "d": "Panel digital para fijar la temperatura en vez de buscarla con la llave."
+      }
     ]
   },
   {
@@ -3591,16 +3717,41 @@
     ],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Gaming"
+        "k": "🎮 Tarjeta gráfica",
+        "v": "NVIDIA GeForce RTX 2070 Super"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🔧 Placa madre",
+        "v": "Gigabyte AORUS Gaming"
+      },
+      {
+        "k": "❄️ Refrigeración",
+        "v": "Líquida AIO",
+        "nota": "para el procesador"
+      },
+      {
+        "k": "🖥️ Gabinete",
+        "v": "Blanco, doble panel de cristal templado"
+      },
+      {
+        "k": "💡 Iluminación",
+        "v": "ARGB personalizable",
+        "nota": "en ventiladores y bomba líquida"
       }
     ],
     "incluye": [
-      "1x PC Gaming Setup Premium"
+      "1x PC Gaming armada y lista para usar"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Refrigeración líquida en el procesador: aguanta sesiones largas sin bajar el rendimiento por calor."
+      },
+      {
+        "d": "Doble panel de cristal templado, con la iluminación ARGB a la vista."
+      }
+    ],
+    "idealPara": [
+      "Jugar a alto rendimiento y trabajos de edición o render."
     ]
   },
   {
@@ -4058,16 +4209,43 @@
     "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Audio"
+        "k": "🔊 Altavoces",
+        "v": "Doble altavoz estéreo HD con radiador de graves"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "💡 Iluminación",
+        "v": "Aro LED RGB en la base",
+        "nota": "con varios modos rítmicos"
+      },
+      {
+        "k": "🔌 Conexiones",
+        "v": "Bluetooth, auxiliar 3.5mm, MicroSD y USB"
+      },
+      {
+        "k": "🧵 Estructura",
+        "v": "Recubierta en tela resistente, con correa de transporte"
+      },
+      {
+        "k": "🎛️ Controles",
+        "v": "Táctiles en la parte superior"
       }
     ],
     "incluye": [
-      "1x Altavoz Bluetooth Portátil RGB"
+      "1x Altavoz Bluetooth portátil RGB"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Radiador de graves además de los dos altavoces, que es lo que le da el golpe bajo."
+      },
+      {
+        "d": "Cuatro formas de conectarse: no depende solo del Bluetooth."
+      },
+      {
+        "d": "Correa de transporte y forro de tela, pensado para llevarlo afuera."
+      }
+    ],
+    "idealPara": [
+      "Reuniones, patio y salidas donde el altavoz se mueve de un lado a otro."
     ]
   },
   {
@@ -4103,16 +4281,51 @@
     ],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Audio"
+        "k": "🏷️ Marca",
+        "v": "MSY Audio"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🔤 Modelo",
+        "v": "Beat Boom F10"
+      },
+      {
+        "k": "🔊 Potencia",
+        "v": "25W RMS",
+        "nota": "sonido estéreo"
+      },
+      {
+        "k": "📶 Alcance Bluetooth",
+        "v": "Hasta 30 metros"
+      },
+      {
+        "k": "💡 Iluminación",
+        "v": "Tiras RGB dinámicas en los laterales"
+      },
+      {
+        "k": "🔌 Conexiones",
+        "v": "USB, lector TF Card y auxiliar 3.5mm"
+      },
+      {
+        "k": "🎛️ Controles",
+        "v": "Botones de goma en la parte superior"
       }
     ],
     "incluye": [
-      "1x Beat Boom F10!"
+      "1x Bocina Bluetooth Beat Boom F10"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Las tiras RGB recorren los laterales siguiendo el ritmo de la música."
+      },
+      {
+        "d": "30 metros de alcance sin interferencias: el teléfono puede quedarse en otra habitación."
+      },
+      {
+        "d": "Lector de TF Card y USB, así que suena aunque no haya teléfono cerca."
+      }
+    ],
+    "idealPara": [
+      "Fiestas y reuniones donde se busca volumen y luces."
     ]
   },
   {
@@ -4203,19 +4416,28 @@
     "specs": [],
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Electrodomésticos"
+        "k": "📐 Tamaño",
+        "v": "Compacto (mini)"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🎨 Aspas",
+        "v": "Blancas"
+      },
+      {
+        "k": "🔧 Montaje",
+        "v": "De techo"
       }
     ],
     "idealPara": [
-      "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande."
+      "Cuartos chicos, pasillos y espacios de techo bajo."
     ],
     "incluye": [
-      "1x Ventilador de Techo"
+      "1x Mini ventilador de techo"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tamaño reducido: entra donde un ventilador de techo normal no cabe."
+      }
     ]
   },
   {
@@ -4245,30 +4467,41 @@
     "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
     "ficha": [
       {
-        "k": "Marca",
+        "k": "🏷️ Marca",
         "v": "Luckycare"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🧪 Tipo",
+        "v": "Creatina monohidratada micronizada"
+      },
+      {
+        "k": "⚖️ Por porción",
+        "v": "5000 mg",
+        "nota": "5 g"
+      },
+      {
+        "k": "📦 Contenido",
+        "v": "500 g"
+      },
+      {
+        "k": "🔢 Porciones",
+        "v": "100",
+        "nota": "500 g a 5 g por porción"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Fórmula de máxima pureza para apoyar la fuerza y ganancia muscular."
+        "d": "Micronizada: se disuelve sin grumos y no queda arenosa en el vaso."
       },
       {
-        "d": "Excelente solubilidad sin grumos y sin sabor para mezclar fácilmente."
-      },
-      {
-        "d": "Acelera la recuperación física tras entrenamientos intensos."
+        "d": "5 g por porción, que es la dosis de mantenimiento habitual."
       }
     ],
     "idealPara": [
-      "Atletas, practicantes de gimnasio y personas activas que buscan acelerar la recuperación y optimizar su desarrollo muscular."
+      "Entrenamiento de fuerza y recuperación muscular."
     ],
     "incluye": [
-      "1x Creatina Monohidratada Luckycare® (5000 mg)"
+      "1x Envase de creatina monohidratada 500 g"
     ]
   },
   {
@@ -4769,19 +5002,32 @@
     "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento.",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Decoracion"
+        "k": "🌿 Tipo",
+        "v": "Panel de hojas artificiales (pared verde)"
       },
       {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
+        "k": "🔲 Formato",
+        "v": "Módulos cuadrados que se conectan entre sí"
+      },
+      {
+        "k": "🧹 Mantenimiento",
+        "v": "Ninguno",
+        "nota": "no se riega ni se poda"
       }
     ],
     "idealPara": [
-      "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento."
+      "Decorar paredes, balcones y negocios sin plantas que mantener."
     ],
     "incluye": [
-      "1x Panel Decorativo de Hojas Artificiales"
+      "1x Panel decorativo de hojas artificiales"
+    ],
+    "caracteristicas": [
+      {
+        "d": "Los módulos se enganchan entre sí, así que la pared se arma del tamaño que haga falta."
+      },
+      {
+        "d": "Al ser artificial no necesita luz, riego ni poda."
+      }
     ]
   },
   {
