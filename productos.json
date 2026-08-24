@@ -150,8 +150,8 @@
     ],
     "incluye": [
       "1x Inversor Tataliken 4000W 12V",
-      "1x Par de cables con terminales de ojo",
-      "1x Par de pinzas caimán para batería"
+      "1x Par de pinzas caimán para batería",
+      "1x Par de mosfet"
     ]
   },
   {
@@ -616,46 +616,64 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "LUBRIM"
+        "v": "Lubrim"
       },
       {
-        "k": "Tecnología",
-        "v": "Calcio-Calcio (Ca/Ca) sin mantenimiento"
+        "k": "Modelo",
+        "v": "Batería Automotriz 75A (12V)"
       },
       {
-        "k": "Voltaje nominal",
+        "k": "Voltaje Nominal",
         "v": "12V DC"
       },
       {
         "k": "Capacidad",
-        "v": "75Ah"
+        "v": "75 Ah",
+        "nota": "Amperios-hora"
       },
       {
-        "k": "Aplicación",
-        "v": "Arranque automotriz y sistemas 12V"
+        "k": "Tecnología",
+        "v": "Calcio-Calcio (Ca/Ca) / Plomo-Ácido sellada"
       },
       {
-        "k": "Construcción",
-        "v": "Sellada y resistente a vibraciones"
+        "k": "Tipo de Mantenimiento",
+        "v": "Libre de mantenimiento",
+        "nota": "Maintenance-Free"
+      },
+      {
+        "k": "Terminales",
+        "v": "Bornes estándar superiores con tapas aislantes"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Placas de aleación de calcio para reducir la autodescarga y evaporación de electrolito."
+        "d": "Tecnología de aleación Calcio-Calcio (Ca/Ca) que minimiza la pérdida de agua, reduce notablemente la tasa de autodescarga y prolonga la vida útil de la batería."
       },
       {
-        "d": "Alta corriente de arranque en frío (CCA) para encendidos instantáneos de motor."
+        "t": "Diseño 100% sellado y libre de mantenimiento",
+        "d": "no requiere recarga periódica de agua destilada ni manipulación de ácido."
       },
       {
-        "d": "Estructura robusta con asa ergonómica para fácil transporte e instalación."
+        "d": "Excelente potencia de arranque en frío (CCA) para un encendido rápido, consistente y seguro en motores a gasolina o diésel."
+      },
+      {
+        "d": "Carcasa de polipropileno reforzado de alta durabilidad, diseñada para absorber impactos mecánicos y resistir las vibraciones del camino y el calor del compartimiento del motor."
+      },
+      {
+        "d": "Protectores plásticos integrados en los bornes para evitar cortocircuitos accidentales durante el almacenamiento o transporte."
+      },
+      {
+        "d": "Asa de sujeción ergonómica y abatible en la parte superior para facilitar su traslado e instalación en el compartimento del vehículo."
       }
     ],
     "idealPara": [
-      "Vehículos modernos, plantas eléctricas o respaldo de emergencia de 12V."
+      "Autos de uso diario, camionetas, SUVs y vehículos de transporte ligero que requieren un arranque confiable y soporte para accesorios eléctricos (aire acondicionado, sonido, luces auxiliares).",
+      "Reemplazo directo en vehículos medianos con especificación de batería de 70 Ah a 75 Ah.",
+      "Sistemas básicos de respaldo eléctrico e inversores de corriente de 12V para emergencias o energía solar simple."
     ],
     "incluye": [
-      "1x Batería Automotriz Lubrim 75A 12V",
-      "1x Cubiertas protectoras de bornes"
+      "1× Batería Automotriz Lubrim (12V - 75Ah)",
+      "2× Tapas protectoras de bornes (integradas)"
     ]
   },
   {
@@ -976,48 +994,68 @@
       },
       {
         "k": "Modelo",
-        "v": "M100 PRO"
+        "v": "M100 PRO",
+        "nota": "Serie M-PRO 100A"
       },
       {
-        "k": "Tecnología",
-        "v": "MPPT 100% real",
-        "nota": "99.5% eficiencia"
+        "k": "Corriente Nominal de Carga",
+        "v": "100A"
       },
       {
-        "k": "Corriente de carga",
-        "v": "100A continuo"
+        "k": "Voltaje de Banco de Baterías",
+        "v": "12V / 24V / 36V / 48V DC",
+        "nota": "Detección automática / programable"
       },
       {
-        "k": "Voltaje de batería",
-        "v": "12V / 24V / 36V / 48V",
-        "nota": "Autodetección"
+        "k": "Voltaje Máximo de Entrada Solar (PV Voc)",
+        "v": "Hasta 150V – 160V DC"
       },
       {
-        "k": "Voltaje solar máx. (Voc)",
-        "v": "100V DC"
+        "k": "Compatibilidad de Baterías",
+        "v": "Litio (LiFePO4, Ternaria de Litio / Li-ion) y Plomo-Ácido",
+        "nota": "GEL, AGM, Sellada, Inundada / Modo Usuario Personalizable"
+      },
+      {
+        "k": "Pantalla",
+        "v": "LCD digital con retroiluminación y monitoreo de parámetros en tiempo real"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Algoritmo MPPT avanzado que aprovecha hasta un 30% más energía frente a reguladores PWM."
+        "d": "Algoritmo de seguimiento MPPT avanzado con eficiencia de rastreo superior al 99% y conversión de hasta 98%, maximizando la captación solar en cualquier época del año."
       },
       {
-        "d": "Pantalla LCD retroiluminada y botones frontales para monitorear voltajes y amperios."
+        "d": "Capacidad de carga de alta potencia de hasta 100A, permitiendo gestionar grandes arreglos solares (hasta ~1200W en 12V, 2400W en 24V, 3600W en 36V y 4800W en 48V)."
       },
       {
-        "d": "Compatible con baterías de Litio (LiFePO4), Gel, AGM y Plomo-ácido."
+        "d": "Amplio rango de entrada fotovoltaica que admite paneles en serie de alto voltaje, reduciendo el calibre requerido del cableado y minimizando pérdidas de transmisión."
       },
       {
-        "d": "Disipador térmico robusto para trabajo pesado en climas cálidos."
+        "d": "Detección automática y gestión inteligente para bancos de baterías de 12V, 24V, 36V y 48V, con ajuste manual preciso de las etapas de absorción, flotación y voltajes de corte."
+      },
+      {
+        "t": "Pantalla LCD digital clara",
+        "d": "monitoreo instantáneo del voltaje fotovoltaico (PV), corriente de carga (A), voltaje de la batería (V) y estado general del sistema."
+      },
+      {
+        "d": "Interfaz intuitiva de 3 botones frontales (PV/SET, BAT/▲, BAT/▼) para una configuración ágil de parámetros y tipos de batería."
+      },
+      {
+        "d": "Chasis con disipador de aluminio y rejillas de ventilación activa para un enfriamiento eficiente durante ciclos prolongados de alta demanda."
+      },
+      {
+        "t": "Paquete integral de protecciones electrónicas",
+        "d": "contra inversión de polaridad en paneles y batería, sobrevoltaje, cortocircuito, sobretemperatura y sobrecarga."
       }
     ],
     "idealPara": [
-      "Sistemas solares residenciales medianos y grandes que requieran cargar bancos de baterías rápidamente."
+      "Sistemas solares aislados (Off-Grid) en hogares, fincas, talleres y negocios con bancos de baterías medianos o grandes de 12V a 48V.",
+      "Arreglos solares con paneles modernos de alta potencia (400W a 650W+) conectados en series de alto voltaje.",
+      "Bancos de baterías de Litio (LiFePO4) o ciclo profundo que demandan recargas rápidas con alto amperaje."
     ],
     "incluye": [
-      "1x Controlador Solar PowMr M100 PRO 100A",
-      "1x Sensor de temperatura",
-      "1x Manual técnico"
+      "1× Controlador Solar MPPT 100A PowMr M100 PRO",
+      "1× Manual de usuario e instrucciones de configuración"
     ]
   },
   {
@@ -1272,42 +1310,71 @@
         "v": "AC180"
       },
       {
-        "k": "Potencia continua",
-        "v": "1800W continuos",
-        "nota": "pico 2700W Power Lifting"
+        "k": "Capacidad de Batería",
+        "v": "1152 Wh",
+        "nota": "Química LiFePO4: +3,500 ciclos de vida al 80%"
       },
       {
-        "k": "Capacidad de batería",
-        "v": "1152Wh",
-        "nota": "LiFePO4"
+        "k": "Potencia de Salida AC",
+        "v": "1800W continuos (Modo Power Lifting hasta 2700W para cargas resistivas) — Onda Senoidal Pura"
       },
       {
-        "k": "Salidas AC",
-        "v": "4 Tomas 120V AC Onda Pura"
+        "k": "Puertos de Salida",
+        "v": "4× tomas AC 120V, 1× USB-C PD (100W), 4× USB-A (5V/3A), 1× salida 12V/10A DC tipo mechero, 1× base de carga inalámbrica superior (15W)"
       },
       {
-        "k": "Puertos",
-        "v": "USB-C 100W PD + USB-A carga rápida + DC 12V"
+        "k": "Entrada de Carga",
+        "v": "Carga rápida de red AC (hasta 1440W), entrada solar MPPT (hasta 500W / 12V-60V), entrada para coche",
+        "nota": "12V/24V"
+      },
+      {
+        "k": "Función UPS",
+        "v": "Conmutación automática en menos de 20 ms"
+      },
+      {
+        "k": "Conectividad",
+        "v": "Bluetooth",
+        "nota": "control y monitoreo desde la app móvil BLUETTI"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Celdas LiFePO4 seguras y duraderas para más de 10 años de uso diario."
+        "d": "Batería ultra duradera de química LiFePO4 (litio-ferrofosfato), con más de 3,500 ciclos de vida útil garantizados y máxima seguridad contra sobrecalentamiento."
       },
       {
-        "d": "Control y monitoreo inalámbrico mediante la App oficial de BLUETTI vía Bluetooth."
+        "d": "Inversor de 1800W continuos de onda senoidal pura con tecnología Power Lifting (hasta 2700W), que permite alimentar aparatos de alta demanda resistiva como calentadores, cafeteras y secadores."
       },
       {
-        "d": "Silencioso y cero emisiones de humo, ideal para usar dentro de la casa."
+        "d": "Carga ultrarrápida por red eléctrica AC de hasta 1440W: recupera del 0% al 80% en solo 45 minutos y el 100% en aproximadamente 1.3 horas."
+      },
+      {
+        "d": "Controlador de carga solar MPPT integrado de hasta 500W para recarga ecológica y completa en 2.5 a 3.5 horas bajo sol óptimo."
+      },
+      {
+        "d": "Función de UPS (Sistema de Alimentación Ininterrumpida) con tiempo de transferencia ultrarrápido (<20 ms) para evitar que computadoras, servidores o routers se apaguen ante un corte de luz."
+      },
+      {
+        "d": "Base de carga inalámbrica rápida integrada en la parte superior (15W) para teléfonos móviles y audífonos compatibles."
+      },
+      {
+        "d": "Pantalla LCD frontal que detalla en tiempo real la potencia de entrada, salida, porcentaje de batería y tiempo estimado restante."
+      },
+      {
+        "d": "Monitoreo y personalización de modos de carga desde el smartphone mediante la app oficial BLUETTI."
       }
     ],
     "idealPara": [
-      "Emergencias residenciales ante cortes eléctricos, trabajo remoto y actividades al aire libre."
+      "Respaldo doméstico durante apagones prolongados: mantiene funcionando refrigeradores, ventiladores, routers Wi-Fi, laptops, iluminación y televisores.",
+      "Alimentación continua de equipos médicos sensibles como máquinas CPAP.",
+      "Campamentos, viajes en casas rodantes (RV), trabajo en exteriores y herramientas eléctricas en zonas sin red eléctrica."
     ],
     "incluye": [
-      "1x Estación de Energía BLUETTI AC180",
-      "1x Cable de alimentación de red AC",
-      "1x Cable de carga solar"
+      "1× Generador Solar Portátil BLUETTI AC180 (1152 Wh / 1800W)",
+      "1× Cable de carga de pared (AC)",
+      "1× Cable de carga para automóvil (12V mechero a DC)",
+      "1× Cable de carga solar (MC4 a DC)",
+      "1× Tornillo de conexión a tierra",
+      "1× Manual de usuario y tarjeta de garantía"
     ]
   },
   {
@@ -3760,7 +3827,7 @@
   },
   {
     "id": 1780017975657,
-    "nombre": "🔊 Xiaomi Sound Outdoor (30W)",
+    "nombre": "🔊 Xiaomi Sound Outdoor",
     "precioActual": 65,
     "precioOriginal": 75,
     "imagen": "https://tiendamax.org/imagenes/img_1783836546487.webp",
@@ -3788,44 +3855,74 @@
     "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes.",
     "ficha": [
       {
-        "k": "Potencia",
-        "v": "30W"
+        "k": "Marca",
+        "v": "Xiaomi"
       },
       {
-        "k": "Batería",
-        "v": "2600 mAh",
-        "nota": "hasta 12h de reproducción al 50% de volumen"
+        "k": "Modelo",
+        "v": "Sound Outdoor (30W)"
       },
       {
-        "k": "Carga",
-        "v": "USB Tipo-C"
+        "k": "Potencia de Salida",
+        "v": "30W RMS",
+        "nota": "Woofer + Tweeter + Doble radiador pasivo"
+      },
+      {
+        "k": "Conectividad",
+        "v": "Bluetooth 5.4"
+      },
+      {
+        "k": "Batería y Autonomía",
+        "v": "Hasta 12 horas de reproducción continua",
+        "nota": "a volumen medio"
+      },
+      {
+        "k": "Resistencia",
+        "v": "Certificación IP67",
+        "nota": "resistente al agua y al polvo"
+      },
+      {
+        "k": "Puerto de Carga",
+        "v": "USB Tipo C",
+        "nota": "soporta carga rápida de 15W"
       }
     ],
     "caracteristicas": [
       {
-        "d": "W de salida (sonido potente y nítido)."
+        "d": "Potencia de salida de 30W con arquitectura acústica de alta fidelidad: combina un woofer para frecuencias medias/bajas, un tweeter para agudos cristalinos y dos radiadores pasivos laterales para graves profundos y contundentes."
       },
       {
-        "d": "Bluetooth 5.4 (conexión más rápida y estable)."
+        "d": "Conexión inalámbrica Bluetooth 5.4 que asegura transmisión de audio fluida, menor latencia, mayor alcance y eficiencia energética."
       },
       {
-        "d": "Certificación IP67 (Totalmente resistente al polvo y al agua)."
+        "d": "Certificación IP67 a prueba de polvo y sumergible en agua, diseñada para resistir lluvia, arena, salpicaduras y entornos exteriores exigentes."
       },
       {
-        "t": "Audio",
-        "d": "Ecualización dinámica y refuerzo de graves."
+        "d": "Función de emparejamiento TWS (True Wireless Stereo) para conectar dos unidades y crear un sistema de sonido estéreo envolvente, con capacidad de enlazar hasta 100 altavoces compatibles en simultáneo."
       },
       {
-        "t": "Extras",
-        "d": "Micrófono integrado para llamadas y tecnología de emparejamiento estéreo (TWS)."
+        "d": "Batería recargable de larga duración que ofrece hasta 12 horas de música ininterrumpida y recarga rápida mediante puerto USB-C."
       },
       {
-        "t": "Portabilidad",
-        "d": "Incluye correa de transporte resistente."
+        "d": "Diseño cilíndrico ergonómico con acabado en tela resistente, base antideslizante y cordón elástico de sujeción integrado para transportarlo cómodamente en la mano, colgado a una mochila o en la bicicleta."
+      },
+      {
+        "d": "Micrófono integrado para responder llamadas en modo manos libres con cancelación de eco y voz nítida."
+      },
+      {
+        "d": "Botones físicos engomados de acceso rápido para control de volumen, reproducción, emparejamiento Bluetooth y encendido."
       }
     ],
     "incluye": [
-      "1x Xiaomi Sound Outdoor (30W)"
+      "1× Altavoz Bluetooth Xiaomi Sound Outdoor (30W)",
+      "1× Cable de carga USB Tipo C",
+      "1× Cordón / correa de transporte (integrada)",
+      "1× Manual de usuario"
+    ],
+    "idealPara": [
+      "Días de playa, piscina, campamentos, terrazas y reuniones al aire libre donde se requiera resistencia al agua y gran potencia acústica.",
+      "Llevar de viaje, paseos en bicicleta o caminatas gracias a su formato compacto, ligero y cordón de transporte.",
+      "Disfrutar de música, podcasts y películas desde el móvil, tablet o laptop con sonido claro y graves envolventes."
     ]
   },
   {
@@ -4210,74 +4307,6 @@
     ]
   },
   {
-    "id": 1780543090267,
-    "nombre": "🎶 Audífonos Inalámbricos Tws",
-    "precioActual": 10,
-    "precioOriginal": 20,
-    "imagen": "https://tiendamax.org/imagenes/img_1783837831859.webp",
-    "categoria": "AUDIO",
-    "subcategoria": "AUDIO",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 50,
-    "slug": "audifonos-ergonomicos",
-    "comision": 1500,
-    "seoTitle": "AUDÍFONOS ERGONÓMICOS en Cuba | TiendaMax",
-    "seoDescription": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz…",
-    "comisionMoneda": "MN",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783837831859.webp",
-      "https://tiendamax.org/imagenes/img_1780543081597.webp"
-    ],
-    "specs": [
-      "🎧 Sonido Inalámbrico de Alta Fidelidad",
-      "🎵 Comodidad Ergonómica y Ajuste Perfecto ",
-      "🛡️ Autonomía Duradera para el Día a Día"
-    ],
-    "descripcion": "Audífonos inalámbricos intrauriculares de diseño ergonómico, diseñados para ofrecer una experiencia auditiva envolvente y sin ataduras. Su estuche de carga compacto y portátil garantiza que disfrutes de tu música, llamadas y contenido favorito durante todo el día con total comodidad y libertad de movimiento.",
-    "ficha": [
-      {
-        "k": "Tecnología / Tipo",
-        "v": "Audífonos inalámbricos TWS",
-        "nota": "True Wireless"
-      },
-      {
-        "k": "Formato",
-        "v": "Intrauriculares",
-        "nota": "In-ear"
-      },
-      {
-        "k": "Color",
-        "v": "Blanco"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Conectividad inalámbrica estable de baja latencia, ideal para una transmisión de audio clara y sin interrupciones."
-      },
-      {
-        "d": "Estructura ligera con almohadillas suaves que aseguran un ajuste cómodo y seguro, minimizando la fatiga durante uso prolongado."
-      },
-      {
-        "d": "Estuche de carga compacto con indicador LED, diseñado para proteger los auriculares y recargarlos de manera rápida mientras te desplazas."
-      },
-      {
-        "t": "Control",
-        "d": "Funciones táctiles intuitivas para gestionar la reproducción de música, cambiar de pista y contestar llamadas con un simple toque."
-      },
-      {
-        "t": "Incluye",
-        "d": "Estuche de carga portátil"
-      }
-    ],
-    "incluye": [
-      "Estuche de carga portátil."
-    ]
-  },
-  {
     "id": 1780873638627,
     "nombre": "Router Fenvi AX3000 WiFi 6",
     "precioActual": 110,
@@ -4536,77 +4565,6 @@
     ]
   },
   {
-    "id": 1780887747583,
-    "nombre": "Altavoz Bluetooth Portátil RGB",
-    "precioActual": 20,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783837846910.webp",
-    "categoria": "AUDIO",
-    "subcategoria": "AUDIO",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "altavoz-bluetooth-portatil-rgb",
-    "comision": 1000,
-    "comisionMoneda": "MN",
-    "seoTitle": "ALTAVOZ BLUETOOTH PORTÁTIL RGB en Cuba | TiendaMax",
-    "seoDescription": "Altavoz Bluetooth Portátil RGB – Características principales Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado…",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783837846910.webp",
-      "https://tiendamax.org/imagenes/img_1780887747583.webp"
-    ],
-    "specs": [
-      "Doble altavoz estéreo HD con radiador de graves",
-      "Aro de luz LED RGB en la base con múltiples modos rritmicos",
-      "Bluetooth + Entrada Auxiliar 3.5mm + Ranura MicroSD + USB",
-      "Estructura recubierta de tela resistente con correa de transporte"
-    ],
-    "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela.",
-    "ficha": [
-      {
-        "k": "🔊 Altavoces",
-        "v": "Doble altavoz estéreo HD con radiador de graves"
-      },
-      {
-        "k": "💡 Iluminación",
-        "v": "Aro LED RGB en la base",
-        "nota": "con varios modos rítmicos"
-      },
-      {
-        "k": "🔌 Conexiones",
-        "v": "Bluetooth, auxiliar 3.5mm, MicroSD y USB"
-      },
-      {
-        "k": "🧵 Estructura",
-        "v": "Recubierta en tela resistente, con correa de transporte"
-      },
-      {
-        "k": "🎛️ Controles",
-        "v": "Táctiles en la parte superior"
-      }
-    ],
-    "incluye": [
-      "1x Altavoz Bluetooth portátil RGB"
-    ],
-    "caracteristicas": [
-      {
-        "d": "Radiador de graves además de los dos altavoces, que es lo que le da el golpe bajo."
-      },
-      {
-        "d": "Cuatro formas de conectarse: no depende solo del Bluetooth."
-      },
-      {
-        "d": "Correa de transporte y forro de tela, pensado para llevarlo afuera."
-      }
-    ],
-    "idealPara": [
-      "Reuniones, patio y salidas donde el altavoz se mueve de un lado a otro."
-    ]
-  },
-  {
     "id": 1780887971522,
     "nombre": "Beat Boom F10! 🎶🔥",
     "precioActual": 40,
@@ -4717,34 +4675,78 @@
     "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.",
     "ficha": [
       {
-        "k": "Voltaje",
-        "v": "12V"
+        "k": "Marca",
+        "v": "Genérico / OEM"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Probador digital de baterías"
+        "k": "Modelo",
+        "v": "Analizador y Probador Digital de Baterías Automotrices"
       },
       {
-        "k": "Uso",
-        "v": "Automotriz y sistemas de 12V"
+        "k": "Voltaje de Operación",
+        "v": "12V DC",
+        "nota": "alimentación directa desde la batería bajo prueba"
+      },
+      {
+        "k": "Rango de Medición (CCA)",
+        "v": "100 a 2000 CCA",
+        "nota": "compatible con estándares CCA, JIS, DIN, IEC, EN, SAE, BCI, CA, MCA"
+      },
+      {
+        "k": "Compatibilidad de Baterías",
+        "v": "Plomo-Ácido estándar (Flooded/STD), AGM Plana, AGM Espiral, GEL y EFB"
+      },
+      {
+        "k": "Pantalla",
+        "v": "LCD digital a color de alta resolución con menú gráfico"
+      },
+      {
+        "k": "Pruebas Principales",
+        "v": "Salud de la batería (SOH), Estado de carga (SOC), Resistencia interna (mΩ), Prueba de arranque (Cranking Test) y Prueba del alternador / sistema de carga",
+        "nota": "Charging Test"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante."
+        "t": "Diagnóstico rápido y preciso",
+        "d": "evalúa en pocos segundos el estado general de la batería, mostrando el porcentaje de vida útil (SOH), porcentaje de carga (SOC), voltaje real y resistencia interna en miliohmios (mΩ)."
       },
       {
-        "d": "Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas."
+        "t": "Prueba de arranque (Cranking Test)",
+        "d": "analiza el comportamiento de la batería y la caída de voltaje durante el encendido del motor para verificar el rendimiento del motor de arranque."
       },
       {
-        "d": "Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador."
+        "t": "Prueba del sistema de carga (Alternador)",
+        "d": "mide el voltaje con y sin carga de accesorios y el rizado (Ripple Test) para comprobar si el alternador está recargando la batería de forma correcta."
+      },
+      {
+        "t": "Prueba dentro o fuera del vehículo",
+        "d": "permite analizar baterías instaladas en el auto o desmontadas en banco de trabajo sin alterar los resultados."
+      },
+      {
+        "t": "Pantalla LCD a color con interfaz intuitiva",
+        "d": "menú de 6 iconos y teclas de acceso directo (V para voltaje instantáneo, F1 y flechas direccionales) para una navegación ágil."
+      },
+      {
+        "t": "Seguridad integral",
+        "d": "protección contra inversión de polaridad que previene chispazos o daños al equipo y al vehículo ante una conexión accidental errónea."
+      },
+      {
+        "t": "Sin baterías internas",
+        "d": "se alimenta automáticamente con solo conectar las pinzas a los bornes de la batería a diagnosticar."
+      },
+      {
+        "d": "Pinzas tipo caimán de cobre reforzadas de alta conductividad con aislamiento engomado para una sujeción firme y mediciones exactas."
       }
     ],
     "idealPara": [
-      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+      "Talleres mecánicos, electricistas automotrices, centros de diagnóstico y flotas de transporte que requieren diagnósticos rápidos y confiables.",
+      "Usuarios particulares que buscan verificar el estado real de la batería de su vehículo antes de viajes largos o detectar problemas de arranque.",
+      "Comprobación del estado de baterías de ciclo profundo, AGM y GEL en sistemas de respaldo o bancos solares de 12V."
     ],
     "incluye": [
-      "1x Probador Digital de Baterías Automotrices"
+      "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
+      "1× Manual de usuario e instrucciones de operación"
     ]
   },
   {
@@ -5384,8 +5386,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🎧 Sonido Envolvente para Gaming de Alta Precisión ",
-      "🎙️ Comunicación Clara sin Interrupciones ",
+      "🎧 Sonido Envolvente para Gaming de Alta Precisión",
+      "🎙️ Comunicación Clara sin Interrupciones",
       "🛡️ Comodidad Ergonómica para Largas Sesiones"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
@@ -5396,38 +5398,71 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "NUBWO"
+        "v": "Nubwo"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Diadema gaming inalámbrica"
+        "k": "Modelo",
+        "v": "G06 Wireless Gaming Headset"
       },
       {
-        "k": "Uso",
-        "v": "Videojuegos y entretenimiento multimedia"
+        "k": "Conectividad",
+        "v": "Inalámbrica 2.4 GHz (Receptor USB) + Bluetooth + Cable auxiliar de 3.5 mm"
+      },
+      {
+        "k": "Drivers / Altavoces",
+        "v": "Neodimio de 50 mm"
+      },
+      {
+        "k": "Autonomía",
+        "v": "Hasta 30 – 40 horas de uso continuo",
+        "nota": "según volumen y modo"
+      },
+      {
+        "k": "Micrófono",
+        "v": "Micrófono flexible con cancelación de ruido"
+      },
+      {
+        "k": "Compatibilidad",
+        "v": "PC, PlayStation (PS4 / PS5), Nintendo Switch, Laptops, teléfonos móviles y Xbox",
+        "nota": "mediante cable de 3.5 mm al mando"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Conexión inalámbrica de baja latencia mediante transmisor USB, ideal para una respuesta de audio rápida y precisa en partidas competitivas."
+        "t": "Conectividad 3 en 1",
+        "d": "enlace inalámbrico de 2.4 GHz de latencia ultrabaja (<30 ms) mediante receptor USB, modo Bluetooth para dispositivos móviles y conexión analógica por cable 3.5 mm."
       },
       {
-        "d": "Controladores de alta definición que ofrecen un sonido envolvente, permitiendo identificar con claridad cada detalle y efecto dentro del juego."
+        "d": "Controladores de neodimio de 50 mm de alta precisión que entregan sonido envolvente estéreo nítido, agudos limpios y graves profundos para identificar pasos y disparos con exactitud."
       },
       {
-        "d": "Almohadillas suaves y diadema ajustable con diseño ergonómico que reducen la presión y garantizan confort prolongado."
+        "d": "Micrófono omnidireccional con supresión de ruido ambiental, flexible y posicionable para comunicaciones claras en partidas cooperativas o llamadas."
       },
       {
-        "t": "Comunicación",
-        "d": "Micrófono de pértiga ajustable que captura la voz con nitidez, facilitando la coordinación táctica con tu equipo."
+        "d": "Batería recargable de gran capacidad para largas sesiones de juego continuas sin necesidad de recargas frecuentes."
       },
       {
-        "t": "Conectividad",
-        "d": "Inalámbrica por USB"
+        "d": "Almohadillas ergonómicas de espuma con memoria viscoelástica y recubrimiento transpirable que aíslan el ruido exterior sin generar presión excesiva en las orejas."
+      },
+      {
+        "d": "Diadema ajustable con estructura reforzada y almohadilla superior acolchada para máxima comodidad durante horas de uso."
+      },
+      {
+        "t": "Controles integrados en el auricular",
+        "d": "selector de encendido, rueda de control de volumen y botón de silenciado rápido de micrófono (Mute)."
       }
     ],
     "incluye": [
-      "1x Audífonos Diademas Gaming Inalámbricos Nubwo"
+      "1× Audífonos Diadema Gaming Inalámbricos Nubwo G06",
+      "1× Transmisor / Adaptador USB inalámbrico 2.4 GHz",
+      "1× Cable de carga USB",
+      "1× Cable de audio analógico jack 3.5 mm",
+      "1× Guía de usuario rápida"
+    ],
+    "idealPara": [
+      "Jugadores competitivos de PC, PS4 y PS5 que requieren audio inalámbrico en tiempo real sin desfase ni retraso en el juego.",
+      "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
+      "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
     ]
   },
   {
@@ -5954,81 +5989,6 @@
     ]
   },
   {
-    "id": 1783179634140,
-    "nombre": "⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-    "imagen": "https://tiendamax.org/imagenes/img_1783179632067.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783179632067.webp"
-    ],
-    "precioActual": 130,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 130,
-    "comisionMoneda": "USD",
-    "categoria": "ENERGIA",
-    "subcategoria": "INVERSORES",
-    "masVendido": false,
-    "usado": true,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "Voltaje: 12V",
-      "Potencia: 3000W"
-    ],
-    "fechaAgregado": "2026-07-04T15:40:34.140Z",
-    "descripcion": "Inversor de corriente de onda senoidal pura UNIZUKI, modelo DA 3000W, entrada de 12V. La onda senoidal pura entrega corriente estable y segura para equipos electrónicos sensibles. Incluye cables con pinzas para batería. Convierte la energía de tu batería en corriente alterna para mantener tu casa o negocio funcionando durante los apagones.",
-    "seoTitle": "Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-    "seoDescription": "Inversor de corriente de onda senoidal pura UNIZUKI, modelo DA 3000W, entrada de 12V. La onda senoidal pura entrega corriente estable y segura para…",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "UNIZUKI"
-      },
-      {
-        "k": "Modelo",
-        "v": "DA 3000W"
-      },
-      {
-        "k": "Potencia continua",
-        "v": "1500W nominal garantizada"
-      },
-      {
-        "k": "Potencia pico",
-        "v": "3000W arranque"
-      },
-      {
-        "k": "Voltaje de entrada",
-        "v": "12V DC",
-        "nota": "Batería"
-      },
-      {
-        "k": "Voltaje de salida",
-        "v": "110V / 120V AC",
-        "nota": "Onda Senoidal Pura"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Onda senoidal pura que evita ruidos, calentamiento en ventiladores o daños en motores."
-      },
-      {
-        "d": "Arranque suave para superar los golpes de arranque de refrigeradores y motores medianos."
-      },
-      {
-        "d": "Carcasa metálica con disipación de calor activa y protecciones eléctricas totales."
-      }
-    ],
-    "idealPara": [
-      "Hogares que necesitan alimentar neveras, ventiladores y televisores durante apagones sin riesgo de averías."
-    ],
-    "incluye": [
-      "1x Inversor Onda Pura Unizuki 3000W",
-      "1x Par de cables con pinzas para batería",
-      "1x Manual del usuario"
-    ]
-  },
-  {
     "id": 1783179800783,
     "nombre": "⚡ Inversor Tataliken 4000W (24V)",
     "imagen": "https://tiendamax.org/imagenes/img_1785946325577.webp",
@@ -6103,8 +6063,8 @@
     ],
     "incluye": [
       "1x Inversor Tataliken 4000W 24V",
-      "1x Par de cables con terminales de bornes",
-      "1x Par de pinzas caimán reforzadas"
+      "1x Par de pinzas caimán reforzadas",
+      "1x Par de mosfet"
     ]
   },
   {
@@ -8247,54 +8207,69 @@
       },
       {
         "k": "Modelo",
-        "v": "TOVPD1-60"
+        "v": "TOVPD1-60 (63A)"
       },
       {
-        "k": "Tipo",
-        "v": "Protector de Voltaje y Sobrecorriente ajustable"
+        "k": "Voltaje de Operación",
+        "v": "AC 220V / 230V (50/60 Hz) — Rango operativo: 140V a 300V AC"
       },
       {
-        "k": "Corriente máxima",
-        "v": "63A",
-        "nota": "Capacidad para toda la casa"
+        "k": "Rango de Sobrevoltaje (>V)",
+        "v": "Ajustable de 230V a 300V",
+        "nota": "por defecto ~270V"
       },
       {
-        "k": "Rango de sobrevoltaje",
-        "v": "Ajustable",
-        "nota": "230V - 300V / Default: 135V en 110V"
+        "k": "Rango de Bajovoltaje (<V)",
+        "v": "( (por * Rango 140V 210V Ajustable Sobrecorriente a de defecto ~170V)>A): Ajustable de 1A a 63A"
       },
       {
-        "k": "Rango de bajo voltaje",
-        "v": "Ajustable",
-        "nota": "140V - 210V / Default: 90V en 110V"
+        "k": "Tiempo de Reconexión / Retardo",
+        "v": "Ajustable de 1 a 500 segundos",
+        "nota": "por defecto ~30s"
       },
       {
-        "k": "Pantalla",
-        "v": "Doble display LED",
-        "nota": "Voltaje y Amperaje en tiempo real"
-      },
-      {
-        "k": "Montaje",
-        "v": "Riel DIN estándar de 35mm"
+        "k": "Tipo de Montaje",
+        "v": "Riel DIN estándar de 35 mm",
+        "nota": "2 módulos / 36 mm de ancho"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Lectura digital simultánea en tiempo real de voltaje y corriente consumida."
+        "t": "Protección integral 3 en 1",
+        "d": "protege automáticamente los circuitos contra sobretensión (alto voltaje), subtensión (bajo voltaje) y sobrecarga de corriente (amperaje excesivo)."
       },
       {
-        "d": "Reconexión automática con tiempo de retardo programable para cuidar refrigeradores."
+        "t": "Doble pantalla digital LED",
+        "d": "visualización precisa y continua en tiempo real del voltaje (V) y del consumo instantáneo de corriente (A)."
       },
       {
-        "d": "Protege aires acondicionados, televisores y electrodomésticos de fallas de fase."
+        "t": "Parámetros 100% configurables",
+        "d": "permite ajustar con precisión los umbrales de corte por voltaje alto/bajo, el límite de corriente máxima y el tiempo de espera tras una anomalía."
+      },
+      {
+        "t": "Reconexión automática inteligente",
+        "d": "una vez que los valores de la red eléctrica se normalizan, el dispositivo restablece el suministro eléctrico de forma segura tras cumplirse el retardo programado."
+      },
+      {
+        "t": "Indicadores LED de diagnóstico",
+        "d": "luces piloto frontales que señalan de forma inmediata el motivo del disparo o corte (>V, <V,>A) y el estado de la alimentación (POWER)."
+      },
+      {
+        "t": "Botón de control manual",
+        "d": "permite encender o cortar el paso de corriente manualmente desde el panel sin necesidad de desconectar cables."
+      },
+      {
+        "d": "Formato estándar para riel DIN que permite una instalación limpia, ordenada y modular dentro de cualquier tablero o caja de distribución eléctrica."
       }
     ],
     "idealPara": [
-      "Tablero eléctrico principal de viviendas para protección total contra fluctuaciones eléctricas."
+      "Protección general de tableros eléctricos principales en hogares, oficinas, talleres y pequeños comercios expuestos a inestabilidad eléctrica.",
+      "Cuidado de equipos de alto consumo y componentes sensibles: aires acondicionados, refrigeradores, lavadoras, bombas de agua, inversores solares y servidores.",
+      "Monitoreo en tiempo real del voltaje de entrada y la carga total de corriente para evitar sobrecargas en las líneas de distribución."
     ],
     "incluye": [
-      "1x Protector Digital TOMZN 63A",
-      "1x Manual de programación"
+      "1× Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60 (63A)",
+      "1× Manual de usuario e instrucciones de configuración rápida"
     ]
   },
   {
@@ -8333,44 +8308,69 @@
         "v": "Y&H"
       },
       {
-        "k": "Tecnología",
-        "v": "MPPT de alta potencia"
+        "k": "Modelo",
+        "v": "Controlador Solar MPPT 120A de Amplio Rango",
+        "nota": "Max PV 230VDC"
       },
       {
-        "k": "Corriente de carga",
-        "v": "120A continuo"
+        "k": "Corriente Nominal de Carga",
+        "v": "120A"
       },
       {
-        "k": "Voltaje de batería",
-        "v": "12V / 24V / 36V / 48V / 60V / 72V / 84V / 96V"
+        "k": "Voltaje de Banco de Baterías",
+        "v": "12V / 24V / 36V / 48V / 60V / 72V / 84V / 96V DC",
+        "nota": "Reconocimiento automático y modo manual programable"
       },
       {
-        "k": "Entrada solar máx. (Voc)",
-        "v": "230V DC",
-        "nota": "Permite series largas de paneles"
+        "k": "Voltaje Máximo de Entrada Solar (PV Voc)",
+        "v": "Hasta 230V DC"
+      },
+      {
+        "k": "Compatibilidad de Baterías",
+        "v": "Litio (LiFePO4, Ternaria de Litio / Li-ion) y Plomo-Ácido",
+        "nota": "GEL, AGM, Sellada, Inundada / Modo Usuario Personalizable"
       },
       {
         "k": "Pantalla",
-        "v": "LCD multifunción retroiluminada"
+        "v": "LCD gráfica retroiluminada multifunción con registro de generación diaria y total"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Soporta bancos de baterías de alta tensión hasta 96V DC."
+        "d": "Amplio rango de compatibilidad de baterías con soporte continuo desde 12V hasta 96V DC (12V, 24V, 36V, 48V, 60V, 72V, 84V y 96V), ideal para proyectos de alta tensión y gran escala."
       },
       {
-        "d": "Entrada de paneles solares hasta 230V Voc para optimizar cableado y reducir pérdidas."
+        "d": "Capacidad de carga masiva de hasta 120A con algoritmo MPPT (Maximum Power Point Tracking) de alta eficiencia (≥ 99%), maximizando la captación solar en cualquier época del año."
       },
       {
-        "d": "Menú de configuración para parámetros personalizados de carga y corte."
+        "d": "Rango fotovoltaico extendido con entrada de hasta 230V DC, permitiendo conectar paneles solares en series largas para reducir el calibre del cableado y minimizar caídas de tensión."
+      },
+      {
+        "t": "Potencia solar máxima admitida escalable",
+        "d": "gestiona desde ~1,440W en sistemas a 12V hasta más de 11,500W en bancos de baterías de 96V."
+      },
+      {
+        "t": "Pantalla LCD gráfica multifuncional",
+        "d": "monitoreo en tiempo real de voltaje y corriente de entrada solar, potencia de carga (W), voltaje de batería, temperatura y acumuladores de energía (kWh)."
+      },
+      {
+        "d": "Panel de navegación con 4 botones físicos (SET, UP, DOWN, CONFIRM) para configuración precisa de voltajes de absorción, flotación, corte por bajo voltaje y curvas de carga para litio o plomo."
+      },
+      {
+        "d": "Sistema de enfriamiento eficiente mediante disipador de aluminio extruido de alta densidad para soportar ciclos de trabajo continuo."
+      },
+      {
+        "t": "Protecciones electrónicas integrales",
+        "d": "contra cortocircuitos, conexión inversa de batería/paneles, sobrecarga, sobretensión y sobretemperatura."
       }
     ],
     "idealPara": [
-      "Proyectos solares grandes, sistemas aislados escalables o movilidad eléctrica solar."
+      "Sistemas solares aislados (Off-Grid) residenciales, comerciales o industriales con bancos de baterías de alto voltaje (48V, 60V, 72V, 84V o 96V).",
+      "Recarga de vehículos eléctricos medianos/pesados, motos eléctricas y maquinaria con sistemas a 60V, 72V o 96V.",
+      "Instalaciones con arreglos fotovoltaicos de gran capacidad que utilicen paneles de alta potencia (450W a 650W+) en cadenas en serie."
     ],
     "incluye": [
-      "1x Controlador MPPT 120A Y&H",
-      "1x Manual de configuración"
+      "1× Controlador de Carga Solar MPPT 120A Y&H (12V–96V / Max PV 230V)"
     ]
   },
   {
@@ -8598,38 +8598,75 @@
         "v": "VEVOR"
       },
       {
-        "k": "Voltajes",
-        "v": "6V / 12V / 24V"
+        "k": "Modelo",
+        "v": "Cargador y Mantenedor Inteligente de Baterías 35A",
+        "nota": "12V / 24V"
       },
       {
-        "k": "Capacidad / Corriente",
-        "v": "35A / 10A"
+        "k": "Voltaje de Entrada",
+        "v": "100V – 240V AC",
+        "nota": "50/60 Hz"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Cargador y mantenedor inteligente de baterías"
+        "k": "Voltaje y Corriente de Salida",
+        "v": "12V (hasta 35A) / 24V (hasta 18A) con selección manual o automática de amperaje"
       },
       {
-        "k": "Corriente",
-        "v": "35A"
+        "k": "Compatibilidad de Baterías",
+        "v": "Plomo-Ácido (STD, AGM, GEL, Ciclo Profundo, EFB, Calcio) y Litio",
+        "nota": "LiFePO4"
+      },
+      {
+        "k": "Pantalla",
+        "v": "LCD digital a color con monitoreo en tiempo real de voltaje (V), corriente (A), porcentaje y estado"
+      },
+      {
+        "k": "Modos Especiales",
+        "v": "Carga Rápida, Mantenedor (Flotación), Desulfatación / Reparación por pulsos y Modo Forzado",
+        "nota": "Force Mode"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Capacidad de salida de hasta 35A para una carga rápida y eficiente de bancos de baterías exigentes."
+        "d": "Carga ultrarrápida de alta potencia con hasta 35A en 12V, reduciendo drásticamente el tiempo de recarga en baterías medianas y grandes."
       },
       {
-        "d": "Compatibilidad de Baterías: Soporta múltiples tecnologías de química de baterías, incluyendo AGM/Lead, LiFePO4 y Litio, configurables desde su interfaz."
+        "d": "Microprocesador inteligente con gestión de carga multietapa, que detecta el estado de la batería y regula automáticamente el flujo para maximizar su vida útil."
       },
       {
-        "d": "Panel de Control y Pantalla: Pantalla LCD a color que muestra métricas en tiempo real (voltaje y amperaje) junto con botones laterales dedicados para funciones de mantenimiento, desulfatación, selección de voltaje (6V/12V/24V) y corriente (Auto/10A/20A/35A)."
+        "t": "Pantalla LCD digital a color",
+        "d": "muestra de forma intuitiva el voltaje actual, los amperios entregados, el nivel de carga gráfica y el modo seleccionado."
+      },
+      {
+        "t": "Función de Desulfatación / Reparación",
+        "d": "aplica pulsos de frecuencia controlada para disolver la sulfatación interna en placas de plomo, restaurando baterías degradadas o descargadas por inactividad."
+      },
+      {
+        "t": "Modo Forzado (Force Mode)",
+        "d": "permite iniciar la carga en baterías profundamente descargadas (con voltajes cercanos a 0V) que los cargadores convencionales no detectan."
+      },
+      {
+        "t": "Mantenedor Automático (Trickle Charge)",
+        "d": "entra en modo de flotación una vez completado el 100% de la carga, permitiendo dejarlo conectado de forma continua y segura durante temporadas sin uso."
+      },
+      {
+        "t": "Sistema integral de seguridad electrónica",
+        "d": "protección contra polaridad invertida, cortocircuitos, sobretensión, sobrecorriente, sobrecalentamiento y sobrecarga."
+      },
+      {
+        "d": "Carcasa de alta resistencia con ventilador interno de refrigeración activa inteligente y pinzas tipo caimán de uso pesado completamente aisladas."
       }
     ],
     "idealPara": [
-      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+      "Automóviles, camionetas, SUVs, camiones, botes, maquinaria agrícola y plantas eléctricas.",
+      "Mantenimiento y carga de bancos de baterías para sistemas solares e inversores (baterías AGM, GEL o LiFePO4 de 12V y 24V).",
+      "Talleres automotrices, garajes y usuarios particulares que requieren tanto cargas rápidas de emergencia como mantenimiento a largo plazo."
     ],
     "incluye": [
-      "1x Cargador y Mantenedor de Baterías VEVOR 35A"
+      "1× Cargador y Mantenedor de Baterías VEVOR 35A",
+      "1× Juego de pinzas tipo caimán de uso pesado integradas",
+      "1× Cable de alimentación AC",
+      "1× Manual de usuario e instrucciones de operación"
     ]
   },
   {
@@ -8727,45 +8764,73 @@
     "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
     "ficha": [
       {
-        "k": "Tipo",
-        "v": "Controlador Solar MPPT Elevador",
-        "nota": "Boost"
+        "k": "Marca",
+        "v": "Boost"
       },
       {
-        "k": "Potencia máxima",
+        "k": "Modelo",
+        "v": "Solar Boost Controller 1200W",
+        "nota": "MPPT Step-Up"
+      },
+      {
+        "k": "Potencia Máxima",
         "v": "1200W"
       },
       {
-        "k": "Voltaje de entrada solar",
-        "v": "12V - 60V DC"
+        "k": "Voltaje de Entrada Solar (PV)",
+        "v": "12V a 60V DC"
       },
       {
-        "k": "Voltaje de salida a batería",
+        "k": "Voltaje de Salida / Batería",
         "v": "48V / 60V / 72V DC",
-        "nota": "Ajustable"
+        "nota": "configurable según el banco de baterías"
+      },
+      {
+        "k": "Tipos de Batería Soportados",
+        "v": "Litio (LiFePO4, Ternaria de Litio / Li-ion) y Plomo-Ácido",
+        "nota": "SLA, GEL, AGM"
       },
       {
         "k": "Pantalla",
-        "v": "Digital LCD a color con métricas de carga"
+        "v": "LCD digital a color con monitoreo en tiempo real"
+      },
+      {
+        "k": "Tecnología de Carga",
+        "v": "MPPT Boost",
+        "nota": "Seguimiento del Punto de Máxima Potencia elevador"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Permite cargar motos eléctricas o bancos de 48V/60V/72V con paneles de bajo voltaje."
+        "t": "Tecnología MPPT Boost (Step-Up)",
+        "d": "eleva de forma eficiente el voltaje de entrada de paneles solares estándar (12V, 18V, 24V o 36V) para cargar directamente bancos de baterías de alto voltaje (48V, 60V o 72V)."
       },
       {
-        "d": "Pantalla digital a color que muestra voltios, amperios y vatios de generación solar."
+        "t": "Pantalla LCD digital a color",
+        "d": "muestra simultáneamente el voltaje del panel solar (PV), la corriente de carga (A), el voltaje de la batería (V), la potencia generada en tiempo real (W), el porcentaje de carga y la temperatura."
       },
       {
-        "d": "Carcasa metálica con disipación eficiente y botón de configuración frontal."
+        "d": "Algoritmo de seguimiento MPPT avanzado con alta eficiencia de conversión (>98%) para extraer la máxima potencia posible del panel solar bajo cualquier condición climática."
+      },
+      {
+        "d": "Ajuste rápido y sencillo mediante botón frontal (Set) para seleccionar el voltaje del banco de baterías y el tipo de química (Litio o Plomo-ácido)."
+      },
+      {
+        "d": "Carcasa compacta fabricada en aleación de aluminio extrusionado en color rojo, que actúa como disipador térmico pasivo para garantizar un funcionamiento fresco y silencioso."
+      },
+      {
+        "t": "Sistema integral de protecciones",
+        "d": "protección contra sobrevoltaje, cortocircuito en terminales, sobrecorriente, sobrecalentamiento y conexión inversa."
       }
     ],
     "idealPara": [
-      "Recarga solar directa de motos eléctricas, patinetas o bancos de alta tensión."
+      "Recarga solar directa de motos eléctricas, triciclos eléctricos (moto-taxis), scooters y carritos de golf de 48V, 60V o 72V usando pocos paneles solares.",
+      "Sistemas solares aislados (Off-Grid) con bancos de baterías a 48V/60V/72V donde el espacio para instalar paneles en serie es limitado.",
+      "Estaciones de carga portátiles o proyectos DIY que requieran elevar el voltaje fotovoltaico hacia acumuladores de alta tensión."
     ],
     "incluye": [
-      "1x Controlador MPPT Boost 1200W",
-      "1x Manual de instrucciones"
+      "1× Controlador de Carga Solar MPPT Boost 1200W",
+      "1× Manual de usuario e instrucciones de configuración"
     ]
   },
   {
