@@ -2443,11 +2443,19 @@
     "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Llantas"
+        "k": "🛞 Rodado",
+        "v": "R14"
       },
       {
-        "k": "Estado",
+        "k": "🎨 Acabado",
+        "v": "Negro con detalle rojo"
+      },
+      {
+        "k": "✨ Diseño",
+        "v": "5 rayos deportivo"
+      },
+      {
+        "k": "📦 Estado",
         "v": "Nuevo en caja original"
       }
     ],
@@ -2455,7 +2463,7 @@
       "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
     ],
     "incluye": [
-      "1x Juego de Llantas R14"
+      "1x Juego de 4 llantas R14"
     ]
   },
   {
@@ -2477,11 +2485,23 @@
     "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
     "ficha": [
       {
-        "k": "Categoría",
-        "v": "Llantas"
+        "k": "🏷️ Marca",
+        "v": "Ocenti Racing"
       },
       {
-        "k": "Estado",
+        "k": "🛞 Rodado",
+        "v": "R15"
+      },
+      {
+        "k": "🎨 Acabado",
+        "v": "Negro pulido"
+      },
+      {
+        "k": "✨ Diseño",
+        "v": "5 rayos deportivo"
+      },
+      {
+        "k": "📦 Estado",
         "v": "Nuevo en caja original"
       }
     ],
@@ -2489,7 +2509,7 @@
       "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
     ],
     "incluye": [
-      "1x Juego de Llantas R15"
+      "1x Juego de 4 llantas R15"
     ]
   },
   {
@@ -4388,7 +4408,32 @@
     "slug": "juego-llantas-r14-centro-4x100-4x114-3",
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "Ocenti Racing"
+      },
+      {
+        "k": "🛞 Rodado",
+        "v": "R14"
+      },
+      {
+        "k": "🎨 Acabado",
+        "v": "Negro con pulido cromado"
+      },
+      {
+        "k": "✨ Diseño",
+        "v": "5 rayos deportivo"
+      },
+      {
+        "k": "📦 Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Juego de 4 llantas R14"
+    ]
   },
   {
     "id": 1778546922840,
@@ -4406,7 +4451,40 @@
     "slug": "juego-llantas-r15-centro-4x100-4x114-3",
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R15 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "Ocenti Racing"
+      },
+      {
+        "k": "🛞 Rodado",
+        "v": "R15"
+      },
+      {
+        "k": "📏 Medida",
+        "v": "15x6"
+      },
+      {
+        "k": "🔩 Patrón de tornillos",
+        "v": "4x100 / 4x114.3"
+      },
+      {
+        "k": "🎨 Acabado",
+        "v": "Gris / negro"
+      },
+      {
+        "k": "✨ Diseño",
+        "v": "5 rayos"
+      },
+      {
+        "k": "📦 Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Juego de 4 llantas R15"
+    ]
   },
   {
     "id": 1778601482845,
