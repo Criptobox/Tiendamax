@@ -29,6 +29,11 @@ ORDEN = [
     "tm-config.js",
     "tm-data.js",
     "tm-state.js",
+    # Parser de la ficha ampliada. Antes de tm-admin, que es quien lo llama al
+    # guardar y para la vista previa. Vive aparte porque también lo carga
+    # suelto scripts/ficha-probador.html: tenerlo duplicado hacía que lo que se
+    # prueba ahí pudiera dejar de ser lo que se guarda.
+    "tm-ficha.js",
     "tm-admin.js",
     # Seguimiento post-venta (funciones puras). Va junto a tm-admin porque solo
     # lo usa el panel; no colisiona con nada, así que el sitio no lo nota.

@@ -3,6 +3,10 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Probador de fichas — TiendaMax</title>
 <link rel="stylesheet" href="../css/bundle.css">
+<!-- El parser es el mismo que usa el admin al guardar (js/src/tm-ficha.src.js).
+     Antes había una copia acá y otra allá, sincronizadas a mano: en cuanto una
+     cambiara, lo que se prueba en este probador dejaba de ser lo que se guarda. -->
+<script src="../js/src/tm-ficha.src.js"></script>
 <style>
 :root{--co:#FF6B35;--bg:#0d0f14;--pa:#141821;--bd:rgba(255,255,255,.10);--mu:#9aa1ab;--tx:#e8e8ee}
 *{box-sizing:border-box}
@@ -160,49 +164,32 @@ let D={nombre:'',precio:'',clave:[],ficha:[],caracteristicas:[],idealPara:[],inc
 
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const lim=s=>String(s||'').replace(/\s+/g,' ').trim();
+const sp=s=>lim(s).replace(/\s*\.\s*$/,'');
 const sinPunto=s=>lim(s).replace(/\s*\.\s*$/,'');
 
-const SEC=[
- [/especificaciones\s+clave/i,'clave'],
- [/ficha\s+t[eé]cnica/i,'ficha'],
- [/caracter[ií]sticas/i,'caracteristicas'],
- [/ideal\s+para/i,'idealPara'],
- [/(incluye|contenido).*caja|qu[eé]\s+incluye/i,'incluye'],
- [/especificaciones(\s*\(specs\))?\s*:?\s*$/i,'ficha'],
-];
-
-// El paréntesis FINAL del valor es una aclaración, no parte del dato:
-// "4000W (para arranques)" -> valor 4000W + nota. Se separa para que el valor
-// siga siendo comparable entre productos.
-function partirNota(v){
-  const m=lim(v).match(/^(.*?)\s*\(\s*(?:nota\s*:\s*)?([^()]{4,})\)\s*\.?\s*$/i);
-  if(m && m[1].trim()) return {v:sinPunto(m[1]), nota:sinPunto(m[2])};
-  return {v:sinPunto(v), nota:''};
-}
-
+// parsear() delega en tmParsearFicha (js/src/tm-ficha.src.js), que es el que
+// corre en el admin al guardar. Solo se le suman nombre y precio, que son de
+// este probador y no del producto.
 function parsear(txt){
-  const R={nombre:'',precio:'',clave:[],ficha:[],caracteristicas:[],idealPara:[],incluye:[]};
+  const base = (typeof tmParsearFicha === 'function')
+    ? tmParsearFicha(txt)
+    : {ficha:[],caracteristicas:[],idealPara:[],incluye:[]};
+  const R = Object.assign({nombre:'',precio:''}, base);
   let sec=null;
-  for(let linea of String(txt||'').split('\n')){
-    const l=lim(linea);
-    if(!l) continue;
-    const cab=SEC.find(([re])=>re.test(l.replace(/^[^\p{L}]+/u,'')));
-    // Un encabezado es una línea corta y sin datos propios ("⚙️ Ficha Técnica
-    // Detallada"), no una línea que además trae un valor ("Marca: Tataliken").
-    if(cab && l.length<48 && !/:\s*\S/.test(l.replace(/:\s*$/,''))){ sec=cab[1]; continue; }
+  for(const linea of String(txt||'').split('\n')){
+    const l=lim(linea); if(!l) continue;
+    const sinEmoji = l.replace(/^[^\p{L}\d]+/u,'');
+    if(/especificaciones|ficha\s+t[eé]cnica|caracter[ií]sticas|ideal\s+para|incluye/i.test(sinEmoji)
+       && l.length<48 && !/:\s*\S/.test(l.replace(/:\s*$/,''))){ sec='x'; continue; }
     const mp=l.match(/^precio\s*:\s*(.+)$/i);
-    if(mp && !sec){ R.precio=sinPunto(mp[1]); continue; }
-    if(!sec){ if(!R.nombre) R.nombre=sinPunto(l); continue; }
-    if(sec==='idealPara'||sec==='incluye'){
-      R[sec].push(sinPunto(l.replace(/^[-•*▪]\s*/,'')));
-      continue;
-    }
-    const m=l.match(/^([^:]{2,46}):\s*(.+)$/);
-    if(!m) continue;
-    const k=sinPunto(m[1]);
-    if(sec==='caracteristicas'){ R.caracteristicas.push({t:k,d:sinPunto(m[2])}); }
-    else { const {v,nota}=partirNota(m[2]); const it={k,v}; if(nota) it.nota=nota; R[sec].push(it); }
+    if(mp && !sec){ R.precio=sp(mp[1]); continue; }
+    if(!sec && !R.nombre){ R.nombre=sp(l); }
   }
+  // El resumen de arriba (los chips) sale de las primeras filas de la ficha,
+  // igual que hace scripts/resumen_specs.py. El parser junta "Especificaciones
+  // Clave" y "Ficha Técnica" en un solo bloque —para el admin son un campo—
+  // así que acá se recorta a las cuatro primeras en vez de pintarlas todas.
+  R.clave = R.ficha.slice(0, 4).map(f => ({k:f.k, v:f.v}));
   return R;
 }
 
