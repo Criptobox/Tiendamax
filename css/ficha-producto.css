@@ -57,6 +57,9 @@
 .tmf-cars .tmf-t { display: block; margin-bottom: 2px; font-size: 13px; font-weight: 800; color: #ffd1b3; }
 .tmf-cars .tmf-t svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 5px; }
 .tmf-cars .tmf-d { font-size: 12.8px; line-height: 1.45; color: #c8ccd4; }
+/* Sin título: la frase es todo el contenido, así que se le da el peso que
+   tendría el título para que la tarjeta no se lea a medias. */
+.tmf-cars .tmf-c-sola .tmf-d { color: #e2e5ea; font-weight: 600; }
 
 /* Listas */
 .tmf-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }

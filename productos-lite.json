@@ -26,72 +26,50 @@
     "almacenId": "alm_1783425091823",
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "MUST"
       },
       {
-        "k": "🔤 Modelo",
+        "k": "Modelo",
         "v": "LP15-12100"
       },
       {
-        "k": "🧪 Química",
+        "k": "Química",
         "v": "LiFePO4",
-        "nota": "litio hierro fosfato"
+        "nota": "Litio Hierro Fosfato"
       },
       {
-        "k": "🔋 Voltaje nominal",
-        "v": "12.8V"
+        "k": "Capacidad nominal",
+        "v": "100Ah / 1280Wh reales"
       },
       {
-        "k": "⚡ Capacidad",
-        "v": "100Ah",
-        "nota": "1280Wh de energía"
+        "k": "Voltaje nominal",
+        "v": "12.8V DC",
+        "nota": "Voltaje de carga máx: 14.6V"
       },
       {
-        "k": "♻️ Ciclos de vida",
-        "v": "6000",
-        "nota": "al 80% de descarga, a 25 °C"
-      },
-      {
-        "k": "🔌 Voltaje de carga máx.",
-        "v": "14.6V"
-      },
-      {
-        "k": "⚡ Corriente de carga máx.",
-        "v": "50A"
-      },
-      {
-        "k": "⚡ Descarga máx. continua",
-        "v": "100A"
-      },
-      {
-        "k": "🛡️ Corte del BMS",
-        "v": "9.2V",
-        "nota": "protege la batería de descarga profunda"
-      },
-      {
-        "k": "🌡️ Temperatura de descarga",
-        "v": "-20 a 55 °C"
+        "k": "Corrientes máximas",
+        "v": "Carga: 50A / Descarga: 100A continuo"
       }
     ],
     "caracteristicas": [
       {
-        "t": "♻️ Dura mucho más que una de plomo",
-        "d": "6000 ciclos al 80% de descarga: donde una de plomo-ácido aguanta un par de años de uso diario, esta trabaja durante años sin perder capacidad de forma notable."
+        "d": "Ciclo de vida superior a 4000 ciclos de descarga profunda."
       },
       {
-        "t": "🛡️ BMS integrado",
-        "d": "Corta sola a 9.2V para que una descarga profunda no la arruine, y protege contra sobrecarga, cortocircuito y temperatura fuera de rango."
+        "d": "BMS interno de protección contra sobrecarga, sobredescarga y cortocircuito."
       },
       {
-        "t": "⚡ Entrega 100A continuos",
-        "d": "Suficiente para alimentar un inversor mediano sin que la batería sea el cuello de botella."
+        "d": "Voltaje constante durante toda la descarga para mantener la potencia del inversor."
       }
     ],
     "idealPara": [
-      "Sistemas solares fotovoltaicos de 12V.",
-      "Bancos de respaldo para inversores durante los apagones.",
-      "Reemplazar baterías de plomo-ácido buscando más vida útil."
+      "Bancos de respaldo e inversores solares para obtener larga autonomía ante apagones continuos."
+    ],
+    "incluye": [
+      "1x Batería MUST LiFePO4 12.8V 100Ah",
+      "1x Tapas protectoras de bornes",
+      "1x Ficha técnica del fabricante"
     ]
   },
   {
@@ -126,62 +104,52 @@
     "radar": true,
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "Tataliken"
       },
       {
-        "k": "⚡ Potencia real (continua)",
-        "v": "2000W",
-        "nota": "lo que sostiene de forma permanente"
+        "k": "Potencia continua",
+        "v": "1800W - 2000W nominal"
       },
       {
-        "k": "⚡ Potencia máxima (pico)",
-        "v": "4000W",
-        "nota": "solo para el arranque de motores"
+        "k": "Potencia pico",
+        "v": "4000W arranque"
       },
       {
-        "k": "🔋 Voltaje de entrada",
+        "k": "Voltaje de entrada",
         "v": "12V DC",
-        "nota": "requiere banco de baterías de 12V"
+        "nota": "Batería"
       },
       {
-        "k": "🔌 Voltaje de salida",
-        "v": "110V / 120V AC",
-        "nota": "tolerancia ±10%"
+        "k": "Voltaje de salida",
+        "v": "110V / 220V AC a 60Hz"
       },
       {
-        "k": "📶 Frecuencia",
-        "v": "60Hz",
-        "nota": "estándar residencial"
-      },
-      {
-        "k": "〰️ Tipo de onda",
-        "v": "Sinusoidal modificada",
-        "nota": "ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados"
+        "k": "Tipo de onda",
+        "v": "Onda Sinusoidal Modificada"
       }
     ],
     "caracteristicas": [
       {
-        "t": "🛡️ Seguridad",
-        "d": "Incluye cables de conexión robustos para una transferencia de energía segura y eficiente."
+        "d": "Potencia continua de 1800W a 2000W suficiente para televisor, ventiladores, iluminación y licuadora."
       },
       {
-        "t": "🔌 Versatilidad",
-        "d": "Equipado con tomas de corriente estándar para conexión directa de electrodomésticos y equipos electrónicos."
+        "d": "Carcasa de aleación de aluminio con ventilador termoactivado para disipación eficiente."
       },
       {
-        "t": "🛡️ Protecciones",
-        "d": "Sobrecarga, cortocircuito, sobretemperatura, inversión de polaridad y voltaje alto o bajo de batería."
+        "d": "Display digital frontal con lectura de voltaje de batería (DC in) y salida (AC out)."
+      },
+      {
+        "d": "Protección automática contra bajo voltaje, sobrevoltaje, cortocircuito y sobrecalentamiento."
       }
     ],
     "idealPara": [
-      "Respaldo energético para el hogar durante los apagones.",
-      "Oficinas y negocios que necesitan mantener equipos esenciales encendidos.",
-      "Sistemas solares pequeños o medianos que trabajan a 12V."
+      "Respaldo eléctrico en hogares ante apagones alimentado desde una batería de 12V (Gel, AGM o Litio)."
     ],
     "incluye": [
-      "1x Inversor Tataliken 4000W (12V)",
-      "1x Juego de cables de conexión a batería"
+      "1x Inversor Tataliken 4000W 12V",
+      "1x Par de cables con terminales de ojo",
+      "1x Par de pinzas caimán para batería"
     ]
   },
   {
@@ -210,6 +178,49 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783836865144.webp",
       "https://tiendamax.org/imagenes/img_1777924248270_a08897.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Wavlink"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Puertos",
+        "v": "1 puerto WAN + 4 puertos LAN"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas de alta ganancia para una señal omnidireccional"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Soporta estándares IEEE 802.11ac/a/n/g/b"
+      },
+      {
+        "k": "Frecuencias",
+        "v": "2.4GHz y 5GHz simultáneas"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Doble banda AC1200 (hasta 867 Mbps en 5GHz y 300 Mbps en 2.4GHz)."
+      },
+      {
+        "d": "antenas externas de alta ganancia para una señal omnidireccional."
+      },
+      {
+        "d": "Puertos WAN y LAN de alta velocidad."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Wavlink AC1200 Dual Band"
     ]
   },
   {
@@ -237,6 +248,51 @@
     "comisionMoneda": "MN",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1777924315386.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 5"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas de alta potencia para una cobertura ampliada y estable"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Repetidor inalámbrico / Extensor de rango"
+      },
+      {
+        "k": "Frecuencias",
+        "v": "Doble banda",
+        "nota": "2.4GHz + 5GHz"
+      },
+      {
+        "k": "Enchufe",
+        "v": "US Plug",
+        "nota": "estándar"
+      },
+      {
+        "k": "Compatibilidad",
+        "v": "Funciona con la mayoría de los routers modernos"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Alcanza hasta 1200 Mbps (5GHz + 2.4GHz) para un rendimiento superior."
+      },
+      {
+        "d": "Estándar Wi-Fi 5 para mayor eficiencia en la gestión de dispositivos."
+      },
+      {
+        "d": "antenas externas de alta potencia para una cobertura ampliada y estable."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)"
     ]
   },
   {
@@ -266,6 +322,41 @@
     "specs": [
       "⚡ Gigabit (1000 Mbps) ",
       "🔌 8 Puertos RJ45"
+    ],
+    "ficha": [
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "GIGABIT"
+      },
+      {
+        "k": "Puertos",
+        "v": "8 puertos RJ45 para una expansión de red inmediata"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Switch Ethernet no gestionado"
+      },
+      {
+        "k": "Calidad",
+        "v": "Componentes optimizados para operación continua"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "puertos RJ45 para una expansión de red inmediata."
+      },
+      {
+        "d": "Rendimiento Gigabit (10/100/1000 Mbps) para transferencia de archivos pesados y streaming fluido."
+      },
+      {
+        "d": "Soporta sistemas de videovigilancia (CCTV) y redes de alto tráfico."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Switch Gigabit de 8 Puertos"
     ]
   },
   {
@@ -295,6 +386,44 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007772666.webp",
       "https://tiendamax.org/imagenes/img_1778102507659_94aef1.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Capacidad Máxima",
+        "v": "Soporta hasta 396.83 lb",
+        "nota": "180 kg"
+      },
+      {
+        "k": "Dimensiones",
+        "v": "Tamaño optimizado de 27x27 cm",
+        "nota": "10.63x10.63 pulgadas"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Báscula corporal digital"
+      },
+      {
+        "k": "Material",
+        "v": "Plataforma de vidrio templado de alta resistencia"
+      },
+      {
+        "k": "Unidades",
+        "v": "Medición soportada en libras (lb) y kilogramos (kg)"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Soporta hasta 396.83 lb (180 kg)."
+      },
+      {
+        "d": "División (d) de 50g para un seguimiento exacto de tu peso."
+      },
+      {
+        "d": "Pantalla digital HD de alta visibilidad para lecturas rápidas."
+      }
+    ],
+    "incluye": [
+      "1x Báscula Digital de Alta Definición"
     ]
   },
   {
@@ -324,6 +453,38 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007359011.webp",
       "https://tiendamax.org/imagenes/img_1778102582909.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Antorcha TIG manual"
+      },
+      {
+        "k": "Accesorios",
+        "v": "Kit de consumibles incluido",
+        "nota": "copas, collets, electrodos"
+      },
+      {
+        "k": "Conexión",
+        "v": "Cableado reforzado para alimentación de gas y energía"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura."
+      },
+      {
+        "d": "Equipada con componentes intercambiables (boquillas, electrodos) para adaptarse a diferentes grosores y tipos de soldadura."
+      },
+      {
+        "d": "Mango ergonómico y manguera flexible de alta resistencia que facilitan el manejo durante trabajos largos."
+      },
+      {
+        "d": "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
+      }
+    ],
+    "incluye": [
+      "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
     ]
   },
   {
@@ -357,46 +518,46 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "LUBRIM",
-        "origen": "repo"
-      },
-      {
-        "k": "Voltaje nominal",
-        "v": "12V",
-        "origen": "repo"
-      },
-      {
-        "k": "Aplicación",
-        "v": "Automotriz",
-        "origen": "repo"
+        "v": "LUBRIM"
       },
       {
         "k": "Tecnología",
-        "v": "Calcio-Calcio (Ca/Ca)",
-        "origen": "repo"
+        "v": "Calcio-Calcio (Ca/Ca) sin mantenimiento"
+      },
+      {
+        "k": "Voltaje nominal",
+        "v": "12V DC"
+      },
+      {
+        "k": "Capacidad",
+        "v": "75Ah"
+      },
+      {
+        "k": "Aplicación",
+        "v": "Arranque automotriz y sistemas 12V"
+      },
+      {
+        "k": "Construcción",
+        "v": "Sellada y resistente a vibraciones"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.",
-        "origen": "repo"
+        "d": "Placas de aleación de calcio para reducir la autodescarga y evaporación de electrolito."
       },
       {
-        "t": "Arranque",
-        "d": "Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.",
-        "origen": "repo"
+        "d": "Alta corriente de arranque en frío (CCA) para encendidos instantáneos de motor."
       },
       {
-        "t": "Construcción",
-        "d": "Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.",
-        "origen": "repo"
-      },
-      {
-        "t": "Compatibilidad",
-        "d": "Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.",
-        "origen": "repo"
+        "d": "Estructura robusta con asa ergonómica para fácil transporte e instalación."
       }
+    ],
+    "idealPara": [
+      "Vehículos modernos, plantas eléctricas o respaldo de emergencia de 12V."
+    ],
+    "incluye": [
+      "1x Batería Automotriz Lubrim 75A 12V",
+      "1x Cubiertas protectoras de bornes"
     ]
   },
   {
@@ -425,6 +586,39 @@
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
       "https://tiendamax.org/imagenes/img_1778103856933.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Autonomía",
+        "v": "Hasta 3 horas de uso continuo por carga"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Masajeador de percusión"
+      },
+      {
+        "k": "Carga",
+        "v": "USB Type-C"
+      },
+      {
+        "k": "Accesorios",
+        "v": "4 cabezales de masaje",
+        "nota": "redondo, horquilla, punta, plano"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Incluye 4 cabezales intercambiables para masajear diferentes grupos musculares (espalda, cuello, piernas, brazos)."
+      },
+      {
+        "d": "Hasta 3 horas de uso continuo por carga."
+      },
+      {
+        "d": "Puerto de carga USB Type-C, compatible con la mayoría de cargadores de dispositivos móviles actuales."
+      }
+    ],
+    "incluye": [
+      "1x Pistola de Masaje Muscular (Fascia Gun)"
     ]
   },
   {
@@ -447,7 +641,42 @@
       "Voltaje: 12V"
     ],
     "seoTitle": "CARGADOR INTELIGENTE DE 15 AMPERES: en Cuba | TiendaMax",
-    "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…"
+    "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…",
+    "ficha": [
+      {
+        "k": "Voltajes",
+        "v": "12V / 24V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "15 AMPERES / 15A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cargadores"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Carga inteligente automática con microprocesador que ajusta voltaje y amperaje según el estado de la batería."
+      },
+      {
+        "d": "Compatible con baterías de 12V y 24V, incluyendo plomo-ácido, AGM, GEL y LiFePO4."
+      },
+      {
+        "d": "Pantalla digital LED con indicadores de carga, voltaje y protecciones activas."
+      }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador Inteligente de 15 Amperes:"
+    ]
   },
   {
     "id": 1778104287395,
@@ -474,6 +703,51 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "BIEN"
+      },
+      {
+        "k": "Capacidad",
+        "v": "Punto de acceso con tecnología 4G/WiFi de alta ganancia"
+      },
+      {
+        "k": "Indicadores",
+        "v": "Panel LED intuitivo",
+        "nota": "Power, WiFi, WAN/LAN, Señal, Ethernet"
+      },
+      {
+        "k": "Modelo",
+        "v": "CPE Exterior KuWfi 4G"
+      },
+      {
+        "k": "Dimensiones",
+        "v": "30 cm (alto) x 8 cm (ancho) x 3 cm",
+        "nota": "profundidad"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Soporta conexión 4G y distribución WiFi"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Punto de acceso con tecnología 4G/WiFi de alta ganancia."
+      },
+      {
+        "d": "Formato vertical estilizado y compacto para montaje exterior."
+      },
+      {
+        "d": "Panel LED intuitivo (Power, WiFi, WAN/LAN, Señal, Ethernet)."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x CPE Exterior Kuwfi 4G/WIFI"
     ]
   },
   {
@@ -495,7 +769,42 @@
       "Voltaje: 12V / 24V"
     ],
     "seoTitle": "CARGADOR 10 AMPERES en Cuba | TiendaMax",
-    "seoDescription": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y…"
+    "seoDescription": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y…",
+    "ficha": [
+      {
+        "k": "Voltajes",
+        "v": "12V / 24V / 110V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "10 AMPERES / 10A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cargadores"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Carga automática de 10A con detección inteligente del tipo de batería conectada."
+      },
+      {
+        "d": "Soporta múltiples químicas: plomo-ácido, AGM, GEL y litio para mayor versatilidad."
+      },
+      {
+        "d": "Diseño compacto con protección contra sobrecarga, cortocircuito y polaridad inversa."
+      }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador 10 Amperes"
+    ]
   },
   {
     "id": 1778104512761,
@@ -527,63 +836,53 @@
     ],
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "PowMr"
       },
       {
-        "k": "🔤 Modelo",
-        "v": "POW-M100-PRO"
+        "k": "Modelo",
+        "v": "M100 PRO"
       },
       {
-        "k": "⚡ Corriente de carga",
-        "v": "100A"
+        "k": "Tecnología",
+        "v": "MPPT 100% real",
+        "nota": "99.5% eficiencia"
       },
       {
-        "k": "🔋 Sistemas compatibles",
+        "k": "Corriente de carga",
+        "v": "100A continuo"
+      },
+      {
+        "k": "Voltaje de batería",
         "v": "12V / 24V / 36V / 48V",
-        "nota": "detección automática"
+        "nota": "Autodetección"
       },
       {
-        "k": "☀️ Voltaje máx. de paneles",
-        "v": "160V",
-        "nota": "circuito abierto (Voc)"
-      },
-      {
-        "k": "☀️ Potencia solar máx.",
-        "v": "1200W / 2400W / 3600W / 4800W",
-        "nota": "según sea sistema de 12, 24, 36 o 48V"
-      },
-      {
-        "k": "📈 Eficiencia de seguimiento",
-        "v": "99.9%"
-      },
-      {
-        "k": "🔋 Tipos de batería",
-        "v": "Plomo-ácido, AGM, gel, selladas, inundadas y litio"
-      },
-      {
-        "k": "🔗 En paralelo",
-        "v": "Hasta 12 unidades"
+        "k": "Voltaje solar máx. (Voc)",
+        "v": "100V DC"
       }
     ],
     "caracteristicas": [
       {
-        "t": "📈 MPPT de verdad",
-        "d": "Sigue el punto de máxima potencia del panel con 99.9% de eficiencia, así que saca más energía que un controlador PWM con los mismos paneles."
+        "d": "Algoritmo MPPT avanzado que aprovecha hasta un 30% más energía frente a reguladores PWM."
       },
       {
-        "t": "🌡️ Refrigeración forzada",
-        "d": "Ventilador interno y sonda de temperatura externa para trabajar a 100A sin recortar la carga por calor."
+        "d": "Pantalla LCD retroiluminada y botones frontales para monitorear voltajes y amperios."
       },
       {
-        "t": "🔌 Pantalla y botones al frente",
-        "d": "LCD con PV/SET y BAT ▲▼ para ver y ajustar los parámetros de carga en tiempo real."
+        "d": "Compatible con baterías de Litio (LiFePO4), Gel, AGM y Plomo-ácido."
+      },
+      {
+        "d": "Disipador térmico robusto para trabajo pesado en climas cálidos."
       }
     ],
     "idealPara": [
-      "Instalaciones solares medianas y grandes, de 12V hasta 48V.",
-      "Sistemas que van a crecer: admite hasta 12 controladores en paralelo.",
-      "Bancos de litio o de plomo-ácido, sin cambiar de equipo."
+      "Sistemas solares residenciales medianos y grandes que requieran cargar bancos de baterías rápidamente."
+    ],
+    "incluye": [
+      "1x Controlador Solar PowMr M100 PRO 100A",
+      "1x Sensor de temperatura",
+      "1x Manual técnico"
     ]
   },
   {
@@ -608,7 +907,59 @@
       "110V"
     ],
     "seoTitle": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW | TiendaMax",
-    "seoDescription": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía…"
+    "seoDescription": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "PowMr"
+      },
+      {
+        "k": "Potencia continua",
+        "v": "3600W (3.6 kW) nominal"
+      },
+      {
+        "k": "Voltaje de batería",
+        "v": "24V DC",
+        "nota": "Plomo, Gel, Litio, LiFePO4"
+      },
+      {
+        "k": "Voltaje de salida",
+        "v": "110V / 120V AC",
+        "nota": "Onda Pura a 60Hz"
+      },
+      {
+        "k": "Entrada solar máx. (Voc)",
+        "v": "500V DC",
+        "nota": "Potencia solar máx: 4200W"
+      },
+      {
+        "k": "Regulador MPPT",
+        "v": "120A integrado",
+        "nota": "Rango: 120V - 450V DC"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Genera Onda Sinusoidal Pura garantizada (THD < 3%), apto para motores y refrigeración."
+      },
+      {
+        "d": "Doble salida AC (On-Grid / Off-Grid) para gestión inteligente de cargas críticas."
+      },
+      {
+        "d": "Cargador de red AC integrado de alta potencia para llenar baterías cuando regresa la luz."
+      },
+      {
+        "d": "Pantalla LCD interactiva con monitoreo de flujo solar, estado de batería y consumo."
+      }
+    ],
+    "idealPara": [
+      "Viviendas con paneles solares y banco de 24V que buscan automatización total con respaldo ininterrumpido."
+    ],
+    "incluye": [
+      "1x Inversor Solar Híbrido PowMr 3.6KW 24V",
+      "1x Terminales y conectores de montaje",
+      "1x Manual técnico de instalación"
+    ]
   },
   {
     "id": 1778104662477,
@@ -640,44 +991,51 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "PowMr",
-        "origen": "repo"
+        "v": "PowMr"
       },
       {
-        "k": "Potencia",
-        "v": "5000W",
-        "origen": "repo"
+        "k": "Potencia continua",
+        "v": "5000W (5 kW) continuos"
       },
       {
-        "k": "Tipo",
-        "v": "Inversor solar híbrido",
-        "origen": "repo"
+        "k": "Potencia pico",
+        "v": "10000W sobretensión de arranque"
+      },
+      {
+        "k": "Voltaje de batería",
+        "v": "48V DC"
+      },
+      {
+        "k": "Voltaje de salida",
+        "v": "110V / 120V AC",
+        "nota": "Onda Pura a 60Hz"
+      },
+      {
+        "k": "Paralelizable",
+        "v": "Soporta hasta 6 unidades en paralelo"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Capacidad Robusta",
-        "d": "5000W de potencia nominal para soportar electrodomésticos de alto consumo y sistemas complejos.",
-        "origen": "repo"
+        "d": "Capacidad para arrancar compresores de refrigeración y climatización sin parpadeos."
       },
       {
-        "t": "Tecnología Híbrida",
-        "d": "Gestión inteligente que integra carga solar, banco de baterías y entrada de red eléctrica en un solo equipo.",
-        "origen": "repo"
+        "d": "Gestión híbrida inteligente entre paneles solares, red comercial y banco de 48V."
       },
       {
-        "t": "Monitorización Pro",
-        "d": "Pantalla LCD táctil para el control total: supervisa voltajes, estado de carga y flujo de energía en tiempo real.",
-        "origen": "repo"
+        "d": "Pantalla táctil avanzada con indicadores detallados de parámetros eléctricos en vivo."
       },
       {
-        "t": "Eficiencia",
-        "d": "Diseñado para optimizar el uso de energía fotovoltaica, protegiendo tus baterías y reduciendo la dependencia de la red.",
-        "origen": "repo"
+        "d": "Soporte de comunicación con BMS de baterías de litio y modo de paralelización."
       }
     ],
     "idealPara": [
-      "Sistemas de respaldo residencial, oficinas de alto consumo y soluciones solares integrales."
+      "Hogares de alto consumo, oficinas y negocios que requieren autonomía eléctrica total y robusta."
+    ],
+    "incluye": [
+      "1x Inversor Solar Híbrido PowMr 5000W 48V",
+      "1x Kit de fijación mural",
+      "1x Manual de usuario y configuración"
     ]
   },
   {
@@ -707,6 +1065,37 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783837070407.webp",
       "https://tiendamax.org/imagenes/img_1778104735789.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router Wi-Fi con módem 4G LTE incorporado"
+      },
+      {
+        "k": "Compatibilidad",
+        "v": "Funciona con los estándares de red móvil más comunes"
+      },
+      {
+        "k": "Sin Cables",
+        "v": "Solo inserta tu tarjeta SIM y navega al instante"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Ranura para tarjeta SIM integrada; simplemente inserta tu SIM y empieza a navegar."
+      },
+      {
+        "d": "Soporta redes 4G LTE para una navegación fluida, streaming y conexión de múltiples dispositivos."
+      },
+      {
+        "d": "Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Kuwfi 4G LTE (Wi-fi de Alta Velocidad)"
     ]
   },
   {
@@ -729,7 +1118,42 @@
       "Voltaje: 48V"
     ],
     "seoTitle": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A en Cuba | TiendaMax",
-    "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…"
+    "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…",
+    "ficha": [
+      {
+        "k": "Voltajes",
+        "v": "12V / 24V / 36V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "100A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Controladores solares"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología MPPT que maximiza la extracción de energía de los paneles solares hasta un 30% más que PWM."
+      },
+      {
+        "d": "Detección automática de voltaje de batería (12V/24V/36V/48V) con pantalla LCD retroiluminada."
+      },
+      {
+        "d": "Protección completa: sobrecarga, sobredescarga, cortocircuito, sobretemperatura y polaridad inversa."
+      }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Controlador de Carga Solar MPPT - 100A"
+    ]
   },
   {
     "id": 1778104924836,
@@ -761,59 +1185,50 @@
     ],
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "BLUETTI"
       },
       {
-        "k": "🔤 Modelo",
+        "k": "Modelo",
         "v": "AC180"
       },
       {
-        "k": "⚡ Potencia de salida",
-        "v": "1800W",
-        "nota": "2700W con Power Lifting"
+        "k": "Potencia continua",
+        "v": "1800W continuos",
+        "nota": "pico 2700W Power Lifting"
       },
       {
-        "k": "🔋 Capacidad",
-        "v": "1152Wh"
+        "k": "Capacidad de batería",
+        "v": "1152Wh",
+        "nota": "LiFePO4"
       },
       {
-        "k": "🧪 Química",
-        "v": "LiFePO4"
+        "k": "Salidas AC",
+        "v": "4 Tomas 120V AC Onda Pura"
       },
       {
-        "k": "♻️ Ciclos de vida",
-        "v": "3500+",
-        "nota": "hasta conservar el 80% de la capacidad"
-      },
-      {
-        "k": "🔌 Carga desde la red",
-        "v": "1440W",
-        "nota": "de 0 a 80% en unos 45 minutos"
-      },
-      {
-        "k": "🔌 Salidas",
-        "v": "4 tomas AC, USB-C, USB-A y DC tipo encendedor"
+        "k": "Puertos",
+        "v": "USB-C 100W PD + USB-A carga rápida + DC 12V"
       }
     ],
     "caracteristicas": [
       {
-        "t": "🔌 Carga rápida",
-        "d": "De 0 a 80% en unos 45 minutos con 1440W desde el tomacorriente: aprovecha las ventanas cortas de corriente."
+        "d": "Celdas LiFePO4 seguras y duraderas para más de 10 años de uso diario."
       },
       {
-        "t": "♻️ Batería de litio-ferrofosfato",
-        "d": "3500+ ciclos hasta el 80% de capacidad, bastante más que las de ion-litio comunes."
+        "d": "Control y monitoreo inalámbrico mediante la App oficial de BLUETTI vía Bluetooth."
       },
       {
-        "t": "🔋 Monitoreo en pantalla",
-        "d": "Muestra estado de batería, potencia de entrada y de salida en tiempo real, con control separado de las secciones AC y DC."
+        "d": "Silencioso y cero emisiones de humo, ideal para usar dentro de la casa."
       }
     ],
     "idealPara": [
-      "Respaldo del hogar durante los apagones, sin instalación ni cableado.",
-      "Trabajo o estudio: mantener laptop, router y luces encendidos.",
-      "Salidas al aire libre y emergencias."
+      "Emergencias residenciales ante cortes eléctricos, trabajo remoto y actividades al aire libre."
+    ],
+    "incluye": [
+      "1x Estación de Energía BLUETTI AC180",
+      "1x Cable de alimentación de red AC",
+      "1x Cable de carga solar"
     ]
   },
   {
@@ -838,68 +1253,54 @@
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…",
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "BLUETTI"
       },
       {
-        "k": "🔤 Modelo",
+        "k": "Modelo",
         "v": "AC180P"
       },
       {
-        "k": "⚡ Potencia de salida",
+        "k": "Potencia continua",
         "v": "1800W",
-        "nota": "2700W de pico"
+        "nota": "Onda Pura"
       },
       {
-        "k": "🔋 Capacidad",
-        "v": "1440Wh"
+        "k": "Capacidad de batería",
+        "v": "1440Wh",
+        "nota": "LiFePO4"
       },
       {
-        "k": "🧪 Química",
-        "v": "LiFePO4"
+        "k": "Salidas AC",
+        "v": "4 Tomas 120V AC"
       },
       {
-        "k": "♻️ Ciclos de vida",
-        "v": "3500+",
-        "nota": "hasta conservar el 80% de la capacidad"
+        "k": "Puertos adicionales",
+        "v": "USB-C 100W + USB-A + Puerto DC 12V"
       },
       {
-        "k": "🔌 Carga desde la red",
-        "v": "1440W en turbo / 1000W estándar",
-        "nota": "de 0 a 80% en unos 45 minutos"
-      },
-      {
-        "k": "🛡️ Respaldo automático (UPS)",
-        "v": "≤20 ms",
-        "nota": "tiempo de conmutación al cortarse la corriente"
-      },
-      {
-        "k": "🔌 Salidas",
-        "v": "4 tomas AC, DC 12V, USB-C y USB-A"
-      },
-      {
-        "k": "☀️ Carga solar",
-        "v": "MPPT integrado"
+        "k": "Recarga solar",
+        "v": "Regulador MPPT integrado de hasta 500W"
       }
     ],
     "caracteristicas": [
       {
-        "t": "🛡️ Funciona como UPS",
-        "d": "Conmuta en 20 milisegundos o menos: los equipos conectados no llegan a apagarse cuando se va la corriente."
+        "d": "Batería LiFePO4 con más de 3500 ciclos de vida útil al 80% de capacidad."
       },
       {
-        "t": "🔌 Dos modos de carga",
-        "d": "Turbo a 1440W para cargarla rápido, o estándar a 1000W para cuidar la batería cuando hay tiempo."
+        "d": "Función UPS con conmutación en menos de 20ms para respaldo ininterrumpido."
       },
       {
-        "t": "☀️ Se carga con panel solar",
-        "d": "Trae MPPT integrado, así que se puede recargar sin depender de la red."
+        "d": "Pantalla digital informativa con lectura precisa de entrada y salida en Watts."
       }
     ],
     "idealPara": [
-      "Respaldo de equipos que no pueden apagarse de golpe, por el modo UPS.",
-      "Hogares con apagones largos: 1440Wh dan más autonomía que el AC180.",
-      "Instalaciones con panel solar, sin controlador aparte."
+      "Respaldo doméstico silencioso para neveras, televisores, routers, laptops y equipos médicos en apagones."
+    ],
+    "incluye": [
+      "1x Generador Solar BLUETTI AC180P",
+      "1x Cable de carga AC",
+      "1x Cable de carga solar MC4"
     ]
   },
   {
@@ -924,6 +1325,30 @@
     "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "5W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol 5W30 5L"
     ]
   },
   {
@@ -941,7 +1366,27 @@
     "descuento": 0,
     "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13+ ( - 40 °C) ADVANCED 4014. 5L",
-    "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…"
+    "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Antifreeze AG13+ ( - 40 °c) Advanced 4014. 5L"
+    ]
   },
   {
     "id": 1778212462723,
@@ -958,7 +1403,27 @@
     "descuento": 0,
     "slug": "mannol-antifreeze-ag13-40-c-hightec-4013-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13 ( - 40 °C) HIGHTEC 4013. 5L",
-    "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…"
+    "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Antifreeze AG13 ( - 40 °c) Hightec 4013. 5L"
+    ]
   },
   {
     "id": 1778212537706,
@@ -975,7 +1440,27 @@
     "descuento": 0,
     "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG11 ( - 40 °C) LONGTERM 4011. 5L",
-    "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…"
+    "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Antifreeze AG11 ( - 40 °c) Longterm 4011. 5L"
+    ]
   },
   {
     "id": 1778213413973,
@@ -1000,6 +1485,43 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918032855.webp",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Material",
+        "v": "Piel sintética (polipiel) de alta resistencia"
+      },
+      {
+        "k": "Color",
+        "v": "Negro monocolor",
+        "nota": "minimalista"
+      },
+      {
+        "k": "Compatibilidad",
+        "v": "Ajuste universal",
+        "nota": "Sedanes, SUVs y Camionetas"
+      },
+      {
+        "k": "Mantenimiento",
+        "v": "Impermeable y fácil de limpiar con paño húmedo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Piel sintética (polipiel) de alta resistencia."
+      },
+      {
+        "d": "Patrón acolchado de diamantes con costuras reforzadas."
+      },
+      {
+        "d": "Negro monocolor (minimalista)."
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "Incluye fundas completas para asientos delanteros y traseros."
     ]
   },
   {
@@ -1024,6 +1546,30 @@
     "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "20W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Safari 20W - 50 7404 5L"
     ]
   },
   {
@@ -1048,6 +1594,30 @@
     "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "10W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Special PLUS 10W - 30 7512. 5L"
     ]
   },
   {
@@ -1065,7 +1635,31 @@
     "descuento": 0,
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
     "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812. 1L | TiendaMax",
-    "seoDescription": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA"
+    "seoDescription": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "10W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol 4 - Takt Motorbike 10W - 40 7812. 1L"
+    ]
   },
   {
     "id": 1778336613589,
@@ -1093,6 +1687,34 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784008477390.webp",
       "https://tiendamax.org/imagenes/img_1778336613589.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Accesorios",
+        "v": "8 cabezales distintos incluidos"
+      },
+      {
+        "k": "Categoría",
+        "v": "Salud y bienestar"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Incluye un set completo de 9 cabezales intercambiables para adaptarse a cualquier grupo muscular."
+      },
+      {
+        "d": "Empuñadura triangular única que facilita un agarre firme y cómodo, permitiendo alcanzar zonas de difícil acceso con menos esfuerzo."
+      },
+      {
+        "d": "Diseñada para llegar a las capas más profundas del tejido muscular para un alivio efectivo."
+      }
+    ],
+    "incluye": [
+      "1x Pistola de Masaje Profesional (Modelo Triangular)"
     ]
   },
   {
@@ -1120,6 +1742,51 @@
     ],
     "specs": [
       "1000 Mbps"
+    ],
+    "ficha": [
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "GIGABIT"
+      },
+      {
+        "k": "Puertos",
+        "v": "5 puertos RJ45 Gigabit"
+      },
+      {
+        "k": "Velocidad",
+        "v": "10/100/1000 Mbps",
+        "nota": "Gigabit"
+      },
+      {
+        "k": "Calidad",
+        "v": "Puertos RJ45 metálicos de 8 pines",
+        "nota": "Full 8pin"
+      },
+      {
+        "k": "Modelo",
+        "v": "900312-1005G"
+      },
+      {
+        "k": "Fabricante",
+        "v": "Teyl Intelligent Technology (Shenzhen) Co., Ltd"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "puertos RJ45 Gigabit."
+      },
+      {
+        "d": "/100/1000 Mbps (Gigabit)."
+      },
+      {
+        "d": "Puertos RJ45 metálicos de 8 pines (Full 8pin)."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Switch Gigabit de 5 Puertos"
     ]
   },
   {
@@ -1149,6 +1816,41 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785284959302.webp",
       "https://tiendamax.org/imagenes/img_1778336789459.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Tenda"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Modelo",
+        "v": "AC6"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router Wi-Fi AC1200 Doble Banda"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Velocidades de hasta 1.2 Gbps combinadas (867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz) para transmisión de contenido y tareas diarias."
+      },
+      {
+        "d": "Cuatro antenas externas con tecnología Beamforming para direccionar la señal hacia los dispositivos."
+      },
+      {
+        "d": "Modos de Operación y Funciones: Soporta modo Punto de Acceso (AP) para transformar conexiones por cable en red inalámbrica."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)"
     ]
   },
   {
@@ -1167,7 +1869,23 @@
     "slug": "toldo-para-sombra-beige-3x2",
     "comision": 1.8,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
-    "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho."
+    "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Hogar"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
+    ],
+    "incluye": [
+      "1x Toldo Para Sombra"
+    ]
   },
   {
     "id": 1778383966832,
@@ -1196,6 +1914,40 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572922212.webp",
       "https://tiendamax.org/imagenes/img_1778383966832_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Sistema de alarma antirrobo inalámbrico inteligente"
+      },
+      {
+        "k": "Categoría",
+        "v": "Alarmas"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Sistema de alarma de seguridad inteligente y completo para la protección integral de hogares u oficinas. Incluye una central de control con pantalla táctil, teclado numérico y lector RFID, acompañada de múltiples sensores de movimiento, contactos magnéticos para puertas/ventanas, controles remotos y una sirena de alto rendimiento."
+      },
+      {
+        "d": "Unidad principal con pantalla digital, botones táctiles retroiluminados, función SOS dedicada y lector RFID integrado para armado y desarmado rápido."
+      },
+      {
+        "d": "Detectores infrarrojos de presencia para cubrir amplios espacios interiores y detectar movimientos sospechosos."
+      },
+      {
+        "d": "Múltiples contactos magnéticos inalámbricos para puertas y ventanas, ideales para asegurar los puntos de acceso principales."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid"
     ]
   },
   {
@@ -1221,6 +1973,33 @@
       "Dual (LEDs Infrarrojos + Luz Blanca LED para visión a color)",
       "Bidireccional (Micrófono y altavoz integrados para hablar y escuchar)",
       "Wi-Fi 2.4 GHz | Gestión mediante App V380 PRO"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Cámaras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Captura de imagen en alta resolución con visión nocturna clara."
+      },
+      {
+        "d": "Estructura robusta resistente para monitoreo continuo 24/7."
+      },
+      {
+        "d": "Alertas en tiempo real y fácil visualización desde el teléfono móvil."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Cámaras de Seguridad (V380 PRO )"
     ]
   },
   {
@@ -1250,6 +2029,44 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572438933.webp",
       "https://tiendamax.org/imagenes/img_1778384158283_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Cerradura de puerta inteligente / Biométrica"
+      },
+      {
+        "k": "Métodos De Acceso",
+        "v": "Huella dactilar, código numérico y aplicación móvil"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cerraduras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Cerradura de puerta inteligente y moderna diseñada para brindar máxima seguridad y comodidad en el acceso a hogares u oficinas. Integra múltiples métodos de desbloqueo, incluyendo un sensor biométrico de huellas dactilares de alta precisión, teclado táctil numérico y control total mediante aplicación móvil para la administración de accesos."
+      },
+      {
+        "d": "Lector de huellas dactilares integrado en la manilla para un reconocimiento rápido, seguro y sin necesidad de llaves físicas."
+      },
+      {
+        "d": "Teclado táctil iluminado con números del 0 al 9 y símbolos de acceso para introducir códigos de seguridad o contraseñas temporales."
+      },
+      {
+        "d": "Conectividad con aplicación móvil para gestionar permisos, crear códigos temporales, ver registros de apertura y controlar el bloqueo a distancia."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
     ]
   },
   {
@@ -1278,6 +2095,41 @@
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778384314795_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ZOSI"
+      },
+      {
+        "k": "Canales",
+        "v": "DVR de 8 canales"
+      },
+      {
+        "k": "Compatibilidad",
+        "v": "Analógica, HD-TVI, CVI y AHD"
+      },
+      {
+        "k": "Uso",
+        "v": "Videovigilancia residencial y comercial"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "DVR 5MP Lite de 8 canales con soporte para cámaras analógicas, HD-TVI, CVI y AHD."
+      },
+      {
+        "d": "Almacenamiento y Compresión: Tecnología de compresión H.265+ con reciclado automático de grabación, grabación continua o configurable por detección de movimiento avanzada (sin disco duro incluido)."
+      },
+      {
+        "d": "Múltiples opciones de salida mediante puertos HDMI, VGA y CVBS."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
     ]
   },
   {
@@ -1302,6 +2154,23 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783837457730.webp",
       "https://tiendamax.org/imagenes/img_1778384428890_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ThinkRider"
+      },
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Portacelulares"
     ]
   },
   {
@@ -1328,6 +2197,26 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778384507302_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Potencia",
+        "v": "30W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Iluminación"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Linterna de cabeza (headlamp) de 30W LED, recargable por USB Type-C, incluye 3 baterías 18650. Zoom ajustable, indicador de batería con porcentaje, hasta 12 horas de luz, ajuste de 90°. Ideal para apagones o trabajar de noche."
+    ],
+    "incluye": [
+      "1x Linterna de Cabeza"
     ]
   },
   {
@@ -1355,6 +2244,42 @@
     "comisionMoneda": "MN",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778384646214_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Voltaje",
+        "v": "24V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "0.3A"
+      },
+      {
+        "k": "Puertos",
+        "v": "2 puertos RJ45",
+        "nota": "LAN / PoE"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología original diseñada para proteger tus dispositivos contra sobretensiones y descargas electrostáticas."
+      },
+      {
+        "d": "Suministra energía estable de 24V con una corriente precisa de 0.3A."
+      },
+      {
+        "d": "Integra alimentación y datos en un solo cable, ideal para instalaciones limpias y profesionales."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Adaptador POE Ubiquiti (24V - 0.3A)"
     ]
   },
   {
@@ -1373,7 +2298,23 @@
     "slug": "ventilador-para-carro",
     "comision": 1.8,
     "seoTitle": "VENTILADOR PARA CARRO en Cuba | TiendaMax",
-    "seoDescription": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro."
+    "seoDescription": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado."
+    ],
+    "incluye": [
+      "1x Ventilador Para Carro"
+    ]
   },
   {
     "id": 1778384840618,
@@ -1402,6 +2343,40 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572695580.webp",
       "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Timbre de puerta inteligente / Videoportero WiFi"
+      },
+      {
+        "k": "Categoría",
+        "v": "Alarmas"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz."
+      },
+      {
+        "d": "Intercomunicador bidireccional, captura de imágenes, visión nocturna, alertas instantáneas y almacenamiento en la nube."
+      },
+      {
+        "d": "Transmisión inalámbrica de fuerte penetración capaz de atravesar puertas y paredes (hasta 50 metros de alcance efectivo sin pérdida de señal)."
+      },
+      {
+        "d": "Audio bidireccional con función de cambio de voz (incluye modulador de voz, por ejemplo, de voz femenina a voz de hombre/tío) para mayor privacidad y seguridad al responder."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
     ]
   },
   {
@@ -1420,7 +2395,34 @@
     "slug": "cargador-portatil-solar-30000mah",
     "comision": 1.8,
     "seoTitle": "CARGADOR PORTÁTIL SOLAR en Cuba | TiendaMax",
-    "seoDescription": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y…"
+    "seoDescription": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y…",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Panel solar integrado de alta eficiencia para recarga autónoma en exteriores y emergencias."
+      },
+      {
+        "d": "Power bank resistente con carga inalámbrica Qi, puertos USB múltiples y linterna LED de emergencia."
+      },
+      {
+        "d": "Carcasa robusta a prueba de polvo y salpicaduras, ideal para camping, viajes y apagones."
+      }
+    ],
+    "idealPara": [
+      "Cargador portátil (power bank) resistente, con panel solar integrado, carga inalámbrica y linterna LED incorporada. Ideal para apagones o salidas al campo — se recarga con corriente normal o con el sol."
+    ],
+    "incluye": [
+      "1x Cargador Portátil Solar"
+    ]
   },
   {
     "id": 1778546645170,
@@ -1438,7 +2440,23 @@
     "slug": "juego-de-llantas-r14",
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Llantas"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Juego de Llantas R14"
+    ]
   },
   {
     "id": 1778546857180,
@@ -1456,7 +2474,23 @@
     "slug": "juego-llantas-r15-centro-4x100-4x114-3",
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R15 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Llantas"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Juego de Llantas R15"
+    ]
   },
   {
     "id": 1778547214210,
@@ -1481,6 +2515,23 @@
       "Android e iPhone 15/16 con puerto Type-C",
       "Estructura telescópica adaptable a la mayoría de smartphones",
       "Incluye botones/tapas extra intercambiables para las palancas"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "GameSir"
+      },
+      {
+        "k": "Categoría",
+        "v": "Mandos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Gamesir X5 LITE"
     ]
   },
   {
@@ -1505,6 +2556,30 @@
     "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "15W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol ts - 4 SHPD 15W - 40 7104. 5L"
     ]
   },
   {
@@ -1529,6 +2604,30 @@
     "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "10W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol Defender 10W - 40 7507. 5L"
     ]
   },
   {
@@ -1546,7 +2645,31 @@
     "descuento": 0,
     "slug": "20w50-s-4t-aceite-de-motor-mineral-ff6208-1l",
     "seoTitle": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L | TiendaMax",
-    "seoDescription": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L disponible en TiendaMax · Motos. Compra en Cuba con pago contra entrega."
+    "seoDescription": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L disponible en TiendaMax · Motos. Compra en Cuba con pago contra entrega.",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "FANFARO"
+      },
+      {
+        "k": "Potencia",
+        "v": "20W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x 20W50 s - 4T Aceite de Motor Mineral FF6208 1L"
+    ]
   },
   {
     "id": 1778602314518,
@@ -1563,7 +2686,27 @@
     "descuento": 0,
     "slug": "fanfaro-2t-1l",
     "seoTitle": "FANFARO 2T 1L en Cuba | TiendaMax",
-    "seoDescription": "ESPECIFICACIONES TÉCNICAS: -Categoría: Aceite para Motores de 2 Tiempos -Viscosidad: SAE 20W(SAE 2T) -Clasificación de Rendimiento: APITC…"
+    "seoDescription": "ESPECIFICACIONES TÉCNICAS: -Categoría: Aceite para Motores de 2 Tiempos -Viscosidad: SAE 20W(SAE 2T) -Clasificación de Rendimiento: APITC…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "FANFARO"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Fanfaro 2T 1L"
+    ]
   },
   {
     "id": 1778634719053,
@@ -1581,7 +2724,27 @@
     "slug": "capa-para-moto-xl",
     "comision": 2,
     "seoTitle": "CAPA PARA MOTO en Cuba | TiendaMax",
-    "seoDescription": "Talla XL ideal para estos tiempos de lluvia 😏"
+    "seoDescription": "Talla XL ideal para estos tiempos de lluvia 😏",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Junlang"
+      },
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Capa Para Moto"
+    ]
   },
   {
     "id": 1778636088295,
@@ -1606,6 +2769,37 @@
       "Infrarrojos con alcance de hasta 20 metros",
       "Continua 24/7 o por Detección de Movimiento",
       "H.265+ de alta eficiencia"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ZOSI"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cámaras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Captura de imagen en alta resolución con visión nocturna clara."
+      },
+      {
+        "d": "Estructura robusta resistente para monitoreo continuo 24/7."
+      },
+      {
+        "d": "Alertas en tiempo real y fácil visualización desde el teléfono móvil."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x KIT de 4 Cámaras Zosi ( Con su Disco Duro )"
     ]
   },
   {
@@ -1633,6 +2827,19 @@
       "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571186172.webp",
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571187204.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Hombre"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Shorts Deportivos Casuales de Secado Rápido"
     ]
   },
   {
@@ -1661,6 +2868,34 @@
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008196606.webp",
       "https://tiendamax.org/imagenes/img_1778820912552_ext.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Tienda de campaña pop-up automática"
+      },
+      {
+        "k": "Dimensiones",
+        "v": "200 cm x 200 cm x 130 cm"
+      },
+      {
+        "k": "Uso",
+        "v": "Camping, playa, picnic o actividades al aire libre"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "⏱ Sistema de apertura instantánea (3 segundos), tan fácil como abrir un paraguas."
+      },
+      {
+        "d": "Configuración de ventilación elegante con múltiples ventanas para mantener el interior fresco en verano."
+      },
+      {
+        "d": "Fabricada con tela resistente a la lluvia, garantizando un refugio seco y seguro."
+      }
+    ],
+    "incluye": [
+      "Estacas de fijación, cuerdas de sujeción y bolsa de transporte."
     ]
   },
   {
@@ -1679,7 +2914,24 @@
     "slug": "linterna-marca-registrada-hecloud",
     "comision": 1.8,
     "seoTitle": "LINTERNA MARCA REGISTRADA \"HECLOUD\" en Cuba | TiendaMax",
-    "seoDescription": "🛑Linterna marca registrada \"HeCloud\" de buceo, pesca submarina y exploración en aguas profundas. Ideal para uso nocturno gracias a su haz LED de alta…"
+    "seoDescription": "🛑Linterna marca registrada \"HeCloud\" de buceo, pesca submarina y exploración en aguas profundas. Ideal para uso nocturno gracias a su haz LED de alta…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Hecloud"
+      },
+      {
+        "k": "Categoría",
+        "v": "Iluminación"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Linterna Marca Registrada \"Hecloud\""
+    ]
   },
   {
     "id": 1778906281677,
@@ -1702,7 +2954,31 @@
       "10A"
     ],
     "seoTitle": "CARGADOR INTELIGENTE DE ALTA POTENCIA 84V 10A | TiendaMax",
-    "seoDescription": "Moto Eléctrica | Carga Rápida 110V 📝 Descripción del Producto Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de…"
+    "seoDescription": "Moto Eléctrica | Carga Rápida 110V 📝 Descripción del Producto Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de…",
+    "ficha": [
+      {
+        "k": "Voltajes",
+        "v": "84V / 110V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "10A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Partes y piezas"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Cargador Inteligente de Alta Potencia 84V 10A"
+    ]
   },
   {
     "id": 1778906455757,
@@ -1720,7 +2996,27 @@
     "slug": "cargador-de-bateria-de-litio-bien-72v-5a-salida-84v-conector-us-pin",
     "comision": 2.8,
     "seoTitle": "CARGADOR DE BATERÍA DE LITIO BIEN 72V 5A… | TiendaMax",
-    "seoDescription": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo…"
+    "seoDescription": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "BIEN"
+      },
+      {
+        "k": "Voltajes",
+        "v": "72V / 84V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "5A"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector us Pin"
+    ]
   },
   {
     "id": 1778906733513,
@@ -1738,7 +3034,27 @@
     "slug": "espejos-retrovisores-deportivos-shenao-stealth-winglet",
     "comision": 1.8,
     "seoTitle": "ESPEJOS RETROVISORES DEPORTIVOS SHENAO STEALTH WINGLET",
-    "seoDescription": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los…"
+    "seoDescription": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Shenao"
+      },
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Espejos Retrovisores Deportivos Shenao Stealth Winglet"
+    ]
   },
   {
     "id": 1778906905279,
@@ -1756,7 +3072,23 @@
     "slug": "espejos-retrovisores-deportivos-aleron-tipo-stealth-acabado-fibra-de-c",
     "comision": 1.8,
     "seoTitle": "ESPEJOS RETROVISORES DEPORTIVOS ALERÓN TIPO… | TiendaMax",
-    "seoDescription": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este…"
+    "seoDescription": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este…",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium"
+    ]
   },
   {
     "id": 1778907072353,
@@ -1774,7 +3106,23 @@
     "slug": "espejos-aleron-deportivos-stealth-poligonales",
     "comision": 1.8,
     "seoTitle": "ESPEJOS ALERÓN DEPORTIVOS STEALTH POLIGONALES |… | TiendaMax",
-    "seoDescription": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo…"
+    "seoDescription": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo…",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Accesorios"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Espejos Alerón Deportivos Stealth Poligonales | Diseño Aerodinámico Premium"
+    ]
   },
   {
     "id": 1778907260915,
@@ -1798,6 +3146,22 @@
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
       "https://tiendamax.org/imagenes/img_1778907258376.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Uso doméstico y confort en el hogar para conservación de alimentos, climatización de cuartos y tareas diarias."
+    ],
+    "incluye": [
+      "1x Calentador Eléctrico"
     ]
   },
   {
@@ -1822,7 +3186,42 @@
       "Voltaje: 24V"
     ],
     "seoTitle": "CARGADORES INTELIGENTES DE 25A en Cuba | TiendaMax",
-    "seoDescription": "Cargadores inteligentes de 25A autovolt a12V y 24v Amperaje ajustable para carga lenta, media o rápida segun su preferencia. Compatible con baterías de…"
+    "seoDescription": "Cargadores inteligentes de 25A autovolt a12V y 24v Amperaje ajustable para carga lenta, media o rápida segun su preferencia. Compatible con baterías de…",
+    "ficha": [
+      {
+        "k": "Voltaje",
+        "v": "24V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "25A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cargadores"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Cargador profesional de 25A para baterías de 24V con carga rápida y modo mantenedor flotante."
+      },
+      {
+        "d": "Microprocesador inteligente que evita sobrecarga y sulfatación, prolongando la vida útil de la batería."
+      },
+      {
+        "d": "Indicadores LED de estado y protecciones térmicas para operación segura continua."
+      }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargadores Inteligentes de 25A"
+    ]
   },
   {
     "id": 1779208523952,
@@ -1848,68 +3247,45 @@
     "comisionMoneda": "USD",
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "PowMr"
       },
       {
-        "k": "🔤 Modelo",
-        "v": "POW-M60-ULTRA"
+        "k": "Modelo",
+        "v": "M60 ULTRA"
       },
       {
-        "k": "⚡ Corriente de carga",
-        "v": "60A"
+        "k": "Tecnología",
+        "v": "MPPT de alta eficiencia"
       },
       {
-        "k": "🔋 Sistemas compatibles",
+        "k": "Corriente de carga",
+        "v": "60A continuo"
+      },
+      {
+        "k": "Voltaje de batería",
         "v": "12V / 24V / 36V / 48V",
-        "nota": "detección automática"
+        "nota": "Autodetección"
       },
       {
-        "k": "☀️ Voltaje máx. de paneles",
-        "v": "160V",
-        "nota": "circuito abierto (Voc)"
-      },
-      {
-        "k": "☀️ Potencia solar máx.",
-        "v": "720W / 1440W / 2100W / 2800W",
-        "nota": "según sea sistema de 12, 24, 36 o 48V"
-      },
-      {
-        "k": "📈 Eficiencia de seguimiento",
-        "v": "99.9%"
-      },
-      {
-        "k": "📈 Eficiencia de conversión",
-        "v": "98.1%",
-        "nota": "valor pico"
-      },
-      {
-        "k": "🔋 Tipos de batería",
-        "v": "Selladas, gel, inundadas y litio (LFP)"
-      },
-      {
-        "k": "🔗 En paralelo",
-        "v": "Hasta 12 unidades"
+        "k": "Pantalla",
+        "v": "LCD digital con parámetros en tiempo real"
       }
     ],
     "caracteristicas": [
       {
-        "t": "📈 Seguimiento del 99.9%",
-        "d": "Extrae casi toda la energía disponible del panel, con un pico de conversión del 98.1%."
+        "d": "Ajuste automático de parámetros de carga según la química de batería seleccionada."
       },
       {
-        "t": "🔋 Reconoce el sistema solo",
-        "d": "Detecta automáticamente si el banco es de 12, 24, 36 o 48V, sin configurarlo a mano."
-      },
-      {
-        "t": "🔗 Crece con la instalación",
-        "d": "Hasta 12 unidades en paralelo: si mañana sumás paneles, sumás controladores en vez de cambiar el que tenés."
+        "d": "Protección total contra corriente inversa nocturna, sobretensión y polaridad inversa."
       }
     ],
     "idealPara": [
-      "Instalaciones solares chicas y medianas hasta 2800W de panel.",
-      "Sistemas mixtos que pueden pasar de 12V a 24V o 48V más adelante.",
-      "Bancos de litio (LFP) o de plomo-ácido."
+      "Instalaciones solares con 2 a 4 paneles solares para viviendas."
+    ],
+    "incluye": [
+      "1x Controlador MPPT PowMr 60A",
+      "1x Manual de usuario"
     ]
   },
   {
@@ -1942,48 +3318,47 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "PowMr",
-        "origen": "repo"
+        "v": "PowMr"
       },
       {
-        "k": "Corriente Máxima de Carga",
-        "v": "80A",
-        "origen": "repo"
+        "k": "Modelo",
+        "v": "M80 PRO"
       },
       {
-        "k": "Voltaje del Sistema",
-        "v": "12V / 24V / 36V / 48V (Auto)",
-        "origen": "repo"
+        "k": "Tecnología",
+        "v": "MPPT de alta eficiencia"
       },
       {
-        "k": "Tipo",
-        "v": "Controlador de carga solar MPPT"
+        "k": "Corriente de carga",
+        "v": "80A continuo"
+      },
+      {
+        "k": "Voltaje de batería",
+        "v": "12V / 24V / 36V / 48V",
+        "nota": "Auto"
+      },
+      {
+        "k": "Voltaje solar máx. (Voc)",
+        "v": "100V DC"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología de Carga",
-        "d": "Sistema MPPT para maximizar la eficiencia en la conversión y aprovechamiento de la energía solar.",
-        "origen": "repo"
+        "d": "Seguimiento ultra rápido del punto de máxima potencia en días soleados o nublados."
       },
       {
-        "t": "Compatibilidad del Sistema",
-        "d": "Detección automática para bancos de baterías de 12V, 24V, 36V y 48V.",
-        "origen": "repo"
+        "d": "Pantalla LCD gráfica con lectura de parámetros de paneles y estado de batería en vivo."
       },
       {
-        "t": "Interfaz y Monitoreo",
-        "d": "Pantalla LCD central con indicadores gráficos de panel y batería, acompañada de botones de navegación (PV/SET, BAT/▲, BAT/▼) para configuración.",
-        "origen": "repo"
-      },
-      {
-        "t": "Estructura",
-        "d": "Diseño compacto en carcasa robusta con disipación lateral y bornes de conexión protegidos en la sección inferior.",
-        "origen": "repo"
+        "d": "Bornes de conexión protegidos para cableado solar de alto calibre."
       }
     ],
     "idealPara": [
-      "Sistemas fotovoltaicos residenciales y autónomos."
+      "Kits solares residenciales para recargar baterías de 100Ah a 400Ah con paneles solares."
+    ],
+    "incluye": [
+      "1x Controlador Solar PowMr 80A MPPT",
+      "1x Manual de conexión"
     ]
   },
   {
@@ -2012,6 +3387,35 @@
       "https://tiendamax.org/imagenes/img_1783836546487.webp",
       "https://tiendamax.org/imagenes/img_1780017975657.webp",
       "https://tiendamax.org/imagenes/img_1783836630474.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Potencia",
+        "v": "30W"
+      },
+      {
+        "k": "Batería",
+        "v": "2600 mAh",
+        "nota": "hasta 12h de reproducción al 50% de volumen"
+      },
+      {
+        "k": "Carga",
+        "v": "USB Tipo-C"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "W de salida (sonido potente y nítido)."
+      },
+      {
+        "d": "Bluetooth 5.4 (conexión más rápida y estable)."
+      },
+      {
+        "d": "Certificación IP67 (Totalmente resistente al polvo y al agua)."
+      }
+    ],
+    "incluye": [
+      "1x Xiaomi Sound Outdoor (30W)"
     ]
   },
   {
@@ -2041,6 +3445,38 @@
       "⚡ Eliminación Rápida y Efectiva de Insectos ",
       "🛡️ Malla Protectora de Seguridad Multicapa",
       "🔋 Recargable y Fácil de Usar"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Raqueta matamoscas eléctrica"
+      },
+      {
+        "k": "Color",
+        "v": "Verde y negro"
+      },
+      {
+        "k": "Categoría",
+        "v": "Hogar"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Red eléctrica de alta tensión diseñada para neutralizar insectos al contacto de manera instantánea."
+      },
+      {
+        "d": "Sistema de triple malla protectora que previene descargas accidentales en las capas exteriores al tocar la rejilla."
+      },
+      {
+        "d": "Estructura ligera con marco circular amplio y mango texturizado para un agarre cómodo y un mejor alcance."
+      }
+    ],
+    "incluye": [
+      "1x Raqueta Matamoscas Eléctrica Recargable"
     ]
   },
   {
@@ -2067,6 +3503,19 @@
       "Sistema de Refrigeración Líquida AIO para el procesador",
       "Chasis blanco Estilo Acuario con doble panel de cristal templado",
       "Iluminación ARGB personalizable en ventiladores y bomba líquida"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Gaming"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x PC Gaming Setup Premium"
     ]
   },
   {
@@ -2095,6 +3544,42 @@
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ZOSI"
+      },
+      {
+        "k": "Uso",
+        "v": "Videovigilancia residencial y comercial",
+        "nota": "interior/exterior"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cámaras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Captura de video de alta definición con lentes de precisión para obtener detalles claros y precisos."
+      },
+      {
+        "d": "Sistema de iluminación infrarroja integrado que asegura una visibilidad excelente durante la noche o en condiciones de baja iluminación."
+      },
+      {
+        "d": "Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Cámara de Seguridad Bullet Zosi"
     ]
   },
   {
@@ -2121,6 +3606,37 @@
       "5 Antenas Externas de 6dBi de Ultra Cobertura",
       "1 WAN Gigabit + 3 LAN Gigabit",
       "OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Tenda"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "GIGABIT"
+      },
+      {
+        "k": "Antenas",
+        "v": "5 antenas de alta ganancia"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+      },
+      {
+        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+      },
+      {
+        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+      }
+    ],
+    "idealPara": [
+      "Router Tenda RX2 Pro, WiFi 6 de doble banda Gigabit, con 5 antenas de alta ganancia. Ideal para hogares con varios dispositivos conectados a la vez sin perder velocidad."
+    ],
+    "incluye": [
+      "1x Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit"
     ]
   },
   {
@@ -2150,6 +3666,40 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780542905916.webp",
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ZOSI"
+      },
+      {
+        "k": "Capacidad Del Dvr",
+        "v": "8 canales / 5MP Lite"
+      },
+      {
+        "k": "Almacenamiento",
+        "v": "1TB de disco duro incluido"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un conjunto de 8 cámaras de alta definición, garantizando un monitoreo detallado, grabación continua y almacenamiento seguro gracias a su disco duro de 1TB integrado."
+      },
+      {
+        "d": "DVR de 8 canales compatible perfectamente con cámaras ZOSI para una integración óptima del sistema."
+      },
+      {
+        "d": "Resolución HD de 2MP (1080p) en las cámaras para obtener imágenes nítidas y detalladas."
+      },
+      {
+        "d": "DVR Lite con capacidad de 5MP que permite una gestión de grabación superior."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Sistema de Seguridad Zosi Para el Hogar - 8 Canales"
     ]
   },
   {
@@ -2179,6 +3729,36 @@
       "🎧 Sonido Inalámbrico de Alta Fidelidad",
       "🎵 Comodidad Ergonómica y Ajuste Perfecto ",
       "🛡️ Autonomía Duradera para el Día a Día"
+    ],
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Audífonos inalámbricos TWS",
+        "nota": "True Wireless"
+      },
+      {
+        "k": "Formato",
+        "v": "Intrauriculares",
+        "nota": "In-ear"
+      },
+      {
+        "k": "Color",
+        "v": "Blanco"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad inalámbrica estable de baja latencia, ideal para una transmisión de audio clara y sin interrupciones."
+      },
+      {
+        "d": "Estructura ligera con almohadillas suaves que aseguran un ajuste cómodo y seguro, minimizando la fatiga durante uso prolongado."
+      },
+      {
+        "d": "Estuche de carga compacto con indicador LED, diseñado para proteger los auriculares y recargarlos de manera rápida mientras te desplazas."
+      }
+    ],
+    "incluye": [
+      "Estuche de carga portátil."
     ]
   },
   {
@@ -2206,6 +3786,37 @@
       "4 Antenas Externas Orientables de alta sensibilidad",
       "Soporte de Redes Mesh, MU-MIMO y OFDMA",
       "Puertos Gigabit Ethernet (10/100/1000 Mbps)"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Fenvi"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AX3000"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+      },
+      {
+        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+      },
+      {
+        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Fenvi AX3000 WiFi 6"
     ]
   },
   {
@@ -2230,7 +3841,38 @@
       "1200Mbps"
     ],
     "seoTitle": "FENVI AC1200 en Cuba | TiendaMax",
-    "seoDescription": "✨ Producto TiendaMax FENVI AC1200 enrutador wifi inteligente de señal fuerte especificaciones: ✅Diseño de 4 antenas externa, señal fuerte. ✅La luz…"
+    "seoDescription": "✨ Producto TiendaMax FENVI AC1200 enrutador wifi inteligente de señal fuerte especificaciones: ✅Diseño de 4 antenas externa, señal fuerte. ✅La luz…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Fenvi"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+      },
+      {
+        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+      },
+      {
+        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+      }
+    ],
+    "idealPara": [
+      "Router Fenvi AC1200, doble banda con 4 antenas, hasta 1200Mbps en 5.8GHz. Ideal para hogares con varios dispositivos conectados a la vez."
+    ],
+    "incluye": [
+      "1x Fenvi AC1200"
+    ]
   },
   {
     "id": 1780887557334,
@@ -2258,6 +3900,38 @@
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "GIANSO"
+      },
+      {
+        "k": "Peso",
+        "v": "3 mm"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Gorro / Capucha de buceo"
+      },
+      {
+        "k": "Uso",
+        "v": "Buceo, esnórquel y deportes acuáticos"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Fabricado en neopreno de alta densidad que proporciona un aislamiento térmico superior en aguas frías o templadas."
+      },
+      {
+        "d": "Estructura de cobertura total que se ajusta perfectamente al contorno del rostro, cuello y hombros para minimizar la filtración de agua."
+      },
+      {
+        "d": "Material flexible y suave al tacto que permite una total libertad de movimiento sin causar presión excesiva."
+      }
+    ],
+    "incluye": [
+      "1x Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
     ]
   },
   {
@@ -2288,6 +3962,19 @@
       "Aro de luz LED RGB en la base con múltiples modos rritmicos",
       "Bluetooth + Entrada Auxiliar 3.5mm + Ranura MicroSD + USB",
       "Estructura recubierta de tela resistente con correa de transporte"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Audio"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Altavoz Bluetooth Portátil RGB"
     ]
   },
   {
@@ -2319,6 +4006,19 @@
       "Tiras de luces RGB dinámicas a los laterales",
       "Puerto USB + Lector TF Card + Entrada auxiliar 3.5mm",
       "Botones superiores de goma para control directo"
+    ],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Audio"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "incluye": [
+      "1x Beat Boom F10!"
     ]
   },
   {
@@ -2351,41 +4051,34 @@
     ],
     "ficha": [
       {
-        "k": "Uso",
-        "v": "Automotriz y sistemas de 12V",
-        "origen": "repo"
+        "k": "Voltaje",
+        "v": "12V"
       },
       {
-        "k": "Tipo",
+        "k": "Tecnología / Tipo",
         "v": "Probador digital de baterías"
+      },
+      {
+        "k": "Uso",
+        "v": "Automotriz y sistemas de 12V"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.",
-        "origen": "repo"
+        "d": "Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante."
       },
       {
-        "t": "Pantalla",
-        "d": "Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.",
-        "origen": "repo"
+        "d": "Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas."
       },
       {
-        "t": "Funciones",
-        "d": "Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.",
-        "origen": "repo"
-      },
-      {
-        "t": "Conectividad",
-        "d": "Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.",
-        "origen": "repo"
-      },
-      {
-        "t": "Interfaz",
-        "d": "Teclado direccional con botones de función dedicados (ESC, F1, V, OK).",
-        "origen": "repo"
+        "d": "Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Probador Digital de Baterías Automotrices"
     ]
   },
   {
@@ -2411,7 +4104,23 @@
       "https://tiendamax.org/imagenes/img_1783838929527.webp",
       "https://tiendamax.org/imagenes/img_1781365133963.webp"
     ],
-    "specs": []
+    "specs": [],
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande."
+    ],
+    "incluye": [
+      "1x Ventilador de Techo"
+    ]
   },
   {
     "id": 1781377297283,
@@ -2436,7 +4145,34 @@
       "https://tiendamax.org/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
     ],
-    "specs": []
+    "specs": [],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Luckycare"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Fórmula de máxima pureza para apoyar la fuerza y ganancia muscular."
+      },
+      {
+        "d": "Excelente solubilidad sin grumos y sin sabor para mezclar fácilmente."
+      },
+      {
+        "d": "Acelera la recuperación física tras entrenamientos intensos."
+      }
+    ],
+    "idealPara": [
+      "Atletas, practicantes de gimnasio y personas activas que buscan acelerar la recuperación y optimizar su desarrollo muscular."
+    ],
+    "incluye": [
+      "1x Creatina Monohidratada Luckycare® (5000 mg)"
+    ]
   },
   {
     "id": 1781711154462,
@@ -2460,6 +4196,37 @@
     "specs": [],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Extensor de rango / Repetidor Wi-Fi"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Doble banda simultánea con velocidades combinadas para mejorar la transmisión de datos y la cobertura en áreas difíciles de alcanzar."
+      },
+      {
+        "d": "Dos antenas externas ajustables orientadas para optimizar la recepción y la difusión de la señal Wi-Fi en espacios residenciales."
+      },
+      {
+        "d": "Puerto Ethernet en la parte inferior para conectar dispositivos por cable o para funcionar en modo punto de acceso."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Repetidor Wi-fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)"
     ]
   },
   {
@@ -2488,6 +4255,41 @@
     "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711422926.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Modelo",
+        "v": "Archer C54"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router Wi-Fi AC1200 Doble Banda"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad Wi-Fi de doble banda simultánea con velocidades combinadas de hasta 1200 Mbps (hasta 867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz)."
+      },
+      {
+        "d": "Cuatro antenas externas fijas distribuidas para ampliar la recepción y cobertura de la señal inalámbrica en espacios domésticos."
+      },
+      {
+        "d": "Puertos Ethernet en la parte posterior para conexiones por cable estables en ordenadores, consolas u otros equipos de red."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Wi-fi AC1200 TP-Link Archer C54"
     ]
   },
   {
@@ -2522,56 +4324,52 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "MUST",
-        "origen": "repo"
+        "v": "MUST"
       },
       {
         "k": "Modelo",
-        "v": "PV15-1524 LV",
-        "origen": "repo"
+        "v": "PV15-1524 LV"
       },
       {
-        "k": "Potencia nominal",
-        "v": "1500VA / 1500W",
-        "origen": "repo"
+        "k": "Potencia continua",
+        "v": "1500W",
+        "nota": "1500VA nominal"
       },
       {
-        "k": "Voltaje del sistema",
-        "v": "24VDC",
-        "origen": "repo"
+        "k": "Voltaje de batería",
+        "v": "24V DC"
       },
       {
-        "k": "Rango MPPT",
-        "v": "30-75VDC",
-        "origen": "repo"
+        "k": "Voltaje de salida",
+        "v": "120V AC Onda Pura a 60Hz"
       },
       {
-        "k": "Máx. voltaje solar (VOC)",
-        "v": "105VDC",
-        "origen": "repo"
+        "k": "Entrada solar máx. (Voc)",
+        "v": "105V DC",
+        "nota": "Rango MPPT: 30V - 75V DC"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Sistema integral que permite la conversión de energía solar y la carga de baterías, garantizando una administración eficiente de la corriente continua.",
-        "origen": "repo"
+        "d": "Onda sinusoidal pura de alta estabilidad para equipos electrónicos y motores pequeños."
       },
       {
-        "t": "Seguridad",
-        "d": "Operación diseñada bajo estrictas normas de seguridad, incluyendo protección contra sobrecargas y un rango de temperatura operativa entre 0°C y 45°C.",
-        "origen": "repo"
+        "d": "Seguimiento de máxima potencia solar MPPT para optimizar el rendimiento de paneles."
       },
       {
-        "t": "Monitoreo",
-        "d": "Incluye sistema de seguimiento del punto de máxima potencia (MPPT) para asegurar un rendimiento óptimo de los paneles solares bajo diversas condiciones climáticas.",
-        "origen": "repo"
+        "d": "Protección inteligente contra sobrecargas, cortocircuitos y sobretemperatura (0°C a 45°C)."
       },
       {
-        "t": "Diseño",
-        "d": "Construcción robusta y de fácil instalación, ideal para configuraciones que requieren un aprovechamiento preciso del voltaje solar (VOC máx. 105VDC).",
-        "origen": "repo"
+        "d": "Garantía de compra de 15 días contra defectos de fábrica."
       }
+    ],
+    "idealPara": [
+      "Sistemas fotovoltaicos residenciales con banco de baterías de 24V para iluminación, TV, ventiladores y router."
+    ],
+    "incluye": [
+      "1x Inversor Solar MUST PV15-1524 LV",
+      "1x Manual de instrucciones",
+      "1x Garantía de 15 días"
     ]
   },
   {
@@ -2625,7 +4423,31 @@
     "descuento": 0,
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
     "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812 1L | TiendaMax",
-    "seoDescription": "Specifications SAE 10W-40 API SP JASO MA/MA2"
+    "seoDescription": "Specifications SAE 10W-40 API SP JASO MA/MA2",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Potencia",
+        "v": "10W"
+      },
+      {
+        "k": "Categoría",
+        "v": "Aceites y lubricantes"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Mannol 4 - Takt Motorbike 10W - 40 7812 1L"
+    ]
   },
   {
     "id": 1782438922547,
@@ -2653,7 +4475,51 @@
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "ROUTER DE DOBLE BANDA ARCHER AX1450 en Cuba | TiendaMax",
-    "seoDescription": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de…"
+    "seoDescription": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AX1450"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas de alto rendimiento con Beamforming para una señal más fuerte y estable"
+      },
+      {
+        "k": "Estándar",
+        "v": "Wi-Fi 6",
+        "nota": "802.11ax"
+      },
+      {
+        "k": "Modos De Operación",
+        "v": "Router, Punto de Acceso (AP)"
+      },
+      {
+        "k": "Gestión",
+        "v": "Configuración sencilla mediante la app TP-Link Tether"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Velocidad combinada de hasta 1500 Mbps (1201 Mbps en 5GHz + 300 Mbps en 2.4GHz)."
+      },
+      {
+        "d": "Puertos WAN y LAN Gigabit para aprovechar al máximo tu conexión a internet por cable."
+      },
+      {
+        "d": "Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO para gestionar mejor el tráfico de múltiples dispositivos."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router TP-Link Archer AX1450 (Wi-fi 6)"
+    ]
   },
   {
     "id": 1782439428159,
@@ -2683,7 +4549,35 @@
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "AURICULARES GAMING INALÁMBRICO NUBWO en Cuba | TiendaMax",
-    "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…"
+    "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "NUBWO"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Diadema gaming inalámbrica"
+      },
+      {
+        "k": "Uso",
+        "v": "Videojuegos y entretenimiento multimedia"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conexión inalámbrica de baja latencia mediante transmisor USB, ideal para una respuesta de audio rápida y precisa en partidas competitivas."
+      },
+      {
+        "d": "Controladores de alta definición que ofrecen un sonido envolvente, permitiendo identificar con claridad cada detalle y efecto dentro del juego."
+      },
+      {
+        "d": "Almohadillas suaves y diadema ajustable con diseño ergonómico que reducen la presión y garantizan confort prolongado."
+      }
+    ],
+    "incluye": [
+      "1x Audífonos Diademas Gaming Inalámbricos Nubwo"
+    ]
   },
   {
     "id": 1782439525089,
@@ -2708,7 +4602,23 @@
     "fechaAgregado": "2026-06-26T02:05:25.090Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "PANEL DECORATIVO DE HOJAS ARTIFICIALES en Cuba | TiendaMax",
-    "seoDescription": "🌿 Panel de Pared de Césped y Plantas Artificiales Renueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped…"
+    "seoDescription": "🌿 Panel de Pared de Césped y Plantas Artificiales Renueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped…",
+    "ficha": [
+      {
+        "k": "Categoría",
+        "v": "Decoracion"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento."
+    ],
+    "incluye": [
+      "1x Panel Decorativo de Hojas Artificiales"
+    ]
   },
   {
     "id": 1782439688529,
@@ -2737,7 +4647,51 @@
     "fechaAgregado": "2026-06-26T02:08:08.529Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "TRANSFERENCIA AUTOMÁTICA O MANUAL en Cuba | TiendaMax",
-    "seoDescription": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red…"
+    "seoDescription": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "SMOQ"
+      },
+      {
+        "k": "Modelo",
+        "v": "SMOQ3-100/2P"
+      },
+      {
+        "k": "Tipo",
+        "v": "Interruptor de Transferencia Automática (ATS)"
+      },
+      {
+        "k": "Corriente nominal",
+        "v": "100A continuo"
+      },
+      {
+        "k": "Voltaje nominal",
+        "v": "110V / 220V AC"
+      },
+      {
+        "k": "Montaje",
+        "v": "Riel DIN estándar de 35mm"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conmutación ultra rápida entre dos fuentes eléctricas sin apagar equipos."
+      },
+      {
+        "d": "Selector frontal para modo de operación 100% Automático o Manual."
+      },
+      {
+        "d": "Contactos de plata de alta durabilidad con capacidad de corte de 100A."
+      }
+    ],
+    "idealPara": [
+      "Cuadros eléctricos residenciales para automatizar el cambio entre red de la calle e inversor."
+    ],
+    "incluye": [
+      "1x Interruptor de Transferencia Automática 100A",
+      "1x Diagrama de conexión"
+    ]
   },
   {
     "id": 1782535594832,
@@ -2761,7 +4715,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T04:46:34.832Z",
     "seoTitle": "BATIDORA MILEXUS CRISTAL en Cuba | TiendaMax",
-    "seoDescription": "Marca: Milexus original (Modelo ML-L602) Vaso: Cristal grueso de alta resistencia (fácil de lavar y no suelta residuos). Base: Elegante acabado negro…"
+    "seoDescription": "Marca: Milexus original (Modelo ML-L602) Vaso: Cristal grueso de alta resistencia (fácil de lavar y no suelta residuos). Base: Elegante acabado negro…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Batidora Milexus, modelo ML-L602, jarra de cristal con base de acero inoxidable y motor negro. Ideal para batidos, jugos y triturar hielo."
+    ],
+    "incluye": [
+      "1x Batidora Milexus Cristal"
+    ]
   },
   {
     "id": 1782535836192,
@@ -2786,7 +4760,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T04:50:36.193Z",
     "seoTitle": "SMART TV MILEXUS 43\" en Cuba | TiendaMax",
-    "seoDescription": "Pantalla: 43 Pulgadas LED (Tamaño ideal para la sala o el cuarto). Sistema Operativo: Google TV oficial (Súper fluido, con acceso directo a Netflix…"
+    "seoDescription": "Pantalla: 43 Pulgadas LED (Tamaño ideal para la sala o el cuarto). Sistema Operativo: Google TV oficial (Súper fluido, con acceso directo a Netflix…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Uso doméstico y confort en el hogar para conservación de alimentos, climatización de cuartos y tareas diarias."
+    ],
+    "incluye": [
+      "1x Smart TV Milexus 43\""
+    ]
   },
   {
     "id": 1782536078989,
@@ -2813,7 +4807,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T04:54:38.989Z",
     "seoTitle": "LAVADORA MILEXUS DE DOBLE TINA (9 KG) en Cuba | TiendaMax",
-    "seoDescription": "Marca: Milexus original (Modelo ML-WM-9KGS). Capacidad: 9 Kilogramos (Ideal para sábanas, colchas y cargas familiares grandes). Doble Tina: Sistema…"
+    "seoDescription": "Marca: Milexus original (Modelo ML-WM-9KGS). Capacidad: 9 Kilogramos (Ideal para sábanas, colchas y cargas familiares grandes). Doble Tina: Sistema…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Uso doméstico y confort en el hogar para conservación de alimentos, climatización de cuartos y tareas diarias."
+    ],
+    "incluye": [
+      "1x Lavadora Milexus de Doble Tina (9 kg)"
+    ]
   },
   {
     "id": 1782536259878,
@@ -2837,7 +4851,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T04:57:39.878Z",
     "seoTitle": "SPLIT MILEXUS 1T en Cuba | TiendaMax",
-    "seoDescription": "Marca: Milexus Tecnología Gold Fin: Recubrimiento anticorrosivo de última generación que protege el equipo contra la humedad y el salitre, asegurando…"
+    "seoDescription": "Marca: Milexus Tecnología Gold Fin: Recubrimiento anticorrosivo de última generación que protege el equipo contra la humedad y el salitre, asegurando…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Uso doméstico y confort en el hogar para conservación de alimentos, climatización de cuartos y tareas diarias."
+    ],
+    "incluye": [
+      "1x Split Milexus 1T"
+    ]
   },
   {
     "id": 1782536637390,
@@ -2861,7 +4895,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T05:03:57.390Z",
     "seoTitle": "EXHIBIDOR VERTICAL MILEXUS 13 PIES en Cuba | TiendaMax",
-    "seoDescription": "Marca: Milexus Diseño: Puerta de cristal templado panorámica de alta resistencia (mantiene el frío a la perfección y no se empaña). Copete Iluminado…"
+    "seoDescription": "Marca: Milexus Diseño: Puerta de cristal templado panorámica de alta resistencia (mantiene el frío a la perfección y no se empaña). Copete Iluminado…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "refrescos, cervezas, lácteos."
+    ],
+    "incluye": [
+      "1x Exhibidor Vertical Milexus 13 Pies"
+    ]
   },
   {
     "id": 1782537024284,
@@ -2885,7 +4939,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T05:10:24.286Z",
     "seoTitle": "EXHIBIDOR VERTICAL DE DOBLE PUERTA MILEXUS 20 PIES",
-    "seoDescription": "Capacidad masiva: Al ser de doble puerta, te permite almacenar el doble o triple de mercancía bien organizada en comparación con el de una sola puerta…"
+    "seoDescription": "Capacidad masiva: Al ser de doble puerta, te permite almacenar el doble o triple de mercancía bien organizada en comparación con el de una sola puerta…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Exhibidor vertical Milexus de doble puerta, 20 pies, cristal templado, varias parrillas ajustables. Ideal para negocios con mayor volumen de productos refrigerados."
+    ],
+    "incluye": [
+      "1x Exhibidor Vertical de Doble Puerta Milexus 20 Pies"
+    ]
   },
   {
     "id": 1782537341725,
@@ -2910,7 +4984,27 @@
     "specs": [],
     "fechaAgregado": "2026-06-27T05:15:41.725Z",
     "seoTitle": "NEVERA HORIZONTAL MILEXUS 7 PIES en Cuba | TiendaMax",
-    "seoDescription": "Marca: Milexus (Modelo ML-CF-200). Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar). Bajo…"
+    "seoDescription": "Marca: Milexus (Modelo ML-CF-200). Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar). Bajo…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Milexus"
+      },
+      {
+        "k": "Categoría",
+        "v": "Electrodomésticos"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "idealPara": [
+      "Nevera horizontal (congeladora) Milexus de 7 pies, color gris oscuro, tapa superior con manija. Ideal para almacenar carnes, helados o mercancía congelada en el hogar o negocio."
+    ],
+    "incluye": [
+      "1x Nevera Horizontal Milexus 7 Pies"
+    ]
   },
   {
     "id": 1782791345628,
@@ -2943,55 +5037,46 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "GEYA",
-        "origen": "repo"
+        "v": "GEYA"
       },
       {
         "k": "Modelo",
-        "v": "W2R-100",
-        "origen": "repo"
-      },
-      {
-        "k": "Corriente nominal",
-        "v": "100A",
-        "origen": "repo"
-      },
-      {
-        "k": "Voltaje nominal",
-        "v": "220V AC",
-        "origen": "repo"
-      },
-      {
-        "k": "Frecuencia",
-        "v": "50-60Hz",
-        "origen": "repo"
+        "v": "W2R-100"
       },
       {
         "k": "Tipo",
-        "v": "Interruptor de transferencia automática (ATS)"
+        "v": "Interruptor de Transferencia Automática (ATS)"
+      },
+      {
+        "k": "Corriente nominal",
+        "v": "100A continuo"
+      },
+      {
+        "k": "Voltaje nominal",
+        "v": "220V AC"
+      },
+      {
+        "k": "Montaje",
+        "v": "Riel DIN estándar de 35mm"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Funcionamiento",
-        "d": "Permite la conmutación entre una fuente de energía solar (PV) y la red eléctrica (City Power), optimizando el uso de recursos y asegurando el respaldo energético.",
-        "origen": "repo"
+        "d": "Conmutación ultra rápida entre dos fuentes eléctricas sin apagar equipos."
       },
       {
-        "t": "Modos de uso",
-        "d": "Incluye un selector físico para operación manual o automática, adaptándose a las necesidades específicas de cada instalación eléctrica.",
-        "origen": "repo"
+        "d": "Selector frontal para modo de operación 100% Automático o Manual."
       },
       {
-        "t": "Seguridad",
-        "d": "Construido con materiales resistentes, diseñado para soportar tensiones de impacto y cumplir con estándares internacionales de aislamiento y protección.",
-        "origen": "repo"
-      },
-      {
-        "t": "Instalación",
-        "d": "Diseño modular pensado para integrarse fácilmente en cuadros eléctricos, facilitando la conexión de cables y la gestión de circuitos.",
-        "origen": "repo"
+        "d": "Contactos de plata de alta durabilidad con capacidad de corte de 100A."
       }
+    ],
+    "idealPara": [
+      "Cuadros eléctricos residenciales para automatizar el cambio entre red de la calle e inversor."
+    ],
+    "incluye": [
+      "1x Interruptor de Transferencia Automática 100A",
+      "1x Diagrama de conexión"
     ]
   },
   {
@@ -3019,7 +5104,54 @@
     ],
     "fechaAgregado": "2026-07-04T15:40:34.140Z",
     "seoTitle": "Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-    "seoDescription": "Inversor de corriente de onda senoidal pura UNIZUKI, modelo DA 3000W, entrada de 12V. La onda senoidal pura entrega corriente estable y segura para…"
+    "seoDescription": "Inversor de corriente de onda senoidal pura UNIZUKI, modelo DA 3000W, entrada de 12V. La onda senoidal pura entrega corriente estable y segura para…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "UNIZUKI"
+      },
+      {
+        "k": "Modelo",
+        "v": "DA 3000W"
+      },
+      {
+        "k": "Potencia continua",
+        "v": "1500W nominal garantizada"
+      },
+      {
+        "k": "Potencia pico",
+        "v": "3000W arranque"
+      },
+      {
+        "k": "Voltaje de entrada",
+        "v": "12V DC",
+        "nota": "Batería"
+      },
+      {
+        "k": "Voltaje de salida",
+        "v": "110V / 120V AC",
+        "nota": "Onda Senoidal Pura"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Onda senoidal pura que evita ruidos, calentamiento en ventiladores o daños en motores."
+      },
+      {
+        "d": "Arranque suave para superar los golpes de arranque de refrigeradores y motores medianos."
+      },
+      {
+        "d": "Carcasa metálica con disipación de calor activa y protecciones eléctricas totales."
+      }
+    ],
+    "idealPara": [
+      "Hogares que necesitan alimentar neveras, ventiladores y televisores durante apagones sin riesgo de averías."
+    ],
+    "incluye": [
+      "1x Inversor Onda Pura Unizuki 3000W",
+      "1x Par de cables con pinzas para batería",
+      "1x Manual del usuario"
+    ]
   },
   {
     "id": 1783179800783,
@@ -3051,66 +5183,52 @@
     "seoDescription": "Inversor Tataliken de 24V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada para bancos de baterías de 24V, con menos corriente en el cableado que un equivalente de 12V.",
     "ficha": [
       {
-        "k": "🏷️ Marca",
+        "k": "Marca",
         "v": "Tataliken"
       },
       {
-        "k": "⚡ Potencia real (continua)",
-        "v": "2000W",
-        "nota": "lo que sostiene de forma permanente"
+        "k": "Potencia continua",
+        "v": "2000W nominal"
       },
       {
-        "k": "⚡ Potencia máxima (pico)",
-        "v": "4000W",
-        "nota": "solo para el arranque de motores"
+        "k": "Potencia pico",
+        "v": "4000W arranque"
       },
       {
-        "k": "🔋 Voltaje de entrada",
+        "k": "Voltaje de entrada",
         "v": "24V DC",
-        "nota": "el banco de baterías tiene que ser de 24V"
+        "nota": "Baterías en serie o banco 24V"
       },
       {
-        "k": "🔌 Voltaje de salida",
-        "v": "110V / 120V AC",
-        "nota": "tolerancia ±10%"
+        "k": "Voltaje de salida",
+        "v": "110V / 220V AC a 60Hz"
       },
       {
-        "k": "📶 Frecuencia",
-        "v": "60Hz",
-        "nota": "estándar residencial"
-      },
-      {
-        "k": "〰️ Tipo de onda",
-        "v": "Sinusoidal modificada",
-        "nota": "ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados"
+        "k": "Tipo de onda",
+        "v": "Onda Sinusoidal Modificada"
       }
     ],
     "caracteristicas": [
       {
-        "t": "🔋 Sistema de 24V",
-        "d": "Optimizado para bancos de baterías en serie: a igual potencia mueve la mitad de corriente que uno de 12V, así que el cableado sufre menos."
+        "d": "Menor grosor de cable requerido y menor caída de tensión ante consumos altos."
       },
       {
-        "t": "🛡️ Seguridad",
-        "d": "Incluye cables robustos para garantizar una transferencia segura de energía desde el banco de baterías."
+        "d": "Doble ventilador de enfriamiento automático por sensor térmico para trabajo pesado."
       },
       {
-        "t": "🔌 Versatilidad",
-        "d": "Tomas de corriente integradas para una conexión rápida y directa."
+        "d": "Consumo en vacío ultra bajo (< 0.6A) para ahorrar batería en horas nocturnas."
       },
       {
-        "t": "🛡️ Protecciones",
-        "d": "Sobrecarga, cortocircuito, sobretemperatura, inversión de polaridad y voltaje alto o bajo de batería."
+        "d": "Display digital frontal para monitoreo en tiempo real del voltaje de entrada."
       }
     ],
     "idealPara": [
-      "Instalaciones que ya tienen el banco de baterías configurado a 24V.",
-      "Respaldo del hogar con cableado más fino que un equivalente de 12V.",
-      "Sistemas solares medianos que trabajan a 24V."
+      "Sistemas solares o bancos con 2 baterías en serie de 24V que buscan máxima eficiencia energética."
     ],
     "incluye": [
-      "1x Inversor Tataliken 4000W (24V)",
-      "1x Juego de cables de conexión a batería"
+      "1x Inversor Tataliken 4000W 24V",
+      "1x Par de cables con terminales de bornes",
+      "1x Par de pinzas caimán reforzadas"
     ]
   },
   {
@@ -3150,7 +5268,38 @@
     ],
     "fechaAgregado": "2026-07-05T03:24:56.640Z",
     "seoTitle": "Changan CS75 PLUS 2024 (Suv Compacta) en Cuba | TiendaMax",
-    "seoDescription": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño) Precio: 33000usd Kilometraje: Menos de 13,000 km Ubicación: Habana Descripción: ¿Buscas un SUV…"
+    "seoDescription": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño) Precio: 33000usd Kilometraje: Menos de 13,000 km Ubicación: Habana Descripción: ¿Buscas un SUV…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Changan"
+      },
+      {
+        "k": "Kilometraje",
+        "v": "Menos de 13,000 km"
+      },
+      {
+        "k": "Ubicación",
+        "v": "Habana"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado."
+      },
+      {
+        "d": "L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo)."
+      },
+      {
+        "d": "Automática de última generación (con modos de manejo Eco/Normal/Sport)."
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Changan CS75 PLUS 2024 (Suv Compacta)"
+    ]
   },
   {
     "id": 1783453597496,
@@ -3178,7 +5327,52 @@
     ],
     "fechaAgregado": "2026-07-07T19:46:37.496Z",
     "seoTitle": "Router Tp-link Archer A6 (AC1200) en Cuba | TiendaMax",
-    "seoDescription": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias…"
+    "seoDescription": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Puertos",
+        "v": "1 puerto WAN Gigabit + 4 puertos LAN Gigabit",
+        "nota": "garantiza máxima velocidad por cable"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas fijas de alto rendimiento para una cobertura óptima en toda la casa"
+      },
+      {
+        "k": "Estándares",
+        "v": "IEEE 802.11ac/n/a 5GHz, IEEE 802.11n/b/g 2.4GHz"
+      },
+      {
+        "k": "Modos",
+        "v": "Router Wi-Fi o Punto de Acceso",
+        "nota": "AP Mode"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Velocidades combinadas de hasta 1200 Mbps (300 Mbps en 2.4GHz + 867 Mbps en 5GHz)."
+      },
+      {
+        "d": "puerto WAN Gigabit + 4 puertos LAN Gigabit (garantiza máxima velocidad por cable)."
+      },
+      {
+        "d": "antenas fijas de alto rendimiento para una cobertura óptima en toda la casa."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router TP-Link Archer A6 (AC1200)"
+    ]
   },
   {
     "id": 1783453857635,
@@ -3207,7 +5401,47 @@
     ],
     "fechaAgregado": "2026-07-07T19:50:57.635Z",
     "seoTitle": "Router Tp-link Archer AX21 (Wi-fi 6) en Cuba | TiendaMax",
-    "seoDescription": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una…"
+    "seoDescription": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AX21"
+      },
+      {
+        "k": "Puertos",
+        "v": "1 puerto WAN Gigabit + 4 puertos LAN Gigabit para máxima velocidad cableada"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas de alta ganancia con tecnología Beamforming para un alcance superior"
+      },
+      {
+        "k": "Modos",
+        "v": "Router Wi-Fi, Punto de Acceso",
+        "nota": "AP Mode"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Hasta 1800 Mbps totales (1201 Mbps en 5GHz + 574 Mbps en 2.4GHz)."
+      },
+      {
+        "d": "Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO; gestiona más dispositivos sin saturación."
+      },
+      {
+        "d": "puerto WAN Gigabit + 4 puertos LAN Gigabit para máxima velocidad cableada."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router TP-Link Archer AX21 (Wi-fi 6)"
+    ]
   },
   {
     "id": 1783473894756,
@@ -3239,46 +5473,37 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "COREBOX",
-        "origen": "repo"
+        "v": "COREBOX"
       },
       {
-        "k": "Voltaje de salida",
-        "v": "12V",
-        "origen": "repo"
+        "k": "Voltaje",
+        "v": "12V"
       },
       {
-        "k": "Corriente de carga",
-        "v": "15A",
-        "origen": "repo"
+        "k": "Capacidad / Corriente",
+        "v": "15A"
       },
       {
-        "k": "Tecnologías compatibles",
-        "v": "AGM, GEL, EFB, LiFePO4",
-        "origen": "repo"
+        "k": "Tecnología / Tipo",
+        "v": "AGM, GEL, EFB, LiFePO4"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Integra un sistema de carga inteligente que detecta automáticamente el estado de la batería, optimizando el flujo de corriente para un rendimiento superior.",
-        "origen": "repo"
+        "d": "Integra un sistema de carga inteligente que detecta automáticamente el estado de la batería, optimizando el flujo de corriente para un rendimiento superior."
       },
       {
-        "t": "Compatibilidad",
-        "d": "Soporta una amplia gama de tecnologías de baterías, incluyendo AGM, GEL, EFB y LiFePO4, ofreciendo flexibilidad para diferentes aplicaciones.",
-        "origen": "repo"
+        "d": "Soporta una amplia gama de tecnologías de baterías, incluyendo AGM, GEL, EFB y LiFePO4, ofreciendo flexibilidad para diferentes aplicaciones."
       },
       {
-        "t": "Monitoreo",
-        "d": "Pantalla LED integrada que muestra el porcentaje de carga y los parámetros eléctricos, permitiendo un control total y seguro durante todo el proceso.",
-        "origen": "repo"
-      },
-      {
-        "t": "Diseño",
-        "d": "Carcasa robusta con disipación de calor eficiente, ideal para uso prolongado sin riesgos de sobrecalentamiento.",
-        "origen": "repo"
+        "d": "Pantalla LED integrada que muestra el porcentaje de carga y los parámetros eléctricos, permitiendo un control total y seguro durante todo el proceso."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador Inteligente Corebox 12V 15A"
     ]
   },
   {
@@ -3312,51 +5537,45 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "NTRC",
-        "origen": "repo"
+        "v": "NTRC"
+      },
+      {
+        "k": "Voltajes",
+        "v": "12V / 24V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "20A / 10A"
       },
       {
         "k": "Modelo",
-        "v": "P20",
-        "origen": "repo"
+        "v": "P20"
       },
       {
         "k": "Salida 12V",
-        "v": "20A",
-        "origen": "repo"
+        "v": "20A"
       },
       {
         "k": "Salida 24V",
-        "v": "10A",
-        "origen": "repo"
-      },
-      {
-        "k": "Tecnologías compatibles",
-        "v": "Litio, AGM/Plomo, LiFePO4",
-        "origen": "repo"
+        "v": "10A"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Sistema inteligente que detecta y ajusta automáticamente la carga para tipos de baterías como Litio, AGM/Plomo y LiFePO4.",
-        "origen": "repo"
+        "d": "Sistema inteligente que detecta y ajusta automáticamente la carga para tipos de baterías como Litio, AGM/Plomo y LiFePO4."
       },
       {
-        "t": "Versatilidad",
-        "d": "Soporta configuraciones de 12V y 24V, proporcionando una salida de corriente ajustable para adaptarse a los requerimientos específicos de cada batería.",
-        "origen": "repo"
+        "d": "Soporta configuraciones de 12V y 24V, proporcionando una salida de corriente ajustable para adaptarse a los requerimientos específicos de cada batería."
       },
       {
-        "t": "Reparación",
-        "d": "Incluye una función especial de reparación (Repair) diseñada para ayudar a recuperar baterías que presentan dificultades, optimizando su rendimiento.",
-        "origen": "repo"
-      },
-      {
-        "t": "Monitoreo",
-        "d": "Pantalla digital intuitiva que muestra en tiempo real el nivel de carga, voltaje y modo de operación seleccionado, facilitando su uso.",
-        "origen": "repo"
+        "d": "Incluye una función especial de reparación (Repair) diseñada para ayudar a recuperar baterías que presentan dificultades, optimizando su rendimiento."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador Inteligente Ntrc 20A"
     ]
   },
   {
@@ -3390,51 +5609,45 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "NTRC",
-        "origen": "repo"
+        "v": "NTRC"
+      },
+      {
+        "k": "Voltajes",
+        "v": "12V / 24V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "35A / 18A"
       },
       {
         "k": "Modelo",
-        "v": "P35",
-        "origen": "repo"
+        "v": "P35"
       },
       {
         "k": "Salida 12V",
-        "v": "35A",
-        "origen": "repo"
+        "v": "35A"
       },
       {
         "k": "Salida 24V",
-        "v": "18A",
-        "origen": "repo"
-      },
-      {
-        "k": "Tecnologías compatibles",
-        "v": "Litio, AGM/Plomo, LiFePO4",
-        "origen": "repo"
+        "v": "18A"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Sistema inteligente avanzado que ajusta automáticamente los parámetros de carga para tecnologías como Litio, AGM/Plomo y LiFePO4.",
-        "origen": "repo"
+        "d": "Sistema inteligente avanzado que ajusta automáticamente los parámetros de carga para tecnologías como Litio, AGM/Plomo y LiFePO4."
       },
       {
-        "t": "Versatilidad",
-        "d": "Admite configuraciones duales de voltaje, proporcionando una solución robusta para diferentes necesidades de energía en el hogar o taller.",
-        "origen": "repo"
+        "d": "Admite configuraciones duales de voltaje, proporcionando una solución robusta para diferentes necesidades de energía en el hogar o taller."
       },
       {
-        "t": "Reparación",
-        "d": "Incluye modo de reparación específico para tratar baterías que requieren restauración, optimizando su capacidad de almacenamiento.",
-        "origen": "repo"
-      },
-      {
-        "t": "Monitoreo",
-        "d": "Pantalla LCD clara que permite visualizar en tiempo real el voltaje, corriente y modo de operación seleccionado, asegurando un proceso de carga transparente.",
-        "origen": "repo"
+        "d": "Incluye modo de reparación específico para tratar baterías que requieren restauración, optimizando su capacidad de almacenamiento."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador Inteligente Ntrc 35A"
     ]
   },
   {
@@ -3463,7 +5676,51 @@
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
     "seoTitle": "Mikrotik Hex (RB750GR3) en Cuba | TiendaMax",
-    "seoDescription": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y…"
+    "seoDescription": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "GIGABIT"
+      },
+      {
+        "k": "Puertos",
+        "v": "5 puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router cableado",
+        "nota": "sin Wi-Fi integrado"
+      },
+      {
+        "k": "Cpu",
+        "v": "Dual-core 880 MHz"
+      },
+      {
+        "k": "Ram",
+        "v": "256 MB"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Potente procesador dual-core de 880 MHz para manejar configuraciones complejas (VPN, firewall, colas de tráfico)."
+      },
+      {
+        "d": "puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable."
+      },
+      {
+        "d": "Ranura para tarjeta microSD que permite almacenar archivos de usuario y bases de datos."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x MikroTik hEX (RB750GR3)"
+    ]
   },
   {
     "id": 1783543451116,
@@ -3491,7 +5748,47 @@
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
     "seoTitle": "Router Tenda TX12 PRO (Wi-fi 6) en Cuba | TiendaMax",
-    "seoDescription": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar…"
+    "seoDescription": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Tenda"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AX12"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable"
+      },
+      {
+        "k": "Estándar",
+        "v": "Wi-Fi 6",
+        "nota": "AX1500"
+      },
+      {
+        "k": "Gestión",
+        "v": "Configuración sencilla a través de la App Tenda WiFi"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias."
+      },
+      {
+        "d": "Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz)."
+      },
+      {
+        "d": "Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Tenda AX12 PRO (Wi-fi 6)"
+    ]
   },
   {
     "id": 1784403677390,
@@ -3521,7 +5818,46 @@
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
     "seoTitle": "Nanostation AC Loco en Cuba | TiendaMax",
-    "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…"
+    "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "450 MBPS"
+      },
+      {
+        "k": "Modelo",
+        "v": "NanoStation AC loco"
+      },
+      {
+        "k": "Frecuencias",
+        "v": "5 GHz"
+      },
+      {
+        "k": "Velocidad Máxima",
+        "v": "450+ Mbps"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad."
+      },
+      {
+        "d": "Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal."
+      },
+      {
+        "d": "Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x NanoStation 5 AC Loco"
+    ]
   },
   {
     "id": 1784404666988,
@@ -3551,7 +5887,46 @@
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z",
     "seoTitle": "Mikrotik Sxtsq LITE5 en Cuba | TiendaMax",
-    "seoDescription": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y…"
+    "seoDescription": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Modelo",
+        "v": "SXTsq Lite5"
+      },
+      {
+        "k": "Frecuencias",
+        "v": "5 GHz"
+      },
+      {
+        "k": "Uso",
+        "v": "Enlaces punto a punto y CPE en exteriores"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Dispositivo inalámbrico"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Diseñado para enlaces de largo alcance en la banda de 5 GHz, ofreciendo una conexión inalámbrica robusta y de gran estabilidad."
+      },
+      {
+        "d": "Formato cuadrado minimalista y compacto en color blanco, optimizado para una instalación discreta y duradera en exteriores."
+      },
+      {
+        "d": "Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x MikroTik SXTsq LITE5"
+    ]
   },
   {
     "id": 1784405087402,
@@ -3579,7 +5954,43 @@
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
     "seoTitle": "Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
-    "seoDescription": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y…"
+    "seoDescription": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y…",
+    "ficha": [
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Cámara IP PTZ inalámbrica"
+      },
+      {
+        "k": "Uso",
+        "v": "Interiores y exteriores protegidos",
+        "nota": "Hogares/Oficinas"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cámaras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior."
+      },
+      {
+        "d": "Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad."
+      },
+      {
+        "d": "Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
+    ]
   },
   {
     "id": 1784569265085,
@@ -3607,7 +6018,42 @@
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
     "seoTitle": "Router Inalámbrico Wavlink AC1200 Dual Band | TiendaMax",
-    "seoDescription": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran…"
+    "seoDescription": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Wavlink"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router inalámbrico Dual Band"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Soporta doble banda simultánea para separar el tráfico y reducir la interferencia, asegurando un rendimiento óptimo en la red."
+      },
+      {
+        "d": "Dispone de cuatro antenas externas de alta ganancia que amplían el área de cobertura y eliminan las zonas sin señal."
+      },
+      {
+        "d": "Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Inalámbrico Wavlink AC1200 Dual Band"
+    ]
   },
   {
     "id": 1784569498967,
@@ -3638,41 +6084,35 @@
     "seoDescription": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento…",
     "ficha": [
       {
-        "k": "Corriente nominal",
-        "v": "100A",
-        "origen": "repo"
+        "k": "Voltajes",
+        "v": "12V / 24V / 36V"
       },
       {
-        "k": "Voltaje del sistema",
-        "v": "12V / 24V / 36V / 48V (Automático)",
-        "origen": "repo"
+        "k": "Capacidad / Corriente",
+        "v": "100A"
       },
       {
-        "k": "Tipo",
-        "v": "Controlador de carga solar MPPT"
+        "k": "Voltaje",
+        "v": "12V / 24V / 36V / 48V",
+        "nota": "Automático"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología",
-        "d": "Tecnología MPPT avanzada que incrementa significativamente la eficiencia de conversión y aprovechamiento de la energía solar disponible.",
-        "origen": "repo"
+        "d": "Tecnología MPPT avanzada que incrementa significativamente la eficiencia de conversión y aprovechamiento de la energía solar disponible."
       },
       {
-        "t": "Compatibilidad",
-        "d": "Detección automática de voltaje, soportando sistemas de 12V, 24V, 36V y 48V para una gran versatilidad en instalaciones.",
-        "origen": "repo"
+        "d": "Detección automática de voltaje, soportando sistemas de 12V, 24V, 36V y 48V para una gran versatilidad en instalaciones."
       },
       {
-        "t": "Monitoreo",
-        "d": "Pantalla LCD integrada que muestra en tiempo real el estado de la batería, el voltaje de los paneles y la salida de carga.",
-        "origen": "repo"
-      },
-      {
-        "t": "Protección",
-        "d": "Funciones de seguridad integradas para prevenir sobrecargas, cortocircuitos y descargas inversas, protegiendo todo el sistema.",
-        "origen": "repo"
+        "d": "Pantalla LCD integrada que muestra en tiempo real el estado de la batería, el voltaje de los paneles y la salida de carga."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Controlador de Carga Solar MPPT 100A"
     ]
   },
   {
@@ -3701,7 +6141,39 @@
     ],
     "fechaAgregado": "2026-07-20T17:55:00.968Z",
     "seoTitle": "Soldadora Inverter MMA-300 en Cuba | TiendaMax",
-    "seoDescription": "Máquina de soldar tipo inverter de alto rendimiento, diseñada para ofrecer una fusión limpia, estable y profesional en trabajos de herrería y…"
+    "seoDescription": "Máquina de soldar tipo inverter de alto rendimiento, diseñada para ofrecer una fusión limpia, estable y profesional en trabajos de herrería y…",
+    "ficha": [
+      {
+        "k": "Modelo",
+        "v": "MMA-300"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Soldadora inverter MMA"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Digital LED para visualización de corriente"
+      },
+      {
+        "k": "Aplicación",
+        "v": "Soldadura por arco manual"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología inverter avanzada que asegura una corriente de salida estable, minimizando la salpicadura y optimizando el consumo eléctrico."
+      },
+      {
+        "d": "Perilla frontal de ajuste de corriente junto con una pantalla digital clara para un control preciso de los amperios según el electrodo."
+      },
+      {
+        "d": "Estructura ligera con asa superior reforzada, diseñada para facilitar su transporte y uso en diferentes áreas de trabajo."
+      }
+    ],
+    "incluye": [
+      "1x Soldadora Inverter MMA-300"
+    ]
   },
   {
     "id": 1784571782777,
@@ -3729,7 +6201,41 @@
     ],
     "fechaAgregado": "2026-07-20T18:23:02.778Z",
     "seoTitle": "Sistema de Seguridad Zosi de 8 Canales Con… | TiendaMax",
-    "seoDescription": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un…"
+    "seoDescription": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ZOSI"
+      },
+      {
+        "k": "Capacidad Del Dvr",
+        "v": "8 canales / 5MP Lite"
+      },
+      {
+        "k": "Almacenamiento",
+        "v": "1TB de disco duro incluido"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un conjunto de 8 cámaras de alta definición, garantizando un monitoreo detallado, grabación continua y almacenamiento seguro gracias a su disco duro de 1TB integrado."
+      },
+      {
+        "d": "DVR de 8 canales compatible perfectamente con cámaras ZOSI para una integración óptima del sistema."
+      },
+      {
+        "d": "Resolución HD de 2MP (1080p) en las cámaras para obtener imágenes nítidas y detalladas."
+      },
+      {
+        "d": "DVR Lite con capacidad de 5MP que permite una gestión de grabación superior."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB"
+    ]
   },
   {
     "id": 1784732614444,
@@ -3757,7 +6263,42 @@
     ],
     "fechaAgregado": "2026-07-22T15:03:34.445Z",
     "seoTitle": "Router Wi-fi 6 AX1800 Asus RT-AX1800S en Cuba | TiendaMax",
-    "seoDescription": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos…"
+    "seoDescription": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "ASUS"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 6"
+      },
+      {
+        "k": "Modelo",
+        "v": "RT-AX1800S"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router Wi-Fi 6 AX1800 de doble banda"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Wi-Fi 6 (802.11ax) de doble banda con velocidades combinadas de hasta 1800 Mbps para una navegación fluida."
+      },
+      {
+        "d": "Cuatro antenas externas orientables diseñadas para expandir la cobertura de señal en todo el espacio."
+      },
+      {
+        "d": "Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Wi-fi 6 AX1800 Asus RT-AX1800S"
+    ]
   },
   {
     "id": 1784732715417,
@@ -3785,7 +6326,46 @@
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z",
     "seoTitle": "Router Wi-fi 6 AX3000 Tp-link Archer AX55 | TiendaMax",
-    "seoDescription": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en…"
+    "seoDescription": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 6"
+      },
+      {
+        "k": "Puertos",
+        "v": "1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas"
+      },
+      {
+        "k": "Modelo",
+        "v": "Archer AX55"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router Wi-Fi 6 AX3000 de doble banda"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Wi-Fi 6 (802.11ax) de doble banda que alcanza velocidades combinadas de hasta 3000 Mbps (2402 Mbps en 5 GHz y 574 Mbps en 2.4 GHz)."
+      },
+      {
+        "d": "Cuatro antenas externas de alta ganancia equipadas con tecnología Beamforming para concentrar la señal hacia los dispositivos y eliminar zonas muertas."
+      },
+      {
+        "d": "Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Wi-fi 6 AX3000 TP-Link Archer AX55"
+    ]
   },
   {
     "id": 1784823616101,
@@ -3816,44 +6396,39 @@
     "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…",
     "ficha": [
       {
-        "k": "Corriente Máxima de Carga",
-        "v": "150A",
-        "origen": "repo"
+        "k": "Voltajes",
+        "v": "12V / 24V / 36V"
       },
       {
-        "k": "Voltaje del Sistema",
-        "v": "12V / 24V / 36V / 48V (Auto)",
-        "origen": "repo"
+        "k": "Capacidad / Corriente",
+        "v": "150A"
       },
       {
-        "k": "Tipo",
-        "v": "Controlador de carga solar MPPT"
+        "k": "Voltaje",
+        "v": "12V / 24V / 36V / 48V",
+        "nota": "Auto"
+      },
+      {
+        "k": "Uso",
+        "v": "Sistemas solares residenciales y de alta demanda energética"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología de Carga",
-        "d": "Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior.",
-        "origen": "repo"
+        "d": "Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior."
       },
       {
-        "t": "Compatibilidad de Baterías",
-        "d": "Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded.",
-        "origen": "repo"
+        "d": "Compatibilidad de Baterías: Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded."
       },
       {
-        "t": "Monitoreo y Control",
-        "d": "Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables.",
-        "origen": "repo"
-      },
-      {
-        "t": "Conectividad y Puertos",
-        "d": "Incluye terminales robustos para paneles, baterías y carga, junto con 2 puertos USB de 5V integrados.",
-        "origen": "repo"
+        "d": "Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables."
       }
     ],
     "idealPara": [
-      "Sistemas solares residenciales y de alta demanda energética."
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Controlador de Carga Solar MPPT 150A"
     ]
   },
   {
@@ -3882,7 +6457,42 @@
     ],
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
-    "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…"
+    "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…",
+    "ficha": [
+      {
+        "k": "Modelo",
+        "v": "QW8-WIFI"
+      },
+      {
+        "k": "Uso",
+        "v": "Vigilancia exterior residencial o comercial"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cámaras"
+      },
+      {
+        "k": "Estado",
+        "v": "Nuevo en caja original"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Dos lentes independientes integrados en el mismo cuerpo para monitorear dos áreas distintas de forma simultánea desde el celular."
+      },
+      {
+        "d": "Panel solar de alta eficiencia para la recarga autónoma del sistema, garantizando funcionamiento continuo en exteriores."
+      },
+      {
+        "d": "Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos."
+      }
+    ],
+    "idealPara": [
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+    ],
+    "incluye": [
+      "1x Cámara de Seguridad Solar Doble Lente QW8-WIFI"
+    ]
   },
   {
     "id": 1785285424837,
@@ -3910,7 +6520,50 @@
     ],
     "fechaAgregado": "2026-07-29T00:37:04.838Z",
     "seoTitle": "Antena CPE MikroTik SXTsq 5 AX en Cuba | TiendaMax",
-    "seoDescription": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE)…"
+    "seoDescription": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE)…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 6"
+      },
+      {
+        "k": "Modelo",
+        "v": "SXTsq 5 ax"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "CPE Inalámbrico para exteriores"
+      },
+      {
+        "k": "Antenas",
+        "v": "16 dBi"
+      },
+      {
+        "k": "Licencia Routeros",
+        "v": "Level 4"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad Wi-Fi 6 (802.11ax) para mayor velocidad de transferencia, eficiencia y menor latencia en enlaces de larga distancia."
+      },
+      {
+        "d": "Antena direccional integrada de 16 dBi optimizada para concentrar el haz de señal y lograr conexiones estables punto a punto (PtP)."
+      },
+      {
+        "d": "Viene equipado con RouterOS con licencia Level 4, permitiendo su uso como estación base para sectores o en enlaces punto a multipunto (PtMP)."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Antena CPE MikroTik SXTsq 5 AX"
+    ]
   },
   {
     "id": 1785286289086,
@@ -3938,7 +6591,39 @@
     ],
     "fechaAgregado": "2026-07-29T00:51:29.086Z",
     "seoTitle": "Antena CPE Ubiquiti NanoStation M5 Internacional | TiendaMax",
-    "seoDescription": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación…"
+    "seoDescription": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Modelo",
+        "v": "NanoStation M5"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "CPE Inalámbrico para exteriores",
+        "nota": "Versión Internacional"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores."
+      },
+      {
+        "d": "Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido."
+      },
+      {
+        "d": "Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Antena CPE Ubiquiti NanoStation M5 Internacional"
+    ]
   },
   {
     "id": 1785866159148,
@@ -3968,7 +6653,50 @@
     ],
     "fechaAgregado": "2026-08-04T17:55:59.149Z",
     "seoTitle": "Cargador de Batería de Litio BIEN 48V 5A en Cuba | TiendaMax",
-    "seoDescription": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de…"
+    "seoDescription": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "BIEN"
+      },
+      {
+        "k": "Potencia",
+        "v": "275W"
+      },
+      {
+        "k": "Voltajes",
+        "v": "48V / 110V / 54.6V"
+      },
+      {
+        "k": "Capacidad / Corriente",
+        "v": "5A / 5.0A"
+      },
+      {
+        "k": "Modelo",
+        "v": "48V 5A (54.6V) US PIN"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Cargador para baterías de litio"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Voltaje de entrada de corriente alterna de 110V a 60Hz con una potencia máxima de 275W."
+      },
+      {
+        "d": "Tensión de salida nominal de 54.6V con una corriente de carga continua de 5.0A optimizada para baterías de litio de 48V."
+      },
+      {
+        "d": "Incorpora advertencias operativas para uso exclusivo en interiores, ventilación adecuada y protección contra sobrecargas o cortocircuitos."
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+    ],
+    "incluye": [
+      "1x Cargador de Batería de Litio BIEN 48V 5A"
+    ]
   },
   {
     "id": 1786631549331,
@@ -3996,7 +6724,50 @@
     ],
     "fechaAgregado": "2026-08-13T14:32:29.331Z",
     "seoTitle": "Access Point Sectorial Exterior MikroTik SXT SA5 ac",
-    "seoDescription": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP)…"
+    "seoDescription": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP)…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 802"
+      },
+      {
+        "k": "Modelo",
+        "v": "SXT SA5 ac"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Access Point Sectorial para exteriores"
+      },
+      {
+        "k": "Antenas",
+        "v": "90 grados"
+      },
+      {
+        "k": "Licencia Routeros",
+        "v": "Level 4"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad Wi-Fi 802.11ac de alta eficiencia para transferencias rápidas y estables en la banda de 5 GHz."
+      },
+      {
+        "d": "Antena sectorial integrada con apertura de 90 grados, optimizada para conectar múltiples clientes simultáneamente en una misma zona."
+      },
+      {
+        "d": "Funciona con el sistema RouterOS e incluye licencia Level 4, permitiendo su uso directo como punto de acceso base sectorial."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Access Point Sectorial Exterior MikroTik SXT SA5 ac"
+    ]
   },
   {
     "id": 1786631968221,
@@ -4025,7 +6796,43 @@
     ],
     "fechaAgregado": "2026-08-13T14:39:28.222Z",
     "seoTitle": "Router Inalámbrico de Escritorio MikroTik hAP ac3",
-    "seoDescription": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable…"
+    "seoDescription": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "AC3"
+      },
+      {
+        "k": "Modelo",
+        "v": "hAP ac3",
+        "nota": "RouterBOARD / RBD53iG-5HacD2HnD"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Router inalámbrico de doble banda para interiores"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad Wi-Fi 5 de doble banda simultánea (2.4 GHz y 5 GHz) para una distribución rápida y estable del tráfico de red."
+      },
+      {
+        "d": "Dos antenas externas de alta ganancia que mejoran la propagación de la señal y minimizan los obstáculos en el entorno doméstico u de oficina."
+      },
+      {
+        "d": "Puertos Gigabit Ethernet para conexiones por cable ultrarrápidas, operando bajo el sistema operativo RouterOS para configuraciones avanzadas de red."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Router Inalámbrico de Escritorio MikroTik hAP ac3"
+    ]
   },
   {
     "id": 1786632255672,
@@ -4055,7 +6862,38 @@
     ],
     "fechaAgregado": "2026-08-13T14:44:15.672Z",
     "seoTitle": "Antena CPE Inalámbrica Ubiquiti NanoStation… | TiendaMax",
-    "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…"
+    "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Modelo",
+        "v": "NanoStation Loco M2"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "CPE Inalámbrico para exteriores de 2.4 GHz"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores."
+      },
+      {
+        "d": "Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables."
+      },
+      {
+        "d": "Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Antena CPE Inalámbrica Ubiquiti NanoStation M2 Internacional"
+    ]
   },
   {
     "id": 1786632573985,
@@ -4083,7 +6921,43 @@
     ],
     "fechaAgregado": "2026-08-13T14:49:33.985Z",
     "seoTitle": "Punto de Acceso UniFi AC Mesh Ubiquiti en Cuba | TiendaMax",
-    "seoDescription": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes…"
+    "seoDescription": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Velocidad Wi-Fi",
+        "v": "WI-FI 802"
+      },
+      {
+        "k": "Modelo",
+        "v": "UniFi AC Mesh",
+        "nota": "UAP-AC-M"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Punto de acceso Wi-Fi para exteriores"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Conectividad Wi-Fi 802.11ac de doble banda simultánea para garantizar velocidades rápidas de transferencia y menor congestión de red."
+      },
+      {
+        "d": "Antenas omnidireccionales ajustables de alta ganancia integradas para una distribución uniforme de la señal en exteriores."
+      },
+      {
+        "d": "Puerto Ethernet con soporte para alimentación PoE (Power over Ethernet), administrado de forma centralizada mediante el software UniFi Network."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Punto de Acceso UniFi AC Mesh Ubiquiti"
+    ]
   },
   {
     "id": 1786633494382,
@@ -4115,41 +6989,58 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "TOMZN",
-        "origen": "repo"
+        "v": "TOMZN"
       },
       {
         "k": "Modelo",
-        "v": "TOVPD1-60",
-        "origen": "repo"
+        "v": "TOVPD1-60"
       },
       {
-        "k": "Corriente Máxima (IN)",
+        "k": "Tipo",
+        "v": "Protector de Voltaje y Sobrecorriente ajustable"
+      },
+      {
+        "k": "Corriente máxima",
         "v": "63A",
-        "origen": "repo"
+        "nota": "Capacidad para toda la casa"
+      },
+      {
+        "k": "Rango de sobrevoltaje",
+        "v": "Ajustable",
+        "nota": "230V - 300V / Default: 135V en 110V"
+      },
+      {
+        "k": "Rango de bajo voltaje",
+        "v": "Ajustable",
+        "nota": "140V - 210V / Default: 90V en 110V"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Doble display LED",
+        "nota": "Voltaje y Amperaje en tiempo real"
+      },
+      {
+        "k": "Montaje",
+        "v": "Riel DIN estándar de 35mm"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología y Monitoreo",
-        "d": "Monitoreo digital continuo de voltaje y corriente con doble pantalla LED independiente para lectura clara de los parámetros.",
-        "origen": "repo"
+        "d": "Lectura digital simultánea en tiempo real de voltaje y corriente consumida."
       },
       {
-        "t": "Capacidad de Protección",
-        "d": "Soporta una corriente nominal de hasta 63A, con funciones ajustables para protección contra alto voltaje, bajo voltaje y sobrecorriente.",
-        "origen": "repo"
+        "d": "Reconexión automática con tiempo de retardo programable para cuidar refrigeradores."
       },
       {
-        "t": "Interfaz y Configuración",
-        "d": "Panel frontal con indicadores LED de estado y cuatro botones de navegación/control para configurar los umbrales de protección.",
-        "origen": "repo"
-      },
-      {
-        "t": "Tipo",
-        "d": "Protector ajustable de voltaje y sobrecorriente para riel DIN.",
-        "origen": "repo"
+        "d": "Protege aires acondicionados, televisores y electrodomésticos de fallas de fase."
       }
+    ],
+    "idealPara": [
+      "Tablero eléctrico principal de viviendas para protección total contra fluctuaciones eléctricas."
+    ],
+    "incluye": [
+      "1x Protector Digital TOMZN 63A",
+      "1x Manual de programación"
     ]
   },
   {
@@ -4184,50 +7075,47 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Y&H",
-        "origen": "repo"
+        "v": "Y&H"
       },
       {
-        "k": "Corriente Máxima",
-        "v": "120A",
-        "origen": "repo"
+        "k": "Tecnología",
+        "v": "MPPT de alta potencia"
       },
       {
-        "k": "Voltaje Máximo de Entrada (Voc)",
-        "v": "230VDC",
-        "origen": "repo"
+        "k": "Corriente de carga",
+        "v": "120A continuo"
       },
       {
-        "k": "Compatibilidad de Baterías",
-        "v": "12V a 96V",
-        "origen": "repo"
+        "k": "Voltaje de batería",
+        "v": "12V / 24V / 36V / 48V / 60V / 72V / 84V / 96V"
       },
       {
-        "k": "Tipo",
-        "v": "Controlador de carga solar MPPT"
+        "k": "Entrada solar máx. (Voc)",
+        "v": "230V DC",
+        "nota": "Permite series largas de paneles"
+      },
+      {
+        "k": "Pantalla",
+        "v": "LCD multifunción retroiluminada"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Rendimiento y Potencia",
-        "d": "Capacidad de carga continua de 120A, ideal para gestionar bancos de baterías de gran capacidad en sistemas de energía solar fuera de la red.",
-        "origen": "repo"
+        "d": "Soporta bancos de baterías de alta tensión hasta 96V DC."
       },
       {
-        "t": "Margen de Voltaje de Entrada (PV)",
-        "d": "Admite un voltaje máximo de circuito abierto de paneles (Voc) de hasta 230VDC, facilitando configuraciones serie eficientes.",
-        "origen": "repo"
+        "d": "Entrada de paneles solares hasta 230V Voc para optimizar cableado y reducir pérdidas."
       },
       {
-        "t": "Amplia Compatibilidad de Sistema",
-        "d": "Soporta una escala operativa que abarca desde sistemas de 12V, 24V, 36V, 48V, 60V, 72V, 84V hasta 96V, ofreciendo una flexibilidad inigualable para proyectos de diferentes voltajes.",
-        "origen": "repo"
-      },
-      {
-        "t": "Interfaz de Usuario",
-        "d": "Pantalla LCD central con visualización detallada de parámetros (flujo PV, carga de batería, consumo de carga) y botones de configuración rápida (SET, UP, DOWN, CONFIRM).",
-        "origen": "repo"
+        "d": "Menú de configuración para parámetros personalizados de carga y corte."
       }
+    ],
+    "idealPara": [
+      "Proyectos solares grandes, sistemas aislados escalables o movilidad eléctrica solar."
+    ],
+    "incluye": [
+      "1x Controlador MPPT 120A Y&H",
+      "1x Manual de configuración"
     ]
   },
   {
@@ -4257,7 +7145,39 @@
     ],
     "fechaAgregado": "2026-08-15T15:28:26.673Z",
     "seoTitle": "Creatina Monohidrato Hearthy Foods 500g en Cuba | TiendaMax",
-    "seoDescription": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el…"
+    "seoDescription": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Hearthy Foods"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Suplemento dietético de creatina monohidratada"
+      },
+      {
+        "k": "Contenido Neto",
+        "v": "500g",
+        "nota": "17.637 OZ"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Rendimiento y Dosificación: Aporta 5g de creatina micronizada por porción, con un total de 100 porciones por bolsa."
+      },
+      {
+        "d": "Ayuda a respaldar el rendimiento deportivo, la fuerza y la recuperación posterior al entrenamiento."
+      },
+      {
+        "d": "Características del Producto: Fórmula vegana, sin gluten, sometida a pruebas de terceros (3rd party tested) y completamente unflavored (sin sabor)."
+      }
+    ],
+    "idealPara": [
+      "Atletas, practicantes de gimnasio y personas activas que buscan acelerar la recuperación y optimizar su desarrollo muscular."
+    ],
+    "incluye": [
+      "1x Creatina Monohidrato Hearthy Foods 500g"
+    ]
   },
   {
     "id": 1786807859244,
@@ -4285,7 +7205,39 @@
     ],
     "fechaAgregado": "2026-08-15T15:30:59.245Z",
     "seoTitle": "Creatina Monohidrato Dorado Nutrition 300g | TiendaMax",
-    "seoDescription": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva…"
+    "seoDescription": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Dorado Nutrition"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Suplemento dietético de creatina monohidratada"
+      },
+      {
+        "k": "Contenido Neto",
+        "v": "10.5 OZ",
+        "nota": "300g"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Rendimiento y Dosificación: Aporta 5g por porción, con un contenido total de 300g por envase que rinde para 60 porciones."
+      },
+      {
+        "d": "Características del Polvo: Fórmula micronizada en polvo completamente unflavored (sin sabor), ideal para mezclar con agua u otras bebidas."
+      },
+      {
+        "d": "Cuenta con etiqueta de pruebas de terceros (Third Party Tested) para garantizar estándares de pureza."
+      }
+    ],
+    "idealPara": [
+      "Fórmula micronizada en polvo completamente unflavored (sin sabor), ideal para mezclar con agua u otras bebidas."
+    ],
+    "incluye": [
+      "1x Creatina Monohidrato Dorado Nutrition 300g"
+    ]
   },
   {
     "id": 1786808152310,
@@ -4313,7 +7265,44 @@
     ],
     "fechaAgregado": "2026-08-15T15:35:52.310Z",
     "seoTitle": "Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
-    "seoDescription": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y…"
+    "seoDescription": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "1UP Nutrition"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Suplemento dietético de proteína de suero",
+        "nota": "Whey Protein"
+      },
+      {
+        "k": "Sabor",
+        "v": "Coconut Ice Cream"
+      },
+      {
+        "k": "Peso",
+        "v": "962 g",
+        "nota": "2.12 lbs"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Aporta 23 gramos de proteína y 5.0 gramos de BCAAs por porción para el desarrollo y recuperación muscular."
+      },
+      {
+        "d": "Compuesta por 100% proteína de suero de alta calidad (Whey Protein Concentrate + Whey Protein Isolate) con saborizante y sin colorantes artificiales."
+      },
+      {
+        "d": "Envase con un peso neto de 962 g (2.12 lbs) en sabor Coconut Ice Cream."
+      }
+    ],
+    "idealPara": [
+      "Atletas, practicantes de gimnasio y personas activas que buscan acelerar la recuperación y optimizar su desarrollo muscular."
+    ],
+    "incluye": [
+      "1x Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g"
+    ]
   },
   {
     "id": 1787071784077,
@@ -4347,35 +7336,41 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "VEVOR",
-        "origen": "repo"
+        "v": "VEVOR"
       },
       {
-        "k": "Corriente Máxima",
-        "v": "35A",
-        "origen": "repo"
+        "k": "Voltajes",
+        "v": "6V / 12V / 24V"
       },
       {
-        "k": "Tipo",
+        "k": "Capacidad / Corriente",
+        "v": "35A / 10A"
+      },
+      {
+        "k": "Tecnología / Tipo",
         "v": "Cargador y mantenedor inteligente de baterías"
+      },
+      {
+        "k": "Corriente",
+        "v": "35A"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Rendimiento y Corriente",
-        "d": "Capacidad de salida de hasta 35A para una carga rápida y eficiente de bancos de baterías exigentes.",
-        "origen": "repo"
+        "d": "Capacidad de salida de hasta 35A para una carga rápida y eficiente de bancos de baterías exigentes."
       },
       {
-        "t": "Compatibilidad de Baterías",
-        "d": "Soporta múltiples tecnologías de química de baterías, incluyendo AGM/Lead, LiFePO4 y Litio, configurables desde su interfaz.",
-        "origen": "repo"
+        "d": "Compatibilidad de Baterías: Soporta múltiples tecnologías de química de baterías, incluyendo AGM/Lead, LiFePO4 y Litio, configurables desde su interfaz."
       },
       {
-        "t": "Panel de Control y Pantalla",
-        "d": "Pantalla LCD a color que muestra métricas en tiempo real (voltaje y amperaje) junto con botones laterales dedicados para funciones de mantenimiento, desulfatación, selección de voltaje (6V/12V/24V) y corriente (Auto/10A/20A/35A).",
-        "origen": "repo"
+        "d": "Panel de Control y Pantalla: Pantalla LCD a color que muestra métricas en tiempo real (voltaje y amperaje) junto con botones laterales dedicados para funciones de mantenimiento, desulfatación, selección de voltaje (6V/12V/24V) y corriente (Auto/10A/20A/35A)."
       }
+    ],
+    "idealPara": [
+      "Respaldo eléctrico en hogares ante apagones o sistemas solares para alimentar electrodomésticos, luces, routers y equipos esenciales."
+    ],
+    "incluye": [
+      "1x Cargador y Mantenedor de Baterías VEVOR 35A"
     ]
   },
   {
@@ -4404,7 +7399,38 @@
     ],
     "fechaAgregado": "2026-08-18T16:54:00.178Z",
     "seoTitle": "Soldadora Inverter YESWELDER FLUX-140 FLEX | TiendaMax",
-    "seoDescription": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por…"
+    "seoDescription": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "YESWELDER"
+      },
+      {
+        "k": "Modelo",
+        "v": "FLUX-140 FLEX"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "Máquina de soldar Inverter multiproceso"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre."
+      },
+      {
+        "d": "Capacidad 3 en 1 compatible con modos Stick, Flux y Lift TIG para adaptarse a diversas necesidades de herrería y reparación."
+      },
+      {
+        "d": "Pantalla LED central clara con indicadores de voltaje, velocidad de alambre y selección de modo de soldadura mediante perilla y botones dedicados."
+      },
+      {
+        "d": "Accesorios y Presentación: Incluye pinza de masa, portaelectrodos, antorchas y rollos de alambre tubular (flux core) listos para operar."
+      }
+    ],
+    "incluye": [
+      "1x Soldadora Inverter YESWELDER FLUX-140 FLEX"
+    ]
   },
   {
     "id": 1787079480177,
@@ -4440,41 +7466,45 @@
     "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
     "ficha": [
       {
-        "k": "Potencia",
-        "v": "1200W",
-        "origen": "repo"
-      },
-      {
-        "k": "Rango de Entrada (Input)",
-        "v": "12-60V",
-        "origen": "repo"
-      },
-      {
-        "k": "Voltaje de Carga (Charging)",
-        "v": "48V, 60V, 72V",
-        "origen": "repo"
-      },
-      {
         "k": "Tipo",
-        "v": "Controlador de carga solar MPPT Boost"
+        "v": "Controlador Solar MPPT Elevador",
+        "nota": "Boost"
+      },
+      {
+        "k": "Potencia máxima",
+        "v": "1200W"
+      },
+      {
+        "k": "Voltaje de entrada solar",
+        "v": "12V - 60V DC"
+      },
+      {
+        "k": "Voltaje de salida a batería",
+        "v": "48V / 60V / 72V DC",
+        "nota": "Ajustable"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Digital LCD a color con métricas de carga"
       }
     ],
     "caracteristicas": [
       {
-        "t": "Tecnología y Potencia",
-        "d": "Sistema MPPT con capacidad de elevación (Boost) de hasta 1200W de potencia para optimizar el rendimiento energético.",
-        "origen": "repo"
+        "d": "Permite cargar motos eléctricas o bancos de 48V/60V/72V con paneles de bajo voltaje."
       },
       {
-        "t": "Rangos de Operación",
-        "d": "Especificado para aceptar un voltaje de entrada (Input) de 12-60V y entregar un voltaje de carga (Charging) adaptado para sistemas de 48V, 60V y 72V.",
-        "origen": "repo"
+        "d": "Pantalla digital a color que muestra voltios, amperios y vatios de generación solar."
       },
       {
-        "t": "Interfaz de Monitoreo",
-        "d": "Pantalla LCD a color integrada que muestra parámetros en tiempo real como voltaje fotovoltaico, corriente, voltaje de carga, potencia en vatios y estado de la batería.",
-        "origen": "repo"
+        "d": "Carcasa metálica con disipación eficiente y botón de configuración frontal."
       }
+    ],
+    "idealPara": [
+      "Recarga solar directa de motos eléctricas, patinetas o bancos de alta tensión."
+    ],
+    "incluye": [
+      "1x Controlador MPPT Boost 1200W",
+      "1x Manual de instrucciones"
     ]
   },
   {
@@ -4501,6 +7531,37 @@
       "📶 Antena Direccional Integrada de Doble Polarización",
       "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
     ],
-    "fechaAgregado": "2026-08-19T16:34:14.208Z"
+    "fechaAgregado": "2026-08-19T16:34:14.208Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti"
+      },
+      {
+        "k": "Modelo",
+        "v": "NanoStation Loco M2"
+      },
+      {
+        "k": "Tecnología / Tipo",
+        "v": "CPE Inalámbrico para exteriores de 2.4 GHz"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores."
+      },
+      {
+        "d": "Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables."
+      },
+      {
+        "d": "Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores."
+      }
+    ],
+    "idealPara": [
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+    ],
+    "incluye": [
+      "1x Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2"
+    ]
   }
 ]

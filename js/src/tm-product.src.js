@@ -670,11 +670,18 @@ if (_detailPrecioMNEl) {
         }).join('') + '</div>';
     });
 
+    // Una característica puede venir como {t, d} o solo como texto: el catálogo
+    // que arma el dueño las escribe como frases sueltas, sin título. Sin este
+    // caso, esas frases no se dibujaban y el bloque salía vacío.
     _tmPintarBloque('detailCaracteristicas', p.caracteristicas, 'Características', function (filas) {
         return '<div class="tmf-cars">' + filas.map(function (c) {
-            const t = _tmIcoDe(c && c.t);
-            const d = String((c && c.d) || '').trim();
-            if (!t.texto || !d) return '';
+            const esTexto = (typeof c === 'string');
+            const t = _tmIcoDe(esTexto ? '' : (c && c.t));
+            const d = String((esTexto ? c : (c && c.d)) || '').trim();
+            if (!d) return '';
+            if (!t.texto) {
+                return '<div class="tmf-c tmf-c-sola"><span class="tmf-d">' + escapeHtml(d) + '</span></div>';
+            }
             return '<div class="tmf-c"><span class="tmf-t">' + t.ico + escapeHtml(t.texto) + '</span>'
                  + '<span class="tmf-d">' + escapeHtml(d) + '</span></div>';
         }).join('') + '</div>';
