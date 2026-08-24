@@ -24,7 +24,76 @@
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
     "radar": true,
     "almacenId": "alm_1783425091823",
-    "descripcion": "Batería MUST tipo LiFePO4 (litio hierro fosfato), modelo LP15-12100, 12.8V y 100Ah (1280Wh). Más segura y con mayor vida útil que las tradicionales de plomo-ácido. Voltaje de carga máx. 14.6V, corriente de carga máx. 50A, descarga máx. 100A. Ideal para sistemas solares e inversores."
+    "descripcion": "Batería MUST tipo LiFePO4 (litio hierro fosfato), modelo LP15-12100, 12.8V y 100Ah (1280Wh). Más segura y con mayor vida útil que las tradicionales de plomo-ácido. Voltaje de carga máx. 14.6V, corriente de carga máx. 50A, descarga máx. 100A. Ideal para sistemas solares e inversores.",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "MUST"
+      },
+      {
+        "k": "🔤 Modelo",
+        "v": "LP15-12100"
+      },
+      {
+        "k": "🧪 Química",
+        "v": "LiFePO4",
+        "nota": "litio hierro fosfato"
+      },
+      {
+        "k": "🔋 Voltaje nominal",
+        "v": "12.8V"
+      },
+      {
+        "k": "⚡ Capacidad",
+        "v": "100Ah",
+        "nota": "1280Wh de energía"
+      },
+      {
+        "k": "♻️ Ciclos de vida",
+        "v": "6000",
+        "nota": "al 80% de descarga, a 25 °C"
+      },
+      {
+        "k": "🔌 Voltaje de carga máx.",
+        "v": "14.6V"
+      },
+      {
+        "k": "⚡ Corriente de carga máx.",
+        "v": "50A"
+      },
+      {
+        "k": "⚡ Descarga máx. continua",
+        "v": "100A"
+      },
+      {
+        "k": "🛡️ Corte del BMS",
+        "v": "9.2V",
+        "nota": "protege la batería de descarga profunda"
+      },
+      {
+        "k": "🌡️ Temperatura de descarga",
+        "v": "-20 a 55 °C"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "♻️ Dura mucho más que una de plomo",
+        "d": "6000 ciclos al 80% de descarga: donde una de plomo-ácido aguanta un par de años de uso diario, esta trabaja durante años sin perder capacidad de forma notable."
+      },
+      {
+        "t": "🛡️ BMS integrado",
+        "d": "Corta sola a 9.2V para que una descarga profunda no la arruine, y protege contra sobrecarga, cortocircuito y temperatura fuera de rango."
+      },
+      {
+        "t": "⚡ Entrega 100A continuos",
+        "d": "Suficiente para alimentar un inversor mediano sin que la batería sea el cuello de botella."
+      }
+    ],
+    "idealPara": [
+      "Sistemas solares fotovoltaicos de 12V.",
+      "Bancos de respaldo para inversores durante los apagones.",
+      "Reemplazar baterías de plomo-ácido buscando más vida útil."
+    ]
   },
   {
     "id": 1777924118004,
@@ -54,9 +123,9 @@
     ],
     "recomendados": [],
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
-    "seoDescription": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de…",
+    "seoDescription": "Inversor Tataliken de 12V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada, ideal para ventiladores, televisores, luces LED y carga de dispositivos durante los apagones.",
     "radar": true,
-    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.\nFicha Técnica:\nCapacidad: ⚡ Potencia nominal de 4000W, capaz de gestionar múltiples dispositivos simultáneamente.\nCompatibilidad: 🔋 Diseñado para sistemas de entrada de 12V DC (baterías).\nSeguridad: 🛡️ Incluye cables de conexión robustos para una transferencia de energía segura y eficiente.\nVersatilidad: 🔌 Equipado con tomas de corriente estándar para conexión directa de electrodomésticos y equipos electrónicos.\nEspecificaciones (Specs):\nMarca: Tataliken.\nVoltaje de entrada: 12V DC.\nSalida: Alta potencia (4000W).\nUso: Respaldo energético para hogar, oficinas o sistemas solares.",
+    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
     "ficha": [
       {
         "k": "🏷️ Marca",
@@ -424,7 +493,67 @@
       "https://tiendamax.org/imagenes/img_1785284197964.webp",
       "https://tiendamax.org/imagenes/img_1778104512761.webp"
     ],
-    "descripcion": "Este controlador MPPT de alta capacidad (100A) de PowMr es una solución robusta y versátil, capaz de gestionar sistemas de baterías desde 12V hasta 48V de forma automática o configurada. Gracias a su tecnología MPPT, maximiza la extracción de energía de los paneles solares, asegurando una carga eficiente y protegida para tu banco de baterías.\n​Ficha Técnica:\n​Versatilidad de Voltaje: 🔋 Soporta configuraciones de sistemas de baterías de 12V, 24V, 36V y 48V, adaptándose a diversas necesidades energéticas.\n​Rendimiento MPPT: ⚡ Alta eficiencia de seguimiento del punto de máxima potencia, lo que garantiza una carga optimizada incluso en condiciones variables de luz.\n​Interfaz de Usuario: 🔌 Cuenta con una pantalla LCD intuitiva y botones de configuración frontal (PV/SET, BAT/▲, BAT/▼) para un monitoreo preciso de los parámetros de carga en tiempo real.\n​Especificaciones (Specs):\n​Marca: PowMr.\n​Tipo: Controlador de carga solar MPPT.\n​Capacidad: 100A.\n​Compatibilidad de Sistema: 12V/24V/36V/48V."
+    "descripcion": "Este controlador MPPT de alta capacidad (100A) de PowMr es una solución robusta y versátil, capaz de gestionar sistemas de baterías desde 12V hasta 48V de forma automática o configurada. Gracias a su tecnología MPPT, maximiza la extracción de energía de los paneles solares, asegurando una carga eficiente y protegida para tu banco de baterías.",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "PowMr"
+      },
+      {
+        "k": "🔤 Modelo",
+        "v": "POW-M100-PRO"
+      },
+      {
+        "k": "⚡ Corriente de carga",
+        "v": "100A"
+      },
+      {
+        "k": "🔋 Sistemas compatibles",
+        "v": "12V / 24V / 36V / 48V",
+        "nota": "detección automática"
+      },
+      {
+        "k": "☀️ Voltaje máx. de paneles",
+        "v": "160V",
+        "nota": "circuito abierto (Voc)"
+      },
+      {
+        "k": "☀️ Potencia solar máx.",
+        "v": "1200W / 2400W / 3600W / 4800W",
+        "nota": "según sea sistema de 12, 24, 36 o 48V"
+      },
+      {
+        "k": "📈 Eficiencia de seguimiento",
+        "v": "99.9%"
+      },
+      {
+        "k": "🔋 Tipos de batería",
+        "v": "Plomo-ácido, AGM, gel, selladas, inundadas y litio"
+      },
+      {
+        "k": "🔗 En paralelo",
+        "v": "Hasta 12 unidades"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "📈 MPPT de verdad",
+        "d": "Sigue el punto de máxima potencia del panel con 99.9% de eficiencia, así que saca más energía que un controlador PWM con los mismos paneles."
+      },
+      {
+        "t": "🌡️ Refrigeración forzada",
+        "d": "Ventilador interno y sonda de temperatura externa para trabajar a 100A sin recortar la carga por calor."
+      },
+      {
+        "t": "🔌 Pantalla y botones al frente",
+        "d": "LCD con PV/SET y BAT ▲▼ para ver y ajustar los parámetros de carga en tiempo real."
+      }
+    ],
+    "idealPara": [
+      "Instalaciones solares medianas y grandes, de 12V hasta 48V.",
+      "Sistemas que van a crecer: admite hasta 12 controladores en paralelo.",
+      "Bancos de litio o de plomo-ácido, sin cambiar de equipo."
+    ]
   },
   {
     "id": 1778104599386,
@@ -556,11 +685,67 @@
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
     "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
-    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.\n​Ficha Técnica:\n​Rendimiento y Capacidad: ⚡ Ofrece una potencia nominal de 1800W y una capacidad de almacenamiento de energía de 1152Wh para alimentar diversos electrodomésticos y dispositivos.\n​Panel de Conectividad y Salidas: 🔌 Incluye 4 tomacorrientes de corriente alterna (AC), puertos USB-C, puertos USB-A de carga rápida y una toma de corriente DC tipo automotriz.\n​Monitoreo y Control: 🔋 Pantalla digital integrada con indicadores de estado de batería, potencia de entrada/salida y botones dedicados de control para las secciones DC y AC.\n​Especificaciones (Specs):\n​Marca: BLUETTI.\n​Modelo: AC180.\n​Tipo: Estación de energía portátil / Generador solar.\n​Potencia: 1800W.\n​Capacidad: 1152Wh.",
+    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778104924836.webp"
+    ],
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "BLUETTI"
+      },
+      {
+        "k": "🔤 Modelo",
+        "v": "AC180"
+      },
+      {
+        "k": "⚡ Potencia de salida",
+        "v": "1800W",
+        "nota": "2700W con Power Lifting"
+      },
+      {
+        "k": "🔋 Capacidad",
+        "v": "1152Wh"
+      },
+      {
+        "k": "🧪 Química",
+        "v": "LiFePO4"
+      },
+      {
+        "k": "♻️ Ciclos de vida",
+        "v": "3500+",
+        "nota": "hasta conservar el 80% de la capacidad"
+      },
+      {
+        "k": "🔌 Carga desde la red",
+        "v": "1440W",
+        "nota": "de 0 a 80% en unos 45 minutos"
+      },
+      {
+        "k": "🔌 Salidas",
+        "v": "4 tomas AC, USB-C, USB-A y DC tipo encendedor"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "🔌 Carga rápida",
+        "d": "De 0 a 80% en unos 45 minutos con 1440W desde el tomacorriente: aprovecha las ventanas cortas de corriente."
+      },
+      {
+        "t": "♻️ Batería de litio-ferrofosfato",
+        "d": "3500+ ciclos hasta el 80% de capacidad, bastante más que las de ion-litio comunes."
+      },
+      {
+        "t": "🔋 Monitoreo en pantalla",
+        "d": "Muestra estado de batería, potencia de entrada y de salida en tiempo real, con control separado de las secciones AC y DC."
+      }
+    ],
+    "idealPara": [
+      "Respaldo del hogar durante los apagones, sin instalación ni cableado.",
+      "Trabajo o estudio: mantener laptop, router y luces encendidos.",
+      "Salidas al aire libre y emergencias."
     ]
   },
   {
@@ -583,7 +768,72 @@
     ],
     "seoTitle": "BLUETTI AC 180P en Cuba | TiendaMax",
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…",
-    "descripcion": "Estación de energía portátil BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga rápida. Pantalla con indicador de batería, entrada y salida de energía en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado)."
+    "descripcion": "Estación de energía portátil BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga rápida. Pantalla con indicador de batería, entrada y salida de energía en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado).",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "BLUETTI"
+      },
+      {
+        "k": "🔤 Modelo",
+        "v": "AC180P"
+      },
+      {
+        "k": "⚡ Potencia de salida",
+        "v": "1800W",
+        "nota": "2700W de pico"
+      },
+      {
+        "k": "🔋 Capacidad",
+        "v": "1440Wh"
+      },
+      {
+        "k": "🧪 Química",
+        "v": "LiFePO4"
+      },
+      {
+        "k": "♻️ Ciclos de vida",
+        "v": "3500+",
+        "nota": "hasta conservar el 80% de la capacidad"
+      },
+      {
+        "k": "🔌 Carga desde la red",
+        "v": "1440W en turbo / 1000W estándar",
+        "nota": "de 0 a 80% en unos 45 minutos"
+      },
+      {
+        "k": "🛡️ Respaldo automático (UPS)",
+        "v": "≤20 ms",
+        "nota": "tiempo de conmutación al cortarse la corriente"
+      },
+      {
+        "k": "🔌 Salidas",
+        "v": "4 tomas AC, DC 12V, USB-C y USB-A"
+      },
+      {
+        "k": "☀️ Carga solar",
+        "v": "MPPT integrado"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "🛡️ Funciona como UPS",
+        "d": "Conmuta en 20 milisegundos o menos: los equipos conectados no llegan a apagarse cuando se va la corriente."
+      },
+      {
+        "t": "🔌 Dos modos de carga",
+        "d": "Turbo a 1440W para cargarla rápido, o estándar a 1000W para cuidar la batería cuando hay tiempo."
+      },
+      {
+        "t": "☀️ Se carga con panel solar",
+        "d": "Trae MPPT integrado, así que se puede recargar sin depender de la red."
+      }
+    ],
+    "idealPara": [
+      "Respaldo de equipos que no pueden apagarse de golpe, por el modo UPS.",
+      "Hogares con apagones largos: 1440Wh dan más autonomía que el AC180.",
+      "Instalaciones con panel solar, sin controlador aparte."
+    ]
   },
   {
     "id": 1778212195565,
@@ -1570,7 +1820,72 @@
     "seoTitle": "CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA | TiendaMax",
     "seoDescription": "♻️CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA♻️ 🔴PARA BATERIAS DE 12V,24V,36V,48V🔴 ♻️Características Principales y Técnicas♻️ 1. ♻️Tecnología MPPT…",
     "comisionMoneda": "USD",
-    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real."
+    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "PowMr"
+      },
+      {
+        "k": "🔤 Modelo",
+        "v": "POW-M60-ULTRA"
+      },
+      {
+        "k": "⚡ Corriente de carga",
+        "v": "60A"
+      },
+      {
+        "k": "🔋 Sistemas compatibles",
+        "v": "12V / 24V / 36V / 48V",
+        "nota": "detección automática"
+      },
+      {
+        "k": "☀️ Voltaje máx. de paneles",
+        "v": "160V",
+        "nota": "circuito abierto (Voc)"
+      },
+      {
+        "k": "☀️ Potencia solar máx.",
+        "v": "720W / 1440W / 2100W / 2800W",
+        "nota": "según sea sistema de 12, 24, 36 o 48V"
+      },
+      {
+        "k": "📈 Eficiencia de seguimiento",
+        "v": "99.9%"
+      },
+      {
+        "k": "📈 Eficiencia de conversión",
+        "v": "98.1%",
+        "nota": "valor pico"
+      },
+      {
+        "k": "🔋 Tipos de batería",
+        "v": "Selladas, gel, inundadas y litio (LFP)"
+      },
+      {
+        "k": "🔗 En paralelo",
+        "v": "Hasta 12 unidades"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "📈 Seguimiento del 99.9%",
+        "d": "Extrae casi toda la energía disponible del panel, con un pico de conversión del 98.1%."
+      },
+      {
+        "t": "🔋 Reconoce el sistema solo",
+        "d": "Detecta automáticamente si el banco es de 12, 24, 36 o 48V, sin configurarlo a mano."
+      },
+      {
+        "t": "🔗 Crece con la instalación",
+        "d": "Hasta 12 unidades en paralelo: si mañana sumás paneles, sumás controladores en vez de cambiar el que tenés."
+      }
+    ],
+    "idealPara": [
+      "Instalaciones solares chicas y medianas hasta 2800W de panel.",
+      "Sistemas mixtos que pueden pasar de 12V a 24V o 48V más adelante.",
+      "Bancos de litio (LFP) o de plomo-ácido."
+    ]
   },
   {
     "id": 1779562612951,
@@ -2552,8 +2867,8 @@
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
     "seoTitle": "inversor de Corriente Tataliken 4000W (24V) | TiendaMax",
-    "seoDescription": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie…",
-    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.\nFicha Técnica:\nCapacidad: ⚡ Potencia nominal de 4000W para cubrir las necesidades energéticas de equipos exigentes.\nSistema de 24V: 🔋 Optimizado para configuraciones de baterías de 24V, permitiendo una gestión más eficiente de la corriente en comparación con sistemas de 12V.\nSeguridad: 🛡️ Incluye cables robustos para garantizar una transferencia segura de energía desde el banco de baterías.\nVersatilidad: 🔌 Tomas de corriente integradas para una conexión rápida y directa.\nEspecificaciones (Specs):\nMarca: Tataliken.\nVoltaje de entrada: 24V DC (Indispensable verificar que el banco de baterías sea de este voltaje).\nSalida: 4000W (Alta capacidad).\nUso: Respaldo energético avanzado para el hogar, sistemas solares de 24V y aplicaciones fuera de la red.",
+    "seoDescription": "Inversor Tataliken de 24V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada para bancos de baterías de 24V, con menos corriente en el cableado que un equivalente de 12V.",
+    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.",
     "ficha": [
       {
         "k": "🏷️ Marca",

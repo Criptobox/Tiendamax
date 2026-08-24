@@ -2089,8 +2089,24 @@ function _cResumirDetalle(txt, max){
 }
 // `max` = cuánto texto admite el detalle en la plantilla que va a pintar.
 // Se resume solo lo que no cabe; el resto se deja como lo escribió el admin.
-function _cFeatures(desc, specs, max){
-  const out=[]; const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
+function _cFeatures(desc, specs, max, ficha){
+  const out=[];
+  // La ficha estructurada gana sobre parsear "Ficha Técnica:" del texto: es el
+  // mismo dato sin la oración de venta alrededor, y no depende de que el bloque
+  // siga existiendo en la descripción (en los productos migrados se saca, para
+  // no tener el dato escrito en dos lugares que después se contradicen).
+  if(Array.isArray(ficha) && ficha.length){
+    ficha.slice(0,4).forEach(f=>{
+      const kRaw=String((f&&f.k)||'').replace(/\u200b/g,'').trim();
+      const v=String((f&&f.v)||'').replace(/\u200b/g,'').trim();
+      if(!kRaw||!v) return;
+      const em=(kRaw.match(/^[\p{Extended_Pictographic}\u3030\ufe0f\u200d]+/u)||[''])[0]||'🔹';
+      out.push({icon:em, title:_cEtiquetaCorta(_cStrip(kRaw).toUpperCase()),
+                desc:_cResumirDetalle(_cStrip(v), max)});
+    });
+    if(out.length) return out;
+  }
+  const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
   let inF=false;
   for(const l of lines){
     if(/ficha t[eé]cnica/i.test(l)){ inF=true; continue; }
@@ -2132,7 +2148,7 @@ function _cartelDataFromProduct(p){
   const [w1,w2] = _cSplitTitle(p.nombre);
   const disc = parseFloat(p.precioOriginal) > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
   return {
-    _productoId: String(p.id||''), nombre: p.nombre||'', categoria: p.categoria||'', descripcion: p.descripcion||'', _specs: p.specs,
+    _productoId: String(p.id||''), nombre: p.nombre||'', categoria: p.categoria||'', descripcion: p.descripcion||'', _specs: p.specs, _ficha: p.ficha,
     title1: w1, title2: w2, tag: (p.categoria||'DESTACADO').toUpperCase(),
     precio: String(p.precioActual||''), precioAnterior: disc ? String(p.precioOriginal) : '', moneda: 'USD',
     stock: String(p.stock||''), masVendido: !!p.masVendido,
@@ -2245,7 +2261,7 @@ function _hexToRgbCsv(hex){
 const _C_DESC_MAX_PRO2 = 92;
 function _cartelHTML2(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
-  const feats=_cFeatures(d.descripcion, d._specs, _C_DESC_MAX_PRO2).slice(0,4);
+  const feats=_cFeatures(d.descripcion, d._specs, _C_DESC_MAX_PRO2, d._ficha).slice(0,4);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
@@ -2464,7 +2480,7 @@ function _tcpTGlifo(categoria, dato){
 }
 
 function _cartelHTMLTecno(d){
-  const feats=_cFeatures(d.descripcion, d._specs, 44);
+  const feats=_cFeatures(d.descripcion, d._specs, 44, d._ficha);
   const {marca, modelo}=_tcpTPartir(d.nombre || ((d.title1||'')+' '+(d.title2||'')));
   // Los nombres del catálogo arrastran coletillas entre paréntesis ("(GLOBAL
   // Version)", "(30W)") que en un titular de 50px se comen dos líneas enteras.
@@ -2534,7 +2550,7 @@ function _cartelHTMLTecno(d){
 // el Pro v2, así las 3 plantillas quedan consistentes entre sí.
 function _cartelHTML3(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
-  const feats=_cFeatures(d.descripcion, d._specs, 62).slice(0,4);
+  const feats=_cFeatures(d.descripcion, d._specs, 62, d._ficha).slice(0,4);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
@@ -2610,7 +2626,7 @@ function promoSetProduct(id) {
 function _cartelHTML(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
   const tf=_cTitleFont(w1,w2);
-  const feats=_cFeatures(d.descripcion, d._specs, 62);
+  const feats=_cFeatures(d.descripcion, d._specs, 62, d._ficha);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const st=Number(d.stock||0), moneda=d.moneda||'USD';
