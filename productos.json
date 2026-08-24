@@ -8921,5 +8921,102 @@
       "1× Guía de inicio rápido"
     ],
     "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia."
+  },
+  {
+    "id": 1787604262771,
+    "nombre": "🌐 Cable de Red / Patch Cord Ethernet Cat6A",
+    "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787604261333.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787604261333.webp"
+    ],
+    "precioActual": 0.42,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 300,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-08-24T20:44:22.771Z",
+    "ficha": [
+      {
+        "k": "Tipo de Cable",
+        "v": "Cable de Red / Patch Cord Ethernet Cat6A"
+      },
+      {
+        "k": "Categoría",
+        "v": "Cat 6A",
+        "nota": "Categoría 6 Aumentada"
+      },
+      {
+        "k": "Tipo de Blindaje",
+        "v": "UTP",
+        "nota": "Unshielded Twisted Pair / Par trenzado sin blindaje"
+      },
+      {
+        "k": "Longitud",
+        "v": "10 metros"
+      },
+      {
+        "k": "Color",
+        "v": "Blanco"
+      },
+      {
+        "k": "Conectores",
+        "v": "2× RJ45 macho con terminales chapados en oro y capuchones protectores"
+      },
+      {
+        "k": "Velocidad de Transmisión",
+        "v": "Hasta 10 Gbps",
+        "nota": "10GBASE-T"
+      },
+      {
+        "k": "Frecuencia de Operación",
+        "v": "Hasta 500 MHz"
+      },
+      {
+        "k": "Compatibilidad PoE",
+        "v": "Soporte para PoE / PoE+",
+        "nota": "IEEE 802.3af / 802.3at"
+      },
+      {
+        "k": "Cubierta Exterior",
+        "v": "PVC flexible para uso en interiores"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Rendimiento de alta velocidad de hasta 10 Gbps con un ancho de banda de 500 MHz, minimizando la latencia y el retardo en transferencias pesadas."
+      },
+      {
+        "d": "Compatibilidad total con tecnología PoE y PoE+, permitiendo suministrar energía eléctrica y datos simultáneamente a través del mismo cable."
+      },
+      {
+        "d": "Conectores RJ45 ensamblados y testeados de fábrica, con contactos chapados en oro para garantizar máxima conductividad y prevenir la corrosión."
+      },
+      {
+        "d": "Diseño con cubierta protectora anti-enganche (snagless), que resguarda la pestaña de fijación del conector durante el paso por canalizaciones o tuberías."
+      },
+      {
+        "d": "Revestimiento de PVC resistente y flexible en color blanco, ideal para tendidos discretos sobre zócalos, paredes, molduras o canaletas."
+      },
+      {
+        "d": "Retrocompatibilidad universal con estándares de red anteriores (Cat6, Cat5e y Cat5)."
+      }
+    ],
+    "idealPara": [
+      "Interconexión de routers, switches de alta velocidad, servidores NAS, consolas de videojuegos y PCs de escritorio.",
+      "Alimentación y transmisión de datos hacia cámaras de seguridad IP, puntos de acceso Wi-Fi (AP) y teléfonos VoIP compatibles con PoE.",
+      "Oficinas, estudios y hogares que requieren un tendido interior limpio, ordenado y preparado para conexiones de fibra óptica de alta velocidad."
+    ],
+    "incluye": [
+      "1× Cable de Red UTP Cat6A de 10m"
+    ]
   }
 ]
