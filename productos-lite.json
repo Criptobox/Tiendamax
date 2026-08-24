@@ -46,8 +46,10 @@
       "https://tiendamax.org/imagenes/img_1777924118004.webp"
     ],
     "specs": [
-      "⚡ Potencia: 4000W",
-      "🔋 Conversión 12V DC a AC"
+      "⚡ Potencia: 2000W continuos / 4000W pico",
+      "🔋 Conversión 12V DC a AC",
+      "🔌 Salida: 110V / 120V AC",
+      "〰️ Tipo de onda: Sinusoidal modificada"
     ],
     "recomendados": [],
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
@@ -72,6 +74,21 @@
         "k": "🔋 Voltaje de entrada",
         "v": "12V DC",
         "nota": "requiere banco de baterías de 12V"
+      },
+      {
+        "k": "🔌 Voltaje de salida",
+        "v": "110V / 120V AC",
+        "nota": "tolerancia ±10%"
+      },
+      {
+        "k": "📶 Frecuencia",
+        "v": "60Hz",
+        "nota": "estándar residencial"
+      },
+      {
+        "k": "〰️ Tipo de onda",
+        "v": "Sinusoidal modificada",
+        "nota": "ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados"
       }
     ],
     "caracteristicas": [
@@ -82,6 +99,10 @@
       {
         "t": "🔌 Versatilidad",
         "d": "Equipado con tomas de corriente estándar para conexión directa de electrodomésticos y equipos electrónicos."
+      },
+      {
+        "t": "🛡️ Protecciones",
+        "d": "Sobrecarga, cortocircuito, sobretemperatura, inversión de polaridad y voltaje alto o bajo de batería."
       }
     ],
     "idealPara": [
@@ -2428,12 +2449,77 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Potencia: 4000W",
-      "🔋 Conversión 24V DC a AC"
+      "⚡ Potencia: 2000W continuos / 4000W pico",
+      "🔋 Conversión 24V DC a AC",
+      "🔌 Salida: 110V / 120V AC",
+      "〰️ Tipo de onda: Sinusoidal modificada"
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
     "seoTitle": "inversor de Corriente Tataliken 4000W (24V) | TiendaMax",
-    "seoDescription": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie…"
+    "seoDescription": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie…",
+    "ficha": [
+      {
+        "k": "🏷️ Marca",
+        "v": "Tataliken"
+      },
+      {
+        "k": "⚡ Potencia real (continua)",
+        "v": "2000W",
+        "nota": "lo que sostiene de forma permanente"
+      },
+      {
+        "k": "⚡ Potencia máxima (pico)",
+        "v": "4000W",
+        "nota": "solo para el arranque de motores"
+      },
+      {
+        "k": "🔋 Voltaje de entrada",
+        "v": "24V DC",
+        "nota": "el banco de baterías tiene que ser de 24V"
+      },
+      {
+        "k": "🔌 Voltaje de salida",
+        "v": "110V / 120V AC",
+        "nota": "tolerancia ±10%"
+      },
+      {
+        "k": "📶 Frecuencia",
+        "v": "60Hz",
+        "nota": "estándar residencial"
+      },
+      {
+        "k": "〰️ Tipo de onda",
+        "v": "Sinusoidal modificada",
+        "nota": "ideal para cargas resistivas y motores estándar; verificar compatibilidad con equipos electrónicos delicados"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "🔋 Sistema de 24V",
+        "d": "Optimizado para bancos de baterías en serie: a igual potencia mueve la mitad de corriente que uno de 12V, así que el cableado sufre menos."
+      },
+      {
+        "t": "🛡️ Seguridad",
+        "d": "Incluye cables robustos para garantizar una transferencia segura de energía desde el banco de baterías."
+      },
+      {
+        "t": "🔌 Versatilidad",
+        "d": "Tomas de corriente integradas para una conexión rápida y directa."
+      },
+      {
+        "t": "🛡️ Protecciones",
+        "d": "Sobrecarga, cortocircuito, sobretemperatura, inversión de polaridad y voltaje alto o bajo de batería."
+      }
+    ],
+    "idealPara": [
+      "Instalaciones que ya tienen el banco de baterías configurado a 24V.",
+      "Respaldo del hogar con cableado más fino que un equivalente de 12V.",
+      "Sistemas solares medianos que trabajan a 24V."
+    ],
+    "incluye": [
+      "1x Inversor Tataliken 4000W (24V)",
+      "1x Juego de cables de conexión a batería"
+    ]
   },
   {
     "id": 1783221896639,
