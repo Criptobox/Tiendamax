@@ -153,6 +153,70 @@ function pubSwitchPanel(name) {
 }
 window.pubSwitchPanel = pubSwitchPanel;
 
+
+// ── Ficha ampliada del formulario ────────────────────────────────────────
+// El admin escribe la ficha como texto, igual que la redacta para el
+// catálogo. Acá se parte en los campos que dibuja el modal: `ficha`,
+// `caracteristicas`, `idealPara` e `incluye`. Mismas reglas que el probador
+// (scripts/ficha-probador.html), para que lo que se prueba ahí entre igual.
+const _TM_FICHA_SECCIONES = [
+    [/especificaciones\s+clave|ficha\s+t[eé]cnica|especificaciones/i, 'ficha'],
+    [/caracter[ií]sticas/i, 'caracteristicas'],
+    [/ideal\s+para/i, 'idealPara'],
+    [/(incluye|contenido).*caja|qu[eé]\s+incluye|incluye/i, 'incluye']
+];
+const _TM_EMOJI_INI = /^((?:[\p{Extended_Pictographic}\u3030\u303d\ufe0f\u200d])+)\s*/u;
+
+function _tmFichaLimpiar(t) {
+    return String(t == null ? '' : t).replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, '')
+        .replace(/\s+/g, ' ').trim();
+}
+
+// El paréntesis final del valor es una aclaración, no parte del dato:
+// "2000W (lo que sostiene…)" -> valor 2000W + nota. Separarlo es lo que deja
+// el valor comparable entre productos.
+function _tmFichaPartirNota(v) {
+    const m = _tmFichaLimpiar(v).match(/^(.*?)\s*\(\s*(?:nota\s*:\s*)?([^()]{4,})\)\s*\.?\s*$/i);
+    if (m && m[1].trim()) return { v: m[1].trim(), nota: m[2].trim() };
+    return { v: _tmFichaLimpiar(v), nota: '' };
+}
+
+function tmParsearFicha(texto) {
+    const R = { ficha: [], caracteristicas: [], idealPara: [], incluye: [] };
+    let sec = null;
+    String(texto || '').split('\n').forEach(function (linea) {
+        const l = _tmFichaLimpiar(linea);
+        if (!l) return;
+        // Un encabezado es una línea corta y sin dato propio ("⚙️ Ficha
+        // Técnica"), no una que además trae valor ("Marca: Tataliken").
+        const sinEmoji = l.replace(_TM_EMOJI_INI, '');
+        const cab = _TM_FICHA_SECCIONES.find(function (par) { return par[0].test(sinEmoji); });
+        if (cab && l.length < 48 && !/:\s*\S/.test(l.replace(/:\s*$/, ''))) {
+            sec = cab[1];
+            return;
+        }
+        if (!sec) return;
+        if (sec === 'idealPara' || sec === 'incluye') {
+            R[sec].push(l.replace(/^[-•*▪]\s*/, ''));
+            return;
+        }
+        const m = l.match(/^([^:]{2,46}):\s*(.+)$/);
+        if (sec === 'caracteristicas') {
+            // Acepta "Título: frase" y también la frase sola.
+            if (m) R.caracteristicas.push({ t: m[1].trim(), d: _tmFichaLimpiar(m[2]) });
+            else R.caracteristicas.push({ d: l });
+            return;
+        }
+        if (!m) return;
+        const par = _tmFichaPartirNota(m[2]);
+        const fila = { k: m[1].trim(), v: par.v };
+        if (par.nota) fila.nota = par.nota;
+        R.ficha.push(fila);
+    });
+    return R;
+}
+
+
 function switchTab(tabName) {
     // Redirects to unified Publicación tab
     if (tabName === 'publicar-ahora') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('publicar'), 50); return; }
@@ -400,6 +464,13 @@ async function agregarProductoForm(event) {
             fechaAgregado: new Date().toISOString()
         };
 
+        // Ficha ampliada: solo se agregan los bloques que tengan algo, para no
+        // dejar arrays vacíos en el JSON de todos los productos nuevos.
+        const _ficha = tmParsearFicha(document.getElementById('productFicha')?.value);
+        ['ficha', 'caracteristicas', 'idealPara', 'incluye'].forEach(function (k) {
+            if (_ficha[k] && _ficha[k].length) producto[k] = _ficha[k];
+        });
+
         const errores = validarProducto(producto);
         if (errores.length > 0) {
             mostrarNotificacion('❌ ' + errores[0], 'error');
@@ -598,7 +669,7 @@ const TM_BORRADOR_KEY = 'tm_borrador_producto_v1';
 const _TM_BORRADOR_CAMPOS = [
     'productName', 'productDescription', 'productPriceActual', 'productPrecioOriginal',
     'productStock', 'productComision', 'productComisionMoneda', 'productCategory',
-    'productSubcategory', 'productGarantia', 'productSpecs', 'productMasVendido'
+    'productSubcategory', 'productGarantia', 'productSpecs', 'productFicha', 'productMasVendido'
 ];
 let _tmBorradorTimer = null;
 
@@ -617,8 +688,12 @@ function _tmLeerCampos() {
 }
 
 function _tmHayAlgoEscrito(d) {
+    // La ficha ampliada entra en la cuenta: es el campo más largo de la carga,
+    // y sin esto quien escribía solo la ficha perdía todo al recargar porque
+    // el borrador daba el formulario por vacío.
     return !!((d.productName || '').trim() || (d.productDescription || '').trim() ||
-              (d.productSpecs || '').trim() || (d.productGarantia || '').trim());
+              (d.productSpecs || '').trim() || (d.productGarantia || '').trim() ||
+              (d.productFicha || '').trim());
 }
 
 function guardarBorradorProducto() {

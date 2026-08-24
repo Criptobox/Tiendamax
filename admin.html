@@ -1548,6 +1548,17 @@
                 </label>
                 <input class="form-input" id="productSpecs" placeholder="1800Mbps, Dual Band, 4 antenas">
               </div>
+              <div class="form-group" style="margin-top:10px">
+                <label class="form-label" for="productFicha">Ficha ampliada</label>
+                <textarea class="form-textarea" id="productFicha" rows="9" style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px"
+                  placeholder="⚙️ Ficha Técnica&#10;Marca: Tataliken&#10;Potencia real (continua): 2000W (lo que sostiene de forma permanente)&#10;Voltaje de entrada: 12V DC&#10;&#10;⚡ Características&#10;Incluye cables de conexión robustos.&#10;&#10;🎯 Ideal Para&#10;Respaldo del hogar durante los apagones.&#10;&#10;📦 Qué incluye&#10;1x Inversor Tataliken 4000W"></textarea>
+                <small style="display:block;margin-top:6px;color:#9aa1ab;font-size:11.5px;line-height:1.5">
+                  Los encabezados se reconocen por su nombre (<b>Ficha Técnica</b>, <b>Características</b>,
+                  <b>Ideal Para</b>, <b>Qué incluye</b>), con o sin emoji. Dentro de la ficha, cada línea
+                  <b>Etiqueta: Valor</b> es un dato; lo que vaya entre paréntesis al final se guarda como
+                  nota aparte, para que el valor siga siendo comparable entre productos.
+                </small>
+              </div>
             </div>
             <div class="section">
               <h3>💰 Precio y stock</h3>
@@ -1665,7 +1676,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=c53f2346"></script>
+<script src="js/tm-bundle.js?v=7bbe3bab"></script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
 <script src="js/revolico_integration.js?v=091bc1dc"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
