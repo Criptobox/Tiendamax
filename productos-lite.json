@@ -353,6 +353,50 @@
       "🔋 Energía Automotriz Confiable",
       "⚡ Potencia de Arranque Estable",
       "🛡️ Tecnología Duradera y Resistente"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "LUBRIM",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje nominal",
+        "v": "12V",
+        "origen": "repo"
+      },
+      {
+        "k": "Aplicación",
+        "v": "Automotriz",
+        "origen": "repo"
+      },
+      {
+        "k": "Tecnología",
+        "v": "Calcio-Calcio (Ca/Ca)",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.",
+        "origen": "repo"
+      },
+      {
+        "t": "Arranque",
+        "d": "Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.",
+        "origen": "repo"
+      },
+      {
+        "t": "Construcción",
+        "d": "Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad",
+        "d": "Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.",
+        "origen": "repo"
+      }
     ]
   },
   {
@@ -592,6 +636,48 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783838193521.webp",
       "https://tiendamax.org/imagenes/img_1778104662477.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "PowMr",
+        "origen": "repo"
+      },
+      {
+        "k": "Potencia",
+        "v": "5000W",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Inversor solar híbrido",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Capacidad Robusta",
+        "d": "5000W de potencia nominal para soportar electrodomésticos de alto consumo y sistemas complejos.",
+        "origen": "repo"
+      },
+      {
+        "t": "Tecnología Híbrida",
+        "d": "Gestión inteligente que integra carga solar, banco de baterías y entrada de red eléctrica en un solo equipo.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitorización Pro",
+        "d": "Pantalla LCD táctil para el control total: supervisa voltajes, estado de carga y flujo de energía en tiempo real.",
+        "origen": "repo"
+      },
+      {
+        "t": "Eficiencia",
+        "d": "Diseñado para optimizar el uso de energía fotovoltaica, protegiendo tus baterías y reduciendo la dependencia de la red.",
+        "origen": "repo"
+      }
+    ],
+    "idealPara": [
+      "Sistemas de respaldo residencial, oficinas de alto consumo y soluciones solares integrales."
     ]
   },
   {
@@ -1852,6 +1938,52 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785284197964.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "PowMr",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente Máxima de Carga",
+        "v": "80A",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje del Sistema",
+        "v": "12V / 24V / 36V / 48V (Auto)",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Controlador de carga solar MPPT"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología de Carga",
+        "d": "Sistema MPPT para maximizar la eficiencia en la conversión y aprovechamiento de la energía solar.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad del Sistema",
+        "d": "Detección automática para bancos de baterías de 12V, 24V, 36V y 48V.",
+        "origen": "repo"
+      },
+      {
+        "t": "Interfaz y Monitoreo",
+        "d": "Pantalla LCD central con indicadores gráficos de panel y batería, acompañada de botones de navegación (PV/SET, BAT/▲, BAT/▼) para configuración.",
+        "origen": "repo"
+      },
+      {
+        "t": "Estructura",
+        "d": "Diseño compacto en carcasa robusta con disipación lateral y bornes de conexión protegidos en la sección inferior.",
+        "origen": "repo"
+      }
+    ],
+    "idealPara": [
+      "Sistemas fotovoltaicos residenciales y autónomos."
     ]
   },
   {
@@ -2216,6 +2348,44 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
       "https://tiendamax.org/imagenes/img_1781365018400.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Uso",
+        "v": "Automotriz y sistemas de 12V",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Probador digital de baterías"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.",
+        "origen": "repo"
+      },
+      {
+        "t": "Pantalla",
+        "d": "Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.",
+        "origen": "repo"
+      },
+      {
+        "t": "Funciones",
+        "d": "Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.",
+        "origen": "repo"
+      },
+      {
+        "t": "Conectividad",
+        "d": "Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.",
+        "origen": "repo"
+      },
+      {
+        "t": "Interfaz",
+        "d": "Teclado direccional con botones de función dedicados (ESC, F1, V, OK).",
+        "origen": "repo"
+      }
     ]
   },
   {
@@ -2348,6 +2518,60 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783836465146.webp",
       "https://tiendamax.org/imagenes/img_1781899206341_f6b3ad.webp"
+    ],
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MUST",
+        "origen": "repo"
+      },
+      {
+        "k": "Modelo",
+        "v": "PV15-1524 LV",
+        "origen": "repo"
+      },
+      {
+        "k": "Potencia nominal",
+        "v": "1500VA / 1500W",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje del sistema",
+        "v": "24VDC",
+        "origen": "repo"
+      },
+      {
+        "k": "Rango MPPT",
+        "v": "30-75VDC",
+        "origen": "repo"
+      },
+      {
+        "k": "Máx. voltaje solar (VOC)",
+        "v": "105VDC",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Sistema integral que permite la conversión de energía solar y la carga de baterías, garantizando una administración eficiente de la corriente continua.",
+        "origen": "repo"
+      },
+      {
+        "t": "Seguridad",
+        "d": "Operación diseñada bajo estrictas normas de seguridad, incluyendo protección contra sobrecargas y un rango de temperatura operativa entre 0°C y 45°C.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo",
+        "d": "Incluye sistema de seguimiento del punto de máxima potencia (MPPT) para asegurar un rendimiento óptimo de los paneles solares bajo diversas condiciones climáticas.",
+        "origen": "repo"
+      },
+      {
+        "t": "Diseño",
+        "d": "Construcción robusta y de fácil instalación, ideal para configuraciones que requieren un aprovechamiento preciso del voltaje solar (VOC máx. 105VDC).",
+        "origen": "repo"
+      }
     ]
   },
   {
@@ -2715,7 +2939,60 @@
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
     "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
-    "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…"
+    "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "GEYA",
+        "origen": "repo"
+      },
+      {
+        "k": "Modelo",
+        "v": "W2R-100",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente nominal",
+        "v": "100A",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje nominal",
+        "v": "220V AC",
+        "origen": "repo"
+      },
+      {
+        "k": "Frecuencia",
+        "v": "50-60Hz",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Interruptor de transferencia automática (ATS)"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Funcionamiento",
+        "d": "Permite la conmutación entre una fuente de energía solar (PV) y la red eléctrica (City Power), optimizando el uso de recursos y asegurando el respaldo energético.",
+        "origen": "repo"
+      },
+      {
+        "t": "Modos de uso",
+        "d": "Incluye un selector físico para operación manual o automática, adaptándose a las necesidades específicas de cada instalación eléctrica.",
+        "origen": "repo"
+      },
+      {
+        "t": "Seguridad",
+        "d": "Construido con materiales resistentes, diseñado para soportar tensiones de impacto y cumplir con estándares internacionales de aislamiento y protección.",
+        "origen": "repo"
+      },
+      {
+        "t": "Instalación",
+        "d": "Diseño modular pensado para integrarse fácilmente en cuadros eléctricos, facilitando la conexión de cables y la gestión de circuitos.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1783179634140,
@@ -2958,7 +3235,51 @@
     ],
     "fechaAgregado": "2026-07-08T01:24:54.756Z",
     "seoTitle": "Cargador Inteligente Corebox 12V 15A en Cuba | TiendaMax",
-    "seoDescription": "Cargador inteligente de última generación diseñado para ofrecer una carga rápida y segura a diversos tipos de baterías. Equipado con una pantalla digital…"
+    "seoDescription": "Cargador inteligente de última generación diseñado para ofrecer una carga rápida y segura a diversos tipos de baterías. Equipado con una pantalla digital…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "COREBOX",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje de salida",
+        "v": "12V",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente de carga",
+        "v": "15A",
+        "origen": "repo"
+      },
+      {
+        "k": "Tecnologías compatibles",
+        "v": "AGM, GEL, EFB, LiFePO4",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Integra un sistema de carga inteligente que detecta automáticamente el estado de la batería, optimizando el flujo de corriente para un rendimiento superior.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad",
+        "d": "Soporta una amplia gama de tecnologías de baterías, incluyendo AGM, GEL, EFB y LiFePO4, ofreciendo flexibilidad para diferentes aplicaciones.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo",
+        "d": "Pantalla LED integrada que muestra el porcentaje de carga y los parámetros eléctricos, permitiendo un control total y seguro durante todo el proceso.",
+        "origen": "repo"
+      },
+      {
+        "t": "Diseño",
+        "d": "Carcasa robusta con disipación de calor eficiente, ideal para uso prolongado sin riesgos de sobrecalentamiento.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1783474199534,
@@ -2987,7 +3308,56 @@
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z",
     "seoTitle": "Cargador Inteligente Ntrc 20A en Cuba | TiendaMax",
-    "seoDescription": "Cargador inteligente avanzado diseñado para ofrecer un mantenimiento óptimo y una carga segura para una amplia variedad de baterías. Su capacidad para…"
+    "seoDescription": "Cargador inteligente avanzado diseñado para ofrecer un mantenimiento óptimo y una carga segura para una amplia variedad de baterías. Su capacidad para…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "NTRC",
+        "origen": "repo"
+      },
+      {
+        "k": "Modelo",
+        "v": "P20",
+        "origen": "repo"
+      },
+      {
+        "k": "Salida 12V",
+        "v": "20A",
+        "origen": "repo"
+      },
+      {
+        "k": "Salida 24V",
+        "v": "10A",
+        "origen": "repo"
+      },
+      {
+        "k": "Tecnologías compatibles",
+        "v": "Litio, AGM/Plomo, LiFePO4",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Sistema inteligente que detecta y ajusta automáticamente la carga para tipos de baterías como Litio, AGM/Plomo y LiFePO4.",
+        "origen": "repo"
+      },
+      {
+        "t": "Versatilidad",
+        "d": "Soporta configuraciones de 12V y 24V, proporcionando una salida de corriente ajustable para adaptarse a los requerimientos específicos de cada batería.",
+        "origen": "repo"
+      },
+      {
+        "t": "Reparación",
+        "d": "Incluye una función especial de reparación (Repair) diseñada para ayudar a recuperar baterías que presentan dificultades, optimizando su rendimiento.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo",
+        "d": "Pantalla digital intuitiva que muestra en tiempo real el nivel de carga, voltaje y modo de operación seleccionado, facilitando su uso.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1783474440848,
@@ -3016,7 +3386,56 @@
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z",
     "seoTitle": "Cargador Inteligente Ntrc 35A en Cuba | TiendaMax",
-    "seoDescription": "Cargador inteligente de alta capacidad diseñado para ofrecer una carga eficiente y un mantenimiento seguro a una amplia variedad de baterías. Su…"
+    "seoDescription": "Cargador inteligente de alta capacidad diseñado para ofrecer una carga eficiente y un mantenimiento seguro a una amplia variedad de baterías. Su…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "NTRC",
+        "origen": "repo"
+      },
+      {
+        "k": "Modelo",
+        "v": "P35",
+        "origen": "repo"
+      },
+      {
+        "k": "Salida 12V",
+        "v": "35A",
+        "origen": "repo"
+      },
+      {
+        "k": "Salida 24V",
+        "v": "18A",
+        "origen": "repo"
+      },
+      {
+        "k": "Tecnologías compatibles",
+        "v": "Litio, AGM/Plomo, LiFePO4",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Sistema inteligente avanzado que ajusta automáticamente los parámetros de carga para tecnologías como Litio, AGM/Plomo y LiFePO4.",
+        "origen": "repo"
+      },
+      {
+        "t": "Versatilidad",
+        "d": "Admite configuraciones duales de voltaje, proporcionando una solución robusta para diferentes necesidades de energía en el hogar o taller.",
+        "origen": "repo"
+      },
+      {
+        "t": "Reparación",
+        "d": "Incluye modo de reparación específico para tratar baterías que requieren restauración, optimizando su capacidad de almacenamiento.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo",
+        "d": "Pantalla LCD clara que permite visualizar en tiempo real el voltaje, corriente y modo de operación seleccionado, asegurando un proceso de carga transparente.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1783474747296,
@@ -3216,7 +3635,45 @@
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z",
     "seoTitle": "Controlador de Carga Solar MPPT 100A en Cuba | TiendaMax",
-    "seoDescription": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento…"
+    "seoDescription": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento…",
+    "ficha": [
+      {
+        "k": "Corriente nominal",
+        "v": "100A",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje del sistema",
+        "v": "12V / 24V / 36V / 48V (Automático)",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Controlador de carga solar MPPT"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología",
+        "d": "Tecnología MPPT avanzada que incrementa significativamente la eficiencia de conversión y aprovechamiento de la energía solar disponible.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad",
+        "d": "Detección automática de voltaje, soportando sistemas de 12V, 24V, 36V y 48V para una gran versatilidad en instalaciones.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo",
+        "d": "Pantalla LCD integrada que muestra en tiempo real el estado de la batería, el voltaje de los paneles y la salida de carga.",
+        "origen": "repo"
+      },
+      {
+        "t": "Protección",
+        "d": "Funciones de seguridad integradas para prevenir sobrecargas, cortocircuitos y descargas inversas, protegiendo todo el sistema.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1784570100968,
@@ -3356,7 +3813,48 @@
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z",
     "seoTitle": "Controlador de Carga Solar MPPT 150A en Cuba | TiendaMax",
-    "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…"
+    "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…",
+    "ficha": [
+      {
+        "k": "Corriente Máxima de Carga",
+        "v": "150A",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje del Sistema",
+        "v": "12V / 24V / 36V / 48V (Auto)",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Controlador de carga solar MPPT"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología de Carga",
+        "d": "Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad de Baterías",
+        "d": "Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded.",
+        "origen": "repo"
+      },
+      {
+        "t": "Monitoreo y Control",
+        "d": "Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables.",
+        "origen": "repo"
+      },
+      {
+        "t": "Conectividad y Puertos",
+        "d": "Incluye terminales robustos para paneles, baterías y carga, junto con 2 puertos USB de 5V integrados.",
+        "origen": "repo"
+      }
+    ],
+    "idealPara": [
+      "Sistemas solares residenciales y de alta demanda energética."
+    ]
   },
   {
     "id": 1784825579392,
@@ -3613,7 +4111,46 @@
     ],
     "fechaAgregado": "2026-08-13T15:04:54.383Z",
     "seoTitle": "Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
-    "seoDescription": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo…"
+    "seoDescription": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TOMZN",
+        "origen": "repo"
+      },
+      {
+        "k": "Modelo",
+        "v": "TOVPD1-60",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente Máxima (IN)",
+        "v": "63A",
+        "origen": "repo"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología y Monitoreo",
+        "d": "Monitoreo digital continuo de voltaje y corriente con doble pantalla LED independiente para lectura clara de los parámetros.",
+        "origen": "repo"
+      },
+      {
+        "t": "Capacidad de Protección",
+        "d": "Soporta una corriente nominal de hasta 63A, con funciones ajustables para protección contra alto voltaje, bajo voltaje y sobrecorriente.",
+        "origen": "repo"
+      },
+      {
+        "t": "Interfaz y Configuración",
+        "d": "Panel frontal con indicadores LED de estado y cuatro botones de navegación/control para configurar los umbrales de protección.",
+        "origen": "repo"
+      },
+      {
+        "t": "Tipo",
+        "d": "Protector ajustable de voltaje y sobrecorriente para riel DIN.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1786633899405,
@@ -3643,7 +4180,55 @@
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z",
     "seoTitle": "Controlador de Carga Solar MPPT 120A Y&H en Cuba | TiendaMax",
-    "seoDescription": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema…"
+    "seoDescription": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Y&H",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente Máxima",
+        "v": "120A",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje Máximo de Entrada (Voc)",
+        "v": "230VDC",
+        "origen": "repo"
+      },
+      {
+        "k": "Compatibilidad de Baterías",
+        "v": "12V a 96V",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Controlador de carga solar MPPT"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Rendimiento y Potencia",
+        "d": "Capacidad de carga continua de 120A, ideal para gestionar bancos de baterías de gran capacidad en sistemas de energía solar fuera de la red.",
+        "origen": "repo"
+      },
+      {
+        "t": "Margen de Voltaje de Entrada (PV)",
+        "d": "Admite un voltaje máximo de circuito abierto de paneles (Voc) de hasta 230VDC, facilitando configuraciones serie eficientes.",
+        "origen": "repo"
+      },
+      {
+        "t": "Amplia Compatibilidad de Sistema",
+        "d": "Soporta una escala operativa que abarca desde sistemas de 12V, 24V, 36V, 48V, 60V, 72V, 84V hasta 96V, ofreciendo una flexibilidad inigualable para proyectos de diferentes voltajes.",
+        "origen": "repo"
+      },
+      {
+        "t": "Interfaz de Usuario",
+        "d": "Pantalla LCD central con visualización detallada de parámetros (flujo PV, carga de batería, consumo de carga) y botones de configuración rápida (SET, UP, DOWN, CONFIRM).",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1786807706672,
@@ -3758,7 +4343,40 @@
     ],
     "fechaAgregado": "2026-08-18T16:49:44.078Z",
     "seoTitle": "Cargador y Mantenedor de Baterías VEVOR 35A | TiendaMax",
-    "seoDescription": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de…"
+    "seoDescription": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de…",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "VEVOR",
+        "origen": "repo"
+      },
+      {
+        "k": "Corriente Máxima",
+        "v": "35A",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Cargador y mantenedor inteligente de baterías"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Rendimiento y Corriente",
+        "d": "Capacidad de salida de hasta 35A para una carga rápida y eficiente de bancos de baterías exigentes.",
+        "origen": "repo"
+      },
+      {
+        "t": "Compatibilidad de Baterías",
+        "d": "Soporta múltiples tecnologías de química de baterías, incluyendo AGM/Lead, LiFePO4 y Litio, configurables desde su interfaz.",
+        "origen": "repo"
+      },
+      {
+        "t": "Panel de Control y Pantalla",
+        "d": "Pantalla LCD a color que muestra métricas en tiempo real (voltaje y amperaje) junto con botones laterales dedicados para funciones de mantenimiento, desulfatación, selección de voltaje (6V/12V/24V) y corriente (Auto/10A/20A/35A).",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1787072040177,
@@ -3819,7 +4437,45 @@
     ],
     "fechaAgregado": "2026-08-18T18:58:00.178Z",
     "seoTitle": "Controlador de Carga Solar MPPT Boost 1200W | TiendaMax",
-    "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…"
+    "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
+    "ficha": [
+      {
+        "k": "Potencia",
+        "v": "1200W",
+        "origen": "repo"
+      },
+      {
+        "k": "Rango de Entrada (Input)",
+        "v": "12-60V",
+        "origen": "repo"
+      },
+      {
+        "k": "Voltaje de Carga (Charging)",
+        "v": "48V, 60V, 72V",
+        "origen": "repo"
+      },
+      {
+        "k": "Tipo",
+        "v": "Controlador de carga solar MPPT Boost"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología y Potencia",
+        "d": "Sistema MPPT con capacidad de elevación (Boost) de hasta 1200W de potencia para optimizar el rendimiento energético.",
+        "origen": "repo"
+      },
+      {
+        "t": "Rangos de Operación",
+        "d": "Especificado para aceptar un voltaje de entrada (Input) de 12-60V y entregar un voltaje de carga (Charging) adaptado para sistemas de 48V, 60V y 72V.",
+        "origen": "repo"
+      },
+      {
+        "t": "Interfaz de Monitoreo",
+        "d": "Pantalla LCD a color integrada que muestra parámetros en tiempo real como voltaje fotovoltaico, corriente, voltaje de carga, potencia en vatios y estado de la batería.",
+        "origen": "repo"
+      }
+    ]
   },
   {
     "id": 1787157254207,
