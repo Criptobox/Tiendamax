@@ -214,10 +214,27 @@
       },
       {
         "d": "Puertos WAN y LAN de alta velocidad."
+      },
+      {
+        "t": "Botón Turbo",
+        "d": "Modo \"Turbo\" para mejorar la penetración de la señal a través de paredes."
+      },
+      {
+        "t": "Diseño",
+        "d": "Estructura circular con indicadores LED frontales."
+      },
+      {
+        "t": "Instalación",
+        "d": "Configuración simplificada a través de interfaz web."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Encriptación WPA/WPA2-PSK"
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para streaming en 4K, juegos online y múltiples dispositivos conectados."
     ],
     "incluye": [
       "1x Router Wavlink AC1200 Dual Band"
@@ -286,10 +303,19 @@
       },
       {
         "d": "antenas externas de alta potencia para una cobertura ampliada y estable."
+      },
+      {
+        "t": "Instalación",
+        "d": "Configuración rápida y sencilla tipo \"Plug & Play\"."
+      },
+      {
+        "t": "Conectividad",
+        "d": "Ideal para streaming 4K, videollamadas y juegos sin cortes."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Extensión de red en hogares y oficinas donde la señal principal es débil."
     ],
     "incluye": [
       "1x Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)"
@@ -350,10 +376,19 @@
       },
       {
         "d": "Soporta sistemas de videovigilancia (CCTV) y redes de alto tráfico."
+      },
+      {
+        "t": "Construcción",
+        "d": "Diseño con PCB de doble capa y puertos metálicos para mayor durabilidad y estabilidad."
+      },
+      {
+        "t": "Plug & Play",
+        "d": "Sin configuraciones complicadas; conéctalo y empieza a usarlo de inmediato."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para oficinas en casa, centros de entretenimiento o pequeños sistemas de cámaras."
     ],
     "incluye": [
       "1x Switch Gigabit de 8 Puertos"
@@ -420,10 +455,17 @@
       },
       {
         "d": "Pantalla digital HD de alta visibilidad para lecturas rápidas."
+      },
+      {
+        "t": "Diseño",
+        "d": "Estética moderna en color negro con acabado de alta calidad."
       }
     ],
     "incluye": [
       "1x Báscula Digital de Alta Definición"
+    ],
+    "idealPara": [
+      "Monitoreo de peso personal y control de salud."
     ]
   },
   {
@@ -481,10 +523,17 @@
       },
       {
         "d": "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
+      },
+      {
+        "t": "Calidad",
+        "d": "Construida con materiales resistentes al calor para garantizar una larga vida útil y una conducción estable del gas y la corriente."
       }
     ],
     "incluye": [
       "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
+    ],
+    "idealPara": [
+      "Soldadura de precisión en acero inoxidable, aluminio y otros metales."
     ]
   },
   {
@@ -615,10 +664,21 @@
       },
       {
         "d": "Puerto de carga USB Type-C, compatible con la mayoría de cargadores de dispositivos móviles actuales."
+      },
+      {
+        "t": "Control Intuitivo",
+        "d": "Panel de control táctil con indicadores LED para ajustar la intensidad del masaje."
+      },
+      {
+        "t": "Diseño",
+        "d": "Ergonómico, ligero y fácil de transportar para llevarlo al gimnasio o usarlo en casa."
       }
     ],
     "incluye": [
       "1x Pistola de Masaje Muscular (Fascia Gun)"
+    ],
+    "idealPara": [
+      "Recuperación post-entrenamiento, alivio de dolores musculares, mejora de la flexibilidad y relajación diaria."
     ]
   },
   {
@@ -741,10 +801,27 @@
       },
       {
         "d": "Panel LED intuitivo (Power, WiFi, WAN/LAN, Señal, Ethernet)."
+      },
+      {
+        "t": "Instalación",
+        "d": "Sistema de montaje integrado para paredes o postes."
+      },
+      {
+        "t": "Conectividad física",
+        "d": "Puerto Ethernet para conexión cableada (WAN/LAN)."
+      },
+      {
+        "t": "Resistencia",
+        "d": "Carcasa diseñada para uso en exteriores (protección ambiental)."
+      },
+      {
+        "t": "Indicadores visuales",
+        "d": "Panel central con 5 niveles de intensidad de señal."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para llevar internet a zonas rurales o áreas con difícil cobertura."
     ],
     "incluye": [
       "1x CPE Exterior Kuwfi 4G/WIFI"
@@ -1089,6 +1166,38 @@
       },
       {
         "d": "Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje."
+      },
+      {
+        "t": "Antenas",
+        "d": "Antenas de alta ganancia para asegurar una recepción de señal móvil superior incluso en áreas con cobertura limitada."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Encriptación robusta para mantener tu red y tus datos protegidos."
+      },
+      {
+        "t": "Gestión",
+        "d": "Interfaz web sencilla para configurar el APN y gestionar el consumo de datos."
+      },
+      {
+        "t": "Puertos",
+        "d": "Incluye puertos LAN para conectar dispositivos por cable si lo requieres."
+      },
+      {
+        "t": "Uso Ideal",
+        "d": "Zonas sin cobertura de cable, respaldo de internet, trabajo remoto y soluciones de movilidad."
+      },
+      {
+        "t": "Configuración fácil",
+        "d": "Compatible con APN manual para una conexión rápida con la red local."
+      },
+      {
+        "t": "Ideal para cualquier lugar",
+        "d": "Perfecto para zonas donde no llega el cable o como conexión de respaldo garantizada."
+      },
+      {
+        "t": "Multi-usuario",
+        "d": "Comparte tus datos móviles con toda la familia o tu equipo de trabajo al mismo tiempo."
       }
     ],
     "idealPara": [
@@ -1515,6 +1624,10 @@
       },
       {
         "d": "Negro monocolor (minimalista)."
+      },
+      {
+        "t": "Set",
+        "d": "Incluye fundas completas para asientos delanteros y traseros."
       }
     ],
     "idealPara": [
@@ -1711,10 +1824,21 @@
       },
       {
         "d": "Diseñada para llegar a las capas más profundas del tejido muscular para un alivio efectivo."
+      },
+      {
+        "t": "Uso Profesional",
+        "d": "Apta tanto para uso personal en casa como para rutinas de recuperación en gimnasios."
+      },
+      {
+        "t": "Tipo",
+        "d": "Masajeador de percusión de alto rendimiento."
       }
     ],
     "incluye": [
       "1x Pistola de Masaje Profesional (Modelo Triangular)"
+    ],
+    "idealPara": [
+      "Recuperación post-entrenamiento, relajación miofascial y tratamiento de tensiones musculares."
     ]
   },
   {
@@ -1780,10 +1904,23 @@
       },
       {
         "d": "Puertos RJ45 metálicos de 8 pines (Full 8pin)."
+      },
+      {
+        "t": "Diseño",
+        "d": "Compacto con PCB de doble capa."
+      },
+      {
+        "t": "Construcción",
+        "d": "PCB de doble capa y puertos RJ45 con refuerzo metálico."
+      },
+      {
+        "t": "Aplicación",
+        "d": "Optimizado para redes locales, entornos de oficina y sistemas de vigilancia CCTV."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Soporta sistemas CCTV y redes LAN de alto rendimiento."
     ],
     "incluye": [
       "1x Switch Gigabit de 5 Puertos"
@@ -1844,6 +1981,10 @@
       },
       {
         "d": "Modos de Operación y Funciones: Soporta modo Punto de Acceso (AP) para transformar conexiones por cable en red inalámbrica."
+      },
+      {
+        "t": "Administración",
+        "d": "Configuración y control de red, estado y controles parentales a través de la aplicación Tenda Wi-Fi."
       }
     ],
     "idealPara": [
@@ -1961,10 +2102,19 @@
       },
       {
         "d": "Múltiples contactos magnéticos inalámbricos para puertas y ventanas, ideales para asegurar los puntos de acceso principales."
+      },
+      {
+        "t": "Control y Accesorios",
+        "d": "Incluye controles remotos portátiles, llaveros de proximidad RFID y una sirena de alerta independiente para disuasión acústica."
+      },
+      {
+        "t": "Componentes",
+        "d": "Panel táctil central, sensores de movimiento, sensores de puertas/ventanas, mandos a distancia, llaveros RFID y sirena."
       }
     ],
     "idealPara": [
-      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención.",
+      "Seguridad y automatización residencial o comercial."
     ],
     "incluye": [
       "1x KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid"
@@ -2107,10 +2257,15 @@
       },
       {
         "d": "Conectividad con aplicación móvil para gestionar permisos, crear códigos temporales, ver registros de apertura y controlar el bloqueo a distancia."
+      },
+      {
+        "t": "Diseño",
+        "d": "Estructura ergonómica y minimalista con acabado negro mate, ideal para puertas de habitaciones, oficinas o entradas principales."
       }
     ],
     "idealPara": [
-      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención.",
+      "Control de acceso residencial y comercial."
     ],
     "incluye": [
       "1x Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
@@ -2170,6 +2325,18 @@
       },
       {
         "d": "Múltiples opciones de salida mediante puertos HDMI, VGA y CVBS."
+      },
+      {
+        "t": "Visualización",
+        "d": "Permite monitoreo local directo conectando un monitor por HDMI o VGA sin requerir red, o visualización remota mediante la app ZOSI Smart (iOS/Android) y el cliente AVSS PC conectando Internet al DVR."
+      },
+      {
+        "t": "Protección",
+        "d": "Cámaras con diseño resistente al agua, ideales para instalaciones en interior o exterior."
+      },
+      {
+        "t": "Estado",
+        "d": "Nuevo en caja (incluye todos los accesorios, sin disco duro)."
       }
     ],
     "idealPara": [
@@ -2320,10 +2487,15 @@
       },
       {
         "d": "Integra alimentación y datos en un solo cable, ideal para instalaciones limpias y profesionales."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Incorpora protección contra picos de voltaje, garantizando la vida útil de tu hardware."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Alimentación exclusiva para equipos de red Ubiquiti u otros dispositivos compatibles con 24V/0.3A."
     ],
     "incluye": [
       "1x Adaptador POE Ubiquiti (24V - 0.3A)"
@@ -2425,6 +2597,10 @@
       },
       {
         "d": "Audio bidireccional con función de cambio de voz (incluye modulador de voz, por ejemplo, de voz femenina a voz de hombre/tío) para mayor privacidad y seguridad al responder."
+      },
+      {
+        "t": "Accesorios",
+        "d": "Incluye la unidad principal del timbre con cámara y un altavoz chime receptor para colocar en el interior del hogar u oficina."
       }
     ],
     "idealPara": [
@@ -2996,6 +3172,14 @@
       },
       {
         "d": "Fabricada con tela resistente a la lluvia, garantizando un refugio seco y seguro."
+      },
+      {
+        "t": "Diseño",
+        "d": "Espaciosa y funcional, con dimensiones ideales para un descanso cómodo."
+      },
+      {
+        "t": "Incluye",
+        "d": "Estacas de fijación, cuerdas de sujeción y bolsa de transporte."
       }
     ],
     "incluye": [
@@ -3558,6 +3742,18 @@
       },
       {
         "d": "Certificación IP67 (Totalmente resistente al polvo y al agua)."
+      },
+      {
+        "t": "Audio",
+        "d": "Ecualización dinámica y refuerzo de graves."
+      },
+      {
+        "t": "Extras",
+        "d": "Micrófono integrado para llamadas y tecnología de emparejamiento estéreo (TWS)."
+      },
+      {
+        "t": "Portabilidad",
+        "d": "Incluye correa de transporte resistente."
       }
     ],
     "incluye": [
@@ -3619,10 +3815,17 @@
       },
       {
         "d": "Estructura ligera con marco circular amplio y mango texturizado para un agarre cómodo y un mejor alcance."
+      },
+      {
+        "t": "Alimentación",
+        "d": "Batería recargable integrada que garantiza una autonomía práctica sin necesidad de reemplazar pilas constantemente."
       }
     ],
     "incluye": [
       "1x Raqueta Matamoscas Eléctrica Recargable"
+    ],
+    "idealPara": [
+      "Doméstico y control de plagas voladoras."
     ]
   },
   {
@@ -3744,6 +3947,14 @@
       },
       {
         "d": "Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes."
+      },
+      {
+        "t": "Conectividad",
+        "d": "Cableado integrado con conectores estándar para una fácil conexión a sistemas de grabación DVR compatibles."
+      },
+      {
+        "t": "Tipo",
+        "d": "Cámara de seguridad bullet"
       }
     ],
     "idealPara": [
@@ -3864,6 +4075,14 @@
       },
       {
         "d": "DVR Lite con capacidad de 5MP que permite una gestión de grabación superior."
+      },
+      {
+        "t": "Modos de Operación",
+        "d": "Grabación 24/7 combinada con tecnología de detección de movimiento para mayor seguridad y eficiencia."
+      },
+      {
+        "t": "Alimentación",
+        "d": "Alimentación por USB que facilita la instalación y puesta en marcha del equipo."
       }
     ],
     "idealPara": [
@@ -3926,6 +4145,14 @@
       },
       {
         "d": "Estuche de carga compacto con indicador LED, diseñado para proteger los auriculares y recargarlos de manera rápida mientras te desplazas."
+      },
+      {
+        "t": "Control",
+        "d": "Funciones táctiles intuitivas para gestionar la reproducción de música, cambiar de pista y contestar llamadas con un simple toque."
+      },
+      {
+        "t": "Incluye",
+        "d": "Estuche de carga portátil"
       }
     ],
     "incluye": [
@@ -4099,6 +4326,10 @@
       },
       {
         "d": "Material flexible y suave al tacto que permite una total libertad de movimiento sin causar presión excesiva."
+      },
+      {
+        "t": "Durabilidad",
+        "d": "Costuras reforzadas diseñadas para soportar el uso frecuente en ambientes marinos exigentes."
       }
     ],
     "incluye": [
@@ -4473,6 +4704,10 @@
       },
       {
         "d": "Puerto Ethernet en la parte inferior para conectar dispositivos por cable o para funcionar en modo punto de acceso."
+      },
+      {
+        "t": "Diseño",
+        "d": "Montaje directo a pared con rejillas de ventilación laterales."
       }
     ],
     "idealPara": [
@@ -4823,10 +5058,19 @@
       },
       {
         "d": "Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO para gestionar mejor el tráfico de múltiples dispositivos."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Encriptación WPA3 para una protección robusta de tu red."
+      },
+      {
+        "t": "Ventaja clave",
+        "d": "Mayor capacidad de dispositivos simultáneos comparado con la generación anterior (AC)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para gaming, streaming de video de alta calidad y hogares inteligentes conectados."
     ],
     "incluye": [
       "1x Router TP-Link Archer AX1450 (Wi-fi 6)"
@@ -4884,6 +5128,14 @@
       },
       {
         "d": "Almohadillas suaves y diadema ajustable con diseño ergonómico que reducen la presión y garantizan confort prolongado."
+      },
+      {
+        "t": "Comunicación",
+        "d": "Micrófono de pértiga ajustable que captura la voz con nitidez, facilitando la coordinación táctica con tu equipo."
+      },
+      {
+        "t": "Conectividad",
+        "d": "Inalámbrica por USB"
       }
     ],
     "incluye": [
@@ -5689,10 +5941,27 @@
       },
       {
         "d": "antenas fijas de alto rendimiento para una cobertura óptima en toda la casa."
+      },
+      {
+        "t": "Tecnología",
+        "d": "Soporte para MU-MIMO (transmite a varios dispositivos simultáneamente)."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Encriptación WPA3 (último estándar de seguridad) y WPA2."
+      },
+      {
+        "t": "Gestión",
+        "d": "Compatible con la app TP-Link Tether para una configuración rápida."
+      },
+      {
+        "t": "Dimensiones",
+        "d": "230 x 144 x 35 mm"
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para gaming, streaming 4K y entornos con alta demanda de ancho de banda."
     ],
     "incluye": [
       "1x Router TP-Link Archer A6 (AC1200)"
@@ -5758,10 +6027,27 @@
       },
       {
         "d": "puerto WAN Gigabit + 4 puertos LAN Gigabit para máxima velocidad cableada."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Incluye el estándar WPA3, la protección más moderna para tu red doméstica."
+      },
+      {
+        "t": "Procesador",
+        "d": "CPU de núcleo cuádruple para un procesamiento de datos rápido."
+      },
+      {
+        "t": "Gestión",
+        "d": "Control total desde la app TP-Link Tether (iOS/Android)."
+      },
+      {
+        "t": "Eficiencia",
+        "d": "Tecnología Target Wake Time que ayuda a ahorrar batería en tus dispositivos conectados."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para teletrabajo, gaming competitivo y streaming de contenido en ultra alta definición (4K)."
     ],
     "incluye": [
       "1x Router TP-Link Archer AX21 (Wi-fi 6)"
@@ -6037,10 +6323,23 @@
       },
       {
         "d": "Ranura para tarjeta microSD que permite almacenar archivos de usuario y bases de datos."
+      },
+      {
+        "t": "Sistema",
+        "d": "Ejecuta RouterOS, el sistema operativo líder para la gestión profesional de redes."
+      },
+      {
+        "t": "Versatilidad",
+        "d": "Incluye puerto USB para módems 4G/LTE u otros periféricos"
+      },
+      {
+        "t": "Puertos",
+        "d": "5x 10/100/1000 Mbps Ethernet"
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para administración de ISPs, gestión de ancho de banda, VPNs y redes corporativas pequeñas."
     ],
     "incluye": [
       "1x MikroTik hEX (RB750GR3)"
@@ -6105,10 +6404,23 @@
       },
       {
         "d": "Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica."
+      },
+      {
+        "t": "Eficiencia",
+        "d": "Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Protocolo WPA3 para una protección de red mucho más avanzada."
+      },
+      {
+        "t": "Funciones",
+        "d": "Soporte para control parental y red de invitados."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos."
     ],
     "incluye": [
       "1x Router Tenda AX12 PRO (Wi-fi 6)"
@@ -6174,6 +6486,10 @@
       },
       {
         "d": "Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención."
+      },
+      {
+        "t": "Gestión",
+        "d": "Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada."
       }
     ],
     "idealPara": [
@@ -6243,6 +6559,10 @@
       },
       {
         "d": "Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes."
+      },
+      {
+        "t": "○ Configuración",
+        "d": "Interfaz intuitiva y versátil propia de MikroTik, permitiendo una puesta en marcha rápida y una gestión precisa de la red."
       }
     ],
     "idealPara": [
@@ -6307,6 +6627,14 @@
       },
       {
         "d": "Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones."
+      },
+      {
+        "t": "Instalación",
+        "d": "Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva."
+      },
+      {
+        "t": "Características principales",
+        "d": "Rotación 360°, visión nocturna, monitoreo móvil."
       }
     ],
     "idealPara": [
@@ -6370,6 +6698,14 @@
       },
       {
         "d": "Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras."
+      },
+      {
+        "t": "Seguridad",
+        "d": "Protocolos de encriptación avanzados para proteger tu red contra accesos no autorizados y mantener tus datos seguros."
+      },
+      {
+        "t": "Modelo",
+        "d": "AC1200"
       }
     ],
     "idealPara": [
@@ -6493,6 +6829,10 @@
       },
       {
         "d": "Estructura ligera con asa superior reforzada, diseñada para facilitar su transporte y uso en diferentes áreas de trabajo."
+      },
+      {
+        "t": "Accesorios",
+        "d": "Incluye kit completo con cables, pinza de masa, portaelectrodos, careta protectora, cepillo y electrodos para comenzar de inmediato."
       }
     ],
     "incluye": [
@@ -6552,6 +6892,14 @@
       },
       {
         "d": "DVR Lite con capacidad de 5MP que permite una gestión de grabación superior."
+      },
+      {
+        "t": "Modos de Operación",
+        "d": "Grabación 24/7 combinada con tecnología de detección de movimiento para mayor seguridad y eficiencia."
+      },
+      {
+        "t": "Alimentación",
+        "d": "Alimentación por USB que facilita la instalación y puesta en marcha del equipo."
       }
     ],
     "idealPara": [
@@ -6615,10 +6963,15 @@
       },
       {
         "d": "Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad."
+      },
+      {
+        "t": "Conectividad Física",
+        "d": "Puertos Gigabit Ethernet para conexiones por cable de alta velocidad con máxima estabilidad."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Enrutamiento y distribución de red de alta velocidad para el hogar u oficina."
     ],
     "incluye": [
       "1x Router Wi-fi 6 AX1800 Asus RT-AX1800S"
@@ -6682,10 +7035,15 @@
       },
       {
         "d": "Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento."
+      },
+      {
+        "t": "Puertos y Conectividad Física",
+        "d": "Puertos Ethernet Gigabit completos (1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas, además de un puerto USB integrado para compartir archivos en red."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
+      "Conectividad y enrutamiento de red de alta velocidad para hogar u oficina."
     ],
     "incluye": [
       "1x Router Wi-fi 6 AX3000 TP-Link Archer AX55"
@@ -6809,6 +7167,14 @@
       },
       {
         "d": "Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos."
+      },
+      {
+        "t": "Conectividad Inalámbrica",
+        "d": "Conexión a red Wi-Fi para visualización en tiempo real, control de funciones y recepción de alertas de movimiento."
+      },
+      {
+        "t": "Tipo",
+        "d": "Cámara de seguridad solar PTZ de doble lente."
       }
     ],
     "idealPara": [
@@ -6880,6 +7246,10 @@
       },
       {
         "d": "Viene equipado con RouterOS con licencia Level 4, permitiendo su uso como estación base para sectores o en enlaces punto a multipunto (PtMP)."
+      },
+      {
+        "t": "Diseño Físico",
+        "d": "Carcasa compacta para exteriores con protección contra condiciones ambientales adversas y opciones sencillas de montaje en mástil."
       }
     ],
     "idealPara": [
@@ -7084,6 +7454,10 @@
       },
       {
         "d": "Funciona con el sistema RouterOS e incluye licencia Level 4, permitiendo su uso directo como punto de acceso base sectorial."
+      },
+      {
+        "t": "Diseño Físico",
+        "d": "Carcasa robusta para exteriores con montaje integrado en mástil y protección contra condiciones climáticas adversas."
       }
     ],
     "idealPara": [
