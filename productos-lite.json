@@ -185,59 +185,66 @@
         "v": "Wavlink"
       },
       {
+        "k": "Modelo",
+        "v": "AC1200 Smart Router Doble Banda",
+        "nota": "Serie Quantum / Halo"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
       },
       {
         "k": "Puertos",
-        "v": "1 puerto WAN + 4 puertos LAN"
+        "v": "1× puerto WAN RJ45 + 4× puertos LAN RJ45"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas externas de alta ganancia para una señal omnidireccional"
+        "v": "4 antenas omnidireccionales externas de alta ganancia",
+        "nota": "5 dBi"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Soporta estándares IEEE 802.11ac/a/n/g/b"
-      },
-      {
-        "k": "Frecuencias",
-        "v": "2.4GHz y 5GHz simultáneas"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor / WISP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Doble banda AC1200 (hasta 867 Mbps en 5GHz y 300 Mbps en 2.4GHz)."
+        "d": "Hasta 1167 Mbps teóricos totales (867 Mbps en la banda limpia de 5 GHz + 300 Mbps en 2.4 GHz para máxima penetración)."
       },
       {
-        "d": "antenas externas de alta ganancia para una señal omnidireccional."
+        "d": "4 antenas omnidireccionales de 5 dBi con tecnología Beamforming que concentran la señal directamente en tus dispositivos, eliminando zonas muertas."
       },
       {
-        "d": "Puertos WAN y LAN de alta velocidad."
+        "t": "Tecnología Touchlink (patentada por Wavlink)",
+        "d": "permite a los invitados conectarse a la red simplemente tocando la parte superior del router, sin necesidad de ingresar la contraseña."
       },
       {
-        "t": "Botón Turbo",
-        "d": "Modo \"Turbo\" para mejorar la penetración de la señal a través de paredes."
+        "d": "Soporte multiusuario MU-MIMO para transmitir datos a múltiples teléfonos, laptops y Smart TVs al mismo tiempo sin saturación."
       },
       {
-        "t": "Diseño",
-        "d": "Estructura circular con indicadores LED frontales."
+        "d": "Puertos Ethernet para conectar por cable equipos de escritorio, consolas de videojuegos o sistemas de TV box con máxima estabilidad."
       },
       {
-        "t": "Instalación",
-        "d": "Configuración simplificada a través de interfaz web."
+        "d": "Seguridad de red robusta con soporte para cifrado WPA-PSK / WPA2-PSK y cortafuegos integrado para prevenir accesos no autorizados."
       },
       {
-        "t": "Seguridad",
-        "d": "Encriptación WPA/WPA2-PSK"
+        "d": "Diseño circular aerodinámico con excelente disipación térmica e indicadores LED frontales en color azul para monitoreo de estado."
+      },
+      {
+        "d": "Configuración rápida e intuitiva mediante asistente web con soporte para control parental, red de invitados y priorización de tráfico (QoS)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para streaming en 4K, juegos online y múltiples dispositivos conectados."
+      "Departamentos, casas medianas y oficinas pequeñas que requieren renovar su red a doble banda con una solución económica y de fácil manejo.",
+      "Streaming de video en calidad HD/4K, clases virtuales, teletrabajo y navegación web multidispositivo simultánea.",
+      "Espacios o pequeños comercios que reciben visitas continuas y quieren ofrecer acceso Wi-Fi rápido y seguro sin comprometer la clave principal."
     ],
     "incluye": [
-      "1x Router Wavlink AC1200 Dual Band"
+      "1× Router Wavlink AC1200 Dual Band",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -257,7 +264,7 @@
     "slug": "repetidor-wifi-5",
     "comision": 1500,
     "specs": [
-      "📶 Wi-Fi 5 (Doble Banda) ",
+      "📶 Wi-Fi 5 (Doble Banda)",
       "🚀 1200 Mbps"
     ],
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
@@ -268,57 +275,71 @@
     ],
     "ficha": [
       {
+        "k": "Marca",
+        "v": "Genérico / OEM"
+      },
+      {
+        "k": "Modelo",
+        "v": "Repetidor / Extensor Wi-Fi AC1200 Doble Banda",
+        "nota": "6 Antenas"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 5"
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Ethernet RJ45 LAN/WAN",
+        "nota": "10/100 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas externas de alta potencia para una cobertura ampliada y estable"
+        "v": "6 antenas externas omnidireccionales de alta ganancia",
+        "nota": "orientables"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Repetidor inalámbrico / Extensor de rango"
+        "k": "Modos de operación",
+        "v": "Modo Repetidor (Extensor de rango), Modo Punto de Acceso (AP), Modo Router"
       },
       {
-        "k": "Frecuencias",
-        "v": "Doble banda",
-        "nota": "2.4GHz + 5GHz"
-      },
-      {
-        "k": "Enchufe",
-        "v": "US Plug",
-        "nota": "estándar"
-      },
-      {
-        "k": "Compatibilidad",
-        "v": "Funciona con la mayoría de los routers modernos"
+        "k": "Conexión eléctrica",
+        "v": "Enchufe de pared directo tipo US",
+        "nota": "clavija americana estándar, 110V - 240V"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Alcanza hasta 1200 Mbps (5GHz + 2.4GHz) para un rendimiento superior."
+        "d": "Transmisión simultánea en doble banda (5 GHz para mayor velocidad y fluidez; 2.4 GHz para máxima penetración y alcance a través de paredes)."
       },
       {
-        "d": "Estándar Wi-Fi 5 para mayor eficiencia en la gestión de dispositivos."
+        "d": "Sistema de 6 antenas externas ajustables que eliminan zonas muertas y amplifican la cobertura en áreas difíciles del hogar."
       },
       {
-        "d": "antenas externas de alta potencia para una cobertura ampliada y estable."
+        "d": "Botón WPS de emparejamiento rápido para sincronizar con el router principal en segundos sin ingresar contraseñas complejas."
       },
       {
-        "t": "Instalación",
-        "d": "Configuración rápida y sencilla tipo \"Plug & Play\"."
+        "d": "Indicadores LED frontales de encendido, señal Wi-Fi y puerto Ethernet que facilitan ubicar el repetidor en el punto óptimo."
       },
       {
-        "t": "Conectividad",
-        "d": "Ideal para streaming 4K, videollamadas y juegos sin cortes."
+        "d": "Puerto de red RJ45 integrado para conectar por cable equipos fijos (Smart TV, PC, consola) o convertir una conexión cableada en red inalámbrica en modo AP."
+      },
+      {
+        "d": "Compatibilidad universal con cualquier router, módem o punto de acceso Wi-Fi (estándares 802.11a/b/g/n/ac)."
+      },
+      {
+        "d": "Soporte para protocolos de seguridad inalámbrica WPA/WPA2 y WPA-PSK/WPA2-PSK."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Extensión de red en hogares y oficinas donde la señal principal es débil."
+      "Eliminar puntos ciegos y llevar señal Wi-Fi a habitaciones alejadas, pisos superiores, terrazas o patios.",
+      "Conectar Smart TVs, consolas de videojuegos, cámaras de seguridad y laptops sin necesidad de realizar instalaciones complejas de cableado.",
+      "Streaming de video en HD/4K, videollamadas estables y navegación fluida en zonas donde la señal del módem llega débil."
     ],
     "incluye": [
-      "1x Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)"
+      "1× Repetidor Wi-Fi 5 AC1200 (6 Antenas - Clavija US)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -346,52 +367,72 @@
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
     ],
     "specs": [
-      "⚡ Gigabit (1000 Mbps) ",
+      "⚡ Gigabit (1000 Mbps)",
       "🔌 8 Puertos RJ45"
     ],
     "ficha": [
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "GIGABIT"
+        "k": "Marca",
+        "v": "Genérico / OEM"
+      },
+      {
+        "k": "Modelo",
+        "v": "Switch de Escritorio Gigabit de 8 Puertos"
+      },
+      {
+        "k": "Velocidad de Red",
+        "v": "10/100/1000 Mbps",
+        "nota": "Gigabit Ethernet Full Duplex"
       },
       {
         "k": "Puertos",
-        "v": "8 puertos RJ45 para una expansión de red inmediata"
+        "v": "8× puertos RJ45 con negociación automática y soporte Auto-MDI/MDIX"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Switch Ethernet no gestionado"
+        "k": "Tipo de Switch",
+        "v": "No administrado",
+        "nota": "Unmanaged / Plug & Play"
       },
       {
-        "k": "Calidad",
-        "v": "Componentes optimizados para operación continua"
+        "k": "Alimentación",
+        "v": "5V DC",
+        "nota": "mediante cable de alimentación USB"
       }
     ],
     "caracteristicas": [
       {
-        "d": "puertos RJ45 para una expansión de red inmediata."
+        "t": "Expansión de red cableada",
+        "d": "añade hasta 8 conexiones Gigabit de alta velocidad (1000 Mbps) simultáneas sin pérdidas de rendimiento."
       },
       {
-        "d": "Rendimiento Gigabit (10/100/1000 Mbps) para transferencia de archivos pesados y streaming fluido."
+        "t": "Tecnología Plug & Play",
+        "d": "funcionamiento directo e instantáneo sin necesidad de configuración, software ni controladores."
       },
       {
-        "d": "Soporta sistemas de videovigilancia (CCTV) y redes de alto tráfico."
+        "d": "Soporte para Auto-MDI/MDIX, eliminando la necesidad de cables cruzados para enlaces entre switches o routers."
       },
       {
-        "t": "Construcción",
-        "d": "Diseño con PCB de doble capa y puertos metálicos para mayor durabilidad y estabilidad."
+        "d": "Control de flujo IEEE 802.3x para modo Full Duplex y contrapresión para Half Duplex, asegurando transferencias fluidas sin pérdida de paquetes."
       },
       {
-        "t": "Plug & Play",
-        "d": "Sin configuraciones complicadas; conéctalo y empieza a usarlo de inmediato."
+        "d": "Alimentación flexible de bajo consumo mediante cable USB (5V), compatible con cargadores estándar de móvil o puertos USB energizados."
+      },
+      {
+        "d": "Indicadores LED individuales sobre cada puerto para monitorear en tiempo real el encendido, la conexión y la actividad de la red."
+      },
+      {
+        "d": "Carcasa compacta y ligera en plástico ABS resistente con excelente disipación térmica pasiva para un funcionamiento silencioso."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para oficinas en casa, centros de entretenimiento o pequeños sistemas de cámaras."
+      "Oficinas, negocios, salas de entretenimiento y hogares donde los puertos del módem/router son insuficientes para conectar múltiples dispositivos.",
+      "Conexión cableada estable y de baja latencia para múltiples PCs de escritorio, consolas de videojuegos, Smart TVs, impresoras de red y decodificadores.",
+      "Sistemas de videovigilancia con cámaras IP o redes domésticas que transfieren archivos de gran tamaño y realizan streaming local en alta definición."
     ],
     "incluye": [
-      "1x Switch Gigabit de 8 Puertos"
+      "1× Switch Gigabit de 8 Puertos",
+      "1× Cable de alimentación USB (no incluye espiga / adaptador de corriente de pared)",
+      "1× Guía de uso rápido"
     ]
   },
   {
@@ -767,64 +808,68 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "BIEN"
-      },
-      {
-        "k": "Capacidad",
-        "v": "Punto de acceso con tecnología 4G/WiFi de alta ganancia"
-      },
-      {
-        "k": "Indicadores",
-        "v": "Panel LED intuitivo",
-        "nota": "Power, WiFi, WAN/LAN, Señal, Ethernet"
+        "v": "KuWFi"
       },
       {
         "k": "Modelo",
-        "v": "CPE Exterior KuWfi 4G"
+        "v": "Router CPE Exterior 4G LTE / Wi-Fi",
+        "nota": "Serie C900 / CPF905 / L100"
       },
       {
-        "k": "Dimensiones",
-        "v": "30 cm (alto) x 8 cm (ancho) x 3 cm",
-        "nota": "profundidad"
+        "k": "Velocidad de Red",
+        "v": "4G LTE Cat4 (hasta 150 Mbps de descarga / 50 Mbps de subida) + Wi-Fi 2.4 GHz hasta 300 Mbps",
+        "nota": "802.11b/g/n"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Soporta conexión 4G y distribución WiFi"
+        "k": "Puertos",
+        "v": "1× puerto LAN/WAN Ethernet RJ45 (10/100 Mbps con soporte PoE) + 1× ranura para tarjeta SIM",
+        "nota": "Micro/Nano con adaptador"
+      },
+      {
+        "k": "Antenas",
+        "v": "2× antenas omnidireccionales externas de alta ganancia (5 dBi) para señal celular 4G y cobertura Wi-Fi"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router 4G LTE (mediante tarjeta SIM), Modo Punto de Acceso (AP por cable de red), Modo Repetidor Wi-Fi"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Punto de acceso con tecnología 4G/WiFi de alta ganancia."
+        "t": "Conectividad móvil 4G LTE Plug & Play",
+        "d": "inserta una tarjeta SIM con plan de datos y distribuye Internet por Wi-Fi o cable sin configuraciones complicadas."
       },
       {
-        "d": "Formato vertical estilizado y compacto para montaje exterior."
+        "d": "Punto de acceso inalámbrico en 2.4 GHz con capacidad para conectar de 10 a 32 dispositivos simultáneamente (teléfonos, laptops, Smart TVs, cámaras IP)."
       },
       {
-        "d": "Panel LED intuitivo (Power, WiFi, WAN/LAN, Señal, Ethernet)."
+        "d": "Carcasa impermeable con protección IP65 / IP66 resistente al agua, polvo, exposición solar directa y temperaturas extremas para montaje en exteriores."
       },
       {
-        "t": "Instalación",
-        "d": "Sistema de montaje integrado para paredes o postes."
+        "d": "Alimentación versátil mediante PoE Pasivo (12V a 24V) a través del mismo cable de red o mediante entrada de corriente directa DC 12V."
       },
       {
-        "t": "Conectividad física",
-        "d": "Puerto Ethernet para conexión cableada (WAN/LAN)."
+        "d": "Antenas externas desmontables y orientables que optimizan la recepción de señal celular en zonas con cobertura móvil débil."
       },
       {
-        "t": "Resistencia",
-        "d": "Carcasa diseñada para uso en exteriores (protección ambiental)."
+        "d": "Panel frontal con indicadores LED para verificar en tiempo real el encendido, conexión LAN/WAN, Wi-Fi y potencia de la señal 4G."
       },
       {
-        "t": "Indicadores visuales",
-        "d": "Panel central con 5 niveles de intensidad de señal."
+        "d": "Interfaz web de configuración para ajuste automático o manual de APN, seguridad WPA/WPA2-PSK y gestión de dispositivos conectados."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para llevar internet a zonas rurales o áreas con difícil cobertura."
+      "Fincas, casas de campo, naves industriales y zonas suburbanas o rurales donde no hay tendido de fibra óptica ni cable coaxial.",
+      "Centralización y transmisión continua de cámaras de videovigilancia IP instaladas en exteriores o perímetros abiertos.",
+      "Campamentos, obras de construcción, comercios temporales o respaldo de conexión a Internet ante caídas del proveedor principal."
     ],
     "incluye": [
-      "1x CPE Exterior Kuwfi 4G/WIFI"
+      "1× Router CPE Exterior KuWFi 4G LTE / Wi-Fi",
+      "2× Antenas externas desmontables (4G / Wi-Fi)",
+      "1× Inyector PoE / Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Abrazadera / kit de sujeción para montaje en mástil o poste",
+      "1× Manual de usuario"
     ]
   },
   {
@@ -1113,98 +1158,6 @@
       "1x Inversor Solar Híbrido PowMr 5000W 48V",
       "1x Kit de fijación mural",
       "1x Manual de usuario y configuración"
-    ]
-  },
-  {
-    "id": 1778104735789,
-    "nombre": "📡 Router Kuwfi 4G LTE (Wi-fi de Alta Velocidad)",
-    "precioActual": 130,
-    "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
-    "categoria": "WIFI",
-    "subcategoria": "ROUTERS",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
-    "comision": 10,
-    "specs": [
-      "🌐 Internet 4G/LTE",
-      "📱 Libre (Multibanda)",
-      "🚀 Sin Cables"
-    ],
-    "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
-    "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…",
-    "precioOriginal": 0,
-    "comisionMoneda": "USD",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783837070407.webp",
-      "https://tiendamax.org/imagenes/img_1778104735789.webp"
-    ],
-    "ficha": [
-      {
-        "k": "Tecnología / Tipo",
-        "v": "Router Wi-Fi con módem 4G LTE incorporado"
-      },
-      {
-        "k": "Compatibilidad",
-        "v": "Funciona con los estándares de red móvil más comunes"
-      },
-      {
-        "k": "Sin Cables",
-        "v": "Solo inserta tu tarjeta SIM y navega al instante"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Ranura para tarjeta SIM integrada; simplemente inserta tu SIM y empieza a navegar."
-      },
-      {
-        "d": "Soporta redes 4G LTE para una navegación fluida, streaming y conexión de múltiples dispositivos."
-      },
-      {
-        "d": "Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje."
-      },
-      {
-        "t": "Antenas",
-        "d": "Antenas de alta ganancia para asegurar una recepción de señal móvil superior incluso en áreas con cobertura limitada."
-      },
-      {
-        "t": "Seguridad",
-        "d": "Encriptación robusta para mantener tu red y tus datos protegidos."
-      },
-      {
-        "t": "Gestión",
-        "d": "Interfaz web sencilla para configurar el APN y gestionar el consumo de datos."
-      },
-      {
-        "t": "Puertos",
-        "d": "Incluye puertos LAN para conectar dispositivos por cable si lo requieres."
-      },
-      {
-        "t": "Uso Ideal",
-        "d": "Zonas sin cobertura de cable, respaldo de internet, trabajo remoto y soluciones de movilidad."
-      },
-      {
-        "t": "Configuración fácil",
-        "d": "Compatible con APN manual para una conexión rápida con la red local."
-      },
-      {
-        "t": "Ideal para cualquier lugar",
-        "d": "Perfecto para zonas donde no llega el cable o como conexión de respaldo garantizada."
-      },
-      {
-        "t": "Multi-usuario",
-        "d": "Comparte tus datos móviles con toda la familia o tu equipo de trabajo al mismo tiempo."
-      }
-    ],
-    "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
-    ],
-    "incluye": [
-      "1x Router Kuwfi 4G LTE (Wi-fi de Alta Velocidad)"
     ]
   },
   {
@@ -1869,61 +1822,67 @@
     ],
     "ficha": [
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "GIGABIT"
-      },
-      {
-        "k": "Puertos",
-        "v": "5 puertos RJ45 Gigabit"
-      },
-      {
-        "k": "Velocidad",
-        "v": "10/100/1000 Mbps",
-        "nota": "Gigabit"
-      },
-      {
-        "k": "Calidad",
-        "v": "Puertos RJ45 metálicos de 8 pines",
-        "nota": "Full 8pin"
+        "k": "Marca",
+        "v": "Genérico / OEM"
       },
       {
         "k": "Modelo",
-        "v": "900312-1005G"
+        "v": "Switch de Escritorio Gigabit de 5 Puertos"
       },
       {
-        "k": "Fabricante",
-        "v": "Teyl Intelligent Technology (Shenzhen) Co., Ltd"
+        "k": "Velocidad de Red",
+        "v": "10/100/1000 Mbps",
+        "nota": "Gigabit Ethernet Full Duplex"
+      },
+      {
+        "k": "Puertos",
+        "v": "5× puertos RJ45 con negociación automática y soporte Auto-MDI/MDIX"
+      },
+      {
+        "k": "Tipo de Switch",
+        "v": "No administrado",
+        "nota": "Unmanaged / Plug & Play"
+      },
+      {
+        "k": "Alimentación",
+        "v": "5V DC",
+        "nota": "mediante cable USB"
       }
     ],
     "caracteristicas": [
       {
-        "d": "puertos RJ45 Gigabit."
+        "t": "Expansión instantánea de red cableada",
+        "d": "añade hasta 5 conexiones Gigabit de alta velocidad (1000 Mbps) sin pérdidas de rendimiento."
       },
       {
-        "d": "/100/1000 Mbps (Gigabit)."
+        "t": "Tecnología Plug & Play",
+        "d": "funcionamiento directo sin necesidad de configuración, software ni controladores."
       },
       {
-        "d": "Puertos RJ45 metálicos de 8 pines (Full 8pin)."
+        "d": "Soporte para Auto-MDI/MDIX, eliminando la necesidad de usar cables cruzados para enlaces entre switches o routers."
       },
       {
-        "t": "Diseño",
-        "d": "Compacto con PCB de doble capa."
+        "d": "Control de flujo IEEE 802.3x para modo Full Duplex y contrapresión para Half Duplex, garantizando transferencias de datos estables y sin pérdida de paquetes."
       },
       {
-        "t": "Construcción",
-        "d": "PCB de doble capa y puertos RJ45 con refuerzo metálico."
+        "d": "Alimentación flexible y de bajo consumo mediante cable USB (5V), compatible con cualquier cargador de móvil estándar o puerto USB energizado."
       },
       {
-        "t": "Aplicación",
-        "d": "Optimizado para redes locales, entornos de oficina y sistemas de vigilancia CCTV."
+        "d": "Indicadores LED integrados sobre cada puerto para monitorear el encendido, el enlace y la actividad de datos en tiempo real."
+      },
+      {
+        "d": "Diseño ultra compacto y ligero fabricado en material ABS resistente, ideal para colocar discretamente en cualquier espacio de trabajo o repisa."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Soporta sistemas CCTV y redes LAN de alto rendimiento."
+      "Oficinas, habitaciones y salas de estar donde los puertos LAN del router principal son insuficientes.",
+      "Conexión cableada estable y sin lag para múltiples dispositivos: PCs, Smart TVs, consolas de videojuegos, impresoras de red y decodificadores.",
+      "Pequeños sistemas de videovigilancia IP o redes domésticas que requieren transferir archivos pesados o realizar streaming local sin caídas."
     ],
     "incluye": [
-      "1x Switch Gigabit de 5 Puertos"
+      "1× Switch Gigabit de 5 Puertos",
+      "1× Cable de alimentación USB (no incluye espiga / adaptador de corriente de pared)",
+      "1× Guía de uso rápido"
     ]
   },
   {
@@ -1942,8 +1901,8 @@
     "slug": "router-tenda-ac1200-wifi-dual-band",
     "comision": 10,
     "specs": [
-      "⚡ AC1200 Doble Banda ",
-      "📶 4 Antenas Externas ",
+      "⚡ AC1200 Doble Banda",
+      "📶 4 Antenas Externas",
       "🌐 Soporte MU-MIMO y Modo AP"
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
@@ -1960,38 +1919,66 @@
         "v": "Tenda"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
-      },
-      {
         "k": "Modelo",
-        "v": "AC6"
+        "v": "AC6",
+        "nota": "Versión Global"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router Wi-Fi AC1200 Doble Banda"
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Fast Ethernet + 3× puertos LAN Fast Ethernet",
+        "nota": "10/100 Mbps"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas omnidireccionales de alta ganancia (6 dBi) con Beamforming+ y amplificadores dedicados"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor Universal, Modo WISP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Velocidades de hasta 1.2 Gbps combinadas (867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz) para transmisión de contenido y tareas diarias."
+        "d": "Hasta 1167 Mbps teóricos combinados (867 Mbps en la banda limpia de 5 GHz + 300 Mbps en la banda de 2.4 GHz para mayor alcance)."
       },
       {
-        "d": "Cuatro antenas externas con tecnología Beamforming para direccionar la señal hacia los dispositivos."
+        "d": "4 antenas de 6 dBi con tecnología Beamforming+ y amplificadores de señal independientes para excelente penetración a través de paredes y cobertura en todo el hogar."
       },
       {
-        "d": "Modos de Operación y Funciones: Soporta modo Punto de Acceso (AP) para transformar conexiones por cable en red inalámbrica."
+        "d": "Procesador de alto rendimiento de 28 nm a 1 GHz que garantiza una disipación térmica eficiente y estabilidad continua ante múltiples conexiones."
       },
       {
-        "t": "Administración",
-        "d": "Configuración y control de red, estado y controles parentales a través de la aplicación Tenda Wi-Fi."
+        "d": "Tecnología MU-MIMO que permite la transmisión simultánea a varios dispositivos sin saturación de red ni demoras de conexión."
+      },
+      {
+        "t": "Migración inteligente de credenciales",
+        "d": "permite clonar el usuario y contraseña PPPoE del router antiguo conectándolos con un cable para una configuración instantánea."
+      },
+      {
+        "d": "Programación inteligente de Wi-Fi para ahorro de energía, permitiendo configurar horarios automáticos de reposo y apagado de luces LED."
+      },
+      {
+        "d": "Seguridad de red completa con cifrado WPA-PSK / WPA2-PSK, cortafuegos integrado, red de invitados y control parental."
+      },
+      {
+        "d": "Configuración y monitoreo en tiempo real mediante la aplicación móvil Tenda WiFi (Android / iOS) o a través de navegador web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Casas medianas, departamentos y oficinas pequeñas con conexiones de Internet de hasta 100 Mbps que requieren estabilizar y extender la cobertura inalámbrica.",
+      "Streaming de video en calidad HD/4K, teletrabajo, clases virtuales y juegos en línea sin interrupciones.",
+      "Redes domésticas con múltiples celulares, Smart TVs, computadoras y dispositivos inteligentes conectados al mismo tiempo."
     ],
     "incluye": [
-      "1x Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)"
+      "1× Router Wi-Fi AC1200 Tenda AC6 (Versión Global)",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -2462,43 +2449,62 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Ubiquiti"
+        "v": "Ubiquiti Networks"
       },
       {
-        "k": "Voltaje",
-        "v": "24V"
+        "k": "Modelo",
+        "v": "Inyector PoE Pasivo 24V 0.3A",
+        "nota": "POE-24-7W-G / POE-24-0.3A"
       },
       {
-        "k": "Capacidad / Corriente",
-        "v": "0.3A"
+        "k": "Voltaje de Salida",
+        "v": "24V DC @ 0.3A",
+        "nota": "7.2W"
       },
       {
         "k": "Puertos",
-        "v": "2 puertos RJ45",
-        "nota": "LAN / PoE"
+        "v": "2× puertos RJ45 blindados",
+        "nota": "1× LAN para datos + 1× PoE para datos y energía"
+      },
+      {
+        "k": "Velocidad de Red",
+        "v": "10/100/1000 Mbps",
+        "nota": "Gigabit Ethernet"
+      },
+      {
+        "k": "Tipo de PoE",
+        "v": "PoE Pasivo",
+        "nota": "Pines 4, 5 [+] / Pines 7, 8 [-]"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Tecnología original diseñada para proteger tus dispositivos contra sobretensiones y descargas electrostáticas."
+        "d": "Transmite energía eléctrica y datos de alta velocidad simultáneamente a través de un único cable Ethernet RJ45."
       },
       {
-        "d": "Suministra energía estable de 24V con una corriente precisa de 0.3A."
+        "d": "Protección avanzada contra descargas electrostáticas (ESD), sobretensiones y picos de voltaje para proteger los equipos conectados a la intemperie."
       },
       {
-        "d": "Integra alimentación y datos en un solo cable, ideal para instalaciones limpias y profesionales."
+        "d": "Puertos Gigabit blindados que garantizan el paso de datos sin pérdidas de velocidad ni cuellos de botella."
       },
       {
-        "t": "Seguridad",
-        "d": "Incorpora protección contra picos de voltaje, garantizando la vida útil de tu hardware."
+        "d": "Diseño compacto, estilizado y ligero en color blanco con indicador LED frontal de estado y encendido."
+      },
+      {
+        "d": "Eficiencia energética optimizada con puesta a tierra integrada compatible con cables blindados (TOUGHCable)."
+      },
+      {
+        "d": "Compatible con fijación a pared mediante soporte o clip de montaje."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Alimentación exclusiva para equipos de red Ubiquiti u otros dispositivos compatibles con 24V/0.3A."
+      "Alimentar antenas CPE y estaciones base de la línea Ubiquiti airMAX (NanoStation 5AC Loco, LiteBeam 5AC Gen2, NanoStation Loco M2/M5, entre otros).",
+      "Puntos de acceso UniFi y cámaras de seguridad IP que requieran alimentación PoE pasivo de 24V.",
+      "Instalaciones de redes inalámbricas exteriores donde se necesite centralizar la energía y proteger los dispositivos contra descargas eléctricas."
     ],
     "incluye": [
-      "1x Adaptador POE Ubiquiti (24V - 0.3A)"
+      "1× Adaptador PoE Ubiquiti (24V - 0.3A)",
+      "1× Cable de alimentación AC con conexión a tierra"
     ]
   },
   {
@@ -3987,7 +3993,8 @@
       "1501 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
       "5 Antenas Externas de 6dBi de Ultra Cobertura",
       "1 WAN Gigabit + 3 LAN Gigabit",
-      "OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
+      "OFDMA",
+      "MU-MIMO"
     ],
     "ficha": [
       {
@@ -3995,30 +4002,73 @@
         "v": "Tenda"
       },
       {
+        "k": "Modelo",
+        "v": "RX2 Pro",
+        "nota": "AX1500"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "GIGABIT"
+        "v": "AX1500 Doble Banda",
+        "nota": "Wi-Fi 6: hasta 1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + 3× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "5 antenas de alta ganancia"
+        "v": "5 antenas externas omnidireccionales de alta ganancia",
+        "nota": "6 dBi"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor Universal / WISP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+        "d": "Hasta 1500 Mbps teóricos combinados (1201 Mbps en la banda de 5 GHz con tecnología Wi-Fi 6 + 300 Mbps en la banda de 2.4 GHz)."
       },
       {
-        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+        "d": "Sistema de 5 antenas externas de 6 dBi de alto rendimiento con módulos front-end (FEM) dedicados para mayor cobertura y penetración a través de paredes."
       },
       {
-        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+        "d": "Tecnologías Wi-Fi 6 (802.11ax) con soporte para OFDMA y MU-MIMO, reduciendo la latencia y permitiendo que múltiples equipos transmitan datos simultáneamente sin congestión."
+      },
+      {
+        "d": "Puertos Ethernet Gigabit completos (1 WAN + 3 LAN) para aprovechar al máximo las conexiones de fibra óptica en Smart TVs, consolas y PCs."
+      },
+      {
+        "d": "Compatibilidad con tecnología de red en malla Wi-Fi+, que permite emparejar fácilmente otros dispositivos Tenda compatibles para ampliar la cobertura con un solo nombre de red y roaming automático."
+      },
+      {
+        "d": "Seguridad inalámbrica de última generación con soporte para cifrado WPA3."
+      },
+      {
+        "d": "Conmutación inteligente de bandas (Band Steering), asignando de forma automática a cada equipo la frecuencia óptima (2.4 GHz para mayor alcance o 5 GHz para máxima velocidad)."
+      },
+      {
+        "d": "Reducción en el consumo energético de los dispositivos conectados mediante la tecnología Target Wake Time (TWT)."
+      },
+      {
+        "d": "Gestión intuitiva y control parental desde la aplicación móvil Tenda WiFi o mediante navegador web."
       }
     ],
     "idealPara": [
-      "Router Tenda RX2 Pro, WiFi 6 de doble banda Gigabit, con 5 antenas de alta ganancia. Ideal para hogares con varios dispositivos conectados a la vez sin perder velocidad."
+      "Casas medianas, departamentos y oficinas con planes de Internet por fibra óptica de alta velocidad que buscan actualizarse a Wi-Fi 6 a un precio accesible.",
+      "Streaming de video en resolución 4K/UHD, teletrabajo con videollamadas fluidas y gaming en línea con baja latencia.",
+      "Redes domésticas con múltiples dispositivos (smartphones, computadoras, consolas y domótica) conectados al mismo tiempo."
     ],
     "incluye": [
-      "1x Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit"
+      "1× Router Wi-Fi 6 Tenda RX2 Pro (AX1500)",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
+    ],
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780510677267.webp"
     ]
   },
   {
@@ -4182,7 +4232,8 @@
       "Wi-Fi 6 (802.11ax) Doble Banda Mesh",
       "2976 Mbps (2402 Mbps en 5.8 GHz + 574 Mbps en 2.4 GHz)",
       "4 Antenas Externas Orientables de alta sensibilidad",
-      "Soporte de Redes Mesh, MU-MIMO y OFDMA",
+      "Soporte de Redes Mesh",
+      "MU-MIMO y OFDMA",
       "Puertos Gigabit Ethernet (10/100/1000 Mbps)"
     ],
     "ficha": [
@@ -4191,30 +4242,69 @@
         "v": "Fenvi"
       },
       {
+        "k": "Modelo",
+        "v": "AX3000 Wireless Router",
+        "nota": "Wi-Fi 6"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AX3000"
+        "v": "AX3000 Doble Banda",
+        "nota": "Wi-Fi 6: hasta 2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + 3× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas"
+        "v": "4 antenas externas omnidireccionales de alta ganancia",
+        "nota": "5 dBi"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+        "d": "Hasta 3000 Mbps teóricos combinados (2402 Mbps en la banda de 5 GHz con soporte de canales de 160 MHz + 574 Mbps en 2.4 GHz)."
       },
       {
-        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+        "d": "Tecnología Wi-Fi 6 (802.11ax) con soporte de OFDMA y MU-MIMO, permitiendo transmisiones de datos eficientes a múltiples dispositivos a la vez sin congestión."
       },
       {
-        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+        "d": "Puertos Ethernet Gigabit completos (10/100/1000 Mbps) para aprovechar al máximo las conexiones de fibra óptica en equipos cableados (PCs, Smart TVs, consolas)."
+      },
+      {
+        "d": "Cobertura optimizada con 4 antenas de alta potencia y tecnología Beamforming, que enfoca la señal de forma directa hacia los dispositivos vinculados."
+      },
+      {
+        "d": "Seguridad de última generación con soporte para cifrado WPA3, garantizando protección robusta frente a accesos no autorizados."
+      },
+      {
+        "d": "Eficiencia energética con Target Wake Time (TWT), que gestiona los tiempos de transmisión para reducir el consumo de batería en teléfonos y dispositivos inteligentes."
+      },
+      {
+        "d": "Diseño moderno en color blanco con rejillas superiores para una disipación térmica constante y eficiente."
+      },
+      {
+        "d": "Configuración rápida mediante interfaz web con soporte para IPv6, control parental y red de invitados independiente."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Casas y oficinas con conexiones de Internet por fibra óptica de alta velocidad (hasta 1 Gbps) que requieren el máximo rendimiento cableado e inalámbrico.",
+      "Gaming online competitivo con baja latencia, streaming fluido de video en resoluciones 4K/8K y teletrabajo continuo.",
+      "Hogares con múltiples dispositivos conectados de forma simultánea (smartphones, consolas, laptops y equipos domóticos)."
     ],
     "incluye": [
-      "1x Router Fenvi AX3000 WiFi 6"
+      "1× Router Fenvi AX3000 Wi-Fi 6",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida / Manual de usuario"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780873635709.webp"
     ]
   },
   {
@@ -4246,30 +4336,68 @@
         "v": "Fenvi"
       },
       {
+        "k": "Modelo",
+        "v": "AC1200 Dual Band Gigabit Wi-Fi Router"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas"
+        "v": "4 antenas externas omnidireccionales de alta ganancia",
+        "nota": "5 dBi"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Tecnología inalámbrica optimizada para alta velocidad y baja latencia."
+        "d": "Hasta 1167 Mbps teóricos combinados (867 Mbps en la banda de 5 GHz + 300 Mbps en la banda de 2.4 GHz)."
       },
       {
-        "d": "Gestión inteligente de tráfico para conectar múltiples dispositivos a la vez."
+        "d": "Puertos Ethernet Gigabit completos (10/100/1000 Mbps) para transferencias cableadas de máxima velocidad y sin pérdidas en conexiones de fibra óptica."
       },
       {
-        "d": "Antenas de alta ganancia para mayor penetración de señal a través de muros."
+        "d": "4 antenas de 5 dBi orientables con tecnología Beamforming para optimizar el alcance y la estabilidad de la señal a través de paredes."
+      },
+      {
+        "d": "Procesador de alto rendimiento para gestionar múltiples dispositivos conectados simultáneamente de forma fluida."
+      },
+      {
+        "d": "Tecnología MU-MIMO que optimiza el envío simultáneo de datos a múltiples equipos sin crear congestión de red."
+      },
+      {
+        "d": "Soporte nativo para el protocolo moderno de Internet IPv6 y compatibilidad con IPv4."
+      },
+      {
+        "d": "Seguridad inalámbrica con encriptación WPA/WPA2-PSK, red de invitados independiente y control de acceso."
+      },
+      {
+        "d": "Interfaz web de configuración intuitiva para gestión rápida de la red, contraseñas y parámetros de conexión."
       }
     ],
     "idealPara": [
-      "Router Fenvi AC1200, doble banda con 4 antenas, hasta 1200Mbps en 5.8GHz. Ideal para hogares con varios dispositivos conectados a la vez."
+      "Hogares, departamentos y oficinas medianas con planes de Internet por fibra óptica superiores a 100 Mbps que requieren puertos Gigabit para aprovechar su ancho de banda real.",
+      "Streaming de video en calidad Full HD/4K, teletrabajo con videollamadas fluidas y clases virtuales.",
+      "Conexión por cable de alta velocidad para PCs, Smart TVs y consolas de videojuegos."
     ],
     "incluye": [
-      "1x Fenvi AC1200"
+      "1× Router Fenvi AC1200 Dual Band Gigabit",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de usuario / Manual rápido"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780873818246_99b40d.webp"
     ]
   },
   {
@@ -4687,34 +4815,63 @@
         "v": "TP-Link"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
+        "k": "Modelo",
+        "v": "TL-WA855RE",
+        "nota": "N300"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Extensor de rango / Repetidor Wi-Fi"
+        "k": "Velocidad Wi-Fi",
+        "v": "Hasta 300 Mbps en la banda de 2.4 GHz",
+        "nota": "Estándar 802.11n/g/b"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Fast Ethernet RJ45",
+        "nota": "10/100 Mbps"
+      },
+      {
+        "k": "Antenas",
+        "v": "2 antenas externas ajustables de alta ganancia con tecnología MIMO"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Extensor de Rango (Repetidor), Modo Punto de Acceso (AP)"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Doble banda simultánea con velocidades combinadas para mejorar la transmisión de datos y la cobertura en áreas difíciles de alcanzar."
+        "d": "Amplifica la señal Wi-Fi del router principal eliminando zonas muertas en habitaciones, pasillos y áreas de difícil acceso."
       },
       {
-        "d": "Dos antenas externas ajustables orientadas para optimizar la recepción y la difusión de la señal Wi-Fi en espacios residenciales."
+        "d": "2 antenas externas con tecnología MIMO que optimizan la recepción y estabilidad de la señal en toda la casa."
       },
       {
-        "d": "Puerto Ethernet en la parte inferior para conectar dispositivos por cable o para funcionar en modo punto de acceso."
+        "d": "Indicador de señal LED inteligente que cambia de color para ayudarte a encontrar la ubicación óptima de instalación."
       },
       {
-        "t": "Diseño",
-        "d": "Montaje directo a pared con rejillas de ventilación laterales."
+        "d": "Botón WPS para conexión instantánea con el router principal en segundos sin configuraciones complejas."
+      },
+      {
+        "d": "Puerto Fast Ethernet integrado para conectar dispositivos por cable (Smart TV, PC, consola) o convertir una conexión de cable en Wi-Fi (Modo AP)."
+      },
+      {
+        "d": "Control de cobertura y programación de horarios de apagado/encendido para ahorro de energía desde la interfaz."
+      },
+      {
+        "d": "Compatible con cualquier módem, router o punto de acceso inalámbrico estándar."
+      },
+      {
+        "d": "Gestión sencilla desde el smartphone con la app móvil TP-Link Tether (Android / iOS) o navegador web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Departamentos y casas donde la señal del módem principal no llega con suficiente fuerza a dormitorios, patios u oficinas de trabajo.",
+      "Conectar por cable equipos que no tienen Wi-Fi o requieren mayor estabilidad (computadoras de escritorio, impresoras de red o decodificadores).",
+      "Teletrabajo, clases virtuales, navegación web y reproducción fluida de contenido en HD."
     ],
     "incluye": [
-      "1x Repetidor Wi-fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)"
+      "1× Extensor de Cobertura Wi-Fi TP-Link TL-WA855RE (N300)",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -4750,34 +4907,66 @@
         "v": "TP-Link"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
-      },
-      {
         "k": "Modelo",
         "v": "Archer C54"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router Wi-Fi AC1200 Doble Banda"
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Fast Ethernet + 4× puertos LAN Fast Ethernet",
+        "nota": "10/100 Mbps"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas de alta ganancia con tecnología Beamforming"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Extensor de Rango",
+        "nota": "Repetidor"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Conectividad Wi-Fi de doble banda simultánea con velocidades combinadas de hasta 1200 Mbps (hasta 867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz)."
+        "d": "Hasta 1167 Mbps teóricos combinados (867 Mbps en la banda de 5 GHz + 300 Mbps en la banda de 2.4 GHz)."
       },
       {
-        "d": "Cuatro antenas externas fijas distribuidas para ampliar la recepción y cobertura de la señal inalámbrica en espacios domésticos."
+        "t": "Funcionalidad versátil 3 en 1",
+        "d": "opera como Router principal, Punto de Acceso por cable o Repetidor de señal inalámbrica."
       },
       {
-        "d": "Puertos Ethernet en la parte posterior para conexiones por cable estables en ordenadores, consolas u otros equipos de red."
+        "d": "Tecnología MU-MIMO para atender a múltiples dispositivos de forma simultánea, evitando la saturación de la red."
+      },
+      {
+        "d": "4 antenas externas con tecnología Beamforming, que localizan la posición de los equipos para concentrar la señal inalámbrica directamente hacia ellos."
+      },
+      {
+        "d": "Soporte para funciones de IPTV (IGMP Proxy/Snooping, Modo Puente y Tag VLAN) para streaming de televisión digital sin interrupciones."
+      },
+      {
+        "d": "Diseño ultra compacto y estilizado, ideal para ahorrar espacio en escritorios o para montaje en pared."
+      },
+      {
+        "d": "Seguridad y control con red de invitados independiente, controles parentales para limitar accesos y cifrado moderno WPA/WPA2/WPA3."
+      },
+      {
+        "d": "Gestión y configuración intuitiva desde el teléfono con la app móvil TP-Link Tether (iOS/Android) o a través de navegador web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Departamentos, casas pequeñas a medianas y oficinas con conexiones de Internet de hasta 100 Mbps que buscan una señal estable de doble banda.",
+      "Streaming de video en calidad Full HD/4K, teletrabajo, clases virtuales y videollamadas fluidas sin cortes.",
+      "Ampliar la cobertura de una red existente configurándolo de forma rápida como repetidor o punto de acceso secundario."
     ],
     "incluye": [
-      "1x Router Wi-fi AC1200 TP-Link Archer C54"
+      "1× Router Wi-Fi AC1200 TP-Link Archer C54",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -5028,52 +5217,67 @@
         "v": "TP-Link"
       },
       {
+        "k": "Modelo",
+        "v": "Archer AX1450"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AX1450"
+        "v": "AX1450 Doble Banda",
+        "nota": "Wi-Fi 6: hasta 1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas de alto rendimiento con Beamforming para una señal más fuerte y estable"
+        "v": "4 antenas externas fijas de alta ganancia con tecnología Beamforming"
       },
       {
-        "k": "Estándar",
-        "v": "Wi-Fi 6",
-        "nota": "802.11ax"
-      },
-      {
-        "k": "Modos De Operación",
-        "v": "Router, Punto de Acceso (AP)"
-      },
-      {
-        "k": "Gestión",
-        "v": "Configuración sencilla mediante la app TP-Link Tether"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Velocidad combinada de hasta 1500 Mbps (1201 Mbps en 5GHz + 300 Mbps en 2.4GHz)."
+        "d": "Hasta 1500 Mbps teóricos combinados (1201 Mbps en la banda de 5 GHz con tecnología Wi-Fi 6 + 300 Mbps en 2.4 GHz)."
       },
       {
-        "d": "Puertos WAN y LAN Gigabit para aprovechar al máximo tu conexión a internet por cable."
+        "d": "Tecnología Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO que permite transmitir datos hacia múltiples dispositivos en simultáneo reduciendo la latencia y la congestión."
       },
       {
-        "d": "Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO para gestionar mejor el tráfico de múltiples dispositivos."
+        "d": "Procesador de triple núcleo (Triple-Core) a 1.5 GHz que gestiona de manera ágil el tráfico pesado y asegura respuestas instantáneas de red."
       },
       {
-        "t": "Seguridad",
-        "d": "Encriptación WPA3 para una protección robusta de tu red."
+        "d": "Puertos Ethernet Gigabit completos (1 WAN + 4 LAN) para conexiones por cable de máxima velocidad en computadoras, consolas de videojuegos y Smart TVs."
       },
       {
-        "t": "Ventaja clave",
-        "d": "Mayor capacidad de dispositivos simultáneos comparado con la generación anterior (AC)."
+        "d": "Cobertura extendida mediante 4 antenas y tecnología Beamforming, orientando la señal directamente hacia los dispositivos enlazados."
+      },
+      {
+        "d": "Seguridad inalámbrica avanzada con protocolo de encriptación WPA3 para mayor protección frente a ciberataques y accesos no autorizados."
+      },
+      {
+        "d": "Compatibilidad con EasyMesh / OneMesh para integrarse con extensores compatibles y crear una red mallada fluida en todo el hogar."
+      },
+      {
+        "d": "Eficiencia energética con Target Wake Time (TWT), disminuyendo el consumo de batería en móviles y dispositivos inteligentes conectados."
+      },
+      {
+        "d": "Configuración rápida e intuitiva desde la aplicación móvil TP-Link Tether (iOS/Android) o a través de la interfaz web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para gaming, streaming de video de alta calidad y hogares inteligentes conectados."
+      "Hogares medianos, departamentos y oficinas que buscan dar el salto a la tecnología Wi-Fi 6 a un costo accesible.",
+      "Streaming de video en calidad 4K/UHD, teletrabajo con videollamadas fluidas y gaming online con baja latencia.",
+      "Redes domésticas con múltiples dispositivos (móviles, laptops, consolas y domótica) conectados al mismo tiempo."
     ],
     "incluye": [
-      "1x Router TP-Link Archer AX1450 (Wi-fi 6)"
+      "1× Router Wi-Fi 6 TP-Link Archer AX1450",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -5910,61 +6114,65 @@
         "v": "TP-Link"
       },
       {
+        "k": "Modelo",
+        "v": "Archer A6",
+        "nota": "AC1200 Gigabit"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
       },
       {
         "k": "Puertos",
-        "v": "1 puerto WAN Gigabit + 4 puertos LAN Gigabit",
-        "nota": "garantiza máxima velocidad por cable"
+        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas fijas de alto rendimiento para una cobertura óptima en toda la casa"
+        "v": "4 antenas externas de alto rendimiento con tecnología Beamforming"
       },
       {
-        "k": "Estándares",
-        "v": "IEEE 802.11ac/n/a 5GHz, IEEE 802.11n/b/g 2.4GHz"
-      },
-      {
-        "k": "Modos",
-        "v": "Router Wi-Fi o Punto de Acceso",
-        "nota": "AP Mode"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Velocidades combinadas de hasta 1200 Mbps (300 Mbps en 2.4GHz + 867 Mbps en 5GHz)."
+        "d": "Velocidades combinadas de hasta 1200 Mbps (867 Mbps en la banda libre de 5 GHz + 300 Mbps en la banda de 2.4 GHz)."
       },
       {
-        "d": "puerto WAN Gigabit + 4 puertos LAN Gigabit (garantiza máxima velocidad por cable)."
+        "d": "Tecnología MU-MIMO 2×2 que transfiere datos a múltiples dispositivos simultáneamente sin caídas de rendimiento ni congestión."
       },
       {
-        "d": "antenas fijas de alto rendimiento para una cobertura óptima en toda la casa."
+        "d": "Cobertura optimizada con tecnología Beamforming, que localiza la posición de los dispositivos conectados para concentrar la señal inalámbrica directamente hacia ellos."
       },
       {
-        "t": "Tecnología",
-        "d": "Soporte para MU-MIMO (transmite a varios dispositivos simultáneamente)."
+        "d": "5 puertos Ethernet Gigabit completos (1 WAN + 4 LAN) para conexiones cableadas ultrarrápidas y sin cuellos de botella en PCs, consolas y Smart TVs."
       },
       {
-        "t": "Seguridad",
-        "d": "Encriptación WPA3 (último estándar de seguridad) y WPA2."
+        "d": "Compatible con TP-Link OneMesh / EasyMesh para emparejar con extensores compatibles y crear una red en malla con un solo nombre de red y roaming sin interrupciones."
       },
       {
-        "t": "Gestión",
-        "d": "Compatible con la app TP-Link Tether para una configuración rápida."
+        "d": "Seguridad inalámbrica avanzada con soporte para el protocolo de cifrado WPA3."
       },
       {
-        "t": "Dimensiones",
-        "d": "230 x 144 x 35 mm"
+        "d": "Modo Punto de Acceso integrado para transformar cualquier conexión cableada existente en una red inalámbrica de alta velocidad."
+      },
+      {
+        "d": "Configuración y administración total desde el móvil mediante la aplicación TP-Link Tether (iOS/Android) o interfaz web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para gaming, streaming 4K y entornos con alta demanda de ancho de banda."
+      "Casas medianas, departamentos y oficinas que cuentan con servicios de Internet por fibra óptica y requieren aprovechar el ancho de banda con puertos Gigabit.",
+      "Streaming de películas y series en resolución Full HD/4K, videollamadas fluidas para teletrabajo y sesiones de juego online estables.",
+      "Redes domésticas con múltiples dispositivos (celulares, tablets, consolas y laptops) conectados al mismo tiempo."
     ],
     "incluye": [
-      "1x Router TP-Link Archer A6 (AC1200)"
+      "1× Router Wi-Fi Gigabit TP-Link Archer A6",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -6289,7 +6497,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚙️ Router Profesional (RouterOS) ",
+      "⚙️ Router Profesional (RouterOS)",
       "⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
@@ -6301,56 +6509,63 @@
         "v": "MikroTik"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "GIGABIT"
+        "k": "Modelo",
+        "v": "hEX",
+        "nota": "RB750Gr3"
+      },
+      {
+        "k": "Procesador y Memoria",
+        "v": "CPU Dual-Core a 880 MHz (4 hilos) + 256 MB de RAM"
       },
       {
         "k": "Puertos",
-        "v": "5 puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable"
+        "v": "5× puertos Gigabit Ethernet (10/100/1000 Mbps) + 1× puerto USB 2.0 tipo A + 1× ranura para tarjeta microSD"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router cableado",
-        "nota": "sin Wi-Fi integrado"
+        "k": "Alimentación",
+        "v": "Jack DC (8V a 30V) o PoE Pasivo en puerto 1",
+        "nota": "8V a 30V"
       },
       {
-        "k": "Cpu",
-        "v": "Dual-core 880 MHz"
-      },
-      {
-        "k": "Ram",
-        "v": "256 MB"
+        "k": "Sistema Operativo",
+        "v": "RouterOS con licencia Nivel 4",
+        "nota": "Level 4"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Potente procesador dual-core de 880 MHz para manejar configuraciones complejas (VPN, firewall, colas de tráfico)."
+        "d": "Rendimiento Gigabit completo en sus 5 puertos para enrutamiento veloz y sin cuellos de botella."
       },
       {
-        "d": "puertos Ethernet Gigabit para una conexión cableada ultra rápida y estable."
+        "d": "Aceleración por hardware para cifrado IPsec (~470 Mbps), ideal para túneles y conexiones VPN ultrarrápidas y seguras."
       },
       {
-        "d": "Ranura para tarjeta microSD que permite almacenar archivos de usuario y bases de datos."
+        "t": "Sistema operativo RouterOS Nivel 4",
+        "d": "permite balanceo de carga con múltiples proveedores de Internet (Multi-WAN / Failover), cortafuegos avanzado (Firewall), control de ancho de banda (Queues/QoS), VLANs y servidor Hotspot."
       },
       {
-        "t": "Sistema",
-        "d": "Ejecuta RouterOS, el sistema operativo líder para la gestión profesional de redes."
+        "d": "Ranura para tarjeta microSD y puerto USB que permiten ampliar el almacenamiento para bases de datos, paquetes de servidor de monitoreo The Dude o conexión de módems 4G/LTE de respaldo."
       },
       {
-        "t": "Versatilidad",
-        "d": "Incluye puerto USB para módems 4G/LTE u otros periféricos"
+        "d": "Procesamiento multitarea estable gracias a sus 2 núcleos físicos y 4 hilos a 880 MHz junto a 256 MB de RAM."
       },
       {
-        "t": "Puertos",
-        "d": "5x 10/100/1000 Mbps Ethernet"
+        "d": "Diseño ultra compacto, de bajo consumo eléctrico y 100% silencioso (refrigeración pasiva sin ventiladores)."
+      },
+      {
+        "t": "Doble opción de alimentación",
+        "d": "a través de su adaptador de corriente tradicional o mediante PoE Pasivo por el puerto 1."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para administración de ISPs, gestión de ancho de banda, VPNs y redes corporativas pequeñas."
+      "Oficinas, empresas y hogares avanzados que requieren balancear 2 o más líneas de Internet o configurar respaldo automático si cae el proveedor principal.",
+      "Redes comerciales que necesitan implementar portal cautivo (Hotspot con tickets/fichas), segmentación por VLANs y priorización de tráfico para videollamadas o streaming.",
+      "Enlaces VPN seguros de sitio a sitio (teletrabajo o interconexión de sucursales) gracias a su soporte nativo de hardware IPsec."
     ],
     "incluye": [
-      "1x MikroTik hEX (RB750GR3)"
+      "1× Router MikroTik hEX (RB750Gr3)",
+      "1× Adaptador de corriente (24V)",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -6386,52 +6601,68 @@
         "v": "Tenda"
       },
       {
+        "k": "Modelo",
+        "v": "AX12 Pro",
+        "nota": "AX3000"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AX12"
+        "v": "AX3000 Doble Banda",
+        "nota": "Wi-Fi 6"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + 3× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable"
+        "v": "4 antenas externas de alta ganancia (6 dBi) con 4 módulos FEM independientes de amplificación de señal"
       },
       {
-        "k": "Estándar",
-        "v": "Wi-Fi 6",
-        "nota": "AX1500"
-      },
-      {
-        "k": "Gestión",
-        "v": "Configuración sencilla a través de la App Tenda WiFi"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor Universal / WISP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias."
+        "d": "Hasta 2976 Mbps teóricos totales (2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz)."
       },
       {
-        "d": "Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz)."
+        "d": "Wi-Fi 6 (802.11ax) con soporte de canales ultra anchos de 160 MHz para duplicar el rendimiento y reducir la latencia."
       },
       {
-        "d": "Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica."
+        "d": "Tecnologías OFDMA y MU-MIMO que permiten transmitir datos a múltiples dispositivos al mismo tiempo sin saturación."
       },
       {
-        "t": "Eficiencia",
-        "d": "Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento."
+        "d": "4 módulos frontales amplificadores (FEM) integrados que optimizan la penetración de señal a través de paredes y eliminan zonas muertas."
       },
       {
-        "t": "Seguridad",
-        "d": "Protocolo WPA3 para una protección de red mucho más avanzada."
+        "d": "Procesador Quad-Core a 1.3 GHz que gestiona el tráfico de alta intensidad manteniendo la estabilidad de la red."
       },
       {
-        "t": "Funciones",
-        "d": "Soporte para control parental y red de invitados."
+        "d": "Seguridad inalámbrica de última generación con estándar WPA3 para máxima protección contra accesos no autorizados."
+      },
+      {
+        "d": "Tecnología Target Wake Time (TWT) que ayuda a ahorrar consumo de batería en smartphones, laptops y dispositivos IoT conectados."
+      },
+      {
+        "d": "BSS Coloring y Beamforming para minimizar interferencias de redes vecinas y concentrar la señal directamente hacia tus dispositivos."
+      },
+      {
+        "d": "Gestión y configuración rápida a través de la aplicación móvil Tenda Wi-Fi (iOS/Android) o interfaz web."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos."
+      "Hogares, oficinas y departamentos con conexiones de fibra óptica de hasta 1 Gbps que requieren aprovechar el ancho de banda contratado al máximo.",
+      "Gaming competitivo en línea con ping bajo, streaming de video en ultra alta definición (4K/8K) y teletrabajo continuo sin interrupciones.",
+      "Redes con decenas de dispositivos inteligentes conectados simultáneamente (Smart TVs, consolas, cámaras y domótica)."
     ],
     "incluye": [
-      "1x Router Tenda AX12 PRO (Wi-fi 6)"
+      "1× Router Tenda AX12 Pro (Wi-Fi 6 AX3000)",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -6466,45 +6697,67 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Ubiquiti"
-      },
-      {
-        "k": "Velocidad Wi-Fi",
-        "v": "450 MBPS"
+        "v": "Ubiquiti Networks"
       },
       {
         "k": "Modelo",
-        "v": "NanoStation AC loco"
+        "v": "NanoStation 5AC Loco",
+        "nota": "Loco5AC"
       },
       {
-        "k": "Frecuencias",
-        "v": "5 GHz"
+        "k": "Frecuencia y Velocidad",
+        "v": "5 GHz hasta 450+ Mbps de rendimiento real",
+        "nota": "Tecnología airMAX ac"
       },
       {
-        "k": "Velocidad Máxima",
-        "v": "450+ Mbps"
+        "k": "Puertos",
+        "v": "1× puerto LAN Gigabit Ethernet",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Antenas",
+        "v": "Antena direccional integrada de 13 dBi",
+        "nota": "Doble polarización 2×2 MIMO"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "CPE / Estación (Cliente), Punto de Acceso (AP) para enlaces Punto a Punto (PtP) y Punto a Multipunto",
+        "nota": "PtMP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad."
+        "d": "Rendimiento de alta velocidad con tecnología airMAX ac, superando los 450 Mbps de velocidad real con baja latencia y alta eficiencia espectral."
       },
       {
-        "d": "Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal."
+        "d": "Radio Wi-Fi de gestión independiente en 2.4 GHz para configuración rápida y monitoreo directo desde el teléfono móvil mediante la app UISP (iOS/Android)."
       },
       {
-        "d": "Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención."
+        "d": "Sistema operativo airOS 8 con analizador de espectro en tiempo real (airView), herramientas avanzadas de diagnóstico de señal y compatibilidad con protocolo TDMA."
       },
       {
-        "t": "Gestión",
-        "d": "Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada."
+        "d": "Puerto Gigabit Ethernet que elimina cuellos de botella y aprovecha al máximo el ancho de banda del enlace inalámbrico."
+      },
+      {
+        "d": "Procesador de alto rendimiento y arquitectura optimizada para rechazo de ruido e interferencias en entornos densos."
+      },
+      {
+        "d": "Diseño ultra compacto, discreto y estilizado con protección para exteriores frente a rayos UV, lluvia y descargas electrostáticas (ESD)."
+      },
+      {
+        "d": "Alimentación mediante PoE Pasivo de 24V (consumo máx. ultra bajo de solo 8.5W)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Enlaces inalámbricos Punto a Punto (PtP) y Punto a Multipunto (PtMP) de corto y medio alcance (hasta 5-10 km con línea de vista despejada).",
+      "Antena cliente (CPE) para proveedores WISP que ofrecen planes de Internet de alta velocidad a usuarios residenciales o corporativos.",
+      "Transmisión fluida de múltiples cámaras de videovigilancia IP en circuito cerrado, interconexión de naves industriales, oficinas anexas o fincas."
     ],
     "incluye": [
-      "1x NanoStation 5 AC Loco"
+      "1× Antena Ubiquiti NanoStation 5AC Loco",
+      "1× Abrazadera / kit de sujeción para montaje en mástil",
+      "1× Guía de inicio rápido",
+      "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ]
   },
   {
@@ -6529,8 +6782,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🌐 Conectividad de Largo Alcance ",
-      "📡 Diseño Compacto y Eficiente ",
+      "🌐 Conectividad de Largo Alcance",
+      "📡 Diseño Compacto y Eficiente",
       "🛠️ Solución para Exterior"
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z",
@@ -6543,41 +6796,63 @@
       },
       {
         "k": "Modelo",
-        "v": "SXTsq Lite5"
+        "v": "SXTsq Lite5",
+        "nota": "RBSXTsq5nD"
       },
       {
-        "k": "Frecuencias",
-        "v": "5 GHz"
+        "k": "Frecuencia y Velocidad",
+        "v": "5 GHz hasta 300 Mbps",
+        "nota": "Wi-Fi 4 / 802.11a/n - Dual Chain 2×2"
       },
       {
-        "k": "Uso",
-        "v": "Enlaces punto a punto y CPE en exteriores"
+        "k": "Puertos",
+        "v": "1× puerto Fast Ethernet RJ45",
+        "nota": "10/100 Mbps con soporte PoE In"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Dispositivo inalámbrico"
+        "k": "Antenas",
+        "v": "Antena direccional de panel integrada de 16 dBi",
+        "nota": "Doble polarización 2×2 MIMO, apertura ~23°"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "CPE / Estación (Cliente), Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 3"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Diseñado para enlaces de largo alcance en la banda de 5 GHz, ofreciendo una conexión inalámbrica robusta y de gran estabilidad."
+        "d": "Frecuencia en banda de 5 GHz (802.11a/n) con modulación 2×2 MIMO para establecer enlaces directos y libres de las interferencias comunes de 2.4 GHz."
       },
       {
-        "d": "Formato cuadrado minimalista y compacto en color blanco, optimizado para una instalación discreta y duradera en exteriores."
+        "d": "Antena integrada de 16 dBi con diseño compacto SXTsq, dos veces más delgada que el modelo SXT Lite5 tradicional conservando el mismo rendimiento de ganancia."
       },
       {
-        "d": "Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes."
+        "d": "Procesador Atheros AR9344 a 600 MHz con 64 MB de RAM para una gestión estable de datos y enrutamiento continuo."
       },
       {
-        "t": "○ Configuración",
-        "d": "Interfaz intuitiva y versátil propia de MikroTik, permitiendo una puesta en marcha rápida y una gestión precisa de la red."
+        "d": "Sistema operativo RouterOS Nivel 3, con soporte para protocolos inalámbricos propietarios MikroTik (Nv2 y Nstreme), firewall, monitoreo de señal y gestión avanzada."
+      },
+      {
+        "d": "Carcasa para exteriores de alta durabilidad, resistente al agua, rayos UV y temperaturas extremas (-40 °C a +70 °C)."
+      },
+      {
+        "d": "Alimentación eficiente mediante PoE Pasivo (10V a 30V) a través del cable de red Ethernet con consumo energético de apenas 6W."
+      },
+      {
+        "d": "Puntos de anclaje integrados compatibles con abrazaderas para mástil y soportes articulados (como MikroTik QuickMount)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Dispositivo cliente (CPE) para abonados en redes de proveedores de Internet inalámbrico (WISP) sobre la banda de 5 GHz.",
+      "Enlaces inalámbricos Punto a Punto (PtP) de corto y mediano alcance (hasta 6-12 km con línea de vista despejada).",
+      "Conexión de cámaras de videovigilancia IP en exteriores e interconexión de redes locales entre edificios cercanos o fincas."
     ],
     "incluye": [
-      "1x MikroTik SXTsq LITE5"
+      "1× Antena CPE MikroTik SXTsq Lite5",
+      "1× Adaptador de corriente (24V)",
+      "1× Inyector PoE Fast Ethernet",
+      "1× Abrazadera metálica para fijación en mástil o poste",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -6685,42 +6960,67 @@
         "v": "Wavlink"
       },
       {
+        "k": "Modelo",
+        "v": "Router Inteligente AC1200 Doble Banda",
+        "nota": "Serie Quantum / WL-WN530HG4"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "AC1200"
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN RJ45 + 4× puertos LAN RJ45",
+        "nota": "10/100 Mbps"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas externas"
+        "v": "4 antenas externas omnidireccionales de alta ganancia",
+        "nota": "5 dBi"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router inalámbrico Dual Band"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor / WISP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Soporta doble banda simultánea para separar el tráfico y reducir la interferencia, asegurando un rendimiento óptimo en la red."
+        "d": "Hasta 1167 Mbps teóricos combinados (867 Mbps en la banda limpia de 5 GHz + 300 Mbps en 2.4 GHz para mayor alcance)."
       },
       {
-        "d": "Dispone de cuatro antenas externas de alta ganancia que amplían el área de cobertura y eliminan las zonas sin señal."
+        "d": "4 antenas externas ajustables de 5 dBi con tecnología Beamforming que dirigen la señal directamente hacia los dispositivos conectados."
       },
       {
-        "d": "Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras."
+        "t": "Tecnología Touchlink (patentada por Wavlink)",
+        "d": "permite a las visitas conectarse a una red de invitados temporal simplemente tocando la carcasa, sin ingresar contraseña."
       },
       {
-        "t": "Seguridad",
-        "d": "Protocolos de encriptación avanzados para proteger tu red contra accesos no autorizados y mantener tus datos seguros."
+        "d": "Soporte multiusuario MU-MIMO para optimizar la transmisión simultánea hacia varios teléfonos, Smart TVs y computadoras."
       },
       {
-        "t": "Modelo",
-        "d": "AC1200"
+        "d": "Puertos Ethernet integrados para conexión directa por cable a equipos fijos como consolas de videojuegos, PCs de escritorio o decodificadores."
+      },
+      {
+        "d": "Seguridad inalámbrica con cifrado WPA-PSK / WPA2-PSK, cortafuegos SPI y protección contra accesos no autorizados."
+      },
+      {
+        "d": "Diseño extraplano y estilizado en color negro mate con rejillas laterales de ventilación para una óptima disipación térmica."
+      },
+      {
+        "d": "Configuración rápida mediante asistente web con opciones de control parental, filtrado por MAC y priorización de ancho de banda (QoS)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Departamentos, casas medianas y oficinas pequeñas que requieren mejorar su conexión inalámbrica a doble banda con una solución económica y estable.",
+      "Streaming de video en HD/4K, teletrabajo, clases virtuales y navegación multidispositivo sin cortes.",
+      "Comercios pequeños, recepciones o salas de espera donde se busca brindar acceso Wi-Fi rápido a clientes e invitados."
     ],
     "incluye": [
-      "1x Router Inalámbrico Wavlink AC1200 Dual Band"
+      "1× Router Inalámbrico Wavlink AC1200 Dual Band",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -6950,39 +7250,64 @@
         "v": "ASUS"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 6"
-      },
-      {
         "k": "Modelo",
         "v": "RT-AX1800S"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router Wi-Fi 6 AX1800 de doble banda"
+        "k": "Velocidad Wi-Fi",
+        "v": "AX1800 Doble Banda",
+        "nota": "Wi-Fi 6"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas de alta ganancia con tecnología Beamforming"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor / Media Bridge, Nodo AiMesh"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Wi-Fi 6 (802.11ax) de doble banda con velocidades combinadas de hasta 1800 Mbps para una navegación fluida."
+        "d": "Hasta 1800 Mbps teóricos totales (1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz)."
       },
       {
-        "d": "Cuatro antenas externas orientables diseñadas para expandir la cobertura de señal en todo el espacio."
+        "d": "Estándar Wi-Fi 6 (802.11ax) con tecnologías OFDMA y MU-MIMO para gestionar mayor densidad de conexiones sin saturación."
       },
       {
-        "d": "Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad."
+        "d": "Seguridad de nivel comercial AiProtection Classic con tecnología Trend Micro™, que bloquea amenazas, sitios maliciosos y ofrece controles parentales avanzados."
       },
       {
-        "t": "Conectividad Física",
-        "d": "Puertos Gigabit Ethernet para conexiones por cable de alta velocidad con máxima estabilidad."
+        "d": "Compatible con ASUS AiMesh, permitiendo crear una red en malla fluida y escalable combinándolo con otros routers ASUS."
+      },
+      {
+        "d": "Puertos Ethernet Gigabit completos para máxima velocidad y estabilidad por cable en PCs, consolas y Smart TVs."
+      },
+      {
+        "d": "Eficiencia energética con tecnología Target Wake Time (TWT), reduciendo el consumo de batería en smartphones y dispositivos IoT."
+      },
+      {
+        "d": "Cifrado de última generación WPA3 para máxima protección contra intrusiones."
+      },
+      {
+        "d": "Gestión completa y monitoreo de tráfico en tiempo real mediante la app móvil ASUS Router (iOS/Android) o la interfaz avanzada ASUSWRT."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Enrutamiento y distribución de red de alta velocidad para el hogar u oficina."
+      "Hogares, departamentos y oficinas medianas que buscan modernizar su red a Wi-Fi 6 con alta estabilidad y control de seguridad robusto.",
+      "Streaming en calidad 4K/UHD, teletrabajo con videollamadas fluidas y gaming sin interrupciones.",
+      "Familias que requieren control parental eficiente para gestionar horarios de conexión y filtrar contenido por dispositivo."
     ],
     "incluye": [
-      "1x Router Wi-fi 6 AX1800 Asus RT-AX1800S"
+      "1× Router Wi-Fi 6 ASUS RT-AX1800S",
+      "1× Adaptador de corriente",
+      "1× Cable Ethernet RJ45",
+      "1× Guía de inicio rápido y garantía"
     ]
   },
   {
@@ -7005,7 +7330,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ AX3000 Wi-Fi 6 ",
+      "⚡ AX3000 Wi-Fi 6",
       "📶 Doble Banda 5 GHz / 2.4 GHz",
       "🔌 Puertos Gigabit / USB"
     ],
@@ -7018,43 +7343,67 @@
         "v": "TP-Link"
       },
       {
+        "k": "Modelo",
+        "v": "Archer AX55",
+        "nota": "AX3000"
+      },
+      {
         "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 6"
+        "v": "AX3000 Doble Banda",
+        "nota": "Wi-Fi 6: hasta 2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
       },
       {
         "k": "Puertos",
-        "v": "1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas"
+        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit (10/100/1000 Mbps) + 1× puerto USB 3.0 tipo A"
       },
       {
-        "k": "Modelo",
-        "v": "Archer AX55"
+        "k": "Antenas",
+        "v": "4 antenas externas de alta ganancia con módulos front-end (FEM) de alta potencia y Beamforming"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router Wi-Fi 6 AX3000 de doble banda"
+        "k": "Modos de operación",
+        "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Wi-Fi 6 (802.11ax) de doble banda que alcanza velocidades combinadas de hasta 3000 Mbps (2402 Mbps en 5 GHz y 574 Mbps en 2.4 GHz)."
+        "d": "Hasta 2976 Mbps teóricos combinados (2402 Mbps en la banda limpia de 5 GHz con soporte de canales de 160 MHz + 574 Mbps en 2.4 GHz)."
       },
       {
-        "d": "Cuatro antenas externas de alta ganancia equipadas con tecnología Beamforming para concentrar la señal hacia los dispositivos y eliminar zonas muertas."
+        "d": "Procesador Qualcomm Dual-Core de alto rendimiento y 512 MB de RAM para una gestión fluida de múltiples transferencias simultáneas con latencia reducida hasta en un 75%."
       },
       {
-        "d": "Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento."
+        "d": "Tecnologías OFDMA y MU-MIMO 2×2 para conectar más de 100 dispositivos de forma concurrente sin caídas de rendimiento ni congestión."
       },
       {
-        "t": "Puertos y Conectividad Física",
-        "d": "Puertos Ethernet Gigabit completos (1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas, además de un puerto USB integrado para compartir archivos en red."
+        "d": "Puerto USB 3.0 multifunción de alta velocidad para compartir archivos en red local, crear una nube personal (Samba/FTP) o respaldo con Time Machine."
+      },
+      {
+        "d": "Sistema de seguridad avanzado TP-Link HomeShield, que incluye escáner de red, controles parentales completos y reportes de seguridad en tiempo real."
+      },
+      {
+        "d": "Soporte nativo para Cliente y Servidor VPN (OpenVPN, PPTP, WireGuard), permitiendo que dispositivos de la red accedan a servidores VPN remotos sin instalar software extra."
+      },
+      {
+        "d": "Disipador térmico de gran tamaño y carcasa con ventilación optimizada para mantener el router fresco y estable ante uso continuo intensivo."
+      },
+      {
+        "d": "Compatible con EasyMesh / OneMesh para crear una red en malla con roaming continuo y cobertura total en todo el hogar."
+      },
+      {
+        "d": "Seguridad inalámbrica moderna con cifrado WPA3 y ahorro de batería con Target Wake Time (TWT)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red.",
-      "Conectividad y enrutamiento de red de alta velocidad para hogar u oficina."
+      "Casas y oficinas con conexiones de fibra óptica de hasta 1 Gbps que buscan exprimir la máxima velocidad cableada e inalámbrica.",
+      "Gaming competitivo en línea con mínima latencia, transmisiones en directo y reproducción fluida de contenido en resolución 4K y 8K.",
+      "Usuarios que requieren crear almacenamiento compartido en red (NAS básico) mediante el puerto USB 3.0 o gestionar túneles VPN dedicados."
     ],
     "incluye": [
-      "1x Router Wi-fi 6 AX3000 TP-Link Archer AX55"
+      "1× Router Wi-Fi 6 TP-Link Archer AX55",
+      "1× Adaptador de corriente (12V)",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
     ]
   },
   {
@@ -7212,7 +7561,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Wi-Fi 6 (802.11ax) Alta Velocidad ",
+      "⚡ Wi-Fi 6 (802.11ax) Alta Velocidad",
       "📶 Antena Direccional de 16 dBi",
       "🌐 Licencia RouterOS Level 4"
     ],
@@ -7225,46 +7574,64 @@
         "v": "MikroTik"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 6"
-      },
-      {
         "k": "Modelo",
-        "v": "SXTsq 5 ax"
+        "v": "SXTsq 5 ax",
+        "nota": "RBSXTsqG-5axD"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "CPE Inalámbrico para exteriores"
+        "k": "Frecuencia y Velocidad",
+        "v": "5 GHz hasta 1200 Mbps",
+        "nota": "Wi-Fi 6 / 802.11ax"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto LAN Gigabit Ethernet",
+        "nota": "10/100/1000 Mbps con soporte PoE In"
       },
       {
         "k": "Antenas",
-        "v": "16 dBi"
+        "v": "Antena direccional de panel integrada de 16 dBi",
+        "nota": "Doble polarización 2×2 MIMO, apertura ~23°"
       },
       {
-        "k": "Licencia Routeros",
-        "v": "Level 4"
+        "k": "Modos de operación",
+        "v": "CPE / Estación (Cliente), Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 3"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Conectividad Wi-Fi 6 (802.11ax) para mayor velocidad de transferencia, eficiencia y menor latencia en enlaces de larga distancia."
+        "d": "Tecnología inalámbrica de última generación Wi-Fi 6 (802.11ax) en 5 GHz con modulación 1024-QAM y OFDMA para un rendimiento ultrarrápido y menor latencia."
       },
       {
-        "d": "Antena direccional integrada de 16 dBi optimizada para concentrar el haz de señal y lograr conexiones estables punto a punto (PtP)."
+        "d": "Potente procesador Dual-Core ARM de 64 bits a 800 MHz (IPQ-5010) y 256 MB de RAM para gestionar transferencias pesadas y encriptación sin saturarse."
       },
       {
-        "d": "Viene equipado con RouterOS con licencia Level 4, permitiendo su uso como estación base para sectores o en enlaces punto a multipunto (PtMP)."
+        "d": "Puerto Gigabit Ethernet que aprovecha al máximo el ancho de banda del enlace inalámbrico sin cuellos de botella."
       },
       {
-        "t": "Diseño Físico",
-        "d": "Carcasa compacta para exteriores con protección contra condiciones ambientales adversas y opciones sencillas de montaje en mástil."
+        "d": "Sistema operativo RouterOS v7 (Licencia Nivel 3), con soporte para cortafuegos avanzado, enrutamiento, túneles VPN, VLANs y monitoreo de tráfico en tiempo real."
+      },
+      {
+        "d": "Diseño ultra compacto y estilizado SXTsq, significativamente más delgado que los modelos SXT clásicos y resistente a condiciones climáticas extremas (-40 °C a +70 °C)."
+      },
+      {
+        "d": "Antena integrada de 16 dBi optimizada para enlaces estables y con excelente aislamiento frente a interferencias en entornos densos."
+      },
+      {
+        "d": "Alimentación eficiente mediante PoE Pasivo (12V a 28V) con bajo consumo energético."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Clientes de proveedores WISP (CPE) que requieren planes de Internet de alta velocidad en redes 5 GHz con tecnología Wi-Fi 6.",
+      "Enlaces inalámbricos Punto a Punto (PtP) de media y larga distancia (hasta 10-15 km con línea de vista despejada) para interconectar oficinas, almacenes o fincas.",
+      "Transmisión continua de video para sistemas de cámaras de seguridad IP en alta definición y tráfico masivo de datos locales."
     ],
     "incluye": [
-      "1x Antena CPE MikroTik SXTsq 5 AX"
+      "1× Antena CPE MikroTik SXTsq 5 ax",
+      "1× Adaptador de corriente (24V)",
+      "1× Inyector PoE Gigabit",
+      "1× Abrazadera metálica para mástil o poste",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -7287,8 +7654,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ 5 GHz airMAX Alta Eficiencia ",
-      "📶 Antena Direccional Integrada ",
+      "⚡ 5 GHz airMAX Alta Eficiencia",
+      "📶 Antena Direccional Integrada",
       "🔌 Puertos Ethernet con PoE Pasivo"
     ],
     "fechaAgregado": "2026-07-29T00:51:29.086Z",
@@ -7297,34 +7664,69 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Ubiquiti"
+        "v": "Ubiquiti Networks"
       },
       {
         "k": "Modelo",
-        "v": "NanoStation M5"
+        "v": "NanoStation M5 (NSM5) - Versión Internacional"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "CPE Inalámbrico para exteriores",
-        "nota": "Versión Internacional"
+        "k": "Frecuencia y Velocidad",
+        "v": "5 GHz (rango ampliado 4.9 – 5.9 GHz) hasta 150+ Mbps de rendimiento real",
+        "nota": "Wi-Fi 4 / 802.11a/n airMAX"
+      },
+      {
+        "k": "Puertos",
+        "v": "2× puertos Ethernet 10/100 Mbps",
+        "nota": "1× puerto principal PoE In + 1× puerto secundario con soporte PoE Passthrough"
+      },
+      {
+        "k": "Antenas",
+        "v": "Antena direccional integrada de panel con ganancia de 16 dBi",
+        "nota": "Doble polarización 2×2 MIMO"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "CPE / Estación (Cliente), Punto de Acceso (AP), Repetidor, Enlaces Punto a Punto (PtP) y Punto a Multipunto",
+        "nota": "PtMP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores."
+        "t": "Versión Internacional desbloqueada",
+        "d": "amplia compatibilidad de frecuencias y canales en la banda de 5 GHz sin restricciones de región."
       },
       {
-        "d": "Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido."
+        "d": "Tecnología propietaria airMAX (TDMA) que maximiza el rendimiento, reduce la latencia y elimina colisiones en enlaces exteriores de larga distancia."
       },
       {
-        "d": "Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores."
+        "t": "Doble puerto Ethernet con PoE Passthrough",
+        "d": "permite alimentar y conectar directamente un segundo equipo (como una cámara IP u otra antena) sin necesidad de tender cables eléctricos adicionales."
+      },
+      {
+        "d": "Antena directiva de panel de alta ganancia (16 dBi) optimizada para lograr enlaces estables a distancias de 10 a 15+ km con línea de vista directa."
+      },
+      {
+        "d": "Sistema operativo airOS con herramientas de diagnóstico avanzadas, control de ancho de banda y analizador de espectro en tiempo real (airView)."
+      },
+      {
+        "d": "Indicadores LED traseros con escala de intensidad de señal para una alineación rápida, intuitiva y precisa en torres o mástiles."
+      },
+      {
+        "d": "Carcasa compacta y resistente a la intemperie (rayos UV, lluvia, viento) con protección electrostática integrada (ESD)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Proveedores de Internet inalámbrico (WISP) que conectan clientes en la banda limpia de 5 GHz para evitar las interferencias de la banda 2.4 GHz.",
+      "Enlaces de media y larga distancia Punto a Punto (PtP) entre sucursales, oficinas, fincas o naves industriales.",
+      "Redes de videovigilancia y cámaras de seguridad IP en exteriores alimentadas directamente desde la antena."
     ],
     "incluye": [
-      "1x Antena CPE Ubiquiti NanoStation M5 Internacional"
+      "1× Antena CPE Ubiquiti NanoStation M5 (Versión Internacional)",
+      "1× Inyector PoE Pasivo (24V, 0.5A)",
+      "1× Cable de alimentación AC",
+      "1× Brida / abrazadera para montaje en mástil o poste",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -7403,9 +7805,9 @@
   {
     "id": 1786631549331,
     "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786631547518.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786631547518.webp"
+      "https://tiendamax.org/imagenes/img_1786631547518.webp"
     ],
     "precioActual": 220,
     "precioOriginal": 0,
@@ -7433,46 +7835,63 @@
         "v": "MikroTik"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 802"
-      },
-      {
         "k": "Modelo",
-        "v": "SXT SA5 ac"
+        "v": "SXT SA5 ac",
+        "nota": "RBSXTG-5HPacD-SA"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Access Point Sectorial para exteriores"
+        "k": "Frecuencia y Velocidad",
+        "v": "5 GHz hasta 866 Mbps",
+        "nota": "Wi-Fi 5 / 802.11ac"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto LAN Gigabit (10/100/1000 Mbps) + 1× puerto USB 2.0 tipo A"
       },
       {
         "k": "Antenas",
-        "v": "90 grados"
+        "v": "Antena sectorial integrada de 14 dBi con apertura de 90°",
+        "nota": "Dual-Chain 2×2 MIMO"
       },
       {
-        "k": "Licencia Routeros",
-        "v": "Level 4"
+        "k": "Modos de operación",
+        "v": "Punto de Acceso (AP / Estación Base PtMP), CPE / Cliente, Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 4"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Conectividad Wi-Fi 802.11ac de alta eficiencia para transferencias rápidas y estables en la banda de 5 GHz."
+        "d": "Protocolo inalámbrico 802.11ac de alta velocidad con modulación hasta 256-QAM y canales de 80 MHz para un rendimiento real superior a 500 Mbps."
       },
       {
-        "d": "Antena sectorial integrada con apertura de 90 grados, optimizada para conectar múltiples clientes simultáneamente en una misma zona."
+        "d": "Antena sectorial de haz ancho (90°) optimizada para servir como estación base multipunto y conectar múltiples clientes exteriores."
       },
       {
-        "d": "Funciona con el sistema RouterOS e incluye licencia Level 4, permitiendo su uso directo como punto de acceso base sectorial."
+        "d": "Procesador de alto rendimiento QCA9557 a 720 MHz con 128 MB de memoria RAM."
       },
       {
-        "t": "Diseño Físico",
-        "d": "Carcasa robusta para exteriores con montaje integrado en mástil y protección contra condiciones climáticas adversas."
+        "d": "Sistema operativo RouterOS Nivel 4, que permite control total de ancho de banda (Queues/QoS), cortafuegos avanzado, VLANs y protocolos propietarios Nv2/Nstreme."
+      },
+      {
+        "d": "Retrocompatible con estándares anteriores 802.11a/n para enlazar con equipos clientes de generaciones previas."
+      },
+      {
+        "d": "Alimentación mediante PoE Pasivo o estándar 802.3af/at en un rango de voltaje de 12V a 57V."
+      },
+      {
+        "d": "Carcasa compacta para exteriores resistente a rayos UV, viento y temperaturas extremas (-40 °C a +70 °C)."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Proveedores de Internet inalámbrico (WISP) que requieren montar una estación base sectorial económica para conectar múltiples clientes residenciales o comerciales.",
+      "Redes de videovigilancia IP en fincas, parques industriales o almacenes que necesitan centralizar cámaras de seguridad distribuidas.",
+      "Enlaces punto a multipunto (PtMP) de cobertura amplia en distancias cortas y medias."
     ],
     "incluye": [
-      "1x Access Point Sectorial Exterior MikroTik SXT SA5 ac"
+      "1× Unidad MikroTik SXT SA5 ac",
+      "1× Adaptador de corriente (24V, 0.8A)",
+      "1× Inyector PoE Gigabit",
+      "1× Abrazadera metálica para mástil o torre",
+      "1× Soporte de montaje y alineación básica"
     ]
   },
   {
@@ -7509,35 +7928,70 @@
         "v": "MikroTik"
       },
       {
-        "k": "Velocidad Wi-Fi",
-        "v": "AC3"
-      },
-      {
         "k": "Modelo",
-        "v": "hAP ac3",
-        "nota": "RouterBOARD / RBD53iG-5HacD2HnD"
+        "v": "hAP ac³",
+        "nota": "RBD53iG-5HacD2HnD"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "Router inalámbrico de doble banda para interiores"
+        "k": "Velocidad Wi-Fi",
+        "v": "AC1200 Doble Banda",
+        "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+      },
+      {
+        "k": "Puertos",
+        "v": "5× puertos Gigabit Ethernet (10/100/1000 Mbps) + 1× puerto USB 2.0 tipo A",
+        "nota": "con soporte PoE In en puerto 1 y PoE Out en puerto 5"
+      },
+      {
+        "k": "Antenas",
+        "v": "2× antenas externas desmontables de alta ganancia",
+        "nota": "conectores RP-SMA, doble polarización"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "RouterOS con licencia Nivel 4",
+        "nota": "Level 4"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Conectividad Wi-Fi 5 de doble banda simultánea (2.4 GHz y 5 GHz) para una distribución rápida y estable del tráfico de red."
+        "d": "Procesador Quad-Core a 716 MHz con 256 MB de RAM y 128 MB de almacenamiento interno para un manejo fluido de alto tráfico y múltiples conexiones simultáneas."
       },
       {
-        "d": "Dos antenas externas de alta ganancia que mejoran la propagación de la señal y minimizan los obstáculos en el entorno doméstico u de oficina."
+        "d": "5 puertos Gigabit Ethernet completos que garantizan máxima velocidad de transferencia cableada sin cuellos de botella."
       },
       {
-        "d": "Puertos Gigabit Ethernet para conexiones por cable ultrarrápidas, operando bajo el sistema operativo RouterOS para configuraciones avanzadas de red."
+        "t": "Soporte PoE In y PoE Out",
+        "d": "recibe energía por el puerto 1 vía PoE y puede alimentar directamente otro equipo (antena CPE exterior, cámara IP o punto de acceso) desde el puerto 5."
+      },
+      {
+        "d": "Antenas externas orientables de alto rendimiento que ofrecen una cobertura amplia, eliminando zonas muertas y mejorando la penetración a través de paredes."
+      },
+      {
+        "t": "Sistema operativo RouterOS Nivel 4",
+        "d": "permite balanceo de carga con múltiples proveedores de Internet (Multi-WAN / Failover), firewall robusto, túneles VPN (WireGuard, IPsec, OpenVPN), segmentación por VLANs y portal cautivo (Hotspot)."
+      },
+      {
+        "d": "Puerto USB 2.0 funcional para almacenamiento compartido en red o para conectar un módem 4G/LTE de respaldo."
+      },
+      {
+        "d": "Soporte para control y gestión centralizada de múltiples puntos de acceso mediante la controladora CAPsMAN."
+      },
+      {
+        "d": "Diseño modular con base multi-posición que permite colocar el equipo de forma horizontal, vertical tipo torre o anclado a la pared."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Hogares grandes, oficinas y negocios que buscan una red Wi-Fi y cableada potente con capacidades de administración avanzada de tráfico.",
+      "Escenarios que requieren balancear 2 o más líneas de Internet o configurar respaldo automático ante caídas del proveedor.",
+      "Instalaciones donde se necesite distribuir Wi-Fi interno y alimentar al mismo tiempo una antena de enlace exterior mediante PoE sin transformadores extras."
     ],
     "incluye": [
-      "1x Router Inalámbrico de Escritorio MikroTik hAP ac3"
+      "1× Router MikroTik hAP ac³",
+      "2× Antenas externas desmontables",
+      "1× Adaptador de corriente (24V, 1.5A)",
+      "1× Base / soporte de montaje (para posición vertical, horizontal o pared) con kit de tornillos",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -7572,97 +8026,69 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Ubiquiti"
+        "v": "Ubiquiti Networks"
       },
       {
         "k": "Modelo",
-        "v": "NanoStation Loco M2"
+        "v": "NanoStation M2 (nota: NSM2)-Versión Internacional"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "CPE Inalámbrico para exteriores de 2.4 GHz"
+        "k": "Frecuencia y Velocidad",
+        "v": "2.4 GHz hasta 150+ Mbps de rendimiento real",
+        "nota": "Wi-Fi 4 / 802.11n airMAX"
+      },
+      {
+        "k": "Puertos",
+        "v": "2× puertos Ethernet 10/100 Mbps",
+        "nota": "1× puerto principal PoE In + 1× puerto secundario con soporte PoE Passthrough"
+      },
+      {
+        "k": "Antenas",
+        "v": "Antena direccional integrada de panel con ganancia de 11 dBi",
+        "nota": "Doble polarización 2×2 MIMO"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "CPE / Estación (Cliente), Punto de Acceso (AP), Repetidor, Enlaces Punto a Punto (PtP) y Punto a Multipunto",
+        "nota": "PtMP"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores."
+        "d": "Tecnología propietaria airMAX (TDMA) que mejora la eficiencia espectral, reduce la latencia y optimiza el rendimiento en exteriores con múltiples conexiones concurrentes."
       },
       {
-        "d": "Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables."
+        "t": "Doble puerto Ethernet con PoE Passthrough",
+        "d": "el puerto secundario permite alimentar y comunicar directamente un segundo equipo (como una cámara IP u otra antena) mediante software sin cables de energía adicionales."
       },
       {
-        "d": "Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores."
+        "d": "Antena directiva de 11 dBi con apertura optimizada para enlaces de mediano y largo alcance (hasta 10-15+ km con línea de vista despejada)."
+      },
+      {
+        "d": "Sistema operativo airOS con analizador de espectro en tiempo real (airView), diagnóstico de enlace, control de ancho de banda y monitoreo de tráfico."
+      },
+      {
+        "d": "Barra de indicadores LED traseros con medición de nivel de señal para facilitar una alineación rápida y precisa en campo."
+      },
+      {
+        "d": "Carcasa compacta y resistente a la intemperie (rayos UV, lluvia y viento) con protección contra descargas electrostáticas (ESD)."
+      },
+      {
+        "d": "Alimentación mediante PoE Pasivo (24V, 0.5A) a través del cable de red Ethernet."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Enlaces inalámbricos Punto a Punto (PtP) y Punto a Multipunto (PtMP) de media y larga distancia en 2.4 GHz.",
+      "Equipos cliente (CPE) para proveedores de Internet inalámbrico (WISP) en zonas urbanas, suburbanas o rurales.",
+      "Instalaciones de videovigilancia exterior donde se necesite enviar video y alimentar cámaras IP directamente desde la antena.",
+      "Interconexión de redes locales entre oficinas, almacenes, naves industriales o casas de campo."
     ],
     "incluye": [
-      "1x Antena CPE Inalámbrica Ubiquiti NanoStation M2 Internacional"
-    ]
-  },
-  {
-    "id": 1786632573985,
-    "nombre": "🌐 Punto de Acceso UniFi AC Mesh Ubiquiti",
-    "imagen": "https://tiendamax.org/imagenes/img_1786632572981.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1786632572981.webp"
-    ],
-    "precioActual": 250,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 10,
-    "comisionMoneda": "USD",
-    "categoria": "WIFI",
-    "subcategoria": "ROUTERS",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "⚡ Wi-Fi AC Doble Banda de Alto Rendimiento",
-      "📶 Cobertura Omnidireccional para Exteriores",
-      "🔌 Alimentación PoE con Puerto Ethernet Gigante"
-    ],
-    "fechaAgregado": "2026-08-13T14:49:33.985Z",
-    "seoTitle": "Punto de Acceso UniFi AC Mesh Ubiquiti en Cuba | TiendaMax",
-    "seoDescription": "Punto de acceso inalámbrico de doble banda diseñado para exteriores, ideal para ampliar redes Wi-Fi en patios, plazas, áreas abiertas o complejos grandes…",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "Ubiquiti"
-      },
-      {
-        "k": "Velocidad Wi-Fi",
-        "v": "WI-FI 802"
-      },
-      {
-        "k": "Modelo",
-        "v": "UniFi AC Mesh",
-        "nota": "UAP-AC-M"
-      },
-      {
-        "k": "Tecnología / Tipo",
-        "v": "Punto de acceso Wi-Fi para exteriores"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Conectividad Wi-Fi 802.11ac de doble banda simultánea para garantizar velocidades rápidas de transferencia y menor congestión de red."
-      },
-      {
-        "d": "Antenas omnidireccionales ajustables de alta ganancia integradas para una distribución uniforme de la señal en exteriores."
-      },
-      {
-        "d": "Puerto Ethernet con soporte para alimentación PoE (Power over Ethernet), administrado de forma centralizada mediante el software UniFi Network."
-      }
-    ],
-    "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
-    ],
-    "incluye": [
-      "1x Punto de Acceso UniFi AC Mesh Ubiquiti"
+      "1× Antena CPE Ubiquiti NanoStation M2",
+      "1× Inyector PoE Pasivo (24V, 0.5A)",
+      "1× Cable de alimentación AC",
+      "1× Brida / abrazadera para fijación en mástil o poste",
+      "1× Guía de inicio rápido"
     ]
   },
   {
@@ -8216,9 +8642,9 @@
   {
     "id": 1787157254207,
     "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787157252895.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787157252895.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787157252895.webp"
+      "https://tiendamax.org/imagenes/img_1787157252895.webp"
     ],
     "precioActual": 150,
     "precioOriginal": 0,
@@ -8241,33 +8667,64 @@
     "ficha": [
       {
         "k": "Marca",
-        "v": "Ubiquiti"
+        "v": "Ubiquiti Networks"
       },
       {
         "k": "Modelo",
-        "v": "NanoStation Loco M2"
+        "v": "NanoStation Loco M2",
+        "nota": "LOCOM2"
       },
       {
-        "k": "Tecnología / Tipo",
-        "v": "CPE Inalámbrico para exteriores de 2.4 GHz"
+        "k": "Frecuencia y Velocidad",
+        "v": "2.4 GHz hasta 150+ Mbps de rendimiento real",
+        "nota": "Wi-Fi 4 / 802.11n airMAX"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Ethernet 10/100 Mbps",
+        "nota": "con soporte de alimentación PoE pasivo"
+      },
+      {
+        "k": "Antenas",
+        "v": "Antena direccional de panel integrada con ganancia de 8 dBi",
+        "nota": "polarización dual cruzada 2×2 MIMO"
+      },
+      {
+        "k": "Modos de operación",
+        "v": "CPE (Cliente), Punto de Acceso (AP), Repetidor y Estación Base en enlaces punto a multipunto (PtMP) o punto a punto (PtP)"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Operación en la frecuencia de 2.4 GHz con protocolo airMAX para optimizar el rendimiento de red y reducir la latencia en exteriores."
+        "d": "Tecnología airMAX (TDMA) patentada por Ubiquiti que mejora la escalabilidad, el rendimiento y reduce la latencia en exteriores con múltiples nodos conectados."
       },
       {
-        "d": "Antena direccional integrada de doble polarización diseñada para concentrar el haz de señal y lograr conexiones estables."
+        "d": "Procesador Atheros MIPS 74Kc a 533 MHz con 64 MB de memoria RAM DDR2 para un procesamiento eficiente de tráfico inalámbrico."
       },
       {
-        "d": "Puerto Ethernet con soporte para alimentación PoE pasiva, simplificando la instalación en mástiles o fachadas exteriores."
+        "d": "Sistema operativo intuitivo airOS, que permite un control avanzado de ancho de banda, análisis de espectro (AirView), herramientas de alineación de antena y monitoreo de tráfico."
+      },
+      {
+        "d": "Cobertura de haz optimizada para enlaces de corto y mediano alcance (hasta 5+ km bajo condiciones óptimas)."
+      },
+      {
+        "d": "Diseño compacto, ligero y resistente a la intemperie con protección contra rayos y descargas electrostáticas (ESD)."
+      },
+      {
+        "d": "Alimentación mediante PoE Pasivo (24V, 0.5A) a través de un solo cable de red para datos y energía."
       }
     ],
     "idealPara": [
-      "Hogares, oficinas y redes locales que requieren ampliar cobertura Wi-Fi y conectar teléfonos, Smart TVs y laptops sin caídas de red."
+      "Proveedores de servicios de Internet (WISP) que despliegan redes de acceso de última milla para clientes residenciales.",
+      "Conexión punto a punto entre edificios cercanos, naves industriales, o transmisión de cámaras de seguridad IP en exteriores.",
+      "Extensión de redes locales a zonas rurales, patios, fincas o áreas abiertas donde el cableado estructurado no es viable."
     ],
     "incluye": [
-      "1x Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2"
+      "1× Antena CPE Ubiquiti NanoStation Loco M2",
+      "1× Adaptador de corriente PoE Pasivo (24V, 0.5A)",
+      "1× Cable de alimentación AC",
+      "1× Abrazadera de montaje para mástil / torre",
+      "1× Guía de inicio rápido"
     ]
   }
 ]
