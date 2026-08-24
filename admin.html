@@ -4308,7 +4308,13 @@ async function renderAvisos(box){
       ? `<span style="font-size:11px;font-weight:800;color:#0b0;background:rgba(0,200,0,.12);padding:3px 9px;border-radius:20px">✅ Ya volvió · stock ${g.stock}</span>`
       : `<span style="font-size:11px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.05);padding:3px 9px;border-radius:20px">Agotado</span>`;
     const filas = g.entries.map(e=>{
-      const tel = _avisoTel(e.tel);
+      let tel = _avisoTel(e.tel);
+      if(!tel){
+        // Los agregados a mano guardan el WhatsApp en este navegador, porque
+        // lista_espera no se puede leer de vuelta.
+        try{ tel = _avisoTel((JSON.parse(localStorage.getItem('tm_espera_tel')||'{}'))[String(e._key||'')]||''); }catch(_e){}
+        if(tel) e = Object.assign({}, e, { tel: tel });
+      }
       const key = esc(String(e._key||''));
       const cuando = e.ts ? new Date(Number(e.ts)).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}) : '';
       // El telefono ya no viaja en avisos_stock (era publico). Los que dejaron
@@ -4364,12 +4370,28 @@ async function avisoManualAgregar(){
   if(tel.length<6){ showToast('⚠️ Teléfono inválido','Pon el número con al menos 6 dígitos'); return; }
   const p = PRODUCTOS.find(x=>String(x.id)===String(pid));
   const base = rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero'); return; }
-  const key = 'manual_'+Date.now();
-  const payload = { token:key, ts:Date.now(), producto:(p&&p.nombre)||'', tel:tel };
+  const key = 'manual_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+  // El telefono NO puede ir en avisos_stock: la regla lo prohibe de forma
+  // explicita (!newData.hasChild('tel')) porque ese nodo estuvo abierto a
+  // lectura publica, y Firebase rechaza el write entero con 401. Va aparte a
+  // lista_espera, que es .read:false, igual que hace la pagina del producto.
   try{
-    const r = await fetch(base+'/avisos_stock/'+encodeURIComponent(pid)+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    const r = await fetch(base+'/avisos_stock/'+encodeURIComponent(pid)+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ token:key, ts:Date.now(), producto:(p&&p.nombre)||'' })});
+    if(!r.ok) throw new Error('HTTP '+r.status+' al registrar el aviso');
+    const rt = await fetch(base+'/lista_espera/'+encodeURIComponent(pid)+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ tel:tel, productoId:String(pid), ts:Date.now() })});
+    if(!rt.ok) throw new Error('HTTP '+rt.status+' al guardar el WhatsApp');
+    // Para poder mostrarlo en el panel: lista_espera es .read:false y no se
+    // puede leer de vuelta ni con la cuenta del dueno. Se queda en este
+    // navegador, como los datos de cliente del CRM.
+    try{
+      const cache = JSON.parse(localStorage.getItem('tm_espera_tel')||'{}');
+      cache[key] = tel;
+      localStorage.setItem('tm_espera_tel', JSON.stringify(cache));
+    }catch(e){}
     showToast('✅ Cliente agregado', (p&&p.nombre)||'');
+    if($('#am-tel')) $('#am-tel').value='';
     setTimeout(()=>renderClientes(), 300);
   }catch(e){ showToast('❌ No se pudo agregar', e.message||''); }
 }
