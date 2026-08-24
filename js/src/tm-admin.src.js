@@ -216,6 +216,75 @@ function tmParsearFicha(texto) {
     return R;
 }
 
+// Dibuja la ficha mientras se escribe, con el mismo reparto que hace el modal
+// de la tienda. Cierra el hueco entre lo que el admin escribe y lo que se
+// publica: antes había que guardar el producto para ver cómo quedaba.
+function tmPintarPreviewFicha() {
+    const caja = document.getElementById('fichaPreview');
+    const cuerpo = document.getElementById('fichaPreviewCuerpo');
+    const campo = document.getElementById('productFicha');
+    if (!caja || !cuerpo || !campo) return;
+
+    const esc = t => String(t == null ? '' : t)
+        .replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const r = tmParsearFicha(campo.value);
+    const vacio = !r.ficha.length && !r.caracteristicas.length &&
+                  !r.idealPara.length && !r.incluye.length;
+    if (!campo.value.trim()) { caja.hidden = true; return; }
+    caja.hidden = false;
+
+    let h = '';
+    if (vacio) {
+        h = '<p class="fp-vacio">Todavía no reconozco ningún bloque. '
+          + 'Empezá una línea con <b>Ficha Técnica</b>, <b>Características</b>, '
+          + '<b>Ideal Para</b> o <b>Qué incluye</b>.</p>';
+    } else {
+        if (r.ficha.length) {
+            h += '<div class="fp-sec"><h5>⚙️ Ficha técnica</h5><div class="fp-tabla">'
+               + r.ficha.map(f => '<div class="fp-r"><span class="fp-k">' + esc(f.k) + '</span>'
+                   + '<span class="fp-v">' + esc(f.v)
+                   + (f.nota ? '<span class="fp-n">' + esc(f.nota) + '</span>' : '')
+                   + '</span></div>').join('') + '</div></div>';
+        }
+        if (r.caracteristicas.length) {
+            h += '<div class="fp-sec"><h5>⚡ Características</h5>'
+               + r.caracteristicas.map(c => '<div class="fp-c">'
+                   + (c.t ? '<b>' + esc(c.t) + '</b>' : '')
+                   + '<span>' + esc(c.d) + '</span></div>').join('') + '</div>';
+        }
+        if (r.idealPara.length) {
+            h += '<div class="fp-sec fp-ideal"><h5>🎯 Ideal para</h5>'
+               + r.idealPara.map(t => '<div class="fp-li">' + esc(t) + '</div>').join('') + '</div>';
+        }
+        if (r.incluye.length) {
+            h += '<div class="fp-sec fp-caja"><h5>📦 Qué incluye</h5>'
+               + r.incluye.map(t => '<div class="fp-li">' + esc(t) + '</div>').join('') + '</div>';
+        }
+    }
+
+    // Si la ficha también quedó escrita en Descripción, el producto la muestra
+    // dos veces. Es el mismo lío que hubo que limpiar en 53 productos: mejor
+    // avisarlo acá que descubrirlo publicado.
+    const desc = (document.getElementById('productDescription') || {}).value || '';
+    if (/\n\s*[​\s]*(?:⚙️|📊)?\s*(?:ficha t[eé]cnica|especificaciones)/i.test(desc)) {
+        h += '<div class="fp-choque">⚠️ La <b>Descripción</b> también trae un bloque de '
+           + '“Ficha Técnica”. Se va a ver dos veces: acá arriba y otra vez abajo. '
+           + 'Dejá en Descripción solo el párrafo de venta.</div>';
+    }
+    cuerpo.innerHTML = h;
+}
+
+function initPreviewFicha() {
+    const campo = document.getElementById('productFicha');
+    if (!campo || campo._tmPrev) return;
+    campo._tmPrev = true;
+    campo.addEventListener('input', tmPintarPreviewFicha);
+    const desc = document.getElementById('productDescription');
+    if (desc) desc.addEventListener('input', tmPintarPreviewFicha);
+    tmPintarPreviewFicha();
+}
+
+
 
 function switchTab(tabName) {
     // Redirects to unified Publicación tab

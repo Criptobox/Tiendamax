@@ -61,6 +61,39 @@
   /* Sidebar */
   .body { display:grid; grid-template-columns:60px 1fr; }
   .sidebar { background:rgba(10,10,18,0.6); border-right:1px solid var(--border); padding:14px 0; display:flex; flex-direction:column; gap:6px; align-items:center; }
+  /* Vista previa de la ficha dentro del formulario. Reproduce el bloque del
+     modal de la tienda para que lo que se escribe y lo que se publica sean lo
+     mismo — antes había que guardar para enterarse de cómo quedaba. */
+  .ficha-preview { margin-top:10px; padding:12px; border:1px solid rgba(255,255,255,.09);
+    border-radius:12px; background:#0d0f14; }
+  .fp-titulo { font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+    color:#8b93a0; margin-bottom:9px; }
+  .fp-sec { margin-top:13px; }
+  .fp-sec:first-child { margin-top:0; }
+  .fp-sec h5 { margin:0 0 7px; font-size:11px; font-weight:800; letter-spacing:.06em;
+    text-transform:uppercase; color:#9aa1ab; }
+  .fp-tabla { border:1px solid rgba(255,255,255,.09); border-radius:10px; overflow:hidden; }
+  .fp-r { display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    padding:8px 11px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .fp-r:last-child { border-bottom:0; }
+  .fp-k { font-size:11.5px; font-weight:600; color:#9aa1ab; flex:0 0 auto; }
+  .fp-v { font-size:12.5px; font-weight:800; color:#f4f4f7; text-align:right; overflow-wrap:anywhere; }
+  .fp-n { display:block; margin-top:2px; font-size:10.5px; font-style:italic; font-weight:500;
+    color:#9aa1ab; text-align:right; }
+  .fp-c { background:rgba(255,255,255,.03); border-left:3px solid var(--o);
+    border-radius:0 8px 8px 0; padding:7px 10px; margin-bottom:6px; }
+  .fp-c b { display:block; font-size:12px; color:#ffd1b3; margin-bottom:2px; }
+  .fp-c span { font-size:11.8px; line-height:1.45; color:#c8ccd4; }
+  .fp-li { position:relative; padding-left:20px; font-size:12px; line-height:1.45;
+    color:#c8ccd4; margin-bottom:5px; }
+  .fp-li::before { position:absolute; left:0; top:0; }
+  .fp-ideal .fp-li::before { content:"🎯"; }
+  .fp-caja .fp-li::before { content:"📦"; }
+  .fp-vacio { color:#8b93a0; font-size:12px; font-style:italic; }
+  /* Aviso de que la ficha quedó escrita también en Descripción. */
+  .fp-choque { margin-top:8px; padding:9px 11px; border-radius:9px; font-size:11.8px;
+    line-height:1.5; background:rgba(251,191,36,.10); border:1px solid rgba(251,191,36,.35);
+    color:#f0c674; }
   .side-btn svg.tm-ico-tab { width:21px; height:21px; }
   .side-btn { width:42px; height:42px; border-radius:9px; background:rgba(255,255,255,0.03); border:1px solid transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:18px; position:relative; }
   .side-btn:hover { background:rgba(255,107,53,0.12); color:var(--o); }
@@ -1565,6 +1598,10 @@
                   <b>Etiqueta: Valor</b> es un dato; lo que vaya entre paréntesis al final se guarda como
                   nota aparte, para que el valor siga siendo comparable entre productos.
                 </small>
+                <div id="fichaPreview" class="ficha-preview" hidden>
+                  <div class="fp-titulo">Así lo va a ver el cliente</div>
+                  <div id="fichaPreviewCuerpo"></div>
+                </div>
               </div>
             </div>
             <div class="section">
@@ -1683,7 +1720,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=487696ed"></script>
+<script src="js/tm-bundle.js?v=ca4a7c6d"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -1831,6 +1868,7 @@ function go(view, btn){
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
+  if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
   if(view==='reservas'){ try{ renderReservas(); }catch(e){}
     // Traerse lo cerrado desde otro dispositivo antes de enseñar la lista.
     try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
