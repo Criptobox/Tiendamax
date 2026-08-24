@@ -1,0 +1,238 @@
+<title>Ficha Tataliken 4000W</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+ --paper:#eef0f3;--surf:#fff;--ink:#171a20;--mut:#69717d;--rule:#e0e4ea;--soft:#f6f7f9;
+ --coral:#DD5518;--coralsoft:#fdf1ea;--coralbd:#f6d2be;
+ --warn:#8a5a05;--warnbg:#fdf6e3;--warnbd:#f0dfae;
+ --ok:#0d6b48;--okbg:#eaf6f0;--okbd:#bfe3d1;
+ --falta:#a03030;--faltabg:#fdeeee;--faltabd:#f2c7c7;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --paper:#101319;--surf:#191d24;--ink:#e7eaef;--mut:#98a1ae;--rule:#2a3039;--soft:#14181e;
+ --coral:#FF7A45;--coralsoft:#2a1810;--coralbd:#4a2a1a;
+ --warn:#f0b429;--warnbg:#2a2313;--warnbd:#4a3d1a;
+ --ok:#4ade80;--okbg:#12261c;--okbd:#1f4030;
+ --falta:#ff8080;--faltabg:#2a1616;--faltabd:#4a2424;}}
+:root[data-theme="dark"]{
+ --paper:#101319;--surf:#191d24;--ink:#e7eaef;--mut:#98a1ae;--rule:#2a3039;--soft:#14181e;
+ --coral:#FF7A45;--coralsoft:#2a1810;--coralbd:#4a2a1a;
+ --warn:#f0b429;--warnbg:#2a2313;--warnbd:#4a3d1a;
+ --ok:#4ade80;--okbg:#12261c;--okbd:#1f4030;
+ --falta:#ff8080;--faltabg:#2a1616;--faltabd:#4a2424;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:400 15px/1.55 Archivo,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+.aviso{background:var(--surf);border-bottom:1px solid var(--rule);padding:11px 18px;
+ font-size:13px;color:var(--mut)}
+.aviso div{max-width:760px;margin:0 auto}
+.aviso b{color:var(--ink)}
+main{max-width:760px;margin:20px auto;padding:0 18px 60px}
+.card{background:var(--surf);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
+/* ── cabecera ── */
+.hdr{padding:20px 22px;border-bottom:1px solid var(--rule);display:flex;gap:18px;flex-wrap:wrap}
+.foto{width:104px;height:104px;border-radius:12px;background:var(--soft);border:1px solid var(--rule);
+ flex:none;display:grid;place-items:center;color:var(--mut);font-size:34px}
+.meta{flex:1;min-width:210px}
+.eyebrow{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.cat{font:700 10.5px Archivo;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+.stock{font:700 10.5px Archivo;text-transform:uppercase;letter-spacing:.08em;
+ background:var(--okbg);color:var(--ok);border:1px solid var(--okbd);padding:3px 9px;border-radius:20px}
+h1{font:800 22px/1.25 Archivo;letter-spacing:-.02em;margin-bottom:6px}
+.precio{font:800 27px Archivo;color:var(--coral);font-variant-numeric:tabular-nums}
+.precio small{font:600 13px Archivo;color:var(--mut);margin-left:5px}
+/* ── tarjetas resumen ── */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;padding:18px 22px;
+ border-bottom:1px solid var(--rule)}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--coralsoft);border:1px solid var(--coralbd);border-radius:11px;
+ padding:12px 11px;text-align:center}
+.kpi span{display:block;font:700 9.5px Archivo;text-transform:uppercase;letter-spacing:.07em;
+ color:var(--mut);margin-bottom:5px;line-height:1.3}
+.kpi b{display:block;font:600 15px "IBM Plex Mono",ui-monospace,monospace;color:var(--coral);
+ line-height:1.25}
+.kpi.sinDato{background:var(--faltabg);border-color:var(--faltabd)}
+.kpi.sinDato b{color:var(--falta);font-size:12px}
+/* ── secciones ── */
+section{padding:20px 22px;border-bottom:1px solid var(--rule)}
+section:last-child{border-bottom:0}
+h2{font:800 12px Archivo;text-transform:uppercase;letter-spacing:.09em;color:var(--coral);
+ display:flex;gap:8px;align-items:center;margin-bottom:14px}
+h3{font:700 10.5px Archivo;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);
+ margin:0 0 8px}
+h3+ .tabla{margin-bottom:16px}
+.tabla{border:1px solid var(--rule);border-radius:11px;overflow:hidden}
+.fila{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;
+ padding:11px 14px;border-bottom:1px solid var(--rule);align-items:baseline}
+.fila:last-child{border-bottom:0}
+.fila:nth-child(odd){background:var(--soft)}
+.fila .k{font:600 13px Archivo;color:var(--mut)}
+.fila .v{font:600 13.5px "IBM Plex Mono",ui-monospace,monospace;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fila .n{display:block;font:400 11.5px Archivo;color:var(--mut);font-style:italic;margin-top:3px}
+.fila.sinDato .v{color:var(--falta);font-family:Archivo,sans-serif;font-weight:600;font-size:12.5px}
+/* empaque */
+.empaque .fila{grid-template-columns:44px minmax(0,1fr) minmax(0,.85fr)}
+@media(max-width:560px){.empaque .fila{grid-template-columns:44px minmax(0,1fr)}
+ .empaque .fila .n2{grid-column:2}}
+.cant{font:600 13px "IBM Plex Mono",monospace;color:var(--coral)}
+.n2{font:400 11.5px Archivo;color:var(--mut);font-style:italic}
+/* cajas */
+.caja{border-radius:12px;padding:14px 16px}
+.caja h2{margin-bottom:9px}
+.caja.w{background:var(--warnbg);border:1px solid var(--warnbd)}
+.caja.w h2{color:var(--warn)}
+.caja ul{margin:0;padding-left:19px;display:grid;gap:6px}
+.caja li{font-size:13.5px;line-height:1.5}
+/* faq */
+.faq{display:grid;gap:9px}
+details{border:1px solid var(--rule);border-radius:11px;background:var(--soft)}
+summary{cursor:pointer;padding:12px 14px;font:700 13.5px Archivo;list-style:none;
+ display:flex;gap:9px;align-items:flex-start}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"?";flex:none;width:19px;height:19px;border-radius:50%;
+ background:var(--coral);color:#fff;font:700 12px Archivo;display:grid;place-items:center;margin-top:1px}
+details[open] summary{border-bottom:1px solid var(--rule)}
+details p{margin:0;padding:12px 14px 13px 42px;font-size:13.5px;color:var(--mut);line-height:1.55}
+summary:focus-visible{outline:2px solid var(--coral);outline-offset:-2px;border-radius:11px}
+.pend{background:var(--faltabg);border:1px solid var(--faltabd);border-radius:12px;
+ padding:13px 16px;margin-top:14px}
+.pend h2{color:var(--falta);margin-bottom:8px}
+.pend ul{margin:0;padding-left:19px;display:grid;gap:5px}
+.pend li{font-size:13px;line-height:1.5}
+.vacio{color:var(--mut);font-size:13px;font-style:italic;margin:0}
+
+/* ── Celular ──────────────────────────────────────────────────────────
+   A 360px la fila de dos columnas deja 109px para la etiqueta: "Potencia
+   real (continua)" y su nota parten en dos líneas cada una y la fila se
+   vuelve un bloque de texto. Apiladas —etiqueta chica arriba, valor ancho
+   abajo— se leen de un vistazo. .empaque .fila tiene 2 clases, así que
+   conserva sus columnas sin depender del orden de las reglas. */
+@media(max-width:560px){
+ .aviso{padding:10px 14px;font-size:12.5px}
+ main{margin:14px auto;padding:0 12px 40px}
+ .card{border-radius:14px}
+ .hdr{padding:15px 14px;gap:12px;flex-wrap:nowrap;align-items:flex-start}
+ .foto{width:60px;height:60px;font-size:23px;border-radius:10px}
+ .meta{min-width:0}
+ h1{font:800 19px/1.28 Archivo;letter-spacing:-.02em}
+ .precio{font-size:23px}
+ .kpis{padding:14px;gap:8px}
+ .kpi{padding:11px 9px}
+ section{padding:16px 14px}
+ h2{margin-bottom:12px}
+ .fila{grid-template-columns:1fr;gap:3px;padding:10px 13px}
+ .fila .k{font:700 10.5px Archivo;text-transform:uppercase;letter-spacing:.06em}
+ .fila .v{font-size:14px}
+ .fila.sinDato .v{font-size:13px}
+ .fila .n{margin-top:3px}
+ .empaque .fila{grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:baseline}
+ .caja{padding:13px 14px}
+ details p{padding:11px 14px 12px 14px}
+ .pend{padding:12px 14px}
+}
+</style>
+
+<div class="aviso"><div>Datos reales de <b>productos.json</b> + lo que confirmaste.
+Lo que está en <b style="color:var(--falta)">rojo</b> es dato que falta — <b>no lo inventé</b>.</div></div>
+
+<main><div class="card">
+
+ <div class="hdr">
+  <div class="foto">⚡</div>
+  <div class="meta">
+   <div class="eyebrow"><span class="cat">Energía · Inversores</span>
+    <span class="stock">4 en stock</span></div>
+   <h1>⚡ Inversor Tataliken 4000W (12V)</h1>
+   <div class="precio">$180<small>USD</small></div>
+  </div>
+ </div>
+
+ <div class="kpis">
+  <div class="kpi"><span>Potencia continua</span><b>2000W</b></div>
+  <div class="kpi"><span>Potencia pico</span><b>4000W</b></div>
+  <div class="kpi"><span>Entrada batería</span><b>12V DC</b></div>
+  <div class="kpi sinDato"><span>Salida AC</span><b>falta confirmar</b></div>
+ </div>
+
+ <section>
+  <h2>📋 Especificaciones técnicas</h2>
+  <h3>Potencia</h3>
+  <div class="tabla">
+   <div class="fila"><span class="k">Potencia real (continua)</span>
+    <span class="v">2000W<span class="n">lo que sostiene de forma permanente</span></span></div>
+   <div class="fila"><span class="k">Potencia máxima (pico)</span>
+    <span class="v">4000W<span class="n">solo para el arranque de motores</span></span></div>
+  </div>
+  <h3>Eléctricas</h3>
+  <div class="tabla">
+   <div class="fila"><span class="k">Voltaje de entrada</span>
+    <span class="v">12V DC<span class="n">requiere banco de baterías de 12V</span></span></div>
+   <div class="fila sinDato"><span class="k">Voltaje de salida</span>
+    <span class="v">falta confirmar — ¿110V/120V o 110V/220V?</span></div>
+   <div class="fila sinDato"><span class="k">Tipo de onda</span>
+    <span class="v">falta confirmar — ¿modificada o pura?</span></div>
+   <div class="fila sinDato"><span class="k">Frecuencia</span><span class="v">sin dato</span></div>
+  </div>
+  <h3>Marca</h3>
+  <div class="tabla">
+   <div class="fila"><span class="k">Marca</span><span class="v">Tataliken</span></div>
+   <div class="fila sinDato"><span class="k">Modelo</span><span class="v">sin dato</span></div>
+  </div>
+ </section>
+
+ <section>
+  <h2>📦 Qué incluye el empaque</h2>
+  <div class="tabla empaque">
+   <div class="fila"><span class="cant">1x</span><span class="v">Inversor Tataliken 4000W (12V)</span>
+    <span class="n2">unidad principal</span></div>
+   <div class="fila sinDato"><span class="cant">?</span>
+    <span class="v">falta confirmar qué más trae la caja</span><span class="n2"></span></div>
+  </div>
+ </section>
+
+ <section><div class="caja w">
+  <h2>⚠️ Requisitos y advertencias de instalación</h2>
+  <ul>
+   <li>Necesita un banco de baterías de <b>12V</b>. No funciona con 24V.</li>
+   <li>Dimensioná el cable según la corriente: a 2000W sobre 12V el consumo pasa los 165A.</li>
+   <li>Dejale ventilación libre alrededor del disipador.</li>
+   <li>No superes los 2000W de forma continua. Los 4000W son pico de arranque, no de uso.</li>
+  </ul>
+ </div></section>
+
+ <!-- El bloque de GARANTÍA no aparece: el campo `garantia` de este producto
+      está vacío en productos.json y se carga a mano solo en los que la tienen. -->
+
+ <section>
+  <h2>❓ Preguntas frecuentes</h2>
+  <div class="faq">
+   <details><summary>¿Qué electrodomésticos puedo conectar?</summary>
+    <p>Con 2000W continuos: ventiladores, televisores, luces LED, cargadores y equipos
+    medianos. Un refrigerador depende del pico de arranque de su compresor y del tipo de
+    onda — <b>ese dato falta confirmar</b>, así que todavía no se puede responder.</p></details>
+   <details><summary>¿Qué batería necesito?</summary>
+    <p>Un banco de 12V. Los amperios-hora dependen de cuánto tiempo quieras respaldo:
+    a 2000W el inversor consume más de 165A de la batería.</p></details>
+   <details><summary>¿Sirve para sistemas solares?</summary>
+    <p>Sí, en instalaciones de 12V. No es híbrido ni trae controlador de carga:
+    convierte la energía de la batería, no gestiona los paneles.</p></details>
+  </div>
+ </section>
+
+ <section><div class="pend">
+  <h2>Falta cargar (5)</h2>
+  <ul>
+   <li><b>Voltaje de salida</b> — tu plantilla decía 110V/220V y la imagen que mandaste 110V/120V. Se contradicen.</li>
+   <li><b>Tipo de onda</b> — el dato que más diferencia este inversor de los de onda pura del catálogo.</li>
+   <li><b>Frecuencia</b> (50 o 60Hz)</li>
+   <li><b>Modelo</b> exacto — Tataliken vende variantes de 1200W, 1500W y 2000W continuos.</li>
+   <li><b>Contenido de la caja</b> — ¿trae pinzas? ¿manual?</li>
+  </ul>
+ </div></section>
+
+</div></main>

@@ -1,4 +1,5 @@
 <title>Probador de Fichas TiendaMax</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -129,6 +130,24 @@ textarea#raw{width:100%;min-height:46vh;background:var(--field);color:var(--ink)
 #json{width:100%;min-height:200px;margin-top:12px;background:var(--field);color:var(--ink);
   border:1px solid var(--rule);border-radius:11px;padding:12px;
   font:400 12px/1.6 "IBM Plex Mono",ui-monospace,monospace;display:none}
+/* ── Celular: blancos táctiles de 44px y menos aire alrededor ──
+   Los botones venían de 8px de padding (≈33px de alto): con el dedo se
+   erran. 44px es el mínimo cómodo. */
+@media(max-width:620px){
+ .bar{padding:9px 12px;gap:8px}
+ .brand{width:100%}
+ .seg{flex:1} .seg button{flex:1;min-height:42px}
+ .acts{width:100%;margin-left:0}
+ .acts button{flex:1;min-height:44px;padding:9px 10px}
+ #flash{width:100%;text-align:center;min-width:0}
+ .pane{padding:13px 12px}
+ textarea#raw{min-height:34vh;font-size:12px}
+ .hint{font-size:12px}
+ .sitio{padding:14px 13px;border-radius:13px}
+ .fr input{min-height:42px}
+ .fr .del{min-height:42px;width:42px}
+ .addb{min-height:42px}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
