@@ -157,10 +157,20 @@ window.pubSwitchPanel = pubSwitchPanel;
 // Dibuja la ficha mientras se escribe, con el mismo reparto que hace el modal
 // de la tienda. Cierra el hueco entre lo que el admin escribe y lo que se
 // publica: antes había que guardar el producto para ver cómo quedaba.
-function tmPintarPreviewFicha() {
-    const caja = document.getElementById('fichaPreview');
-    const cuerpo = document.getElementById('fichaPreviewCuerpo');
-    const campo = document.getElementById('productFicha');
+// Los dos formularios que escriben ficha —agregar y editar— usan el mismo
+// preview; solo cambian los ids. Tenerlo parametrizado evita que la vista de
+// uno diga una cosa y la del otro guarde otra.
+const _TM_FICHA_FORMS = {
+    'productFicha': { caja: 'fichaPreview', cuerpo: 'fichaPreviewCuerpo', desc: 'productDescription' },
+    'pedit-ficha': { caja: 'peditFichaPreview', cuerpo: 'peditFichaPreviewCuerpo', desc: 'pedit-desc' }
+};
+
+function tmPintarPreviewFicha(campoId) {
+    const ids = _TM_FICHA_FORMS[campoId || 'productFicha'];
+    if (!ids) return;
+    const caja = document.getElementById(ids.caja);
+    const cuerpo = document.getElementById(ids.cuerpo);
+    const campo = document.getElementById(campoId || 'productFicha');
     if (!caja || !cuerpo || !campo) return;
 
     const esc = t => String(t == null ? '' : t)
@@ -203,7 +213,7 @@ function tmPintarPreviewFicha() {
     // Si la ficha también quedó escrita en Descripción, el producto la muestra
     // dos veces. Es el mismo lío que hubo que limpiar en 53 productos: mejor
     // avisarlo acá que descubrirlo publicado.
-    const desc = (document.getElementById('productDescription') || {}).value || '';
+    const desc = (document.getElementById(ids.desc) || {}).value || '';
     if (/\n\s*[​\s]*(?:⚙️|📊)?\s*(?:ficha t[eé]cnica|especificaciones)/i.test(desc)) {
         h += '<div class="fp-choque">⚠️ La <b>Descripción</b> también trae un bloque de '
            + '“Ficha Técnica”. Se va a ver dos veces: acá arriba y otra vez abajo. '
@@ -212,14 +222,22 @@ function tmPintarPreviewFicha() {
     cuerpo.innerHTML = h;
 }
 
-function initPreviewFicha() {
-    const campo = document.getElementById('productFicha');
-    if (!campo || campo._tmPrev) return;
-    campo._tmPrev = true;
-    campo.addEventListener('input', tmPintarPreviewFicha);
-    const desc = document.getElementById('productDescription');
-    if (desc) desc.addEventListener('input', tmPintarPreviewFicha);
-    tmPintarPreviewFicha();
+function initPreviewFicha(campoId) {
+    const id = campoId || 'productFicha';
+    const ids = _TM_FICHA_FORMS[id];
+    if (!ids) return;
+    const campo = document.getElementById(id);
+    if (!campo) return;
+    const pintar = function () { tmPintarPreviewFicha(id); };
+    if (!campo._tmPrev) {
+        campo._tmPrev = true;
+        campo.addEventListener('input', pintar);
+        const desc = document.getElementById(ids.desc);
+        // El aviso de ficha duplicada mira la Descripción, así que también
+        // tiene que repintarse cuando cambia ella.
+        if (desc) desc.addEventListener('input', pintar);
+    }
+    pintar();
 }
 
 

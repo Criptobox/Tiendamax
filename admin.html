@@ -1706,6 +1706,20 @@
       </label>
       <input class="form-input" id="pedit-specs" placeholder="1800Mbps, Dual Band, 4 antenas">
     </div>
+    <div class="form-group" style="margin-top:10px">
+      <label class="form-label" for="pedit-ficha">Ficha ampliada</label>
+      <textarea class="form-textarea" id="pedit-ficha" rows="10" style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px"
+        placeholder="&#9881;&#65039; Ficha T&eacute;cnica&#10;Marca: Tataliken&#10;Potencia real: 2000W (lo que sostiene de forma permanente)&#10;&#10;&#9889; Caracter&iacute;sticas&#10;Incluye cables de conexi&oacute;n robustos.&#10;&#10;&#127919; Ideal Para&#10;Respaldo del hogar durante los apagones.&#10;&#10;&#128230; Qu&eacute; incluye&#10;1x Inversor Tataliken 4000W"></textarea>
+      <small style="display:block;margin-top:6px;color:#9aa1ab;font-size:11.5px;line-height:1.5">
+        Son los cuatro bloques que salen en la ficha del producto. Los encabezados se reconocen
+        por su nombre (<b>Ficha T&eacute;cnica</b>, <b>Caracter&iacute;sticas</b>, <b>Ideal Para</b>,
+        <b>Qu&eacute; incluye</b>), con o sin emoji. Vaci&aacute;lo para quitarle la ficha al producto.
+      </small>
+      <div id="peditFichaPreview" class="ficha-preview" hidden>
+        <div class="fp-titulo">As&iacute; lo va a ver el cliente</div>
+        <div id="peditFichaPreviewCuerpo"></div>
+      </div>
+    </div>
     <div class="form-group" style="margin-top:10px"><label class="form-label" for="pedit-garantia">Garantía</label><input class="form-input" id="pedit-garantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
     <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:#cfcfd6">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-usado"> Usado / refurbished</label>
@@ -1720,7 +1734,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3ef39187"></script>
+<script src="js/tm-bundle.js?v=8ae87199"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -3101,6 +3115,15 @@ function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id;
   _renderPeditFotos();
   const _pfNuevas=$('#pedit-fotos-nuevas'); if(_pfNuevas) _pfNuevas.value='';
   const _pfLabel=$('#pedit-fotos-nuevas-name'); if(_pfLabel) _pfLabel.textContent='Agregar fotos nuevas (opcional)';
+  // Ficha ampliada: se arma el texto desde los campos guardados y se recuerda
+  // tal cual. Al guardar se compara contra esto para no re-parsear una ficha
+  // que nadie tocó (ver apEditSave).
+  const _pfi=$('#pedit-ficha');
+  if(_pfi){
+    _pfi.value = (typeof tmFichaATexto==='function') ? tmFichaATexto(p) : '';
+    _pfi.dataset.tmOriginal = _pfi.value;
+    if(typeof initPreviewFicha==='function') try{ initPreviewFicha('pedit-ficha'); }catch(e){}
+  }
   _peditPreview();
   $('#pedit-modal').classList.add('show'); }
 function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
@@ -3211,6 +3234,19 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   p.masVendido=$('#pedit-fav').checked;
   p.specs=(()=>{ const raw=($('#pedit-specs').value||'').trim(); if(!raw) return []; return raw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6); })();
   p.garantia=($('#pedit-garantia').value||'').trim();
+  // Ficha ampliada. Solo se re-parsea si el texto cambió: el texto y los campos
+  // guardados no son equivalentes exactos (una característica escrita
+  // "Título: frase" vuelve partida en dos, un valor terminado en paréntesis
+  // vuelve como nota), y abrir el modal para tocar el precio no tiene por qué
+  // reescribir la ficha. Vaciarlo sí borra los cuatro campos.
+  const _pfi=$('#pedit-ficha');
+  if(_pfi && typeof tmParsearFicha==='function' && _pfi.value!==(_pfi.dataset.tmOriginal||'')){
+    const _f = tmParsearFicha(_pfi.value);
+    ['ficha','caracteristicas','idealPara','incluye'].forEach(k=>{
+      if(_f[k] && _f[k].length) p[k]=_f[k]; else delete p[k];
+    });
+    _pfi.dataset.tmOriginal=_pfi.value;
+  }
   p.usado=$('#pedit-usado').checked;
   p.devolucion=$('#pedit-devolucion').checked;
   const almIdAntes=p.almacenId||'';
