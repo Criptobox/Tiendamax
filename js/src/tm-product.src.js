@@ -497,8 +497,13 @@ const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
 const _detailPrecioMNEl = document.getElementById('detailPriceMN');
 // USD siempre visible en el modal — $ y USD chicos, número grande (acento tipográfico)
+const _esMN = (typeof tmEsMN === 'function') && tmEsMN(p);
 if (_detailPrecioEl) {
-    _detailPrecioEl.innerHTML = `<span class="dp-sym">$</span><span class="dp-num">${Number(p.precioActual||0).toFixed(2)}</span><span class="dp-cur">USD</span>`;
+    // En un producto de precio fijo en MN el número va sin decimales y con
+    // separador de miles: "13,760" se lee, "13760.00" no.
+    _detailPrecioEl.innerHTML = _esMN
+        ? `<span class="dp-sym">$</span><span class="dp-num">${Math.round(Number(p.precioActual||0)).toLocaleString('es-CU')}</span><span class="dp-cur">MN</span>`
+        : `<span class="dp-sym">$</span><span class="dp-num">${Number(p.precioActual||0).toFixed(2)}</span><span class="dp-cur">USD</span>`;
 }
 const _hasPrecioOrigLinea = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
 if (_detailPrecioOldEl) {
@@ -512,7 +517,12 @@ if (_detailPrecioOldEl) {
 // Equivalente MN dinámico — en la misma línea que "Antes $X" (separador "·" solo si hay ambos)
 if (_detailPrecioMNEl) {
     const _tasaModal = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-    if (_tasaModal > 0) {
+    // El "≈ N MN" es la conversión del precio en USD. En un producto que YA
+    // está en MN sobra —y engañaría, porque insinuaría que el de arriba es otra
+    // moneda—, así que se oculta.
+    if (_esMN) {
+        _detailPrecioMNEl.style.display = 'none';
+    } else if (_tasaModal > 0) {
         const _mnTxt = `≈ ${Math.round(p.precioActual * _tasaModal).toLocaleString('es-CU')} MN`;
         _detailPrecioMNEl.textContent = _hasPrecioOrigLinea ? `${_mnTxt} ·` : _mnTxt;
         _detailPrecioMNEl.style.display = 'inline';

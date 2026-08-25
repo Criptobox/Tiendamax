@@ -173,7 +173,9 @@ async function guardarTasaMNAdmin() {
                 : lista[index];
             if (!producto) return;
 
-            card.querySelectorAll('.precio-actual').forEach(el => {
+            // :not([data-mn]) — un precio ya en moneda nacional es fijo, no una
+            // conversión: reescribirlo con formatPrecio() lo convertiría en USD.
+            card.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
                 el.setAttribute('data-usd', String(producto.precioActual));
                 el.textContent = typeof formatPrecio === 'function'
                     ? formatPrecio(producto.precioActual)
@@ -266,7 +268,9 @@ async function guardarTasaMNAdmin() {
                 ? productos.find(p => String(p.id) === pid)
                 : lista[index];
             if (!producto) return;
-            card.querySelectorAll('.precio-actual').forEach(el => {
+            // :not([data-mn]) — un precio ya en moneda nacional es fijo, no una
+            // conversión: reescribirlo con formatPrecio() lo convertiría en USD.
+            card.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
                 el.setAttribute('data-usd', String(producto.precioActual));
                 el.textContent = typeof formatPrecio === 'function'
                     ? formatPrecio(producto.precioActual)
@@ -317,7 +321,10 @@ async function guardarTasaMNAdmin() {
     };
 
     actualizarPreciosMostrados = function () {
-        document.querySelectorAll('.precio-actual').forEach(el => {
+        // Esta función SUSTITUYE a la de tm-patches.src.js, así que la guarda de
+        // los precios en MN tiene que estar también aquí: si no, el conmutador
+        // USD/MN reescribe un precio fijo en pesos como si fueran dólares.
+        document.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
             let usd = parseFloat(el.getAttribute('data-usd') || '');
             if (!Number.isFinite(usd)) {
                 const card = el.closest('.producto-card');
@@ -336,7 +343,8 @@ async function guardarTasaMNAdmin() {
         });
 
         const detailPrice = document.getElementById('detailPriceActual');
-        if (detailPrice && _detalleProductoActual) {
+        const _detMN = (typeof tmEsMN === 'function') && tmEsMN(_detalleProductoActual);
+        if (detailPrice && _detalleProductoActual && !_detMN) {
             detailPrice.setAttribute('data-usd', String(_detalleProductoActual.precioActual));
             // No pisar con textContent plano: destruía los spans tipográficos
             // (.dp-sym/.dp-num/.dp-cur) que arma tm-product.src.js. Solo actualizamos

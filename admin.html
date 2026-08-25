@@ -1621,8 +1621,8 @@
             <div class="section">
               <h3>💰 Precio y stock</h3>
               <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <div class="form-group"><label class="form-label" for="productPriceActual">Precio actual (USD) *</label><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00"></div>
-                <div class="form-group"><label class="form-label" for="productPrecioOriginal">Precio original (tachado)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
+                <div class="form-group"><label class="form-label" for="productPriceActual">Precio actual *</label><div style="display:flex;gap:8px"><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00" style="flex:1"><select class="form-select" id="productMoneda" aria-label="Moneda del precio" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div><small style="display:block;margin-top:5px;color:#9aa1ab;font-size:11.5px">En MN el precio se publica tal cual, sin convertir con la tasa.</small></div>
+                <div class="form-group"><label class="form-label" for="productPrecioOriginal">Precio original (tachado, misma moneda)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
                 <div class="form-group"><label class="form-label" for="productStock">Stock *</label><input class="form-input" id="productStock" type="number" required placeholder="0"></div>
                 <div class="form-group"><label class="form-label" for="productComision">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" aria-label="Moneda de la comisión" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
                 <div class="form-group"><label class="form-label" for="productMasVendido">Destacar</label><select class="form-select" id="productMasVendido"><option value="false">No</option><option value="true">Sí, en "Más vendidos"</option></select></div>
@@ -1700,8 +1700,8 @@
       </label>
     </div>
     <div class="grid-2" style="margin-top:10px">
-      <div class="form-group"><label class="form-label" for="pedit-precio">Precio actual (USD)</label><input class="form-input" id="pedit-precio" type="number" step="0.01"></div>
-      <div class="form-group"><label class="form-label" for="pedit-original">Precio original (opcional)</label><input class="form-input" id="pedit-original" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label" for="pedit-precio">Precio actual</label><div style="display:flex;gap:8px"><input class="form-input" id="pedit-precio" type="number" step="0.01" style="flex:1"><select class="form-select" id="pedit-moneda" aria-label="Moneda del precio" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
+      <div class="form-group"><label class="form-label" for="pedit-original">Precio original (misma moneda)</label><input class="form-input" id="pedit-original" type="number" step="0.01"></div>
     </div>
     <div class="grid-2" style="margin-top:10px">
       <div class="form-group"><label class="form-label" for="pedit-stock">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
@@ -1748,7 +1748,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=8499b1bf"></script>
+<script src="js/tm-bundle.js?v=bb1bd173"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -3120,7 +3120,7 @@ function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "
     (async()=>{ let n=0; for(const u of _huerf){ try{ if(await borrarImagenDeGitHub(u)) n++; }catch(e){} }
       if(n) showToast('🧹 '+n+' foto'+(n>1?'s':'')+' del producto borrada'+(n>1?'s':'')+' del repo'); })();
   } }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
     ? p.imagenes.slice()
@@ -3245,6 +3245,10 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   p.categoria=$('#pedit-cat').value||p.categoria;
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
   p.descripcion=$('#pedit-desc').value;
+  // Solo se guarda cuando es MN: en USD el campo no existe, que es como
+  // están los 128 productos de siempre. Así no hace falta migrar nada ni
+  // engorda el catálogo que baja el cliente.
+  if(($('#pedit-moneda')&&$('#pedit-moneda').value)==='MN') p.moneda='MN'; else delete p.moneda;
   p.masVendido=$('#pedit-fav').checked;
   p.specs=(()=>{ const raw=($('#pedit-specs').value||'').trim(); if(!raw) return []; return raw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6); })();
   p.garantia=($('#pedit-garantia').value||'').trim();

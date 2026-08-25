@@ -1035,6 +1035,30 @@ function setCurrency(moneda) {
     actualizarPreciosMostrados();
 }
 
+/* ── Productos con precio en moneda nacional ─────────────────────────────
+   El sitio nació asumiendo que TODO precio es USD y que MN es una conversión
+   con la tasa de elTOQUE. Pero hay productos que se venden solo en MN a un
+   precio fijo: convertirlos sería hacer que su precio cambie solo cada vez que
+   se mueve la tasa, que es justo lo contrario de lo que quiere el vendedor.
+
+   Un producto marcado `moneda:'MN'` lleva su precio TAL CUAL, y el conmutador
+   USD/MN de la tienda no lo toca. Los que no traen el campo —los 128 de
+   siempre— siguen funcionando exactamente igual que antes. */
+function tmEsMN(p) {
+    return !!(p && p.moneda === 'MN');
+}
+
+function tmMoneda(p) {
+    return tmEsMN(p) ? 'MN' : 'USD';
+}
+
+/* El precio de un producto en SU moneda, ya formateado. */
+function tmPrecioTexto(p, valor) {
+    const n = Number(valor != null ? valor : (p && p.precioActual) || 0);
+    if (tmEsMN(p)) return '$' + Math.round(n).toLocaleString('es-CU') + ' MN';
+    return formatPrecio(n);
+}
+
 function formatPrecio(usd) {
     if (_monedaActual === 'MN') {
         const tasa = getTasaMN();
@@ -1045,14 +1069,16 @@ function formatPrecio(usd) {
 
 function actualizarPreciosMostrados() {
     // Precios en tarjetas de productos
-    document.querySelectorAll('[data-precio-usd]').forEach(el => {
+    // data-mn marca un precio que YA está en moneda nacional y es fijo: el
+    // conmutador USD/MN no puede reescribirlo ni convertirlo.
+    document.querySelectorAll('[data-precio-usd]:not([data-mn])').forEach(el => {
         const usd = parseFloat(el.getAttribute('data-precio-usd'));
         el.textContent = formatPrecio(usd);
     });
     // Re-renderizar si es necesario
     const grid = document.getElementById('productosGrid');
     if (grid && grid.children.length > 0) {
-        grid.querySelectorAll('.precio-actual').forEach(el => {
+        grid.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
             const usd = parseFloat(el.getAttribute('data-usd') || el.textContent.replace(/[^0-9.]/g, ''));
             if (!isNaN(usd) && usd > 0) {
                 if (!el.getAttribute('data-usd')) el.setAttribute('data-usd', usd);

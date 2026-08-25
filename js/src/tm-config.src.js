@@ -336,6 +336,9 @@ function agregarAlCarrito(id, cantidad) {
             id:       p.id,
             nombre:   p.nombre,
             precio:   p.precioActual,
+            // Sin esto el carrito no sabe en qué moneda está cada línea y las
+            // suma todas como si fueran USD.
+            moneda:   (typeof tmMoneda === 'function') ? tmMoneda(p) : 'USD',
             imagen:   p.imagen,
             cantidad: cant
         });
@@ -462,12 +465,27 @@ function renderizarCarrito() {
     vacioEl.style.display  = 'none';
     footerEl.style.display = 'block';
 
-    const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-    const fmt = (usd) => typeof formatPrecio === 'function' ? formatPrecio(usd) : ('$' + usd.toFixed(2) + ' USD');
-    if (totalEl) totalEl.textContent = fmt(total);
+    // Dos totales, uno por moneda. Un producto que se vende en MN a precio fijo
+    // no se puede sumar con uno en USD sin inventar una conversión sobre plata
+    // que el cliente paga en efectivo; se muestran los dos y cada línea va en
+    // la suya. Con un solo tipo de moneda en el carrito —el caso normal— esto
+    // se ve exactamente igual que antes.
+    const totales = carrito.reduce((a, i) => {
+        a[i.moneda === 'MN' ? 'MN' : 'USD'] += i.precio * i.cantidad; return a;
+    }, { USD: 0, MN: 0 });
+    const fmtUSD = (usd) => typeof formatPrecio === 'function' ? formatPrecio(usd) : ('$' + usd.toFixed(2) + ' USD');
+    const fmtMN  = (mn)  => '$' + Math.round(mn).toLocaleString('es-CU') + ' MN';
+    const fmtItem = (item, valor) => item.moneda === 'MN' ? fmtMN(valor) : fmtUSD(valor);
+    if (totalEl) {
+        const partes = [];
+        if (totales.USD > 0 || totales.MN === 0) partes.push(fmtUSD(totales.USD));
+        if (totales.MN > 0) partes.push(fmtMN(totales.MN));
+        totalEl.textContent = partes.join(' + ');
+    }
 
     itemsEl.innerHTML = carrito.map(item => {
         const subtotal = item.precio * item.cantidad;
+        const fmt = (v) => fmtItem(item, v);
         const nombre   = escapeHtml(item.nombre);
         const imagen   = escapeAttr(item.imagen);
         const idSafe   = safeNum(item.id);
@@ -592,15 +610,33 @@ function _mensajeOrdenWA(items, opts) {
         const precio = Number(it.precio || 0);
         const cant   = Number(it.cantidad || 1);
         L.push(E.dot + ' *' + (i + 1) + '.* ' + it.nombre);
+        const esMN = it.moneda === 'MN';
+        const precioTxt = esMN
+            ? '$' + Math.round(precio).toLocaleString('es-CU') + ' MN'
+            : '$' + precio.toFixed(2) + ' USD';
         L.push(precio > 0
-            ? '      \u25b8 Cant: *' + cant + '*  \u00b7  $' + precio.toFixed(2) + ' USD c/u'
+            ? '      \u25b8 Cant: *' + cant + '*  \u00b7  ' + precioTxt + ' c/u'
             : '      \u25b8 Cant: *' + cant + '*');
         L.push('');
     });
 
+    // Los productos con precio fijo en MN no se suman con los de USD: se
+    // llevan aparte y se listan al final en su propia línea. Sumarlos exigiría
+    // convertir plata que el cliente paga en efectivo en MN, y el total dejaría
+    // de coincidir con lo que realmente entrega.
     const subtotal = items.reduce(
-        (s, i) => s + Number(i.precio || 0) * Number(i.cantidad || 1), 0
+        (s, i) => s + (i.moneda === 'MN' ? 0 : Number(i.precio || 0) * Number(i.cantidad || 1)), 0
     );
+    const subtotalMN = items.reduce(
+        (s, i) => s + (i.moneda === 'MN' ? Number(i.precio || 0) * Number(i.cantidad || 1) : 0), 0
+    );
+    // Sin productos en MN el mensaje sale exactamente igual que siempre.
+    const lineaMN = () => {
+        if (subtotalMN > 0) {
+            L.push(E.bill + ' *Productos con precio en MN:* *$'
+                   + Math.round(subtotalMN).toLocaleString('es-CU') + ' MN*');
+        }
+    };
 
     L.push(SEP);
     if (opts.ticket) {
@@ -611,6 +647,7 @@ function _mensajeOrdenWA(items, opts) {
             const totalMN = Math.round(subtotal * tasaFinal).toLocaleString('es-CU');
             L.push(E.bill + ' *Total MN:* ' + totalMN + ' MN');
         }
+        lineaMN();
     } else if (subtotal > 0) {
         L.push(E.money + ' *Subtotal:* $' + subtotal.toFixed(2) + ' USD');
         const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
@@ -619,6 +656,9 @@ function _mensajeOrdenWA(items, opts) {
             L.push(E.chart + ' *Tasa:* 1 USD = ' + tasaFinal + ' MN');
             L.push(E.bill  + ' *TOTAL:* *' + totalMN + ' MN*');
         }
+        lineaMN();
+    } else {
+        lineaMN();
     }
 
     L.push('');

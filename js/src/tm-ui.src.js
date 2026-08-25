@@ -1242,7 +1242,11 @@ renderizarProductos = function() {
                         (_hasDescuento
                             ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span></div>'
                             : '<div class="pv2-oldrow pv2-oldrow-ghost" aria-hidden="true"><span class="pv2-old">&nbsp;</span></div>') +
-                        '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                        // data-mn marca el precio que ya está en moneda nacional: el conmutador
+                        // USD/MN no lo reescribe, porque no es una conversión sino su precio.
+                        (typeof tmEsMN === 'function' && tmEsMN(producto)
+                            ? '<span class="precio-actual" data-mn="1">' + tmPrecioTexto(producto) + '</span>'
+                            : '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>') +
                     '</div>' +
                     (esAgotado ? '' : '<div class="pv2-trust">' + tmIcoUI('🔒') + ' Pago al recibir' + (_tieneGarantia ? ' · ' + tmIcoUI('🛡') + ' Garantía' : '') + '</div>') +
                     _btn +

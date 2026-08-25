@@ -496,6 +496,11 @@ async function agregarProductoForm(event) {
             if (_ficha[k] && _ficha[k].length) producto[k] = _ficha[k];
         });
 
+        // Moneda del precio. Solo se guarda cuando es MN: en USD el campo no
+        // existe, que es como están los 128 productos de siempre — así no hace
+        // falta migrar nada y el catálogo que baja el cliente no engorda.
+        if ((document.getElementById('productMoneda') || {}).value === 'MN') producto.moneda = 'MN';
+
         const errores = validarProducto(producto);
         if (errores.length > 0) {
             mostrarNotificacion('❌ ' + errores[0], 'error');
