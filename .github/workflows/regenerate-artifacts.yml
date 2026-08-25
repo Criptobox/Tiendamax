@@ -68,19 +68,39 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           # productos.json entra aquí porque fill_seo.py puede haberlo tocado
           # (rellena seoTitle/seoDescription in place) — sin esto, ese cambio
           # se perdía al terminar el job en vez de quedar publicado.
           # index.html va aquí porque regenerate_home_nav() reescribe la lista
-          # de categorías del pie. Sin él pasaban dos cosas, las dos calladas:
-          # ese cambio se descartaba en cada corrida (el pie nunca se
-          # actualizaba), y al quedar el fichero modificado sin indexar, el
-          # rebase de la línea de abajo se negaba a correr —"cannot rebase: you
-          # have unstaged changes"— y se perdían TODOS los artefactos ya
-          # generados: páginas /p/ y tarjetas OG de productos nuevos incluidas.
-          git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null || true
-          # Asegurar que archivos nuevos en p/, c/ y og/ también queden en el índice
-          git ls-files --others --exclude-standard -- p/ c/ og/ | xargs -r git add 2>/dev/null || true
+          # de categorías del pie.
+          RUTAS="p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html"
+
+          # Una ruta por vuelta, y NO todas en un solo `git add`: git add es
+          # atómico sobre sus pathspecs, así que uno que no coincida aborta el
+          # comando entero sin indexar nada. Eso pasaba con comisiones.json, que
+          # no existe en el repo y que el regenerador solo escribiría si hubiera
+          # comisiones que limpiar: cada corrida moría en "fatal: pathspec
+          # 'comisiones.json' did not match any files", el `2>/dev/null || true`
+          # se lo tragaba, el paso decía "Sin cambios para subir" y el job
+          # terminaba en verde habiendo generado todo.
+          # Lo único que llegaba a main eran los ficheros NUEVOS, porque de esos
+          # se encargaba el `git ls-files --others`. Las modificaciones y los
+          # borrados se descartaban al terminar el job: las páginas /p/ de
+          # productos ya existentes, el sitemap y el pie de index.html quedaban
+          # congelados, y las páginas de productos borrados no se iban nunca.
+          indexar() {
+            for ruta in $RUTAS; do
+              # -e cubre lo que está en disco; ls-files, lo que el regenerador
+              # borró y hay que indexar justamente como borrado.
+              if [ -e "$ruta" ] || git ls-files --error-unmatch -- "$ruta" >/dev/null 2>&1; then
+                git add -- "$ruta" || { echo "::error::no se pudo indexar $ruta"; exit 1; }
+              fi
+            done
+            git ls-files --others --exclude-standard -- p/ c/ og/ | xargs -r git add
+          }
+
+          indexar
           if git diff --cached --quiet; then
             echo "Sin cambios para subir"
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -96,10 +116,16 @@ jobs:
             fi
             git fetch origin main
             # --autostash: si algún script deja un fichero tocado que no está en
-            # el git add de arriba, el rebase se negaba a arrancar y el job
-            # moría con el trabajo hecho pero sin publicar. Con esto se aparta
-            # solo y el reintento sigue.
-            git rebase --autostash -X ours origin/main || { git checkout --ours -- p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null; git add p/ c/ og/ sitemap.xml subcategorias.json comisiones.json productos.json productos-lite.json index.html 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            # $RUTAS, el rebase se negaba a arrancar y el job moría con el
+            # trabajo hecho pero sin publicar. Con esto se aparta solo y sigue.
+            if ! git rebase --autostash -X ours origin/main; then
+              for ruta in $RUTAS; do
+                [ -e "$ruta" ] || git ls-files --error-unmatch -- "$ruta" >/dev/null 2>&1 || continue
+                git checkout --ours -- "$ruta" 2>/dev/null || true
+              done
+              indexar
+              GIT_EDITOR=true git rebase --continue || git rebase --abort
+            fi
             sleep $((i * 2))
           done
           echo "❌ No se pudieron publicar los artefactos." >&2
