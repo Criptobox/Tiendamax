@@ -983,7 +983,12 @@ html body.light-mode #productDetailModal .detail-description-text .dd-intro:firs
 html body.light-mode #productDetailModal .detail-category { color: var(--tm-modal-accent-light) !important; }
 html body.light-mode #productDetailModal .detail-subcategory { color: #747985 !important; }
 html body.light-mode #productDetailModal .detail-stock { color: #a75d13 !important; }
-html body.light-mode #productDetailModal .detail-img-frame { background: #fff !important; box-shadow: 0 12px 30px rgba(31,36,48,.14) !important; }
+/* El gris es el mismo #e9ebf0 de .producto-card. En blanco, la foto del
+   producto —que casi siempre viene recortada sobre fondo blanco— se fundía
+   con el marco: el modal claro es #FFFCF8 y la diferencia contra el blanco
+   es de tres puntos, invisible en un teléfono. Fuera del modal el producto
+   se ve bien justo por esto: la tarjeta es gris y enmarca la foto. */
+html body.light-mode #productDetailModal .detail-img-frame { background: #e9ebf0 !important; box-shadow: 0 12px 30px rgba(31,36,48,.14) !important; }
 html body.light-mode #productDetailModal .detail-gallery-thumb { background: #fff; }
 html body.light-mode #productDetailModal .detail-trust-card,
 html body.light-mode #productDetailModal #detailQtyRow { background: transparent !important; border-color: rgba(31,36,48,.12) !important; }
