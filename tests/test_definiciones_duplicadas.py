@@ -40,7 +40,7 @@ BUILD = RAIZ / "scripts" / "build_js_bundle.py"
 CONOCIDAS = {
     "renderizarProductos", "agregarAlCarrito", "mostrarVistaCategoria",
     "renderizarMasVendidos", "guardarProductos", "abrirDetalleProducto",
-    "actualizarBotonesCategorias", "filtrarPorCategoria", "stat",
+    "actualizarBotonesCategorias", "stat",
 }
 
 

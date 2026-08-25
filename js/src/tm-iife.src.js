@@ -327,57 +327,9 @@ async function guardarTasaMNAdmin() {
     // (FIX) Override eliminado: ahora renderizarRecientes funciona de verdad
     // y muestra los productos vistos en home y en detalle.
 
-    // ── Mejora 4: chip-slider animado para filtro de categorías ──
-    function _tmSliderInit() {
-        const wrap = document.getElementById('categoriaFiltro');
-        if (!wrap) return;
-        wrap.querySelectorAll('.categoria-btn').forEach(btn => {
-            if (!btn.dataset.tmCat) btn.dataset.tmCat = btn.textContent.trim();
-        });
-        let pill = document.getElementById('tm-chip-slider');
-        if (!pill) {
-            pill = document.createElement('div');
-            pill.id = 'tm-chip-slider';
-            wrap.insertBefore(pill, wrap.firstChild);
-        }
-        pill.style.transition = 'none';
-        _tmSliderMover();
-        _tmBordesTira();
-        requestAnimationFrame(() => { pill.style.transition = ''; });
-    }
-
-    // Enciende el degradado de cada borde solo cuando hay algo cortado de ese
-    // lado. Sin esto el chip de la izquierda se corta en seco pegado al botón
-    // "← Volver" y parece que el botón lo tapa. El de la derecha ya existía,
-    // pero fijo: se quedaba encendido aunque no quedara nada por ver.
-    function _tmBordesTira() {
-        const wrap = document.getElementById('categoriaFiltro');
-        if (!wrap) return;
-        const resto = wrap.scrollWidth - wrap.clientWidth;
-        // 4px de holgura: el scroll no siempre cae en un entero exacto.
-        wrap.classList.toggle('tm-tira-izq', wrap.scrollLeft > 4);
-        wrap.classList.toggle('tm-tira-der', wrap.scrollLeft < resto - 4);
-        if (!wrap._tmBordes) {
-            wrap._tmBordes = true;
-            wrap.addEventListener('scroll', _tmBordesTira, { passive: true });
-            window.addEventListener('resize', _tmBordesTira, { passive: true });
-        }
-    }
-
-    function _tmSliderMover() {
-        const wrap = document.getElementById('categoriaFiltro');
-        const pill = document.getElementById('tm-chip-slider');
-        if (!wrap || !pill) return;
-        const active = wrap.querySelector('.categoria-btn.active');
-        if (!active) { pill.style.opacity = '0'; return; }
-        const wRect = wrap.getBoundingClientRect();
-        const aRect = active.getBoundingClientRect();
-        pill.style.opacity = '1';
-        pill.style.top = active.offsetTop + 'px';
-        pill.style.left = (aRect.left - wRect.left + wrap.scrollLeft) + 'px';
-        pill.style.width = aRect.width + 'px';
-        pill.style.height = active.offsetHeight + 'px';
-    }
+    // La píldora animada de la tira de categorías (_tmSliderInit/
+    // _tmBordesTira/_tmSliderMover) está al final de este fichero, ya en
+    // el ámbito global: filtrarPorCategoria (tm-catalog.src.js) la necesita.
 
     if (typeof actualizarBotonesCategorias === 'function') {
         const _origActBotones = actualizarBotonesCategorias;
@@ -387,39 +339,9 @@ async function guardarTasaMNAdmin() {
         };
     }
 
-    if (typeof filtrarPorCategoria === 'function') {
-    filtrarPorCategoria = function(cat) {
-        categoriaSeleccionada = cat;
-        const container = document.getElementById('categoriaFiltro');
-        if (container) {
-            container.querySelectorAll('.categoria-btn').forEach(btn => {
-                btn.classList.toggle('active', (btn.dataset.tmCat || btn.textContent.trim()) === cat);
-            });
-            _tmSliderMover();
-        }
-    // Cambiar de categoría también cambia sus subcategorías. Sin esto los chips
-    // de subcategoría se quedaban en los de la categoría ANTERIOR —en WIFI
-    // salían HERRAMIENTAS, DEPORTES, HOGAR…, que son de UTILES— y el conteo
-    // con ellos, porque renderizarSubcategoriaTabs() es quien llama a
-    // actualizarCategoriaStats(). Además hay que soltar la subcategoría
-    // elegida ANTES de repintar: si no, la parrilla filtra por una que en la
-    // categoría nueva no existe y sale vacía.
-        //
-        // No se puede delegar en el filtrarPorCategoria original para no
-        // repetirlo: aquel llama a actualizarBotonesCategorias(), que borra y
-        // reconstruye la tira entera —se perdería la píldora animada y la
-        // posición del scroll justo al tocar un chip—. Por eso este override
-        // existe, y por eso estas dos líneas van repetidas a propósito.
-        if (typeof subcategoriaSeleccionada !== 'undefined') subcategoriaSeleccionada = 'Todas';
-        if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
-        renderizarProductos();
-        const titulo = document.getElementById('tituloCategoriaActual');
-        if (titulo) {
-            const icono = typeof obtenerIconoCategoria === 'function' ? obtenerIconoCategoria(cat) : '';
-            titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : (icono + ' ' + cat);
-        }
-    };
-    } // end typeof filtrarPorCategoria guard
+    // filtrarPorCategoria vive ahora en tm-catalog.src.js, con una sola
+    // definición. El override que había aquí la reemplazaba entera y dejaba
+    // la de allá inalcanzable.
 
     // ── Pull-to-refresh ── (solo en la tienda; en el admin estorba bajo las tabs)
     (function() {
@@ -1018,3 +940,53 @@ if (false) (function tmBotonSubirArriba() {
     }
     document.addEventListener('DOMContentLoaded', initGalleryPreview);
 })();
+
+
+/* ── Tira de categorías: píldora animada y degradado de los bordes ──────
+   Estaban dentro del IIFE de arriba. Salieron cuando filtrarPorCategoria
+   dejó de estar duplicada: la única definición vive en tm-catalog.src.js y
+   necesita llamarlas. Los nombres son únicos en todo el bundle. */
+function _tmSliderInit() {
+    const wrap = document.getElementById('categoriaFiltro');
+    if (!wrap) return;
+    wrap.querySelectorAll('.categoria-btn').forEach(btn => {
+        if (!btn.dataset.tmCat) btn.dataset.tmCat = btn.textContent.trim();
+    });
+    let pill = document.getElementById('tm-chip-slider');
+    if (!pill) {
+        pill = document.createElement('div');
+        pill.id = 'tm-chip-slider';
+        wrap.insertBefore(pill, wrap.firstChild);
+    }
+    pill.style.transition = 'none';
+    _tmSliderMover();
+    _tmBordesTira();
+    requestAnimationFrame(() => { pill.style.transition = ''; });
+}
+function _tmBordesTira() {
+    const wrap = document.getElementById('categoriaFiltro');
+    if (!wrap) return;
+    const resto = wrap.scrollWidth - wrap.clientWidth;
+    // 4px de holgura: el scroll no siempre cae en un entero exacto.
+    wrap.classList.toggle('tm-tira-izq', wrap.scrollLeft > 4);
+    wrap.classList.toggle('tm-tira-der', wrap.scrollLeft < resto - 4);
+    if (!wrap._tmBordes) {
+        wrap._tmBordes = true;
+        wrap.addEventListener('scroll', _tmBordesTira, { passive: true });
+        window.addEventListener('resize', _tmBordesTira, { passive: true });
+    }
+}
+function _tmSliderMover() {
+    const wrap = document.getElementById('categoriaFiltro');
+    const pill = document.getElementById('tm-chip-slider');
+    if (!wrap || !pill) return;
+    const active = wrap.querySelector('.categoria-btn.active');
+    if (!active) { pill.style.opacity = '0'; return; }
+    const wRect = wrap.getBoundingClientRect();
+    const aRect = active.getBoundingClientRect();
+    pill.style.opacity = '1';
+    pill.style.top = active.offsetTop + 'px';
+    pill.style.left = (aRect.left - wRect.left + wrap.scrollLeft) + 'px';
+    pill.style.width = aRect.width + 'px';
+    pill.style.height = active.offsetHeight + 'px';
+}

@@ -62,6 +62,17 @@ function actualizarBotonesCategorias() {
 
 function filtrarPorCategoria(cat) {
     categoriaSeleccionada = cat;
+    // Marcar el chip activo a mano en vez de llamar a actualizarBotonesCategorias():
+    // aquella borra y reconstruye la tira entera, así que al tocar un chip se
+    // perdían la píldora animada y la posición del scroll. _tmSliderMover()
+    // (definida al final de tm-iife.src.js) desliza la píldora al chip nuevo.
+    const container = document.getElementById('categoriaFiltro');
+    if (container) {
+        container.querySelectorAll('.categoria-btn').forEach(btn => {
+            btn.classList.toggle('active', (btn.dataset.tmCat || btn.textContent.trim()) === cat);
+        });
+        if (typeof _tmSliderMover === 'function') _tmSliderMover();
+    }
     // Cambiar de categoría también cambia sus subcategorías. Sin esto los chips
     // de subcategoría se quedaban en los de la categoría ANTERIOR —en WIFI
     // salían HERRAMIENTAS, DEPORTES, HOGAR…, que son de UTILES— y el conteo
@@ -70,12 +81,11 @@ function filtrarPorCategoria(cat) {
     // elegida ANTES de repintar: si no, la parrilla filtra por una que en la
     // categoría nueva no existe y sale vacía.
     if (typeof subcategoriaSeleccionada !== 'undefined') subcategoriaSeleccionada = 'Todas';
-    actualizarBotonesCategorias();
     if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
     renderizarProductos();
     const titulo = document.getElementById('tituloCategoriaActual');
     if (titulo) {
-        const icono = obtenerIconoCategoria(cat);
+        const icono = typeof obtenerIconoCategoria === 'function' ? obtenerIconoCategoria(cat) : '';
         titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${cat}`;
     }
 }
