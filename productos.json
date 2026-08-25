@@ -610,9 +610,8 @@
     "specs": [
       "Voltaje Nominal: 12V DC",
       "Capacidad: 75 Ah",
-      "Tipo de Mantenimiento: Libre de mantenimiento"
+      "Calcio-Calcio"
     ],
-    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.",
     "ficha": [
       {
         "k": "Marca",
@@ -674,7 +673,8 @@
     "incluye": [
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
       "2× Tapas protectoras de bornes (integradas)"
-    ]
+    ],
+    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
   },
   {
     "id": 1778103856933,
