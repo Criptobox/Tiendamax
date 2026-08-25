@@ -251,7 +251,15 @@ for (const [q, esperado] of ENCAMINADAS) {
     ]) {
         const r = B.responder(q);
         const nombres = (r.products || []).map(p => p.nombre).join(' | ');
-        ok(esperado.test(nombres), `"${q}" no encuentra lo que sí hay: ${nombres || '(nada)'}`);
+        // El texto cuenta igual que las tarjetas: lo que se comprueba acá es
+        // que el plural se entienda, no que haya stock. Cuando el producto
+        // está agotado —los dos repetidores lo están— Max lo nombra y dice
+        // que no queda, y eso ES haberlo encontrado; mirando solo r.products
+        // no se distinguía de un "no te entendí".
+        const dicho = nombres + ' ' + String(r.response || '').replace(/<[^>]*>/g, ' ');
+        ok(esperado.test(dicho), `"${q}" no encuentra lo que sí hay: ${nombres || '(nada)'}`);
+        ok(!/no te entend|no entiendo/i.test(r.response || ''),
+            `"${q}" cae en "no te entendí" — el plural no se está resolviendo`);
     }
 }
 
@@ -277,8 +285,11 @@ for (const [q, esperado] of ENCAMINADAS) {
 // paneles solares" con un interruptor de transferencia, y el cliente se iba
 // creyendo que sí.
 {
+    // 'tienen cable de red' salió de esta lista: el catálogo ahora trae un
+    // Patch Cord Cat6A con 300 unidades, así que decir "no lo vendo" sería
+    // mentir. Lo que se comprueba de ese caso está justo debajo.
     for (const q of ['tienen paneles solares', 'venden placas solares',
-                     'cuanto cuesta una laptop', 'tienen cable de red',
+                     'cuanto cuesta una laptop',
                      'tienen tarjetas sim']) {
         ok(intent(q) === 'noVendemos', `"${q}" → ${intent(q)}, debería decir que no lo vende`);
     }
@@ -289,6 +300,16 @@ for (const [q, esperado] of ENCAMINADAS) {
     ok(intent('que es un panel solar') === 'tecnico',
         'preguntar qué es un panel solar sigue siendo una explicación');
 }
+// Lo que entró al catálogo se vende, aunque alguna vez no se vendiera. El
+// cable de red estuvo en NO_VENDEMOS hasta que entraron 300 unidades.
+{
+    const r = B.responder('tienen cable de red');
+    ok(!/no vendo|no manejo/i.test(r.response),
+        'el catálogo tiene cable de red con stock: Max no puede decir que no lo vende');
+    ok((r.products || []).some(p => /cable/i.test(p.nombre)),
+        'y tiene que enseñar el cable');
+}
+
 // Nada de la lista puede estar de verdad en el catálogo: decirle que no a un
 // cliente por algo que sí tienes es peor que el fallo que esto arregla.
 {

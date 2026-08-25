@@ -668,7 +668,18 @@ async function subirImagenAGitHub(fileOrBase64) {
             method: 'PUT', headers,
             body: JSON.stringify({ message: 'Imagen: ' + filename, content: base64data })
         });
-        if (res.ok) return 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + path;
+        // El catálogo guarda la URL del propio dominio, no la de
+        // raw.githubusercontent: es la casa de las fotos (249 de las 295
+        // referencias ya eran así) y la única que controlamos. Tener el mismo
+        // fichero con dos URLs distintas no es cosmético — es lo que hizo que
+        // `imagenEnUso` borrara la única foto de un producto porque otro la
+        // reclamaba con la otra forma.
+        //
+        // A cambio hay una ventana: la foto ya está en el repo, pero
+        // tiendamax.org no la sirve hasta que Pages redespliega. Eso solo lo
+        // ve el panel al recién subirla —el cliente no, porque el producto se
+        // publica después—, y de esa ventana se encarga el reintento de abajo.
+        if (res.ok) return 'https://tiendamax.org/' + path;
         // Fallar en silencio aquí era lo que metía base64 en el catálogo. El
         // motivo real (token vencido, sin permisos, límite de la API) se
         // explica para poder arreglarlo en vez de adivinar.
@@ -685,6 +696,42 @@ async function subirImagenAGitHub(fileOrBase64) {
         throw e;
     }
 }
+
+// ── Foto recién subida que Pages todavía no sirve ─────────────
+// Entre el commit de la imagen y el redespliegue de Pages pasan un par de
+// minutos, y en esa ventana tiendamax.org/imagenes/x.webp da 404. Cada <img>
+// de la página tiene su propio onerror —unos esconden la foto, otros ponen el
+// placeholder—, así que sin esto el panel enseña un hueco justo después de
+// subir y parece que la subida falló.
+//
+// Va en captura para llegar antes que esos onerror, reintenta UNA vez contra
+// raw.githubusercontent (que sí tiene el fichero desde el commit) y solo se
+// arma donde hay configuración de GitHub, o sea en el panel: la tienda pública
+// no la tiene y ahí este caso no existe.
+(function () {
+    if (typeof document === 'undefined' || typeof localStorage === 'undefined') return;
+    document.addEventListener('error', function (ev) {
+        const img = ev.target;
+        if (!img || img.tagName !== 'IMG' || img.dataset.tmReintento) return;
+        const ruta = _rutaImagenDesdeUrl(img.src || '');
+        if (!ruta || (img.src || '').indexOf('raw.githubusercontent') !== -1) return;
+        let user, repo;
+        try {
+            user = localStorage.getItem('githubUser');
+            repo = localStorage.getItem('githubRepo');
+        } catch (e) { return; }
+        if (!user || !repo) return;
+        img.dataset.tmReintento = '1';
+        img.src = 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + ruta;
+        // Sin esto el onerror del propio <img> se ejecuta igual y esconde la
+        // foto (o pone el placeholder) aunque el reintento la haya cargado:
+        // se veía el hueco con la imagen buena detrás. Cortar en captura evita
+        // que el evento llegue al elemento. Si el reintento TAMBIÉN falla, el
+        // segundo error sale por el return de arriba y el onerror de la página
+        // hace su trabajo como siempre.
+        ev.stopPropagation();
+    }, true);
+})();
 
 // ── Borrar una imagen del repo ────────────────────────────────
 // Sin esto cada foto reemplazada se queda en imagenes/ para siempre. Con

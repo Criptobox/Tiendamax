@@ -1240,11 +1240,6 @@
       nota: 'Plantas eléctricas y generadores de combustible no vendo.',
       ofrecer: 'Para el apagón sí tengo inversores con batería y estaciones de energía, que es la otra forma de resolverlo.',
       botones: ['⚡ Ver inversores','💬 WhatsApp'] },
-    { re: /\b(cable\w*)\s+(de\s+)?(red|rj45|utp|ethernet)\b|\bcable rj45\b/i,
-      que: 'cables de red',
-      nota: 'Cables de red sueltos no vendo.',
-      ofrecer: 'Se consiguen fácil en cualquier ferretería o tienda de informática.',
-      botones: ['📶 Ver routers','💬 WhatsApp'] },
     { re: /\b(tarjeta\w*\s+sim|sim card|chip de datos)\b/i,
       que: 'tarjetas SIM',
       nota: 'Tarjetas SIM no vendo — esas las da ETECSA.',
@@ -3673,9 +3668,49 @@ ${notasHTML}
     };
   }
 
+  /* Alternativas a un producto agotado.
+   *
+   * La subcategoría sola no alcanza: WIFI › ACCESORIOS mete en la misma bolsa
+   * los repetidores ($25-30) y el patch cord ($0.42), y como el cable era lo
+   * único con stock, a quien preguntaba por un repetidor se le ofrecía un
+   * cable de red como sustituto.
+   *
+   * Pasa la que esté en una banda de precio razonable O la que sea la misma
+   * clase de cosa. Ninguna de las dos sola sirve: solo por precio se caía un
+   * inversor de $180 como alternativa a uno de $900, que sí lo es; y solo por
+   * nombre entraba un Smart TV Milexus como alternativa a una Batidora
+   * Milexus, porque comparten la marca. De ahí que la clase se mire por el
+   * primer sustantivo del nombre —de qué cosa se trata— y no por cualquier
+   * palabra en común.
+   *
+   * Cuando no queda ninguna, el que llama ya sabe qué hacer: ofrece avisar
+   * cuando entre, que es más honesto que enseñar cualquier cosa. */
+  const _ALT_FACTOR = 4;
+  const _ALT_STOP = new Set(['para','con','sin','este','esta','desde','hasta','tipo',
+    'marca','nuevo','nueva','pack','unidad','modelo','color','negro','blanco',
+    'original','calidad']);
+  function _altCabeza(nombre){
+    const limpio = String(nombre || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z0-9 ]+/g,' ');
+    for(const w of limpio.split(/\s+/)){
+      if(w.length < 4 || _ALT_STOP.has(w)) continue;
+      return w.endsWith('s') ? w.slice(0,-1) : w;   // cámara / cámaras
+    }
+    return '';
+  }
   function findAlternativas(p, n=3){
+    const base = Number(p.precio) || 0;
+    const cabeza = _altCabeza(p.nombre);
     return PRODUCTOS
       .filter(x => x.categoria === p.categoria && (x.subcategoria||'') === (p.subcategoria||'') && x.id !== p.id && x.stock > 0)
+      .filter(x => {
+        const q = Number(x.precio) || 0;
+        // Sin precio en alguno de los dos no hay banda que valga: manda la
+        // subcategoría, como antes.
+        if(!base || !q) return true;
+        if(q <= base * _ALT_FACTOR && q >= base / _ALT_FACTOR) return true;
+        return !!cabeza && cabeza === _altCabeza(x.nombre);
+      })
       .sort((a,b) => Math.abs(a.precio - p.precio) - Math.abs(b.precio - p.precio))
       .slice(0, n);
   }

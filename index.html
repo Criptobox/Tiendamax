@@ -78,7 +78,7 @@
          inyecta la primera vez que el cliente abre el chat. La URL va aquí
          (y no dentro del JS) para que bump_versions.py le ponga el hash del
          archivo y el navegador no sirva un cerebro viejo desde caché. -->
-    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=4dfb5da0">
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=52736fe9">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=8ae87199" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b1490d74" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=0bc055bd">
+    <link rel="stylesheet" href="css/bundle.css?v=7906aab6">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -1663,7 +1663,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=8ae87199" defer></script>
+    <script src="js/tm-bundle.js?v=b1490d74" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

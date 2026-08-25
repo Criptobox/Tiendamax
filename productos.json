@@ -680,7 +680,7 @@
     "id": 1778103856933,
     "nombre": "⚡ Pistola de Masaje Muscular (Fascia Gun)",
     "precioActual": 25,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784007970666.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
     "stock": 5,
@@ -701,7 +701,7 @@
       "🔋 Carga Rápida Type-C"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
+      "https://tiendamax.org/imagenes/img_1784007970666.webp",
       "https://tiendamax.org/imagenes/img_1778103856933.webp"
     ],
     "ficha": [
@@ -1454,7 +1454,7 @@
     "id": 1778212195565,
     "nombre": "Mannol 5W30 5L",
     "precioActual": 35,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -1472,7 +1472,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.webp"
+      "https://tiendamax.org/imagenes/img_1783918216261.webp"
     ],
     "ficha": [
       {
@@ -1684,7 +1684,7 @@
     "id": 1778213940333,
     "nombre": "Mannol Safari 20W - 50 7404 5L",
     "precioActual": 25,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -1702,7 +1702,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.webp"
+      "https://tiendamax.org/imagenes/img_1783918626441.webp"
     ],
     "ficha": [
       {
@@ -1733,7 +1733,7 @@
     "id": 1778214089400,
     "nombre": "Mannol Special PLUS 10W - 30 7512. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918610323.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 33,
@@ -1751,7 +1751,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.webp"
+      "https://tiendamax.org/imagenes/img_1783918610323.webp"
     ],
     "ficha": [
       {
@@ -2775,7 +2775,7 @@
   },
   {
     "id": 1778546645170,
-    "nombre": "Juego de Llantas R14",
+    "nombre": "Juego de Llantas R14 — Negro Con Detalle Rojo",
     "precioActual": 550,
     "imagen": "https://tiendamax.org/imagenes/img_1778546645170_ext.webp",
     "categoria": "CARROS",
@@ -2818,7 +2818,7 @@
   },
   {
     "id": 1778546857180,
-    "nombre": "Juego de Llantas R15",
+    "nombre": "Juego de Llantas R15 — Negro Pulido",
     "precioActual": 600,
     "imagen": "https://tiendamax.org/imagenes/img_1778546857180_ext.webp",
     "categoria": "CARROS",
@@ -2910,7 +2910,7 @@
     "id": 1778547461235,
     "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -2928,7 +2928,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.webp"
+      "https://tiendamax.org/imagenes/img_1783919083218.webp"
     ],
     "ficha": [
       {
@@ -2959,7 +2959,7 @@
     "id": 1778547753925,
     "nombre": "Mannol Defender 10W - 40 7507. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918493021.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -2977,7 +2977,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.webp"
+      "https://tiendamax.org/imagenes/img_1783918493021.webp"
     ],
     "ficha": [
       {
@@ -3184,7 +3184,7 @@
     "id": 1778717147247,
     "nombre": "👖 Shorts Deportivos Casuales de Secado Rápido",
     "precioActual": 5,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571184792.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784571184792.webp",
     "categoria": "ROPA",
     "subcategoria": "HOMBRE",
     "stock": 4,
@@ -3202,10 +3202,10 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571184792.webp",
+      "https://tiendamax.org/imagenes/img_1784571184792.webp",
       "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571186172.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571187204.webp"
+      "https://tiendamax.org/imagenes/img_1784571186172.webp",
+      "https://tiendamax.org/imagenes/img_1784571187204.webp"
     ],
     "ficha": [
       {
@@ -3249,7 +3249,7 @@
     "id": 1778820912552,
     "nombre": "⛺ Tienda de Campaña Instantánea (Automática)",
     "precioActual": 100,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008196606.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784008196606.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
     "stock": 4,
@@ -3270,7 +3270,7 @@
       "🌧️ Tela Impermeable"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008196606.webp",
+      "https://tiendamax.org/imagenes/img_1784008196606.webp",
       "https://tiendamax.org/imagenes/img_1778820912552_ext.webp"
     ],
     "ficha": [
@@ -3569,7 +3569,7 @@
     "id": 1778907260915,
     "nombre": "Calentador Eléctrico",
     "precioActual": 125,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838545299.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 4,
@@ -3586,7 +3586,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
+      "https://tiendamax.org/imagenes/img_1783838545299.webp",
       "https://tiendamax.org/imagenes/img_1778907258376.webp"
     ],
     "ficha": [
@@ -3930,7 +3930,7 @@
     "nombre": "🦟 Raqueta Matamoscas Eléctrica Recargable",
     "precioActual": 10,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836578975.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
     "stock": 0,
@@ -3946,7 +3946,7 @@
     "descripcion": "Raqueta eléctrica diseñada para eliminar insectos voladores de forma limpia, rápida y segura en el hogar. Su diseño tipo raqueta con mango ergonómico permite cazar mosquitos y moscas al instante mediante una descarga de alta eficiencia en su red central.",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
+      "https://tiendamax.org/imagenes/img_1783836578975.webp",
       "https://tiendamax.org/imagenes/img_1780079294429.webp"
     ],
     "specs": [
@@ -4261,7 +4261,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780542905916.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp"
+      "https://tiendamax.org/imagenes/img_1784571781169.webp"
     ],
     "ficha": [
       {
@@ -5132,7 +5132,7 @@
   },
   {
     "id": 1778546731028,
-    "nombre": "Juego de Llantas R14",
+    "nombre": "Juego de Llantas R14 — Negro Con Pulido Cromado",
     "precioActual": 550,
     "imagen": "https://tiendamax.org/imagenes/img_1778546731028_ext.webp",
     "categoria": "CARROS",
@@ -5176,7 +5176,7 @@
   },
   {
     "id": 1778546922840,
-    "nombre": "Juego de Llantas R15",
+    "nombre": "Juego de Llantas R15 — Gris / Negro",
     "precioActual": 500,
     "imagen": "https://tiendamax.org/imagenes/img_1778546922840_ext.webp",
     "categoria": "CARROS",
@@ -5642,9 +5642,9 @@
   {
     "id": 1782535836192,
     "nombre": "Smart TV Milexus 43\"",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838818101.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.webp",
+      "https://tiendamax.org/imagenes/img_1783838818101.webp",
       "https://tiendamax.org/imagenes/img_1782535834600.webp"
     ],
     "precioActual": 250,
@@ -5688,9 +5688,9 @@
   {
     "id": 1782536078989,
     "nombre": "Lavadora Milexus de Doble Tina (9 kg)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838636279.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.webp",
+      "https://tiendamax.org/imagenes/img_1783838636279.webp",
       "https://tiendamax.org/imagenes/img_1782536075088.webp",
       "https://tiendamax.org/imagenes/img_1782536076725.webp",
       "https://tiendamax.org/imagenes/img_1782536077803.webp"
@@ -7810,11 +7810,11 @@
     "id": 1785866159148,
     "nombre": "🔋Cargador de Batería de Litio BIEN 48V 5A",
     "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1785866153002.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866153002.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866155608.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785866157414.webp"
+      "https://tiendamax.org/imagenes/img_1785866153002.webp",
+      "https://tiendamax.org/imagenes/img_1785866155608.webp",
+      "https://tiendamax.org/imagenes/img_1785866157414.webp"
     ],
     "precioActual": 40,
     "precioOriginal": 0,
@@ -8176,9 +8176,9 @@
     "id": 1786633494382,
     "nombre": "⚡ Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
     "descripcion": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo real. Corta el suministro eléctrico ante fluctuaciones peligrosas o sobrecargas, protegiendo los electrodomésticos y equipos conectados.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786633493204.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786633493204.webp"
+      "https://tiendamax.org/imagenes/img_1786633493204.webp"
     ],
     "precioActual": 20,
     "precioOriginal": 0,
@@ -8377,9 +8377,9 @@
     "id": 1786807706672,
     "nombre": "🏋️ Creatina Monohidrato Hearthy Foods 500g",
     "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786807705245.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807705245.webp"
+      "https://tiendamax.org/imagenes/img_1786807705245.webp"
     ],
     "precioActual": 25,
     "precioOriginal": 0,
@@ -8439,9 +8439,9 @@
     "id": 1786807859244,
     "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
     "descripcion": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva. Se presenta en un envase con 60 porciones, sin sabor y verificado mediante pruebas de terceros.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786807857921.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786807857921.webp"
+      "https://tiendamax.org/imagenes/img_1786807857921.webp"
     ],
     "precioActual": 23,
     "precioOriginal": 0,
@@ -8500,9 +8500,9 @@
     "id": 1786808152310,
     "nombre": "🏋️ Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
     "descripcion": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y recuperación muscular. Presenta un delicioso sabor a helado de coco (Coconut Ice Cream), sin colorantes artificiales y con un contenido neto de 962 gramos.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1786808150368.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1786808150368.webp"
+      "https://tiendamax.org/imagenes/img_1786808150368.webp"
     ],
     "precioActual": 35,
     "precioOriginal": 0,
@@ -8566,10 +8566,10 @@
     "id": 1787071784077,
     "nombre": "🔌 Cargador y Mantenedor de Baterías VEVOR 35A",
     "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787071781631.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071781631.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787071783066.webp"
+      "https://tiendamax.org/imagenes/img_1787071781631.webp",
+      "https://tiendamax.org/imagenes/img_1787071783066.webp"
     ],
     "precioActual": 145,
     "precioOriginal": 0,
@@ -8673,9 +8673,9 @@
     "id": 1787072040177,
     "nombre": "⚡ Soldadora Inverter YESWELDER FLUX-140 FLEX",
     "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787072038550.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787072038550.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787072038550.webp"
+      "https://tiendamax.org/imagenes/img_1787072038550.webp"
     ],
     "precioActual": 275,
     "precioOriginal": 0,
@@ -8920,17 +8920,15 @@
       "1× Abrazadera de montaje para mástil / torre",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.",
-    "seoTitle": "Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
-    "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…"
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia."
   },
   {
     "id": 1787604262771,
     "nombre": "🌐 Cable de Red / Patch Cord Ethernet Cat6A",
     "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787604261333.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1787604261333.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1787604261333.webp"
+      "https://tiendamax.org/imagenes/img_1787604261333.webp"
     ],
     "precioActual": 0.42,
     "precioOriginal": 0,
@@ -9019,8 +9017,6 @@
     ],
     "incluye": [
       "1× Cable de Red UTP Cat6A de 10m"
-    ],
-    "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
-    "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…"
+    ]
   }
 ]
