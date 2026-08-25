@@ -27,57 +27,6 @@ if (typeof agregarAlCarrito === 'function') {
 }
 
 
-// ── 3. ANALYTICS COUNTER ANIMADO ──
-function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
-    const isFloat = String(target).includes('.');
-    const decimals = isFloat ? 2 : 0;
-    const numTarget = parseFloat(target) || 0;
-    const start = performance.now();
-
-    function step(now) {
-        const t = Math.min((now - start) / duration, 1);
-        // Ease out expo
-        const e = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-        const current = numTarget * e;
-        el.textContent = prefix + current.toFixed(decimals) + suffix;
-        if (t < 1) requestAnimationFrame(step);
-        else el.textContent = prefix + numTarget.toFixed(decimals) + suffix;
-    }
-    requestAnimationFrame(step);
-}
-
-// Patch stat() para usar contadores animados
-if (typeof stat === 'function') {
-stat = function(icon, label, value, color) {
-    const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.startsWith('$'));
-    const id = 'tm-stat-' + Math.random().toString(36).slice(2,7);
-    const display = typeof value === 'number' ? value : value;
-
-    const html = '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
-        '<div style="font-size:22px;">' + icon + '</div>' +
-        '<div id="' + id + '" class="tm-counter" style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color || 'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
-        '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
-        '</div>';
-
-    // Animar después del render
-    if (isNumeric) {
-        setTimeout(() => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (typeof value === 'number') {
-                animarContador(el, value, 900 + Math.random() * 400);
-            } else if (typeof value === 'string' && value.startsWith('$')) {
-                const num = parseFloat(value.replace('$',''));
-                animarContador(el, num, 1000, '$');
-            }
-        }, 80);
-    }
-
-    return html;
-};
-} // end typeof stat guard
-
-
 // ── Buscador y filtro de categorías en Ventas ────────────────────
 let _ventaCatActiva = '';
 

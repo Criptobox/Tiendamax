@@ -827,29 +827,6 @@ function imagenEnUso(url, ignorarProductoId) {
     return false;
 }
 
-// ═══════════════════════════════════════════════════════
-//  ANALYTICS
-// ═══════════════════════════════════════════════════════
-function stat(icon, label, value, color) {
-    const uid = 'ts' + Math.random().toString(36).slice(2,7);
-    const sizeCls = typeof value === 'number' ? 'admin-stat-value' : 'admin-stat-value';
-    const html = '<div class="admin-analytics-stat">' +
-        '<div class="icon">' + icon + '</div>' +
-        '<div id="' + uid + '" class="tm-counter ' + sizeCls + '" style="color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
-        '<div class="label">' + label + '</div>' +
-        '</div>';
-    setTimeout(() => {
-        const el = document.getElementById(uid);
-        if (!el) return;
-        if (typeof value === 'number') {
-            animarContador(el, value, 800 + Math.random() * 500);
-        } else if (typeof value === 'string' && value.startsWith('$')) {
-            animarContador(el, parseFloat(value.replace('$','')), 1000, '$');
-        }
-    }, 60);
-    return html;
-}
-
 // ===== VALIDACIÓN DE CAMPOS =====
 
 function validarProducto(producto) {
