@@ -322,8 +322,22 @@
   td .sub { font-size:10px; color:var(--muted); }
 
   /* Toast */
-  .toast { position:fixed; bottom:24px; right:24px; z-index:99999; background:var(--card); border-left:4px solid var(--green); border-radius:11px; padding:13px 18px; box-shadow:0 8px 32px rgba(0,0,0,0.5); font-size:13px; opacity:0; transform:translateY(20px); transition:opacity 0.3s,transform 0.3s; max-width:340px; }
+  /* pointer-events:none siempre: el toast no tiene nada que tocar, y con
+     opacity:0 seguía recibiendo los toques. Eso dejaba una zona muerta de
+     340x73 clavada abajo a la derecha en TODAS las pantallas —no solo los 2.6s
+     que se ve—, y lo que cayera debajo no respondía. Es el mismo arreglo que
+     ya tiene .tm-copilot-toast en js/admin-copilot.js.
+     El bottom lo sube por encima de la burbuja del Copiloto (62px de alto,
+     bottom:24px en escritorio / 76px + safe-area en el teléfono), que va en
+     z-index 99998 y quedaba tapada cada vez que aparecía un aviso. */
+  .toast { position:fixed; bottom:calc(112px + env(safe-area-inset-bottom)); right:24px; z-index:99999; pointer-events:none; background:var(--card); border-left:4px solid var(--green); border-radius:11px; padding:13px 18px; box-shadow:0 8px 32px rgba(0,0,0,0.5); font-size:13px; opacity:0; transform:translateY(20px); transition:opacity 0.3s,transform 0.3s; max-width:340px; }
   .toast.show { opacity:1; transform:translateY(0); }
+  /* En el teléfono se estira de lado a lado en vez de quedar en una columna
+     angosta pegada al borde derecho. El bottom cuenta con que ahí la burbuja
+     arranca más arriba (76px en vez de 24px). */
+  @media (max-width:560px){
+    .toast { left:12px; right:12px; max-width:none; bottom:calc(164px + env(safe-area-inset-bottom)); }
+  }
   .toast .t { font-weight:800; margin-bottom:3px; color:#fff; }
   .toast .b { color:var(--muted); font-size:12px; }
 
@@ -1734,7 +1748,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=8ae87199"></script>
+<script src="js/tm-bundle.js?v=b1490d74"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la

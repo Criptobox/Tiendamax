@@ -28,7 +28,14 @@ class WorkflowArtefactosTest(unittest.TestCase):
     def setUpClass(cls):
         cls.wf = WF.read_text(encoding="utf-8")
         cls.src = SCRIPT.read_text(encoding="utf-8")
-        cls.add = " ".join(re.findall(r"^\s*git add ([^\n]*)", cls.wf, re.M))
+        # Las rutas pueden estar escritas de dos formas y las dos cuentan:
+        # sueltas en un `git add a b c`, o en la variable RUTAS que recorre el
+        # bucle de indexado. Buscando solo la primera, el test se quedó ciego
+        # justo cuando el workflow pasó a la segunda.
+        cls.add = " ".join(
+            re.findall(r"^\s*git add ([^\n]*)", cls.wf, re.M)
+            + re.findall(r'^\s*RUTAS=\"([^\"]*)\"', cls.wf, re.M)
+        )
 
     def _constantes_escritas(self):
         """Constantes ROOT/'algo' que el script escribe (no solo lee)."""
@@ -57,7 +64,9 @@ class WorkflowArtefactosTest(unittest.TestCase):
     def test_el_rebase_del_reintento_no_muere_por_ficheros_sueltos(self):
         # Un fichero tocado y sin indexar bastaba para tumbar el job entero
         # después de haber hecho todo el trabajo.
-        m = re.search(r"^\s*git rebase ([^\n]*)", self.wf, re.M)
+        # Sin anclar al principio de la línea: el rebase vive dentro de un
+        # `if ! git rebase ...; then` desde que el fallback se unificó.
+        m = re.search(r"git rebase ([^\n;]*)", self.wf)
         self.assertIsNotNone(m, "no se encontró el rebase del reintento")
         self.assertIn(
             "--autostash", m.group(1),
