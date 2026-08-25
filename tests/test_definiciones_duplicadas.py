@@ -28,14 +28,19 @@ BUILD = RAIZ / "scripts" / "build_js_bundle.py"
 # Las que ya estaban el día que se puso esta prueba. Cada una es una copia
 # muerta esperando a que alguien la edite por error. La lista solo debe
 # ENCOGER: si arreglás una, bórrala de aquí.
+# Siete de estas ENVUELVEN a la original y la siguen llamando por una
+# referencia guardada antes de reasignar: eso es el patrón decorador, no código
+# muerto, y está bien. Las que dejan una copia inalcanzable son las que
+# REEMPLAZAN sin llamarla:
+#
+#   filtrarPorCategoria   la de tm-catalog está muerta
+#   stat                  la de tm-data está muerta
+#
+# (actualizarPreciosMostrados era la tercera y ya está unificada.)
 CONOCIDAS = {
     "renderizarProductos", "agregarAlCarrito", "mostrarVistaCategoria",
     "renderizarMasVendidos", "guardarProductos", "abrirDetalleProducto",
-    "actualizarBotonesCategorias", "filtrarPorCategoria",
-    "actualizarPreciosMostrados",
-    # Nombres de funciones internas que coinciden por casualidad entre módulos.
-    # No se pisan —son locales— pero el escaneo por texto no puede saberlo.
-    "init", "stat", "step",
+    "actualizarBotonesCategorias", "filtrarPorCategoria", "stat",
 }
 
 
@@ -54,7 +59,11 @@ def _definiciones():
         if not f.is_file():
             continue
         texto = f.read_text(encoding="utf-8")
-        nombres = set(re.findall(r"^\s*function\s+([A-Za-z_$][\w$]*)\s*\(", texto, re.M))
+        # Solo las de NIVEL SUPERIOR: una función anidada es local y no
+        # colisiona con nada. Sin anclar a la columna 0 salían "init", "stat" y
+        # "step" —helpers internos de tres módulos distintos— como si se
+        # pisaran, y el ruido tapa los casos de verdad.
+        nombres = set(re.findall(r"^function\s+([A-Za-z_$][\w$]*)\s*\(", texto, re.M))
         nombres |= set(re.findall(r"^\s*([A-Za-z_$][\w$]*)\s*=\s*function\s*\(", texto, re.M))
         for n in nombres:
             porNombre.setdefault(n, set()).add(mod)

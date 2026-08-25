@@ -320,55 +320,9 @@ async function guardarTasaMNAdmin() {
         tmPostProcesarMasVendidos();
     };
 
-    actualizarPreciosMostrados = function () {
-        // Esta función SUSTITUYE a la de tm-patches.src.js, así que la guarda de
-        // los precios en MN tiene que estar también aquí: si no, el conmutador
-        // USD/MN reescribe un precio fijo en pesos como si fueran dólares.
-        document.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
-            let usd = parseFloat(el.getAttribute('data-usd') || '');
-            if (!Number.isFinite(usd)) {
-                const card = el.closest('.producto-card');
-                const productId = card && card.dataset ? card.dataset.productId : '';
-                const producto = productId ? productos.find(p => String(p.id) === String(productId)) : null;
-                if (producto) {
-                    usd = Number(producto.precioActual);
-                    el.setAttribute('data-usd', String(usd));
-                }
-            }
-            if (Number.isFinite(usd)) {
-                el.textContent = typeof formatPrecio === 'function'
-                    ? formatPrecio(usd)
-                    : ('$' + usd.toFixed(2) + ' USD');
-            }
-        });
-
-        const detailPrice = document.getElementById('detailPriceActual');
-        const _detMN = (typeof tmEsMN === 'function') && tmEsMN(_detalleProductoActual);
-        if (detailPrice && _detalleProductoActual && !_detMN) {
-            detailPrice.setAttribute('data-usd', String(_detalleProductoActual.precioActual));
-            // No pisar con textContent plano: destruía los spans tipográficos
-            // (.dp-sym/.dp-num/.dp-cur) que arma tm-product.src.js. Solo actualizamos
-            // el número; el símbolo/moneda los mantiene el markup existente.
-            const numEl = detailPrice.querySelector('.dp-num');
-            if (numEl) {
-                numEl.textContent = Number(_detalleProductoActual.precioActual).toFixed(2);
-            } else {
-                detailPrice.textContent = typeof formatPrecio === 'function'
-                    ? formatPrecio(_detalleProductoActual.precioActual)
-                    : ('$' + Number(_detalleProductoActual.precioActual).toFixed(2) + ' USD');
-            }
-        }
-        const mnEl = document.getElementById('detailPriceMN');
-        if (mnEl && _detalleProductoActual) {
-            const tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-            if (tasa > 0) {
-                mnEl.textContent = '≈ ' + Math.round(_detalleProductoActual.precioActual * tasa).toLocaleString('es-CU') + ' MN';
-                mnEl.style.display = 'block';
-            } else {
-                mnEl.style.display = 'none';
-            }
-        }
-    };
+    // actualizarPreciosMostrados vive ahora en tm-patches.src.js, como una
+    // sola definición. Reasignarla desde aquí era lo que dejaba muerta la
+    // de allá sin que se notara.
 
     // (FIX) Override eliminado: ahora renderizarRecientes funciona de verdad
     // y muestra los productos vistos en home y en detalle.

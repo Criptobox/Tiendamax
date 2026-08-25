@@ -1067,36 +1067,61 @@ function formatPrecio(usd) {
     return `$${parseFloat(usd).toFixed(2)} USD`;
 }
 
+/* Repinta los precios al cambiar el conmutador USD/MN.
+   Esta es la ÚNICA definición. Vivía duplicada: una declaración aquí y una
+   reasignación en tm-iife.src.js que la sustituía entera. La que corría era la
+   de tm-iife —una asignación se ejecuta después de que se icen las
+   declaraciones—, así que la de aquí era inalcanzable y se leía como si
+   mandara. Es lo que hizo que la guarda de los precios en MN se escribiera en
+   la copia muerta y no hiciera nada.
+   Se conserva el cuerpo que corría en producción; la copia muerta además tenía
+   una rama para `[data-precio-usd]`, un atributo que no genera nadie. */
 function actualizarPreciosMostrados() {
-    // Precios en tarjetas de productos
-    // data-mn marca un precio que YA está en moneda nacional y es fijo: el
-    // conmutador USD/MN no puede reescribirlo ni convertirlo.
-    document.querySelectorAll('[data-precio-usd]:not([data-mn])').forEach(el => {
-        const usd = parseFloat(el.getAttribute('data-precio-usd'));
-        el.textContent = formatPrecio(usd);
-    });
-    // Re-renderizar si es necesario
-    const grid = document.getElementById('productosGrid');
-    if (grid && grid.children.length > 0) {
-        grid.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
-            const usd = parseFloat(el.getAttribute('data-usd') || el.textContent.replace(/[^0-9.]/g, ''));
-            if (!isNaN(usd) && usd > 0) {
-                if (!el.getAttribute('data-usd')) el.setAttribute('data-usd', usd);
-                el.textContent = formatPrecio(usd);
+    // Esta función SUSTITUYE a la de tm-patches.src.js, así que la guarda de
+    // los precios en MN tiene que estar también aquí: si no, el conmutador
+    // USD/MN reescribe un precio fijo en pesos como si fueran dólares.
+    document.querySelectorAll('.precio-actual:not([data-mn])').forEach(el => {
+        let usd = parseFloat(el.getAttribute('data-usd') || '');
+        if (!Number.isFinite(usd)) {
+            const card = el.closest('.producto-card');
+            const productId = card && card.dataset ? card.dataset.productId : '';
+            const producto = productId ? productos.find(p => String(p.id) === String(productId)) : null;
+            if (producto) {
+                usd = Number(producto.precioActual);
+                el.setAttribute('data-usd', String(usd));
             }
-        });
-    }
-    // Actualizar precio MN en modal de detalle si está abierto
-    const _mnEl = document.getElementById('detailPriceMN');
-    if (_mnEl) {
-        const _tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-        const _usdEl = document.getElementById('detailPriceActual');
-        const _usd = _usdEl ? parseFloat(_usdEl.textContent.replace(/[^0-9.]/g, '')) : 0;
-        if (_tasa > 0 && _usd > 0) {
-            _mnEl.textContent = `≈ ${Math.round(_usd * _tasa).toLocaleString('es-CU')} MN`;
-            _mnEl.style.display = 'block';
+        }
+        if (Number.isFinite(usd)) {
+            el.textContent = typeof formatPrecio === 'function'
+                ? formatPrecio(usd)
+                : ('$' + usd.toFixed(2) + ' USD');
+        }
+    });
+
+    const detailPrice = document.getElementById('detailPriceActual');
+    const _detMN = (typeof tmEsMN === 'function') && tmEsMN(_detalleProductoActual);
+    if (detailPrice && _detalleProductoActual && !_detMN) {
+        detailPrice.setAttribute('data-usd', String(_detalleProductoActual.precioActual));
+        // No pisar con textContent plano: destruía los spans tipográficos
+        // (.dp-sym/.dp-num/.dp-cur) que arma tm-product.src.js. Solo actualizamos
+        // el número; el símbolo/moneda los mantiene el markup existente.
+        const numEl = detailPrice.querySelector('.dp-num');
+        if (numEl) {
+            numEl.textContent = Number(_detalleProductoActual.precioActual).toFixed(2);
         } else {
-            _mnEl.style.display = 'none';
+            detailPrice.textContent = typeof formatPrecio === 'function'
+                ? formatPrecio(_detalleProductoActual.precioActual)
+                : ('$' + Number(_detalleProductoActual.precioActual).toFixed(2) + ' USD');
+        }
+    }
+    const mnEl = document.getElementById('detailPriceMN');
+    if (mnEl && _detalleProductoActual) {
+        const tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+        if (tasa > 0) {
+            mnEl.textContent = '≈ ' + Math.round(_detalleProductoActual.precioActual * tasa).toLocaleString('es-CU') + ' MN';
+            mnEl.style.display = 'block';
+        } else {
+            mnEl.style.display = 'none';
         }
     }
 }
