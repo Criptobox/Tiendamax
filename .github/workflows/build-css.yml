@@ -59,18 +59,49 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add css/bundle.css sw.js index.html admin.html
-          if git diff --cached --quiet; then
+          # bundle.css, sw.js y los ?v= del HTML son DERIVADOS: se calculan a
+          # partir de css/*.css. Fusionarlos no tiene sentido y encima no se
+          # puede — sw.js lleva el sello de caché, así que las dos ramas tocan
+          # SIEMPRE la misma línea. El `git pull --rebase` de antes chocaba ahí,
+          # abortaba, y los cinco reintentos repetían el mismo choque hasta
+          # morir: el bundle YA minificado se perdía y en producción quedaba el
+          # que hubiera subido a mano quien ganó la carrera. Pasó en el run #141
+          # y dejó 581 KB de CSS sin minificar publicados.
+          #
+          # Ante un push rechazado, entonces: tirar lo nuestro, ponerse sobre el
+          # main nuevo y volver a generar. Sale siempre lo correcto porque no
+          # hay nada que conservar de la versión vieja.
+          regenerar() {
+            python scripts/build_css.py
+            npx --yes csso-cli css/bundle.css -o css/bundle.css
+            python scripts/bump_versions.py
+          }
+          commitear() {
+            git add css/bundle.css sw.js index.html admin.html
+            if git diff --cached --quiet; then return 1; fi
+            git commit -m "chore: regenerar y minificar css/bundle.css [skip ci]"
+          }
+
+          if ! commitear; then
             echo "Sin cambios — nada que subir."
             echo "changed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          git commit -m "chore: regenerar y minificar css/bundle.css [skip ci]"
           for i in 1 2 3 4 5; do
             if git push; then echo "changed=true" >> $GITHUB_OUTPUT; exit 0; fi
-            git pull --rebase origin main || git rebase --abort 2>/dev/null
-            sleep 2
+            echo "Push rechazado; regenerando sobre el main nuevo (intento $i)."
+            git fetch origin main
+            git reset --hard origin/main
+            regenerar
+            if ! commitear; then
+              # El otro push ya traía este mismo bundle: no hay nada que subir.
+              echo "Sin cambios tras regenerar — el bundle ya está al día."
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            sleep $((i * 2))
           done
+          echo "::error::no se pudo publicar el bundle.css minificado"
           exit 1
 
       - name: Publicar en GitHub Pages

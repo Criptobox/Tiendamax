@@ -57,18 +57,46 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/src/*.js js/tm-bundle.js sw.js index.html admin.html 404.html
-          if git diff --cached --quiet; then
+          # Los minificados, tm-bundle.js, sw.js y los ?v= son DERIVADOS de
+          # js/src/*.src.js. Fusionarlos no tiene sentido y encima no se puede:
+          # sw.js lleva el sello de caché, así que las dos ramas tocan SIEMPRE
+          # la misma línea. El `git pull --rebase` de antes chocaba ahí,
+          # abortaba, y los cinco reintentos repetían el mismo choque hasta
+          # morir, dejando publicado el bundle sin minificar. (El workflow
+          # hermano de CSS falló así en el run #141.)
+          #
+          # Ante un push rechazado: tirar lo nuestro, ponerse sobre el main
+          # nuevo y volver a generar. No hay nada que conservar de lo viejo.
+          regenerar() {
+            python scripts/minify_js.py
+            python scripts/build_js_bundle.py
+            python scripts/bump_versions.py
+          }
+          commitear() {
+            git add js/src/*.js js/tm-bundle.js sw.js index.html admin.html 404.html
+            if git diff --cached --quiet; then return 1; fi
+            git commit -m "chore: minificar js/src/*.js [skip ci]"
+          }
+
+          if ! commitear; then
             echo "Sin cambios — nada que subir."
             echo "changed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          git commit -m "chore: minificar js/src/*.js [skip ci]"
           for i in 1 2 3 4 5; do
             if git push; then echo "changed=true" >> $GITHUB_OUTPUT; exit 0; fi
-            git pull --rebase origin main || git rebase --abort 2>/dev/null
-            sleep 2
+            echo "Push rechazado; regenerando sobre el main nuevo (intento $i)."
+            git fetch origin main
+            git reset --hard origin/main
+            regenerar
+            if ! commitear; then
+              echo "Sin cambios tras regenerar — el bundle ya está al día."
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            sleep $((i * 2))
           done
+          echo "::error::no se pudo publicar el bundle minificado"
           exit 1
 
       - name: Publicar en GitHub Pages
