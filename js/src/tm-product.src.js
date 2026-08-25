@@ -658,11 +658,11 @@ if (_detailPrecioMNEl) {
         const lista = Array.isArray(filas) ? filas.filter(Boolean) : [];
         if (!lista.length) { el.innerHTML = ''; el.style.display = 'none'; return; }
 
-        // El modal medía 4717px en un teléfono de 915: cinco pantallas, con la
-        // ficha entera por debajo del botón de Pedir. Plegada, el cliente ve el
-        // precio, los datos clave y el botón sin scrollear, y abre el detalle
-        // si lo quiere. El contenido sigue en el DOM —solo se oculta— para no
-        // esconderlo de los lectores de pantalla ni del buscador.
+        // El modal medía 4717px en un teléfono de 915: cinco pantallas por
+        // debajo del botón de Pedir. Se pliega todo menos la ficha técnica,
+        // que es el dato duro —el que el cliente entra a comprobar— y va
+        // siempre abierta. El contenido sigue en el DOM —solo se oculta— para
+        // no esconderlo de los lectores de pantalla ni del buscador.
         if (plegable && lista.length >= _TMF_PLEGAR_DESDE) {
             el.innerHTML =
                 '<button type="button" class="tmf-cab" aria-expanded="false" data-tmf-plegar>' +
@@ -703,7 +703,7 @@ if (_detailPrecioMNEl) {
                  + (nota ? '<span class="tmf-n">' + escapeHtml(nota) + '</span>' : '')
                  + '</span></div>';
         }).join('') + '</div>';
-    }, true);
+    });
 
     // Una característica puede venir como {t, d} o solo como texto: el catálogo
     // que arma el dueño las escribe como frases sueltas, sin título. Sin este
@@ -739,10 +739,8 @@ if (_detailPrecioMNEl) {
         };
     }
 
-    // Estos dos no se pliegan aunque sean largos: "para qué sirve" y "qué trae
-    // la caja" son lo que convence de comprar, no una tabla de consulta.
-    _tmPintarBloque('detailIdealPara', p.idealPara, 'Ideal para', _tmLista('tmf-ideal', '🎯'));
-    _tmPintarBloque('detailIncluye', p.incluye, 'Qué incluye', _tmLista('tmf-caja', '📦'));
+    _tmPintarBloque('detailIdealPara', p.idealPara, 'Ideal para', _tmLista('tmf-ideal', '🎯'), true);
+    _tmPintarBloque('detailIncluye', p.incluye, 'Qué incluye', _tmLista('tmf-caja', '📦'), true);
 
     // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
     // garantía/devolución solo si el producto los tiene de verdad).
