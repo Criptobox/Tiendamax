@@ -380,7 +380,26 @@ async function guardarTasaMNAdmin() {
         }
         pill.style.transition = 'none';
         _tmSliderMover();
+        _tmBordesTira();
         requestAnimationFrame(() => { pill.style.transition = ''; });
+    }
+
+    // Enciende el degradado de cada borde solo cuando hay algo cortado de ese
+    // lado. Sin esto el chip de la izquierda se corta en seco pegado al botón
+    // "← Volver" y parece que el botón lo tapa. El de la derecha ya existía,
+    // pero fijo: se quedaba encendido aunque no quedara nada por ver.
+    function _tmBordesTira() {
+        const wrap = document.getElementById('categoriaFiltro');
+        if (!wrap) return;
+        const resto = wrap.scrollWidth - wrap.clientWidth;
+        // 4px de holgura: el scroll no siempre cae en un entero exacto.
+        wrap.classList.toggle('tm-tira-izq', wrap.scrollLeft > 4);
+        wrap.classList.toggle('tm-tira-der', wrap.scrollLeft < resto - 4);
+        if (!wrap._tmBordes) {
+            wrap._tmBordes = true;
+            wrap.addEventListener('scroll', _tmBordesTira, { passive: true });
+            window.addEventListener('resize', _tmBordesTira, { passive: true });
+        }
     }
 
     function _tmSliderMover() {

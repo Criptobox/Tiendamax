@@ -1631,13 +1631,24 @@ html body:not(.light-mode) .categorias-home-inner{
 }
 
 /* ── Barra de categorías: que se vea que hay más al costado ──
-   Se cortaba en seco a la derecha sin ninguna pista de que desplaza. */
+   Se cortaba en seco a la derecha sin ninguna pista de que desplaza.
+   El degradado tapaba SOLO ese borde, así que al desplazar la tira el chip de
+   la izquierda quedaba cortado a cuchillo pegado al botón "← Volver" y parecía
+   que el botón lo estaba tapando. Ahora se desvanecen los dos bordes, y cada
+   uno solo cuando hay algo cortado de ese lado: las clases las pone
+   _tmBordesTira() en tm-iife.src.js según el scroll. El derecho arranca
+   encendido para que no haya un parpadeo sin degradado antes de que corra el
+   JS; si no queda nada por ver, _tmBordesTira() lo apaga. */
 html body .categoria-filtro{
   position:relative !important;
-  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 44px),transparent 100%);
-  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 44px),transparent 100%);
+  --tm-fade-izq:0px;
+  --tm-fade-der:44px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--tm-fade-izq),#000 calc(100% - var(--tm-fade-der)),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 var(--tm-fade-izq),#000 calc(100% - var(--tm-fade-der)),transparent 100%);
   scrollbar-width:none !important;
 }
+html body .categoria-filtro.tm-tira-izq{ --tm-fade-izq:26px; }
+html body .categoria-filtro:not(.tm-tira-der){ --tm-fade-der:0px; }
 html body .categoria-filtro::-webkit-scrollbar{display:none !important}
 /* En claro las píldoras quedaban gris sobre crema, casi sin contraste */
 html body.light-mode .categoria-btn,
