@@ -435,6 +435,21 @@ async function guardarTasaMNAdmin() {
             });
             _tmSliderMover();
         }
+    // Cambiar de categoría también cambia sus subcategorías. Sin esto los chips
+    // de subcategoría se quedaban en los de la categoría ANTERIOR —en WIFI
+    // salían HERRAMIENTAS, DEPORTES, HOGAR…, que son de UTILES— y el conteo
+    // con ellos, porque renderizarSubcategoriaTabs() es quien llama a
+    // actualizarCategoriaStats(). Además hay que soltar la subcategoría
+    // elegida ANTES de repintar: si no, la parrilla filtra por una que en la
+    // categoría nueva no existe y sale vacía.
+        //
+        // No se puede delegar en el filtrarPorCategoria original para no
+        // repetirlo: aquel llama a actualizarBotonesCategorias(), que borra y
+        // reconstruye la tira entera —se perdería la píldora animada y la
+        // posición del scroll justo al tocar un chip—. Por eso este override
+        // existe, y por eso estas dos líneas van repetidas a propósito.
+        if (typeof subcategoriaSeleccionada !== 'undefined') subcategoriaSeleccionada = 'Todas';
+        if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
         renderizarProductos();
         const titulo = document.getElementById('tituloCategoriaActual');
         if (titulo) {

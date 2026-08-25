@@ -281,6 +281,12 @@ function renderizarSubcategoriaTabs() {
     const tabsContainer = document.getElementById('subcategoriaTabs');
     if (!tabsContainer) return;
 
+    // El conteo va PRIMERO, antes de los return de abajo. Estaba al final, así
+    // que en "Todas" —y en cualquier categoría sin subcategorías— la función
+    // salía antes de llegar a él y el número se quedaba con el de la categoría
+    // anterior: se volvía de WIFI a Todas y seguía diciendo "29 productos".
+    actualizarCategoriaStats();
+
     // Cuando es "Todas" no hay subcategoría tabs
     if (categoriaSeleccionada === 'Todas') {
         tabsContainer.style.display = 'none';
@@ -317,8 +323,6 @@ function renderizarSubcategoriaTabs() {
         tabsContainer.appendChild(tab);
     });
 
-    // Actualizar stats
-    actualizarCategoriaStats();
 }
 
 function seleccionarSubcategoria(subcat) {
