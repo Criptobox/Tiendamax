@@ -8980,5 +8980,113 @@
     ],
     "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
     "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…"
+  },
+  {
+    "id": 1787698473597,
+    "nombre": "🌐 MikroTik SXTsq Lite2",
+    "imagen": "https://tiendamax.org/imagenes/img_1787698472400.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1787698472400.webp"
+    ],
+    "precioActual": 120,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡2.4 GHz",
+      "📡10 dBi integrada"
+    ],
+    "fechaAgregado": "2026-08-25T22:54:33.597Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Modelo",
+        "v": "SXTsq Lite2",
+        "nota": "RBSXTsq2nD"
+      },
+      {
+        "k": "Frecuencia Inalámbrica",
+        "v": "2.4 GHz",
+        "nota": "Estándar 802.11b/g/n, Dual-Chain 2×2 MIMO"
+      },
+      {
+        "k": "Ganancia de Antena",
+        "v": "10 dBi integrada",
+        "nota": "apertura de haz de 60°"
+      },
+      {
+        "k": "Procesador y Memoria",
+        "v": "CPU QCA9533 a 650 MHz / 64 MB RAM / 16 MB Flash"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Ethernet 10/100 Mbps",
+        "nota": "Fast Ethernet"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "MikroTik RouterOS",
+        "nota": "Licencia Nivel 3"
+      },
+      {
+        "k": "Alimentación",
+        "v": "PoE Pasivo",
+        "nota": "10V – 30V DC"
+      },
+      {
+        "k": "Protección",
+        "v": "Carcasa para exteriores resistente a la intemperie",
+        "nota": "rayos UV, lluvia y viento"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Antena integrada de 10 dBi",
+        "d": "diseño optimizado de doble polarización (Dual-Chain 2×2 MIMO) en la banda de 2.4 GHz para enlaces inalámbricos directos y estables."
+      },
+      {
+        "t": "Factor de forma ultracompacto",
+        "d": "estructura dos veces más delgada que los modelos SXT clásicos, lo que reduce la resistencia al viento y minimiza el impacto visual."
+      },
+      {
+        "t": "Potencia y gestión con RouterOS",
+        "d": "integra el potente sistema operativo de MikroTik (Nivel 3), permitiendo control granular de tráfico, firewall, protocolos de enrutamiento y herramientas de alineación de señal."
+      },
+      {
+        "t": "Alimentación PoE Pasivo",
+        "d": "simplifica la instalación exterior al transmitir energía y datos a través de un único cable de red Ethernet."
+      },
+      {
+        "t": "Montaje versátil",
+        "d": "ranuras posteriores diseñadas para sujetar la unidad en postes o mástiles tanto en orientación horizontal como vertical mediante abrazadera metálica."
+      },
+      {
+        "t": "Protección integrada",
+        "d": "terminal de conexión a tierra accesible para resguardar el hardware contra descargas electrostáticas (ESD) y sobretensiones atmosféricas."
+      }
+    ],
+    "idealPara": [
+      "Enlaces inalámbricos Punto a Punto (PtP) de corta y media distancia en la frecuencia de 2.4 GHz.",
+      "Dispositivo cliente (CPE) para conexión de abonados a torres de proveedores de Internet inalámbrico (WISP).",
+      "Interconexión de redes entre edificios, oficinas, almacenes o talleres sin necesidad de tendidos de cable subterráneo o aéreo.",
+      "Captación de redes Wi-Fi públicas o comunitarias en 2.4 GHz para retransmitir la señal al interior del hogar mediante un router."
+    ],
+    "incluye": [
+      "1× Dispositivo inalámbrico exterior MikroTik SXTsq Lite2",
+      "1× Adaptador de corriente (fuente de alimentación 24V)",
+      "1× Inyector PoE pasivo",
+      "1× Abrazadera metálica de montaje para mástil / tubo"
+    ]
   }
 ]
