@@ -648,13 +648,48 @@ if (_detailPrecioMNEl) {
             ? tmIconoSVG(p.emoji, 'tm-ico-spec') : '';
         return { ico: ico, texto: p.texto };
     }
-    function _tmPintarBloque(id, filas, titulo, armar) {
+    // A partir de aquí el bloque se pliega. Por debajo, un botón de "ver más"
+    // para tres filas estorba más de lo que ahorra.
+    const _TMF_PLEGAR_DESDE = 5;
+
+    function _tmPintarBloque(id, filas, titulo, armar, plegable) {
         const el = document.getElementById(id);
         if (!el) return;
         const lista = Array.isArray(filas) ? filas.filter(Boolean) : [];
         if (!lista.length) { el.innerHTML = ''; el.style.display = 'none'; return; }
-        el.innerHTML = '<h4>' + titulo + '</h4>' + armar(lista);
+
+        // El modal medía 4717px en un teléfono de 915: cinco pantallas, con la
+        // ficha entera por debajo del botón de Pedir. Plegada, el cliente ve el
+        // precio, los datos clave y el botón sin scrollear, y abre el detalle
+        // si lo quiere. El contenido sigue en el DOM —solo se oculta— para no
+        // esconderlo de los lectores de pantalla ni del buscador.
+        if (plegable && lista.length >= _TMF_PLEGAR_DESDE) {
+            el.innerHTML =
+                '<button type="button" class="tmf-cab" aria-expanded="false" data-tmf-plegar>' +
+                    '<span class="tmf-cab-txt">' + titulo + '</span>' +
+                    '<span class="tmf-cab-n">' + lista.length + '</span>' +
+                    '<svg class="tmf-cab-v" viewBox="0 0 24 24" aria-hidden="true">' +
+                        '<path d="M6 9l6 6 6-6"/></svg>' +
+                '</button>' +
+                '<div class="tmf-cuerpo" hidden>' + armar(lista) + '</div>';
+        } else {
+            el.innerHTML = '<h4>' + titulo + '</h4>' + armar(lista);
+        }
         el.style.display = 'block';
+    }
+
+    // Un solo listener delegado en el modal: los bloques se vuelven a pintar
+    // con cada producto y enganchar el click en cada uno los iba acumulando.
+    if (!window._tmfPlegarListo) {
+        window._tmfPlegarListo = true;
+        document.addEventListener('click', function (ev) {
+            const cab = ev.target && ev.target.closest && ev.target.closest('[data-tmf-plegar]');
+            if (!cab) return;
+            const abierto = cab.getAttribute('aria-expanded') === 'true';
+            cab.setAttribute('aria-expanded', abierto ? 'false' : 'true');
+            const cuerpo = cab.nextElementSibling;
+            if (cuerpo) cuerpo.hidden = abierto;
+        });
     }
 
     _tmPintarBloque('detailFicha', p.ficha, 'Ficha técnica', function (filas) {
@@ -668,7 +703,7 @@ if (_detailPrecioMNEl) {
                  + (nota ? '<span class="tmf-n">' + escapeHtml(nota) + '</span>' : '')
                  + '</span></div>';
         }).join('') + '</div>';
-    });
+    }, true);
 
     // Una característica puede venir como {t, d} o solo como texto: el catálogo
     // que arma el dueño las escribe como frases sueltas, sin título. Sin este
@@ -685,19 +720,29 @@ if (_detailPrecioMNEl) {
             return '<div class="tmf-c"><span class="tmf-t">' + t.ico + escapeHtml(t.texto) + '</span>'
                  + '<span class="tmf-d">' + escapeHtml(d) + '</span></div>';
         }).join('') + '</div>';
-    });
+    }, true);
 
-    _tmPintarBloque('detailIdealPara', p.idealPara, 'Ideal para', function (filas) {
-        return '<ul class="tmf-lista tmf-ideal">' + filas.map(function (t) {
-            return '<li>' + escapeHtml(String(t).trim()) + '</li>';
-        }).join('') + '</ul>';
-    });
+    // La viñeta va como ícono de línea, no como emoji: eran los dos únicos
+    // sitios del modal con un emoji a todo color y desentonaban al lado de los
+    // 36 íconos de línea del resto. Se pintan aquí y no en CSS con ::before
+    // porque el ícono sale del mismo sitio que todos los demás.
+    function _tmVineta(emoji) {
+        return (typeof tmIconoSVG === 'function')
+            ? tmIconoSVG(emoji, 'tmf-vineta') : '';
+    }
+    function _tmLista(clase, emoji) {
+        return function (filas) {
+            const ico = _tmVineta(emoji);
+            return '<ul class="tmf-lista ' + clase + '">' + filas.map(function (t) {
+                return '<li>' + ico + '<span>' + escapeHtml(String(t).trim()) + '</span></li>';
+            }).join('') + '</ul>';
+        };
+    }
 
-    _tmPintarBloque('detailIncluye', p.incluye, 'Qué incluye', function (filas) {
-        return '<ul class="tmf-lista tmf-caja">' + filas.map(function (t) {
-            return '<li>' + escapeHtml(String(t).trim()) + '</li>';
-        }).join('') + '</ul>';
-    });
+    // Estos dos no se pliegan aunque sean largos: "para qué sirve" y "qué trae
+    // la caja" son lo que convence de comprar, no una tabla de consulta.
+    _tmPintarBloque('detailIdealPara', p.idealPara, 'Ideal para', _tmLista('tmf-ideal', '🎯'));
+    _tmPintarBloque('detailIncluye', p.incluye, 'Qué incluye', _tmLista('tmf-caja', '📦'));
 
     // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
     // garantía/devolución solo si el producto los tiene de verdad).

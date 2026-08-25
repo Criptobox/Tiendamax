@@ -349,10 +349,17 @@ for (const [q, esperado] of ENCAMINADAS) {
 
 // La autonomía no puede estampar una capacidad supuesta DEBAJO del nombre
 // propio de un producto: ahí no se lee como estimación, se lee como ficha.
+//
+// La Lubrim ya declara sus 75Ah y 12V —antes no, y por eso aquí se comprobaba
+// que Max se negara a calcular—, así que lo que se vigila ahora es que use SU
+// dato y no el 100Ah de respaldo. Es la misma protección: el número que sale
+// bajo el nombre del producto tiene que ser el suyo.
 {
     const r = B.responder('cuanto dura la bateria automotriz lubrim con la tv');
-    ok(/no tengo los ah|no puedo calcularte/i.test(r.response),
-        'sin Ah/V declarados hay que decirlo, no inventar 100Ah bajo su nombre');
+    ok(/75\s*ah/i.test(r.response),
+        'con Ah declarados hay que usar los suyos: ' + String(r.response).replace(/<[^>]*>/g,' ').slice(0, 90));
+    ok(!/100\s*ah/i.test(r.response),
+        'no puede aparecer el 100Ah de respaldo en un producto que declara el suyo');
     ok(!/lubrim[^\n]*100ah/i.test(r.response.replace(/<[^>]+>/g, '')),
         'no puede aparecer "100Ah" en la misma línea que el nombre del producto');
     // Y los Ah que escribe el cliente mandan.

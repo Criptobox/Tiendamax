@@ -367,7 +367,13 @@ function tmIconoSVG(emoji, cls, estricto) {
 
 // Separa el emoji inicial de un texto: '🔋 Batería 12V' → { emoji:'🔋', texto:'Batería 12V' }
 function tmPartirEmoji(texto) {
-    const s = String(texto || '');
+    // Los invisibles de delante se quitan antes de mirar el emoji. Dos nombres
+    // del catálogo empiezan con U+200B —se cuelan al pegar texto desde
+    // WhatsApp— y con ese carácter por delante el bucle cortaba en el primer
+    // paso: el emoji se quedaba dentro del texto y salía a todo color en el
+    // título del modal, al lado del mismo símbolo ya convertido a ícono de
+    // línea. No fallaba nada; simplemente se veían dos estilos a la vez.
+    const s = String(texto || '').replace(/^[\u200b\u200c\u200d\u2060\ufeff\u180e]+/, '');
     let corte = 0;
     for (const ch of s) {
         if (!tmEsEmojiCP(ch.codePointAt(0))) break;

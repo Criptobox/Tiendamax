@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=b1490d74" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=14ab9db5" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,7 +276,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=dce4dff9">
+    <link rel="stylesheet" href="css/bundle.css?v=f7d5a7b9">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -1231,7 +1231,7 @@
                          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleZoomImagen(this)}">
                     <div class="detail-zoom-hint"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='10.5' cy='10.5' r='7'/><path d='m20.5 20.5-5-5'/></svg> Toca para ampliar</div>
                     <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
-                    <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Top Ventas</div>
+                    <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="tm-ico tm-ico-ui"><path d='M12 2.5s4.2 4.6 4.2 8.2a4.2 4.2 0 0 1-8.4 0c0-1.2.4-2.2 1-3 .2 1.2.9 2 1.8 2C10 8 12 5.4 12 2.5z'/><path d='M6.2 13.8a5.8 5.8 0 0 0 11.6 0c0-2-1-3.9-2.3-5.4'/></svg> Top Ventas</div>
                     <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;" aria-live="polite"></div>
                 </div>
                 <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;" role="list" aria-label="Galería de imágenes del producto"></div>
@@ -1344,7 +1344,7 @@
                                     X (Twitter)
                                 </button>
                                 <button data-action="copiarLinkProducto" class="red-social-btn red-copiar" type="button">
-                                    🔗 Copiar enlace
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="tm-ico tm-ico-ui"><path d='M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1'/><path d='M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1'/></svg> Copiar enlace
                                 </button>
                                 <button data-action="compartirNativo" class="red-social-btn red-mas" type="button">
                                     ••• Más opciones
@@ -1663,7 +1663,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=b1490d74" defer></script>
+    <script src="js/tm-bundle.js?v=14ab9db5" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

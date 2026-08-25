@@ -171,8 +171,8 @@
     "slug": "enrutador-wifi-wavlink-ac1200",
     "comision": 10,
     "specs": [
-      "📡 Diseño de Cobertura Amplia",
-      "⚡ Alta Potencia"
+      "Velocidad Wi-Fi: AC1200 Doble Banda",
+      "Puertos: 1× puerto WAN RJ45 + 4× puertos LAN RJ45"
     ],
     "seoTitle": "ENRUTADOR WIFI WAVLINK AC1200 en Cuba | TiendaMax",
     "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
@@ -267,7 +267,6 @@
     "slug": "repetidor-wifi-5",
     "comision": 1500,
     "specs": [
-      "📶 Wi-Fi 5 (Doble Banda)",
       "🚀 1200 Mbps"
     ],
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
@@ -461,8 +460,9 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "⚖️ Alta Precisión",
-      "📱 Display Digital HD"
+      "Capacidad Máxima: Soporta hasta 396.83 lb",
+      "Dimensiones: Tamaño optimizado de 27x27 cm",
+      "Tecnología / Tipo: Báscula corporal digital"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007772666.webp",
@@ -536,8 +536,8 @@
     "precioOriginal": 90,
     "comisionMoneda": "USD",
     "specs": [
-      "🎯 Precisión Profesional",
-      "🛠️ Kit Completo TIG"
+      "Tecnología / Tipo: Antorcha TIG manual",
+      "Accesorios: Kit de consumibles incluido"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007359011.webp",
@@ -608,9 +608,9 @@
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
     ],
     "specs": [
-      "🔋 Energía Automotriz Confiable",
-      "⚡ Potencia de Arranque Estable",
-      "🛡️ Tecnología Duradera y Resistente"
+      "Voltaje Nominal: 12V DC",
+      "Capacidad: 75 Ah",
+      "Tipo de Mantenimiento: Libre de mantenimiento"
     ],
     "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.",
     "ficha": [
@@ -697,8 +697,9 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "💆♂️ Alivio Profundo",
-      "🔋 Carga Rápida Type-C"
+      "Accesorios: 4 cabezales de masaje",
+      "Tecnología / Tipo: Masajeador de percusión",
+      "Carga: USB Type-C"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007970666.webp",
@@ -974,8 +975,8 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
     "comision": 10,
     "specs": [
-      "​⚡ Tecnología MPPT de Alta Eficiencia (100A)",
-      "​🔋 Compatibilidad Universal (12V/24V/36V/48V) ​",
+      "⚡ Tecnología MPPT de Alta Eficiencia (100A)",
+      "🔋 Compatibilidad Universal (12V/24V/36V/48V)",
       "🔌 Pantalla LCD y Control Inteligente"
     ],
     "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
@@ -1151,8 +1152,7 @@
     "slug": "inversor-de-onda-sinusoidal-pura-fuera-de-la-red",
     "comision": 35,
     "specs": [
-      "⚡ Alta Capacidad: 5000W",
-      "☀️ Inversor Solar Híbrido"
+      "⚡ Alta Capacidad: 5000W"
     ],
     "seoTitle": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED | TiendaMax",
     "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…",
@@ -1273,7 +1273,7 @@
   },
   {
     "id": 1778104924836,
-    "nombre": "​⚡ Generador Solar Portátil BLUETTI AC180",
+    "nombre": "⚡ Generador Solar Portátil BLUETTI AC180",
     "precioActual": 700,
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
@@ -1287,10 +1287,9 @@
     "slug": "estacion-de-carga-portatil",
     "comision": 15,
     "specs": [
-      "​⚡ 1800W de Potencia / 1152Wh Capacidad",
-      "​🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
-      "​🔋 Estación de Energía Portátil de Alta Capacidad ​",
-      "⚡ Generador Solar Portátil BLUETTI AC180"
+      "⚡ 1800W de Potencia / 1152Wh Capacidad",
+      "🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
+      "🔋 Estación de Energía Portátil de Alta Capacidad"
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
     "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
@@ -1470,7 +1469,9 @@
     "precioOriginal": 0,
     "comision": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Viscosidad (SAE): 5W-30"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918216261.webp"
     ],
@@ -1480,8 +1481,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "5W"
+        "k": "Viscosidad (SAE)",
+        "v": "5W-30"
       },
       {
         "k": "Categoría",
@@ -1632,7 +1633,10 @@
     "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Color: Negro monocolor",
+      "Compatibilidad: Ajuste universal"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918032855.webp",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
@@ -1700,7 +1704,9 @@
     "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Viscosidad (SAE): 20W-50"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918626441.webp"
     ],
@@ -1710,8 +1716,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "20W"
+        "k": "Viscosidad (SAE)",
+        "v": "20W-50"
       },
       {
         "k": "Categoría",
@@ -1749,7 +1755,9 @@
     "precioOriginal": 0,
     "comision": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Viscosidad (SAE): 10W-30"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918610323.webp"
     ],
@@ -1759,8 +1767,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "10W"
+        "k": "Viscosidad (SAE)",
+        "v": "10W-30"
       },
       {
         "k": "Categoría",
@@ -1801,8 +1809,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "10W"
+        "k": "Viscosidad (SAE)",
+        "v": "10W-40"
       },
       {
         "k": "Categoría",
@@ -1818,6 +1826,9 @@
     ],
     "incluye": [
       "1x Mannol 4 - Takt Motorbike 10W - 40 7812. 1L"
+    ],
+    "specs": [
+      "Viscosidad (SAE): 10W-40"
     ]
   },
   {
@@ -2130,6 +2141,12 @@
       {
         "d": "Se instala amarrado a postes o paredes, sin estructura fija."
       }
+    ],
+    "specs": [
+      "📐 Medidas: 3m x 6m",
+      "☀️ Bloqueo UV: 90%",
+      "🎨 Color: Beige",
+      "🧵 Tela: Transpirable"
     ]
   },
   {
@@ -2153,7 +2170,7 @@
     "comisionMoneda": "USD",
     "specs": [
       "🚨 Sistema de Alarma Inteligente Inalámbrico para el Hogar",
-      "🛡️ Seguridad Perimetral y Control de Acceso Completo ",
+      "🛡️ Seguridad Perimetral y Control de Acceso Completo",
       "🌐 Monitoreo Centralizado con Panel Táctil y RFID"
     ],
     "imagenes": [
@@ -2379,7 +2396,7 @@
     "comisionMoneda": "USD",
     "specs": [
       "📹 Sistema de Videovigilancia de Alta Definición",
-      "🛡️ Monitoreo de Seguridad Integral 24/7 ",
+      "🛡️ Monitoreo de Seguridad Integral 24/7",
       "🌐 Confiabilidad y Cobertura Amplia"
     ],
     "imagenes": [
@@ -2539,8 +2556,7 @@
     "slug": "adaptador-poe-ubiquiti",
     "comision": 1500,
     "specs": [
-      "⚡ Ubiquiti Original",
-      "🔌 24V / 0.3A"
+      "⚡ Ubiquiti Original"
     ],
     "seoTitle": "ADAPTADOR POE UBIQUITI en Cuba | TiendaMax",
     "seoDescription": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.",
@@ -2652,6 +2668,10 @@
       {
         "d": "Tres cabezales orientables para repartir el aire por el habitáculo."
       }
+    ],
+    "specs": [
+      "🔢 Cabezales: 3",
+      "🔌 Alimentación: Toma del encendedor (cigarrera)"
     ]
   },
   {
@@ -2674,7 +2694,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "🔔 Timbre Inteligente con Videovigilancia y WiFi ",
+      "🔔 Timbre Inteligente con Videovigilancia y WiFi",
       "🛡️ Comunicación Bidireccional y Control Remoto",
       "🌐 Conexión Inalámbrica de Gran Alcance con Alarma Chime"
     ],
@@ -2771,6 +2791,11 @@
     ],
     "incluye": [
       "1x Cargador portátil solar"
+    ],
+    "specs": [
+      "☀️ Recarga: Corriente eléctrica o panel solar",
+      "📱 Carga inalámbrica: Sí",
+      "🔦 Linterna LED: Incorporada"
     ]
   },
   {
@@ -2814,6 +2839,11 @@
     ],
     "incluye": [
       "1x Juego de 4 llantas R14"
+    ],
+    "specs": [
+      "🛞 Rodado: R14",
+      "✨ Diseño: 5 rayos deportivo",
+      "🎨 Acabado: Negro con detalle rojo"
     ]
   },
   {
@@ -2861,6 +2891,11 @@
     ],
     "incluye": [
       "1x Juego de 4 llantas R15"
+    ],
+    "specs": [
+      "🛞 Rodado: R15",
+      "✨ Diseño: 5 rayos deportivo",
+      "🎨 Acabado: Negro pulido"
     ]
   },
   {
@@ -2926,7 +2961,9 @@
     "precioOriginal": 0,
     "comision": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Viscosidad (SAE): 15W-40"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783919083218.webp"
     ],
@@ -2936,8 +2973,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "15W"
+        "k": "Viscosidad (SAE)",
+        "v": "15W-40"
       },
       {
         "k": "Categoría",
@@ -2975,7 +3012,9 @@
     "precioOriginal": 0,
     "comision": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "Viscosidad (SAE): 10W-40"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783918493021.webp"
     ],
@@ -2985,8 +3024,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "10W"
+        "k": "Viscosidad (SAE)",
+        "v": "10W-40"
       },
       {
         "k": "Categoría",
@@ -3027,8 +3066,8 @@
         "v": "FANFARO"
       },
       {
-        "k": "Potencia",
-        "v": "20W"
+        "k": "Viscosidad (SAE)",
+        "v": "20W-50"
       },
       {
         "k": "Categoría",
@@ -3044,6 +3083,9 @@
     ],
     "incluye": [
       "1x 20W50 s - 4T Aceite de Motor Mineral FF6208 1L"
+    ],
+    "specs": [
+      "Viscosidad (SAE): 20W-50"
     ]
   },
   {
@@ -3200,7 +3242,12 @@
     "descripcion": "Short de nylon deportivo, cintura elástica con cordón, bolsillo lateral con cierre y franja reflectiva en la pierna. Disponible en varios colores (verde olivo, gris oscuro, azul marino, gris claro).",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "specs": [],
+    "specs": [
+      "🧵 Material: Nylon deportivo",
+      "👖 Cintura: Elástica con cordón",
+      "🎒 Bolsillos: Bolsillo lateral con cierre",
+      "🦺 Seguridad: Franja reflectiva en la pierna"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784571184792.webp",
       "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
@@ -3431,6 +3478,10 @@
     ],
     "incluye": [
       "1x Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector us Pin"
+    ],
+    "specs": [
+      "Voltajes: 72V / 84V",
+      "Capacidad / Corriente: 5A"
     ]
   },
   {
@@ -3515,6 +3566,10 @@
       {
         "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
       }
+    ],
+    "specs": [
+      "✨ Diseño: Tipo Stealth (alerón)",
+      "🔩 Instalación: Incluye tornillería"
     ]
   },
   {
@@ -3563,6 +3618,10 @@
       {
         "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
       }
+    ],
+    "specs": [
+      "🕶️ Cristal: Con tinte",
+      "🔩 Instalación: Incluye tornillería"
     ]
   },
   {
@@ -3623,6 +3682,11 @@
       {
         "d": "Panel digital para fijar la temperatura en vez de buscarla con la llave."
       }
+    ],
+    "specs": [
+      "📟 Control: Panel digital",
+      "🎨 Color: Negro con blanco",
+      "🔧 Conexión: Directo a la tubería de agua"
     ]
   },
   {
@@ -3768,7 +3832,7 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
     "comision": 10,
     "specs": [
-      "⚡ 80A MPPT ",
+      "⚡ 80A MPPT",
       "🔋 12V / 24V / 36V / 48V Auto",
       "📟 Pantalla LCD y Botones de Control"
     ],
@@ -3950,9 +4014,8 @@
       "https://tiendamax.org/imagenes/img_1780079294429.webp"
     ],
     "specs": [
-      "⚡ Eliminación Rápida y Efectiva de Insectos ",
-      "🛡️ Malla Protectora de Seguridad Multicapa",
-      "🔋 Recargable y Fácil de Usar"
+      "Tecnología / Tipo: Raqueta matamoscas eléctrica",
+      "Color: Verde y negro"
     ],
     "ficha": [
       {
@@ -4079,9 +4142,7 @@
     "seoDescription": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
     "comisionMoneda": "MN",
     "specs": [
-      "📹 Cámara de Seguridad de Alta Definición",
-      "🛡️ Monitoreo Confiable para Interiores y Exteriores",
-      "🌙 Visión Nocturna Infrarroja Avanzada"
+      "Uso: Videovigilancia residencial y comercial"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
@@ -4251,8 +4312,8 @@
     "slug": "sistema-de-seguridad-zosi-para-el-hogar-8-canales",
     "comision": 20,
     "specs": [
-      "📹 Sistema de Videovigilancia de 8 Canales con Alta Definición ",
-      "🛡️ Monitoreo Completo y Almacenamiento Integrado ",
+      "📹 Sistema de Videovigilancia de 8 Canales con Alta Definición",
+      "🛡️ Monitoreo Completo y Almacenamiento Integrado",
       "🌐 Seguridad Confiable 24/7 para el Hogar"
     ],
     "seoTitle": "SISTEMA DE SEGURIDAD ZOSI PARA EL HOGAR - 8 CANALES",
@@ -4519,9 +4580,8 @@
     "seoTitle": "GORRO DE BUCEO en Cuba | TiendaMax",
     "seoDescription": "Gorro de buseo de neopreno de 3mm. Diferentes tallas.",
     "specs": [
-      "🌊 Protección Térmica Avanzada para Buceo ",
-      "🤿 Diseño Ergonómico de Cobertura Total",
-      "🛡️ Neopreno Resistente y Flexible"
+      "Peso: 3 mm",
+      "Tecnología / Tipo: Gorro / Capucha de buceo"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp"
@@ -4664,9 +4724,8 @@
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
     "specs": [
-      "🔋 Diagnóstico Preciso del Sistema Eléctrico",
-      "⚡ Pruebas Rápidas de Carga y Arranque",
-      "🛡️ Interfaz Intuitiva con Pantalla a Color"
+      "Voltaje de Operación: 12V DC",
+      "Rango de Medición (CCA): 100 a 2000 CCA"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
@@ -4773,7 +4832,11 @@
       "https://tiendamax.org/imagenes/img_1781365133963.webp"
     ],
     "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
-    "specs": [],
+    "specs": [
+      "📐 Tamaño: Compacto (mini)",
+      "🎨 Aspas: Blancas",
+      "🔧 Montaje: De techo"
+    ],
     "ficha": [
       {
         "k": "📐 Tamaño",
@@ -4823,7 +4886,11 @@
       "https://tiendamax.org/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
     ],
-    "specs": [],
+    "specs": [
+      "⚖️ Por porción: 5000 mg",
+      "📦 Contenido: 500 g",
+      "🔢 Porciones: 100"
+    ],
     "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
     "ficha": [
       {
@@ -4883,7 +4950,10 @@
     "comisionMoneda": "MN",
     "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
     "seoDescription": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
-    "specs": [],
+    "specs": [
+      "Puertos: 1× puerto Fast Ethernet RJ45",
+      "Velocidad Wi-Fi: Hasta 300 Mbps en la banda de 2.4 GHz"
+    ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
     ],
@@ -5068,9 +5138,10 @@
     "comisionMoneda": "USD",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "specs": [
-      "☀️ Eficiencia Energética Solar ",
-      "🔋 Respaldo Energético Compacto ",
-      "⚙️ Gestión Profesional de Energía"
+      "Potencia continua: 1500W",
+      "Voltaje de batería: 24V DC",
+      "Voltaje de salida: 120V AC Onda Pura a 60Hz",
+      "Entrada solar máx. (Voc): 105V DC"
     ],
     "seoTitle": "INVERSOR SOLAR HÍBRIDO MUST 1500W (24V A 120V) | TiendaMax",
     "seoDescription": "⚙️ Especificaciones Técnicas Principales: Potencia Nominal: 1500VA / 1500W (Potencia real continua). Voltaje del Sistema (Baterías): 24V DC. Salida de…",
@@ -5172,6 +5243,11 @@
     ],
     "incluye": [
       "1x Juego de 4 llantas R14"
+    ],
+    "specs": [
+      "🛞 Rodado: R14",
+      "✨ Diseño: 5 rayos deportivo",
+      "🎨 Acabado: Negro con pulido cromado"
     ]
   },
   {
@@ -5224,6 +5300,12 @@
     ],
     "incluye": [
       "1x Juego de 4 llantas R15"
+    ],
+    "specs": [
+      "🛞 Rodado: R15",
+      "📏 Medida: 15x6",
+      "🔩 Patrón de tornillos: 4x100 / 4x114.3",
+      "✨ Diseño: 5 rayos"
     ]
   },
   {
@@ -5249,8 +5331,8 @@
         "v": "MANNOL"
       },
       {
-        "k": "Potencia",
-        "v": "10W"
+        "k": "Viscosidad (SAE)",
+        "v": "10W-40"
       },
       {
         "k": "Categoría",
@@ -5266,6 +5348,9 @@
     ],
     "incluye": [
       "1x Mannol 4 - Takt Motorbike 10W - 40 7812 1L"
+    ],
+    "specs": [
+      "Viscosidad (SAE): 10W-40"
     ]
   },
   {
@@ -5288,7 +5373,6 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🚀 Wi-Fi 6 (AX1450)",
       "⚡ Gigabit"
     ],
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
@@ -5386,9 +5470,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🎧 Sonido Envolvente para Gaming de Alta Precisión",
-      "🎙️ Comunicación Clara sin Interrupciones",
-      "🛡️ Comodidad Ergonómica para Largas Sesiones"
+      "Conectividad: Inalámbrica 2.4 GHz",
+      "Drivers / Altavoces: Neodimio de 50 mm",
+      "Autonomía: Hasta 30"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -5484,7 +5568,10 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "🧹 Mantenimiento: Ninguno",
+      "🔲 Formato: Módulos cuadrados que se conectan entre sí"
+    ],
     "fechaAgregado": "2026-06-26T02:05:25.090Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "PANEL DECORATIVO DE HOJAS ARTIFICIALES en Cuba | TiendaMax",
@@ -5935,9 +6022,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Transferencia Automática Dual",
-      "🔄 Gestión Inteligente de Energía",
-      "🛡️ Protección y Seguridad Eléctrica"
+      "Corriente nominal: 100A continuo",
+      "Voltaje nominal: 220V AC",
+      "Montaje: Riel DIN estándar de 35mm"
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
     "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
@@ -6099,8 +6186,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🏎️ Turbo Eficiente ",
-      "💎 Lujo Tecnológico"
+      "Kilometraje: Menos de 13,000 km",
+      "Ubicación: Habana"
     ],
     "fechaAgregado": "2026-07-05T03:24:56.640Z",
     "seoTitle": "Changan CS75 PLUS 2024 (Suv Compacta) en Cuba | TiendaMax",
@@ -6348,9 +6435,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Carga Inteligente de Alta Potencia",
-      "🔋 Versatilidad para Múltiples Baterías ",
-      "🛡️ Mantenimiento Seguro y Eficiente"
+      "Voltaje: 12V",
+      "Capacidad / Corriente: 15A",
+      "Tecnología / Tipo: AGM, GEL, EFB, LiFePO4"
     ],
     "fechaAgregado": "2026-07-08T01:24:54.756Z",
     "seoTitle": "Cargador Inteligente Corebox 12V 15A en Cuba | TiendaMax",
@@ -6413,9 +6500,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Carga Inteligente de Alta Precisión",
-      "🔋 Compatibilidad Multivoltaje y Multitecnología ",
-      "🛡️ Función de Reparación y Mantenimiento"
+      "Voltajes: 12V / 24V",
+      "Capacidad / Corriente: 20A / 10A",
+      "Salida 12V: 20A",
+      "Salida 24V: 10A"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z",
     "seoTitle": "Cargador Inteligente Ntrc 20A en Cuba | TiendaMax",
@@ -6486,9 +6574,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Carga Inteligente de Alta Potencia",
-      "🔋 Compatibilidad Multivoltaje y Multitecnología ",
-      "🛡️ Función de Reparación y Mantenimiento Avanzado"
+      "Voltajes: 12V / 24V",
+      "Capacidad / Corriente: 35A / 18A",
+      "Salida 12V: 35A",
+      "Salida 24V: 18A"
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z",
     "seoTitle": "Cargador Inteligente Ntrc 35A en Cuba | TiendaMax",
@@ -6559,8 +6648,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚙️ Router Profesional (RouterOS)",
-      "⚡ Gigabit"
+      "Procesador y Memoria: CPU Dual-Core a 880 MHz",
+      "Puertos: 5× puertos Gigabit Ethernet",
+      "Sistema Operativo: RouterOS con licencia Nivel 4"
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
     "seoTitle": "Mikrotik Hex (RB750GR3) en Cuba | TiendaMax",
@@ -6847,9 +6937,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🌐 Conectividad de Largo Alcance",
-      "📡 Diseño Compacto y Eficiente",
-      "🛠️ Solución para Exterior"
+      "Frecuencia y Velocidad: 5 GHz hasta 300 Mbps",
+      "Puertos: 1× puerto Fast Ethernet RJ45"
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z",
     "seoTitle": "Mikrotik Sxtsq LITE5 en Cuba | TiendaMax",
@@ -6941,9 +7030,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "📹 Cámara IP Domo PTZ Inalámbrica ",
-      "🛡️ Seguridad Inteligente con Cobertura de Doble Antena ",
-      "🌐 Monitoreo Remoto y Visión Nocturna Avanzada"
+      "Tecnología / Tipo: Cámara IP PTZ inalámbrica",
+      "Uso: Interiores y exteriores protegidos"
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
     "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.",
@@ -7014,9 +7102,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🌐 Conectividad Dual Band de Alta Velocidad",
-      "📶 Cobertura Amplia y Estable sin Interrupciones",
-      "🛡️ Red Doméstica Segura y de Gran Rendimiento"
+      "Velocidad Wi-Fi: AC1200 Doble Banda",
+      "Puertos: 1× puerto WAN RJ45 + 4× puertos LAN RJ45"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
     "seoTitle": "Router Inalámbrico Wavlink AC1200 Dual Band | TiendaMax",
@@ -7111,7 +7198,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ 100A MPPT Alta Potencia ",
+      "⚡ 100A MPPT Alta Potencia",
       "🔋 12V / 24V / 36V / 48V Auto",
       "📟 Pantalla LCD y Puertos USB"
     ],
@@ -7172,9 +7259,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Soldadura Inverter de Alta Potencia",
-      "🛠️ Rendimiento Profesional y Preciso",
-      "🛡️ Kit Completo Listo para Trabajar"
+      "Tecnología / Tipo: Soldadora inverter MMA",
+      "Pantalla: Digital LED para visualización de corriente"
     ],
     "fechaAgregado": "2026-07-20T17:55:00.968Z",
     "seoTitle": "Soldadora Inverter MMA-300 en Cuba | TiendaMax",
@@ -7238,7 +7324,7 @@
     "devolucion": false,
     "specs": [
       "📹 Sistema de Videovigilancia de 8 Canales con Alta Definición",
-      "🛡️ Monitoreo Completo y Almacenamiento Integrado ",
+      "🛡️ Monitoreo Completo y Almacenamiento Integrado",
       "🌐 Seguridad Confiable 24/7 para el Hogar"
     ],
     "fechaAgregado": "2026-07-20T18:23:02.778Z",
@@ -7308,7 +7394,6 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ AX1800 Wi-Fi 6",
       "📶 Doble Banda 5 GHz / 2.4 GHz",
       "🔌 Puertos Gigabit"
     ],
@@ -7402,7 +7487,6 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ AX3000 Wi-Fi 6",
       "📶 Doble Banda 5 GHz / 2.4 GHz",
       "🔌 Puertos Gigabit / USB"
     ],
@@ -7500,7 +7584,7 @@
     "devolucion": false,
     "specs": [
       "⚡ 150A MPPT Alta Potencia",
-      "🔋 12V / 24V / 36V / 48V Auto ",
+      "🔋 12V / 24V / 36V / 48V Auto",
       "📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z",
@@ -7564,9 +7648,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "📹 Doble Lente Simultáneo",
-      "☀️ Energía Solar / Panel Incluido ",
-      "🌐 Conexión Wi-Fi PTZ"
+      "Uso: Vigilancia exterior residencial o comercial"
     ],
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
@@ -7975,7 +8057,7 @@
   },
   {
     "id": 1786631968221,
-    "nombre": "​🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
     "imagen": "https://tiendamax.org/imagenes/img_1786631962109.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786631962109.webp",
@@ -7994,8 +8076,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "​⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento ​",
-      "📶 Dos Antenas Externas de Alta Ganancia ​",
+      "⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento",
+      "📶 Dos Antenas Externas de Alta Ganancia",
       "🌐 Puertos Gigabit Ethernet y RouterOS"
     ],
     "fechaAgregado": "2026-08-13T14:39:28.222Z",
@@ -8295,8 +8377,8 @@
     "devolucion": false,
     "specs": [
       "🔋 Rango de Compatibilidad: Sistemas de 12V hasta 96V",
-      "​🔌 Entrada PV: Máximo 230VDC",
-      "​⚡ Tecnología MPPT de Alta Eficiencia (120A) ​"
+      "🔌 Entrada PV: Máximo 230VDC",
+      "⚡ Tecnología MPPT de Alta Eficiencia (120A)"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z",
     "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.",
@@ -8753,7 +8835,6 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "⚡ Controlador MPPT Solar Boost de 1200W",
       "🔋 Entrada de 12-60V / Carga para 48V",
       "60V y 72V",
       "📟 Pantalla Digital a Color y Botón Set Frontal"
@@ -8944,7 +9025,12 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "Longitud: 10 metros",
+      "Velocidad de Transmisión: Hasta 10 Gbps",
+      "Frecuencia de Operación: Hasta 500 MHz",
+      "Tipo de Blindaje: UTP"
+    ],
     "fechaAgregado": "2026-08-24T20:44:22.771Z",
     "ficha": [
       {
