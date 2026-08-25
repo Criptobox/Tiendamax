@@ -1290,11 +1290,16 @@ html body:not(.light-mode) #productDetailModal .modal-content{
   color:var(--op-ink) !important;
   border:1px solid rgba(255,106,31,.16) !important;
 }
+/* Gris #e9ebf0, el mismo de .producto-card. La foto del producto ocupa el
+   marco entero (object-fit:cover), así que teñir el marco no sirve de nada:
+   lo que hace que en la tarjeta se distinga un producto blanco es que la caja
+   de la foto queda enmarcada por el gris de alrededor. En crema —tres puntos
+   de diferencia contra el blanco— ese marco no existe y el producto se funde. */
 html body.light-mode .detail-modal-content,
 html body.light-mode #productDetailModal .modal-content{
   background:
-    radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.09),transparent 60%),
-    #FFFCF8 !important;
+    radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.07),transparent 60%),
+    #e9ebf0 !important;
   color:var(--op-ink) !important;
   border:1px solid rgba(255,106,31,.14) !important;
 }
@@ -2082,7 +2087,9 @@ html body #productDetailModal .detail-sticky-cta{
   box-shadow:0 -14px 34px -18px rgba(0,0,0,.9) !important;
 }
 html body.light-mode #productDetailModal .detail-sticky-cta{
-  background:#FFFCF8 !important;
+  /* Acompaña a la superficie del modal: en crema quedaba un escalón de color
+     justo en el borde inferior. */
+  background:#e9ebf0 !important;
   border-top:1px solid rgba(0,0,0,.07) !important;
   box-shadow:0 -14px 30px -20px rgba(0,0,0,.35) !important;
 }
