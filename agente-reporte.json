@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-25T09:26:39.094249+00:00",
-  "productos": 128,
+  "generado": "2026-08-26T09:32:46.752681+00:00",
+  "productos": 129,
   "urgentes": 3,
   "advertencias": 0,
   "info": 7,
-  "resumen": "Anoche revisé tus 128 productos y encontré 3 urgente(s), 7 de info.",
+  "resumen": "Anoche revisé tus 129 productos y encontré 3 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -53,8 +53,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "59 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 56 más"
+      "nombre": "58 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 55 más"
     }
   ]
 }
