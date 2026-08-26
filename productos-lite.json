@@ -8885,7 +8885,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787604261333.webp"
     ],
-    "precioActual": 0.42,
+    "precioActual": 280,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 300,
@@ -8979,7 +8979,8 @@
       "1× Cable de Red UTP Cat6A de 10m"
     ],
     "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
-    "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…"
+    "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…",
+    "moneda": "MN"
   },
   {
     "id": 1787698473597,
@@ -9087,6 +9088,8 @@
       "1× Adaptador de corriente (fuente de alimentación 24V)",
       "1× Inyector PoE pasivo",
       "1× Abrazadera metálica de montaje para mástil / tubo"
-    ]
+    ],
+    "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
+    "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…"
   }
 ]
