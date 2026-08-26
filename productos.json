@@ -9008,12 +9008,11 @@
   {
     "id": 1787604262771,
     "nombre": "🌐 Cable de Red / Patch Cord Ethernet Cat6A",
-    "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
     "imagen": "https://tiendamax.org/imagenes/img_1787604261333.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787604261333.webp"
     ],
-    "precioActual": 0.42,
+    "precioActual": 280,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 300,
@@ -9107,7 +9106,9 @@
       "1× Cable de Red UTP Cat6A de 10m"
     ],
     "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
-    "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…"
+    "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…",
+    "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
+    "moneda": "MN"
   },
   {
     "id": 1787698473597,
