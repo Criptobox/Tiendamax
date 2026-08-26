@@ -7368,7 +7368,7 @@
     "precioActual": 150,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7400,55 +7400,77 @@
         "nota": "Wi-Fi 6: hasta 2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
       },
       {
+        "k": "Procesador",
+        "v": "CPU Qualcomm Dual-Core de alto rendimiento"
+      },
+      {
         "k": "Puertos",
-        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit (10/100/1000 Mbps) + 1× puerto USB 3.0 tipo A"
+        "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit (10/100/1000 Mbps) + 1× puerto USB 3.0"
       },
       {
         "k": "Antenas",
-        "v": "4 antenas externas de alta ganancia con módulos front-end (FEM) de alta potencia y Beamforming"
+        "v": "4 antenas externas de alta ganancia con tecnología Beamforming"
       },
       {
-        "k": "Modos de operación",
+        "k": "Ancho de Canal",
+        "v": "Soporte de canales de hasta 160 MHz"
+      },
+      {
+        "k": "Modos de Operación",
         "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
+      },
+      {
+        "k": "Seguridad y Gestión",
+        "v": "WPA3, TP-Link HomeShield, Servidor/Cliente VPN",
+        "nota": "OpenVPN, PPTP, WireGuard"
       }
     ],
     "caracteristicas": [
       {
-        "d": "Hasta 2976 Mbps teóricos combinados (2402 Mbps en la banda limpia de 5 GHz con soporte de canales de 160 MHz + 574 Mbps en 2.4 GHz)."
+        "t": "Velocidad Wi-Fi 6 de hasta 3 Gbps",
+        "d": "2402 Mbps en la banda de 5 GHz y 574 Mbps en la de 2.4 GHz, ofreciendo transferencias ultrarrápidas y menor congestión."
       },
       {
-        "d": "Procesador Qualcomm Dual-Core de alto rendimiento y 512 MB de RAM para una gestión fluida de múltiples transferencias simultáneas con latencia reducida hasta en un 75%."
+        "t": "Canales de 160 MHz",
+        "d": "duplica el ancho de banda habitual de 80 MHz en la banda de 5 GHz para exprimir al máximo la velocidad de dispositivos compatibles con Wi-Fi 6."
       },
       {
-        "d": "Tecnologías OFDMA y MU-MIMO 2×2 para conectar más de 100 dispositivos de forma concurrente sin caídas de rendimiento ni congestión."
+        "t": "Procesador Qualcomm Dual-Core",
+        "d": "procesa múltiples flujos de datos pesados manteniendo una latencia mínima y una estabilidad continua."
       },
       {
-        "d": "Puerto USB 3.0 multifunción de alta velocidad para compartir archivos en red local, crear una nube personal (Samba/FTP) o respaldo con Time Machine."
+        "t": "Tecnologías OFDMA y MU-MIMO",
+        "d": "permiten que decenas de dispositivos transmitan y reciban datos simultáneamente sin colas de espera ni caídas de rendimiento."
       },
       {
-        "d": "Sistema de seguridad avanzado TP-Link HomeShield, que incluye escáner de red, controles parentales completos y reportes de seguridad en tiempo real."
+        "t": "Puerto USB 3.0 de alta velocidad",
+        "d": "facilita la creación de un servidor de medios compartido, almacenamiento NAS doméstico o nube personal en red local."
       },
       {
-        "d": "Soporte nativo para Cliente y Servidor VPN (OpenVPN, PPTP, WireGuard), permitiendo que dispositivos de la red accedan a servidores VPN remotos sin instalar software extra."
+        "t": "Cobertura ampliada con Beamforming",
+        "d": "4 antenas externas de alta ganancia y módulos front-end (FEM) concentran la potencia de la señal hacia la ubicación exacta de cada equipo."
       },
       {
-        "d": "Disipador térmico de gran tamaño y carcasa con ventilación optimizada para mantener el router fresco y estable ante uso continuo intensivo."
+        "t": "Compatibilidad EasyMesh / OneMesh",
+        "d": "permite integrarse con repetidores o routers compatibles para formar una red de malla (Mesh) continua bajo un solo nombre de red y cambio de nodo imperceptible."
       },
       {
-        "d": "Compatible con EasyMesh / OneMesh para crear una red en malla con roaming continuo y cobertura total en todo el hogar."
+        "t": "Seguridad integral TP-Link HomeShield",
+        "d": "incluye escaneo de vulnerabilidades de red, controles parentales completos y protección avanzada contra ciberamenazas."
       },
       {
-        "d": "Seguridad inalámbrica moderna con cifrado WPA3 y ahorro de batería con Target Wake Time (TWT)."
+        "t": "Disipación térmica eficiente",
+        "d": "diseño de cubierta con ranuras de ventilación optimizadas para disipar el calor y evitar caídas de velocidad por temperatura bajo uso intensivo."
       }
     ],
     "idealPara": [
-      "Casas y oficinas con conexiones de fibra óptica de hasta 1 Gbps que buscan exprimir la máxima velocidad cableada e inalámbrica.",
-      "Gaming competitivo en línea con mínima latencia, transmisiones en directo y reproducción fluida de contenido en resolución 4K y 8K.",
-      "Usuarios que requieren crear almacenamiento compartido en red (NAS básico) mediante el puerto USB 3.0 o gestionar túneles VPN dedicados."
+      "Casas grandes, departamentos y oficinas con conexiones de fibra óptica de alta velocidad (300 Mbps a 1 Gbps o más).",
+      "Streaming de video en 4K/8K sin interrupciones, transferencias pesadas de archivos en red local y gaming online competitivo de baja latencia.",
+      "Redes saturadas con numerosos dispositivos conectados simultáneamente (laptops, consolas, móviles, domótica y Smart TVs)."
     ],
     "incluye": [
-      "1× Router Wi-Fi 6 TP-Link Archer AX55",
-      "1× Adaptador de corriente (12V)",
+      "1× Router Wi-Fi 6 TP-Link Archer AX55 (AX3000)",
+      "1× Adaptador de corriente",
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ]
