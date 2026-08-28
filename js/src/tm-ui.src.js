@@ -468,11 +468,19 @@ function registrarVentaPedido(items, cliente, opts) {
             precio: precio,
             comision: comision,
             comisionMoneda: it.comisionMoneda || p.comisionMoneda || 'USD',
+            moneda: (it.moneda === 'MN' || p.moneda === 'MN') ? 'MN' : 'USD',
             total: precio * cant,
             ganancia: comision * cant
         };
     });
-    const total = detalle.reduce((s, d) => s + d.total, 0);
+    // Dos totales, no uno. Un producto con precio fijo en MN no es plata
+    // convertible a la del resto: sumarlo al total en USD daba un número que
+    // no es dinero de ninguna de las dos monedas. `total` sigue siendo la
+    // parte en USD —es lo que leen todos los informes de siempre— y las
+    // ventas antiguas, todas anteriores a que existiera moneda:'MN', siguen
+    // valiendo tal cual.
+    const total = detalle.reduce((s, d) => s + (d.moneda === 'MN' ? 0 : d.total), 0);
+    const totalMN = detalle.reduce((s, d) => s + (d.moneda === 'MN' ? d.total : 0), 0);
     const ganancia = detalle.reduce((s, d) => s + d.ganancia, 0);
     const unidades = detalle.reduce((s, d) => s + d.cantidad, 0);
     const venta = {
@@ -482,10 +490,11 @@ function registrarVentaPedido(items, cliente, opts) {
         producto: detalle.length === 1 ? detalle[0].producto : `${detalle[0].producto} +${detalle.length - 1} más`,
         productoId: detalle[0].productoId,
         cantidad: unidades,
-        precio: detalle.length === 1 ? detalle[0].precio : total,
+        precio: detalle.length === 1 ? detalle[0].precio : (total + totalMN),
         comision: detalle.length === 1 ? detalle[0].comision : ganancia,
         comisionMoneda: detalle[0].comisionMoneda,
         total: total,
+        totalMN: totalMN,
         ganancia: ganancia
     };
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
@@ -517,8 +526,9 @@ function registrarVentaPedido(items, cliente, opts) {
                 body: JSON.stringify({
                     id: venta.id,
                     fecha: venta.fecha,
-                    items: detalle.map(d => ({ id: d.productoId, nombre: d.producto, cantidad: d.cantidad, precio: d.precio })),
+                    items: detalle.map(d => ({ id: d.productoId, nombre: d.producto, cantidad: d.cantidad, precio: d.precio, moneda: d.moneda })),
                     total: total,
+                    totalMN: totalMN,
                     estado: 'confirmado',
                     clienteTs: Date.now(),
                     actualizado: Date.now()

@@ -285,6 +285,9 @@
         "total": {
           ".validate": "newData.isNumber() && newData.val() >= 0"
         },
+        "totalMN": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
         "actualizado": {
           ".validate": "newData.isNumber()"
         },
@@ -304,6 +307,9 @@
             },
             "precio": {
               ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "moneda": {
+              ".validate": "newData.isString() && (newData.val() === 'USD' || newData.val() === 'MN')"
             }
           }
         }

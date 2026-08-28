@@ -131,6 +131,7 @@
       }
       detalle.push({
         id: p.id, nombre: p.nombre, cantidad: cant, precio: _precio(p),
+        moneda: p.moneda === 'MN' ? 'MN' : 'USD',
         comision: Number(p.comision) || 0, comisionMoneda: p.comisionMoneda || 'USD'
       });
     }
@@ -147,7 +148,11 @@
       telefono: String((datos && datos.telefono) || '').slice(0, 25),
       nota: String((datos && datos.nota) || '').slice(0, 140),
       items: detalle,
-      total: detalle.reduce(function (s, d) { return s + d.precio * d.cantidad; }, 0)
+      // Dos totales, como en la venta: un producto con precio fijo en MN no se
+      // suma con los de USD. `total` es la parte en dólares —lo que leían las
+      // reservas de siempre— y totalMN va aparte.
+      total: detalle.reduce(function (s, d) { return s + (d.moneda === 'MN' ? 0 : d.precio * d.cantidad); }, 0),
+      totalMN: detalle.reduce(function (s, d) { return s + (d.moneda === 'MN' ? d.precio * d.cantidad : 0); }, 0)
     };
     var lista = reservas();
     lista.unshift(r);

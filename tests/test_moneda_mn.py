@@ -33,6 +33,8 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 SRC = RAIZ / "js" / "src"
 ADMIN = RAIZ / "admin.html"
+RESERVAS = RAIZ / "js" / "reservas.js"
+REGLAS = RAIZ / "firebase-rules.json"
 
 
 class MonedaMNTest(unittest.TestCase):
@@ -151,3 +153,103 @@ class MonedaMNTest(unittest.TestCase):
             if "reduce(" in linea and "valorInvPorMoneda" not in linea:
                 self.fail("suma de inventario sin separar por moneda:\n  "
                           + linea.strip()[:160])
+
+
+    # ── Las ventas ──────────────────────────────────────────────────────
+    def test_la_venta_guarda_los_dos_totales_por_separado(self):
+        """`total` es la parte en USD y `totalMN` la de pesos.
+
+        Sumarlas daría un número que no es dinero de ninguna de las dos
+        monedas, y encima uno enorme: una venta de 5.000 pesos entraría en la
+        facturación como 5.000 dólares. Que `total` siga significando "dólares"
+        es lo que deja intactas las ventas ya registradas, todas anteriores a
+        que existiera moneda:'MN'.
+        """
+        texto = (SRC / "tm-ui.src.js").read_text(encoding="utf-8")
+        self.assertRegex(
+            texto,
+            r"const total = detalle\.reduce\([^\n]*d\.moneda === 'MN' \? 0 : d\.total",
+            "registrarVentaPedido volvió a sumar un único total: las ventas en "
+            "MN se cuentan como dólares.",
+        )
+        self.assertRegex(
+            texto, r"const totalMN = detalle\.reduce\(",
+            "falta totalMN en registrarVentaPedido.",
+        )
+        self.assertIn("totalMN: totalMN", texto,
+                      "la venta no guarda totalMN, así que la parte en pesos "
+                      "se pierde al recargar.")
+        # Cada línea tiene que llevar su moneda o el total no se puede repartir.
+        self.assertRegex(
+            texto, r"moneda: \(it\.moneda === 'MN' \|\| p\.moneda === 'MN'\)",
+            "las líneas de la venta no guardan su moneda.",
+        )
+
+    def test_ningun_informe_suma_las_ventas_en_un_solo_numero(self):
+        """ventaTotal() devuelve SOLO la parte en USD, a propósito.
+
+        Acumularla como si fuera el total de la venta deja fuera lo cobrado en
+        pesos sin avisar: el informe cuadra consigo mismo y falta dinero.
+        Para eso está ventaTotales() -> {usd, mn}.
+        """
+        texto = ADMIN.read_text(encoding="utf-8")
+        malos = []
+        for m in re.finditer(r"[^\n]*ventaTotal\([^\n]*", texto):
+            linea = m.group(0)
+            # La definición y el propio ventaTotales() sí la usan.
+            if "function ventaTotal" in linea or "ventaTotales" in linea:
+                continue
+            if re.search(r"(\+=|reduce\(|s\s*\+\s*)ventaTotal\(", linea):
+                malos.append(linea.strip()[:120])
+        self.assertEqual(
+            [], malos,
+            "estas líneas acumulan ventaTotal(), que es solo la parte en USD:"
+            "\n  " + "\n  ".join(malos)
+            + "\n\nUsá ventaTotales(v) y sumá con sumaMonedas().",
+        )
+
+    def test_hay_un_solo_formateador_de_pares_de_moneda(self):
+        texto = ADMIN.read_text(encoding="utf-8")
+        self.assertIn("const dosMonedas", texto,
+                      "admin.html perdió dosMonedas(), que es lo que escribe "
+                      "un par {usd, mn} sin sumarlo.")
+        # moneyMN llegó a estar definida tres veces (dos locales dentro de
+        # funciones). Cada copia era una forma distinta de escribir lo mismo.
+        self.assertEqual(
+            1, len(re.findall(r"(?:const|let|var|function)\s+moneyMN\b", texto)),
+            "moneyMN está definida más de una vez en admin.html.",
+        )
+
+    def test_la_reserva_tambien_separa_las_monedas(self):
+        """Una reserva se convierte en venta tal cual: si mezcla ahí, mezcla
+        también en la facturación."""
+        texto = RESERVAS.read_text(encoding="utf-8")
+        self.assertIn("totalMN:", texto,
+                      "js/reservas.js suma un único total y pierde la parte en "
+                      "pesos al ejecutar la reserva como venta.")
+        self.assertRegex(
+            texto, r"moneda: p\.moneda === 'MN' \? 'MN' : 'USD'",
+            "las líneas de la reserva no guardan su moneda.",
+        )
+        admin = ADMIN.read_text(encoding="utf-8")
+        self.assertRegex(
+            admin, r"reservaVender[\s\S]{0,900}?moneda:\s*i\.moneda",
+            "reservaVender() no le pasa la moneda a registrarVentaPedido: la "
+            "reserva en pesos se registra como una venta en dólares.",
+        )
+
+    def test_la_regla_de_firebase_admite_lo_que_el_pedido_manda(self):
+        """El PUT a /pedidos/$id es atómico: un campo que la regla no acepta
+        tumba el pedido entero, no solo ese campo."""
+        import json
+        reglas = json.loads(REGLAS.read_text(encoding="utf-8"))
+        pedido = reglas["rules"]["pedidos"]["$pedidoId"]
+        self.assertIn("totalMN", pedido,
+                      "/pedidos no declara totalMN y el pedido de una venta en "
+                      "pesos se rechazaría entero.")
+        self.assertIn("moneda", pedido["items"]["$idx"],
+                      "/pedidos/items no declara moneda.")
+        # Y que el motor lo mande de verdad.
+        motor = (SRC / "tm-ui.src.js").read_text(encoding="utf-8")
+        self.assertIn("totalMN: totalMN,\n                    estado:", motor,
+                      "el pedido subido a Firebase no lleva totalMN.")

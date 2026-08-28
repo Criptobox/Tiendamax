@@ -1748,7 +1748,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=12229abd"></script>
+<script src="js/tm-bundle.js?v=d574b0e4"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -1820,7 +1820,7 @@
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js?v=d5e76abf"></script>
+<script src="js/reservas.js?v=dcf96cd5"></script>
 <script src="js/admin-copilot.js?v=0d9d91bf"></script>
 
 <script>
@@ -1871,12 +1871,21 @@ const esMN = p => !!(p && p.moneda === 'MN');
 // Valor de inventario: hay que sumar por moneda, no todo junto. Un producto de
 // 5000 MN metido en el total de USD lo infla en 5000 dólares que no existen, y
 // el número sale mal sin que nada falle.
+const moneyMN = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0}) + ' MN';
+// Un par {usd, mn} escrito para leer. Mientras no haya nada en MN se ve
+// exactamente igual que antes: "$1,240.00". En cuanto lo hay, las dos cifras
+// van juntas y separadas, nunca sumadas.
+const dosMonedas = t => {
+  const u = Number(t && t.usd) || 0, m = Number(t && t.mn) || 0;
+  if (m > 0 && u === 0) return moneyMN(m);   // una venta solo en pesos no lleva "$0 +" delante
+  return money(u) + (m > 0 ? ' + ' + moneyMN(m) : '');
+};
+const sumaMonedas = (lista, f) => (lista||[]).reduce((a,x)=>{ const t=f(x); a.usd+=t.usd; a.mn+=t.mn; return a; }, {usd:0, mn:0});
 const valorInvPorMoneda = lista => (lista||[]).reduce((a,p)=>{
   a[esMN(p)?'MN':'USD'] += (Number(p.precioActual)||0)*(Number(p.stock)||0);
   return a;
 }, {USD:0, MN:0});
-const valorInvTexto = t => '$' + Math.round(t.USD).toLocaleString('en-US')
-  + (t.MN > 0 ? ' + $' + Math.round(t.MN).toLocaleString('en-US') + ' MN' : '');
+const valorInvTexto = t => dosMonedas({usd:t.USD, mn:t.MN});
 const moneyP = (p, n) => {
   const v = Number(n != null ? n : (p && p.precioActual) || 0);
   return esMN(p)
@@ -2438,7 +2447,7 @@ function renderReservas(){
       +   '<span style="font-size:12px;color:'+(viejo?'#ff8f85':'var(--muted)')+'">'+(d===0?'hoy':(d===1?'ayer':'hace '+d+' días'))+'</span>'
       + '</div>'
       + '<div style="font-size:13px;color:var(--text);margin-top:5px">'+items+'</div>'
-      + '<div style="font-size:13px;color:var(--gold);margin-top:3px">'+money(r.total)+'</div>'
+      + '<div style="font-size:13px;color:var(--gold);margin-top:3px">'+dosMonedas({usd:Number(r.total)||0, mn:Number(r.totalMN)||0})+'</div>'
       + (viejo?'<div style="font-size:12px;color:#ff8f85;margin-top:6px">⚠️ Lleva '+d+' días sin cerrar. Ese stock está apartado y nadie más lo puede comprar.</div>':'')
       + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'
       +   '<button class="btn btn-success" style="flex:1;min-width:130px;justify-content:center" onclick="reservaVender(\''+r.id+'\')">✅ Ejecutar venta</button>'
@@ -2459,7 +2468,7 @@ function reservaVender(id){
   // volverías a ejecutarla y venderías dos veces lo mismo.
   const m=TMReservas.marcarVendida(id);
   if(!m.ok){ mostrarNotificacion('❌ '+m.msg,'error'); return; }
-  const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, comision:i.comision, comisionMoneda:i.comisionMoneda}));
+  const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, moneda:i.moneda, comision:i.comision, comisionMoneda:i.comisionMoneda}));
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
   registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true});
   renderReservas();
@@ -2745,21 +2754,43 @@ function agenteBorrarKey(){ localStorage.removeItem('anthropicApiKey'); localSto
 
 /* ============ Helpers ventas ============ */
 function ventaFecha(v){ const ts=v.id||v.fecha; if(!ts) return null; const d=new Date(typeof ts==='number'?ts:Date.parse(ts)); return isNaN(d.getTime())?null:d; }
+// La parte en USD de una venta. Sigue significando lo mismo que siempre: las
+// ventas anteriores a que existiera moneda:'MN' traen solo `total` y son todas
+// en dólares, así que sus números no se mueven.
 function ventaTotal(v){ return Number(v.total||v.totalUSD||0)||0; }
+// La venta entera, partida en dos. Nunca se suman: un producto con precio fijo
+// en MN no es plata convertible a la del resto, y juntarlos da un número que no
+// es dinero de ninguna de las dos monedas.
+function ventaTotales(v){
+  if(!v) return {usd:0, mn:0};
+  if(v.totalMN != null) return {usd:ventaTotal(v), mn:Number(v.totalMN)||0};
+  // Venta registrada antes de que el motor guardara totalMN, pero con líneas
+  // que sí traen su moneda: se reconstruye desde ellas.
+  const items = v.productos || v.items || [];
+  if(items.length && items.some(it=>it && it.moneda==='MN')){
+    return items.reduce((a,it)=>{
+      const q = Number(it.cantidad||it.qty||1)||1;
+      const imp = (it.total!=null ? Number(it.total) : Number(it.precio||0)*q) || 0;
+      a[it.moneda==='MN'?'mn':'usd'] += imp;
+      return a;
+    }, {usd:0, mn:0});
+  }
+  return {usd:ventaTotal(v), mn:0};
+}
 function hoyKey(){ return new Date().toISOString().slice(0,10); }
 
 /* ============ INICIO ============ */
 function renderInicio(){
   $('#inicio-fecha').textContent = new Date().toLocaleDateString('es-CU',{weekday:'long',day:'numeric',month:'long'}) + ' · vista general';
   const hoy = hoyKey();
-  let ventasHoy=0, nHoy=0;
-  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d && d.toISOString().slice(0,10)===hoy){ ventasHoy+=ventaTotal(v); nHoy++; } });
+  let ventasHoy={usd:0,mn:0}, nHoy=0;
+  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d && d.toISOString().slice(0,10)===hoy){ const t=ventaTotales(v); ventasHoy.usd+=t.usd; ventasHoy.mn+=t.mn; nHoy++; } });
   const stockBajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
   const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  const totalVendido = VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
+  const totalVendido = sumaMonedas(VENTAS, ventaTotales);
   const k = [
-    ['usd','Ventas hoy USD', money(ventasHoy), nHoy+' ventas hoy','muted'],
-    ['success','Vendido total', money(totalVendido), VENTAS.length+' ventas','muted'],
+    ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' ventas hoy','muted'],
+    ['success','Vendido total', dosMonedas(totalVendido), VENTAS.length+' ventas','muted'],
     ['warn','Stock bajo', stockBajo, agotados+' agotados', stockBajo?'down':'muted'],
     ['','Productos', PRODUCTOS.length, PRODUCTOS.filter(p=>p.masVendido).length+' destacados','muted'],
     ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', 'sesiones de clientes','muted'],
@@ -2771,13 +2802,17 @@ function renderInicio(){
   let msg = `Tienes <b>${PRODUCTOS.length} productos</b>. `;
   if(agotados) msg += `⚠️ <b>${agotados} agotados</b> y ${stockBajo} con stock bajo. `;
   else if(stockBajo) msg += `<b>${stockBajo}</b> con stock bajo. `;
-  if(VENTAS.length) msg += `Llevas <b>${money(totalVendido)}</b> en ${VENTAS.length} ventas registradas.`;
+  if(VENTAS.length) msg += `Llevas <b>${dosMonedas(totalVendido)}</b> en ${VENTAS.length} ventas registradas.`;
   else msg += `Aún no hay ventas registradas en este dispositivo.`;
   $('#inicio-resumen').innerHTML = msg;
   // Chart 7 días (real)
   const slots={}; const dias=[];
+  let mn7d=0;
   for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const key=d.toISOString().slice(0,10); slots[key]=0; dias.push({key,lbl:['D','L','M','X','J','V','S'][d.getDay()]}); }
-  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d) return; const k=d.toISOString().slice(0,10); if(k in slots) slots[k]+=ventaTotal(v); });
+  // Las barras miden USD. Un peso y un dólar no caben en la misma escala, así
+  // que lo vendido en MN se cuenta aparte y se dice debajo, en vez de deformar
+  // la altura de los días en que hubo una venta en pesos.
+  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d) return; const k=d.toISOString().slice(0,10); if(!(k in slots)) return; const t=ventaTotales(v); slots[k]+=t.usd; mn7d+=t.mn; });
   const max=Math.max(1,...dias.map(d=>slots[d.key]));
   $('#chart-ventas').innerHTML = dias.map(d=>{ const val=slots[d.key]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${Math.round(val)}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
   // Hero: valor de inventario + vendido 7 días (mismo cálculo del gráfico de arriba)
@@ -2785,7 +2820,7 @@ function renderInicio(){
   const vendido7d = dias.reduce((s,d)=>s+slots[d.key],0);
   const nVentas7d = VENTAS.reduce((s,v)=>{ const d=ventaFecha(v); return s+(d && (d.toISOString().slice(0,10) in slots)?1:0); },0);
   $('#hi-val').textContent = valorInvTexto(valorInventario).replace(/^\$/,'');
-  $('#hi-sold-v').textContent = money(vendido7d);
+  $('#hi-sold-v').textContent = dosMonedas({usd:vendido7d, mn:mn7d});
   $('#hi-sold-s').textContent = nVentas7d ? ('↑ '+nVentas7d+' venta'+(nVentas7d!==1?'s':'')) : 'Sin ventas esta semana';
   const sparkPts = dias.map((d,i)=>{ const x = i*(110/6); const y = 38 - Math.round((slots[d.key]/max)*34); return x+','+y; }).join(' ');
   $('#hi-spark').innerHTML = `<polyline points="${sparkPts}" stroke="#C9A96E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${110}" cy="${38 - Math.round((slots[dias[6].key]/max)*34)}" r="2.6" fill="#C9A96E"/>`;
@@ -2796,7 +2831,7 @@ function renderInicio(){
   $('#inicio-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:20px">${i===0?'🏆':'📦'}</div><div style="flex:1"><b style="color:#fff;font-size:13px">${esc(nm)}</b><small style="color:var(--muted);font-size:10px;display:block">${q} vendidos</small></div></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle de productos aún.</div>`;
   // Actividad = últimas ventas
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
-  $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${money(ventaTotal(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
+  $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${dosMonedas(ventaTotales(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
   // Badge alertas topbar: pinta primero lo cacheado (para que no quede en
   // blanco) y de inmediato pide el número real a Firebase para corregirlo.
   const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
@@ -3664,10 +3699,9 @@ function renderRadar(){
 
 /* ============ VENTAS ============ */
 function renderVentas(){
-  const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
-  const hoy=hoyKey(); let tHoy=0,nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){tHoy+=ventaTotal(v);nHoy++;}});
+  const total=sumaMonedas(VENTAS, ventaTotales);
+  const hoy=hoyKey(); let tHoy={usd:0,mn:0},nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){const t=ventaTotales(v); tHoy.usd+=t.usd; tHoy.mn+=t.mn; nHoy++;}});
   // ganancias (comisiones) separadas por moneda: USD y MN
-  const moneyMN = n => (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0})+' MN';
   let ganUSD=0, ganMN=0; const comisPorProd={}; const cont={};
   const itName = it => it.producto||it.nombre||it.nm||'';
   VENTAS.forEach(v=>{
@@ -3684,7 +3718,7 @@ function renderVentas(){
     });
   });
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
-  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total vendido',money(total),VENTAS.length+' ventas'],['gold','Ganancia USD',money(ganUSD),''],['gold','Ganancia MN',moneyMN(ganMN),''],['info','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  $('#ventas-kpis').innerHTML=[['usd','Hoy',dosMonedas(tHoy),nHoy+' ventas'],['success','Total vendido',dosMonedas(total),VENTAS.length+' ventas'],['gold','Ganancia USD',money(ganUSD),''],['gold','Ganancia MN',moneyMN(ganMN),''],['info','Ticket promedio',dosMonedas(VENTAS.length?{usd:total.usd/VENTAS.length, mn:total.mn/VENTAS.length}:{usd:0,mn:0}),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
   // top productos vendidos
   const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:18px">${i===0?'🏆':'📦'}</div><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--o);font-weight:800">${q} uds</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle aún.</div>`;
@@ -3701,16 +3735,16 @@ function renderVentas(){
   if(rango){ filtradas = filtradas.filter(v=>{ const d=ventaFecha(v); return d && (ahora-d.getTime())<=rango; }); }
   if(q){ filtradas = filtradas.filter(v=>ventaTxt(v).includes(q)); }
   filtradas.sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0));
-  const totPer = filtradas.reduce((s,v)=>s+ventaTotal(v),0);
-  const totEl=$('#ventas-periodo-tot'); if(totEl) totEl.innerHTML = filtradas.length? `<b style="color:var(--o)">${filtradas.length}</b> venta(s) · <b style="color:var(--green)">${money(totPer)}</b>${per!=='all'||q?' (filtro activo)':''}` : '';
+  const totPer = sumaMonedas(filtradas, ventaTotales);
+  const totEl=$('#ventas-periodo-tot'); if(totEl) totEl.innerHTML = filtradas.length? `<b style="color:var(--o)">${filtradas.length}</b> venta(s) · <b style="color:var(--green)">${dosMonedas(totPer)}</b>${per!=='all'||q?' (filtro activo)':''}` : '';
   const ult=filtradas.slice(0,200);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${dosMonedas(ventaTotales(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
 }
 // Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
 function ventaAnular(id){
   const v=VENTAS.find(x=>String(x.id)===String(id));
   if(!v){ showToast('No encontré esa venta'); return; }
-  if(!confirm('¿Anular esta venta de '+money(ventaTotal(v))+'? Se devolverá el stock al inventario.')) return;
+  if(!confirm('¿Anular esta venta de '+dosMonedas(ventaTotales(v))+'? Se devolverá el stock al inventario.')) return;
   // Devolver stock de cada ítem
   syncProductos();
   const items=(v.productos||v.items||[]);
@@ -3761,20 +3795,22 @@ function renderReporteMensual(){
   if(!sel.options.length || sel.dataset.n!=String(meses.length)){ const cur=sel.value; sel.innerHTML=meses.map(k=>`<option value="${k}">${repMesLabel(k)}</option>`).join(''); sel.dataset.n=String(meses.length); if(meses.includes(cur)) sel.value=cur; }
   const mes=sel.value||meses[0]||new Date().toISOString().slice(0,7);
   const delMes=VENTAS.filter(v=>{ const d=ventaFecha(v); return d && d.toISOString().slice(0,7)===mes; });
-  const moneyMN = n => (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0})+' MN';
-  let vendido=0, gU=0, gM=0; const porProd={};
-  delMes.forEach(v=>{ vendido+=ventaTotal(v); const g=ventaGanancia(v); gU+=g.usd; gM+=g.mn;
+  let vendido={usd:0,mn:0}, gU=0, gM=0; const porProd={};
+  delMes.forEach(v=>{ const t=ventaTotales(v); vendido.usd+=t.usd; vendido.mn+=t.mn; const g=ventaGanancia(v); gU+=g.usd; gM+=g.mn;
     (v.productos||v.items||[{producto:v.producto||v.nombre,cantidad:v.cantidad}]).forEach(it=>{ const nm=it.producto||it.nombre||it.nm; if(!nm)return; const q=Number(it.cantidad||it.qty||1)||1; porProd[nm]=(porProd[nm]||0)+q; }); });
-  const nV=delMes.length; const ticket=nV?vendido/nV:0;
+  const nV=delMes.length;
+  // El ticket promedio también va por moneda: un promedio que mezcla pesos y
+  // dólares no describe ninguna venta real.
+  const ticket=nV?{usd:vendido.usd/nV, mn:vendido.mn/nV}:{usd:0,mn:0};
   const top=Object.entries(porProd).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const box=$('#rep-mensual'); if(!box) return;
   window.__repMesTexto = `📊 TiendaMax — Reporte de ${repMesLabel(mes)}\n`+
-    `Ventas: ${nV}\nVendido: ${money(vendido)}\nGanancia (comisión): ${money(gU)}${gM?(' + '+moneyMN(gM)):''}\nTicket promedio: ${money(ticket)}\n`+
+    `Ventas: ${nV}\nVendido: ${dosMonedas(vendido)}\nGanancia (comisión): ${dosMonedas({usd:gU, mn:gM})}\nTicket promedio: ${dosMonedas(ticket)}\n`+
     (top.length?('Top vendidos:\n'+top.map((x,i)=>`  ${i+1}. ${x[0]} ×${x[1]}`).join('\n')):'');
   box.innerHTML = `<div class="kpis" style="margin-bottom:12px">
-      <div class="kpi success"><div class="lbl">Vendido</div><div class="val">${money(vendido)}</div><div class="sub muted">${nV} venta(s)</div></div>
+      <div class="kpi success"><div class="lbl">Vendido</div><div class="val">${dosMonedas(vendido)}</div><div class="sub muted">${nV} venta(s)</div></div>
       <div class="kpi gold"><div class="lbl">Ganancia</div><div class="val">${money(gU)}</div><div class="sub muted">${gM?moneyMN(gM):'comisión USD'}</div></div>
-      <div class="kpi info"><div class="lbl">Ticket prom.</div><div class="val">${money(ticket)}</div></div>
+      <div class="kpi info"><div class="lbl">Ticket prom.</div><div class="val">${dosMonedas(ticket)}</div></div>
     </div>
     ${top.length?`<div style="font-size:12px;color:var(--muted);margin-bottom:6px">🏆 Más vendidos del mes</div>`+top.map((x,i)=>`<div style="display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px;font-size:13px"><span style="color:#fff">${i+1}. ${esc(x[0])}</span><span style="color:var(--o);font-weight:700">×${x[1]}</span></div>`).join('')
       :'<div class="empty" style="padding:18px"><div class="ico">📅</div>Sin ventas registradas en este mes.</div>'}`;
@@ -3783,8 +3819,8 @@ function reporteCopiar(){ const t=window.__repMesTexto||''; if(!t){ showToast('N
 function renderAnalytics(){
   renderReporteMensual();
   const totalVal=valorInvPorMoneda(PRODUCTOS);
-  const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
-  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',valorInvTexto(totalVal)],['success','Vendido',money(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  const total=sumaMonedas(VENTAS, ventaTotales);
+  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',valorInvTexto(totalVal)],['success','Vendido',dosMonedas(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   cargarVisitasWeb();
   cargarInteresProductos();
   cargarErroresJS();
@@ -4186,8 +4222,8 @@ function renderClientes(){
     // persona salía en dos filas si una venta llevaba el nombre y otra solo el
     // teléfono — con las compras repartidas y dos botones al mismo número.
     const k = tel ? ('tel:'+tel) : ('nom:'+norm(nm));
-    if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:tel,ultima:0,seg:null};
-    cli[k].compras++; cli[k].total+=ventaTotal(v);
+    if(!cli[k]) cli[k]={nombre:nm,compras:0,total:{usd:0,mn:0},tel:tel,ultima:0,seg:null};
+    cli[k].compras++; const tv=ventaTotales(v); cli[k].total.usd+=tv.usd; cli[k].total.mn+=tv.mn;
     const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0;
     if(ts&&ts>cli[k].ultima){ cli[k].ultima=ts; if(nm) cli[k].nombre=nm; }  // el nombre más reciente
     if(!cli[k].nombre && nm) cli[k].nombre=nm;
@@ -4199,7 +4235,8 @@ function renderClientes(){
   try{ segSincronizarTodos().catch(()=>{}); }catch(e){}
   // Primero a quien hay que escribirle, y dentro de eso lo más atrasado.
   const list=Object.values(cli).sort((a,b)=>
-    (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0) || b.total-a.total);
+    (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0)
+    || (b.total.usd-a.total.usd) || (b.total.mn-a.total.mn));
   const porContactar=list.filter(c=>c.seg).length;
   $('#cli-sub').textContent = list.length+' clientes · '+porContactar+' por contactar · reviews · avisos';
   const P=$('#cli-pills');
@@ -4225,7 +4262,7 @@ function renderClientes(){
     };
     box.innerHTML = list.length
       ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
-         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span></td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
+         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span></td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
       : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
