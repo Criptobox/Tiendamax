@@ -36,7 +36,6 @@
     "HOMBRE",
     "MUJER"
   ],
-  "LENCERIA": [],
   "SEGURIDAD": [
     "CÁMARAS",
     "ALARMAS",
@@ -64,9 +63,10 @@
     "ACCESORIOS"
   ],
   "GYM": [],
-  "General": [],
-  "COMBOS": [],
   "AUDIO": [
     "AUDIO"
-  ]
+  ],
+  "LENCERIA": [],
+  "General": [],
+  "COMBOS": []
 }
