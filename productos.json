@@ -9257,5 +9257,122 @@
     ],
     "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…"
+  },
+  {
+    "id": 1787888877372,
+    "nombre": "🌐MikroTik hEX S (RB760iGS)",
+    "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales.",
+    "imagen": "https://tiendamax.org/imagenes/img_1787888875463.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1787888875463.webp"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "Memoria RAM: 256 MB",
+      "hEX S (RB760iGS)"
+    ],
+    "fechaAgregado": "2026-08-28T03:47:57.378Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Modelo",
+        "v": "hEX S",
+        "nota": "RB760iGS"
+      },
+      {
+        "k": "Arquitectura / Procesador",
+        "v": "MediaTek MT7621A",
+        "nota": "Dual-Core 880 MHz, 4 hilos"
+      },
+      {
+        "k": "Memoria RAM",
+        "v": "256 MB"
+      },
+      {
+        "k": "Almacenamiento",
+        "v": "16 MB Flash + Ranura para tarjeta microSD"
+      },
+      {
+        "k": "Puertos de Red",
+        "v": "5× puertos Gigabit Ethernet",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Puerto de Fibra Óptica",
+        "v": "1× puerto SFP",
+        "nota": "1.25 Gbps"
+      },
+      {
+        "k": "Puertos Adicionales",
+        "v": "1× puerto USB 2.0 Tipo A"
+      },
+      {
+        "k": "Alimentación y PoE",
+        "v": "Entrada PoE 802.3af/at y PoE Pasivo (Puerto 1, 12V–57V) / Salida PoE Pasivo (Puerto 5, hasta 500 mA) / Jack DC"
+      },
+      {
+        "k": "Aceleración por Hardware",
+        "v": "Cifrado IPsec por hardware",
+        "nota": "~470 Mbps"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "MikroTik RouterOS",
+        "nota": "Licencia Nivel 4"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Procesador de doble núcleo y 4 hilos a 880 MHz junto a 256 MB de RAM, ofreciendo un enrutamiento de alta velocidad y baja latencia para redes cableadas exigentes."
+      },
+      {
+        "t": "Puerto SFP de 1.25 Gbps integrado",
+        "d": "permite la conexión directa de módulos de fibra óptica para enlaces de larga distancia o acometidas de Internet sin requerir convertidores de medios externos."
+      },
+      {
+        "t": "Aceleración de cifrado IPsec por hardware",
+        "d": "permite levantar túneles VPN seguros y ultrarrápidos con tasas de transferencia de hasta ~470 Mbps sin saturar la CPU."
+      },
+      {
+        "t": "Salida PoE Pasivo en el puerto 5",
+        "d": "simplifica la topología de red al suministrar energía y datos directamente a una antena CPE exterior, punto de acceso Wi-Fi o cámara IP."
+      },
+      {
+        "t": "Ranura microSD y puerto USB 2.0",
+        "d": "permite expandir el almacenamiento para bases de datos del sistema de monitoreo de red The Dude, almacenamiento de logs o conexión de módems 4G/LTE de respaldo."
+      },
+      {
+        "t": "Gestión profesional con RouterOS (Nivel 4)",
+        "d": "funciones completas de balanceo de carga Multi-WAN, Failover, control de ancho de banda (Queues / QoS), VLANs, Firewall por capas y servidores/clientes VPN (WireGuard, OpenVPN, L2TP/IPsec)."
+      },
+      {
+        "d": "Formato de escritorio compacto y resistente, con refrigeración completamente pasiva para un funcionamiento silencioso 24/7."
+      }
+    ],
+    "idealPara": [
+      "Oficinas, empresas y hogares con planes de Internet de alta velocidad que requieren balancear múltiples proveedores (Multi-WAN) o redundancia de conexión.",
+      "Terminación directa de enlaces de fibra óptica mediante módulo SFP para distribuir a la red local.",
+      "Alimentación directa de antenas cliente (CPE) o Puntos de Acceso Wi-Fi desde el puerto PoE de salida.",
+      "Enrutamiento central y pasarela VPN segura para teletrabajo, interconexión de sucursales o servidores locales."
+    ],
+    "incluye": [
+      "1× Router Gigabit MikroTik hEX S (RB760iGS)",
+      "1× Adaptador de corriente (Fuente de alimentación 24V / 1.2A)",
+      "1× Guía de inicio rápido"
+    ]
   }
 ]
