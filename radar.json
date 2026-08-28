@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-27T20:55:48.503336+00:00",
-  "fecha": "2026-08-27",
+  "actualizado": "2026-08-28T21:19:26.992490+00:00",
+  "fecha": "2026-08-28",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 2,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -18,7 +18,7 @@
       "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 70.0,
+        "min": 100.0,
         "mediana": 180.0,
         "n": 16
       },
@@ -63,16 +63,13 @@
         {
           "fecha": "2026-08-27",
           "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-28",
+          "mediana": 180.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "70 USD Inverdor híbrido 4kw, Controlador Solar, Bateria 12v, 24v y 48v 100a, Inversor 4kw,",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/controlador-solar-80a-voltaje-12v-36v48v-mensajeria-opcional-cerca-de-la-ceguera-51752405?p",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
@@ -107,6 +104,13 @@
           "precio": 180.0,
           "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24v-4000w-pico-56164540",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "180 USD Inversor tataliken 12 v 4000 w",
+          "precio": 180.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12-v-4000-w-56820966",
+          "dias": null
         }
       ]
     },
@@ -119,16 +123,12 @@
         "mediana": 82.5,
         "n": 12
       },
-      "deltaAyerMediana": -7.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-14",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-15",
           "mediana": 90.0
@@ -179,6 +179,10 @@
         },
         {
           "fecha": "2026-08-27",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-08-28",
           "mediana": 82.5
         }
       ],
