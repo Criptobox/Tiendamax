@@ -9376,5 +9376,125 @@
     ],
     "seoTitle": "MikroTik hEX S (RB760iGS) en Cuba | TiendaMax",
     "seoDescription": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios…"
+  },
+  {
+    "id": 1787933033934,
+    "nombre": "📡Ubiquiti Litebeam M5",
+    "descripcion": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes y garantizando transferencias estables con latencia reducida incluso en zonas con alto ruido de radiofrecuencia. Su sistema operativo airOS ofrece herramientas profesionales de diagnóstico en tiempo real, destacando el analizador de espectro airView para ubicar y seleccionar siempre los canales más limpios y libres de interferencia.",
+    "imagen": "https://tiendamax.org/imagenes/img_1787933030028.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1787933030028.webp"
+    ],
+    "precioActual": 140,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "5GHz",
+      "23dBi",
+      "450Mbps",
+      "MIMO 2x2",
+      "1x Ethernet 100Mbps",
+      "24V PoE"
+    ],
+    "fechaAgregado": "2026-08-28T16:03:53.937Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti Networks"
+      },
+      {
+        "k": "Modelo",
+        "v": "LiteBeam M5 23",
+        "nota": "LBE-M5-23"
+      },
+      {
+        "k": "Frecuencia Inalámbrica",
+        "v": "5 GHz",
+        "nota": "5150 – 5875 MHz"
+      },
+      {
+        "k": "Ganancia de Antena",
+        "v": "23 dBi",
+        "nota": "Reflector direccional con tecnología InnerFeed"
+      },
+      {
+        "k": "Rendimiento / Velocidad",
+        "v": "Hasta 100+ Mbps de rendimiento real",
+        "nota": "Protocolo airMAX TDMA"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Fast Ethernet 10/100 Mbps"
+      },
+      {
+        "k": "Procesador y Memoria",
+        "v": "MIPS 74K / 64 MB RAM"
+      },
+      {
+        "k": "Alimentación",
+        "v": "PoE Pasivo 24V, 0.2A"
+      },
+      {
+        "k": "Alcance",
+        "v": "Enlaces de largo alcance",
+        "nota": "+20 a 30 km con línea de vista despejada"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "airOS 7 / airOS 8"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Antena direccional de 23 dBi",
+        "d": "tecnología InnerFeed que integra el radio transmisor directamente dentro del cono alimentador, eliminando pérdidas de señal causadas por cables coaxiales."
+      },
+      {
+        "t": "Protocolo airMAX TDMA",
+        "d": "asigna ranuras de tiempo dedicadas a cada cliente, evitando colisiones de paquetes y optimizando la latencia y estabilidad en entornos de alta interferencia."
+      },
+      {
+        "d": "Montaje con rótula esférica de 3 ejes (Ball Joint Mount): proporciona una flexibilidad total para alinear con precisión milimétrica la elevación y el azimut en postes o mástiles."
+      },
+      {
+        "t": "Diseño modular y ligero",
+        "d": "reflector dividido en 3 paneles de ensamblaje rápido sin herramientas (snap-lock), facilitando el transporte y montaje en alturas."
+      },
+      {
+        "t": "Estructura aerodinámica de bajo peso",
+        "d": "paneles microperforados que minimizan la resistencia a fuertes ráfagas de viento (hasta 200 km/h) para mantener el enlace firme."
+      },
+      {
+        "t": "Alimentación PoE Pasivo",
+        "d": "permite transmitir energía eléctrica y datos simultáneamente por un único cable de red Ethernet hacia el techo o torre."
+      },
+      {
+        "t": "Gestión completa con airOS",
+        "d": "incluye analizador de espectro de radiofrecuencia en tiempo real (airView), herramientas de alineación visual/acústica y control detallado del ancho de banda."
+      }
+    ],
+    "idealPara": [
+      "Enlaces inalámbricos Punto a Punto (PtP) de larga distancia para unir redes entre edificios, fincas, talleres o sucursales.",
+      "Equipo cliente (CPE) en enlaces Punto a Multipunto (PtMP) para conectarse a estaciones base de proveedores de Internet inalámbrico (WISP) en 5 GHz.",
+      "Transporte de datos de cámaras de seguridad IP y sistemas de videovigilancia remota hacia grabadores NVR.",
+      "Llevar conexión a Internet de alta estabilidad hacia áreas rurales o suburbanas sin cobertura de fibra óptica."
+    ],
+    "incluye": [
+      "1× Alimentador / Radio central Ubiquiti LiteBeam M5",
+      "1× Kit de reflectores de rejilla (3 piezas)",
+      "1× Soporte de montaje ajustable de 3 ejes",
+      "1× Abrazadera metálica para mástil",
+      "1× Inyector PoE Pasivo (24V, 0.2A) con cable de corriente AC",
+      "1× Guía de instalación rápida"
+    ]
   }
 ]
