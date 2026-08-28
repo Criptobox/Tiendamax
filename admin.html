@@ -1860,6 +1860,31 @@ Object.defineProperty(window, 'PRODUCTOS', {
 window.PRODUCTOS = [];   // pasa por el setter: deja los tres nombres apuntando al mismo array desde el principio
 const $ = s => document.querySelector(s);
 const money = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});
+// money() solo recibe un número, y la moneda no vive en la cifra sino en el
+// producto: uno marcado moneda:'MN' lleva su precio TAL CUAL, sin pasar por la
+// tasa. Por eso todo lo que pinte el precio DE UN PRODUCTO tiene que ir por
+// moneyP() y no por money(), o un producto de 5000 MN se lee como si costara
+// 5000 dólares —que fue exactamente lo que pasaba en la lista de productos—.
+// Etiqueta siempre la moneda: ahora que conviven las dos, "$5000" a secas no
+// dice nada.
+const esMN = p => !!(p && p.moneda === 'MN');
+// Valor de inventario: hay que sumar por moneda, no todo junto. Un producto de
+// 5000 MN metido en el total de USD lo infla en 5000 dólares que no existen, y
+// el número sale mal sin que nada falle.
+const valorInvPorMoneda = lista => (lista||[]).reduce((a,p)=>{
+  a[esMN(p)?'MN':'USD'] += (Number(p.precioActual)||0)*(Number(p.stock)||0);
+  return a;
+}, {USD:0, MN:0});
+const valorInvTexto = t => '$' + Math.round(t.USD).toLocaleString('en-US')
+  + (t.MN > 0 ? ' + $' + Math.round(t.MN).toLocaleString('en-US') + ' MN' : '');
+const moneyP = (p, n) => {
+  const v = Number(n != null ? n : (p && p.precioActual) || 0);
+  return esMN(p)
+    ? '$' + Math.round(v).toLocaleString('es-US') + ' MN'
+    // Dos decimales siempre: money() se come el cero final ($35.5) y en un
+    // precio eso se lee como un descuido.
+    : '$' + v.toLocaleString('es-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' USD';
+};
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 // Para meter texto dentro de onclick="fn('...')": esc() solo protege el HTML,
 // pero el navegador decodifica entidades (&#39; -> ') ANTES de compilar el
@@ -2113,19 +2138,19 @@ function renderTodo(){
 function fillOfertaDia(){
   const sel=$('#ofertaDiaSelect2'); if(!sel) return;
   const cur=localStorage.getItem('ofertaDiaId')||'';
-  sel.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(cur)?'selected':''}>${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join('');
+  sel.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(cur)?'selected':''}>${esc(p.nombre)} — ${moneyP(p)}</option>`).join('');
   const txt=$('#ofertaDiaTexto2'); if(txt && !txt.value) txt.value=localStorage.getItem('ofertaDiaTexto')||'';
   const st=$('#ofertaDiaStatus'); if(st){ if(cur){ const p=PRODUCTOS.find(x=>String(x.id)===String(cur)); st.textContent='✅ Activa: '+(p?p.nombre:cur); } else st.textContent='Sin oferta del día activa.'; }
   // contador tiempo limitado
   const cs=$('#countdownProductSelect');
-  if(cs){ cs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join(''); }
+  if(cs){ cs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${moneyP(p)}</option>`).join(''); }
   const cst=$('#countdownStatus');
   if(cst){ let cd=null; try{ cd=JSON.parse(localStorage.getItem('activeCountdown')||'null'); }catch(e){}
     if(cd && cd.endTime>Date.now()){ const p=PRODUCTOS.find(x=>String(x.id)===String(cd.productId)); const mins=Math.round((cd.endTime-Date.now())/60000); cst.textContent='✅ Activo: '+(p?p.nombre:cd.productId)+' · quedan ~'+mins+' min'; if(cs && cd.productId) cs.value=cd.productId; }
     else cst.textContent='Sin oferta por tiempo limitado activa.'; }
   // descuento con fecha de fin
   const ofs=$('#ofertaFinProducto');
-  if(ofs) ofs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.filter(p=>!p.ofertaFin).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join('');
+  if(ofs) ofs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.filter(p=>!p.ofertaFin).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${moneyP(p)}</option>`).join('');
   renderOfertasFin();
 }
 function fillConfig(){
@@ -2490,18 +2515,18 @@ function ventaBuscar(){
   const q=norm($('#venta-buscar')&&$('#venta-buscar').value); const box=$('#venta-resultados'); if(!box)return;
   if(!q){box.innerHTML='';return;}
   const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,8);
-  box.innerHTML=res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b> <span style="color:var(--gray)">· stock ${Number(p.stock)||0}</span></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="ventaAdd('${esc(String(p.id))}')">+ Agregar</button></div>`).join('')||`<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
+  box.innerHTML=res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${moneyP(p)}</b> <span style="color:var(--gray)">· stock ${Number(p.stock)||0}</span></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="ventaAdd('${esc(String(p.id))}')">+ Agregar</button></div>`).join('')||`<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
 }
 function ventaAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p)return;
-  const ex=VENTA_CART.find(x=>String(x.id)===String(id)); if(ex){ex.cantidad++;} else { VENTA_CART.push({id:p.id,nombre:p.nombre,precio:Number(p.precioActual)||0,comision:Number(p.comision)||0,comisionMoneda:p.comisionMoneda||'USD',cantidad:1}); }
+  const ex=VENTA_CART.find(x=>String(x.id)===String(id)); if(ex){ex.cantidad++;} else { VENTA_CART.push({id:p.id,nombre:p.nombre,precio:Number(p.precioActual)||0,moneda:(esMN(p)?'MN':'USD'),comision:Number(p.comision)||0,comisionMoneda:p.comisionMoneda||'USD',cantidad:1}); }
   if($('#venta-buscar'))$('#venta-buscar').value=''; if($('#venta-resultados'))$('#venta-resultados').innerHTML=''; ventaRenderCart();
 }
 function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==String(id)); ventaRenderCart(); }
 function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); }
 function ventaRenderCart(){
   const box=$('#venta-cart'), tEl=$('#venta-total'), btn=$('#venta-registrar-btn'); if(!box)return;
-  box.innerHTML=VENTA_CART.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${esc(String(it.id))}')">✕</button></div>`).join('');
+  box.innerHTML=VENTA_CART.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${esc(String(it.id))}')">✕</button></div>`).join('');
   const total=VENTA_CART.reduce((s,it)=>s+it.precio*it.cantidad,0);
   if(tEl) tEl.innerHTML=VENTA_CART.length?`<div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 2px"><span style="color:var(--gray)">Total</span><span style="color:var(--o)">${money(total)}</span></div>`:'';
   if(btn) btn.style.display=VENTA_CART.length?'block':'none';
@@ -2512,7 +2537,7 @@ function ventaRegistrar(){
   // CLAVE: unificar el array del motor con PRODUCTOS JUSTO ANTES (síncrono), para
   // que ajustarStock del motor descuente el MISMO array que muestra el admin.
   syncProductos();
-  const vendidos = VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda}));
+  const vendidos = VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,moneda:it.moneda||'USD',comision:it.comision,comisionMoneda:it.comisionMoneda}));
   const cliente = {
     nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
     tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
@@ -2551,7 +2576,7 @@ function comboBuscar(){
   box.innerHTML = res.map(p=>{
     const en=COMBO_SEL.some(x=>String(x.id)===String(p.id));
     return `<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px">
-      <div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b></div>
+      <div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${moneyP(p)}</b></div>
       ${en
         ? `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;opacity:.7" onclick="comboAdd('${esc(String(p.id))}')">✓ Agregado (+1)</button>`
         : `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${esc(String(p.id))}')">+ Agregar</button>`}
@@ -2561,14 +2586,14 @@ function comboBuscar(){
 function comboAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
   const ex=COMBO_SEL.find(x=>String(x.id)===String(id));
-  if(ex){ ex.cantidad=(ex.cantidad||1)+1; } else { COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0, cantidad:1}); }
+  if(ex){ ex.cantidad=(ex.cantidad||1)+1; } else { COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0, moneda:(esMN(p)?'MN':'USD'), cantidad:1}); }
   comboBuscar(); comboRenderItems(); comboCalc();
 }
 function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id)); comboRenderItems(); comboCalc(); }
 function comboQty(id,d){ const it=COMBO_SEL.find(x=>String(x.id)===String(id)); if(it){ it.cantidad=Math.max(1,(it.cantidad||1)+d); } comboRenderItems(); comboCalc(); }
 function comboRenderItems(){
   const box=$('#combo-items'); if(!box) return;
-  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${esc(String(it.id))}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
+  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${esc(String(it.id))}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
 }
 function comboCalc(){
   const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
@@ -2663,7 +2688,7 @@ function ofertaFinActivar(){
   if(!vence){ showToast('⚠️ Elige cuándo vence'); return; }
   const finTs=new Date(vence); if(isNaN(finTs.getTime())||finTs.getTime()<=Date.now()){ showToast('⚠️ Esa fecha ya pasó'); return; }
   const p=apFind(id); if(!p){ showToast('No encontré el producto'); return; }
-  if(precio>=Number(p.precioActual)){ if(!confirm('El precio de oferta ('+money(precio)+') no es menor al actual ('+money(p.precioActual)+'). ¿Seguir de todas formas?')) return; }
+  if(precio>=Number(p.precioActual)){ if(!confirm('El precio de oferta ('+moneyP(p,precio)+') no es menor al actual ('+moneyP(p)+'). ¿Seguir de todas formas?')) return; }
   p.precioOriginal=Number(p.precioActual)||0;
   p.precioActual=precio;
   p.ofertaFin=finTs.toISOString();
@@ -2693,7 +2718,7 @@ function renderOfertasFin(){
     return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre)}</div>
-        <div style="font-size:11px;color:${vencida?'var(--red)':'var(--muted)'}">${money(p.precioActual)} → vuelve a ${money(p.precioOriginal)} · ${cuando}</div>
+        <div style="font-size:11px;color:${vencida?'var(--red)':'var(--muted)'}">${moneyP(p)} → vuelve a ${moneyP(p,p.precioOriginal)} · ${cuando}</div>
       </div>
       <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="ofertaFinCancelar('${esc(String(p.id))}')">↩️ Terminar ya</button>
     </div>`;
@@ -2756,10 +2781,10 @@ function renderInicio(){
   const max=Math.max(1,...dias.map(d=>slots[d.key]));
   $('#chart-ventas').innerHTML = dias.map(d=>{ const val=slots[d.key]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${Math.round(val)}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
   // Hero: valor de inventario + vendido 7 días (mismo cálculo del gráfico de arriba)
-  const valorInventario = PRODUCTOS.reduce((s,p)=>s+Number(p.precioActual||0)*Number(p.stock||0),0);
+  const valorInventario = valorInvPorMoneda(PRODUCTOS);
   const vendido7d = dias.reduce((s,d)=>s+slots[d.key],0);
   const nVentas7d = VENTAS.reduce((s,v)=>{ const d=ventaFecha(v); return s+(d && (d.toISOString().slice(0,10) in slots)?1:0); },0);
-  $('#hi-val').textContent = Math.round(valorInventario).toLocaleString('en-US');
+  $('#hi-val').textContent = valorInvTexto(valorInventario).replace(/^\$/,'');
   $('#hi-sold-v').textContent = money(vendido7d);
   $('#hi-sold-s').textContent = nVentas7d ? ('↑ '+nVentas7d+' venta'+(nVentas7d!==1?'s':'')) : 'Sin ventas esta semana';
   const sparkPts = dias.map((d,i)=>{ const x = i*(110/6); const y = 38 - Math.round((slots[d.key]/max)*34); return x+','+y; }).join(' ');
@@ -3012,7 +3037,7 @@ function apCardHTML(p){
       ${img}
       <div class="pcard-info">
         <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
-        <div class="pcard-meta">$${Number(p.precioActual||0).toFixed(2)} USD${off}</div>
+        <div class="pcard-meta">${moneyP(p)}${off}</div>
         ${comm}
       </div>
       <div class="pcard-acts">
@@ -3757,9 +3782,9 @@ function renderReporteMensual(){
 function reporteCopiar(){ const t=window.__repMesTexto||''; if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Reporte copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } }
 function renderAnalytics(){
   renderReporteMensual();
-  const totalVal=PRODUCTOS.reduce((s,p)=>s+(Number(p.precioActual)||0)*(Number(p.stock)||0),0);
+  const totalVal=valorInvPorMoneda(PRODUCTOS);
   const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
-  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',valorInvTexto(totalVal)],['success','Vendido',money(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   cargarVisitasWeb();
   cargarInteresProductos();
   cargarErroresJS();
@@ -3940,7 +3965,7 @@ async function cargarAnalyticsAvanzado(){
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.nombre||'')}</div>
-          <div style="font-size:10.5px;color:var(--muted)">👁 ${v}v · 💬 ${w}wa · ${money(Number(p.precioActual)||0)}</div>
+          <div style="font-size:10.5px;color:var(--muted)">👁 ${v}v · 💬 ${w}wa · ${moneyP(p)}</div>
         </div>
         <div style="font-size:20px;font-weight:800;color:${col};flex-shrink:0">${p.stock}</div>
       </div>`;
@@ -4930,10 +4955,10 @@ function pubWaNum(){ return String(localStorage.getItem('whatsappNumero')||'5354
    buscar el botón y redactar — cada paso perdía gente. El mensaje incluye el
    enlace con utm, así al llegar el pedido se ve de qué red vino. */
 function pubWaLink(p, src){
-  const msg='Hola, quiero: '+(p.nombre||'este producto')+' — $'+Number(p.precioActual||0).toFixed(2)+' USD\n'+pubUrl(p, src);
+  const msg='Hola, quiero: '+(p.nombre||'este producto')+' — '+moneyP(p)+'\n'+pubUrl(p, src);
   return 'https://wa.me/'+pubWaNum()+'?text='+encodeURIComponent(msg);
 }
-function pubTxt(p, src){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\n📲 Pídelo en 1 toque por WhatsApp:\n${pubWaLink(p, src)}\n\n👀 Ver fotos y detalles:\n${pubUrl(p, src)}`; }
+function pubTxt(p, src){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 ${moneyP(p)}\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\n📲 Pídelo en 1 toque por WhatsApp:\n${pubWaLink(p, src)}\n\n👀 Ver fotos y detalles:\n${pubUrl(p, src)}`; }
 /* ── Historial de publicaciones ──────────────────────────────────────────
    Guarda cuándo se publicó cada producto por última vez. Con ~80 productos en
    stock es fácil repetir siempre los mismos y dejar otros sin publicar nunca;
@@ -5105,7 +5130,7 @@ function pubHoyHTML(){
       <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
       <div class="pub-hoy-info">
         <b>${esc(p.nombre||'Producto')}</b>
-        <small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)} · ${esc(cuando)}</small>
+        <small>${esc(p.categoria||'General')} · ${moneyP(p)} · stock ${Number(p.stock||0)} · ${esc(cuando)}</small>
       </div>
       <div class="pub-hoy-btns">
         <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
@@ -5178,7 +5203,7 @@ function pubRenderShareList(){
   box.innerHTML = arr.length ? arr.map(p=>`<div class="pub-share-card">
       <div class="pub-share-top">
         <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
-        <div class="pub-share-info"><b>${esc(p.nombre||'Producto')}</b><small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small><div style="margin-top:4px">${pubBadgePublicado(p.id)}</div></div>
+        <div class="pub-share-info"><b>${esc(p.nombre||'Producto')}</b><small>${esc(p.categoria||'General')} · ${moneyP(p)} · stock ${Number(p.stock||0)}</small><div style="margin-top:4px">${pubBadgePublicado(p.id)}</div></div>
       </div>
       <div class="pub-share-actions">
         <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
@@ -5278,7 +5303,7 @@ function pubCatText(cat){
   const sep='━'.repeat(16);
   const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n`;
   const lines=prods.map(p=>{
-    const _pre=_catEmojiPre(p.nombre,cat); let l=`${_pre?_pre+' ':''}${_catClean(p.nombre)} — $${Number(p.precioActual||0).toFixed(2)} USD`;
+    const _pre=_catEmojiPre(p.nombre,cat); let l=`${_pre?_pre+' ':''}${_catClean(p.nombre)} — ${moneyP(p)}`;
     const st=Number(p.stock||0);
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
     if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
@@ -5371,7 +5396,7 @@ function tmCatalogHTML(cat){
   const em=s=>{ const e=pubCatEmoji(s,cat); return e==='✨'?'':e+' '; };
   // No anteponer emoji de categoría si el nombre ya empieza con uno (evita duplicados).
   const emP=p=>_empiezaConEmoji(p.nombre)?'':em(p.nombre);
-  const row=(p,badge)=>`<div class="tmcat-row"><div class="tmcat-l"><div class="tmcat-nm">${emP(p)}${esc(_catClean(p.nombre))}${badge?' <span class="tmcat-bdg">'+badge+'</span>':''}</div><div class="tmcat-sub">${esc(_catSubtitle(p))}</div></div><div class="tmcat-pr">${money(p.precioActual)}</div></div>`;
+  const row=(p,badge)=>`<div class="tmcat-row"><div class="tmcat-l"><div class="tmcat-nm">${emP(p)}${esc(_catClean(p.nombre))}${badge?' <span class="tmcat-bdg">'+badge+'</span>':''}</div><div class="tmcat-sub">${esc(_catSubtitle(p))}</div></div><div class="tmcat-pr">${money(p.precioActual)}${esMN(p)?' MN':''}</div></div>`;
   const topBox=tops.length?`<div class="tmcat-top"><div class="tmcat-toplbl">🏆 TOP VENTAS</div>${tops.map((p,i)=>row(p,i===0?'⭐ MÁS VENDIDO':'')).join('')}</div>`:'';
   const MAX=12; let shown=0, extra=0, sectionsHtml='';
   Object.entries(groups).forEach(([name,arr])=>{
@@ -5417,7 +5442,7 @@ async function _pubCatGenImgLegacy(cat){
   const rows=[];
   for(let i=0;i<maxItems;i++){
     const p=prods[i];
-    const price='$'+Number(p.precioActual||0).toFixed(2);
+    const price='$'+Number(p.precioActual||0).toFixed(2)+(esMN(p)?' MN':'');
     ctx.font=PF; const priceW=ctx.measureText(price).width;
     ctx.font=NF;
     const maxNameW=(W-75)-priceW-30-80;
@@ -5807,6 +5832,9 @@ cargarDatos();
 
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
+// moneyP/esMN salen a window porque el <script> de Herramientas es otro IIFE
+// —y admin-copilot.js otro fichero— y también pintan precios de productos.
+window.moneyP=moneyP; window.esMN=esMN;
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
@@ -5913,7 +5941,7 @@ function card(id,ico,t,p){return `<div class="tm-tool-card" data-tool="${id}"><d
 function color(id){const m={ai:'rgba(155,89,182,.18)',compress:'rgba(201,169,110,.18)',duplicate:'rgba(52,152,219,.18)',history:'rgba(46,204,113,.18)',csv:'rgba(255,107,53,.18)',dups:'rgba(155,89,182,.18)',schedule:'rgba(52,152,219,.18)',coupons:'rgba(201,169,110,.18)',locations:'rgba(255,107,53,.18)',ab:'rgba(46,204,113,.18)',totp:'rgba(155,89,182,.18)',roles:'rgba(52,152,219,.18)',competitors:'rgba(155,89,182,.18)',margin:'rgba(46,204,113,.18)',posts:'rgba(255,107,53,.18)',heatmap:'rgba(201,169,110,.18)',crm:'rgba(52,152,219,.18)',shipping:'rgba(155,89,182,.18)'};return m[id]||'rgba(255,255,255,.08)'}
 function bind(sec){sec.addEventListener('click',e=>{const c=e.target.closest('[data-tool]');if(c) openTool(c.dataset.tool); const a=e.target.closest('[data-act]'); if(a) actions(a.dataset.act,a);});}
 function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button type="button" class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
-function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — $${Number(p.precioActual||p.price||0).toFixed(2)}</option>`).join('')}
+function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — ${moneyP(p, p.precioActual||p.price||0)}</option>`).join('')}
 function openTool(id){({ai,compress,duplicate,history,csv,dups,schedule,coupons,locations,ab,totp,roles,competitors,margin,posts,heatmap,crm,shipping}[id]||ai)()}
 function ai(){panel('🤖 Generador de descripciones IA','Funciona localmente con plantillas. Si luego conectas API, se puede cambiar por Claude/GPT.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAiProd">Producto</label><select id="tmAiProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAiTone">Tono</label><select id="tmAiTone"><option>Premium vendedor</option><option>Corto WhatsApp</option><option>Técnico</option><option>Facebook grupos</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="aiGen">Generar textos</button><button type="button" class="tm-btn" data-act="copyOut">Copiar resultado</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y genera.</div>`)}
 function compress(){panel('🖼️ Compresión on-upload','Activa compresión visual y genera versión WebP/base64 antes de subir.',`<div class="tm-field"><label for="tmCompressFile">Probar compresión</label><input type="file" id="tmCompressFile" accept="image/*"></div><div class="tm-form-grid"><div class="tm-field"><label for="tmCompressW">Ancho máximo</label><input id="tmCompressW" type="number" value="1200"></div><div class="tm-field"><label for="tmCompressQ">Calidad WebP</label><input id="tmCompressQ" type="number" step="0.05" value="0.82"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compressRun">Comprimir imagen</button></div><div id="tmToolOut2" class="tm-code" style="margin-top:12px">La compresión real puede conectarse al input productImage.</div>`)}
@@ -5953,7 +5981,7 @@ function refreshAdmin2(){ if(typeof window.cargarDatos==='function') window.carg
 function actions(act,el){let d=data(), ps=prods();
  if(act==='closePanel'){$('#tmToolPanel').className='tm-panel';return}
  if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');toast('Copiado','success');return}
- if(act==='aiGen'){let p=ps.find(x=>String(x.id)===$('#tmAiProd').value)||ps[0];let tono=$('#tmAiTone').value;$('#tmToolOut').textContent=`${p.nombre}\n\n${p.descripcion||'Producto disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${p.stock||0}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto ${tono}:\n🔥 ${p.nombre} disponible ahora en TiendaMax. Calidad, entrega coordinada y atención por WhatsApp. Escríbenos para reservar.`;return}
+ if(act==='aiGen'){let p=ps.find(x=>String(x.id)===$('#tmAiProd').value)||ps[0];let tono=$('#tmAiTone').value;$('#tmToolOut').textContent=`${p.nombre}\n\n${p.descripcion||'Producto disponible en TiendaMax.'}\n\n💵 Precio: ${moneyP(p)}\n📦 Stock: ${p.stock||0}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto ${tono}:\n🔥 ${p.nombre} disponible ahora en TiendaMax. Calidad, entrega coordinada y atención por WhatsApp. Escríbenos para reservar.`;return}
  if(act==='compressRun'){let f=$('#tmCompressFile').files[0]; if(!f)return toast('Selecciona imagen','error'); compressFile(f,Number($('#tmCompressW').value)||1200,Number($('#tmCompressQ').value)||.82);return}
  if(act==='dupNow'){let p=ps.find(x=>String(x.id)===$('#tmDupProd').value); if(!p)return; snapshot('antes de duplicar'); let np={...p,id:Date.now(),nombre:(p.nombre||'Producto')+' — Copia',fechaAgregado:new Date().toISOString()}; ps.push(np); guardarProds(ps); marcarMod(np.id); toast('Producto duplicado'); refreshAdmin2(); duplicate(); return}
  if(act==='snapshot'){snapshot();toast('Snapshot creado');history();return}
@@ -5969,7 +5997,7 @@ function actions(act,el){let d=data(), ps=prods();
  if(act==='roleAdd'){d.roles.push({name:$('#tmRoleName').value,perms:$('#tmRolePerms').value});setData(d);roles();return}
  if(act==='compAdd'){let p=ps.find(x=>String(x.id)===$('#tmCompProd').value);d.competitors.unshift({pid:p.id,name:p.nombre,price:$('#tmCompPrice').value,url:$('#tmCompUrl').value});setData(d);competitors();return}
  if(act==='marginCalc'){let price=+$('#tmMPrice').value||0,cost=+$('#tmMCost').value||0,ship=+$('#tmMShip').value||0,com=+$('#tmMCom').value||0;let profit=price-cost-ship-com;$('#tmToolOut').textContent=`Ganancia: $${profit.toFixed(2)}\nMargen: ${price?((profit/price)*100).toFixed(1):0}%\nCosto total: $${(cost+ship+com).toFixed(2)}`;return}
- if(act==='postGen'){let p=ps.find(x=>String(x.id)===$('#tmPostProd').value);$('#tmToolOut').textContent=`🔥 ${p.nombre}\n\n${p.descripcion||'Disponible en TiendaMax.'}\n\n💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${p.stock||0}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;return}
+ if(act==='postGen'){let p=ps.find(x=>String(x.id)===$('#tmPostProd').value);$('#tmToolOut').textContent=`🔥 ${p.nombre}\n\n${p.descripcion||'Disponible en TiendaMax.'}\n\n💵 ${moneyP(p)}\n📦 Stock: ${p.stock||0}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;return}
  if(act==='crmAdd'){d.clients.unshift({name:$('#tmCrmName').value,phone:$('#tmCrmPhone').value,ltv:$('#tmCrmLtv').value});setData(d);crm();return}
  if(act==='shipAdd'){d.shipments.unshift({name:$('#tmShipName').value,status:$('#tmShipStatus').value,note:$('#tmShipNote').value});setData(d);shipping();return}
  if(/Del$/.test(act)){let arr={schDel:'scheduled',cupDel:'coupons',abDel:'ab',roleDel:'roles',compDel:'competitors',crmDel:'clients',shipDel:'shipments'}[act]; if(arr){d[arr].splice(Number(el.dataset.i),1);setData(d);openTool({scheduled:'schedule',coupons:'coupons',ab:'ab',roles:'roles',competitors:'competitors',clients:'crm',shipments:'shipping'}[arr]);}}

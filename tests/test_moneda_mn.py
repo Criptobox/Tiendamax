@@ -18,6 +18,13 @@ vigila es lo que falla en silencio:
 
   · El carrito sumaba todo en un único total. Mezclar un producto en USD con
     uno en MN daba un número que no es plata de ninguna de las dos.
+
+  · El panel dejaba marcar un producto como MN pero seguía pintándolo en USD:
+    la tienda mostraba "$5.000 MN" y el admin, para el mismo producto,
+    "$5000.00 USD". El precio salía de plantillas que escribían "USD" a mano o
+    que llamaban a money(), que solo recibe un número y no puede saber de qué
+    moneda es —la moneda vive en el producto—. Lo mismo llegaba al texto de
+    WhatsApp y al de publicar en grupos, o sea al cliente.
 """
 import re
 import unittest
@@ -82,3 +89,65 @@ class MonedaMNTest(unittest.TestCase):
             usd = [p["nombre"] for p in datos if p.get("moneda") == "USD"]
             self.assertEqual([], usd,
                              f"{cat}: 'moneda' solo se guarda cuando es MN")
+
+
+    # ── El panel ────────────────────────────────────────────────────────
+    def test_el_panel_no_pinta_ningun_precio_con_usd_a_mano(self):
+        """Nada que muestre el precio DE UN PRODUCTO puede fijar la moneda.
+
+        Un `$${...precioActual...} USD` en una plantilla se ve perfecto —hasta
+        que el producto es de los de MN, y entonces afirma un precio en dólares
+        que nadie puso. Estas plantillas alimentan la lista de productos, el
+        modal de publicación, el texto de WhatsApp y el de los grupos: el error
+        no se queda en el panel, sale hacia el cliente.
+        """
+        texto = ADMIN.read_text(encoding="utf-8")
+        # Solo las dos formas en que "USD" acaba PINTÁNDOSE pegado al precio:
+        #   `${…precioActual…} USD`   y   `'+…precioActual…+' USD'`
+        # No vale con buscar "USD" suelto en la línea: 'USD' también aparece
+        # como valor por defecto (comisionMoneda||'USD', moneda:…?'MN':'USD'),
+        # que es correcto, y esas líneas son larguísimas.
+        PINTA_USD = [
+            re.compile(r"precioActual[^\n]{0,70}?\}\s*USD"),
+            re.compile(r"precioActual[^\n]{0,70}?\+\s*'\s*USD"),
+        ]
+        malos = []
+        for m in re.finditer(r"[^\n]*precioActual[^\n]*", texto):
+            linea = m.group(0)
+            # moneyP() ya decide la moneda mirando el producto.
+            sin_helper = re.sub(r"moneyP\([^)]*\)", "", linea)
+            if any(rx.search(sin_helper) for rx in PINTA_USD):
+                malos.append(linea.strip()[:120])
+        self.assertEqual(
+            [], malos,
+            "estas líneas de admin.html escriben 'USD' junto al precio de un "
+            "producto en vez de pasar por moneyP():\n  " + "\n  ".join(malos)
+            + "\n\nPara un producto con moneda:'MN' afirman una moneda falsa.",
+        )
+
+    def test_moneyP_existe_y_distingue_las_dos_monedas(self):
+        texto = ADMIN.read_text(encoding="utf-8")
+        self.assertIn("const moneyP", texto,
+                      "admin.html perdió moneyP(), el helper que sabe de qué "
+                      "moneda es el precio de un producto.")
+        # Debe mirar el producto, no la cifra.
+        self.assertRegex(
+            texto, r"const esMN\s*=\s*p\s*=>",
+            "moneyP() decide con esMN(p): sin eso vuelve a formatear a ciegas.",
+        )
+        self.assertIn("window.moneyP=moneyP", texto,
+                      "moneyP tiene que salir a window: el <script> de "
+                      "Herramientas es otro IIFE y también pinta precios.")
+
+    def test_el_valor_de_inventario_no_suma_monedas_distintas(self):
+        """Un producto de 5.000 MN sumado al total en USD lo infla en 5.000
+        dólares que no existen, y el número sale mal sin que nada falle."""
+        texto = ADMIN.read_text(encoding="utf-8")
+        self.assertIn("valorInvPorMoneda", texto,
+                      "el valor de inventario volvió a sumarse en un solo "
+                      "número, mezclando USD con MN.")
+        for m in re.finditer(r"[^\n]*precioActual[^\n]*stock[^\n]*", texto):
+            linea = m.group(0)
+            if "reduce(" in linea and "valorInvPorMoneda" not in linea:
+                self.fail("suma de inventario sin separar por moneda:\n  "
+                          + linea.strip()[:160])
