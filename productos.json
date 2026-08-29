@@ -5041,7 +5041,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 10,
+    "stock": 0,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -8403,7 +8403,7 @@
     "precioActual": 260,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 3,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8418,7 +8418,6 @@
       "⚡ Tecnología MPPT de Alta Eficiencia (120A)"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z",
-    "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.",
     "seoTitle": "Controlador de Carga Solar MPPT 120A Y&H en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema…",
     "ficha": [
@@ -8490,7 +8489,8 @@
     ],
     "incluye": [
       "1× Controlador de Carga Solar MPPT 120A Y&H (12V–96V / Max PV 230V)"
-    ]
+    ],
+    "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas."
   },
   {
     "id": 1786807706672,
