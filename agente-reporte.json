@@ -1,10 +1,10 @@
 {
-  "generado": "2026-08-29T14:05:31.046133+00:00",
+  "generado": "2026-08-30T14:09:32.837102+00:00",
   "productos": 131,
   "urgentes": 4,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 131 productos y encontré 4 urgente(s), 7 de info.",
+  "info": 6,
+  "resumen": "Anoche revisé tus 131 productos y encontré 4 urgente(s), 6 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -52,14 +52,9 @@
       "detalle": "precio: 33000"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
-      "detalle": "quedan 3"
-    },
-    {
       "tipo": "agotados",
-      "nombre": "57 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 54 más"
+      "nombre": "60 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 57 más"
     }
   ]
 }
