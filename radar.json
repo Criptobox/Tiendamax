@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-29T15:30:14.649350+00:00",
-  "fecha": "2026-08-29",
+  "actualizado": "2026-08-30T15:11:02.842769+00:00",
+  "fecha": "2026-08-30",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -71,6 +71,10 @@
         {
           "fecha": "2026-08-29",
           "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-30",
+          "mediana": 180.0
         }
       ],
       "muestras": [
@@ -106,14 +110,14 @@
           "fuente": "revolico",
           "titulo": "180 USD Inversor Tataliken de 12V 4000W",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-56942193",
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-57091109",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor marca Tataliken de 24v 4000w pico",
+          "titulo": "180 USD Inversor Tataliken de 12V 4000W",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24v-4000w-pico-56164540",
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-56942193",
           "dias": null
         }
       ]
@@ -133,10 +137,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-16",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-17",
           "mediana": 90.0
@@ -187,6 +187,10 @@
         },
         {
           "fecha": "2026-08-29",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-08-30",
           "mediana": 82.5
         }
       ],
