@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-30T15:11:02.842769+00:00",
-  "fecha": "2026-08-30",
+  "actualizado": "2026-08-31T17:55:25.595214+00:00",
+  "fecha": "2026-08-31",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 100.0,
         "mediana": 180.0,
-        "n": 16
+        "n": 15
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -74,6 +74,10 @@
         },
         {
           "fecha": "2026-08-30",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-08-31",
           "mediana": 180.0
         }
       ],
@@ -138,10 +142,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-08-17",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-08-18",
           "mediana": 90.0
         },
@@ -191,6 +191,10 @@
         },
         {
           "fecha": "2026-08-30",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-08-31",
           "mediana": 82.5
         }
       ],
