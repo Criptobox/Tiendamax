@@ -7675,7 +7675,7 @@
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 8,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "SEGURIDAD",
@@ -7690,7 +7690,6 @@
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
     "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…",
-    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.",
     "ficha": [
       {
         "k": "Modelo",
@@ -7733,7 +7732,8 @@
     ],
     "incluye": [
       "1x Cámara de Seguridad Solar Doble Lente QW8-WIFI"
-    ]
+    ],
+    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas."
   },
   {
     "id": 1785285424837,
