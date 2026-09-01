@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-08-31T17:55:25.595214+00:00",
-  "fecha": "2026-08-31",
+  "actualizado": "2026-09-01T15:23:45.008018+00:00",
+  "fecha": "2026-09-01",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -79,6 +79,10 @@
         {
           "fecha": "2026-08-31",
           "mediana": 180.0
+        },
+        {
+          "fecha": "2026-09-01",
+          "mediana": 180.0
         }
       ],
       "muestras": [
@@ -105,16 +109,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
-          "precio": 178.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
+          "titulo": "175 USD Inversor Tataliken de 12V 4000W",
+          "precio": 175.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-57091109",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor Tataliken de 12V 4000W",
-          "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-57091109",
+          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
+          "precio": 178.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
           "dias": null
         },
         {
@@ -141,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-18",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-19",
           "mediana": 90.0
@@ -195,6 +195,10 @@
         },
         {
           "fecha": "2026-08-31",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-01",
           "mediana": 82.5
         }
       ],
