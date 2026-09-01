@@ -13,8 +13,8 @@
 <meta property="og:type" content="product">
 <meta property="og:title" content="ADAPTADOR POE UBIQUITI en Cuba | TiendaMax">
 <meta property="og:description" content="ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.">
-<meta property="og:image" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=2259f1a4abc5b250">
-<meta property="og:image:secure_url" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=2259f1a4abc5b250">
+<meta property="og:image" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=de9dcf4a05c789c5">
+<meta property="og:image:secure_url" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=de9dcf4a05c789c5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
@@ -29,7 +29,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ADAPTADOR POE UBIQUITI en Cuba | TiendaMax">
 <meta name="twitter:description" content="ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.">
-<meta name="twitter:image" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=2259f1a4abc5b250">
+<meta name="twitter:image" content="https://tiendamax.org/og/producto-1778384646214.jpg?v=de9dcf4a05c789c5">
 <meta name="twitter:image:alt" content="ADAPTADOR POE UBIQUITI en Cuba | TiendaMax">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -49,7 +49,7 @@
     "@type": "Offer",
     "price": "20.00",
     "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
+    "availability": "https://schema.org/OutOfStock",
     "itemCondition": "https://schema.org/NewCondition",
     "url": "https://tiendamax.org/p/producto-1778384646214.html",
     "seller": {"@type": "Organization", "name": "TiendaMax"},
@@ -200,10 +200,19 @@
       
     </div>
     <p class="tm-desc">Inyector PoE original de Ubiquiti, diseñado para alimentar de manera segura y eficiente puntos de acceso, radios y equipos de red que requieren una entrada de 24V y 0.3A. La fiabilidad que tus equipos de red necesitan.</p>
-    <div class="tm-stok-y">En stock (20 disponibles)</div>
+    <div class="tm-stok-n">Agotado</div>
     <div class="tm-actions">
-      <a href="https://tiendamax.org/?producto=1778384646214#producto-1778384646214" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>
-      <a href="https://wa.me/5354320170?text=Hola%2C%20me%20interesa%3A%20%F0%9F%8C%90%20Adaptador%20POE%20Ubiquiti%20%2824V%20-%200.3A%29.%20https%3A//tiendamax.org/p/producto-1778384646214.html" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
+      <button type="button" class="tm-btn tm-btn-p" id="tmAvisarBtn" aria-expanded="false" aria-controls="tmAviso">🔔 Avísame cuando vuelva</button>
+      <div class="tm-aviso" id="tmAviso">
+        <p>Déjame tu WhatsApp y te escribo apenas entre. Nada más: ni correo, ni registro.</p>
+        <div class="tm-aviso-row">
+          <input id="tmAvisoTel" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" placeholder="5355551234" aria-label="Tu WhatsApp">
+          <button type="button" id="tmAvisoOk">Avisarme</button>
+        </div>
+        <div class="msg" id="tmAvisoMsg" role="status" aria-live="polite"></div>
+        <div class="luego">¿Prefieres el aviso automático en el móvil? <a href="https://tiendamax.org/?producto=1778384646214#producto-1778384646214">Actívalo en la tienda</a>.</div>
+      </div>
+      <a href="https://wa.me/5354320170?text=Hola%2C%20te%20escribo%20por%3A%20%F0%9F%8C%90%20Adaptador%20POE%20Ubiquiti%20%2824V%20-%200.3A%29.%20https%3A//tiendamax.org/p/producto-1778384646214.html" class="tm-btn tm-btn-s" target="_blank" rel="noopener noreferrer">💬 Escríbeme</a>
     </div>
   </div>
 </main>
@@ -225,5 +234,62 @@
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
 </footer>
 
+<script>
+(function(){
+  var BASE = "https://tiendamax-8feb5-default-rtdb.firebaseio.com";
+  var PID  = "1778384646214";
+  var btn  = document.getElementById('tmAvisarBtn');
+  var caja = document.getElementById('tmAviso');
+  var tel  = document.getElementById('tmAvisoTel');
+  var ok   = document.getElementById('tmAvisoOk');
+  var msg  = document.getElementById('tmAvisoMsg');
+  if(!btn || !caja || !tel || !ok || !msg) return;
+
+  var YA = 'tm_espera_' + PID;
+  function decir(t, clase){ msg.textContent = t; msg.className = 'msg ' + (clase||''); }
+
+  // Ya lo pidió desde este teléfono: no se le vuelve a preguntar.
+  try{ if(localStorage.getItem(YA)){
+    caja.classList.add('abierto');
+    btn.setAttribute('aria-expanded','true');
+    decir('\u2705 Ya tienes el aviso puesto. Te escribo apenas entre.','ok');
+    tel.style.display = ok.style.display = 'none';
+  } }catch(e){}
+
+  btn.addEventListener('click', function(){
+    var abierto = caja.classList.toggle('abierto');
+    btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    if(abierto) try{ tel.focus(); }catch(e){}
+  });
+
+  tel.addEventListener('keydown', function(e){ if(e.key === 'Enter') ok.click(); });
+
+  ok.addEventListener('click', function(){
+    // Los dos extremos los exige la regla de /lista_espera (6 a 25). Pasarse
+    // por arriba daba un rechazo mudo: el cliente veía "guardando" y nada más.
+    var n = (tel.value || '').replace(/[^0-9+]/g, '').slice(0, 25);
+    if(n.length < 6){ decir('Escribe un WhatsApp v\u00e1lido, con el c\u00f3digo si es de fuera.','err'); return; }
+    if(!BASE){ decir('No se pudo guardar. Escr\u00edbeme por WhatsApp y te apunto.','err'); return; }
+    ok.disabled = true; decir('Guardando\u2026','');
+    // Clave con azar además de la hora: la regla es "solo si no existe", y dos
+    // personas en el mismo milisegundo harían que la segunda se perdiera callada.
+    var clave = Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    var ctrl = new AbortController();
+    var tid = setTimeout(function(){ ctrl.abort(); }, 8000);
+    fetch(BASE + '/lista_espera/' + PID + '/' + clave + '.json', {
+      method:'PUT', headers:{'Content-Type':'application/json'}, signal: ctrl.signal,
+      body: JSON.stringify({ tel:n, productoId:String(PID), ts:Date.now() })
+    }).then(function(r){
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      try{ localStorage.setItem(YA,'1'); }catch(e){}
+      decir('\u2705 Listo. Te escribo apenas entre.','ok');
+      tel.style.display = ok.style.display = 'none';
+    }).catch(function(){
+      ok.disabled = false;
+      decir('No se pudo guardar. Rev\u00edsa tu conexi\u00f3n o escr\u00edbeme por WhatsApp.','err');
+    }).then(function(){ clearTimeout(tid); });
+  });
+})();
+</script>
 </body>
 </html>
