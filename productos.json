@@ -9616,7 +9616,7 @@
   },
   {
     "id": 1788389384026,
-    "nombre": "🌐Ubiquiti LOCOM5 airMAX NanoStation M5 Loco",
+    "nombre": "🌐Ubiqui airMAX NanoStation M5 Loco",
     "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada.",
     "imagen": "https://tiendamax.org/imagenes/img_1788389380951.webp",
     "imagenes": [
@@ -9733,8 +9733,6 @@
       "1× Inyector PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
       "1× Brida de sujeción para montaje en mástil o tubo",
       "1× Guía de inicio rápido"
-    ],
-    "seoTitle": "Ubiquiti LOCOM5 airMAX NanoStation M5 Loco | TiendaMax",
-    "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…"
+    ]
   }
 ]
