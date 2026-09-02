@@ -683,7 +683,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007970666.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -693,7 +693,6 @@
     "comision": 1500,
     "seoTitle": "PISTOLA DE MASAJE RECARGABLE: en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una…",
-    "descripcion": "Dispositivo de percusión de alta potencia diseñado para liberar la tensión muscular, mejorar la circulación y acelerar la recuperación después del entrenamiento o tras largas jornadas de trabajo.",
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
@@ -748,7 +747,8 @@
     ],
     "idealPara": [
       "Recuperación post-entrenamiento, alivio de dolores musculares, mejora de la flexibilidad y relajación diaria."
-    ]
+    ],
+    "descripcion": "Dispositivo de percusión de alta potencia diseñado para liberar la tensión muscular, mejorar la circulación y acelerar la recuperación después del entrenamiento o tras largas jornadas de trabajo."
   },
   {
     "id": 1778104191957,
@@ -2547,7 +2547,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 0,
+    "stock": 10,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -8791,7 +8791,6 @@
   {
     "id": 1787072040177,
     "nombre": "⚡ Soldadora Inverter YESWELDER FLUX-140 FLEX",
-    "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre.",
     "imagen": "https://tiendamax.org/imagenes/img_1787072038550.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787072038550.webp"
@@ -8799,7 +8798,7 @@
     "precioActual": 275,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -8846,7 +8845,8 @@
     ],
     "incluye": [
       "1x Soldadora Inverter YESWELDER FLUX-140 FLEX"
-    ]
+    ],
+    "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre."
   },
   {
     "id": 1787079480177,
@@ -9380,7 +9380,6 @@
   {
     "id": 1787933033934,
     "nombre": "📡Ubiquiti Litebeam M5",
-    "descripcion": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes y garantizando transferencias estables con latencia reducida incluso en zonas con alto ruido de radiofrecuencia. Su sistema operativo airOS ofrece herramientas profesionales de diagnóstico en tiempo real, destacando el analizador de espectro airView para ubicar y seleccionar siempre los canales más limpios y libres de interferencia.",
     "imagen": "https://tiendamax.org/imagenes/img_1787933030028.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787933030028.webp"
@@ -9388,7 +9387,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9497,7 +9496,8 @@
       "1× Guía de instalación rápida"
     ],
     "seoTitle": "Ubiquiti Litebeam M5 en Cuba | TiendaMax",
-    "seoDescription": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes…"
+    "seoDescription": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes…",
+    "descripcion": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes y garantizando transferencias estables con latencia reducida incluso en zonas con alto ruido de radiofrecuencia. Su sistema operativo airOS ofrece herramientas profesionales de diagnóstico en tiempo real, destacando el analizador de espectro airView para ubicar y seleccionar siempre los canales más limpios y libres de interferencia."
   },
   {
     "id": 1788368389009,
