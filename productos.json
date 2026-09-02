@@ -9613,5 +9613,126 @@
     ],
     "seoTitle": "Conectores MC4 10 pares en Cuba | TiendaMax",
     "seoDescription": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado…"
+  },
+  {
+    "id": 1788389384026,
+    "nombre": "🌐Ubiquiti LOCOM5 airMAX NanoStation M5 Loco",
+    "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada.",
+    "imagen": "https://tiendamax.org/imagenes/img_1788389380951.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788389380951.webp"
+    ],
+    "precioActual": 160,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 2,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "8 dBi antena integrada",
+      "10/100 Mbps Ethernet",
+      "24V PoE"
+    ],
+    "fechaAgregado": "2026-09-02T22:49:44.026Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti Networks"
+      },
+      {
+        "k": "Modelo",
+        "v": "NanoStation Loco M5",
+        "nota": "LocoM5"
+      },
+      {
+        "k": "Frecuencia Inalámbrica",
+        "v": "5 GHz",
+        "nota": "5170 – 5875 MHz"
+      },
+      {
+        "k": "Ganancia de Antena",
+        "v": "13 dBi integrada",
+        "nota": "Panel direccional 2×2 MIMO de doble polarización"
+      },
+      {
+        "k": "Apertura de Haz",
+        "v": "45° (horizontal) / 45°",
+        "nota": "vertical"
+      },
+      {
+        "k": "Rendimiento Máximo",
+        "v": "Hasta 150+ Mbps de rendimiento real",
+        "nota": "Tecnología airMAX TDMA"
+      },
+      {
+        "k": "Puertos",
+        "v": "1× puerto Fast Ethernet 10/100 Mbps"
+      },
+      {
+        "k": "Procesador y Memoria",
+        "v": "Atheros MIPS 24KC a 400 MHz / 32 MB SDRAM / 8 MB Flash"
+      },
+      {
+        "k": "Alimentación",
+        "v": "PoE Pasivo 24V, 0.5A"
+      },
+      {
+        "k": "Alcance",
+        "v": "Hasta 5 a 10 km",
+        "nota": "con línea de vista directa despejada"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "airOS"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Antena integrada de panel de 13 dBi",
+        "d": "diseño de polarización dual (MIMO 2×2) que concentra el haz de señal para enlaces estables y de baja latencia en la banda de 5 GHz."
+      },
+      {
+        "t": "Tecnología airMAX (TDMA)",
+        "d": "protocolo propietario de Ubiquiti que asigna ventanas de tiempo inteligentes a cada dispositivo, eliminando colisiones de paquetes y optimizando la velocidad en entornos con ruido espectral."
+      },
+      {
+        "t": "Diseño compacto y discreto",
+        "d": "formato estilizado de perfil bajo que reduce el impacto visual en fachadas, balcones o mástiles exteriores."
+      },
+      {
+        "t": "Alimentación por PoE Pasivo",
+        "d": "transmite corriente eléctrica y datos a través de un único cable de red Ethernet hacia el exterior, simplificando la instalación en techos o torres."
+      },
+      {
+        "t": "Indicadores LED de alineación",
+        "d": "barra de luces LED traseras que reflejan la intensidad de la señal en tiempo real para calibrar y orientar la antena con precisión sin necesidad de mirar la computadora."
+      },
+      {
+        "t": "Gestión avanzada con airOS",
+        "d": "interfaz web completa que incorpora utilidades profesionales como analizador de espectro de radiofrecuencia (airView), prueba de velocidad integrada y monitoreo continuo del enlace."
+      },
+      {
+        "t": "Carcasa exterior con protección UV",
+        "d": "plástico industrial estabilizado para resistir la lluvia, humedad y radiación solar extrema durante años de operación continua."
+      }
+    ],
+    "idealPara": [
+      "Enlaces inalámbricos Punto a Punto (PtP) de corta y media distancia para compartir conexión a Internet entre viviendas, almacenes, fincas o sucursales.",
+      "Dispositivo cliente (CPE) en redes Punto a Multipunto (PtMP) para conectarse a estaciones base de proveedores WISP en 5 GHz.",
+      "Conexión y transporte de video de cámaras de seguridad IP remotas hacia un grabador central (NVR).",
+      "Interconexión de redes locales entre dos edificios sin necesidad de tender cableado físico exterior."
+    ],
+    "incluye": [
+      "1× Equipo inalámbrico exterior Ubiquiti NanoStation Loco M5",
+      "1× Inyector PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
+      "1× Brida de sujeción para montaje en mástil o tubo",
+      "1× Guía de inicio rápido"
+    ]
   }
 ]
