@@ -9498,5 +9498,118 @@
     ],
     "seoTitle": "Ubiquiti Litebeam M5 en Cuba | TiendaMax",
     "seoDescription": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes…"
+  },
+  {
+    "id": 1788368389009,
+    "nombre": "⚡Conectores MC4 10 pares",
+    "descripcion": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado por la radiación ultravioleta continua, la intemperie y temperaturas extremas (-40°C a +90°C), evitando deformaciones o quiebres con el paso de los años.",
+    "imagen": "https://tiendamax.org/imagenes/img_1788368386636.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788368386636.webp"
+    ],
+    "precioActual": 13,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-09-02T16:59:49.009Z",
+    "ficha": [
+      {
+        "k": "Tipo de Producto",
+        "v": "Conectores Solares Fotovoltaicos MC4",
+        "nota": "Macho y Hembra"
+      },
+      {
+        "k": "Cantidad",
+        "v": "Pack de 10 Pares",
+        "nota": "20 piezas en total: 10 machos + 10 hembras"
+      },
+      {
+        "k": "Voltaje Nominal",
+        "v": "1000V DC / 1500V DC"
+      },
+      {
+        "k": "Corriente Nominal",
+        "v": "30A"
+      },
+      {
+        "k": "Calibres de Cable Compatibles",
+        "v": "2.5 mm², 4.0 mm², 6.0 mm²",
+        "nota": "14 AWG, 12 AWG, 10 AWG"
+      },
+      {
+        "k": "Grado de Protección",
+        "v": "IP67",
+        "nota": "impermeable y resistente al polvo"
+      },
+      {
+        "k": "Material de Contacto",
+        "v": "Cobre de alta conductividad con recubrimiento de estaño"
+      },
+      {
+        "k": "Material de Aislamiento",
+        "v": "Polímero PPO ignífugo con protección UV",
+        "nota": "UL94-V0"
+      },
+      {
+        "k": "Rango de Temperatura Operativa",
+        "v": "-40°C a +90°C"
+      },
+      {
+        "k": "Sistema de Acople",
+        "v": "Bloqueo automático por presión",
+        "nota": "Snap-in lock"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Kit completo de 10 pares",
+        "d": "suministra 20 conectores y 20 terminales metálicos para armar múltiples conexiones en cadenas de paneles solares o extensiones de bajada."
+      },
+      {
+        "t": "Compatibilidad universal MC4",
+        "d": "estándar compatible con paneles solares monocristalinos y policristalinos, microinversores, inversores híbridos y controladores de carga de cualquier marca."
+      },
+      {
+        "t": "Sellado hermético IP67",
+        "d": "juntas tóricas de goma (O-rings) que impiden la filtración de agua de lluvia, rocío, condensación y acumulación de polvo."
+      },
+      {
+        "t": "Contactos de cobre estañado",
+        "d": "terminales para crimpado que optimizan el flujo de corriente, reducen la resistencia interna y evitan la corrosión galvánica y la oxidación a la intemperie."
+      },
+      {
+        "t": "Carcasa de polímero PPO reforzado",
+        "d": "material de grado industrial altamente resistente al fuego, envejecimiento térmico y degradación por rayos solares UV directos."
+      },
+      {
+        "t": "Mecanismo autoblocante seguro",
+        "d": "sistema de traba por pestillo que asegura una unión mecánica firme y evita desconexiones involuntarias por tracción o viento."
+      },
+      {
+        "t": "Prensacable roscado posterior",
+        "d": "ajuste sellado que fija cables solares de 14 AWG a 10 AWG sin dañar su doble aislamiento."
+      }
+    ],
+    "idealPara": [
+      "Instalación completa de arreglos fotovoltaicos residenciales, comerciales o de fincas en conexiones serie y paralelo.",
+      "Fabricación de cables de bajada, puentes de interconexión y extensiones a medida hacia la caja de protecciones o el inversor.",
+      "Proyectos solares aislados (Off-Grid) en casas de campo, casetas de bombeo, campers, barcos y sistemas de respaldo de energía.",
+      "Mantenimiento, reemplazo y reparación de terminales sulfatados o dañados por la intemperie."
+    ],
+    "incluye": [
+      "10× Carcasas de conector solar MC4 Macho",
+      "10× Carcasas de conector solar MC4 Hembra",
+      "10× Pines terminales metálicos macho (cobre estañado)",
+      "10× Pines terminales metálicos hembra (cobre estañado)"
+    ]
   }
 ]
