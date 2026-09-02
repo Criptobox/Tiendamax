@@ -9625,7 +9625,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 2,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9733,8 +9733,6 @@
       "1× Inyector PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
       "1× Brida de sujeción para montaje en mástil o tubo",
       "1× Guía de inicio rápido"
-    ],
-    "seoTitle": "Ubiquiti LOCOM5 airMAX NanoStation M5 Loco | TiendaMax",
-    "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…"
+    ]
   }
 ]
