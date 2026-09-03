@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-02T13:06:55.393560+00:00",
-  "productos": 131,
-  "urgentes": 4,
+  "generado": "2026-09-03T13:08:33.017775+00:00",
+  "productos": 133,
+  "urgentes": 5,
   "advertencias": 0,
   "info": 6,
-  "resumen": "Anoche revisé tus 131 productos y encontré 4 urgente(s), 6 de info.",
+  "resumen": "Anoche revisé tus 133 productos y encontré 5 urgente(s), 6 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -25,6 +25,11 @@
       "tipo": "nombre",
       "nombre": "🌐MikroTik hEX S (RB760iGS)",
       "detalle": "→ 🌐MikroTik hEX s (RB760iGS)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "⚡Conectores MC4 10 pares",
+      "detalle": "→ ⚡Conectores MC4 10 Pares"
     },
     {
       "tipo": "stock_bajo",
@@ -53,8 +58,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "60 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 57 más"
+      "nombre": "63 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, 🌐 Router Wavlink AC1200 Dual Band, 📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps) y 60 más"
     }
   ]
 }
