@@ -81,7 +81,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -9859,5 +9859,240 @@
     ],
     "seoTitle": "TP-Link Archer BE230 en Cuba | TiendaMax",
     "seoDescription": "es un router de última generación equipado con el estándar Wi-Fi 7 (BE3600) y puertos cableados de alta velocidad a 2.5 Gbps, concebido para exprimir…"
+  },
+  {
+    "id": 1788626436047,
+    "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
+    "precioActual": 170,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
+    "categoria": "ENERGIA",
+    "subcategoria": "INVERSORES",
+    "stock": 4,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "inversor-12v",
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1777924118004.webp"
+    ],
+    "specs": [
+      "3500W potencia continua",
+      "12V DC entrada",
+      "120V AC salida",
+      "Protección por sobrecarga"
+    ],
+    "recomendados": [],
+    "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
+    "seoDescription": "Inversor Tataliken de 12V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada, ideal para ventiladores, televisores, luces LED y carga de dispositivos durante los apagones.",
+    "radar": true,
+    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TATALIKEN"
+      },
+      {
+        "k": "Tipo de Onda",
+        "v": "Onda Senoidal Pura",
+        "nota": "Pure Sine Wave"
+      },
+      {
+        "k": "Potencia Pico (Arranque)",
+        "v": "3500W"
+      },
+      {
+        "k": "Potencia Continua (Nominal)",
+        "v": "1500W – 1750W"
+      },
+      {
+        "k": "Voltaje de Entrada",
+        "v": "12V DC",
+        "nota": "Rango de operación: 10.5V – 15.5V DC"
+      },
+      {
+        "k": "Voltaje de Salida",
+        "v": "110V / 120V AC",
+        "nota": "Frecuencia: 60 Hz / 50 Hz ± 2 Hz"
+      },
+      {
+        "k": "Eficiencia de Conversión",
+        "v": "≥ 90%"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Display digital LED para monitoreo de voltaje en tiempo real"
+      },
+      {
+        "k": "Refrigeración",
+        "v": "Ventilador de enfriamiento inteligente controlado por temperatura y carga"
+      },
+      {
+        "k": "Chasis",
+        "v": "Aleación de aluminio y magnesio con disipación térmica pasiva y activa"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Onda Senoidal Pura",
+        "d": "suministra corriente alterna de alta calidad idéntica a la red eléctrica convencional, protegiendo equipos electrónicos sensibles, eliminando zumbidos en motores y evitando sobrecalentamientos."
+      },
+      {
+        "t": "Capacidad de arranque de 3500W",
+        "d": "soporta los picos de corriente inicial que demandan herramientas eléctricas, motores pequeños y compresores (refrigeradores, bombas de agua o ventiladores)."
+      },
+      {
+        "t": "Pantalla digital LED integrada",
+        "d": "permite verificar al instante el nivel de voltaje de entrada para supervisar el estado de carga de la batería y prevenir descargas profundas accidentales."
+      },
+      {
+        "t": "Ventilador inteligente termorregulado",
+        "d": "funciona de manera silenciosa y se activa automáticamente solo cuando la temperatura interna o la demanda de potencia lo requieren, optimizando el consumo en reposo."
+      },
+      {
+        "t": "Carcasa de aleación de aluminio anodizado",
+        "d": "estructura de alta rigidez mecánica con aletas de disipación que aceleran la disipación del calor durante el uso prolongado."
+      },
+      {
+        "d": "Circuito de protección multinivel:"
+      },
+      {
+        "d": "Alarma sonora y corte automático por bajo voltaje de batería (evita daño a las celdas)."
+      },
+      {
+        "d": "Protección contra sobretensión en la entrada DC."
+      },
+      {
+        "d": "Protección contra sobrecarga de potencia."
+      },
+      {
+        "d": "Protección contra cortocircuito en la salida AC."
+      },
+      {
+        "d": "Apagado térmico por sobrecalentamiento interno."
+      }
+    ],
+    "idealPara": [
+      "Sistemas de respaldo eléctrico de emergencia (Back-up) en el hogar durante cortes de luz o apagones para alimentar iluminación, ventiladores, televisores, módems de Internet, computadoras y pequeños electrodomésticos.",
+      "Instalaciones solares aisladas (Off-Grid) a 12V en casas de campo, fincas o casetas de herramientas.",
+      "Vehículos camper, furgonetas de viaje, autocaravanas y embarcaciones para conectar herramientas, cargadores de laptops y electrónica de consumo desde la batería del vehículo."
+    ],
+    "incluye": [
+      "1× Inversor de Corriente Onda Senoidal Pura TATALIKEN 3500W (12V a 110V/120V)",
+      "2× Cables de conexión de alto calibre para bornes de batería con terminales",
+      "2× Pinzas tipo caimán para conexión rápida a batería",
+      "1× Manual de usuario e instrucciones de funcionamiento"
+    ],
+    "fechaAgregado": "2026-09-05T16:40:36.047Z"
+  },
+  {
+    "id": 1788627372873,
+    "nombre": "🔌VEVOR Cargador de batería inteligente 30A",
+    "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente.",
+    "imagen": "https://tiendamax.org/imagenes/img_1788627369327.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788627369327.webp",
+      "https://tiendamax.org/imagenes/img_1788627371422.webp"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "Corriente de carga: 30A",
+      "Voltaje: 12V/24V"
+    ],
+    "fechaAgregado": "2026-09-05T16:56:12.874Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "VEVOR"
+      },
+      {
+        "k": "Modelo",
+        "v": "Cargador y Mantenedor Inteligente de Baterías 30A"
+      },
+      {
+        "k": "Voltajes de Operación",
+        "v": "6V / 12V / 24V DC",
+        "nota": "Selección manual y detección automática"
+      },
+      {
+        "k": "Corriente Nominal de Carga",
+        "v": "Hasta 30A",
+        "nota": "ajuste inteligente de amperaje según voltaje y estado de la batería"
+      },
+      {
+        "k": "Voltaje de Entrada AC",
+        "v": "100V – 240V AC, 50/60 Hz"
+      },
+      {
+        "k": "Compatibilidad de Baterías",
+        "v": "Plomo-Ácido (AGM, GEL, SLA, Inundada/WET, Calcio, EFB, Ciclo Profundo) y Litio",
+        "nota": "LiFePO4"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Display digital LCD retroiluminado con indicadores de estado y diagnóstico"
+      },
+      {
+        "k": "Modos de Trabajo",
+        "v": "Carga rápida, mantenedor (carga lenta / flotación), modo reparación por pulsos (desulfatador) y compensación de temperatura"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Carga de alta velocidad de hasta 30A",
+        "d": "optimiza los tiempos de recarga tanto en baterías de uso rudo como en bancos de ciclo profundo, ajustando la potencia entregada según la necesidad química del acumulador."
+      },
+      {
+        "t": "Versatilidad multivoltaje (6V / 12V / 24V)",
+        "d": "equipo multifunción capaz de gestionar desde pequeñas baterías de 6V hasta sistemas pesados de 24V en camiones o maquinaria."
+      },
+      {
+        "t": "Microprocesador de etapas múltiples",
+        "d": "gestiona automáticamente ciclos completos de precarga, corriente constante, voltaje constante, absorción y modo flotación para evitar el estrés térmico."
+      },
+      {
+        "d": "Función de reparación por pulsos de alta/baja frecuencia: disuelve la sulfatación interna en placas de plomo y revive baterías profundamente descargadas o fatigadas, extendiendo su vida útil."
+      },
+      {
+        "t": "Compensación térmica inteligente",
+        "d": "ajusta el voltaje de entrega automáticamente según la temperatura exterior, previniendo sobrecargas en climas cálidos o cargas deficientes en frío extremo."
+      },
+      {
+        "t": "Pantalla LCD digital intuitiva",
+        "d": "muestra en tiempo real el voltaje actual, la corriente de carga (amperios), porcentaje de energía cargada y códigos de advertencia ante fallas."
+      },
+      {
+        "t": "Sistema de protección integral",
+        "d": "circuito con corte automático contra inversión de polaridad, chispas accidentales, cortocircuitos, sobretensión, sobrecorriente y sobrecalentamiento."
+      },
+      {
+        "d": "Pinzas de cocodrilo de cobre reforzado de uso pesado con aislamiento completo y disipador interno asistido por ventilador para jornadas prolongadas."
+      }
+    ],
+    "idealPara": [
+      "Talleres automotrices, flotas de transporte, camiones diésel y maquinaria agrícola o pesada con sistemas de 24V.",
+      "Mantenimiento y recarga rápida de baterías de autos, camionetas, lanchas y vehículos recreativos a 12V.",
+      "Cuidado y recuperación de baterías de 6V en motos clásicas, juguetes eléctricos y equipos antiguos.",
+      "Carga de respaldo conectada a la red comercial o planta eléctrica para bancos de baterías solares (GEL, AGM o LiFePO4)."
+    ],
+    "incluye": [
+      "1× Cargador Inteligente Multivoltaje VEVOR 30A (6V/12V/24V) con pinzas caimán de uso rudo",
+      "1× Manual de usuario e instrucciones de funcionamiento"
+    ]
   }
 ]
