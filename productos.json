@@ -9268,7 +9268,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9736,5 +9736,126 @@
     ],
     "seoTitle": "Ubiqui airMAX NanoStation M5 Loco en Cuba | TiendaMax",
     "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…"
+  },
+  {
+    "id": 1788625483027,
+    "nombre": "🛜TP-Link Archer BE230",
+    "descripcion": "es un router de última generación equipado con el estándar Wi-Fi 7 (BE3600) y puertos cableados de alta velocidad a 2.5 Gbps, concebido para exprimir conexiones de fibra óptica ultrarrápidas y ofrecer transferencias fluidas, estables y sin retrasos en entornos con múltiples dispositivos de alto consumo simultáneo.",
+    "imagen": "https://tiendamax.org/imagenes/img_1788625479728.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788625479728.webp",
+      "https://tiendamax.org/imagenes/img_1788625481249.webp",
+      "https://tiendamax.org/imagenes/img_1788625482230.webp"
+    ],
+    "precioActual": 200,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "Wi-Fi 7 BE3600",
+      "Hasta 2882Mbps en 5GHz",
+      "Hasta 688Mbps en 2.4GHz",
+      "1 puerto WAN 2.5Gbps",
+      "1 puerto LAN 2.5Gbps"
+    ],
+    "fechaAgregado": "2026-09-05T16:24:43.028Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "TP-Link"
+      },
+      {
+        "k": "Modelo",
+        "v": "Archer BE230"
+      },
+      {
+        "k": "Estándar Inalámbrico",
+        "v": "Wi-Fi 7",
+        "nota": "IEEE 802.11be/ax/ac/n/a en 5 GHz, IEEE 802.11be/ax/n/g/b en 2.4 GHz"
+      },
+      {
+        "k": "Velocidad Wi-Fi (BE3600)",
+        "v": "Hasta 2882 Mbps (5 GHz) + 688 Mbps",
+        "nota": "2.4 GHz"
+      },
+      {
+        "k": "Puertos de Red",
+        "v": "1× puerto WAN 2.5 Gbps + 1× puerto LAN 2.5 Gbps + 3× puertos LAN Gigabit",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Puertos Adicionales",
+        "v": "1× puerto USB 3.0"
+      },
+      {
+        "k": "Antenas",
+        "v": "4 antenas externas fijas de alto rendimiento con Beamforming"
+      },
+      {
+        "k": "Tecnologías Clave Wi-Fi 7",
+        "v": "Operación Multienlace (MLO), 4K-QAM, Multi-RU"
+      },
+      {
+        "k": "Seguridad y Gestión",
+        "v": "WPA3, TP-Link HomeShield, Servidor y Cliente VPN (WireGuard, OpenVPN, PPTP, L2TP), compatibilidad EasyMesh"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "d": "Tecnología Wi-Fi 7 de última generación (BE3600): ofrece transferencias inalámbricas combinadas de hasta 3.6 Gbps con latencia ultrabaja y máxima estabilidad en entornos congestionados."
+      },
+      {
+        "t": "Doble conectividad Multi-Gigabit de 2.5 Gbps",
+        "d": "incorpora 1 puerto WAN de 2.5G para exprimir planes de fibra óptica superiores a 1 Gbps y 1 puerto LAN de 2.5G para conectar directamente PCs gaming, conmutadores o almacenamiento NAS de alta velocidad."
+      },
+      {
+        "t": "Operación Multienlace (MLO)",
+        "d": "permite que los dispositivos compatibles transmitan y reciban paquetes a través de diferentes bandas simultáneamente, reduciendo el retardo y blindando la conexión frente a interferencias."
+      },
+      {
+        "t": "Modulación 4K-QAM",
+        "d": "incrementa la densidad de transmisión de datos en un 20% respecto a Wi-Fi 6 (1024-QAM), logrando descargas y transmisiones notablemente más veloces."
+      },
+      {
+        "t": "Puerto USB 3.0 integrado",
+        "d": "facilita la creación de almacenamiento compartido en red local (NAS doméstico), servidor multimedia o respaldo de archivos."
+      },
+      {
+        "t": "Compatibilidad EasyMesh",
+        "d": "se enlaza con routers o repetidores compatibles para crear una red de malla unificada bajo un solo nombre Wi-Fi con roaming fluido en todo el hogar."
+      },
+      {
+        "t": "Soporte avanzado para VPN",
+        "d": "funciones de cliente y servidor VPN integradas de fábrica (incluyendo el protocolo ágil WireGuard) para túneles remotos seguros sin necesidad de software adicional."
+      },
+      {
+        "t": "Seguridad integral TP-Link HomeShield",
+        "d": "escaneo de vulnerabilidades en tiempo real, bloqueador de sitios maliciosos y controles parentales completos."
+      },
+      {
+        "t": "Disipación térmica eficiente",
+        "d": "cubierta superior con rejilla microperforada de ventilación que mantiene las temperaturas bajo control en jornadas de alta demanda continua."
+      }
+    ],
+    "idealPara": [
+      "Conexiones de fibra óptica simétricas de 1 Gbps, 1.5 Gbps o 2.5 Gbps que buscan evitar cuellos de botella por cable o Wi-Fi.",
+      "Gaming online competitivo de ultra baja latencia, streaming en vivo y consumo multimedia intensivo en 4K/8K sin interrupciones.",
+      "Hogares u oficinas con alta densidad de dispositivos conectados simultáneamente (consolas, laptops, smartphones y domótica inteligente).",
+      "Usuarios que requieren almacenamiento centralizado en red local de alta velocidad conectando un disco externo o NAS al puerto 2.5G."
+    ],
+    "incluye": [
+      "1× Router Wi-Fi 7 TP-Link Archer BE230 (BE3600)",
+      "1× Adaptador de corriente",
+      "1× Cable de red Ethernet RJ45",
+      "1× Guía de instalación rápida"
+    ]
   }
 ]
