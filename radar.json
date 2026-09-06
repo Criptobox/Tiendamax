@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-05T13:41:46.991945+00:00",
-  "fecha": "2026-09-05",
+  "actualizado": "2026-09-06T13:58:09.146420+00:00",
+  "fecha": "2026-09-06",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -13,123 +13,6 @@
     "sinDatos": 0
   },
   "productos": [
-    {
-      "id": 1777924118004,
-      "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
-      "tuPrecio": 180.0,
-      "mercado": {
-        "min": 100.0,
-        "mediana": 180.0,
-        "n": 15
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-08-23",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-24",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-25",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-26",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-27",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-28",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-29",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-30",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-08-31",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-09-01",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-09-02",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-09-03",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-09-04",
-          "mediana": 180.0
-        },
-        {
-          "fecha": "2026-09-05",
-          "mediana": 180.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "140 USD INVERSOR MARCA \"TATALIKEN\" DE. (   24 V ) Y 4000 W PICO",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-24-v-y-4000-w-pico-56268741",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor 12v-110v onda sonoudial pura 4000W",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-12v-110v-onda-sonoudial-pura-4000w-57153402",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor tataliken 12 v 4000 w",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-12-v-4000-w-56820966",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "175 USD Inversor Tataliken de 12V 4000W",
-          "precio": 175.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-57091109",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
-          "precio": 178.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
-          "dias": null
-        }
-      ]
-    },
     {
       "id": 1778102582909,
       "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
@@ -146,10 +29,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-08-23",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-08-24",
           "mediana": 90.0
         },
@@ -199,6 +78,10 @@
         },
         {
           "fecha": "2026-09-05",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-06",
           "mediana": 82.5
         }
       ],
@@ -243,6 +126,64 @@
           "titulo": "75 USD Antorcha FEMEROL para soldadura",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/antorcha-femerol-para-soldadura-56521672",
+          "dias": null
+        }
+      ]
+    },
+    {
+      "id": 1788626436047,
+      "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
+      "tuPrecio": 170.0,
+      "mercado": {
+        "min": 100.0,
+        "mediana": 170.0,
+        "n": 5
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-09-06",
+          "mediana": 170.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57214908",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57144336",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor 3500W Tataliken [170]",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-3500w-tataliken-170-57132969",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-3500w-57078348",
           "dias": null
         }
       ]
