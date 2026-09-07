@@ -1748,7 +1748,10 @@
     </div>
     <div class="grid-2" style="margin-top:10px">
       <div class="form-group"><label class="form-label" for="pedit-stock">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
-      <div class="form-group"><label class="form-label" for="pedit-cat">Categoría</label><select class="form-select" id="pedit-cat"></select></div>
+      <div class="grid-2" style="gap:8px">
+        <div class="form-group" style="margin:0"><label class="form-label" for="pedit-cat">Categoría</label><select class="form-select" id="pedit-cat" onchange="apEditFillSubcats()"></select></div>
+        <div class="form-group" style="margin:0"><label class="form-label" for="pedit-subcat">Subcategoría</label><select class="form-select" id="pedit-subcat"><option value="">—</option></select></div>
+      </div>
     </div>
     <div class="grid-2" style="margin-top:10px">
       <div class="form-group"><label class="form-label" for="pedit-comision">Comisión</label><input class="form-input" id="pedit-comision" type="number" step="0.01"></div>
@@ -3312,7 +3315,8 @@ function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "
     (async()=>{ let n=0; for(const u of _huerf){ try{ if(await borrarImagenDeGitHub(u)) n++; }catch(e){} }
       if(n) showToast('🧹 '+n+' foto'+(n>1?'s':'')+' del producto borrada'+(n>1?'s':'')+' del repo'); })();
   } }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); }
+  apEditFillSubcats(p.subcategoria); const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
     ? p.imagenes.slice()
@@ -3425,6 +3429,25 @@ function apDuplicar(id){
   apEdit(String(copia.id)); // abrir la copia para ajustar nombre/precio/foto
   showToast('📄 Producto duplicado','Ajusta el nombre y guarda; luego "Actualizar tienda"');
 }
+// Las subcategorías del modal de editar. Cambiar de categoría tiene que
+// recargarlas y soltar la anterior: la de la categoría vieja no existe en la
+// nueva, y si se quedara pegada el producto acabaría en un chip que en su
+// categoría no está —igual que le pasaba a la tira de la tienda—.
+function apEditFillSubcats(seleccion){
+  const cat=$('#pedit-cat') && $('#pedit-cat').value;
+  const sub=$('#pedit-subcat'); if(!sub) return;
+  const map=(SUBCATS && !Array.isArray(SUBCATS))?SUBCATS:{};
+  let subs = map[cat] || map[(cat||'').toUpperCase()] || [];
+  if(!subs.length){ const k=Object.keys(map).find(x=>norm(x)===norm(cat)); if(k) subs=map[k]; }
+  // Si el producto ya trae una subcategoría que no está en la lista, se añade
+  // igual: es un dato real del catálogo y borrarlo al guardar sería perderlo
+  // sin que nadie lo pidiera.
+  const actual=String(seleccion||'').trim();
+  const lista=(subs||[]).slice();
+  if(actual && !lista.some(x=>norm(x)===norm(actual))) lista.unshift(actual);
+  sub.innerHTML='<option value="">—</option>'+lista.map(x=>`<option value="${esc(x)}"${norm(x)===norm(actual)?' selected':''}>${esc(x)}</option>`).join('');
+}
+
 async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
   const nuevoPrecio=Number($('#pedit-precio').value);
   if(!(nuevoPrecio>0)){ showToast('❌ El precio debe ser mayor a 0'); return; }
@@ -3435,6 +3458,8 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   p.descuento = (orig>0 && orig>p.precioActual) ? Math.round((orig-p.precioActual)/orig*100) : 0;
   p.stock=Math.max(0,Number($('#pedit-stock').value)||0);
   p.categoria=$('#pedit-cat').value||p.categoria;
+  const _sub=($('#pedit-subcat') && $('#pedit-subcat').value || '').trim();
+  if(_sub) p.subcategoria=_sub; else delete p.subcategoria;
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
   p.descripcion=$('#pedit-desc').value;
   // Solo se guarda cuando es MN: en USD el campo no existe, que es como
@@ -3847,7 +3872,12 @@ function renderVentas(){
       g=g||0;
       const mon=(it.comisionMoneda||prod.comisionMoneda||'USD');
       if(mon==='MN') ganMN+=g; else ganUSD+=g;
-      if(nm) comisPorProd[nm]=(comisPorProd[nm]||0)+g;
+      // Por producto también hay que separar: hay productos cuya comisión se
+      // cobra en pesos, y sumarla con las de dólares daba una lista donde 300
+      // MN se leían como $300. El total de arriba ya lo separaba; esta lista
+      // no, y es la que dice qué producto deja más.
+      if(nm){ const r=comisPorProd[nm]||(comisPorProd[nm]={usd:0,mn:0});
+              r[mon==='MN'?'mn':'usd']+=g; }
     });
   });
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
@@ -3856,8 +3886,9 @@ function renderVentas(){
   const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:18px">${i===0?'🏆':'📦'}</div><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--o);font-weight:800">${q} uds</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle aún.</div>`;
   // comisiones por producto
-  const comisArr=Object.entries(comisPorProd).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${money(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
+  const comisArr=Object.entries(comisPorProd).filter(([,c])=>c.usd>0||c.mn>0)
+    .sort((a,b)=>(b[1].usd-a[1].usd)||(b[1].mn-a[1].mn)).slice(0,8);
+  $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${dosMonedas(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
   // Filtro del historial: texto (producto/cliente) + periodo, con total del periodo
   const q = norm($('#ventas-q') && $('#ventas-q').value);
   const per = ($('#ventas-periodo') && $('#ventas-periodo').value) || 'all';
@@ -6008,7 +6039,7 @@ window.moneyP=moneyP; window.esMN=esMN;
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
-window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
+window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditFillSubcats=apEditFillSubcats; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
