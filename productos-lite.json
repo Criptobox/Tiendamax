@@ -10080,5 +10080,127 @@
       "1× Inyector Gigabit PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
       "1× Guía de inicio rápido"
     ]
+  },
+  {
+    "id": 1788797590930,
+    "nombre": "📡Mikrotik lhg 5ax",
+    "imagen": "https://tiendamax.org/imagenes/img_1788797588660.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788797588660.webp",
+      "https://tiendamax.org/imagenes/img_1788797589882.webp"
+    ],
+    "precioActual": 240,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "Wi‑Fi 6 en 5 GHz",
+      "Antena parabólica de 24",
+      "5 dBi",
+      "1 puerto Gigabit Ethernet",
+      "2x2 MIMO",
+      "PoE 802.3af/at"
+    ],
+    "fechaAgregado": "2026-09-07T16:13:10.930Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MikroTik"
+      },
+      {
+        "k": "Modelo",
+        "v": "LHG 5 ax",
+        "nota": "RBLHG-5axD"
+      },
+      {
+        "k": "Estándar Inalámbrico",
+        "v": "Wi-Fi 6",
+        "nota": "802.11a/n/ac/ax en 5 GHz, Dual Chain"
+      },
+      {
+        "k": "Ganancia de Antena",
+        "v": "24.5 dBi",
+        "nota": "Reflector de rejilla tipo panel de abeja"
+      },
+      {
+        "k": "Apertura de Haz",
+        "v": "7°"
+      },
+      {
+        "k": "Procesador",
+        "v": "CPU ARM Dual-Core de última generación",
+        "nota": "800 MHz"
+      },
+      {
+        "k": "Memoria RAM",
+        "v": "512 MB"
+      },
+      {
+        "k": "Almacenamiento",
+        "v": "128 MB NAND"
+      },
+      {
+        "k": "Puertos de Red",
+        "v": "1× puerto Gigabit Ethernet",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Alimentación y PoE",
+        "v": "PoE-In compatible con 802.3af/at y PoE Pasivo",
+        "nota": "12V – 57V"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "MikroTik RouterOS v7",
+        "nota": "Licencia Nivel 3"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Tecnología Wi-Fi 6 (802.11ax) en 5 GHz",
+        "d": "incorpora modulación avanzada 1024-QAM y mayor eficiencia de canal, logrando enlaces inalámbricos mucho más veloces, estables y con latencia ultrabaja frente a generaciones anteriores."
+      },
+      {
+        "d": "Diseño de integración directa (Light Head Grid): el radio transmisor está integrado físicamente en el cabezal alimentador de la antena, eliminando cables coaxiales y evitando cualquier tipo de pérdida por atenuación de RF."
+      },
+      {
+        "t": "Estructura de rejilla aerodinámica",
+        "d": "chasis de malla microperforada con patrón hexagonal que deja pasar el viento libremente, minimizando las vibraciones y desalineaciones en torres altas o zonas costeras con fuertes ráfagas."
+      },
+      {
+        "t": "Puerto Gigabit Ethernet",
+        "d": "aprovecha plenamente el rendimiento de datos que entrega el protocolo 802.11ax sin generar cuellos de botella por cable."
+      },
+      {
+        "t": "Alimentación PoE versátil",
+        "d": "admite tanto PoE Pasivo como el estándar industrial 802.3af/at en un amplio rango de voltaje (12V a 57V), facilitando su conexión a switches PoE o inyectores tradicionales."
+      },
+      {
+        "t": "RouterOS v7 avanzado",
+        "d": "control profesional del ancho de banda, firewall robusto, herramientas de análisis espectral en vivo, diagnósticos de enlace milimétricos y protocolos propietarios de MikroTik."
+      }
+    ],
+    "idealPara": [
+      "Enlaces inalámbricos Punto a Punto (PtP) de media y larga distancia de alta velocidad para unir sucursales, fincas o almacenes.",
+      "Equipo cliente (CPE) de alto rendimiento en redes WISP de 5 GHz sobre entornos congestionados o distancias considerables.",
+      "Instalación en torres elevadas, azoteas y mástiles expuestos a vientos fuertes donde las antenas de plato sólido sufren descalibración.",
+      "Troncales de transporte de datos y transmisión masiva de video para sistemas de cámaras de seguridad IP."
+    ],
+    "incluye": [
+      "1× Radio / Alimentador central MikroTik LHG 5 ax",
+      "1× Reflector de rejilla metálica (Grid) con estructura de ensamblaje",
+      "1× Inyector Gigabit PoE",
+      "1× Adaptador de corriente (24V, 0.8A)",
+      "2× Abrazaderas metálicas de sujeción para mástil (K-LHG mount kit)",
+      "1× Guía de inicio rápido"
+    ]
   }
 ]
