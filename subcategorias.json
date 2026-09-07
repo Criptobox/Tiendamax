@@ -1,8 +1,10 @@
 {
   "WIFI": [
     "ROUTERS",
+    "ANTENAS Y CPE",
+    "REPETIDORES",
     "SWITCHES",
-    "ACCESORIOS"
+    "ACCESORIOS DE RED"
   ],
   "ENERGIA": [
     "BATERÍAS",
