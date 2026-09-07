@@ -198,6 +198,42 @@
   .pcard-info { flex:1; min-width:0; }
   .pcard-nm { font-size:15px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; letter-spacing:.3px; }
   .pcard-meta { font-size:14px; white-space:nowrap; color:#b9b9c2; font-weight:600; }
+  /* ── Elegir producto para una venta ──────────────────────────────────
+     Antes era un <select> con <optgroup>. En Android el desplegable nativo se
+     abre a pantalla completa, con un radio al lado de cada opción y el nombre
+     partido en tres líneas: no se parece en nada al resto del panel y cuesta
+     leerlo. Aquí van las mismas categorías como tira de chips y los productos
+     como tarjetas con su foto, que es como se ven en el resto del admin. */
+  .vp-cats { display:flex; gap:7px; overflow-x:auto; padding:2px 2px 9px; -ms-overflow-style:none; scrollbar-width:none; }
+  .vp-cats::-webkit-scrollbar { display:none; }
+  .vp-cat { flex:0 0 auto; padding:7px 13px; border-radius:999px; border:1px solid var(--border);
+            background:rgba(255,255,255,0.05); color:#c9c9d2; font-size:12.5px; font-weight:700;
+            white-space:nowrap; cursor:pointer; transition:background .15s, color .15s; }
+  .vp-cat:hover { background:rgba(255,255,255,0.09); }
+  .vp-cat.on { background:var(--o); border-color:var(--o); color:#fff; }
+  .vp-cat span { opacity:.6; margin-left:5px; font-weight:700; }
+  .vp-lista { max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:2px; }
+  .vp-card { display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border-radius:14px;
+             border:1px solid var(--border); background:rgba(255,255,255,0.035); color:inherit;
+             cursor:pointer; text-align:left; font:inherit; transition:background .15s, transform .1s; }
+  .vp-card:hover { background:rgba(255,107,53,0.09); border-color:rgba(255,107,53,0.35); }
+  .vp-card:active { transform:scale(.985); }
+  .vp-card.agotado .vp-thumb, .vp-card.agotado .vp-nm { opacity:.55; }
+  .vp-thumb { width:46px; height:46px; object-fit:cover; border-radius:11px; flex-shrink:0;
+              background:rgba(255,255,255,0.05); }
+  .vp-info { flex:1; min-width:0; }
+  .vp-nm { font-size:13.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vp-meta { font-size:12.5px; color:var(--muted); font-weight:600; margin-top:2px;
+             white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vp-precio { color:var(--o); font-weight:800; }
+  .vp-stock.bajo { color:var(--yellow); }
+  .vp-stock.cero { color:var(--red); font-weight:700; }
+  .vp-mas { width:34px; height:34px; flex-shrink:0; border-radius:11px; display:flex;
+            align-items:center; justify-content:center; font-size:19px; font-weight:700;
+            border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; }
+  .vp-card:hover .vp-mas { background:var(--o); border-color:var(--o); }
+  .vp-mas.encart { background:var(--green); border-color:var(--green); font-size:14px; font-weight:800; }
+  .vp-vacio { padding:18px; text-align:center; color:var(--muted); font-size:12.5px; }
   .pcard-comm { font-size:13px; margin-top:3px; color:#d9d9e0; }
   .pcard-comm b { display:block; color:var(--green); font-size:14px; font-weight:800; }
   .pcard-acts { display:flex; gap:7px; flex-shrink:0; align-self:flex-start; }
@@ -1301,11 +1337,13 @@
         <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
         <div class="section">
           <h3>⚡ Registrar venta</h3>
-          <!-- Lista desplegable en vez de buscador: agrupada por categoría, se ve
-               todo el catálogo de un vistazo y se elige con un toque. Escribir el
-               nombre obligaba a acordarse de cómo estaba escrito cada producto. -->
-          <div class="form-group"><label class="form-label" for="venta-producto">Producto</label>
-            <select class="form-select" id="venta-producto" onchange="ventaAddSel()"></select>
+          <!-- Elegir el producto con un toque, sin escribir el nombre: la tira de
+               arriba filtra por categoría y abajo salen las tarjetas con su foto,
+               precio y stock. Tocar una la agrega a la venta. -->
+          <div class="form-group">
+            <label class="form-label">Producto</label>
+            <div class="vp-cats" id="venta-cats"></div>
+            <div class="vp-lista" id="venta-lista"></div>
           </div>
           <div id="venta-cart" style="margin-top:12px"></div>
           <div id="venta-total" style="margin-top:8px"></div>
@@ -2525,35 +2563,48 @@ function fileName(input, spanId, def){
 }
 /* ============ Registrar venta (usa registrarVentaPedido del motor) ============ */
 let VENTA_CART=[];
-// El desplegable se rellena aquí y no en el HTML: el catálogo cambia (altas,
-// bajas, stock) y una lista escrita a mano se queda vieja sin avisar.
-function ventaLlenarSelect(){
-  const sel=$('#venta-producto'); if(!sel) return;
-  const previo=sel.value;
+// Categoría elegida en la tira ('' = todas).
+let VENTA_CAT = '';
+// El selector se arma aquí y no en el HTML: el catálogo cambia (altas, bajas,
+// stock) y una lista escrita a mano se queda vieja sin avisar.
+function ventaRenderPicker(){
+  const cats=$('#venta-cats'), lista=$('#venta-lista');
+  if(!cats || !lista) return;
   const porCat={};
   [...PRODUCTOS].sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es'))
     .forEach(p=>{ const c=String(p.categoria||'Sin categoría'); (porCat[c]=porCat[c]||[]).push(p); });
-  const cats=Object.keys(porCat).sort((a,b)=>a.localeCompare(b,'es'));
-  sel.innerHTML='<option value="">Elige un producto…</option>'+cats.map(c=>{
-    const opts=porCat[c].map(p=>{
-      const st=Number(p.stock)||0;
-      // Los agotados se dejan a la vista y se pueden vender: a veces la venta es
-      // de algo que acaba de entrar y el stock del panel va por detrás. Se avisa
-      // en la etiqueta para que no pase inadvertido.
-      const marca = st<=0 ? ' · SIN STOCK' : ' · '+st+' u.';
-      return `<option value="${esc(String(p.id))}">${esc(p.nombre||'')} — ${esc(moneyP(p))}${marca}</option>`;
-    }).join('');
-    return `<optgroup label="${esc(c)} (${porCat[c].length})">${opts}</optgroup>`;
-  }).join('');
-  // Si el producto elegido sigue existiendo, no se pierde la selección al
-  // repintar (renderVentas() se llama después de cada venta).
-  if(previo && sel.querySelector(`option[value="${CSS.escape(previo)}"]`)) sel.value=previo;
+  const nombres=Object.keys(porCat).sort((a,b)=>a.localeCompare(b,'es'));
+  // Si la categoría elegida desaparece del catálogo, se vuelve a Todas en vez
+  // de dejar la lista vacía sin explicación.
+  if(VENTA_CAT && !porCat[VENTA_CAT]) VENTA_CAT='';
+
+  const chip=(valor,texto,n)=>`<button type="button" class="vp-cat${VENTA_CAT===valor?' on':''}" onclick="ventaCat('${escJsAttr(valor)}')">${esc(texto)}<span>${n}</span></button>`;
+  cats.innerHTML = chip('','Todas',PRODUCTOS.length)
+    + nombres.map(c=>chip(c,c,porCat[c].length)).join('');
+
+  const visibles = VENTA_CAT ? porCat[VENTA_CAT] : nombres.reduce((a,c)=>a.concat(porCat[c]),[]);
+  lista.innerHTML = visibles.length ? visibles.map(p=>{
+    const st=Number(p.stock)||0;
+    // Los agotados se dejan a la vista y se pueden vender: a veces la venta es
+    // de algo que acaba de entrar y el stock del panel va por detrás. Se marcan
+    // para que no pase inadvertido.
+    const clase = st<=0 ? 'cero' : (st<=3 ? 'bajo' : '');
+    const stockTxt = st<=0 ? 'Sin stock' : st+' u.';
+    const enCart = VENTA_CART.find(x=>String(x.id)===String(p.id));
+    const img = p.imagen
+      ? `<img class="vp-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+      : `<div class="vp-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px">${esc(emojiCat(p.categoria))}</div>`;
+    return `<button type="button" class="vp-card${st<=0?' agotado':''}" onclick="ventaAdd('${escJsAttr(String(p.id))}')" title="${esc(p.nombre||'')}">
+      ${img}
+      <div class="vp-info">
+        <div class="vp-nm">${esc(p.nombre||'')}</div>
+        <div class="vp-meta"><span class="vp-precio">${esc(moneyP(p))}</span> · <span class="vp-stock ${clase}">${stockTxt}</span></div>
+      </div>
+      <div class="vp-mas${enCart?' encart':''}">${enCart?('×'+enCart.cantidad):'+'}</div>
+    </button>`;
+  }).join('') : '<div class="vp-vacio">No hay productos en esta categoría.</div>';
 }
-function ventaAddSel(){
-  const sel=$('#venta-producto'); if(!sel||!sel.value) return;
-  ventaAdd(sel.value);
-  sel.value='';   // listo para el siguiente
-}
+function ventaCat(c){ VENTA_CAT=c||''; ventaRenderPicker(); const l=$('#venta-lista'); if(l) l.scrollTop=0; }
 function ventaAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p)return;
   const ex=VENTA_CART.find(x=>String(x.id)===String(id));
@@ -2564,9 +2615,10 @@ function ventaAdd(id){
                      comision:com, comisionOriginal:com, comisionMoneda:p.comisionMoneda||'USD',cantidad:1});
   }
   ventaRenderCart();
+  ventaRenderPicker();   // la tarjeta pasa a marcar cuántas unidades van
 }
-function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==String(id)); ventaRenderCart(); }
-function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); }
+function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==String(id)); ventaRenderCart(); ventaRenderPicker(); }
+function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); ventaRenderPicker(); }
 // Rebajar la comisión: al cliente se le hace un descuento y ese dinero sale de
 // lo que gana el vendedor, no del precio del catálogo. Por eso se toca aquí, por
 // línea y solo en esta venta, sin alterar la comisión del producto.
@@ -2635,7 +2687,7 @@ function ventaRegistrar(){
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
-  VENTA_CART=[]; ventaRenderCart();
+  VENTA_CART=[]; ventaRenderCart(); ventaRenderPicker();
   if($('#venta-cliente')) $('#venta-cliente').value='';
   if($('#venta-tel')) $('#venta-tel').value='';
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
@@ -3779,7 +3831,7 @@ function renderRadar(){
 
 /* ============ VENTAS ============ */
 function renderVentas(){
-  ventaLlenarSelect();
+  ventaRenderPicker();
   const total=sumaMonedas(VENTAS, ventaTotales);
   const hoy=hoyKey(); let tHoy={usd:0,mn:0},nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){const t=ventaTotales(v); tHoy.usd+=t.usd; tHoy.mn+=t.mn; nHoy++;}});
   // ganancias (comisiones) separadas por moneda: USD y MN
@@ -5962,7 +6014,7 @@ window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=com
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
 window.comboFoto=comboFoto; window.comboFotoQuitar=comboFotoQuitar;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
-window.ventaAdd=ventaAdd; window.ventaAddSel=ventaAddSel; window.ventaCartComision=ventaCartComision; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
+window.ventaAdd=ventaAdd; window.ventaCat=ventaCat; window.ventaCartComision=ventaCartComision; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
 
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;

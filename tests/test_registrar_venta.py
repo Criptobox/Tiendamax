@@ -2,10 +2,15 @@
 
 Dos cosas que se rompen en silencio si alguien toca esta pantalla:
 
-1. La lista de productos es un <select> con un <optgroup> por categoría, y se
-   rellena desde PRODUCTOS cada vez que se pinta la pestaña. Escrita a mano en
-   el HTML se quedaría vieja en cuanto se den de alta o de baja productos, y
-   nadie lo notaría: el desplegable seguiría abriéndose, solo que sin lo nuevo.
+1. Los productos se eligen tocando una tarjeta, filtrando con la tira de
+   categorías, y todo se arma desde PRODUCTOS cada vez que se pinta la pestaña.
+   Escrito a mano en el HTML se quedaría viejo en cuanto se den de alta o de
+   baja productos, y nadie lo notaría: la lista seguiría apareciendo, solo que
+   sin lo nuevo.
+
+   No puede volver a ser un <select>: en Android el desplegable nativo se abre
+   a pantalla completa, con un radio al lado de cada opción y el nombre partido
+   en tres líneas. Funcionaba, pero no había forma de leerlo.
 
 2. La comisión de cada línea se puede rebajar ahí mismo: cuando al cliente se
    le hace un descuento, ese dinero sale de lo que gana el vendedor, no del
@@ -27,18 +32,20 @@ ADMIN = RAIZ / "admin.html"
 MOTOR = RAIZ / "js" / "src" / "tm-ui.src.js"
 
 
-class DesplegableTest(unittest.TestCase):
+class SelectorDeProductoTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.html = ADMIN.read_text(encoding="utf-8")
+        ini = cls.html.index("function ventaRenderPicker(")
+        cls.picker = cls.html[ini:cls.html.index("function ventaAdd(", ini)]
 
-    def test_el_formulario_usa_un_desplegable_y_no_un_buscador(self):
-        self.assertRegex(
-            self.html, r'<select[^>]*id="venta-producto"',
-            "el formulario de registrar venta perdió el desplegable de "
-            "productos.",
-        )
+    def test_los_productos_se_eligen_en_tarjetas_y_no_escribiendo(self):
+        self.assertIn('id="venta-lista"', self.html,
+                      "el formulario de registrar venta perdió la lista de "
+                      "tarjetas.")
+        self.assertIn("vp-card", self.picker,
+                      "los productos ya no se pintan como tarjetas.")
         for resto in ("venta-buscar", "venta-resultados", "ventaBuscar"):
             self.assertNotIn(
                 resto, self.html,
@@ -46,21 +53,50 @@ class DesplegableTest(unittest.TestCase):
                 "se lee como si aún hiciera algo.",
             )
 
-    def test_las_opciones_van_agrupadas_por_categoria(self):
-        cuerpo = self.html[self.html.index("function ventaLlenarSelect("):]
-        cuerpo = cuerpo[:cuerpo.index("\nfunction ")]
-        self.assertIn("optgroup", cuerpo,
-                      "las opciones ya no se agrupan: sin <optgroup> el "
-                      "desplegable es una lista de 130 nombres seguidos.")
-        self.assertIn("categoria", cuerpo,
-                      "el agrupado dejó de mirar la categoría del producto.")
+    def test_no_vuelve_al_desplegable_nativo(self):
+        """Se veía mal en el móvil, que es donde se registran las ventas."""
+        self.assertNotRegex(
+            self.html, r'<select[^>]*id="venta-producto"',
+            "volvió el <select> nativo: en Android se abre a pantalla completa "
+            "con un radio por opción y los nombres partidos en tres líneas.",
+        )
 
-    def test_el_desplegable_se_rellena_al_pintar_la_pestana(self):
+    def test_se_filtra_por_categoria(self):
+        self.assertIn('id="venta-cats"', self.html,
+                      "desapareció la tira de categorías: con 138 productos "
+                      "seguidos hay que bajar a mano hasta encontrar el que "
+                      "se vendió.")
+        self.assertIn("categoria", self.picker,
+                      "el filtro dejó de mirar la categoría del producto.")
+        self.assertIn("vp-cat", self.picker,
+                      "las categorías ya no se pintan como chips.")
+
+    def test_la_tarjeta_dice_precio_y_stock(self):
+        for dato, porque in (
+            ("moneyP(p)", "sin el precio hay que abrir el producto para saber "
+                          "cuánto cobrar"),
+            ("p.stock", "sin el stock se vende a ciegas lo que ya no queda"),
+        ):
+            self.assertIn(dato, self.picker, porque)
+
+    def test_el_selector_se_rearma_al_pintar_la_pestana(self):
         cuerpo = self.html[self.html.index("function renderVentas("):]
         cuerpo = cuerpo[:cuerpo.index("\nfunction ")]
-        self.assertIn("ventaLlenarSelect()", cuerpo,
-                      "renderVentas() ya no rellena el desplegable: se queda "
-                      "con el catálogo de cuando se cargó la página.")
+        self.assertIn("ventaRenderPicker()", cuerpo,
+                      "renderVentas() ya no rearma el selector: se queda con "
+                      "el catálogo de cuando se cargó la página.")
+
+    def test_la_tarjeta_marca_lo_que_ya_va_en_la_venta(self):
+        """Tocar dos veces el mismo producto suma una unidad. Sin marca en la
+        tarjeta no hay forma de saber si el primer toque entró."""
+        self.assertIn("VENTA_CART.find", self.picker,
+                      "la tarjeta no mira el carrito, así que no puede decir "
+                      "cuántas unidades van.")
+        cuerpo = self.html[self.html.index("function ventaAdd("):]
+        cuerpo = cuerpo[:cuerpo.index("\nfunction ")]
+        self.assertIn("ventaRenderPicker()", cuerpo,
+                      "agregar no repinta las tarjetas: la marca se queda "
+                      "en el número anterior.")
 
 
 class ComisionRebajableTest(unittest.TestCase):
