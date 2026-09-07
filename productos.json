@@ -1,7 +1,7 @@
 [
   {
     "id": 1778104115783,
-    "nombre": "Batería Must Tipo LiFePO4",
+    "nombre": "🔋Batería Must Tipo LiFePO4",
     "precioActual": 300,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1778104115783.webp",
@@ -24,7 +24,6 @@
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
     "radar": true,
     "almacenId": "alm_1783425091823",
-    "descripcion": "Batería MUST tipo LiFePO4 (litio hierro fosfato), modelo LP15-12100, 12.8V y 100Ah (1280Wh). Más segura y con mayor vida útil que las tradicionales de plomo-ácido. Voltaje de carga máx. 14.6V, corriente de carga máx. 50A, descarga máx. 100A. Ideal para sistemas solares e inversores.",
     "ficha": [
       {
         "k": "Marca",
@@ -71,6 +70,10 @@
       "1x Batería MUST LiFePO4 12.8V 100Ah",
       "1x Tapas protectoras de bornes",
       "1x Ficha técnica del fabricante"
+    ],
+    "descripcion": "Batería MUST tipo LiFePO4 (litio hierro fosfato), modelo LP15-12100, 12.8V y 100Ah (1280Wh). Más segura y con mayor vida útil que las tradicionales de plomo-ácido. Voltaje de carga máx. 14.6V, corriente de carga máx. 50A, descarga máx. 100A. Ideal para sistemas solares e inversores.",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778104115783.webp"
     ]
   },
   {
@@ -1061,7 +1064,7 @@
   },
   {
     "id": 1778104599386,
-    "nombre": "Inversor Solar Híbrido Inteligente MPPT de 3.6KW",
+    "nombre": "📟Inversor Solar Híbrido Inteligente MPPT de 3.6KW",
     "precioActual": 550,
     "imagen": "https://tiendamax.org/imagenes/img_1778104599386.webp",
     "categoria": "ENERGIA",
@@ -1082,7 +1085,6 @@
     ],
     "seoTitle": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW | TiendaMax",
     "seoDescription": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía…",
-    "descripcion": "Inversor solar híbrido inteligente PowMr, 3.6KW, MPPT de 120A integrado, entrada de 24V DC a salida de 110V AC. Potencia máxima de paneles solares 4200W, voltaje máximo de entrada 500V. Doble salida (on-grid/off-grid), compatible con baterías de plomo-ácido y litio de 24V. Pantalla con indicadores de carga solar y de batería en tiempo real.",
     "ficha": [
       {
         "k": "Marca",
@@ -1134,6 +1136,12 @@
       "1x Inversor Solar Híbrido PowMr 3.6KW 24V",
       "1x Terminales y conectores de montaje",
       "1x Manual técnico de instalación"
+    ],
+    "descripcion": "Inversor solar híbrido inteligente PowMr, 3.6KW, MPPT de 120A integrado, entrada de 24V DC a salida de 110V AC. Potencia máxima de paneles solares 4200W, voltaje máximo de entrada 500V. Doble salida (on-grid/off-grid), compatible con baterías de plomo-ácido y litio de 24V. Pantalla con indicadores de carga solar y de batería en tiempo real.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778104599386.webp"
     ]
   },
   {
@@ -1273,7 +1281,7 @@
   },
   {
     "id": 1778104924836,
-    "nombre": "⚡ Generador Solar Portátil BLUETTI AC180",
+    "nombre": "🔋 Generador Solar Portátil BLUETTI AC180",
     "precioActual": 700,
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
@@ -1293,7 +1301,6 @@
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
     "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
-    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -1374,11 +1381,12 @@
       "1× Cable de carga solar (MC4 a DC)",
       "1× Tornillo de conexión a tierra",
       "1× Manual de usuario y tarjeta de garantía"
-    ]
+    ],
+    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto."
   },
   {
     "id": 1778104985977,
-    "nombre": "BLUETTI AC 180P",
+    "nombre": "🔋BLUETTI AC 180P",
     "precioActual": 695,
     "imagen": "https://tiendamax.org/imagenes/img_1778104985977.webp",
     "categoria": "ENERGIA",
@@ -1396,7 +1404,6 @@
     ],
     "seoTitle": "BLUETTI AC 180P en Cuba | TiendaMax",
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…",
-    "descripcion": "Estación de energía portátil BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga rápida. Pantalla con indicador de batería, entrada y salida de energía en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado).",
     "ficha": [
       {
         "k": "Marca",
@@ -1447,6 +1454,12 @@
       "1x Generador Solar BLUETTI AC180P",
       "1x Cable de carga AC",
       "1x Cable de carga solar MC4"
+    ],
+    "descripcion": "Estación de energía portátil BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga rápida. Pantalla con indicador de batería, entrada y salida de energía en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado).",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778104985977.webp"
     ]
   },
   {
@@ -3761,7 +3774,7 @@
   },
   {
     "id": 1779208523952,
-    "nombre": "Controlador Solar de 60 Amp POWMR M60 ULTRA",
+    "nombre": "📟Controlador Solar de 60 Amp POWMR M60 ULTRA",
     "precioActual": 180,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1779208523952.webp",
@@ -3823,7 +3836,10 @@
       "1x Controlador MPPT PowMr 60A",
       "1x Manual de usuario"
     ],
-    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real."
+    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1779208523952.webp"
+    ]
   },
   {
     "id": 1779562612951,
@@ -5633,7 +5649,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5650,7 +5666,6 @@
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "TRANSFERENCIA AUTOMÁTICA O MANUAL en Cuba | TiendaMax",
     "seoDescription": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red…",
-    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz.",
     "ficha": [
       {
         "k": "Marca",
@@ -5694,7 +5709,8 @@
     "incluye": [
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
-    ]
+    ],
+    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz."
   },
   {
     "id": 1782535594832,
@@ -8850,7 +8866,7 @@
   },
   {
     "id": 1787079480177,
-    "nombre": "🌐 Controlador de Carga Solar MPPT Boost 1200W",
+    "nombre": "📟 Controlador de Carga Solar MPPT Boost 1200W",
     "imagen": "https://tiendamax.org/imagenes/img_1787079474093.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787079474093.webp",
@@ -8877,7 +8893,6 @@
       "📟 Pantalla Digital a Color y Botón Set Frontal"
     ],
     "fechaAgregado": "2026-08-18T18:58:00.178Z",
-    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
     "seoTitle": "Controlador de Carga Solar MPPT Boost 1200W | TiendaMax",
     "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
     "ficha": [
@@ -8949,7 +8964,8 @@
     "incluye": [
       "1× Controlador de Carga Solar MPPT Boost 1200W",
       "1× Manual de usuario e instrucciones de configuración"
-    ]
+    ],
+    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal."
   },
   {
     "id": 1787157254207,
