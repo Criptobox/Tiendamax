@@ -1793,7 +1793,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778214214360.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 43,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1802,7 +1802,6 @@
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
     "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812. 1L | TiendaMax",
     "seoDescription": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA",
-    "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro.",
     "ficha": [
       {
         "k": "Marca",
@@ -1829,7 +1828,8 @@
     ],
     "specs": [
       "Viscosidad (SAE): 10W-40"
-    ]
+    ],
+    "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro."
   },
   {
     "id": 1778336613589,
@@ -5475,7 +5475,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -5493,7 +5493,6 @@
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "AURICULARES GAMING INALÁMBRICO NUBWO en Cuba | TiendaMax",
     "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…",
-    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.",
     "ficha": [
       {
         "k": "Marca",
@@ -5562,7 +5561,8 @@
       "Jugadores competitivos de PC, PS4 y PS5 que requieren audio inalámbrico en tiempo real sin desfase ni retraso en el juego.",
       "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
       "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
-    ]
+    ],
+    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego."
   },
   {
     "id": 1782439525089,
