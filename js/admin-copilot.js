@@ -215,6 +215,9 @@ window.tmCopilotOnVenta = function(items){
 // Etiqueta legible del tipo de empujón
 function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t==='post_ready' ? 'publicación' : t; }
 function money(v){ return '$' + Number(v||0).toLocaleString('es-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+// Los pesos van sin decimales y con su etiqueta: "$5,000 MN" no se confunde con
+// dólares ni cuando está al lado de una cifra en USD.
+function moneyMN(v){ return '$' + Number(v||0).toLocaleString('es-US', { maximumFractionDigits: 0 }) + ' MN'; }
 /* Para las tarjetas de KPI, que miden ~90px: ahí "$123,537.00" se partía en
    "$123,537." y "00". En un titular el orden de magnitud es lo que importa;
    la cifra exacta sigue entera en el diagnóstico de abajo. */
@@ -727,15 +730,28 @@ function _lineasDeVenta(){
       // entraba como 1.500 USD y el total de ganancia salía mayor que el de
       // ventas (medido: $3.055 ganados sobre $750 vendidos).
       const monedaCom = String(it.comisionMoneda || 'USD').toUpperCase();
-      let gan = num(it.ganancia != null ? it.ganancia : it.comision);
-      if (monedaCom === 'MN'){ const t = _tasaMN(); gan = t > 0 ? gan / t : 0; }
+      const bruto = num(it.ganancia != null ? it.ganancia : it.comision);
+      let gan = bruto;
+      if (monedaCom === 'MN'){ const t = _tasaMN(); gan = t > 0 ? bruto / t : 0; }
       out.push({
         ts,
         pid: String(it.productoId != null ? it.productoId : ''),
         nombre: it.producto || '',
         cantidad: num(it.cantidad) || 1,
-        total: num(it.total != null ? it.total : it.precio),
+        // El importe se trata igual que la ganancia: convertido a USD para
+        // poder sumar y ordenar, y los pesos guardados aparte. Sumarlos crudos
+        // decía "$5.300 vendidos" cuando fueron $300 y 5.000 MN.
+        total: (()=>{ const b = num(it.total != null ? it.total : it.precio);
+                      if (String(it.moneda || 'USD').toUpperCase() !== 'MN') return b;
+                      const t = _tasaMN(); return t > 0 ? b / t : 0; })(),
+        totalMN: String(it.moneda || 'USD').toUpperCase() === 'MN'
+                 ? num(it.total != null ? it.total : it.precio) : 0,
+        // `ganancia` va convertida a USD porque es con lo que se ORDENA: sin una
+        // moneda común no se puede decir qué producto deja más. `gananciaMN`
+        // guarda los pesos tal cual, que es lo que se cobró de verdad y lo que
+        // hay que enseñar: un equivalente en dólares se mueve con la tasa.
         ganancia: gan,
+        gananciaMN: monedaCom === 'MN' ? bruto : 0,
       });
     });
   });
@@ -753,14 +769,15 @@ function asesorMetricas(){
   const porId = {};
   lineas.forEach(l => {
     if (!l.pid) return;
-    const r = porId[l.pid] || (porId[l.pid] = { unidades:0, ingreso:0, ganancia:0, ultima:0, veces:0 });
-    r.unidades += l.cantidad; r.ingreso += l.total; r.ganancia += l.ganancia;
+    const r = porId[l.pid] || (porId[l.pid] = { unidades:0, ingreso:0, ingresoMN:0, ganancia:0, gananciaMN:0, ultima:0, veces:0 });
+    r.unidades += l.cantidad; r.ingreso += l.total; r.ingresoMN += l.totalMN;
+    r.ganancia += l.ganancia; r.gananciaMN += l.gananciaMN;
     r.veces++; if (l.ts > r.ultima) r.ultima = l.ts;
   });
 
   const filas = ps.map(p => {
     const id = String(p.id);
-    const v = porId[id] || { unidades:0, ingreso:0, ganancia:0, ultima:0, veces:0 };
+    const v = porId[id] || { unidades:0, ingreso:0, ingresoMN:0, ganancia:0, gananciaMN:0, ultima:0, veces:0 };
     const precio = num(p.precioActual);
     const stock = num(p.stock);
     const marg = _comisionUSD(p);
@@ -771,7 +788,9 @@ function asesorMetricas(){
       inmovilizado: precio * stock,
       vendidas: v.unidades,
       ingreso: v.ingreso,
+      ingresoMN: v.ingresoMN,
       ganancia: v.ganancia,
+      gananciaMN: v.gananciaMN,
       ultimaVenta: v.ultima,
       diasSinVender: v.ultima ? Math.floor((ahora - v.ultima) / 864e5) : null,
       vistas: num(vistas[id]),
@@ -820,6 +839,7 @@ function asesorMetricas(){
     .sort((a,b) => b.margenPct - a.margenPct);
 
   const ganancia30 = lineas.filter(l => l.ts > ahora - 30*864e5).reduce((s,l) => s + l.ganancia, 0);
+  const ganancia30MN = lineas.filter(l => l.ts > ahora - 30*864e5).reduce((s,l) => s + l.gananciaMN, 0);
   const ganancia30ant = lineas.filter(l => l.ts > ahora - 60*864e5 && l.ts <= ahora - 30*864e5).reduce((s,l) => s + l.ganancia, 0);
 
   return {
@@ -829,8 +849,10 @@ function asesorMetricas(){
     convWhats: totVistas > 0 ? (totWhats / totVistas) * 100 : 0,
     convVenta: totWhats > 0 ? (totVentas / totWhats) * 100 : 0,
     ingresoTotal: lineas.reduce((s,l) => s + l.total, 0),
+    ingresoTotalMN: lineas.reduce((s,l) => s + l.totalMN, 0),
     gananciaTotal: lineas.reduce((s,l) => s + l.ganancia, 0),
-    ganancia30, ganancia30ant,
+    gananciaTotalMN: lineas.reduce((s,l) => s + l.gananciaMN, 0),
+    ganancia30, ganancia30ant, ganancia30MN,
     // MEDIANA, no media: un solo producto con la comisión mal puesta movía la
     // media de 7% a 62% y volvía inútil el dato. La mediana lo aguanta.
     margenTipico: (() => {
@@ -988,9 +1010,12 @@ function asesorContexto(){
   const L = [];
   const top = arr => arr.slice(0,6);
   L.push(`DINERO: inventario ${money(m.capitalTotal)} a precio de venta, de los cuales ${money(m.capitalMuerto)} en ${m.muertos.length} productos sin rotación (>${ASESOR_MUERTO_DIAS} días o nunca vendidos).`);
-  L.push(`Ganancia acumulada ${money(m.gananciaTotal)} sobre ${money(m.ingresoTotal)} vendidos. Últimos 30 días ${money(m.ganancia30)} (30 previos ${money(m.ganancia30ant)}). Ticket medio ${money(m.ticketMedio)}. Margen típico (mediana) ${m.margenTipico.toFixed(1)}%.`);
+  // Las cifras van en USD porque es la moneda común con la que se comparan;
+  // entre paréntesis, cuánto de eso se cobró en pesos, que es el dato real.
+  const _enMN = (mn) => num(mn) > 0 ? ` (de los cuales ${moneyMN(mn)})` : '';
+  L.push(`Ganancia acumulada ${money(m.gananciaTotal)}${_enMN(m.gananciaTotalMN)} sobre ${money(m.ingresoTotal)}${_enMN(m.ingresoTotalMN)} vendidos. Últimos 30 días ${money(m.ganancia30)} (30 previos ${money(m.ganancia30ant)}). Ticket medio ${money(m.ticketMedio)}. Margen típico (mediana) ${m.margenTipico.toFixed(1)}%.`);
   L.push(`EMBUDO: ${m.totVistas} vistas → ${m.totWhats} clics WhatsApp (${m.convWhats.toFixed(1)}%) → ${m.totVentas} ventas.`);
-  if (m.rotando.length) L.push('LO QUE MÁS GANANCIA DEJA: ' + top(m.rotando).map(f=>`${f.p.nombre} (${f.vendidas} u, ${money(f.ganancia)} ganados, margen ${f.margenPct.toFixed(0)}%, stock ${f.stock})`).join(' · ') + '.');
+  if (m.rotando.length) L.push('LO QUE MÁS GANANCIA DEJA: ' + top(m.rotando).map(f=>`${f.p.nombre} (${f.vendidas} u, ${money(f.ganancia)}${num(f.gananciaMN)>0?' —'+moneyMN(f.gananciaMN)+' de ellos cobrados en pesos—':''} ganados, margen ${f.margenPct.toFixed(0)}%, stock ${f.stock})`).join(' · ') + '.');
   if (m.muertos.length) L.push('CAPITAL DORMIDO: ' + top(m.muertos).map(f=>`${f.p.nombre} (${money(f.inmovilizado)}, ${f.vendidas===0?'nunca vendido':f.diasSinVender+' días sin vender'}, stock ${f.stock})`).join(' · ') + '.');
   if (m.reponer.length) L.push('HAY QUE REPONER (vende y queda poco): ' + top(m.reponer).map(f=>`${f.p.nombre} (stock ${f.stock}, vendidas ${f.vendidas})`).join(' · ') + '.');
   if (m.noConvierten.length) L.push('MIRAN Y NO ESCRIBEN: ' + top(m.noConvierten).map(f=>`${f.p.nombre} (${f.vistas} vistas, 0 WhatsApp, ${money(f.precio)})`).join(' · ') + '.');
@@ -1016,7 +1041,7 @@ function renderAsesor(){
     <div class="tm-copilot-summary">
       <div class="tm-copilot-stat"><small>Inventario</small><b title="${money(m.capitalTotal)}">${moneyCorto(m.capitalTotal)}</b></div>
       <div class="tm-copilot-stat"><small>Parado</small><b style="color:${m.capitalMuerto>0?'#e74c3c':'#25d366'}">${pct(m.capitalMuerto,m.capitalTotal)}%</b></div>
-      <div class="tm-copilot-stat"><small>Ganancia 30d</small><b title="${money(m.ganancia30)}">${moneyCorto(m.ganancia30)}</b></div>
+      <div class="tm-copilot-stat"><small>Ganancia 30d</small><b title="${money(m.ganancia30)}${m.ganancia30MN>0?' · '+moneyMN(m.ganancia30MN)+' cobrados en pesos':''}">${moneyCorto(m.ganancia30)}${m.ganancia30MN>0?`<span style="display:block;font-size:10px;opacity:.7;font-weight:600">${moneyMN(m.ganancia30MN)}</span>`:''}</b></div>
       <div class="tm-copilot-stat"><small>Margen típico</small><b>${m.margenTipico.toFixed(0)}%</b></div>
     </div>`;
 
@@ -1027,12 +1052,21 @@ function renderAsesor(){
       <small style="display:block;margin-top:6px;opacity:.85"><b>→ ${esc(h.accion)}</b></small>
     </div>`).join('') : '<div class="tm-copilot-empty">Sin hallazgos: o todo está en orden, o falta historial de ventas para analizar.</div>';
 
-  const tabla = arr => arr.length ? `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">
-      <tr style="opacity:.6;text-align:left"><th style="padding:4px 6px">Producto</th><th>Stock</th><th>Vendidas</th><th>Ganancia</th><th>Margen</th></tr>
+  // La columna MN aparece solo cuando hay comisiones cobradas en pesos: en una
+  // tienda que factura en dólares sería una columna con un guion en cada fila.
+  // La de Ganancia sigue en USD porque es con lo que se ordena la tabla —para
+  // comparar productos hace falta una sola moneda—, pero al lado va lo que se
+  // cobró de verdad, sin pasar por una tasa que se mueve cada semana.
+  const tabla = arr => {
+    if (!arr.length) return '<div class="tm-copilot-empty">Sin datos todavía.</div>';
+    const hayMN = arr.slice(0,8).some(f => num(f.gananciaMN) > 0);
+    return `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">
+      <tr style="opacity:.6;text-align:left"><th style="padding:4px 6px">Producto</th><th>Stock</th><th>Vendidas</th><th>Ganancia</th>${hayMN?'<th>En MN</th>':''}<th>Margen</th></tr>
       ${arr.slice(0,8).map(f=>`<tr style="border-top:1px solid rgba(128,128,128,.15)">
         <td style="padding:4px 6px">${esc(f.p.nombre.slice(0,34))}</td><td>${f.stock}</td><td>${f.vendidas}</td>
-        <td>${money(f.ganancia)}</td><td>${f.margen>0?f.margenPct.toFixed(0)+'%':'—'}</td></tr>`).join('')}
-    </table></div>` : '<div class="tm-copilot-empty">Sin datos todavía.</div>';
+        <td>${money(f.ganancia)}</td>${hayMN?`<td>${num(f.gananciaMN)>0?moneyMN(f.gananciaMN):'—'}</td>`:''}<td>${f.margen>0?f.margenPct.toFixed(0)+'%':'—'}</td></tr>`).join('')}
+    </table></div>`;
+  };
 
   return `
     ${kpis}
@@ -1134,8 +1168,14 @@ function chatContexto(){
   const agotados = ps.filter(p=>num(p.stock)<=0);
   const bajos = ps.filter(p=>num(p.stock)>0&&num(p.stock)<=3);
   const cats = {}; ps.forEach(p=>{ const c=p.categoria||'General'; cats[c]=(cats[c]||0)+1; });
+  // `total` y `ganancia` de una venta son la parte en USD; los pesos van en
+  // totalMN/gananciaMN. Leer solo los primeros dejaba fuera, sin avisar, todo
+  // lo cobrado en moneda nacional, y la IA respondía con una tienda más chica
+  // de lo que es.
   const totalVendido = vs.reduce((s,v)=>s+num(v.total),0);
+  const totalVendidoMN = vs.reduce((s,v)=>s+num(v.totalMN),0);
   const ganancia = vs.reduce((s,v)=>s+num(v.ganancia!=null?v.ganancia:v.comision),0);
+  const gananciaMN = vs.reduce((s,v)=>s+num(v.gananciaMN),0);
   const hace30 = Date.now()-30*864e5;
   const ventas30 = vs.filter(v=>{ const t=v.id||Date.parse(v.fecha||0); return t>hace30; });
   const topStock = conStock.slice().sort((a,b)=>num(b.stock)-num(a.stock)).slice(0,10).map(p=>`${p.nombre} ($${num(p.precioActual)}, stock ${num(p.stock)}, ${p.categoria||'—'})`);
@@ -1146,7 +1186,7 @@ function chatContexto(){
     'Categorías: '+Object.entries(cats).map(([c,n])=>c+' '+n).join(', ')+'.',
     'Stock bajo (≤3): '+(bajos.map(p=>p.nombre).slice(0,12).join(', ')||'ninguno')+'.',
     'Agotados: '+(agotados.map(p=>p.nombre).slice(0,12).join(', ')||'ninguno')+'.',
-    'Ventas: '+vs.length+' registradas, $'+totalVendido.toFixed(2)+' vendido, $'+ganancia.toFixed(2)+' de comisión. Últimos 30 días: '+ventas30.length+' ventas.',
+    'Ventas: '+vs.length+' registradas, $'+totalVendido.toFixed(2)+' vendido'+(totalVendidoMN>0?' + '+moneyMN(totalVendidoMN):'')+', $'+ganancia.toFixed(2)+(gananciaMN>0?' + '+moneyMN(gananciaMN):'')+' de comisión. Últimos 30 días: '+ventas30.length+' ventas.',
     'Productos con más interés (vistas/WhatsApp): '+(topHot.join(' · ')||'sin datos aún')+'.',
     'Productos disponibles (muestra): '+topStock.join(' · ')+'.',
     '',

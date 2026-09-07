@@ -104,6 +104,45 @@ const ok = (c, m) => { if (!c) fallos.push(m); };
         'el importe exacto debe quedar en el title, no perderse al acortar');
 }
 
+// ── 3. Las dos monedas: convertidas para comparar, crudas para enseñar ───
+//
+// La comisión y el importe pueden estar en USD o en MN. Para ORDENAR productos
+// hace falta una moneda común —si no, uno con comisión en 1.500 MN parece 100
+// veces más rentable que otro de 12 USD—, así que se convierten con la tasa.
+// Pero lo convertido no se puede enseñar como si fuera lo cobrado: la tasa se
+// mueve cada semana y el dueño cobró pesos, no dólares. Por eso cada línea
+// guarda además la cifra en MN tal cual, y esa es la que va en la columna.
+//
+// Sin la conversión, sumar crudo daba disparates medidos en el catálogo real:
+// $3.055 de ganancia sobre $750 vendidos, y "$5.300 vendidos" cuando fueron
+// $300 y 5.000 MN.
+{
+    const l = SRC.match(/function _lineasDeVenta\(\)\{[\s\S]*?\n\}/);
+    ok(l, 'no encuentro _lineasDeVenta()');
+    const cuerpo = l ? l[0] : '';
+    ok(/comisionMoneda/.test(cuerpo) && /_tasaMN\(\)/.test(cuerpo),
+        'la ganancia en MN debe convertirse con la tasa antes de sumarse');
+    ok(/gananciaMN:/.test(cuerpo),
+        'falta gananciaMN: sin la cifra cruda solo queda el equivalente en '
+        + 'dólares, que se mueve con la tasa');
+    ok(/totalMN:/.test(cuerpo),
+        'falta totalMN: el importe en pesos se sumaba como si fueran dólares');
+    ok(/it\.moneda/.test(cuerpo),
+        'el importe se reparte por la moneda del PRECIO (it.moneda), no por la '
+        + 'de la comisión');
+
+    ok(/gananciaTotalMN:/.test(SRC) && /ingresoTotalMN:/.test(SRC),
+        'las métricas no exponen los totales en pesos');
+    ok(/const hayMN = /.test(SRC),
+        'la columna "En MN" tiene que aparecer solo cuando hay algo en pesos: '
+        + 'si no, es una columna con un guion en cada fila');
+    ok(/<th>En MN<\/th>/.test(SRC),
+        'falta la cabecera de la columna En MN en la tabla de rentabilidad');
+    ok(/function moneyMN\(/.test(SRC),
+        'falta moneyMN(): los pesos se escriben con su etiqueta para no '
+        + 'confundirlos con dólares');
+}
+
 if (fallos.length) {
     console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

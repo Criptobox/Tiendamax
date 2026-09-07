@@ -132,14 +132,48 @@ async function _revLoadImg(src) {
 }
 
 
+// El tono de fondo del anuncio sale de la categoría del producto, para que en
+// una lista de Revólico se distingan de un vistazo. El naranja quemado de antes
+// queda como respaldo: una categoría sin color en la tabla sigue saliendo como
+// siempre en vez de perder el fondo.
+const _REV_TONO_POR_DEFECTO = '#c0390a';
+function _revTonoCategoria(producto) {
+    const c = (typeof tmColorCategoria === 'function')
+        ? tmColorCategoria(producto && producto.categoria) : null;
+    return c || _REV_TONO_POR_DEFECTO;
+}
+// Los colores de categoría están pensados para un chip sobre fondo oscuro, así
+// que algunos son muy claros (ENERGIA es amarillo). Puestos tal cual, el fondo
+// competía con la foto y la franja negra de abajo perdía contraste. Se bajan
+// todos a la luminancia del naranja original, que es la que ya estaba probada:
+// así el amarillo y el azul pesan lo mismo en la imagen.
+function _revOscurecer(hex, objetivo) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
+    if (!m) return hex;
+    const n = parseInt(m[1], 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    const lum = (0.2126*r + 0.7152*g + 0.0722*b) / 255;
+    const k = lum > 0 ? Math.min(1, objetivo / lum) : 1;
+    const p2 = v => Math.round(Math.max(0, Math.min(255, v * k))).toString(16).padStart(2, '0');
+    return '#' + p2(r) + p2(g) + p2(b);
+}
+// Luminancia del #c0390a de siempre: el listón que igualan las demás.
+const _REV_LUM = (0.2126*0xc0 + 0.7152*0x39 + 0.0722*0x0a) / 255;
+
 async function _dibujarImagenAnuncio(canvas, producto) {
     const W = 1080, H = 1080;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    // Fondo degradado de marca
+    // Fondo degradado en el tono de la categoría. Cambia SOLO el fondo: el
+    // borde dorado y el "TiendaMax" naranja de abajo se quedan igual en todas
+    // las categorías, que son los que hacen que el anuncio se reconozca como
+    // tuyo entre los cientos que hay en Revólico.
+    const tono = _revOscurecer(_revTonoCategoria(producto), _REV_LUM);
     const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#0d0d0d'); bg.addColorStop(.6, '#2b160c'); bg.addColorStop(1, '#c0390a');
+    bg.addColorStop(0, '#0d0d0d');
+    bg.addColorStop(.6, _revOscurecer(tono, _REV_LUM * 0.22));
+    bg.addColorStop(1, tono);
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
     // Borde dorado

@@ -1871,6 +1871,12 @@ html body #detailSpecBadges .tm-ico-spec{
   color:var(--coral, #FF6A1F);opacity:.95;
 }
 html body.light-mode #detailSpecBadges .tm-ico-spec{ color:var(--coral-deep, #D24E0F); }
+/* La viñeta neutra (spec sin emoji propio) va más chica y apagada: está para
+   alinear la columna, no para competir con los íconos que sí dicen algo. */
+html body .tm-ico-dato{
+  width:9px;height:9px;flex:0 0 9px;
+  vertical-align:-.02em;margin-right:8px;opacity:.55;
+}
 
 /* Modo claro: el ícono del nombre necesita más contraste sobre blanco */
 html body.light-mode .pv2-title .tm-ico-nombre,

@@ -320,6 +320,14 @@ const TM_ICONOS = {
 // estrena un emoji que este mapa todavía no cubre.
 const TM_ICONO_GENERICO = '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>';
 
+// Viñeta neutra para una fila de ficha que no trae emoji propio. Hace falta
+// una aparte porque TM_ICONO_GENERICO es una bolsa de compra: sirve para una
+// categoría desconocida, no al lado de "Voltaje: 12.8V". Sin viñeta, las filas
+// con emoji salían con ícono y las demás sin nada, y la columna de etiquetas
+// quedaba desalineada —que es lo que se ve como "unos specs tienen emoji y
+// otros no"—. Así se ven todas iguales sin inventarle un emoji a cada dato.
+const TM_ICONO_DATO = '<circle cx="12" cy="12" r="3.4"/>';
+
 const _TM_SVG_ABRE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
 
 // Quita selectores de variación, ZWJ y tonos de piel: '👍🏽' y '👍️' deben
@@ -363,6 +371,11 @@ function tmIconoSVG(emoji, cls, estricto) {
     if (!paths && estricto) return '';
     const clase = 'tm-ico' + (cls ? ' ' + cls : '');
     return _TM_SVG_ABRE + ' class="' + clase + '">' + (paths || TM_ICONO_GENERICO) + '</svg>';
+}
+
+// La viñeta neutra, ya envuelta en su <svg>.
+function tmIconoDato(cls) {
+    return _TM_SVG_ABRE + ' class="tm-ico' + (cls ? ' ' + cls : '') + '">' + TM_ICONO_DATO + '</svg>';
 }
 
 // Separa el emoji inicial de un texto: '🔋 Batería 12V' → { emoji:'🔋', texto:'Batería 12V' }

@@ -623,9 +623,12 @@ if (_detailPrecioMNEl) {
             const _part = (typeof tmPartirEmoji === 'function')
                 ? tmPartirEmoji(s)
                 : { emoji: '', texto: String(s).trim() };
-            const ico = (_part.emoji && typeof tmIconoSVG === 'function')
-                ? tmIconoSVG(_part.emoji, 'tm-ico-spec')
-                : '';
+            // Sin emoji propio va la viñeta neutra: toda fila lleva ícono y la
+            // columna de etiquetas queda alineada. Antes, las specs escritas sin
+            // emoji salían sueltas al lado de las que sí lo traían.
+            const ico = (typeof tmIconoSVG !== 'function') ? ''
+                : (_part.emoji ? tmIconoSVG(_part.emoji, 'tm-ico-spec')
+                               : tmIconoDato('tm-ico-spec tm-ico-dato'));
             const str = _part.texto;
             const idx = str.indexOf(':');
             if (idx > 0 && idx < str.length - 1) {
@@ -654,8 +657,9 @@ if (_detailPrecioMNEl) {
     function _tmIcoDe(txt) {
         const p = (typeof tmPartirEmoji === 'function')
             ? tmPartirEmoji(txt) : { emoji: '', texto: String(txt || '').trim() };
-        const ico = (p.emoji && typeof tmIconoSVG === 'function')
-            ? tmIconoSVG(p.emoji, 'tm-ico-spec') : '';
+        const ico = (typeof tmIconoSVG !== 'function') ? ''
+            : (p.emoji ? tmIconoSVG(p.emoji, 'tm-ico-spec')
+                       : tmIconoDato('tm-ico-spec tm-ico-dato'));
         return { ico: ico, texto: p.texto };
     }
     // A partir de aquí el bloque se pliega. Por debajo, un botón de "ver más"

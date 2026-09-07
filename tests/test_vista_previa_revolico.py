@@ -88,3 +88,60 @@ class VistaPreviaRevolicoTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TonoPorCategoriaTest(unittest.TestCase):
+    """El fondo del anuncio lleva el color de la categoría del producto.
+
+    Antes salían todos con el mismo naranja quemado y en una lista de Revólico
+    no había forma de distinguirlos de un golpe de vista.
+
+    Lo que NO puede cambiar es el borde dorado ni el "TiendaMax" naranja de
+    abajo: son los que hacen que el anuncio se reconozca como de la tienda
+    entre los cientos que hay publicados. Si cambiara todo, se gana variedad y
+    se pierde la marca, que es peor negocio.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.src = MODULO.read_text(encoding="utf-8")
+        ini = cls.src.index("async function _dibujarImagenAnuncio(")
+        cls.dibujo = cls.src[ini:cls.src.index("// ── end canvas helpers", ini)]
+
+    def test_el_fondo_sale_de_la_categoria(self):
+        self.assertIn("_revTonoCategoria(producto)", self.dibujo,
+                      "el degradado del fondo dejó de mirar la categoría.")
+        self.assertRegex(
+            self.src, r"tmColorCategoria",
+            "el tono tiene que salir de la tabla de colores por categoría que "
+            "ya usan los carteles, no de una lista aparte que se desincroniza.",
+        )
+
+    def test_una_categoria_sin_color_no_pierde_el_fondo(self):
+        self.assertRegex(
+            self.src, r"_REV_TONO_POR_DEFECTO\s*=\s*'#c0390a'",
+            "sin respaldo, una categoría que no esté en la tabla se quedaría "
+            "sin fondo en vez de salir como salía antes.",
+        )
+        self.assertIn("c || _REV_TONO_POR_DEFECTO", self.src,
+                      "_revTonoCategoria() no cae al naranja de siempre.")
+
+    def test_los_colores_claros_se_bajan_al_peso_del_naranja(self):
+        """ENERGIA es amarillo y JUEGOS mostaza: puestos tal cual, el fondo
+        competía con la foto y la franja negra de abajo perdía contraste."""
+        self.assertIn("_revOscurecer(", self.dibujo,
+                      "el tono de categoría entra sin normalizar su "
+                      "luminancia.")
+        self.assertRegex(
+            self.src, r"_REV_LUM\s*=\s*\(0\.2126\*0xc0",
+            "la referencia de luminancia tiene que ser la del naranja "
+            "original, que es la que ya estaba probada.",
+        )
+
+    def test_la_marca_no_cambia_de_color(self):
+        self.assertIn("rgba(201,169,110,.8)", self.dibujo,
+                      "el borde dorado dejó de ser fijo.")
+        self.assertRegex(
+            self.dibujo, r"fillStyle = '#FF6B35';\s*\n\s*ctx\.fillText\('TiendaMax'",
+            "el rótulo TiendaMax dejó de ir en el naranja de la marca.",
+        )
