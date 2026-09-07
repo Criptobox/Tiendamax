@@ -349,7 +349,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836802568.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 0,
+    "stock": 10,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1880,7 +1880,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836818228.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 0,
+    "stock": 10,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4966,7 +4966,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 11,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -5298,7 +5298,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 8,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -6745,7 +6745,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7003,7 +7003,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 9,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7886,7 +7886,7 @@
   },
   {
     "id": 1786631549331,
-    "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
+    "nombre": "🌐  MikroTik SXT SA5 ac",
     "imagen": "https://tiendamax.org/imagenes/img_1786631547518.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786631547518.webp"
@@ -9139,7 +9139,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9257,7 +9257,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9492,7 +9492,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9960,5 +9960,125 @@
     ],
     "seoTitle": "VEVOR Cargador de batería inteligente 30A | TiendaMax",
     "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…"
+  },
+  {
+    "id": 1788797303584,
+    "nombre": "📡Ubiquiti Networks (LAP-120)",
+    "imagen": "https://tiendamax.org/imagenes/img_1788797299062.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1788797299062.webp"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "5 GHz (5150–5875 MHz)",
+      "2x2 MIMO",
+      "Hasta 450 Mbps",
+      "Antena sectorial 120°",
+      "Ganancia de 16 dBi"
+    ],
+    "fechaAgregado": "2026-09-07T16:08:23.585Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Ubiquiti Networks"
+      },
+      {
+        "k": "Modelo",
+        "v": "LiteAP ac",
+        "nota": "LAP-120"
+      },
+      {
+        "k": "Frecuencia Inalámbrica",
+        "v": "5 GHz",
+        "nota": "airMAX ac, 5150 – 5875 MHz"
+      },
+      {
+        "k": "Ganancia de Antena",
+        "v": "16 dBi integrada",
+        "nota": "Panel sectorial 2×2 MIMO"
+      },
+      {
+        "k": "Apertura de Haz (Cobertura)",
+        "v": "120°",
+        "nota": "Azimut"
+      },
+      {
+        "k": "Rendimiento / Velocidad",
+        "v": "Hasta 450+ Mbps de rendimiento real"
+      },
+      {
+        "k": "Puertos de Red",
+        "v": "1× puerto Gigabit Ethernet",
+        "nota": "10/100/1000 Mbps"
+      },
+      {
+        "k": "Radio de Gestión",
+        "v": "Wi-Fi integrada de 2.4 GHz dedicada para configuración móvil",
+        "nota": "App UISP"
+      },
+      {
+        "k": "Alimentación",
+        "v": "PoE Pasivo 24V, 0.5A",
+        "nota": "Adaptador Gigabit PoE incluido"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "airOS 8"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Antena sectorial integrada de 120°",
+        "d": "ofrece una cobertura amplia de 120 grados con 16 dBi de ganancia, optimizada para funcionar como estación base y atender múltiples clientes simultáneos."
+      },
+      {
+        "t": "Tecnología airMAX ac",
+        "d": "procesador optimizado con modulación avanzada 256-QAM que alcanza más de 450 Mbps de rendimiento real con latencia reducida y alta eficiencia espectral."
+      },
+      {
+        "t": "Puerto Gigabit Ethernet",
+        "d": "elimina cuellos de botella de red por cable para aprovechar al máximo las transferencias de alta velocidad del estándar ac."
+      },
+      {
+        "t": "Radio Wi-Fi dedicada para gestión",
+        "d": "permite acceder, configurar y alinear el equipo desde un smartphone o tablet mediante la aplicación móvil UISP (UNMS) sin requerir cables ni adaptadores adicionales."
+      },
+      {
+        "t": "Montaje con rótula esférica de 3 ejes",
+        "d": "diseño de soporte articulado que proporciona total flexibilidad para ajustar y fijar con precisión la elevación, el azimut y la rotación en postes o mástiles."
+      },
+      {
+        "t": "airOS 8 con airView en tiempo real",
+        "d": "sistema operativo con analizador de espectro continuo e independiente que detecta interferencias de RF sin interrumpir el enlace de datos."
+      },
+      {
+        "t": "Estructura ligera y aerodinámica",
+        "d": "factor de forma estilizado que minimiza la carga de viento y facilita instalaciones limpias en torres y mástiles."
+      }
+    ],
+    "idealPara": [
+      "Estación base (Punto de Acceso / AP) en enlaces Punto a Multipunto (PtMP) para proveedores de Internet inalámbrico (WISP).",
+      "Conexión y distribución de red hacia múltiples clientes residenciales o comerciales (CPEs) ubicados dentro de un área de 120°.",
+      "Centralización de transmisiones para sistemas perimetrales de videovigilancia y cámaras de seguridad IP en predios extensos, fincas o almacenes.",
+      "Soluciones de conectividad exterior de alta capacidad con despliegue ágil y administración móvil."
+    ],
+    "incluye": [
+      "1× Punto de Acceso Sectorial Ubiquiti LiteAP ac (LAP-120)",
+      "1× Soporte de montaje con rótula articulada de 3 ejes",
+      "1× Abrazadera metálica para fijación en mástil",
+      "1× Inyector Gigabit PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
+      "1× Guía de inicio rápido"
+    ]
   }
 ]
