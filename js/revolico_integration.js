@@ -13,6 +13,21 @@ function _escH(s) {
 // _precioMN se quitó: estaba definida pero nunca se usaba, y el precio en CUP
 // no debe ir en publicaciones (el post queda meses y la tasa cambia cada semana).
 
+// La moneda de un producto vive en el producto, no en la cifra: uno marcado
+// moneda:'MN' lleva su precio TAL CUAL, sin pasar por la tasa. Todo lo de este
+// fichero acaba delante de un cliente —el mensaje de WhatsApp, el post de
+// Facebook, el anuncio de Revolico—, así que escribir "USD" a mano le afirmaba
+// una moneda falsa a quien iba a pagar.
+function _esMN(producto) {
+    return !!(producto && producto.moneda === 'MN');
+}
+function _monedaDe(producto) { return _esMN(producto) ? 'MN' : 'USD'; }
+// "$150 USD" o "$5000 MN", ya listo para pegar.
+function _precioTxt(producto, valor) {
+    const n = Number(valor != null ? valor : (producto && producto.precioActual) || 0);
+    return '$' + (_esMN(producto) ? Math.round(n) : n) + ' ' + _monedaDe(producto);
+}
+
 // Enlace del producto con utm, para ver en Analytics qué red trae las visitas.
 function _urlProducto(producto, src) {
     return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${src}&utm_medium=social&utm_campaign=producto`;
@@ -22,7 +37,7 @@ function _urlProducto(producto, src) {
 // pierden pedidos.
 function _waPedido(producto, src) {
     const num = localStorage.getItem('whatsappNumero') || '5354320170';
-    const msg = `Hola, quiero: ${producto.nombre} — $${producto.precioActual} USD\n${_urlProducto(producto, src)}`;
+    const msg = `Hola, quiero: ${producto.nombre} — ${_precioTxt(producto)}\n${_urlProducto(producto, src)}`;
     return `https://wa.me/${String(num).replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -59,12 +74,12 @@ async function _generarTextoFacebookAI(producto) {
     const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
     const info = [
         `Producto: ${producto.nombre}`,
-        `Precio: $${producto.precioActual} USD`,
+        `Precio: ${_precioTxt(producto)}`,
         producto.descripcion && `Descripción: ${producto.descripcion}`,
         producto.garantia && `Garantía: ${producto.garantia}`,
         producto.usado && 'Producto usado/refurbished',
     ].filter(Boolean).join('\n');
-    const prompt = `Escribe una publicación atractiva y variada para un grupo de ventas de Facebook en Cuba (español cubano). Usa emojis creativos. Muestra el precio SOLO en USD (no menciones precio en MN/CUP ni la cantidad en stock). Termina con WhatsApp wa.me/${whatsapp} y el enlace ${url}. Responde SOLO con el texto listo para pegar, sin explicaciones.\n\n${info}`;
+    const prompt = `Escribe una publicación atractiva y variada para un grupo de ventas de Facebook en Cuba (español cubano). Usa emojis creativos. ${_esMN(producto) ? 'El precio es en MN (pesos cubanos): escríbelo tal cual, con "MN", y no lo conviertas a USD.' : 'Muestra el precio SOLO en USD (no menciones precio en MN/CUP).'} No menciones la cantidad en stock. Termina con WhatsApp wa.me/${whatsapp} y el enlace ${url}. Responde SOLO con el texto listo para pegar, sin explicaciones.\n\n${info}`;
     return await tmAIChat(prompt, { max_tokens: 550, temperature: 0.85 });
 }
 
@@ -74,7 +89,7 @@ async function _generarTextoRevolicoAI(producto) {
     const tags = _hashtagsCategoria(producto.categoria);
     const info = [
         `Nombre: ${producto.nombre}`,
-        `Precio: $${producto.precioActual} USD`,
+        `Precio: ${_precioTxt(producto)}`,
         producto.descripcion && `Descripción: ${producto.descripcion}`,
         producto.garantia && `Garantía: ${producto.garantia}`,
         producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock} unidades`,
@@ -202,10 +217,10 @@ function _textoFacebook(producto) {
         // OJO: Facebook NO renderiza markdown. Antes se usaba ~~tachado~~ y en el
         // post salían las virgulillas literales ("~~$85 USD~~"), que se ve a
         // descuido. En texto plano se lee mejor "Antes / AHORA".
-        t += `💰 Antes $${producto.precioOriginal} USD  👉  AHORA $${precio} USD\n`;
-        t += `🎉 Ahorras $${ahorro} USD\n`;
+        t += `💰 Antes ${_precioTxt(producto, producto.precioOriginal)}  👉  AHORA ${_precioTxt(producto, precio)}\n`;
+        t += `🎉 Ahorras ${_precioTxt(producto, ahorro)}\n`;
     } else {
-        t += `💰 Precio: $${precio} USD\n`;
+        t += `💰 Precio: ${_precioTxt(producto, precio)}\n`;
     }
 
     if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
@@ -380,7 +395,7 @@ function publicarEnGrupoFB(iGrupo) {
         nombre.textContent = p.nombre;
         const meta = document.createElement('div');
         meta.style.cssText = 'font-size:11px;opacity:.6;margin-top:2px;';
-        meta.textContent = `$${p.precioActual}${agotado ? ' · 🚫 Agotado' : ''}`;
+        meta.textContent = `${_precioTxt(p)}${agotado ? ' · 🚫 Agotado' : ''}`;
         info.appendChild(nombre);
         info.appendChild(meta);
         const btn = document.createElement('button');
@@ -474,11 +489,18 @@ function previsualizarRevolico(productoId) {
     const revUrl = catInfo.url;
 
     const existing = document.getElementById('revPreviewModal');
-    if (existing) document.body.removeChild(existing);
+    if (existing) existing.remove();
+
+    // Abrir una vista previa anula el "me fui a Revolico" que hubiera pendiente
+    // de otro producto. Sin esto, el restaurador de más abajo pisaba este modal
+    // con el del producto guardado y el anuncio salía con la descripción de
+    // otro: el dueño abría uno tras otro y siempre veía el mismo texto.
+    sessionStorage.removeItem('_tmRevActive');
 
     const modal = document.createElement('div');
     modal.id = 'revPreviewModal';
     modal.className = 'modal';
+    modal.dataset.productoId = String(producto.id);
     modal.style.display = 'flex';
 
     const sBtnBase = 'border:none;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;';
@@ -516,7 +538,7 @@ function previsualizarRevolico(productoId) {
 
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label for="revPrecioInp" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Precio (USD)</label>
+              <label for="revPrecioInp" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Precio (${_monedaDe(producto)})</label>
               <button id="btnCopyPrecio" type="button"
                 style="${sBtnBase}background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar precio</button>
             </div>
@@ -687,7 +709,12 @@ function cerrarRevPreview() {
 window.addEventListener('pageshow', function() {
     const savedId = sessionStorage.getItem('_tmRevActive');
     if (!savedId) return;
-    if (document.getElementById('revPreviewModal')?.style.display !== 'none') return;
+    const m = document.getElementById('revPreviewModal');
+    // Solo se reabre el modal que el propio usuario dejó a medias: el que sigue
+    // en el DOM, oculto, y es de ESE producto. Si mientras tanto abrió otro, o
+    // no hay modal, aquí no se toca nada.
+    if (!m || getComputedStyle(m).display !== 'none') return;
+    if (String(m.dataset.productoId || '') !== String(savedId)) return;
     // Esperar a que los productos estén disponibles antes de reabrir
     const tryReopen = (attempts) => {
         const prods = (typeof productos !== 'undefined' && Array.isArray(productos) ? productos : null)

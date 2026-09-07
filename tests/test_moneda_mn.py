@@ -34,6 +34,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 SRC = RAIZ / "js" / "src"
 ADMIN = RAIZ / "admin.html"
 RESERVAS = RAIZ / "js" / "reservas.js"
+REVOLICO = RAIZ / "js" / "revolico_integration.js"
 REGLAS = RAIZ / "firebase-rules.json"
 
 
@@ -103,8 +104,7 @@ class MonedaMNTest(unittest.TestCase):
         modal de publicación, el texto de WhatsApp y el de los grupos: el error
         no se queda en el panel, sale hacia el cliente.
         """
-        texto = ADMIN.read_text(encoding="utf-8")
-        # Solo las dos formas en que "USD" acaba PINTÁNDOSE pegado al precio:
+        # Solo las formas en que "USD" acaba PINTÁNDOSE pegado al precio:
         #   `${…precioActual…} USD`   y   `'+…precioActual…+' USD'`
         # No vale con buscar "USD" suelto en la línea: 'USD' también aparece
         # como valor por defecto (comisionMoneda||'USD', moneda:…?'MN':'USD'),
@@ -113,17 +113,23 @@ class MonedaMNTest(unittest.TestCase):
             re.compile(r"precioActual[^\n]{0,70}?\}\s*USD"),
             re.compile(r"precioActual[^\n]{0,70}?\+\s*'\s*USD"),
         ]
+        # revolico_integration.js entra aquí porque su vista previa alimenta
+        # el anuncio de Revolico, el post de Facebook y el mensaje de WhatsApp:
+        # lo que escriba mal lo lee el cliente, no el dueño.
+        HELPERS = re.compile(r"(?:moneyP|_precioTxt)\([^)]*\)")
         malos = []
-        for m in re.finditer(r"[^\n]*precioActual[^\n]*", texto):
-            linea = m.group(0)
-            # moneyP() ya decide la moneda mirando el producto.
-            sin_helper = re.sub(r"moneyP\([^)]*\)", "", linea)
-            if any(rx.search(sin_helper) for rx in PINTA_USD):
-                malos.append(linea.strip()[:120])
+        for fichero in (ADMIN, REVOLICO):
+            texto = fichero.read_text(encoding="utf-8")
+            for m in re.finditer(r"[^\n]*precioActual[^\n]*", texto):
+                linea = m.group(0)
+                # Los helpers ya deciden la moneda mirando el producto.
+                sin_helper = HELPERS.sub("", linea)
+                if any(rx.search(sin_helper) for rx in PINTA_USD):
+                    malos.append(f"{fichero.name}: {linea.strip()[:110]}")
         self.assertEqual(
             [], malos,
-            "estas líneas de admin.html escriben 'USD' junto al precio de un "
-            "producto en vez de pasar por moneyP():\n  " + "\n  ".join(malos)
+            "estas líneas escriben 'USD' junto al precio de un producto en vez "
+            "de pasar por moneyP() / _precioTxt():\n  " + "\n  ".join(malos)
             + "\n\nPara un producto con moneda:'MN' afirman una moneda falsa.",
         )
 
