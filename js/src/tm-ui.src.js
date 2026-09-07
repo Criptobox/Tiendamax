@@ -481,7 +481,12 @@ function registrarVentaPedido(items, cliente, opts) {
     // valiendo tal cual.
     const total = detalle.reduce((s, d) => s + (d.moneda === 'MN' ? 0 : d.total), 0);
     const totalMN = detalle.reduce((s, d) => s + (d.moneda === 'MN' ? d.total : 0), 0);
-    const ganancia = detalle.reduce((s, d) => s + d.ganancia, 0);
+    // La comisión se parte igual que el total, y por su PROPIA moneda: un
+    // producto en USD puede dejar la comisión en pesos y al revés, por eso mira
+    // comisionMoneda y no d.moneda. Antes las sumaba juntas y una venta con 300
+    // MN de comisión quedaba anotada como si dejara 300 dólares.
+    const ganancia = detalle.reduce((s, d) => s + (d.comisionMoneda === 'MN' ? 0 : d.ganancia), 0);
+    const gananciaMN = detalle.reduce((s, d) => s + (d.comisionMoneda === 'MN' ? d.ganancia : 0), 0);
     const unidades = detalle.reduce((s, d) => s + d.cantidad, 0);
     const venta = {
         id: Date.now(),
@@ -491,11 +496,16 @@ function registrarVentaPedido(items, cliente, opts) {
         productoId: detalle[0].productoId,
         cantidad: unidades,
         precio: detalle.length === 1 ? detalle[0].precio : (total + totalMN),
+        // Resumen de la venta: para una sola línea es su comisión (y
+        // comisionMoneda dice de qué moneda); para varias, la parte en USD,
+        // igual que `total`. Sumar las dos monedas aquí sería volver al número
+        // que no es plata de ninguna.
         comision: detalle.length === 1 ? detalle[0].comision : ganancia,
         comisionMoneda: detalle[0].comisionMoneda,
         total: total,
         totalMN: totalMN,
-        ganancia: ganancia
+        ganancia: ganancia,
+        gananciaMN: gananciaMN
     };
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
     // v.telefono) y salía vacío porque nadie los escribía nunca.
