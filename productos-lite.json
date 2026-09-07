@@ -1768,7 +1768,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778214214360.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 43,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -5394,7 +5394,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -9957,6 +9957,8 @@
     "incluye": [
       "1× Cargador Inteligente Multivoltaje VEVOR 30A (6V/12V/24V) con pinzas caimán de uso rudo",
       "1× Manual de usuario e instrucciones de funcionamiento"
-    ]
+    ],
+    "seoTitle": "VEVOR Cargador de batería inteligente 30A | TiendaMax",
+    "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…"
   }
 ]
