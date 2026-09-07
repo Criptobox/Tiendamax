@@ -1,18 +1,83 @@
 {
-  "actualizado": "2026-09-06T13:58:09.146420+00:00",
-  "fecha": "2026-09-06",
+  "actualizado": "2026-09-07T16:17:45.242560+00:00",
+  "fecha": "2026-09-07",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 2,
+    "vigilados": 3,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
+    {
+      "id": 1778102214012,
+      "nombre": "🌐 Switch Gigabit de 8 Puertos",
+      "tuPrecio": 30.0,
+      "mercado": {
+        "min": 15.0,
+        "mediana": 30.0,
+        "n": 14
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-09-07",
+          "mediana": 30.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
+          "precio": 15.0,
+          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
+          "precio": 29.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "30 USD Switch Gigabit de 8 Puertos Ethernet [30]",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "30 USD 🔀 Switch Ethernet Gigabit 8 Puertos 🔀 AX | E01 | 30 USD",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
+          "dias": null
+        }
+      ]
+    },
     {
       "id": 1778102582909,
       "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
@@ -28,10 +93,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-24",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-25",
           "mediana": 90.0
@@ -82,6 +143,10 @@
         },
         {
           "fecha": "2026-09-06",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-07",
           "mediana": 82.5
         }
       ],
@@ -137,9 +202,9 @@
       "mercado": {
         "min": 100.0,
         "mediana": 170.0,
-        "n": 5
+        "n": 6
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -147,6 +212,10 @@
       "historial": [
         {
           "fecha": "2026-09-06",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-07",
           "mediana": 170.0
         }
       ],
@@ -156,6 +225,13 @@
           "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
           "precio": 100.0,
           "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W Ideal para combatir los apagones",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-ideal-para-combatir-los-apagones-57251727",
           "dias": null
         },
         {
