@@ -1208,7 +1208,7 @@
   },
   {
     "id": 1778104850733,
-    "nombre": "✅️ Controlador de Carga Solar MPPT - 100A",
+    "nombre": "⚡ Controlador de Carga Solar MPPT 100A",
     "precioActual": 70,
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "categoria": "ENERGIA",
@@ -2134,7 +2134,7 @@
   },
   {
     "id": 1778383966832,
-    "nombre": "🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid",
+    "nombre": "🔒 KIT de Alarma Inalámbrica Con Panel Táctil, Sensores y RFID",
     "precioActual": 170,
     "imagen": "https://tiendamax.org/imagenes/img_1784572922212.webp",
     "categoria": "SEGURIDAD",
@@ -2285,7 +2285,7 @@
   },
   {
     "id": 1778384158283,
-    "nombre": "🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico",
+    "nombre": "🔒 Cerradura Inteligente Biométrica Con Huella y Teclado",
     "precioActual": 60,
     "imagen": "https://tiendamax.org/imagenes/img_1784572438933.webp",
     "categoria": "SEGURIDAD",
@@ -2357,7 +2357,7 @@
   },
   {
     "id": 1778384314795,
-    "nombre": "🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales",
+    "nombre": "🔒 KIT de Cámaras Zosi Con DVR 8 Canales",
     "precioActual": 230,
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
@@ -2651,7 +2651,7 @@
   },
   {
     "id": 1778384840618,
-    "nombre": "🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi",
+    "nombre": "🔒 Timbre Inteligente Con Cámara HD y WiFi",
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
@@ -3413,7 +3413,7 @@
   },
   {
     "id": 1778906455757,
-    "nombre": "Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector us Pin",
+    "nombre": "Cargador de Litio BIEN 72V 5A (Salida 84V)",
     "precioActual": 40,
     "imagen": "https://tiendamax.org/imagenes/img_1778906453441.webp",
     "categoria": "MOTOS",
@@ -3440,6 +3440,10 @@
       {
         "k": "Capacidad / Corriente",
         "v": "5A"
+      },
+      {
+        "k": "Conector",
+        "v": "US Pin"
       }
     ],
     "idealPara": [
@@ -3493,7 +3497,7 @@
   },
   {
     "id": 1778906905279,
-    "nombre": "Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium",
+    "nombre": "Espejos Alerón Stealth Fibra de Carbón",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
@@ -3541,7 +3545,7 @@
   },
   {
     "id": 1778907072353,
-    "nombre": "Espejos Alerón Deportivos Stealth Poligonales | Diseño Aerodinámico Premium",
+    "nombre": "Espejos Alerón Stealth Poligonales",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
     "categoria": "MOTOS",
@@ -7106,7 +7110,7 @@
   },
   {
     "id": 1784569498967,
-    "nombre": "☀️ Controlador de Carga Solar MPPT 100A",
+    "nombre": "☀️ Controlador de Carga Solar MPPT 100A Con USB",
     "imagen": "https://tiendamax.org/imagenes/img_1784825170677.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784825170677.webp"
@@ -7229,7 +7233,7 @@
   },
   {
     "id": 1784571782777,
-    "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
+    "nombre": "🔒 Sistema Zosi 8 Canales DVR 5MP + Disco 1TB",
     "imagen": "https://tiendamax.org/imagenes/img_1784571781169.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784571781169.webp"
