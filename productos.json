@@ -1815,7 +1815,7 @@
   },
   {
     "id": 1778336789459,
-    "nombre": "🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)",
+    "nombre": "🛜 Tenda AC6 (AC1200)",
     "precioActual": 80,
     "imagen": "https://tiendamax.org/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
@@ -1826,15 +1826,15 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "router-tenda-ac1200-wifi-dual-band",
+    "slug": "tenda-ac6-ac1200",
     "comision": 10,
     "specs": [
       "⚡ AC1200 Doble Banda",
       "📶 4 Antenas Externas",
       "🌐 Soporte MU-MIMO y Modo AP"
     ],
-    "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
-    "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
+    "seoTitle": "Tenda AC6 (AC1200) en Cuba | TiendaMax",
+    "seoDescription": "Router inalámbrico de doble banda para el hogar que ofrece velocidades de hasta 1.2 Gbps, distribuidas en 867 Mbps en la banda de 5 GHz y 300 Mbps en la…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -4034,7 +4034,7 @@
   },
   {
     "id": 1780510681519,
-    "nombre": "Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit",
+    "nombre": "Tenda RX2 PRO (Wi-fi 6)",
     "precioActual": 110,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780510677267.webp",
@@ -4046,10 +4046,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "router-tenda-rx2-pro-wifi-6-dual-band-gigabit",
+    "slug": "tenda-rx2-pro-wi-fi-6",
     "comision": 10,
-    "seoTitle": "ROUTER TENDA RX2 PRO - WIFI 6 DUAL - BAND GIGABIT",
-    "seoDescription": "Tecnología Wi-Fi 6 de Última Generación: Mayor velocidad de transmisión, más capacidad de dispositivos conectados y una latencia extremadamente baja…",
+    "seoTitle": "Tenda RX2 PRO (Wi-fi 6) en Cuba | TiendaMax",
+    "seoDescription": "Router Tenda RX2 Pro, WiFi 6 de doble banda Gigabit, con 5 antenas de alta ganancia. Ideal para hogares con varios dispositivos conectados a la vez sin…",
     "specs": [
       "📶 Wi-Fi 6 (802.11ax) Doble Banda",
       "📶 1501 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
@@ -4671,7 +4671,7 @@
   },
   {
     "id": 1781711424820,
-    "nombre": "🛜 Router Wi-fi AC1200 TP-Link Archer C54",
+    "nombre": "🛜 TP-Link Archer C54",
     "precioActual": 60,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
@@ -4683,7 +4683,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "router-wifi-inalambrico-d-link-avanzado-de-doble-banda",
+    "slug": "tp-link-archer-c54",
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
@@ -4691,8 +4691,8 @@
       "📶 4 Antenas Externas",
       "🌐 Puertos Fast Ethernet"
     ],
-    "seoTitle": "ROUTER WIFI INALÁMBRICO D - LINK AVANZADO DE DOBLE BANDA",
-    "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…",
+    "seoTitle": "TP-Link Archer C54 en Cuba | TiendaMax",
+    "seoDescription": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de…",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711422926.webp"
     ],
@@ -5006,7 +5006,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "🛜 Router TP-Link Archer AX1450 (Wi-fi 6)",
+    "nombre": "🛜 TP-Link Archer AX1450",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
@@ -5028,8 +5028,8 @@
     ],
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
-    "seoTitle": "ROUTER DE DOBLE BANDA ARCHER AX1450 en Cuba | TiendaMax",
-    "seoDescription": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de…",
+    "seoTitle": "TP-Link Archer AX1450 en Cuba | TiendaMax",
+    "seoDescription": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir…",
     "ficha": [
       {
         "k": "Marca",
@@ -5878,7 +5878,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "🛜 Router TP-Link Archer A6 (AC1200)",
+    "nombre": "🛜 TP-Link Archer A6",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.webp",
@@ -5901,7 +5901,7 @@
       "📶 Doble Banda (AC1200)"
     ],
     "fechaAgregado": "2026-07-07T19:46:37.496Z",
-    "seoTitle": "Router Tp-link Archer A6 (AC1200) en Cuba | TiendaMax",
+    "seoTitle": "TP-Link Archer A6 en Cuba | TiendaMax",
     "seoDescription": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias…",
     "ficha": [
       {
@@ -5973,7 +5973,7 @@
   },
   {
     "id": 1783453857635,
-    "nombre": "🌐 Router TP-Link Archer AX21 (Wi-fi 6)",
+    "nombre": "🌐 TP-Link Archer AX21",
     "imagen": "https://tiendamax.org/imagenes/img_1783453857635_d53e54.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453857635_d53e54.webp",
@@ -5997,7 +5997,7 @@
       "🛡️ WPA3"
     ],
     "fechaAgregado": "2026-07-07T19:50:57.635Z",
-    "seoTitle": "Router Tp-link Archer AX21 (Wi-fi 6) en Cuba | TiendaMax",
+    "seoTitle": "TP-Link Archer AX21 en Cuba | TiendaMax",
     "seoDescription": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una…",
     "ficha": [
       {
@@ -6280,7 +6280,7 @@
   },
   {
     "id": 1783474747296,
-    "nombre": "🌐 MikroTik hEX (RB750GR3)",
+    "nombre": "🌐 MikroTik hEX RB750GR3",
     "imagen": "https://tiendamax.org/imagenes/img_1783474741055.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474741055.webp",
@@ -6304,7 +6304,7 @@
       "⚙ Sistema Operativo: RouterOS con licencia Nivel 4"
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
-    "seoTitle": "Mikrotik Hex (RB750GR3) en Cuba | TiendaMax",
+    "seoTitle": "MikroTik hEX RB750GR3 en Cuba | TiendaMax",
     "seoDescription": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y…",
     "ficha": [
       {
@@ -6374,7 +6374,7 @@
   },
   {
     "id": 1783543451116,
-    "nombre": "🛜 Router Tenda AX12 PRO (Wi-fi 6)",
+    "nombre": "🛜 Tenda AX12 PRO",
     "imagen": "https://tiendamax.org/imagenes/img_1783543448278.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783543448278.webp",
@@ -6397,7 +6397,7 @@
       "⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
-    "seoTitle": "Router Tenda TX12 PRO (Wi-fi 6) en Cuba | TiendaMax",
+    "seoTitle": "Tenda AX12 PRO en Cuba | TiendaMax",
     "seoDescription": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar…",
     "ficha": [
       {
@@ -6735,7 +6735,7 @@
   },
   {
     "id": 1784569265085,
-    "nombre": "🛜 Router Inalámbrico Wavlink AC1200 Dual Band",
+    "nombre": "🛜 Wavlink AC1200",
     "imagen": "https://tiendamax.org/imagenes/img_1784569263882.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784569263882.webp"
@@ -6757,7 +6757,7 @@
       "🔌 Puertos: 1× puerto WAN RJ45 + 4× puertos LAN RJ45"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
-    "seoTitle": "Router Inalámbrico Wavlink AC1200 Dual Band | TiendaMax",
+    "seoTitle": "Wavlink AC1200 en Cuba | TiendaMax",
     "seoDescription": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran…",
     "ficha": [
       {
@@ -7027,7 +7027,7 @@
   },
   {
     "id": 1784732614444,
-    "nombre": "🛜 Router Wi-fi 6 AX1800 Asus RT-AX1800S",
+    "nombre": "🛜 Asus RT-AX1800S",
     "imagen": "https://tiendamax.org/imagenes/img_1784732612977.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784732612977.webp"
@@ -7049,7 +7049,7 @@
       "🔌 Puertos Gigabit"
     ],
     "fechaAgregado": "2026-07-22T15:03:34.445Z",
-    "seoTitle": "Router Wi-fi 6 AX1800 Asus RT-AX1800S en Cuba | TiendaMax",
+    "seoTitle": "Asus RT-AX1800S en Cuba | TiendaMax",
     "seoDescription": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos…",
     "ficha": [
       {
@@ -7120,7 +7120,7 @@
   },
   {
     "id": 1784732715417,
-    "nombre": "🛜 Router Wi-fi 6 AX3000 TP-Link Archer AX55",
+    "nombre": "🛜 TP-Link Archer AX55",
     "imagen": "https://tiendamax.org/imagenes/img_1784732713920.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784732713920.webp"
@@ -7142,7 +7142,7 @@
       "🔌 Puertos Gigabit / USB"
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z",
-    "seoTitle": "Router Wi-fi 6 AX3000 Tp-link Archer AX55 | TiendaMax",
+    "seoTitle": "TP-Link Archer AX55 en Cuba | TiendaMax",
     "seoDescription": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en…",
     "ficha": [
       {
@@ -7730,7 +7730,7 @@
   },
   {
     "id": 1786631968221,
-    "nombre": "🌐 Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "nombre": "🌐 MikroTik hAP ac3",
     "imagen": "https://tiendamax.org/imagenes/img_1786631962109.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786631962109.webp",
@@ -7754,7 +7754,7 @@
       "🌐 Puertos Gigabit Ethernet y RouterOS"
     ],
     "fechaAgregado": "2026-08-13T14:39:28.222Z",
-    "seoTitle": "Router Inalámbrico de Escritorio MikroTik hAP ac3",
+    "seoTitle": "MikroTik hAP ac3 en Cuba | TiendaMax",
     "seoDescription": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable…",
     "ficha": [
       {
@@ -8896,7 +8896,7 @@
   },
   {
     "id": 1787888877372,
-    "nombre": "🌐MikroTik hEX S (RB760iGS)",
+    "nombre": "🌐 MikroTik hEX S RB760iGS",
     "imagen": "https://tiendamax.org/imagenes/img_1787888875463.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787888875463.webp"
@@ -9009,7 +9009,7 @@
       "1× Adaptador de corriente (Fuente de alimentación 24V / 1.2A)",
       "1× Guía de inicio rápido"
     ],
-    "seoTitle": "MikroTik hEX S (RB760iGS) en Cuba | TiendaMax",
+    "seoTitle": "MikroTik hEX S RB760iGS en Cuba | TiendaMax",
     "seoDescription": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios…",
     "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales."
   },
@@ -9375,7 +9375,7 @@
   },
   {
     "id": 1788625483027,
-    "nombre": "🛜TP-Link Archer BE230",
+    "nombre": "🛜 TP-Link Archer BE230",
     "descripcion": "es un router de última generación equipado con el estándar Wi-Fi 7 (BE3600) y puertos cableados de alta velocidad a 2.5 Gbps, concebido para exprimir conexiones de fibra óptica ultrarrápidas y ofrecer transferencias fluidas, estables y sin retrasos en entornos con múltiples dispositivos de alto consumo simultáneo.",
     "imagen": "https://tiendamax.org/imagenes/img_1788625479728.webp",
     "imagenes": [
