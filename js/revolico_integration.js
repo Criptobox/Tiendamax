@@ -41,7 +41,15 @@ function _urlProducto(producto, src) {
 // pierden pedidos.
 function _waPedido(producto, src) {
     const num = localStorage.getItem('whatsappNumero') || '5354320170';
-    const msg = `Hola, quiero: ${producto.nombre} — ${_precioTxt(producto)}\n${_urlProducto(producto, src)}`;
+    // El mensaje va al mínimo: solo el nombre. Antes llevaba también el precio
+    // y la URL completa con sus tres utm, y todo eso se codifica —el emoji del
+    // nombre son 12 caracteres él solo—, así que el enlace pasaba de 256
+    // caracteres y era más de la mitad del anuncio. Quien recibe el mensaje ya
+    // sabe el precio y la URL no le dice nada: lo que necesita es QUÉ producto.
+    const nombre = (typeof tmPartirEmoji === 'function')
+        ? tmPartirEmoji(producto.nombre || '').texto
+        : String(producto.nombre || '').trim();
+    const msg = `Hola, quiero: ${nombre}`;
     return `https://wa.me/${String(num).replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -530,30 +538,56 @@ const _REVOLICO_CATS = {
 };
 const _REVOLICO_DEFAULT = { label: 'Electrónica', url: 'https://www.revolico.com/anuncios/nuevo/?c=9' };
 
+// Cuatro datos de la ficha, en líneas cortas. Quien mira clasificados escanea
+// buscando cifras, no lee párrafos: el anuncio llevaba solo la descripción en
+// prosa aunque el producto tuviera guardados marca, modelo, velocidad y
+// puertos. Se saltan los valores largos: en Revólico el texto va sin formato y
+// una línea de 90 caracteres se parte por donde caiga.
+function _fichaCorta(producto, maxFilas) {
+    const filas = Array.isArray(producto && producto.ficha) ? producto.ficha : [];
+    return filas
+        .filter(f => f && f.k && f.v && String(f.v).length <= 55)
+        .slice(0, maxFilas || 4)
+        .map(f => `• ${String(f.k).trim()}: ${String(f.v).trim()}`);
+}
+
 function _textoRevolico(producto) {
     // Título: solo nombre, sin precio (Revolico tiene campo de precio separado)
     let titulo = producto.nombre;
     if (titulo.length > 70) titulo = titulo.substring(0, 67) + '...';
 
-    let desc = '';
-    if (producto.usado)       desc += 'PRODUCTO USADO / REFURBISHED\n\n';
-    if (producto.descripcion) desc += `${producto.descripcion}\n\n`;
-    if (producto.garantia)    desc += `Garantía: ${producto.garantia}\n`;
-    if (producto.devolucion)  desc += `Devolución segura garantizada\n`;
+    const bloques = [];
+    if (producto.usado)       bloques.push('PRODUCTO USADO / REFURBISHED');
+    if (producto.descripcion) bloques.push(String(producto.descripcion).trim());
 
-    if (producto.stock === 0) {
-        desc += '\n⚠️ AGOTADO — Consultar disponibilidad\n';
-    } else if (producto.stock <= 5) {
-        desc += `\nDisponibilidad: ${producto.stock} unidad${producto.stock !== 1 ? 'es' : ''}\n`;
-    }
+    const ficha = _fichaCorta(producto);
+    if (ficha.length) bloques.push(ficha.join('\n'));
+
+    // Qué trae la caja, en una línea: es la duda que más se pregunta por
+    // WhatsApp y responderla en el anuncio ahorra el mensaje.
+    const incluye = (Array.isArray(producto.incluye) ? producto.incluye : [])
+        .map(x => String(x).replace(/^\s*\d+\s*[x×]\s*/i, '').split(' (')[0].trim())
+        .filter(Boolean).slice(0, 4);
+    if (incluye.length) bloques.push('Incluye: ' + incluye.join(', '));
+
+    const confianza = [];
+    if (producto.garantia)   confianza.push('Garantía: ' + producto.garantia);
+    if (producto.devolucion) confianza.push('Devolución segura garantizada');
+    if (confianza.length) bloques.push(confianza.join('\n'));
+
+    // El conteo de unidades no va: es un dato que envejece solo —el anuncio se
+    // queda meses publicado y el stock cambia— y no ayuda a decidir. El aviso
+    // de agotado sí, que ese evita que alguien escriba por algo que no hay.
+    if (producto.stock === 0) bloques.push('⚠️ AGOTADO — Consultar disponibilidad');
 
     // Revólico no es red social: los hashtags no hacen nada ahí (no hay búsqueda
     // por hashtag) y solo ensucian el anuncio. Se dejan fuera a propósito.
-    // El anuncio sí lleva el enlace de pedido en 1 toque: antes solo ponía la
-    // página, y quien mira clasificados quiere escribir ya, no navegar.
-    desc += `\nPedir por WhatsApp (te abre el chat): ${_waPedido(producto, 'revolico')}\n`;
-    desc += `Fotos y detalles: ${_urlProducto(producto, 'revolico')}`;
-    return { titulo, descripcion: desc.trim() };
+    // El enlace de WhatsApp se queda —un wa.me pelado abre un chat vacío y ahí
+    // se pierden pedidos— pero adelgazado: ver _waPedido.
+    bloques.push('📲 Pedir por WhatsApp: ' + _waPedido(producto, 'revolico')
+               + '\n🔗 Fotos y ficha completa: ' + _urlProducto(producto, 'revolico'));
+
+    return { titulo, descripcion: bloques.join('\n\n') };
 }
 
 function previsualizarRevolico(productoId) {

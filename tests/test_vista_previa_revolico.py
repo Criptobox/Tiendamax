@@ -211,3 +211,60 @@ class FotoDelAnuncioTest(unittest.TestCase):
             "la vista previa no enciende el aviso cuando falta la foto: el "
             "anuncio se publicaría con el icono de cámara sin que se note.",
         )
+
+
+class TextoDelAnuncioTest(unittest.TestCase):
+    """El anuncio era un párrafo de prosa entre dos URLs enormes.
+
+    Medido sobre un producto real: de 639 caracteres, 367 eran URL —el 57% del
+    anuncio— y de eso 256 se los llevaba el enlace de WhatsApp él solo, porque
+    prerrellenaba el nombre CON emoji, el precio y la URL entera con sus tres
+    utm, y todo eso se codifica (el emoji son 12 caracteres).
+
+    Y lo que sí se leía no tenía ni un dato: marca, modelo, velocidad y puertos
+    estaban guardados en el producto y no salían. Quien mira clasificados
+    escanea buscando cifras.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.src = MODULO.read_text(encoding="utf-8")
+        ini = cls.src.index("function _textoRevolico(producto) {")
+        cls.texto = cls.src[ini:cls.src.index("\nfunction previsualizarRevolico(", ini)]
+        ini2 = cls.src.index("function _waPedido(producto, src) {")
+        cls.wa = cls.src[ini2:cls.src.index("\n}", ini2) + 2]
+
+    def test_el_mensaje_de_whatsapp_lleva_solo_el_nombre(self):
+        self.assertIn("const msg = `Hola, quiero: ${nombre}`;", self.wa,
+                      "el prerrelleno volvió a meter precio o URL: cada cosa "
+                      "que entra ahí se codifica y engorda el enlace.")
+        self.assertIn("tmPartirEmoji", self.wa,
+                      "el emoji del nombre se codifica en 12 caracteres; hay "
+                      "que quitarlo del mensaje.")
+        self.assertNotIn("_urlProducto(producto, src)", self.wa,
+                         "meter la URL dentro del mensaje duplicaba el enlace "
+                         "y era lo que más pesaba.")
+
+    def test_el_anuncio_lleva_datos_y_no_solo_prosa(self):
+        self.assertIn("_fichaCorta(producto)", self.texto,
+                      "el anuncio dejó de sacar la ficha del producto.")
+        self.assertIn("producto.incluye", self.texto,
+                      "qué trae la caja es la duda que más se pregunta por "
+                      "WhatsApp; responderla ahorra el mensaje.")
+
+    def test_las_filas_largas_de_ficha_se_quedan_fuera(self):
+        """En Revólico el texto va sin formato: una línea de 90 caracteres se
+        parte por donde caiga y deshace la lista."""
+        ficha = self.src[self.src.index("function _fichaCorta("):]
+        ficha = ficha[:ficha.index("\n}") + 2]
+        self.assertIn("String(f.v).length <= 55", ficha,
+                      "sin tope, un valor largo rompe la lista de datos.")
+
+    def test_no_se_anuncian_unidades_disponibles(self):
+        """El anuncio se queda meses publicado y el stock cambia: el número
+        envejece solo y no ayuda a decidir. El aviso de agotado sí se queda."""
+        self.assertNotIn("Disponibilidad:", self.texto,
+                         "volvió el conteo de unidades al anuncio.")
+        self.assertIn("AGOTADO", self.texto,
+                      "el aviso de agotado tiene que seguir: evita que alguien "
+                      "escriba por algo que no hay.")
