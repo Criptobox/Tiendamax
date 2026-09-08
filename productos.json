@@ -10239,7 +10239,6 @@
   {
     "id": 1788797590930,
     "nombre": "📡 MikroTik LHG 5AX",
-    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE).",
     "imagen": "https://tiendamax.org/imagenes/img_1788797588660.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1788797588660.webp",
@@ -10248,7 +10247,7 @@
     "precioActual": 240,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -10359,6 +10358,7 @@
       "1× Guía de inicio rápido"
     ],
     "seoTitle": "Mikrotik lhg 5ax en Cuba | TiendaMax",
-    "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…"
+    "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
+    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
   }
 ]
