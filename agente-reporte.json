@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-07T14:38:08.085215+00:00",
-  "productos": 136,
-  "urgentes": 7,
+  "generado": "2026-09-08T13:11:27.640770+00:00",
+  "productos": 138,
+  "urgentes": 6,
   "advertencias": 0,
   "info": 7,
-  "resumen": "Anoche revisé tus 136 productos y encontré 7 urgente(s), 7 de info.",
+  "resumen": "Anoche revisé tus 138 productos y encontré 6 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -18,8 +18,8 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "🌐 Access Point Sectorial Exterior MikroTik SXT SA5 ac",
-      "detalle": "→ 🌐 Access Point Sectorial Exterior MikroTik SXT SA5 AC"
+      "nombre": "🌐  MikroTik SXT SA5 ac",
+      "detalle": "→ 🌐 MikroTik SXT SA5 AC"
     },
     {
       "tipo": "nombre",
@@ -35,11 +35,6 @@
       "tipo": "nombre",
       "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
       "detalle": "→ ⚡ Inversor Tataliken 3500W ( 12V )"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🔌VEVOR Cargador de batería inteligente 30A",
-      "detalle": "→ 🔌VEVOR Cargador de Batería Inteligente 30A"
     },
     {
       "tipo": "stock_bajo",
@@ -73,8 +68,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "68 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, ⚡ Inversor  Tataliken 4000W ( 12V ), 🌐 Router Wavlink AC1200 Dual Band y 65 más"
+      "nombre": "62 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Inversor  Tataliken 4000W ( 12V ), 🌐 Router Wavlink AC1200 Dual Band y 59 más"
     }
   ]
 }
