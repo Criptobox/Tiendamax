@@ -30,7 +30,11 @@ function _precioTxt(producto, valor) {
 
 // Enlace del producto con utm, para ver en Analytics qué red trae las visitas.
 function _urlProducto(producto, src) {
-    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${src}&utm_medium=social&utm_campaign=producto`;
+    // El canal se normaliza: este fichero mandaba 'fb' y 'rev' donde el panel
+    // manda 'facebook' y 'revolico', así que el mismo canal se contaba partido
+    // en dos. tmCanalCanonico() vive en el bundle, que carga antes que esto.
+    const canal = (typeof tmCanalCanonico === 'function' && tmCanalCanonico(src)) || src;
+    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${canal}&utm_medium=social&utm_campaign=producto`;
 }
 // Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya redactado. Un
 // wa.me pelado abre un chat vacío y el cliente tiene que escribir él — ahí se

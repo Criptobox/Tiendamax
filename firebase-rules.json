@@ -43,7 +43,23 @@
         }
       },
       ".read": true,
-      ".write": false
+      ".write": false,
+      "fuentes": {
+        "$fuente": {
+          "count": {
+            ".read": true,
+            ".write": "!data.exists() || newData.val() == data.val() + 1",
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "dias": {
+            "$dia": {
+              ".read": true,
+              ".write": "!data.exists() || newData.val() == data.val() + 1",
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+            }
+          }
+        }
+      }
     },
     "almacenes": {
       ".read": true,

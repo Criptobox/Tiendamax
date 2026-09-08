@@ -1395,12 +1395,55 @@ window.tmMonedaActual = () => _monedaActual;
             const hoy = new Date().toISOString().slice(0, 10);
             const okTotal = await _tmSumarUno(url + '/analytics/visitas/count.json');
             await _tmSumarUno(url + '/analytics/visitas/dias/' + hoy + '.json');
+            // Y de dónde vino, si el enlace lo dice. Va con la misma marca de
+            // sesión que la visita: una recarga no cuenta dos veces.
+            const fuente = (typeof tmFuenteVisita === 'function') ? tmFuenteVisita() : '';
+            if (fuente) {
+                await _tmSumarUno(url + '/analytics/fuentes/' + fuente + '/count.json');
+                await _tmSumarUno(url + '/analytics/fuentes/' + fuente + '/dias/' + hoy + '.json');
+            }
             if (okTotal) {
                 try { sessionStorage.setItem('tm_visita_contada', '1'); } catch (e) {}
             }
         } catch (e) {}
     }, 2500);
 })();
+
+/* ── De dónde llegó esta visita ─────────────────────────────────────────
+   Todo lo que se publica sale con ?utm_source=<canal>, pero hasta ahora nadie
+   lo recogía al llegar: se repartía el esfuerzo entre WhatsApp, Facebook y
+   Revólico sin saber cuál trae a quien escribe.
+
+   El mapa acepta ALIAS a propósito. El panel escribe 'facebook' y
+   revolico_integration.js escribía 'fb' para el mismo canal, así que los
+   enlaces ya publicados —que están ahí fuera para siempre y no se pueden
+   reescribir— llevan las dos formas. Sin los alias, cada canal contaría
+   partido en dos y el dato no serviría para decidir nada. */
+const _TM_FUENTES = {
+    'whatsapp': 'whatsapp', 'wa': 'whatsapp',
+    'whatsapp-estado': 'whatsapp-estado', 'story': 'whatsapp-estado', 'estado': 'whatsapp-estado',
+    'facebook': 'facebook', 'fb': 'facebook',
+    'instagram': 'instagram', 'ig': 'instagram',
+    'revolico': 'revolico', 'rev': 'revolico',
+    'copiado': 'copiado', 'copy': 'copiado',
+    'lote-categoria': 'lote-categoria'
+};
+/* El nombre canónico de un canal, para ESCRIBIR el enlace. Que los dos sitios
+   que arman enlaces usen el mismo evita seguir partiendo el conteo en dos. */
+function tmCanalCanonico(src) {
+    return _TM_FUENTES[String(src || '').trim().toLowerCase()] || '';
+}
+function tmFuenteVisita(busqueda) {
+    let cruda = '';
+    try {
+        const qs = new URLSearchParams(busqueda != null ? busqueda : location.search);
+        cruda = String(qs.get('utm_source') || '').trim().toLowerCase();
+    } catch (e) { return ''; }
+    if (!cruda) return '';
+    // Solo canales conocidos: la clave va a una ruta de Firebase, y aceptar
+    // cualquier texto de la URL dejaría que un enlace inventado creara nodos.
+    return _TM_FUENTES[cruda] || '';
+}
 
 /* Suma uno a un contador de Firebase.
 

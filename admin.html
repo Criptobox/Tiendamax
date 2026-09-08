@@ -1582,6 +1582,10 @@
         </div>
         <div class="kpis" id="an-kpis"></div>
         <div class="section"><h3>👁 Visitas — Últimos 7 días <span class="badge">registro real</span></h3><div class="bar-chart-wrap"><div class="bar-chart" id="chart-visitas"></div></div></div>
+        <div class="section"><h3>📣 De dónde llegan <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Cada enlace que publicas lleva su canal marcado. Esto es lo que trae de verdad las visitas — en qué vale la pena gastar el tiempo.</p>
+          <div id="an-fuentes"></div>
+        </div>
         <div class="section"><h3>🔥 Productos con más interés <span class="badge">registro real</span></h3>
           <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Lo que tus clientes miran y piden — señal directa de qué vender y reponer.</p>
           <div class="grid-2" id="an-interes" style="gap:16px"><div id="an-top-vistas"></div><div id="an-top-wa"></div></div>
@@ -1794,7 +1798,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=7a610db1"></script>
+<script src="js/tm-bundle.js?v=9711e51f"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -1844,7 +1848,7 @@
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=e18ee87b"></script>
+<script src="js/revolico_integration.js?v=a7b3cf0a"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -3986,6 +3990,7 @@ function renderAnalytics(){
   const total=sumaMonedas(VENTAS, ventaTotales);
   $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',valorInvTexto(totalVal)],['success','Vendido',dosMonedas(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   cargarVisitasWeb();
+  cargarFuentes();
   cargarInteresProductos();
   cargarErroresJS();
   cargarAuditoriaCambios();
@@ -4020,6 +4025,42 @@ function renderAnalytics(){
 }
 // Lee el contador de visitas de la tienda (lo incrementa index en cada sesión).
 // Rellena el KPI de Inicio y el de Analytics, el que exista.
+// De dónde llegan las visitas. Los canales se leen de /analytics/fuentes, que
+// escribe la propia tienda al abrirse un enlace con ?utm_source=.
+const AN_FUENTE_ETIQUETA = {
+  'whatsapp':'💬 WhatsApp', 'whatsapp-estado':'🖼️ Estado de WhatsApp',
+  'facebook':'📘 Facebook', 'instagram':'📷 Instagram',
+  'revolico':'🟠 Revólico', 'copiado':'🔗 Enlace copiado',
+  'lote-categoria':'🗂️ Lote por categoría'
+};
+async function cargarFuentes(){
+  const box=$('#an-fuentes'); if(!box) return;
+  const base=rtdbBase();
+  if(!base){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>Configura Firebase para ver de dónde llegan.</div>'; return; }
+  let datos=null;
+  try{ const r=await fetch(base+'/analytics/fuentes.json?_='+Date.now(),{cache:'no-store'}); datos=r.ok?await r.json():null; }catch(e){}
+  const filas=Object.entries(datos||{})
+    .map(([k,v])=>[k, Number(v&&v.count)||0]).filter(([,n])=>n>0)
+    .sort((a,b)=>b[1]-a[1]);
+  if(!filas.length){
+    box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>'
+      + 'Todavía no hay visitas con canal marcado. Empieza a contar en cuanto alguien abra uno de los enlaces que publiques a partir de ahora.</div>';
+    return;
+  }
+  const total=filas.reduce((s,[,n])=>s+n,0);
+  box.innerHTML=filas.map(([k,n])=>{
+    const pct=Math.round(n/total*100);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:#fff;margin-bottom:4px">
+        <span>${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o)">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
+      </div>
+      <div style="height:7px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:var(--o);border-radius:4px"></div>
+      </div>
+    </div>`;
+  }).join('') + `<div style="font-size:11px;color:var(--muted);margin-top:8px">${total.toLocaleString('es-US')} visita(s) con canal identificado.</div>`;
+}
+
 async function cargarVisitasWeb(){
   const els=[$('#an-visitas'),$('#inicio-visitas')].filter(Boolean);
   const base=rtdbBase();
@@ -5186,13 +5227,6 @@ function _pubMigrarHistViejo(){
     });
   }catch(e){}
 }
-/** id → fecha de la última publicación. Derivado del log, no un almacén aparte. */
-function pubHist(){
-  _pubMigrarHistViejo();
-  const out={};
-  try{ tmPublicaciones().forEach(e=>{ const k=String(e.pid); if(!out[k]||e.ts>out[k]) out[k]=e.ts; }); }catch(e){}
-  return out;
-}
 function pubMarcarPublicado(id, red, destino){
   try{ tmRegistrarPublicacion(id, red||'otra', destino||''); }catch(e){}
 }
@@ -5206,10 +5240,49 @@ function pubHaceTxt(ts){
   if(dias<30) return 'hace '+Math.floor(dias/7)+' sem';
   return 'hace '+Math.floor(dias/30)+' mes'+(Math.floor(dias/30)>1?'es':'');
 }
-function pubBadgePublicado(id){
-  const ts=pubHist()[String(id)];
-  if(!ts) return '<span style="background:rgba(245,166,35,.16);color:#f5a623;border:1px solid rgba(245,166,35,.35);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">✨ sin publicar</span>';
-  return '<span style="background:rgba(255,255,255,.06);color:var(--muted);font-size:10px;padding:2px 8px;border-radius:20px;white-space:nowrap">📤 '+pubHaceTxt(ts)+'</span>';
+// Los tres canales de verdad. 'otra' (copiar el enlace) no cuenta: copiar no
+// es publicar, y darlo por bueno tapaba un canal que nadie llegó a ver.
+const PUB_REDES = [['wa','WA'], ['fb','FB'], ['revolico','RV']];
+
+// Última publicación de cada producto EN CADA RED, en una sola pasada por el
+// registro. Antes se resumía en un único "última vez en cualquier sitio", y eso
+// escondía justo el hueco que importa: subir un router al Estado de WhatsApp lo
+// daba por publicado una semana entera aunque no hubiera estado nunca en
+// Revólico. El registro siempre guardó la red; simplemente no se leía.
+function pubHistRed(){
+  // La migración del formato viejo colgaba de pubHist(), que se borró al dejar
+  // de usarse. Sin este aviso aquí, el historial anterior a unificar el registro
+  // se quedaba en localStorage sin que nada lo leyera nunca.
+  _pubMigrarHistViejo();
+  const out={};
+  try{ tmPublicaciones().forEach(e=>{
+    const k=String(e.pid), r=String(e.red||'');
+    if(!PUB_REDES.some(x=>x[0]===r)) return;
+    const fila = out[k] || (out[k]={});
+    if(!fila[r] || e.ts>fila[r]) fila[r]=e.ts;
+  }); }catch(e){}
+  return out;
+}
+// Canales que le faltan a un producto: nunca publicado ahí, o hace más del
+// descanso. Es lo que decide qué se propone y en qué orden.
+function pubRedesPendientes(id, hr){
+  const fila=(hr||pubHistRed())[String(id)]||{};
+  const corte=Date.now()-PUB_HOY_DESCANSO_DIAS*86400000;
+  return PUB_REDES.filter(([r])=>!fila[r]||fila[r]<corte).map(([r,et])=>({red:r, etiqueta:et, ts:fila[r]||0}));
+}
+function pubBadgePublicado(id, hr){
+  const fila=(hr||pubHistRed())[String(id)]||{};
+  const corte=Date.now()-PUB_HOY_DESCANSO_DIAS*86400000;
+  return PUB_REDES.map(([r,et])=>{
+    const ts=fila[r]||0;
+    const pendiente=!ts||ts<corte;
+    const txt=ts?(et+' '+pubHaceTxt(ts).replace('hace ','')):et;
+    const estilo=pendiente
+      ? 'background:rgba(245,166,35,.16);color:#f5a623;border:1px solid rgba(245,166,35,.35)'
+      : 'background:rgba(255,255,255,.06);color:var(--muted);border:1px solid transparent';
+    const tip=ts?('Última vez en '+et+': '+pubHaceTxt(ts)):('Nunca publicado en '+et);
+    return '<span title="'+esc(tip)+'" style="'+estilo+';font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;margin-right:4px">'+esc(txt)+'</span>';
+  }).join('');
 }
 function pubShareCats(){ return [...new Set(PRODUCTOS.map(p=>p.categoria||'General').filter(Boolean))].sort(); }
 let PUB_SOLO_SIN_PUBLICAR=false;
@@ -5217,13 +5290,16 @@ function pubToggleSinPublicar(){ PUB_SOLO_SIN_PUBLICAR=!PUB_SOLO_SIN_PUBLICAR; c
 function pubShareFiltered(){
   const q=String(($('#pub-share-q')&&$('#pub-share-q').value)||'').toLowerCase().trim();
   const cat=($('#pub-share-cat')&&$('#pub-share-cat').value)||'';
-  const h=pubHist();
+  const hr=pubHistRed();
+  // "Cuántos canales le faltan" ordena mejor que "cuándo fue la última vez":
+  // deja arriba lo que no está en ningún lado, no lo que hace más tiempo que
+  // se tocó pero ya está en los tres.
+  const faltan=p=>pubRedesPendientes(p.id, hr).length;
+  const ultimo=p=>{ const f=hr[String(p.id)]||{}; return Object.keys(f).reduce((m,k)=>Math.max(m,f[k]||0),0); };
   return PRODUCTOS.filter(p=>Number(p.stock||0)>0)
     .filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q)))
-    .filter(p=>!PUB_SOLO_SIN_PUBLICAR || !h[String(p.id)])
-    // Los nunca publicados primero, después los más antiguos: lo que falta por
-    // mover queda arriba sin tener que buscarlo.
-    .sort((a,b)=>(h[String(a.id)]||0)-(h[String(b.id)]||0));
+    .filter(p=>!PUB_SOLO_SIN_PUBLICAR || faltan(p)>0)
+    .sort((a,b)=>(faltan(b)-faltan(a)) || (ultimo(a)-ultimo(b)));
 }
 /* La lista pintaba los 75 productos con stock de golpe: 375 botones y 15.000px
    de scroll en el móvil. Ahora entran de 20 en 20. Cualquier filtro vuelve a
@@ -5290,15 +5366,27 @@ function pubRenderCartelPreview(){
 const PUB_HOY_N = 3;
 const PUB_HOY_DESCANSO_DIAS = 7;
 let PUB_HOY_SALTO = 0;
-/** Los candidatos, del más olvidado al menos. */
+/** Los candidatos, del que más canales le faltan al que menos.
+ *
+ *  Antes bastaba con haberlo publicado en cualquier sitio para que saliera de
+ *  la lista una semana. Ahora se mira canal por canal: un producto que está en
+ *  WhatsApp pero nunca en Revólico sigue siendo trabajo pendiente, que es como
+ *  se ve desde fuera. Primero los que no están en ningún lado, y a igualdad,
+ *  el que lleva más tiempo sin moverse. */
 function pubHoyCandidatos(){
-  const h=pubHist();
-  const D=86400000, ahora=Date.now();
+  const hr=pubHistRed();
   return PRODUCTOS
     .filter(p=>p.activo!==false && Number(p.stock||0)>0)
-    .map(p=>({p, ts:h[String(p.id)]||0}))
-    .filter(x=>!x.ts || (ahora-x.ts) >= PUB_HOY_DESCANSO_DIAS*D)
-    .sort((a,b)=>a.ts-b.ts)
+    .map(p=>{
+      const faltan=pubRedesPendientes(p.id, hr);
+      const fila=hr[String(p.id)]||{};
+      // El más reciente de sus canales: mide cuánto lleva el producto sin que
+      // nadie lo vea por ningún lado.
+      const ultimo=Object.keys(fila).reduce((m,k)=>Math.max(m, fila[k]||0), 0);
+      return {p, faltan, ultimo};
+    })
+    .filter(x=>x.faltan.length)
+    .sort((a,b)=>(b.faltan.length-a.faltan.length) || (a.ultimo-b.ultimo))
     .map(x=>x.p);
 }
 function pubHoyToca(){
@@ -5313,7 +5401,6 @@ function pubHoyToca(){
 }
 function pubHoyHTML(){
   const lista=pubHoyToca();
-  const h=pubHist();
   const hayMas=pubHoyCandidatos().length>PUB_HOY_N;
   if(!lista.length){
     return `<div class="section">
@@ -5322,16 +5409,24 @@ function pubHoyHTML(){
         Todo lo que tienes con stock se publicó en los últimos ${PUB_HOY_DESCANSO_DIAS} días. Descansa o busca abajo lo que quieras repetir.</div>
     </div>`;
   }
-  const total=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0).length;
-  const nunca=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0&&!h[String(p.id)]).length;
+  const _hr=pubHistRed();
+  const conStock=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0);
+  const total=conStock.length;
+  const nunca=conStock.filter(p=>!_hr[String(p.id)]).length;
+  const hr=pubHistRed();
   const filas=lista.map(p=>{
-    const ts=h[String(p.id)];
-    const cuando = ts ? ('último: '+pubHaceTxt(ts)) : 'nunca publicado';
+    // Decir QUÉ canal falta, no solo cuánto hace: es lo que convierte la
+    // sugerencia en una instrucción. "hace 9 días" no dice dónde ponerlo.
+    const faltan=pubRedesPendientes(p.id, hr);
+    const cuando = faltan.length===PUB_REDES.length
+      ? 'no está en ningún canal'
+      : ('falta en ' + faltan.map(f=>f.etiqueta).join(' y '));
     return `<div class="pub-hoy-card">
       <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
       <div class="pub-hoy-info">
         <b>${esc(p.nombre||'Producto')}</b>
-        <small>${esc(p.categoria||'General')} · ${moneyP(p)} · stock ${Number(p.stock||0)} · ${esc(cuando)}</small>
+        <small>${esc(p.categoria||'General')} · ${moneyP(p)} · stock ${Number(p.stock||0)} · <b style="color:#f5a623">${esc(cuando)}</b></small>
+        <div style="margin-top:4px">${pubBadgePublicado(p.id, hr)}</div>
       </div>
       <div class="pub-hoy-btns">
         <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>

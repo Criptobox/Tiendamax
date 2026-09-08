@@ -65,13 +65,19 @@ const CAT = [
 
 // ── admin.html: un solo historial ────────────────────────────────────────
 {
-    // pubHist() ya no puede leer su propio almacén: tiene que derivarse del
+    // El historial no puede leer su propio almacén: tiene que derivarse del
     // log, que es lo que hace que las dos mitades se enteren la una de la otra.
-    const pubHist = HTML.match(/function pubHist\(\)\{[\s\S]*?\n\}/);
-    ok(pubHist && /tmPublicaciones\(\)/.test(pubHist[0]),
-        'pubHist() debe derivarse de tmPublicaciones(), no de un almacén aparte');
-    ok(pubHist && !/localStorage\.getItem\('tmPubHist'\)/.test(pubHist[0]),
-        'pubHist() no puede volver a leer tmPubHist directamente');
+    // (Antes esto vigilaba pubHist(); esa función se borró cuando el historial
+    // pasó a guardarse por canal, y el invariante se mudó a pubHistRed().)
+    const histRed0 = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/);
+    ok(histRed0 && /tmPublicaciones\(\)/.test(histRed0[0]),
+        'pubHistRed() debe derivarse de tmPublicaciones(), no de un almacén aparte');
+    ok(histRed0 && !/localStorage\.getItem\('tmPubHist'\)/.test(histRed0[0]),
+        'pubHistRed() no puede volver a leer tmPubHist directamente');
+    // La migración del formato viejo colgaba de pubHist(): si nadie la llama,
+    // el historial anterior se queda en localStorage sin que nada lo lea.
+    ok(histRed0 && /_pubMigrarHistViejo\(\)/.test(histRed0[0]),
+        'alguien tiene que seguir disparando la migración del historial viejo');
 
     const marcar = HTML.match(/function pubMarcarPublicado\([\s\S]*?\n\}/);
     ok(marcar && /tmRegistrarPublicacion\(/.test(marcar[0]),
@@ -99,8 +105,13 @@ const CAT = [
     const cand = HTML.match(/function pubHoyCandidatos\(\)\{[\s\S]*?\n\}/);
     ok(cand && /Number\(p\.stock\|\|0\)>0/.test(cand[0]),
         '"hoy toca" no puede proponer productos agotados');
-    ok(cand && /PUB_HOY_DESCANSO_DIAS/.test(cand[0]),
+    // El descanso se decide ahora en pubRedesPendientes(), canal por canal:
+    // estar en WhatsApp ya no da por publicado lo que nunca fue a Revólico.
+    const pend = HTML.match(/function pubRedesPendientes\(id, hr\)\{[\s\S]*?\n\}/);
+    ok(pend && /PUB_HOY_DESCANSO_DIAS/.test(pend[0]),
         'lo publicado hace poco debe descansar, o siempre saldrían los mismos');
+    ok(cand && /pubRedesPendientes/.test(cand[0]),
+        '"hoy toca" debe mirar los canales que faltan, no solo la fecha');
     // "Dame otros" tiene que dar OTROS de verdad: se ejecuta la selección
     // real, porque comprobar que el texto menciona el contador no distingue
     // un `if(otros)` de un `if(false)`.
@@ -108,7 +119,11 @@ const CAT = [
     const hasta = HTML.indexOf('function pubHoyHTML()');
     ok(desde > 0 && hasta > desde, 'no encuentro el bloque de "hoy toca" en admin.html');
     const catalogo = Array.from({ length: 9 }, (_, i) => ({ id: 'p' + i, nombre: 'P' + i, stock: 4 }));
-    const sbHoy = { PRODUCTOS: catalogo, pubHist: () => ({}), Date, console };
+    // Registro vacío: ningún producto se ha publicado en ningún canal, así que
+    // los tres están pendientes para todos. Se usan las funciones REALES de
+    // canales (no un stub) para que esto siga cubriéndolas.
+    const sbHoy = { PRODUCTOS: catalogo, tmPublicaciones: () => [],
+                    _pubMigrarHistViejo: () => {}, Date, console };
     sbHoy.globalThis = sbHoy;
     vm.createContext(sbHoy);
     // pubRenderHoy sale del propio admin.html —no se reescribe aquí— porque
@@ -116,7 +131,11 @@ const CAT = [
     const render = HTML.match(/function pubRenderHoy\(otros\)\{[\s\S]*?\n\}/);
     ok(render, 'no encuentro pubRenderHoy() en admin.html');
     sbHoy.$ = () => null;   // pubRenderHoy repinta el DOM; aquí no hay
-    vm.runInContext(HTML.slice(desde, hasta) + '\n' + (render ? render[0] : ''), sbHoy);
+    const redes = HTML.match(/const PUB_REDES = \[[\s\S]*?\];/);
+    const histRed = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/);
+    ok(redes && histRed && pend, 'no encuentro las funciones de canales en admin.html');
+    vm.runInContext([redes[0], histRed[0], pend[0], HTML.slice(desde, hasta),
+                     (render ? render[0] : '')].join('\n'), sbHoy);
     const tanda1 = vm.runInContext('pubHoyToca().map(p=>p.id)', sbHoy);
     vm.runInContext('pubRenderHoy(true)', sbHoy);
     const tanda2 = vm.runInContext('pubHoyToca().map(p=>p.id)', sbHoy);
@@ -130,10 +149,11 @@ const CAT = [
     ok(vm.runInContext('pubHoyToca().length', sbHoy) === 3,
         'al pasar del último debe dar la vuelta, no quedarse sin nada que proponer');
     // Con menos productos que una tanda tampoco puede romperse.
-    const sbPoco = { PRODUCTOS: [{ id: 'x', nombre: 'X', stock: 2 }], pubHist: () => ({}), Date, console };
+    const sbPoco = { PRODUCTOS: [{ id: 'x', nombre: 'X', stock: 2 }],
+                     tmPublicaciones: () => [], _pubMigrarHistViejo: () => {}, Date, console };
     sbPoco.globalThis = sbPoco;
     vm.createContext(sbPoco);
-    vm.runInContext(HTML.slice(desde, hasta), sbPoco);
+    vm.runInContext([redes[0], histRed[0], pend[0], HTML.slice(desde, hasta)].join('\n'), sbPoco);
     ok(vm.runInContext('pubHoyToca().length', sbPoco) === 1,
         'con un solo producto disponible debe proponer ese, sin repetirlo tres veces');
 }
@@ -193,6 +213,72 @@ const CAT = [
         ok(new RegExp('window\\.' + fn + '\\s*=\\s*' + fn).test(HTML),
             `${fn}() se llama desde un onclick pero no está exportada a window: el botón no haría nada`);
     }
+}
+
+// ── Estado por canal ─────────────────────────────────────────────────────
+//
+// El registro siempre guardó en qué red se publicó cada cosa, pero todo se
+// resumía en "última vez en cualquier sitio". Con eso, subir un router al
+// Estado de WhatsApp lo daba por publicado una semana entera aunque no hubiera
+// estado NUNCA en Revólico: el hueco que importa quedaba invisible, y el panel
+// decía que no había nada que hacer.
+{
+    ok(/const PUB_REDES = /.test(HTML), 'no encuentro la lista de canales');
+    const redes = HTML.match(/const PUB_REDES = \[[\s\S]*?\];/)[0];
+    for (const r of ['wa', 'fb', 'revolico']) {
+        ok(redes.includes(`'${r}'`), `falta el canal ${r} en PUB_REDES`);
+    }
+    // Copiar el enlace no es publicar: contarlo daba por cubierto un canal
+    // que nadie llegó a ver.
+    ok(!/'otra'/.test(redes), "'otra' (copiar el enlace) no puede contar como canal");
+
+    const hr = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/)[0];
+    ok(/e\.red/.test(hr), 'pubHistRed() tiene que leer la red de cada entrada del registro');
+
+    const badge = HTML.match(/function pubBadgePublicado\(id, hr\)\{[\s\S]*?\n\}/);
+    ok(badge, 'pubBadgePublicado() debe recibir el historial por canal');
+    ok(badge && /PUB_REDES\.map/.test(badge[0]),
+        'la tarjeta debe decir el estado de CADA canal, no uno solo');
+
+    // Y el filtro "solo lo que falta" también, o seguiría escondiendo el hueco.
+    const filtro = HTML.match(/function pubShareFiltered\(\)\{[\s\S]*?\n\}/);
+    ok(filtro && /pubRedesPendientes/.test(filtro[0]),
+        'el filtro y el orden de la lista deben mirar los canales pendientes');
+}
+
+// ── De dónde llegan las visitas ──────────────────────────────────────────
+//
+// Todo lo publicado sale con ?utm_source=<canal> desde hace tiempo, pero nadie
+// lo recogía al llegar: se repartía el esfuerzo entre cuatro sitios sin saber
+// cuál trae a quien escribe.
+{
+    const PATCHES = readFileSync(join(RAIZ, 'js/src/tm-patches.src.js'), 'utf8');
+    const fn = PATCHES.match(/function tmFuenteVisita\(busqueda\) \{[\s\S]*?\n\}/);
+    ok(fn, 'no encuentro tmFuenteVisita()');
+    ok(fn && /_TM_FUENTES\[cruda\] \|\| ''/.test(fn[0]),
+        'solo se aceptan canales conocidos: la clave va a una ruta de Firebase, '
+        + 'y admitir cualquier texto de la URL dejaría crear nodos a voluntad');
+
+    // Los alias importan: el panel escribe 'facebook' y revolico_integration
+    // escribía 'fb' para lo mismo. Los enlaces ya publicados llevan las dos
+    // formas y no se pueden reescribir; sin alias, cada canal contaría partido.
+    const mapa = PATCHES.match(/const _TM_FUENTES = \{[\s\S]*?\};/);
+    ok(mapa, 'no encuentro el mapa de canales');
+    for (const [alias, bueno] of [["'fb'", 'facebook'], ["'rev'", 'revolico'], ["'wa'", 'whatsapp']]) {
+        ok(mapa && new RegExp(alias + ": '" + bueno + "'").test(mapa[0]),
+            `falta el alias ${alias} → ${bueno}: los enlaces ya publicados lo usan`);
+    }
+
+    ok(/analytics\/fuentes\/' \+ fuente \+ '\/count\.json/.test(PATCHES),
+        'la visita no registra de dónde vino');
+
+    const REGLAS = JSON.parse(readFileSync(join(RAIZ, 'firebase-rules.json'), 'utf8'));
+    ok(REGLAS.rules.analytics.fuentes,
+        '/analytics/fuentes sin regla: la tienda escribe sin permiso y se pierde el dato');
+
+    // Y que el dato se vea: un contador que nadie mira no sirve de nada.
+    ok(/id="an-fuentes"/.test(HTML), 'falta el panel «De dónde llegan» en Analytics');
+    ok(/cargarFuentes\(\);/.test(HTML), 'nadie llama a cargarFuentes()');
 }
 
 if (fallos.length) {
