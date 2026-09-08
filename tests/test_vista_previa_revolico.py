@@ -145,3 +145,69 @@ class TonoPorCategoriaTest(unittest.TestCase):
             self.dibujo, r"fillStyle = '#FF6B35';\s*\n\s*ctx\.fillText\('TiendaMax'",
             "el rótulo TiendaMax dejó de ir en el naranja de la marca.",
         )
+
+
+class FotoDelAnuncioTest(unittest.TestCase):
+    """La foto del lienzo tenía un solo intento y fallaba en silencio.
+
+    El resto del sitio reintenta desde raw.githubusercontent cuando una <img>
+    no carga; el lienzo del anuncio no tenía nada de eso. Un fallo pasajero —y
+    en un móvil cubano los hay— dejaba ese producto con el marcador de cámara,
+    y el anuncio se podía publicar así sin que nada lo dijera: es la única
+    parte del panel donde el error no se ve, porque el hueco de la foto se
+    rellena con un degradado que parece decoración.
+
+    Tampoco había timeout: una petición colgada dejaba la promesa sin resolver
+    y el dibujo no terminaba nunca.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.src = MODULO.read_text(encoding="utf-8")
+        ini = cls.src.index("function _revIntentarImg(")
+        cls.carga = cls.src[ini:cls.src.index("\n// El tono de fondo", ini)]
+
+    def test_un_intento_no_puede_quedarse_colgado(self):
+        self.assertIn("setTimeout(() => acabar(null)", self.carga,
+                      "sin timeout, una petición que no responde deja el "
+                      "anuncio a medio dibujar para siempre.")
+
+    def test_una_imagen_que_decodifica_a_nada_cuenta_como_fallo(self):
+        self.assertIn("img.naturalWidth && img.naturalHeight", self.carga,
+                      "un onload con naturalWidth 0 haría que el lienzo "
+                      "dibujara un rectángulo vacío creyendo que hay foto.")
+
+    def test_reintenta_saltandose_la_cache(self):
+        self.assertIn("'_r=' + Date.now()", self.carga,
+                      "falta el segundo intento con parámetro nuevo: una "
+                      "entrada de caché envenenada no se puede saltar de otra "
+                      "forma.")
+
+    def test_cae_al_espejo_de_github(self):
+        self.assertIn("raw.githubusercontent.com/", self.carga,
+                      "falta el tercer intento contra el espejo, que es de "
+                      "donde salió la foto y lo que ya hace la tienda.")
+        self.assertIn("localStorage.getItem('githubUser')", self.carga,
+                      "el espejo se arma con el usuario y repo que el dueño "
+                      "ya tiene guardados; inventarlos no serviría.")
+
+    def test_sigue_pidiendo_la_imagen_con_cors(self):
+        """Sin crossOrigin el lienzo queda tainted y toDataURL() lanza: se
+        romperían «Copiar imagen» y «Descargar», que es para lo que existe."""
+        self.assertIn(
+            "crossOrigin = 'anonymous'", self.carga,
+            "el cargador dejó de pedir la imagen con CORS: el lienzo quedaría "
+            "tainted y no se podría exportar.",
+        )
+
+    def test_si_no_hay_foto_se_avisa_en_pantalla(self):
+        self.assertIn('id="revImgAviso"', self.src,
+                      "no hay dónde avisar de que la foto no cargó.")
+        self.assertIn("return !_sinFoto;", self.src,
+                      "_dibujarImagenAnuncio() no dice si la foto entró, así "
+                      "que arriba no hay forma de saberlo.")
+        self.assertRegex(
+            self.src, r"_aviso\.style\.display = hayFoto \? 'none' : 'block'",
+            "la vista previa no enciende el aviso cuando falta la foto: el "
+            "anuncio se publicaría con el icono de cámara sin que se note.",
+        )

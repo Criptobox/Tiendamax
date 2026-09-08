@@ -122,13 +122,51 @@ function _revRoundRect(ctx, x, y, w, h, r) {
     ctx.arcTo(x, y, x+w, y, r); ctx.closePath();
 }
 
-async function _revLoadImg(src) {
-    if (!src) return null;
+// Carga una imagen para el lienzo. crossOrigin='anonymous' es obligatorio: sin
+// él el canvas queda "tainted" y toDataURL() lanza, o sea que se rompen «Copiar
+// imagen» y «Descargar». Con timeout porque una petición colgada dejaba la
+// promesa sin resolver y el anuncio salía sin foto sin decir por qué.
+function _revIntentarImg(src, ms) {
     return new Promise(res => {
-        const img = new Image(); img.crossOrigin = 'anonymous';
-        img.onload = () => res(img); img.onerror = () => res(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        let hecho = false;
+        const acabar = v => { if (!hecho) { hecho = true; clearTimeout(t); res(v); } };
+        const t = setTimeout(() => acabar(null), ms || 8000);
+        // naturalWidth 0 = decodificó a nada: cuenta como fallo, o el lienzo
+        // dibuja un rectángulo vacío creyendo que hay foto.
+        img.onload = () => acabar(img.naturalWidth && img.naturalHeight ? img : null);
+        img.onerror = () => acabar(null);
         img.src = src;
     });
+}
+
+// Tres intentos, de menos a más raro, igual que hace la tienda con sus <img>:
+//   1. la URL tal cual
+//   2. la misma con un parámetro nuevo, para saltarse una entrada de caché
+//      envenenada (del navegador o del service worker)
+//   3. el espejo de raw.githubusercontent, que es de donde salió la foto
+// Antes había un solo intento: un fallo pasajero —y en un móvil cubano los hay—
+// dejaba ese producto con el marcador de cámara para siempre, sin avisar.
+async function _revLoadImg(src) {
+    if (!src) return null;
+    let img = await _revIntentarImg(src);
+    if (img) return img;
+
+    img = await _revIntentarImg(src + (src.indexOf('?') === -1 ? '?' : '&') + '_r=' + Date.now());
+    if (img) return img;
+
+    const ruta = (String(src).match(/(?:^|\/)imagenes\/[\w.\-]+\.(?:webp|jpg|jpeg|png)(?:[?#]|$)/i) || [''])[0]
+        .replace(/^\//, '').split(/[?#]/)[0];
+    if (ruta && String(src).indexOf('raw.githubusercontent') === -1) {
+        let user, repo;
+        try { user = localStorage.getItem('githubUser'); repo = localStorage.getItem('githubRepo'); } catch (e) { /* sin config */ }
+        if (user && repo) {
+            img = await _revIntentarImg('https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + ruta);
+            if (img) return img;
+        }
+    }
+    return null;
 }
 
 
@@ -198,6 +236,7 @@ async function _dibujarImagenAnuncio(canvas, producto) {
         ctx.fillText('📷', px+pw/2, py+ph/2);
         ctx.restore();
     }
+    const _sinFoto = !im;
 
     // Franja de marca abajo
     const barY = H - 200;
@@ -212,6 +251,7 @@ async function _dibujarImagenAnuncio(canvas, producto) {
     ctx.fillText('TiendaMax', W/2, H - 112);
     ctx.font = '36px system-ui,Arial'; ctx.fillStyle = 'rgba(255,255,255,.4)';
     ctx.fillText('tiendamax.org', W/2, H - 58);
+    return !_sinFoto;
 }
 
 // ── end canvas helpers ────────────────────────────────────────────────────────
@@ -550,6 +590,7 @@ function previsualizarRevolico(productoId) {
           <!-- Imagen de anuncio con branding -->
           <div>
             <canvas id="revImgCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
+            <div id="revImgAviso" style="display:none;margin-top:8px;padding:9px 11px;border-radius:9px;font-size:12px;font-weight:700;line-height:1.4;background:rgba(231,76,60,.14);border:1px solid rgba(231,76,60,.4);color:#ff9a90;">⚠️ La foto de este producto no cargó — el anuncio saldría con el icono de cámara en su lugar. Revisa la conexión y vuelve a abrir la vista previa.</div>
             <div style="display:flex;gap:8px;margin-top:8px;">
               <button id="btnCopyRevImg" type="button"
                 style="${sBtnBase}flex:1;padding:8px 12px;background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar imagen</button>
@@ -611,8 +652,15 @@ function previsualizarRevolico(productoId) {
     // Generar imagen de anuncio con branding
     const revCanvas = document.getElementById('revImgCanvas');
     if (revCanvas) {
-        _dibujarImagenAnuncio(revCanvas, producto).catch(() => {
+        // Si la foto no entra, el lienzo dibuja un marcador de cámara y el
+        // anuncio se puede publicar así sin que nadie lo note. Se avisa aquí
+        // arriba, que es donde el dueño está mirando.
+        const _aviso = document.getElementById('revImgAviso');
+        _dibujarImagenAnuncio(revCanvas, producto).then(hayFoto => {
+            if (_aviso) _aviso.style.display = hayFoto ? 'none' : 'block';
+        }).catch(() => {
             revCanvas.style.display = 'none';
+            if (_aviso) { _aviso.textContent = '⚠️ No se pudo generar la imagen del anuncio.'; _aviso.style.display = 'block'; }
         });
     }
 
