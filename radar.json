@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-07T16:17:45.242560+00:00",
-  "fecha": "2026-09-07",
+  "actualizado": "2026-09-08T14:55:33.083207+00:00",
+  "fecha": "2026-09-08",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,9 +20,9 @@
       "mercado": {
         "min": 15.0,
         "mediana": 30.0,
-        "n": 14
+        "n": 13
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -30,6 +30,10 @@
       "historial": [
         {
           "fecha": "2026-09-07",
+          "mediana": 30.0
+        },
+        {
+          "fecha": "2026-09-08",
           "mediana": 30.0
         }
       ],
@@ -46,13 +50,6 @@
           "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
           "precio": 20.0,
           "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
           "dias": null
         },
         {
@@ -75,6 +72,13 @@
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
+          "dias": null
         }
       ]
     },
@@ -93,10 +97,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-25",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-26",
           "mediana": 90.0
@@ -147,6 +147,10 @@
         },
         {
           "fecha": "2026-09-07",
+          "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-08",
           "mediana": 82.5
         }
       ],
@@ -202,7 +206,7 @@
       "mercado": {
         "min": 100.0,
         "mediana": 170.0,
-        "n": 6
+        "n": 8
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -217,6 +221,10 @@
         {
           "fecha": "2026-09-07",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-08",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -225,6 +233,13 @@
           "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
           "precio": 100.0,
           "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken 3500W 12V [170]",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-3500w-12v-170-57272682",
           "dias": null
         },
         {
@@ -253,13 +268,6 @@
           "titulo": "170 USD Inversor 3500W Tataliken [170]",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-3500w-tataliken-170-57132969",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 3500W",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-3500w-57078348",
           "dias": null
         }
       ]
