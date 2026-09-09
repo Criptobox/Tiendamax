@@ -84,14 +84,40 @@ await p.click('[data-v="inventario"]'); await p.waitForTimeout(700);
 const ic = await p.evaluate(()=>document.querySelectorAll('.fila .nm svg.a2-ip').length);
 ok('usa los íconos de línea de TM_ICONOS ('+ic+' filas)', ic>10);
 
-// ── navegación
-let todas=true;
-for(const v of ['inicio','inventario','categorias','ventas','copiloto','config']){
-  await p.click(`.a2-lat [data-v="${v}"]`); await p.waitForTimeout(350);
-  const on=await p.evaluate(()=>document.querySelector('.vista.on').id);
-  if(on!=='v-'+v) todas=false;
+// ── navegación: TODAS las vistas, y que ninguna salga en blanco
+const VISTAS=['inicio','inventario','agregar','categorias','combos','almacenes',
+  'ventas','reposicion','radar','reservas','publicar','clientes','analytics',
+  'copiloto','herramientas','config'];
+const malas=[], vacias=[];
+for(const v of VISTAS){
+  await p.click(`.a2-lat [data-v="${v}"]`); await p.waitForTimeout(500);
+  const r=await p.evaluate(()=>{const on=document.querySelector('.vista.on');
+    return {id:on?on.id:'-', largo:on?on.textContent.replace(/\s+/g,'').length:0};});
+  if(r.id!=='v-'+v) malas.push(v);
+  else if(r.largo<80) vacias.push(v+'('+r.largo+')');
 }
-ok('las 6 vistas navegan', todas);
+ok('las '+VISTAS.length+' vistas navegan'+(malas.length?' — fallan: '+malas:''), !malas.length);
+ok('ninguna vista sale en blanco'+(vacias.length?' — vacías: '+vacias:''), !vacias.length);
+
+// ── agregar un producto de verdad
+await p.click('.a2-lat [data-v="agregar"]'); await p.waitForTimeout(400);
+const antesN=await p.evaluate(()=>JSON.parse(localStorage.getItem('productos')).length);
+await p.fill('#ag-nombre','Producto de prueba');
+await p.fill('#ag-precio','42'); await p.fill('#ag-stock','7');
+await p.click('#ag-guardar'); await p.waitForTimeout(600);
+const despN=await p.evaluate(()=>JSON.parse(localStorage.getItem('productos')).length);
+ok('agregar crea el producto y lo guarda', despN===antesN+1);
+ok('y salta al inventario', await p.evaluate(()=>document.querySelector('.vista.on').id==='v-inventario'));
+
+// ── la hoja de secciones del teléfono
+await p.setViewportSize({width:390,height:844}); await p.waitForTimeout(400);
+await p.click('#a2-mas'); await p.waitForTimeout(400);
+const hoja=await p.evaluate(()=>{const h=document.getElementById('a2-hoja');
+  return {abierta:!h.hidden, botones:h.querySelectorAll('[data-v]').length};});
+ok('la hoja del teléfono abre con todas las secciones ('+hoja.botones+')', hoja.abierta && hoja.botones>=12);
+await p.click('#a2-hoja [data-v="radar"]'); await p.waitForTimeout(600);
+ok('y navega, y se cierra al elegir', await p.evaluate(()=>
+  document.querySelector('.vista.on').id==='v-radar' && document.getElementById('a2-hoja').hidden));
 console.log(R.join('\n'));
 console.log('errores JS:', errs.length?errs:'ninguno');
 await b.close(); srv.close();

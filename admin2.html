@@ -362,6 +362,25 @@ html[data-piel="grafito"] .modal{background:#131315}
 }
 @media (max-width:560px){ .rej{grid-template-columns:1fr 1fr} .dos-col{grid-template-columns:1fr} }
 
+
+  /* Hoja de secciones del teléfono. Dieciséis destinos no caben en una barra
+     de cinco, y esconderlos tras un menú de tres puntos es peor: aquí salen
+     todos, con su nombre, de un toque. */
+  #a2-hoja{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.6);
+    display:flex;align-items:flex-end;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .hoja-caja{width:100%;background:var(--bg);border-top:1px solid var(--edge-2);
+    border-radius:24px 24px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom));
+    box-shadow:0 -24px 60px -20px #000;max-height:78vh;overflow-y:auto}
+  .hoja-tirador{width:38px;height:4px;border-radius:99px;background:var(--edge-2);
+    margin:0 auto 14px}
+  .hoja-caja h3{font-size:15px;margin-bottom:13px}
+  .hoja-rej{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .hoja-rej button{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;
+    border:1px solid var(--edge);background:var(--glass);color:var(--ink);font-size:13.5px;
+    font-weight:600;text-align:left}
+  .hoja-rej button .ico{width:17px;height:17px;color:var(--acc2);flex:none}
+  @media (min-width:821px){ #a2-hoja{display:none!important} }
+
 /* ── Aviso flotante ─────────────────────────────────────── */
 #a2-toast{position:fixed;left:50%;transform:translateX(-50%) translateY(140%);
   opacity:0;visibility:hidden;
@@ -409,11 +428,22 @@ html[data-piel="grafito"] .modal{background:#131315}
     <div class="grupo lbl">Catálogo</div>
     <button class="nav" data-v="inicio" aria-current="page"><svg class="ico"><use href="#i-casa"/></svg>Inicio</button>
     <button class="nav" data-v="inventario"><svg class="ico"><use href="#i-caja"/></svg>Inventario<span class="n" id="n-prod">0</span></button>
+    <button class="nav" data-v="agregar"><svg class="ico"><use href="#i-mas"/></svg>Agregar</button>
     <button class="nav" data-v="categorias"><svg class="ico"><use href="#i-etiqueta"/></svg>Categorías<span class="n" id="n-cat">0</span></button>
+    <button class="nav" data-v="combos"><svg class="ico"><use href="#i-regalo"/></svg>Combos<span class="n" id="n-combos">0</span></button>
+    <button class="nav" data-v="almacenes"><svg class="ico"><use href="#i-nave"/></svg>Almacenes</button>
     <div class="grupo lbl">Dinero</div>
     <button class="nav" data-v="ventas"><svg class="ico"><use href="#i-plata"/></svg>Ventas<span class="n" id="n-ventas">0</span></button>
-    <button class="nav" data-v="copiloto"><svg class="ico"><use href="#i-robot"/></svg>Copiloto<span class="pip" id="pip-copi" hidden></span></button>
+    <button class="nav" data-v="reposicion"><svg class="ico"><use href="#i-abajo"/></svg>Reposición<span class="pip" id="pip-repo" hidden></span></button>
+    <button class="nav" data-v="radar"><svg class="ico"><use href="#i-radar"/></svg>Radar<span class="n" id="n-radar">0</span></button>
+    <button class="nav" data-v="reservas"><svg class="ico"><use href="#i-candado"/></svg>Reservas<span class="n" id="n-res">0</span></button>
+    <div class="grupo lbl">Clientes</div>
+    <button class="nav" data-v="publicar"><svg class="ico"><use href="#i-mega"/></svg>Publicar</button>
+    <button class="nav" data-v="clientes"><svg class="ico"><use href="#i-gente"/></svg>Clientes<span class="n" id="n-cli">0</span></button>
+    <button class="nav" data-v="analytics"><svg class="ico"><use href="#i-grafico"/></svg>Analytics</button>
     <div class="grupo lbl">Sistema</div>
+    <button class="nav" data-v="copiloto"><svg class="ico"><use href="#i-robot"/></svg>Copiloto<span class="pip" id="pip-copi" hidden></span></button>
+    <button class="nav" data-v="herramientas"><svg class="ico"><use href="#i-llave"/></svg>Herramientas</button>
     <button class="nav" data-v="config"><svg class="ico"><use href="#i-tuerca"/></svg>Configuración</button>
     <div class="pie">
       Panel nuevo, en pruebas.<br>
@@ -512,6 +542,126 @@ html[data-piel="grafito"] .modal{background:#131315}
       <div id="co-bloques"></div>
     </section>
 
+
+    <!-- ── AGREGAR ── -->
+    <section class="vista" id="v-agregar">
+      <div class="cab"><div><h1>Agregar producto</h1><p>Se guarda aquí; se publica desde el panel clásico</p></div></div>
+      <div class="tj tj-p">
+        <div class="dos-col">
+          <div class="campo"><label for="ag-nombre">Nombre</label>
+            <input id="ag-nombre" type="text" placeholder="Ej: 🛜 TP-Link Archer C54"></div>
+          <div class="campo"><label for="ag-cat">Categoría</label>
+            <select class="sel" id="ag-cat" style="width:100%;border-radius:12px"></select></div>
+        </div>
+        <div class="dos-col">
+          <div class="campo"><label for="ag-precio">Precio</label>
+            <input id="ag-precio" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></div>
+          <div class="campo"><label for="ag-stock">Stock</label>
+            <input id="ag-stock" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+        </div>
+        <div class="dos-col">
+          <div class="campo"><label for="ag-com">Comisión</label>
+            <input id="ag-com" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></div>
+          <div class="campo"><label for="ag-com-mon">Moneda de la comisión</label>
+            <select class="sel" id="ag-com-mon" style="width:100%;border-radius:12px">
+              <option value="USD">USD</option><option value="MN">MN</option></select></div>
+        </div>
+        <div class="dos-col">
+          <div class="campo"><label for="ag-sub">Subcategoría</label>
+            <input id="ag-sub" type="text" placeholder="Opcional"></div>
+          <div class="campo"><label for="ag-gar">Garantía</label>
+            <input id="ag-gar" type="text" placeholder="Ej: 3 meses"></div>
+        </div>
+        <div class="campo"><label for="ag-img">Foto (URL)</label>
+          <input id="ag-img" type="url" placeholder="https://tiendamax.org/imagenes/…"></div>
+        <div style="display:flex;gap:9px;margin-top:6px">
+          <button class="btn btn-p" id="ag-guardar" style="flex:1"><svg class="ico"><use href="#i-mas"/></svg>Guardar producto</button>
+        </div>
+        <p style="font-size:11.5px;color:var(--dim);line-height:1.5;margin-top:11px">
+          Queda en este dispositivo, igual que cualquier cambio del panel clásico.
+          Para que lo vea el cliente hay que sincronizar desde <a href="admin.html">admin.html</a>.</p>
+      </div>
+    </section>
+
+    <!-- ── COMBOS ── -->
+    <section class="vista" id="v-combos">
+      <div class="cab"><div><h1>Combos</h1><p id="cb-sub">—</p></div></div>
+      <div class="tj"><div id="cb-lista"></div></div>
+    </section>
+
+    <!-- ── ALMACENES ── -->
+    <section class="vista" id="v-almacenes">
+      <div class="cab"><div><h1>Almacenes</h1><p id="al-sub">—</p></div></div>
+      <div class="tj"><div id="al-lista"></div></div>
+    </section>
+
+    <!-- ── REPOSICIÓN ── -->
+    <section class="vista" id="v-reposicion">
+      <div class="cab"><div><h1>Reposición</h1><p id="rp-sub">—</p></div></div>
+      <div class="rej" id="rp-rej"></div>
+      <div class="tj">
+        <h3><svg class="ico"><use href="#i-abajo"/></svg>Qué volver a comprar
+          <span class="sp"></span><span class="lbl">por urgencia</span></h3>
+        <div id="rp-lista"></div>
+      </div>
+    </section>
+
+    <!-- ── RADAR ── -->
+    <section class="vista" id="v-radar">
+      <div class="cab"><div><h1>Radar de precios</h1><p id="rd-sub">—</p></div></div>
+      <div class="rej" id="rd-rej"></div>
+      <div id="rd-lista"></div>
+    </section>
+
+    <!-- ── RESERVAS ── -->
+    <section class="vista" id="v-reservas">
+      <div class="cab"><div><h1>Reservas</h1><p id="rs-sub">—</p></div></div>
+      <div class="tj"><div id="rs-lista"></div></div>
+    </section>
+
+    <!-- ── PUBLICAR ── -->
+    <section class="vista" id="v-publicar">
+      <div class="cab"><div><h1>Publicar</h1><p id="pb-sub">—</p></div></div>
+      <div class="tj">
+        <h3><svg class="ico"><use href="#i-mega"/></svg>Toca publicar
+          <span class="sp"></span><span class="lbl">lo que lleva más sin salir</span></h3>
+        <div id="pb-lista"></div>
+      </div>
+      <div class="tj tj-p">
+        <div class="k">Los carteles</div>
+        <div class="t">Se siguen haciendo en el panel clásico</div>
+        <p style="font-size:12.5px;color:var(--mut);line-height:1.55;margin:9px 0 13px">
+          Generar el cartel, el texto de Revolico y el estado de WhatsApp son 2.000 líneas
+          que dependen de html2canvas y de tu token de GitHub. Duplicarlas aquí sería
+          duplicar la parte que más se rompe. Esta lista te dice <b style="color:var(--ink)">qué</b>
+          publicar; el <b style="color:var(--ink)">cómo</b> sigue a un toque de distancia.</p>
+        <a class="btn btn-p" href="admin.html"><svg class="ico"><use href="#i-flecha"/></svg>Abrir Publicar en el clásico</a>
+      </div>
+    </section>
+
+    <!-- ── CLIENTES ── -->
+    <section class="vista" id="v-clientes">
+      <div class="cab"><div><h1>Clientes</h1><p id="cl-sub">—</p></div></div>
+      <div class="tj"><div id="cl-lista"></div></div>
+    </section>
+
+    <!-- ── ANALYTICS ── -->
+    <section class="vista" id="v-analytics">
+      <div class="cab"><div><h1>Analytics</h1><p id="an-sub">—</p></div></div>
+      <div class="rej" id="an-rej"></div>
+      <div class="tj">
+        <h3><svg class="ico"><use href="#i-grafico"/></svg>Los más vendidos<span class="sp"></span>
+          <span class="lbl">vendidos.json</span></h3>
+        <div id="an-lista"></div>
+      </div>
+    </section>
+
+    <!-- ── HERRAMIENTAS ── -->
+    <section class="vista" id="v-herramientas">
+      <div class="cab"><div><h1>Herramientas</h1><p>Lo que vive en el panel clásico</p></div></div>
+      <div class="tj"><div id="hr-lista"></div></div>
+    </section>
+
     <!-- ── CONFIGURACIÓN ── -->
     <section class="vista" id="v-config">
       <div class="cab"><div><h1>Configuración</h1><p>Estilo y estado de los datos</p></div></div>
@@ -543,8 +693,15 @@ html[data-piel="grafito"] .modal{background:#131315}
     <button data-v="inventario" title="Inventario"><svg class="ico"><use href="#i-caja"/></svg></button>
     <button data-v="ventas" title="Ventas"><svg class="ico"><use href="#i-plata"/></svg></button>
     <button data-v="copiloto" title="Copiloto"><svg class="ico"><use href="#i-robot"/></svg></button>
-    <button data-v="config" title="Configuración"><svg class="ico"><use href="#i-tuerca"/></svg></button>
+    <button id="a2-mas" title="Más secciones"><svg class="ico"><use href="#i-mas"/></svg></button>
   </nav>
+  <div id="a2-hoja" hidden>
+    <div class="hoja-caja">
+      <div class="hoja-tirador"></div>
+      <h3>Todas las secciones</h3>
+      <div class="hoja-rej" id="a2-hoja-rej"></div>
+    </div>
+  </div>
 </div>
 
 <div id="a2-toast" role="status" aria-live="polite"></div>
@@ -570,6 +727,16 @@ html[data-piel="grafito"] .modal{background:#131315}
 <symbol id="i-mega" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h3l6 4V6l-6 4H3Z"/><path d="M16 9a4 4 0 0 1 0 6"/></symbol>
 <symbol id="i-cerrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></symbol>
 <symbol id="i-fuego" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s5 4.2 5 9a5 5 0 0 1-10 0c0-2 1-3.4 1-3.4S9.5 11 11 11c0-3.5 1-8 1-8Z"/></symbol>
+<symbol id="i-regalo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v3H3zM4.5 12v9h15v-9"/><path d="M12 9v12"/><path d="M12 9S9.5 4 7.5 5.5 9.5 9 12 9Zm0 0s2.5-5 4.5-3.5S14.5 9 12 9Z"/></symbol>
+<symbol id="i-nave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l6-3 6 3v12"/><path d="M15 21V12l6-3v12"/><path d="M6.5 12.5h2M6.5 16.5h2M18 13.5h.01M18 17h.01"/></symbol>
+<symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><path d="M12 12 18 6"/></symbol>
+<symbol id="i-candado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-gente" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.4a3.4 3.4 0 0 1 0 6.2"/></symbol>
+<symbol id="i-llave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 1 0-4.2 4L4 17v3h3l.5-2h2l.5-2h2l1.4-1.4a4 4 0 0 0 1.1-8.1Z"/><path d="M16.5 5.5h.01"/></symbol>
+<symbol id="i-arriba" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V8"/><path d="m7 12.5 5-5 5 5"/><path d="M4 4h16"/></symbol>
+<symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><path d="M13.5 13.5h3v3M20.5 20.5h-3v-3"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6V3Z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></symbol>
 </defs></svg>
 
 <script src="js/auth.js?v=4c7b6472"></script>
@@ -716,6 +883,17 @@ function irA(v){
   if(v === 'categorias') pintarCategorias();
   if(v === 'config') pintarConfig();
   if(v === 'inicio') pintarInicio();
+  if(v === 'agregar') pintarAgregar();
+  if(v === 'combos') pintarCombos();
+  if(v === 'almacenes') pintarAlmacenes();
+  if(v === 'reposicion') pintarReposicion();
+  if(v === 'radar') pintarRadar();
+  if(v === 'reservas') pintarReservas();
+  if(v === 'publicar') pintarPublicar();
+  if(v === 'clientes') pintarClientes();
+  if(v === 'analytics') pintarAnalytics();
+  if(v === 'herramientas') pintarHerramientas();
+  cerrarHoja();
 }
 
 /* ── INICIO ── */
@@ -1124,6 +1302,372 @@ function pintarConfig(){
   $('#cf-cuenta').textContent = u && u.email ? u.email : 'Sin sesión de Firebase';
 }
 
+
+/* ── Datos que viven en archivos del repo. Se piden una vez y se recuerdan;
+      si no hay red, cada vista lo dice en vez de salir en blanco. ── */
+const CACHE = {};
+async function traer(archivo){
+  if(CACHE[archivo] !== undefined) return CACHE[archivo];
+  try{
+    const r = await fetch(archivo + '?_=' + Date.now(), {cache:'no-store'});
+    CACHE[archivo] = r.ok ? await r.json() : null;
+  }catch(e){ CACHE[archivo] = null; }
+  return CACHE[archivo];
+}
+function sinDatos(titulo, detalle){
+  return `<div class="vacio"><b>${esc(titulo)}</b><span>${esc(detalle)}</span></div>`;
+}
+function miniFila(p, extra){
+  const nm = partirNombre(p.nombre || '');
+  const [cls, txt] = estado(p);
+  return `<div class="fila" style="grid-template-columns:34px minmax(0,1fr) auto">
+    ${p.imagen?`<img class="im" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:'<span class="im"></span>'}
+    <span class="nm"><b>${iconoProducto(nm.emoji)}${esc(nm.texto)}</b>
+      <span>${esc(extra || (p.categoria||'') + ' · ' + precio(p))}</span></span>
+    <span class="chip-st ${cls}">${txt}</span></div>`;
+}
+
+/* ── AGREGAR ── */
+function pintarAgregar(){
+  const sel = $('#ag-cat');
+  if(sel && !sel.options.length){
+    sel.innerHTML = porCategoria().map(([c]) => `<option>${esc(c)}</option>`).join('')
+      || '<option>GENERAL</option>';
+  }
+}
+function guardarNuevo(){
+  const nom = $('#ag-nombre').value.trim();
+  if(!nom){ aviso('Ponle un nombre'); $('#ag-nombre').focus(); return; }
+  const p = {
+    id: Date.now(),
+    nombre: nom,
+    categoria: $('#ag-cat').value || 'GENERAL',
+    precioActual: Math.max(0, num($('#ag-precio').value)),
+    precioOriginal: 0,
+    stock: Math.max(0, Math.round(num($('#ag-stock').value))),
+    comision: Math.max(0, num($('#ag-com').value)),
+    comisionMoneda: $('#ag-com-mon').value === 'MN' ? 'MN' : 'USD',
+    imagen: $('#ag-img').value.trim(),
+    masVendido: false
+  };
+  const sub = $('#ag-sub').value.trim(); if(sub) p.subcategoria = sub;
+  const gar = $('#ag-gar').value.trim(); if(gar) p.garantia = gar;
+  PRODUCTOS.push(p);
+  guardarProductos();
+  ['ag-nombre','ag-precio','ag-stock','ag-com','ag-sub','ag-gar','ag-img']
+    .forEach(id => { const e = $('#' + id); if(e) e.value = ''; });
+  $('#n-prod').textContent = PRODUCTOS.length;
+  aviso('Agregado · ' + PRODUCTOS.length + ' productos');
+  irA('inventario');
+}
+
+/* ── COMBOS ── */
+async function pintarCombos(){
+  let combos = leer('combos', null);
+  if(!combos) combos = await traer('combos.json');
+  const lista = Array.isArray(combos) ? combos
+    : (combos && typeof combos === 'object' ? Object.values(combos) : []);
+  $('#n-combos').textContent = lista.length;
+  $('#cb-sub').textContent = lista.length ? lista.length + ' combos' : 'Ninguno todavía';
+  if(!lista.length){
+    $('#cb-lista').innerHTML = sinDatos('No hay combos',
+      'Un combo junta varios productos con un precio de paquete. Se arman en el panel clásico.');
+    return;
+  }
+  $('#cb-lista').innerHTML = lista.map(c => {
+    const n = Array.isArray(c.items) ? c.items.length : num(c.cantidad);
+    return `<div class="tarea" data-e="info">
+      <span class="ic"><svg class="ico"><use href="#i-regalo"/></svg></span>
+      <span class="tx"><b>${esc(c.nombre || 'Combo')}</b>
+        <span>${n} producto${n===1?'':'s'}${c.precio?' · $'+miles(c.precio):''}</span></span></div>`;
+  }).join('');
+}
+
+/* ── ALMACENES ── */
+function pintarAlmacenes(){
+  // La asignación vive en cada producto (almacenId). Los nombres están en
+  // Firebase; sin red se enseña el reparto igual, que es lo que se consulta.
+  const m = {};
+  PRODUCTOS.forEach(p => {
+    const a = p.almacenId || '(sin asignar)';
+    if(!m[a]) m[a] = {n:0, u:0, v:0};
+    m[a].n++; m[a].u += num(p.stock);
+    if(!esMN(p)) m[a].v += num(p.precioActual) * num(p.stock);
+  });
+  const filas = Object.entries(m).sort((a,b) => b[1].n - a[1].n);
+  const asignados = PRODUCTOS.filter(p => p.almacenId).length;
+  $('#al-sub').textContent = asignados
+    ? asignados + ' de ' + PRODUCTOS.length + ' productos con almacén asignado'
+    : 'Ningún producto tiene almacén asignado todavía';
+  $('#al-lista').innerHTML = filas.map(([a,d]) => `
+    <div class="tarea" data-e="${a==='(sin asignar)'?'warn':'info'}">
+      <span class="ic"><svg class="ico"><use href="#i-nave"/></svg></span>
+      <span class="tx"><b>${esc(a)}</b>
+        <span>${d.n} productos · ${miles(d.u)} unidades · $${miles(d.v)} en almacén</span></span></div>`).join('')
+    + `<div class="tj-p" style="padding-top:0"><p style="font-size:11.5px;color:var(--dim);line-height:1.5">
+       Crear y renombrar almacenes sigue en el panel clásico: los nombres viven en Firebase
+       y se comparten entre dispositivos.</p></div>`;
+}
+
+/* ── REPOSICIÓN ── */
+async function pintarReposicion(){
+  const vend = await traer('vendidos.json');
+  const porProd = (vend && vend.por_producto) || {};
+  // Urgencia = se vendió y queda poco. Lo agotado que además se vendió va primero.
+  const puntua = p => {
+    const v = num(porProd[String(p.id)]);
+    const st = num(p.stock);
+    if(st <= 0) return 1000 + v * 10;
+    if(st <= 3) return 500 + v * 10 - st;
+    return v > 0 ? v : -1;
+  };
+  const lista = PRODUCTOS.map(p => ({p, v: num(porProd[String(p.id)]), s: puntua(p)}))
+    .filter(x => x.s > 0).sort((a,b) => b.s - a.s);
+  const agotadosVendidos = lista.filter(x => num(x.p.stock) <= 0 && x.v > 0).length;
+  const bajos = PRODUCTOS.filter(p => num(p.stock) > 0 && num(p.stock) <= 3).length;
+
+  $('#rp-sub').textContent = lista.length
+    ? lista.length + ' productos para revisar'
+    : 'Nada urgente que reponer';
+  if(bajos || agotadosVendidos) $('#pip-repo').hidden = false;
+
+  $('#rp-rej').innerHTML = [
+    ['i-abajo','Agotados que se vendían', agotadosVendidos, agotadosVendidos?'r':'n'],
+    ['i-reloj','Stock bajo', bajos, bajos?'a':'n'],
+    ['i-caja','Agotados en total', PRODUCTOS.filter(p=>num(p.stock)<=0).length, 'n'],
+    ['i-arriba','Con ventas registradas', Object.keys(porProd).length, 'g']
+  ].map(([ic,k,v,t]) => `
+    <div class="tj"><div class="chip"><svg class="ico"><use href="#${ic}"/></svg></div>
+      <div class="k">${k}</div>
+      <div class="v"${t==='r'?' style="color:var(--crit)"':t==='a'?' style="color:var(--warn)"':t==='g'?' style="color:var(--ok)"':''}>${v}</div></div>`).join('');
+
+  if(!lista.length){
+    $('#rp-lista').innerHTML = vend === null
+      ? sinDatos('No pude leer el histórico de ventas',
+          'vendidos.json no está disponible sin conexión. El stock bajo sí se ve en Inventario.')
+      : sinDatos('Nada que reponer', 'Nadie está bajo de stock y no hay agotados que se estuvieran vendiendo.');
+    return;
+  }
+  $('#rp-lista').innerHTML = lista.slice(0,30).map(x => {
+    const st = num(x.p.stock);
+    const por = st <= 0
+      ? (x.v ? 'Agotado · se vendieron ' + x.v : 'Agotado')
+      : (x.v ? 'Quedan ' + st + ' · se vendieron ' + x.v : 'Quedan ' + st);
+    return miniFila(x.p, por);
+  }).join('');
+}
+
+/* ── RADAR ── */
+async function pintarRadar(){
+  const r = await traer('radar.json');
+  if(!r){
+    $('#rd-sub').textContent = 'Sin datos';
+    $('#rd-rej').innerHTML = '';
+    $('#rd-lista').innerHTML = `<div class="tj">${sinDatos('No pude leer el radar',
+      'radar.json lo genera un cron que compara tus precios con Revolico, Porlalivre y lelespc.')}</div>`;
+    return;
+  }
+  const res = r.resumen || {};
+  const prods = Array.isArray(r.productos) ? r.productos : [];
+  $('#n-radar').textContent = prods.length;
+  $('#rd-sub').textContent = prods.length + ' vigilados · ' +
+    (r.fecha || '') + ' · ' + ((r.fuentes||[]).join(', ') || 'sin fuentes');
+  $('#rd-rej').innerHTML = [
+    ['i-radar','Vigilados', num(res.vigilados), 'n'],
+    ['i-arriba','Por encima del mercado', num(res.encimaMercado), num(res.encimaMercado)?'r':'g'],
+    ['i-abajo','Bajadas de la competencia', num(res.bajadasComp), num(res.bajadasComp)?'a':'n'],
+    ['i-aviso','Sin datos de mercado', num(res.sinDatos), num(res.sinDatos)?'a':'n']
+  ].map(([ic,k,v,t]) => `
+    <div class="tj"><div class="chip"><svg class="ico"><use href="#${ic}"/></svg></div>
+      <div class="k">${k}</div>
+      <div class="v"${t==='r'?' style="color:var(--crit)"':t==='a'?' style="color:var(--warn)"':t==='g'?' style="color:var(--ok)"':''}>${v}</div></div>`).join('');
+
+  const tono = e => e === 'competitivo' ? 'g' : (e === 'caro' || e === 'encima' ? 'r' : 'a');
+  $('#rd-lista').innerHTML = prods.map(x => {
+    const nm = partirNombre(x.nombre || '');
+    const m = x.mercado || {};
+    const muestras = Array.isArray(x.muestras) ? x.muestras.slice(0,3) : [];
+    return `<div class="tj" style="margin-bottom:13px">
+      <h3>${iconoProducto(nm.emoji)}${esc(nm.texto)}<span class="sp"></span>
+        <span class="prop ${tono(x.estado)}">${esc(x.estado || '—')}</span></h3>
+      <div class="tj-p">
+        <div style="display:flex;gap:22px;flex-wrap:wrap">
+          <div><div class="k">Tu precio</div>
+            <div class="mono" style="font-size:22px;font-weight:600">$${miles(x.tuPrecio)}</div></div>
+          <div><div class="k">Mediana del mercado</div>
+            <div class="mono" style="font-size:22px;font-weight:600;color:var(--mut)">$${miles(m.mediana)}</div></div>
+          <div><div class="k">Más barato visto</div>
+            <div class="mono" style="font-size:22px;font-weight:600;color:var(--mut)">$${miles(m.min)}</div></div>
+          <div><div class="k">Anuncios</div>
+            <div class="mono" style="font-size:22px;font-weight:600;color:var(--mut)">${num(m.n)}</div></div>
+        </div>
+        ${x.sugerencia && x.sugerencia.texto
+          ? `<p style="font-size:12.5px;color:var(--mut);margin-top:12px">${esc(x.sugerencia.texto)}</p>` : ''}
+      </div>
+      ${muestras.length ? muestras.map(v => `<div class="tarea" data-e="info">
+        <span class="ic"><svg class="ico"><use href="#i-etiqueta"/></svg></span>
+        <span class="tx"><b>$${miles(v.precio)} · ${esc(v.fuente||'')}</b>
+          <span>${esc(String(v.titulo||'').slice(0,86))}</span></span></div>`).join('') : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ── RESERVAS ── */
+function pintarReservas(){
+  let res = [];
+  if(typeof TMReservas !== 'undefined' && TMReservas.listar){
+    try{ res = TMReservas.listar() || []; }catch(e){ res = []; }
+  }
+  if(!Array.isArray(res)) res = [];
+  $('#n-res').textContent = res.length;
+  $('#rs-sub').textContent = res.length ? res.length + ' reservas' : 'Ninguna reserva activa';
+  if(!res.length){
+    $('#rs-lista').innerHTML = sinDatos('Sin reservas',
+      'Una reserva aparta stock para un cliente hasta que pase a recogerlo. Se crean desde el vale.');
+    return;
+  }
+  $('#rs-lista').innerHTML = res.map(r => {
+    const t = ventaTotales(r);
+    return `<div class="vt">
+      <span><b>${esc(r.cliente || 'Reserva')}</b>
+        <span>${new Date(r.fecha || r.ts || Date.now()).toLocaleDateString('es',{day:'numeric',month:'short'})}</span></span>
+      <span class="m">${t.usd?'$'+miles(t.usd):''}</span>
+      <span class="g">${esc(r.estado || '')}</span></div>`;
+  }).join('');
+}
+
+/* ── PUBLICAR ── */
+function pintarPublicar(){
+  const hist = leer('tmPubHist', []) || [];
+  const cuando = {};
+  (Array.isArray(hist) ? hist : []).forEach(e => {
+    const id = String(e.id || e.productoId || '');
+    const t = new Date(e.fecha || e.ts || 0).getTime();
+    if(id && t && (!cuando[id] || t > cuando[id])) cuando[id] = t;
+  });
+  const conStock = PRODUCTOS.filter(p => num(p.stock) > 0);
+  const orden = conStock.map(p => ({p, t: cuando[String(p.id)] || 0}))
+    .sort((a,b) => a.t - b.t);
+  const nunca = orden.filter(x => !x.t).length;
+  $('#pb-sub').textContent = hist.length
+    ? nunca + ' con stock sin publicar nunca · ' + conStock.length + ' publicables'
+    : conStock.length + ' productos con stock · sin historial de publicaciones en este dispositivo';
+  $('#pb-lista').innerHTML = orden.slice(0,15).map(x => miniFila(x.p,
+    x.t ? 'Última vez hace ' + Math.round((Date.now()-x.t)/864e5) + ' días'
+        : 'Nunca publicado desde este dispositivo')).join('');
+}
+
+/* ── CLIENTES ── */
+function pintarClientes(){
+  const m = {};
+  VENTAS.forEach(v => {
+    const nom = String(v.cliente || '').trim();
+    if(!nom) return;
+    if(!m[nom]) m[nom] = {n:0, usd:0, mn:0, tel: v.telefono || '', ultima: 0};
+    const t = ventaTotales(v);
+    m[nom].n++; m[nom].usd += t.usd; m[nom].mn += t.mn;
+    const f = new Date(v.fecha || v.ts || 0).getTime();
+    if(f > m[nom].ultima) m[nom].ultima = f;
+    if(!m[nom].tel && v.telefono) m[nom].tel = v.telefono;
+  });
+  const lista = Object.entries(m).sort((a,b) => b[1].usd - a[1].usd);
+  $('#n-cli').textContent = lista.length;
+  const sinNombre = VENTAS.length - VENTAS.filter(v => String(v.cliente||'').trim()).length;
+  $('#cl-sub').textContent = lista.length
+    ? lista.length + ' clientes con nombre' + (sinNombre ? ' · ' + sinNombre + ' ventas sin nombre' : '')
+    : 'Ningún cliente registrado todavía';
+  if(!lista.length){
+    $('#cl-lista').innerHTML = sinDatos('Sin clientes',
+      'La lista se arma sola con el nombre y el teléfono que pongas al registrar una venta. Los dos son opcionales, y sólo se guardan en este dispositivo.');
+    return;
+  }
+  $('#cl-lista').innerHTML = lista.map(([nom,d]) => {
+    const dias = d.ultima ? Math.round((Date.now()-d.ultima)/864e5) : null;
+    const tel = String(d.tel||'').replace(/\D/g,'');
+    return `<div class="tarea" data-e="info">
+      <span class="ic"><svg class="ico"><use href="#i-gente"/></svg></span>
+      <span class="tx"><b>${esc(nom)}</b>
+        <span>${d.n} compra${d.n>1?'s':''} · $${miles(d.usd)}${d.mn?' + '+miles(d.mn)+' MN':''}${dias!==null?' · hace '+dias+' días':''}</span></span>
+      ${tel ? `<a class="btn btn-sm" href="https://wa.me/${esc(tel)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ── ANALYTICS ── */
+async function pintarAnalytics(){
+  const vend = await traer('vendidos.json');
+  const porProd = (vend && vend.por_producto) || {};
+  const total = Object.values(porProd).reduce((a,b) => a + num(b), 0);
+  const r = resumen();
+  $('#an-sub').textContent = vend && vend.actualizado
+    ? 'Histórico al ' + new Date(vend.actualizado).toLocaleDateString('es',{day:'numeric',month:'long'})
+    : 'Sin histórico disponible';
+  $('#an-rej').innerHTML = [
+    ['i-plata','Unidades vendidas', miles(total), 'g'],
+    ['i-caja','Productos que se han vendido', Object.keys(porProd).length, 'n'],
+    ['i-estrella','Destacados', PRODUCTOS.filter(p=>p.masVendido).length, 'n'],
+    ['i-etiqueta','Categorías', porCategoria().length, 'n']
+  ].map(([ic,k,v,t]) => `
+    <div class="tj"><div class="chip"><svg class="ico"><use href="#${ic}"/></svg></div>
+      <div class="k">${k}</div>
+      <div class="v"${t==='g'?' style="color:var(--ok)"':''}>${v}</div></div>`).join('');
+
+  const top = Object.entries(porProd).map(([id,n]) => ({p: buscarProducto(id), n: num(n)}))
+    .filter(x => x.p).sort((a,b) => b.n - a.n);
+  if(!top.length){
+    $('#an-lista').innerHTML = vend === null
+      ? sinDatos('No pude leer el histórico', 'vendidos.json no está disponible sin conexión.')
+      : sinDatos('Sin ventas en el histórico', 'vendidos.json todavía no tiene ningún producto.');
+    return;
+  }
+  const tope = top[0].n;
+  $('#an-lista').innerHTML = `<div class="gr">` + top.slice(0,12).map(x => {
+    const nm = partirNombre(x.p.nombre);
+    return `<div class="barra"><span class="kk">${esc(nm.texto)}</span>
+      <span class="t2"><i style="width:${(x.n/tope*100).toFixed(1)}%"></i></span>
+      <span class="vv">${x.n}</span></div>`;
+  }).join('') + `</div>
+    <div class="gr-eje"><div></div><div class="mm"><span>0</span>
+      <span>${Math.round(tope/2)}</span><span>${tope}</span></div><div></div></div>`;
+}
+
+/* ── HERRAMIENTAS ── */
+function pintarHerramientas(){
+  const items = [
+    ['i-mega','Publicar a redes','Cartel, texto de Revolico y estado de WhatsApp','admin.html'],
+    ['i-qr','Código QR para imprimir','El QR de la tienda, en tamaño cartel','admin.html'],
+    ['i-doc','Vale / factura','El comprobante que se le da al cliente','vale.html'],
+    ['i-caja','Importar y exportar CSV','Subir el catálogo entero de golpe','admin.html'],
+    ['i-flecha','Sincronizar con GitHub','Publicar los cambios en la tienda de verdad','admin.html'],
+    ['i-regalo','Armar combos','Juntar productos con precio de paquete','admin.html']
+  ];
+  $('#hr-lista').innerHTML = items.map(([ic,t,d,url]) => `
+    <div class="tarea" data-e="info">
+      <span class="ic"><svg class="ico"><use href="#${ic}"/></svg></span>
+      <span class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></span>
+      <a class="btn btn-sm" href="${url}">Abrir</a></div>`).join('')
+    + `<div class="tj-p"><p style="font-size:11.5px;color:var(--dim);line-height:1.55">
+       Todo esto depende del token de GitHub, de html2canvas o de Firebase, y son las
+       partes que más se rompen. Están donde llevan años funcionando, no duplicadas aquí.</p></div>`;
+}
+
+/* ── La hoja de "más secciones" del teléfono ── */
+const MAS_SECCIONES = [
+  ['agregar','Agregar','i-mas'], ['categorias','Categorías','i-etiqueta'],
+  ['combos','Combos','i-regalo'], ['almacenes','Almacenes','i-nave'],
+  ['reposicion','Reposición','i-abajo'], ['radar','Radar','i-radar'],
+  ['reservas','Reservas','i-candado'], ['publicar','Publicar','i-mega'],
+  ['clientes','Clientes','i-gente'], ['analytics','Analytics','i-grafico'],
+  ['herramientas','Herramientas','i-llave'], ['config','Configuración','i-tuerca']
+];
+function abrirHoja(){
+  const h = $('#a2-hoja');
+  $('#a2-hoja-rej').innerHTML = MAS_SECCIONES.map(([v,t,ic]) => `
+    <button data-v="${v}"><svg class="ico"><use href="#${ic}"/></svg>${esc(t)}</button>`).join('');
+  h.hidden = false;
+}
+function cerrarHoja(){ $('#a2-hoja').hidden = true; }
+
 // ── Arranque ─────────────────────────────────────────────────────
 function delegar(){
   document.addEventListener('click', e => {
@@ -1150,6 +1694,9 @@ function delegar(){
   $('#inv-q').addEventListener('input', () => { clearTimeout(t); t = setTimeout(pintarInventario, 160); });
   $('#inv-cat').addEventListener('change', pintarInventario);
   $('#inv-est').addEventListener('change', pintarInventario);
+  $('#ag-guardar').addEventListener('click', guardarNuevo);
+  $('#a2-mas').addEventListener('click', abrirHoja);
+  $('#a2-hoja').addEventListener('click', e => { if(e.target.id === 'a2-hoja') cerrarHoja(); });
   $('#vt-nueva').addEventListener('click', () => {
     aviso('Registrar ventas sigue en el panel clásico, por ahora');
   });
@@ -1172,6 +1719,9 @@ async function abrirPanel(){
     + cats.map(([c,n]) => `<option value="${esc(c)}">${esc(c)} · ${n}</option>`).join('');
   const pend = tareas().length;
   if(pend) $('#pip-copi').hidden = false;
+  if(PRODUCTOS.some(p => num(p.stock) > 0 && num(p.stock) <= 3)) $('#pip-repo').hidden = false;
+  $('#n-cli').textContent = new Set(VENTAS.map(v => String(v.cliente||'').trim()).filter(Boolean)).size;
+  traer('radar.json').then(r => { if(r && Array.isArray(r.productos)) $('#n-radar').textContent = r.productos.length; });
   pintarInicio();
 }
 
