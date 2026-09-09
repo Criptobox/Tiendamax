@@ -229,12 +229,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/producto-1778214214360.html</loc>
-    <lastmod>2026-09-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/producto-1778336613589.html</loc>
     <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -364,7 +358,7 @@
     <loc>https://tiendamax.org/p/producto-1778634719053.html</loc>
     <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1778636088295.html</loc>
@@ -536,12 +530,6 @@
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1778546922840.html</loc>
-    <lastmod>2026-09-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/producto-1778601482845.html</loc>
     <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
