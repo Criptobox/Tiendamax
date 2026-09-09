@@ -1308,6 +1308,9 @@ function pintarConfig(){
 const CACHE = {};
 async function traer(archivo){
   if(CACHE[archivo] !== undefined) return CACHE[archivo];
+  // La vista previa no tiene servidor: si trae los datos empotrados, se usan.
+  if(window.__A2_PRECARGA && archivo in window.__A2_PRECARGA)
+    return (CACHE[archivo] = window.__A2_PRECARGA[archivo]);
   try{
     const r = await fetch(archivo + '?_=' + Date.now(), {cache:'no-store'});
     CACHE[archivo] = r.ok ? await r.json() : null;
