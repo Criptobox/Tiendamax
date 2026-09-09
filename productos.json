@@ -3545,7 +3545,7 @@
     "nombre": "📟Controlador Solar de 60 Amp POWMR M60 ULTRA",
     "precioActual": 180,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1779208523952.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1788979605648.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 10,
@@ -3604,10 +3604,11 @@
       "1x Controlador MPPT PowMr 60A",
       "1x Manual de usuario"
     ],
-    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1779208523952.webp"
-    ]
+      "https://tiendamax.org/imagenes/img_1788979605648.webp",
+      "https://tiendamax.org/imagenes/img_1788979620287.webp"
+    ],
+    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real."
   },
   {
     "id": 1779562612951,
