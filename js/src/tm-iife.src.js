@@ -133,12 +133,7 @@ async function guardarTasaMNAdmin() {
         }
         if (typeof _heroSearchActivo !== 'undefined' && _heroSearchActivo) {
             const q = _heroSearchActivo;
-            lista = lista.filter(p =>
-                (p.nombre || '').toLowerCase().includes(q) ||
-                (p.descripcion || '').toLowerCase().includes(q) ||
-                (p.categoria || '').toLowerCase().includes(q) ||
-                (p.subcategoria || '').toLowerCase().includes(q)
-            );
+            lista = lista.filter(p => tmCoincideBusqueda(p, q));
         }
 
         const ofertaId = tmGetOfertaId();

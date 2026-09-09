@@ -1252,7 +1252,7 @@ const IA_TYPOS = {
 // Idéntica a SIGLAS en scripts/nightly_agent.py; un test las cruza. Estaban
 // descuadradas y por eso el reporte nocturno proponía "CPE" y este botón
 // aplicaba "Cpe".
-const IA_SIGLAS = new Set(['WIFI','USB','HDMI','LED','RGB','TV','PC','TIG','MPPT','POE','AC','DC','CCTV','GPS','LCD','USD','MN','KIT','PRO','MAX','MINI','PLUS','ULTRA','LITE','XL','II','III','4K','2K','HD','FHD','UHD','5G','4G','3G','2T','4T','SHPD','RX','AX','CPE','SXT','LTE','PV','UPS','BMS','IP','SSD','RAM','OTG']);
+const IA_SIGLAS = new Set(['WIFI','USB','HDMI','LED','RGB','TV','PC','TIG','MPPT','POE','AC','DC','CCTV','GPS','LCD','USD','MN','KIT','PRO','MAX','MINI','PLUS','ULTRA','LITE','XL','II','III','4K','2K','HD','FHD','UHD','5G','4G','3G','2T','4T','SHPD','RX','AX','CPE','SXT','LTE','PV','UPS','BMS','IP','SSD','RAM','OTG','PTZ','NTRC']);
 const IA_SIGLA_FORMA = { 'WIFI':'WiFi' };
 // Marcas y términos cuya grafía la fija el fabricante, no el castellano. Sin
 // esta tabla la regla general escribía bien una palabra normal y destrozaba un
@@ -1268,7 +1268,8 @@ const IA_MARCAS = {
   'LIFEPO4':'LiFePO4','LIITOKALA':'LiitoKala','AIRFIBER':'AirFiber',
   'XIAOMI':'Xiaomi','IPHONE':'iPhone','IPAD':'iPad','AIRPODS':'AirPods',
   'MANNOL':'Mannol','TATALIKEN':'Tataliken','MUST':'Must',
-  'HAP':'hAP','HEX':'hEX','SXTSQ':'SXTsq'
+  'HAP':'hAP','HEX':'hEX','SXTSQ':'SXTsq','COREBOX':'Corebox',
+  'ZOSI':'Zosi','VEVOR':'VEVOR'
 };
 
 function iaNormalizarNombre(raw){

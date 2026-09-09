@@ -102,9 +102,7 @@ function renderizarProductos(isLoadMore = false) {
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
         productosFiltrados = productosFiltrados.filter(p => {
-            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                (p.descripcion||'').toLowerCase().includes(q) ||
-                (p.categoria||'').toLowerCase().includes(q);
+            const matchQ = tmCoincideBusqueda(p, q);
             const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
             return matchQ && matchP;
         });

@@ -78,7 +78,7 @@
   },
   {
     "id": 1777924118004,
-    "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
+    "nombre": "⚡ Inversor Tataliken 4000W",
     "precioActual": 180,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
@@ -90,7 +90,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-12v",
+    "slug": "inversor-tataliken-4000w",
     "comision": 10,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -103,8 +103,8 @@
       "〰️ Tipo de onda: Sinusoidal modificada"
     ],
     "recomendados": [],
-    "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
-    "seoDescription": "Inversor Tataliken de 12V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada, ideal para ventiladores, televisores, luces LED y carga de dispositivos durante los apagones.",
+    "seoTitle": "Inversor Tataliken 4000W en Cuba | TiendaMax",
+    "seoDescription": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales…",
     "radar": true,
     "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
     "ficha": [
@@ -490,7 +490,7 @@
   },
   {
     "id": 1778103856933,
-    "nombre": "⚡ Pistola de Masaje Muscular (Fascia Gun)",
+    "nombre": "⚡ Pistola Fascia Gun",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1784007970666.webp",
     "categoria": "UTILES",
@@ -501,10 +501,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "pistola-de-masaje-recargable",
+    "slug": "masajeador-fascia-gun",
     "comision": 1500,
-    "seoTitle": "PISTOLA DE MASAJE RECARGABLE: en Cuba | TiendaMax",
-    "seoDescription": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una…",
+    "seoTitle": "Pistola Fascia Gun en Cuba | TiendaMax",
+    "seoDescription": "Dispositivo de percusión de alta potencia diseñado para liberar la tensión muscular, mejorar la circulación y acelerar la recuperación después del…",
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
@@ -564,7 +564,7 @@
   },
   {
     "id": 1778104191957,
-    "nombre": "Cargador Inteligente de 15 Amperes:",
+    "nombre": "Cargador Inteligente 15A",
     "precioActual": 65,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780510718915.webp",
@@ -581,8 +581,8 @@
     "specs": [
       "⚡ Voltaje: 12V"
     ],
-    "seoTitle": "CARGADOR INTELIGENTE DE 15 AMPERES: en Cuba | TiendaMax",
-    "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…",
+    "seoTitle": "Cargador Inteligente 15A en Cuba | TiendaMax",
+    "seoDescription": "Cargador inteligente de batería de 15A (12V) / 8A (24V), carga por pulsos de 9 etapas con pantalla digital. Carga y repara baterías de ácido-plomo…",
     "descripcion": "Cargador inteligente de batería de 15A (12V) / 8A (24V), carga por pulsos de 9 etapas con pantalla digital. Carga y repara baterías de ácido-plomo, calcio, gel y húmedas. Incluye cables con pinzas para conectar directo a la batería.",
     "ficha": [
       {
@@ -773,7 +773,7 @@
   },
   {
     "id": 1778104512761,
-    "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
+    "nombre": "📟 Controlador MPPT 100A POWMR",
     "precioActual": 260,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
@@ -784,15 +784,15 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
+    "slug": "controlador-mppt-100a-powmr",
     "comision": 10,
     "specs": [
       "⚡ Tecnología MPPT de Alta Eficiencia (100A)",
       "🔋 Compatibilidad Universal (12V/24V/36V/48V)",
       "🔌 Pantalla LCD y Control Inteligente"
     ],
-    "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
-    "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
+    "seoTitle": "Controlador MPPT 100A POWMR en Cuba | TiendaMax",
+    "seoDescription": "Este controlador MPPT de alta capacidad (100A) de PowMr es una solución robusta y versátil, capaz de gestionar sistemas de baterías desde 12V hasta 48V de…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -1032,7 +1032,7 @@
   },
   {
     "id": 1778104850733,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 100A",
+    "nombre": "⚡ Controlador MPPT 100A",
     "precioActual": 70,
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "categoria": "ENERGIA",
@@ -1043,14 +1043,14 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "controlador-carga-solar-mppt-100a",
+    "slug": "controlador-mppt-100a",
     "comision": 5,
     "specs": [
       "⚡ Corriente: 100A",
       "⚡ Voltaje: 48V"
     ],
-    "seoTitle": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A en Cuba | TiendaMax",
-    "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…",
+    "seoTitle": "Controlador MPPT 100A en Cuba | TiendaMax",
+    "seoDescription": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente…",
     "descripcion": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente de carga en tiempo real, botones de configuración (reset, menú, encendido/apagado). Medidas 19.5 x 18.3cm, para montar en pared.",
     "ficha": [
       {
@@ -1610,7 +1610,7 @@
   },
   {
     "id": 1778336613589,
-    "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
+    "nombre": "⚡ Pistola Triangular",
     "precioActual": 35,
     "imagen": "https://tiendamax.org/imagenes/img_1784008477390.webp",
     "categoria": "UTILES",
@@ -1621,10 +1621,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "pistola-de-masaje-profesional",
+    "slug": "masajeador-triangular",
     "comision": 1500,
-    "seoTitle": "PISTOLA DE MASAJE PROFESIONAL en Cuba | TiendaMax",
-    "seoDescription": "Pistola de masaje PROFESIONAL inalámbrica: Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. Incluye…",
+    "seoTitle": "Pistola Triangular en Cuba | TiendaMax",
+    "seoDescription": "Pistola de masaje de percusión con diseño ergonómico avanzado. Ideal para atletas y personas que buscan una recuperación muscular completa, gracias a su…",
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
@@ -2577,7 +2577,7 @@
   },
   {
     "id": 1778546645170,
-    "nombre": "Juego de Llantas R14 — Negro Con Detalle Rojo",
+    "nombre": "Juego Llantas R14 Rojo",
     "precioActual": 460,
     "imagen": "https://tiendamax.org/imagenes/img_1778546645170_ext.webp",
     "categoria": "CARROS",
@@ -2588,10 +2588,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 16,
-    "slug": "juego-de-llantas-r14",
+    "slug": "juego-llantas-r14-rojo",
     "comision": 10,
-    "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "seoTitle": "Juego Llantas R14 Rojo en Cuba | TiendaMax",
+    "seoDescription": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja.",
     "descripcion": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja.",
     "ficha": [
       {
@@ -2630,7 +2630,7 @@
   },
   {
     "id": 1778546857180,
-    "nombre": "Juego de Llantas R15 — Negro Pulido",
+    "nombre": "Juego Llantas R15 Pulido",
     "precioActual": 460,
     "imagen": "https://tiendamax.org/imagenes/img_1778546857180_ext.webp",
     "categoria": "CARROS",
@@ -2641,10 +2641,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 23,
-    "slug": "juego-llantas-r15-centro-4x100-4x114-3",
+    "slug": "juego-llantas-r15-pulido",
     "comision": 10,
-    "seoTitle": "JUEGO DE LLANTAS R15 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "seoTitle": "Juego Llantas R15 Pulido en Cuba | TiendaMax",
+    "seoDescription": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
     "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
     "ficha": [
       {
@@ -3182,7 +3182,7 @@
   },
   {
     "id": 1778906281677,
-    "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
+    "nombre": "Cargador Inteligente 84V 10A",
     "precioActual": 100,
     "imagen": "https://tiendamax.org/imagenes/img_1778906279220.webp",
     "categoria": "MOTOS",
@@ -3193,15 +3193,15 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargador-inteligente-de-alta-potencia-84v-10a",
+    "slug": "cargador-inteligente-84v-10a",
     "comision": 5,
     "specs": [
       "⚡ 110V",
       "⚡ 84V",
       "⚡ 10A"
     ],
-    "seoTitle": "CARGADOR INTELIGENTE DE ALTA POTENCIA 84V 10A | TiendaMax",
-    "seoDescription": "Moto Eléctrica | Carga Rápida 110V 📝 Descripción del Producto Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de…",
+    "seoTitle": "Cargador Inteligente 84V 10A en Cuba | TiendaMax",
+    "seoDescription": "Cargador inteligente de alta potencia, 84V 10A, entrada 110V. Pantalla digital que muestra porcentaje de carga y estado (cargando/completo). Para baterías…",
     "descripcion": "Cargador inteligente de alta potencia, 84V 10A, entrada 110V. Pantalla digital que muestra porcentaje de carga y estado (cargando/completo). Para baterías de litio de patinetas o bicicletas eléctricas de 84V.",
     "ficha": [
       {
@@ -3316,7 +3316,7 @@
   },
   {
     "id": 1778906905279,
-    "nombre": "Espejos Alerón Stealth Fibra de Carbón",
+    "nombre": "Espejos Stealth Carbón",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
@@ -3327,10 +3327,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "espejos-retrovisores-deportivos-aleron-tipo-stealth-acabado-fibra-de-c",
+    "slug": "espejos-stealth-carbon",
     "comision": 1.8,
-    "seoTitle": "ESPEJOS RETROVISORES DEPORTIVOS ALERÓN TIPO… | TiendaMax",
-    "seoDescription": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este…",
+    "seoTitle": "Espejos Stealth Carbón en Cuba | TiendaMax",
+    "seoDescription": "Espejos retrovisores deportivos tipo Stealth, acabado fibra de carbón premium. Incluye tornillería para instalación.",
     "descripcion": "Espejos retrovisores deportivos tipo Stealth, acabado fibra de carbón premium. Incluye tornillería para instalación.",
     "ficha": [
       {
@@ -3365,7 +3365,7 @@
   },
   {
     "id": 1778907072353,
-    "nombre": "Espejos Alerón Stealth Poligonales",
+    "nombre": "Espejos Stealth Poligonal",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
     "categoria": "MOTOS",
@@ -3376,10 +3376,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "espejos-aleron-deportivos-stealth-poligonales",
+    "slug": "espejos-stealth-poligonal",
     "comision": 1.8,
-    "seoTitle": "ESPEJOS ALERÓN DEPORTIVOS STEALTH POLIGONALES |… | TiendaMax",
-    "seoDescription": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo…",
+    "seoTitle": "Espejos Stealth Poligonal en Cuba | TiendaMax",
+    "seoDescription": "Espejos retrovisores deportivos tipo Stealth, diseño poligonal aerodinámico premium, cristal con tinte. Incluye tornillería para instalación.",
     "descripcion": "Espejos retrovisores deportivos tipo Stealth, diseño poligonal aerodinámico premium, cristal con tinte. Incluye tornillería para instalación.",
     "ficha": [
       {
@@ -3611,7 +3611,7 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "⚡ Controlador de Carga Solar MPPT 80A POWMR",
+    "nombre": "⚡ Controlador MPPT 80A POWMR",
     "precioActual": 220,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
@@ -3623,15 +3623,15 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
+    "slug": "controlador-mppt-80a-powmr",
     "comision": 10,
     "specs": [
       "⚡ 80A MPPT",
       "🔋 12V / 24V / 36V / 48V Auto",
       "📟 Pantalla LCD y Botones de Control"
     ],
-    "seoTitle": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
-    "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
+    "seoTitle": "Controlador MPPT 80A POWMR en Cuba | TiendaMax",
+    "seoDescription": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las…",
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785284197964.webp"
@@ -3918,7 +3918,7 @@
   },
   {
     "id": 1780344659047,
-    "nombre": "🔒 Cámara de Seguridad Bullet Zosi",
+    "nombre": "🔒 Cámara Bullet Zosi",
     "precioActual": 50,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
@@ -3930,10 +3930,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "zosl-camara-de-sequridad-cctv",
+    "slug": "camara-bullet-zosi",
     "comision": 1500,
-    "seoTitle": "ZOSL - CÁMARA DE SEQURIDAD CCTV en Cuba | TiendaMax",
-    "seoDescription": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
+    "seoTitle": "Cámara Bullet Zosi en Cuba | TiendaMax",
+    "seoDescription": "COLORES ⬛ ⬜ Cámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en…",
     "comisionMoneda": "MN",
     "specs": [
       "🎯 Uso: Videovigilancia residencial y comercial"
@@ -4804,7 +4804,7 @@
   },
   {
     "id": 1778546731028,
-    "nombre": "Juego de Llantas R14 — Negro Con Pulido Cromado",
+    "nombre": "Juego Llantas R14 Cromado",
     "precioActual": 460,
     "imagen": "https://tiendamax.org/imagenes/img_1778546731028_ext.webp",
     "categoria": "CARROS",
@@ -4815,10 +4815,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 16,
-    "slug": "juego-llantas-r14-centro-4x100-4x114-3",
+    "slug": "juego-llantas-r14-cromado",
     "comision": 10,
-    "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "seoTitle": "Juego Llantas R14 Cromado en Cuba | TiendaMax",
+    "seoDescription": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja.",
     "descripcion": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja.",
     "ficha": [
       {
@@ -4858,7 +4858,7 @@
   },
   {
     "id": 1778546922840,
-    "nombre": "Juego de Llantas R15 — Gris / Negro",
+    "nombre": "Juego Llantas R15 Gris",
     "precioActual": 500,
     "imagen": "https://tiendamax.org/imagenes/img_1778546922840_ext.webp",
     "categoria": "CARROS",
@@ -4869,10 +4869,10 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "juego-llantas-r15-centro-4x100-4x114-3",
+    "slug": "juego-llantas-r15-gris",
     "comision": 10,
-    "seoTitle": "JUEGO DE LLANTAS R15 en Cuba | TiendaMax",
-    "seoDescription": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
+    "seoTitle": "Juego Llantas R15 Gris en Cuba | TiendaMax",
+    "seoDescription": "Juego de llantas/rines R15, marca Ocenti Racing, diseño de 5 rayos acabado gris/negro. Medida 15x6, patrón de rosca 4x100/114.3. Vienen nuevas en su caja.",
     "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño de 5 rayos acabado gris/negro. Medida 15x6, patrón de rosca 4x100/114.3. Vienen nuevas en su caja.",
     "ficha": [
       {
@@ -5978,7 +5978,7 @@
   },
   {
     "id": 1783473894756,
-    "nombre": "🔌 Cargador Inteligente Corebox 12V 15A",
+    "nombre": "🔌 Cargador Corebox 12V 15A",
     "imagen": "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp"
@@ -6001,7 +6001,7 @@
       "⚙ Tecnología / Tipo: AGM, GEL, EFB, LiFePO4"
     ],
     "fechaAgregado": "2026-07-08T01:24:54.756Z",
-    "seoTitle": "Cargador Inteligente Corebox 12V 15A en Cuba | TiendaMax",
+    "seoTitle": "Cargador Corebox 12V 15A en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de última generación diseñado para ofrecer una carga rápida y segura a diversos tipos de baterías. Equipado con una pantalla digital…",
     "descripcion": "Cargador inteligente de última generación diseñado para ofrecer una carga rápida y segura a diversos tipos de baterías. Equipado con una pantalla digital de alta visibilidad, permite monitorear el proceso de carga en tiempo real, garantizando que tus baterías reciban el tratamiento adecuado para prolongar su vida útil.",
     "ficha": [
@@ -6042,7 +6042,7 @@
   },
   {
     "id": 1783474199534,
-    "nombre": "🔌 Cargador Inteligente Ntrc 20A",
+    "nombre": "🔌 Cargador NTRC 20A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474195842.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474195842.webp",
@@ -6067,7 +6067,7 @@
       "⚡ Salida 24V: 10A"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z",
-    "seoTitle": "Cargador Inteligente Ntrc 20A en Cuba | TiendaMax",
+    "seoTitle": "Cargador NTRC 20A en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente avanzado diseñado para ofrecer un mantenimiento óptimo y una carga segura para una amplia variedad de baterías. Su capacidad para…",
     "descripcion": "Cargador inteligente avanzado diseñado para ofrecer un mantenimiento óptimo y una carga segura para una amplia variedad de baterías. Su capacidad para manejar diferentes voltajes y tecnologías, junto con su función de reparación, lo convierte en una herramienta esencial para prolongar la vida útil de tus equipos eléctricos.",
     "ficha": [
@@ -6116,7 +6116,7 @@
   },
   {
     "id": 1783474440848,
-    "nombre": "🔌 Cargador Inteligente Ntrc 35A",
+    "nombre": "🔌 Cargador NTRC 35A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474437066.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474437066.webp",
@@ -6141,7 +6141,7 @@
       "⚡ Salida 24V: 18A"
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z",
-    "seoTitle": "Cargador Inteligente Ntrc 35A en Cuba | TiendaMax",
+    "seoTitle": "Cargador NTRC 35A en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de alta capacidad diseñado para ofrecer una carga eficiente y un mantenimiento seguro a una amplia variedad de baterías. Su…",
     "descripcion": "Cargador inteligente de alta capacidad diseñado para ofrecer una carga eficiente y un mantenimiento seguro a una amplia variedad de baterías. Su versatilidad permite gestionar sistemas de 12V y 24V, integrando funciones especiales de reparación para ayudar a recuperar y prolongar la vida útil de tus baterías.",
     "ficha": [
@@ -6573,7 +6573,7 @@
   },
   {
     "id": 1784405087402,
-    "nombre": "🔒 Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
+    "nombre": "🔒 Cámara PTZ WiFi Exterior",
     "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784405086297.webp"
@@ -6595,7 +6595,7 @@
       "🎯 Uso: Interiores y exteriores protegidos"
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
-    "seoTitle": "Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
+    "seoTitle": "Cámara PTZ WiFi Exterior en Cuba | TiendaMax",
     "seoDescription": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y…",
     "ficha": [
       {
@@ -6741,7 +6741,7 @@
   },
   {
     "id": 1784569498967,
-    "nombre": "☀️ Controlador de Carga Solar MPPT 100A Con USB",
+    "nombre": "☀️ Controlador MPPT 100A Con USB",
     "imagen": "https://tiendamax.org/imagenes/img_1784825170677.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784825170677.webp"
@@ -6764,7 +6764,7 @@
       "📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z",
-    "seoTitle": "Controlador de Carga Solar MPPT 100A en Cuba | TiendaMax",
+    "seoTitle": "Controlador MPPT 100A Con USB en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento…",
     "descripcion": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento automático se adapta a múltiples configuraciones de voltaje, protegiendo y alargando la vida útil de tu banco de baterías con una gestión eficiente y segura.",
     "ficha": [
@@ -7148,7 +7148,7 @@
   },
   {
     "id": 1784823616101,
-    "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
+    "nombre": "☀️ Controlador MPPT 150A",
     "imagen": "https://tiendamax.org/imagenes/img_1784823614881.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784823614881.webp"
@@ -7171,7 +7171,7 @@
       "📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z",
-    "seoTitle": "Controlador de Carga Solar MPPT 150A en Cuba | TiendaMax",
+    "seoTitle": "Controlador MPPT 150A en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con…",
     "descripcion": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con reconocimiento automático de voltaje, múltiples modos de funcionamiento y una pantalla LCD integrada para el monitoreo completo de la instalación fotovoltaica.",
     "ficha": [
@@ -7213,7 +7213,7 @@
   },
   {
     "id": 1784825579392,
-    "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+    "nombre": "🔒 Cámara Solar QW8-WIFI",
     "imagen": "https://tiendamax.org/imagenes/img_1784825577280.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784825577280.webp"
@@ -7234,7 +7234,7 @@
       "🎯 Uso: Vigilancia exterior residencial o comercial"
     ],
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
-    "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+    "seoTitle": "Cámara Solar QW8-WIFI en Cuba | TiendaMax",
     "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…",
     "ficha": [
       {
@@ -7283,7 +7283,7 @@
   },
   {
     "id": 1785285424837,
-    "nombre": "🌐 Antena CPE MikroTik SXTsq 5 AX",
+    "nombre": "🌐 MikroTik SXTsq 5 AX",
     "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785285422394.webp"
@@ -7306,7 +7306,7 @@
       "🌐 Licencia RouterOS Level 4"
     ],
     "fechaAgregado": "2026-07-29T00:37:04.838Z",
-    "seoTitle": "Antena CPE MikroTik SXTsq 5 AX en Cuba | TiendaMax",
+    "seoTitle": "MikroTik SXTsq 5 AX en Cuba | TiendaMax",
     "seoDescription": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE)…",
     "ficha": [
       {
@@ -7377,7 +7377,7 @@
   },
   {
     "id": 1785286289086,
-    "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+    "nombre": "🌐 NanoStation M5 Internacional",
     "imagen": "https://tiendamax.org/imagenes/img_1785286287536.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785286287536.webp"
@@ -7400,7 +7400,7 @@
       "🔌 Puertos Ethernet con PoE Pasivo"
     ],
     "fechaAgregado": "2026-07-29T00:51:29.086Z",
-    "seoTitle": "Antena CPE Ubiquiti NanoStation M5 Internacional | TiendaMax",
+    "seoTitle": "NanoStation M5 Internacional en Cuba | TiendaMax",
     "seoDescription": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación…",
     "ficha": [
       {
@@ -7741,7 +7741,7 @@
   },
   {
     "id": 1786632255672,
-    "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation M2 Internacional",
+    "nombre": "🌐 NanoStation M2 Internacional",
     "imagen": "https://tiendamax.org/imagenes/img_1786632251413.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786632251413.webp",
@@ -7766,7 +7766,7 @@
       "🔌 Conectividad Ethernet con Soporte PoE Pasivo"
     ],
     "fechaAgregado": "2026-08-13T14:44:15.672Z",
-    "seoTitle": "Antena CPE Inalámbrica Ubiquiti NanoStation… | TiendaMax",
+    "seoTitle": "NanoStation M2 Internacional en Cuba | TiendaMax",
     "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…",
     "ficha": [
       {
@@ -7939,7 +7939,7 @@
   },
   {
     "id": 1786633899405,
-    "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
+    "nombre": "📟 Controlador MPPT 120A Y&H",
     "imagen": "https://tiendamax.org/imagenes/img_1786633894922.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786633894922.webp",
@@ -7964,7 +7964,7 @@
       "⚡ Tecnología MPPT de Alta Eficiencia (120A)"
     ],
     "fechaAgregado": "2026-08-13T15:11:39.405Z",
-    "seoTitle": "Controlador de Carga Solar MPPT 120A Y&H en Cuba | TiendaMax",
+    "seoTitle": "Controlador MPPT 120A Y&H en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema…",
     "ficha": [
       {
@@ -8040,7 +8040,7 @@
   },
   {
     "id": 1786807706672,
-    "nombre": "🏋️ Creatina Monohidrato Hearthy Foods 500g",
+    "nombre": "🏋️ Creatina Hearthy Foods 500g",
     "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.",
     "imagen": "https://tiendamax.org/imagenes/img_1786807705245.webp",
     "imagenes": [
@@ -8065,7 +8065,7 @@
       "✅ Sin Gluten y Probada por Terceros"
     ],
     "fechaAgregado": "2026-08-15T15:28:26.673Z",
-    "seoTitle": "Creatina Monohidrato Hearthy Foods 500g en Cuba | TiendaMax",
+    "seoTitle": "Creatina Hearthy Foods 500g en Cuba | TiendaMax",
     "seoDescription": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el…",
     "ficha": [
       {
@@ -8102,7 +8102,7 @@
   },
   {
     "id": 1786807859244,
-    "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
+    "nombre": "🏋️ Creatina Dorado Nutrition 300g",
     "descripcion": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva. Se presenta en un envase con 60 porciones, sin sabor y verificado mediante pruebas de terceros.",
     "imagen": "https://tiendamax.org/imagenes/img_1786807857921.webp",
     "imagenes": [
@@ -8126,7 +8126,7 @@
       "✅ Probado por Terceros (Third Party Tested)"
     ],
     "fechaAgregado": "2026-08-15T15:30:59.245Z",
-    "seoTitle": "Creatina Monohidrato Dorado Nutrition 300g | TiendaMax",
+    "seoTitle": "Creatina Dorado Nutrition 300g en Cuba | TiendaMax",
     "seoDescription": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva…",
     "ficha": [
       {
@@ -8396,7 +8396,7 @@
   },
   {
     "id": 1787079480177,
-    "nombre": "📟 Controlador de Carga Solar MPPT Boost 1200W",
+    "nombre": "📟 Controlador MPPT Boost 1200W",
     "imagen": "https://tiendamax.org/imagenes/img_1787079474093.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787079474093.webp",
@@ -8423,7 +8423,7 @@
       "📟 Pantalla Digital a Color y Botón Set Frontal"
     ],
     "fechaAgregado": "2026-08-18T18:58:00.178Z",
-    "seoTitle": "Controlador de Carga Solar MPPT Boost 1200W | TiendaMax",
+    "seoTitle": "Controlador MPPT Boost 1200W en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
     "ficha": [
       {
@@ -8499,7 +8499,7 @@
   },
   {
     "id": 1787157254207,
-    "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
+    "nombre": "🌐 NanoStation Loco M2",
     "imagen": "https://tiendamax.org/imagenes/img_1787157252895.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787157252895.webp"
@@ -8585,7 +8585,7 @@
       "1× Guía de inicio rápido"
     ],
     "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.",
-    "seoTitle": "Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
+    "seoTitle": "NanoStation Loco M2 en Cuba | TiendaMax",
     "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…"
   },
   {
@@ -9162,7 +9162,7 @@
   },
   {
     "id": 1788389384026,
-    "nombre": "🌐Ubiqui airMAX NanoStation M5 Loco",
+    "nombre": "🌐 NanoStation M5 Loco",
     "imagen": "https://tiendamax.org/imagenes/img_1788389380951.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1788389380951.webp"
@@ -9279,7 +9279,7 @@
       "1× Brida de sujeción para montaje en mástil o tubo",
       "1× Guía de inicio rápido"
     ],
-    "seoTitle": "Ubiqui airMAX NanoStation M5 Loco en Cuba | TiendaMax",
+    "seoTitle": "NanoStation M5 Loco en Cuba | TiendaMax",
     "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…",
     "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada."
   },
@@ -9408,7 +9408,7 @@
   },
   {
     "id": 1788626436047,
-    "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
+    "nombre": "⚡ Inversor Tataliken 3500W",
     "precioActual": 170,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
@@ -9420,7 +9420,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-12v",
+    "slug": "inversor-tataliken-3500w",
     "comision": 10,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -9433,8 +9433,8 @@
       "🛡 Protección por sobrecarga"
     ],
     "recomendados": [],
-    "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
-    "seoDescription": "Inversor Tataliken de 12V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada, ideal para ventiladores, televisores, luces LED y carga de dispositivos durante los apagones.",
+    "seoTitle": "Inversor Tataliken 3500W en Cuba | TiendaMax",
+    "seoDescription": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales…",
     "radar": true,
     "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
     "ficha": [

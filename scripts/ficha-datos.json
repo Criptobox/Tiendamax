@@ -26,7 +26,7 @@
  },
  {
   "id": 1777924118004,
-  "nombre": "⚡ Inversor Tataliken 4000W ( 12V )",
+  "nombre": "⚡ Inversor Tataliken 4000W",
   "categoria": "ENERGIA",
   "subcategoria": "INVERSORES",
   "precio": 180,
@@ -175,7 +175,7 @@
  },
  {
   "id": 1778103856933,
-  "nombre": "⚡ Pistola de Masaje Muscular (Fascia Gun)",
+  "nombre": "⚡ Pistola Fascia Gun",
   "categoria": "UTILES",
   "subcategoria": "SALUD Y BIENESTAR",
   "precio": 25,
@@ -205,7 +205,7 @@
  },
  {
   "id": 1778104191957,
-  "nombre": "Cargador Inteligente de 15 Amperes:",
+  "nombre": "Cargador Inteligente 15A",
   "categoria": "ENERGIA",
   "subcategoria": "CARGADORES",
   "precio": 65,
@@ -272,7 +272,7 @@
  },
  {
   "id": 1778104512761,
-  "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
+  "nombre": "📟 Controlador MPPT 100A POWMR",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 260,
@@ -362,7 +362,7 @@
  },
  {
   "id": 1778104850733,
-  "nombre": "⚡ Controlador de Carga Solar MPPT 100A",
+  "nombre": "⚡ Controlador MPPT 100A",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 70,
@@ -566,28 +566,8 @@
   "incluye": []
  },
  {
-  "id": 1778214214360,
-  "nombre": "Mannol 4 - Takt Motorbike 10W - 40 7812. 1L",
-  "categoria": "CARROS",
-  "subcategoria": "ACEITES Y LUBRICANTES",
-  "precio": 10,
-  "imagen": "https://tiendamax.org/imagenes/img_1778214214360.webp",
-  "pitch": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro.",
-  "clave": [
-   {
-    "k": "Viscosidad (SAE)",
-    "v": "10W-40",
-    "origen": "repo"
-   }
-  ],
-  "ficha": [],
-  "caracteristicas": [],
-  "idealPara": [],
-  "incluye": []
- },
- {
   "id": 1778336613589,
-  "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
+  "nombre": "⚡ Pistola Triangular",
   "categoria": "UTILES",
   "subcategoria": "SALUD Y BIENESTAR",
   "precio": 35,
@@ -990,7 +970,7 @@
  },
  {
   "id": 1778546645170,
-  "nombre": "Juego de Llantas R14 — Negro Con Detalle Rojo",
+  "nombre": "Juego Llantas R14 Rojo",
   "categoria": "CARROS",
   "subcategoria": "LLANTAS",
   "precio": 460,
@@ -1020,7 +1000,7 @@
  },
  {
   "id": 1778546857180,
-  "nombre": "Juego de Llantas R15 — Negro Pulido",
+  "nombre": "Juego Llantas R15 Pulido",
   "categoria": "CARROS",
   "subcategoria": "LLANTAS",
   "precio": 460,
@@ -1304,7 +1284,7 @@
  },
  {
   "id": 1778906281677,
-  "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
+  "nombre": "Cargador Inteligente 84V 10A",
   "categoria": "MOTOS",
   "subcategoria": "PARTES Y PIEZAS",
   "precio": 100,
@@ -1376,7 +1356,7 @@
  },
  {
   "id": 1778906905279,
-  "nombre": "Espejos Alerón Stealth Fibra de Carbón",
+  "nombre": "Espejos Stealth Carbón",
   "categoria": "MOTOS",
   "subcategoria": "ACCESORIOS",
   "precio": 25,
@@ -1401,7 +1381,7 @@
  },
  {
   "id": 1778907072353,
-  "nombre": "Espejos Alerón Stealth Poligonales",
+  "nombre": "Espejos Stealth Poligonal",
   "categoria": "MOTOS",
   "subcategoria": "ACCESORIOS",
   "precio": 25,
@@ -1501,7 +1481,7 @@
  },
  {
   "id": 1779562612951,
-  "nombre": "⚡ Controlador de Carga Solar MPPT 80A POWMR",
+  "nombre": "⚡ Controlador MPPT 80A POWMR",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 220,
@@ -1625,7 +1605,7 @@
  },
  {
   "id": 1780344659047,
-  "nombre": "🔒 Cámara de Seguridad Bullet Zosi",
+  "nombre": "🔒 Cámara Bullet Zosi",
   "categoria": "SEGURIDAD",
   "subcategoria": "CÁMARAS",
   "precio": 50,
@@ -1977,7 +1957,7 @@
  },
  {
   "id": 1778546731028,
-  "nombre": "Juego de Llantas R14 — Negro Con Pulido Cromado",
+  "nombre": "Juego Llantas R14 Cromado",
   "categoria": "CARROS",
   "subcategoria": "LLANTAS",
   "precio": 460,
@@ -2007,7 +1987,7 @@
  },
  {
   "id": 1778546922840,
-  "nombre": "Juego de Llantas R15 — Gris / Negro",
+  "nombre": "Juego Llantas R15 Gris",
   "categoria": "CARROS",
   "subcategoria": "LLANTAS",
   "precio": 500,
@@ -2032,26 +2012,6 @@
    {
     "k": "Diseño",
     "v": "5 rayos",
-    "origen": "repo"
-   }
-  ],
-  "ficha": [],
-  "caracteristicas": [],
-  "idealPara": [],
-  "incluye": []
- },
- {
-  "id": 1778601482845,
-  "nombre": "Mannol 4 - Takt Motorbike 10W - 40 7812 1L",
-  "categoria": "MOTOS",
-  "subcategoria": "ACEITES Y LUBRICANTES",
-  "precio": 10,
-  "imagen": "https://tiendamax.org/imagenes/img_1778601479670.webp",
-  "pitch": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro.",
-  "clave": [
-   {
-    "k": "Viscosidad (SAE)",
-    "v": "10W-40",
     "origen": "repo"
    }
   ],
@@ -2469,7 +2429,7 @@
  },
  {
   "id": 1783473894756,
-  "nombre": "🔌 Cargador Inteligente Corebox 12V 15A",
+  "nombre": "🔌 Cargador Corebox 12V 15A",
   "categoria": "ENERGIA",
   "subcategoria": "CARGADORES",
   "precio": 65,
@@ -2499,7 +2459,7 @@
  },
  {
   "id": 1783474199534,
-  "nombre": "🔌 Cargador Inteligente Ntrc 20A",
+  "nombre": "🔌 Cargador NTRC 20A",
   "categoria": "ENERGIA",
   "subcategoria": "CARGADORES",
   "precio": 85,
@@ -2534,7 +2494,7 @@
  },
  {
   "id": 1783474440848,
-  "nombre": "🔌 Cargador Inteligente Ntrc 35A",
+  "nombre": "🔌 Cargador NTRC 35A",
   "categoria": "ENERGIA",
   "subcategoria": "CARGADORES",
   "precio": 145,
@@ -2684,7 +2644,7 @@
  },
  {
   "id": 1784405087402,
-  "nombre": "🔒 Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
+  "nombre": "🔒 Cámara PTZ WiFi Exterior",
   "categoria": "SEGURIDAD",
   "subcategoria": "CÁMARAS",
   "precio": 25,
@@ -2734,7 +2694,7 @@
  },
  {
   "id": 1784569498967,
-  "nombre": "☀️ Controlador de Carga Solar MPPT 100A Con USB",
+  "nombre": "☀️ Controlador MPPT 100A Con USB",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 80,
@@ -2879,7 +2839,7 @@
  },
  {
   "id": 1784823616101,
-  "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
+  "nombre": "☀️ Controlador MPPT 150A",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 90,
@@ -2912,7 +2872,7 @@
  },
  {
   "id": 1784825579392,
-  "nombre": "🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+  "nombre": "🔒 Cámara Solar QW8-WIFI",
   "categoria": "SEGURIDAD",
   "subcategoria": "CÁMARAS",
   "precio": 100,
@@ -2932,7 +2892,7 @@
  },
  {
   "id": 1785285424837,
-  "nombre": "🌐 Antena CPE MikroTik SXTsq 5 AX",
+  "nombre": "🌐 MikroTik SXTsq 5 AX",
   "categoria": "WIFI",
   "subcategoria": "ANTENAS Y CPE",
   "precio": 160,
@@ -2965,7 +2925,7 @@
  },
  {
   "id": 1785286289086,
-  "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+  "nombre": "🌐 NanoStation M5 Internacional",
   "categoria": "WIFI",
   "subcategoria": "ANTENAS Y CPE",
   "precio": 230,
@@ -3097,7 +3057,7 @@
  },
  {
   "id": 1786632255672,
-  "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation M2 Internacional",
+  "nombre": "🌐 NanoStation M2 Internacional",
   "categoria": "WIFI",
   "subcategoria": "ANTENAS Y CPE",
   "precio": 230,
@@ -3163,7 +3123,7 @@
  },
  {
   "id": 1786633899405,
-  "nombre": "📟 Controlador de Carga Solar MPPT 120A Y&H",
+  "nombre": "📟 Controlador MPPT 120A Y&H",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 260,
@@ -3194,7 +3154,7 @@
  },
  {
   "id": 1786807706672,
-  "nombre": "🏋️ Creatina Monohidrato Hearthy Foods 500g",
+  "nombre": "🏋️ Creatina Hearthy Foods 500g",
   "categoria": "GYM",
   "subcategoria": "",
   "precio": 25,
@@ -3233,7 +3193,7 @@
  },
  {
   "id": 1786807859244,
-  "nombre": "🏋️ Creatina Monohidrato Dorado Nutrition 300g",
+  "nombre": "🏋️ Creatina Dorado Nutrition 300g",
   "categoria": "GYM",
   "subcategoria": "",
   "precio": 23,
@@ -3371,7 +3331,7 @@
  },
  {
   "id": 1787079480177,
-  "nombre": "📟 Controlador de Carga Solar MPPT Boost 1200W",
+  "nombre": "📟 Controlador MPPT Boost 1200W",
   "categoria": "ENERGIA",
   "subcategoria": "CONTROLADORES SOLARES",
   "precio": 90,
@@ -3404,7 +3364,7 @@
  },
  {
   "id": 1787157254207,
-  "nombre": "🌐 Antena CPE Inalámbrica Ubiquiti NanoStation Loco M2",
+  "nombre": "🌐 NanoStation Loco M2",
   "categoria": "WIFI",
   "subcategoria": "ANTENAS Y CPE",
   "precio": 150,
@@ -3590,7 +3550,7 @@
  },
  {
   "id": 1788389384026,
-  "nombre": "🌐Ubiqui airMAX NanoStation M5 Loco",
+  "nombre": "🌐 NanoStation M5 Loco",
   "categoria": "WIFI",
   "subcategoria": "ANTENAS Y CPE",
   "precio": 160,
@@ -3668,7 +3628,7 @@
  },
  {
   "id": 1788626436047,
-  "nombre": "⚡ Inversor Tataliken 3500W ( 12V )",
+  "nombre": "⚡ Inversor Tataliken 3500W",
   "categoria": "ENERGIA",
   "subcategoria": "INVERSORES",
   "precio": 170,

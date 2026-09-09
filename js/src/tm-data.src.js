@@ -1168,3 +1168,46 @@ window.addEventListener('storage', (event) => {
     }
 });
 
+
+
+// ===== BÚSQUEDA DEL CATÁLOGO =====
+// Los tres sitios que filtran por el buscador (tm-product, tm-ui y tm-iife)
+// tenían cada uno su propia lista de campos, y ninguna coincidía: uno miraba
+// subcategoría, otro no, y ninguno miraba la ficha. Eso no se ve como un fallo
+// —salen resultados, sólo que menos— pero deja fuera cosas que el cliente sí
+// escribe: la marca ("Zosi", "Ubiquiti") vive en la ficha, no en el nombre, y
+// el tipo de producto ("cámaras", "antenas y cpe") vive en la subcategoría.
+// Se agrava al acortar un nombre: lo que se quita de ahí tiene que seguir
+// encontrándose en algún sitio.
+function _tmTextoBuscable(p) {
+    if (!p) return '';
+    if (p._tmBuscable) return p._tmBuscable;   // se calcula una vez por producto
+    const trozos = [p.nombre, p.descripcion, p.categoria, p.subcategoria];
+    if (Array.isArray(p.ficha)) {
+        for (const f of p.ficha) {
+            if (f && typeof f === 'object') trozos.push(f.k, f.v, f.nota);
+        }
+    }
+    if (Array.isArray(p.specs)) trozos.push(p.specs.join(' '));
+    const txt = trozos.filter(Boolean).join(' ').toLowerCase();
+    try { Object.defineProperty(p, '_tmBuscable', { value: txt, enumerable: false }); }
+    catch (e) { /* objeto congelado: da igual, se recalcula */ }
+    return txt;
+}
+
+// `q` llega ya en minúsculas desde el buscador. Se compara PALABRA A PALABRA y
+// todas tienen que aparecer, en cualquier orden: buscar la frase entera fallaba
+// en cuanto el orden no era idéntico ("antena cpe" no está dentro de "ANTENAS Y
+// CPE", aunque las dos palabras sí). Para una sola palabra se comporta igual
+// que antes.
+function tmCoincideBusqueda(p, q) {
+    if (!q) return true;
+    const texto = _tmTextoBuscable(p);
+    if (texto.includes(q)) return true;
+    const palabras = q.split(/\s+/).filter(Boolean);
+    if (palabras.length > 1 && palabras.every(w => texto.includes(w))) return true;
+    // El aproximado sólo sobre nombre+categoría, como estaba: aplicarlo al
+    // texto entero devolvería medio catálogo por cualquier letra suelta.
+    return (typeof tmFuzzyMatch === 'function')
+        && tmFuzzyMatch((p.nombre || '') + ' ' + (p.categoria || ''), q);
+}

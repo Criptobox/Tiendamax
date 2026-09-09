@@ -1109,10 +1109,7 @@ renderizarProductos = function() {
         if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
             const q = _heroSearchActivo;
             productosFiltrados = productosFiltrados.filter(p => {
-                const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                    (p.descripcion||'').toLowerCase().includes(q) ||
-                    (p.categoria||'').toLowerCase().includes(q) ||
-                    tmFuzzyMatch(p.nombre + ' ' + (p.categoria||''), q);
+                const matchQ = tmCoincideBusqueda(p, q);
                 const precio = safeNum(p.precioActual);
                 const matchP = precio >= _heroPrecioMin && precio <= _heroPrecioMax;
                 return matchQ && matchP;
