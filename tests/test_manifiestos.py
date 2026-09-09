@@ -185,6 +185,42 @@ class ManifiestosTest(unittest.TestCase):
             )
             self.assertTrue(ruta_de(src).exists(), f"no existe {src}")
 
+    def test_la_cabecera_del_panel_lleva_el_logo_oficial(self):
+        """Lo de DENTRO de la página, no el icono de la pantalla de inicio.
+
+        La cabecera dibujaba una caja con la letra M en CSS, pintada con el
+        acento de la piel elegida: en la grafito el acento es casi blanco, así
+        que salía un cuadrado blanco con una M invisible. Ahora es el archivo
+        real de la marca —el mismo que la tienda pone en su cabecera y el que
+        la pantalla de acceso de este panel ya mostraba embebido—, así que no
+        depende de la piel y basta con que el archivo exista.
+
+        El icono de la pantalla de inicio sigue siendo el del panel (el test de
+        arriba), que es lo que distingue las dos apps instaladas. Son cosas
+        distintas y no hay que unificarlas.
+        """
+        admin = (ROOT / "admin.html").read_text(encoding="utf-8")
+        m = re.search(r'<img class="logo"[^>]*src="([^"?]+)', admin)
+        self.assertIsNotNone(
+            m, 'la cabecera del panel se quedó sin <img class="logo">')
+        src = m.group(1)
+        self.assertTrue(ruta_de(src).exists(), f"no existe {src}")
+        self.assertNotIn(
+            '<div class="logo">', admin,
+            "volvió la caja con la letra en vez del logo")
+
+        index = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn(
+            src.lstrip("/"), index,
+            f"{src} no es el logo que usa la tienda: el panel estaría "
+            "enseñando otra marca")
+
+        regla = re.search(r'\n\s*\.logo \{[^}]*\}', admin)
+        self.assertIsNotNone(regla, "se perdió la regla .logo")
+        self.assertNotIn(
+            "var(--o)", regla.group(0),
+            "el logo vuelve a teñirse con la piel; es marca, va literal")
+
     def test_cada_app_tiene_su_propio_icono(self):
         """Las tres apps del mismo origen no pueden verse iguales.
 

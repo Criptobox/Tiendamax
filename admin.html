@@ -95,7 +95,12 @@ try{var _piel=localStorage.getItem('tm_piel');
 
   /* Top bar */
   .topbar { background:rgba(10,10,18,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:14px 18px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; }
-  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:var(--o-tinta); flex-shrink:0; box-shadow:0 4px 12px rgba(var(--o-rgb),0.3); }
+  /* El logo oficial de la app (la bolsa con la M), no una caja con la letra:
+     es exactamente el mismo archivo que el icono instalable y que la imagen de
+     la pantalla de acceso. No se tiñe con la piel a propósito — es marca, la
+     misma regla que mantiene los colores literales en los carteles. */
+  .logo { width:36px; height:36px; border-radius:9px; flex-shrink:0; display:block;
+    object-fit:cover; background:var(--card2); box-shadow:0 4px 12px rgba(0,0,0,0.45); }
   .topbar h1 { font-size:16px; font-weight:800; color:#fff; flex:1; }
   .topbar h1 small { display:block; font-size:11px; color:var(--muted); font-weight:500; }
   .tb-actions { display:flex; gap:8px; }
@@ -1217,7 +1222,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
   <!-- Top bar -->
   <div class="topbar">
-    <div class="logo">M</div>
+    <img class="logo" src="/iconos/icon-192.png?v=a8c6a6b9" alt="" width="36" height="36" decoding="async">
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
       <button class="icon-btn" title="Suscriptores push" onclick="irASuscriptores()">🔔<span class="dot" id="tb-subs">0</span></button>
