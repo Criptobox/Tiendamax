@@ -28,15 +28,60 @@
 <meta name="apple-mobile-web-app-title" content="Gestión">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<script>
+/* Piel del panel — antes de pintar, para que no parpadee. */
+try{var _piel=localStorage.getItem('tm_piel');
+  if(_piel&&_piel!=='naranja')document.documentElement.setAttribute('data-piel',_piel);}catch(e){}
+</script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --bg:#0a0a12; --card:#15151f; --card2:#1a1a25; --border:rgba(255,255,255,0.07);
     --text:#e0e0e8; --muted:#888; --dim:#555; --line:rgba(255,255,255,0.04);
-    --o:#FF6B35; --oo:#e0521a; --gold:#C9A96E; --green:#2ecc71; --red:#e74c3c; --yellow:#f1c40f; --purple:#8b5cf6; --blue:#3498db;
+    --o:#FF6B35; --oo:#e0521a; --gold:#C9A96E;
+  --o-rgb:255,107,53; --gold-rgb:201,169,110; --o-tinta:#2A0F04; --green:#2ecc71; --red:#e74c3c; --yellow:#f1c40f; --purple:#8b5cf6; --blue:#3498db;
     /* alias para código heredado de admin.html (Revólico/Facebook/etc) que usa estos nombres */
     --card-bg:var(--card); --border-color:var(--border); --text-muted:var(--muted); --primary:var(--o);
   }
+
+  /* ── PIELES DEL PANEL ────────────────────────────────────────────
+     Sólo redefinen tokens: ni una regla de layout cambia. Se eligen
+     en ⚙️ Configuración → Estilo del panel y se guardan en este
+     navegador (es un gusto, no un dato de la tienda).
+
+     Dos reglas al añadir una piel nueva:
+     · --gold NO cambia. Significa "moneda nacional" en todo el panel;
+       si cambiara con la piel dejaría de reconocerse de un vistazo.
+     · --green/--red/--yellow son ESTADO, así que en cada piel se
+       eligen para no confundirse con el acento: en la lima el verde
+       de "con stock" se va al turquesa porque el acento ya es verde.
+     Y lo que NO entra aquí: los carteles y las imágenes de canvas
+     llevan el naranja de TiendaMax a fuego. Los ve el cliente. */
+  html[data-piel="lima"]{
+    --bg:#0C0D0A; --card:#14170F; --card2:#191D14;
+    --text:#F1F6EC; --muted:#8E9885; --dim:#5A6353;
+    --o:#C6F24E; --oo:#A8D62F; --o-rgb:198,242,78; --o-tinta:#16220A;
+    --green:#2DD4BF; --red:#F43F5E; --yellow:#FB923C; --blue:#38BDF8; --purple:#C084FC;
+  }
+  html[data-piel="azul"]{
+    --bg:#080A0F; --card:#111621; --card2:#161C29;
+    --text:#E6ECF5; --muted:#8792A5; --dim:#525C6E;
+    --o:#3B82F6; --oo:#2563EB; --o-rgb:59,130,246; --o-tinta:#04122B;
+    --green:#34D399; --red:#F43F5E; --yellow:#F97316; --blue:#38BDF8; --purple:#A78BFA;
+  }
+  html[data-piel="violeta"]{
+    --bg:#0A0810; --card:#161122; --card2:#1B1529;
+    --text:#EFE9F8; --muted:#958CA6; --dim:#5D5570;
+    --o:#8B5CF6; --oo:#7C3AED; --o-rgb:139,92,246; --o-tinta:#0E0122;
+    --green:#34D399; --red:#FB7185; --yellow:#FBBF24; --blue:#60A5FA; --purple:#C084FC;
+  }
+  html[data-piel="grafito"]{
+    --bg:#09090B; --card:#141416; --card2:#1A1A1D;
+    --text:#FAFAFA; --muted:#93939B; --dim:#5C5C64;
+    --o:#E4E4E7; --oo:#C4C4CC; --o-rgb:228,228,231; --o-tinta:#0A0A0B;
+    --green:#34D399; --red:#F87171; --yellow:#FBBF24; --blue:#8A8A93; --purple:#A1A1AA;
+  }
+
   .hidden{display:none!important}
   body { font-family:'DM Sans',-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
   button { font-family:inherit; cursor:pointer; }
@@ -50,12 +95,12 @@
 
   /* Top bar */
   .topbar { background:rgba(10,10,18,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:14px 18px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; }
-  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; flex-shrink:0; box-shadow:0 4px 12px rgba(255,107,53,0.3); }
+  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; flex-shrink:0; box-shadow:0 4px 12px rgba(var(--o-rgb),0.3); }
   .topbar h1 { font-size:16px; font-weight:800; color:#fff; flex:1; }
   .topbar h1 small { display:block; font-size:11px; color:var(--muted); font-weight:500; }
   .tb-actions { display:flex; gap:8px; }
   .icon-btn { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; color:#ccc; position:relative; transition:all 0.15s; }
-  .icon-btn:hover { background:rgba(255,107,53,0.15); border-color:rgba(255,107,53,0.3); color:var(--o); }
+  .icon-btn:hover { background:rgba(var(--o-rgb),0.15); border-color:rgba(var(--o-rgb),0.3); color:var(--o); }
   .icon-btn .dot { position:absolute; top:-3px; right:-3px; background:var(--red); color:#fff; border-radius:10px; min-width:18px; height:18px; font-size:10px; font-weight:900; padding:0 5px; display:flex; align-items:center; justify-content:center; border:2px solid var(--bg); }
 
   /* Sidebar */
@@ -96,8 +141,8 @@
     color:#f0c674; }
   .side-btn svg.tm-ico-tab { width:21px; height:21px; }
   .side-btn { width:42px; height:42px; border-radius:9px; background:rgba(255,255,255,0.03); border:1px solid transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:18px; position:relative; }
-  .side-btn:hover { background:rgba(255,107,53,0.12); color:var(--o); }
-  .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:#fff; box-shadow:0 2px 8px rgba(255,107,53,0.3); }
+  .side-btn:hover { background:rgba(var(--o-rgb),0.12); color:var(--o); }
+  .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:#fff; box-shadow:0 2px 8px rgba(var(--o-rgb),0.3); }
   .side-btn .badge { position:absolute; top:-4px; right:-4px; background:var(--red); color:#fff; border-radius:10px; min-width:18px; height:18px; font-size:9px; font-weight:900; padding:0 4px; display:flex; align-items:center; justify-content:center; border:2px solid var(--bg); }
   .side-btn .new-tag { position:absolute; bottom:-6px; right:-6px; background:var(--gold); color:#111; border-radius:10px; padding:0 5px; font-size:8px; font-weight:900; letter-spacing:0.4px; border:2px solid var(--bg); }
   .side-btn.soon { opacity:0.4; }
@@ -119,7 +164,7 @@
   .ph-actions { display:flex; gap:8px; flex-wrap:wrap; }
 
   .btn { padding:9px 16px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px; }
-  .btn-primary { background:var(--o); color:#fff; } .btn-primary:hover { background:var(--oo); transform:translateY(-1px); }
+  .btn-primary { background:var(--o); color:var(--o-tinta); } .btn-primary:hover { background:var(--oo); transform:translateY(-1px); }
   .btn-success { background:var(--green); color:#fff; } .btn-success:hover { background:#27ae60; }
   .btn-warn { background:var(--yellow); color:#111; } .btn-warn:hover { background:#d4ac0d; }
   .btn-danger { background:var(--red); color:#fff; } .btn-danger:hover { background:#c0392b; }
@@ -178,7 +223,7 @@
   /* Product grid */
   .prod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
   .prod-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.2s; cursor:pointer; }
-  .prod-card:hover { transform:translateY(-2px); border-color:rgba(255,107,53,0.3); }
+  .prod-card:hover { transform:translateY(-2px); border-color:rgba(var(--o-rgb),0.3); }
   .prod-img { aspect-ratio:1; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; font-size:48px; overflow:hidden; }
   .prod-img img { width:100%; height:100%; object-fit:cover; }
   .prod-body { padding:12px; }
@@ -216,7 +261,7 @@
   .vp-card { display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border-radius:14px;
              border:1px solid var(--border); background:rgba(255,255,255,0.035); color:inherit;
              cursor:pointer; text-align:left; font:inherit; transition:background .15s, transform .1s; }
-  .vp-card:hover { background:rgba(255,107,53,0.09); border-color:rgba(255,107,53,0.35); }
+  .vp-card:hover { background:rgba(var(--o-rgb),0.09); border-color:rgba(var(--o-rgb),0.35); }
   .vp-card:active { transform:scale(.985); }
   .vp-card.agotado .vp-thumb, .vp-card.agotado .vp-nm { opacity:.55; }
   .vp-thumb { width:46px; height:46px; object-fit:cover; border-radius:11px; flex-shrink:0;
@@ -343,7 +388,7 @@
 
   /* Modales dinámicos (Facebook/Revólico) — portado de css/admin.css, con la paleta de admin2 */
   .modal { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;
-    background:radial-gradient(900px 650px at 8% 8%,rgba(201,169,110,.14),transparent 55%),radial-gradient(720px 520px at 88% 88%,rgba(255,107,53,.16),transparent 55%),rgba(0,0,0,.7); }
+    background:radial-gradient(900px 650px at 8% 8%,rgba(var(--gold-rgb),.14),transparent 55%),radial-gradient(720px 520px at 88% 88%,rgba(var(--o-rgb),.16),transparent 55%),rgba(0,0,0,.7); }
   .modal-content { width:min(540px,94vw); max-height:90vh; overflow:auto; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; }
   .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
   .modal-header h2 { font-size:16px; margin:0; }
@@ -406,7 +451,7 @@
   .form-textarea { resize:vertical; min-height:80px; }
   /* Selector de foto bonito (oculta el input nativo) */
   .file-box { display:flex; align-items:center; gap:10px; padding:14px; border:2px dashed var(--border); border-radius:12px; background:rgba(0,0,0,0.28); cursor:pointer; transition:border-color .15s,background .15s; }
-  .file-box:hover { border-color:var(--o); background:rgba(255,107,53,0.06); }
+  .file-box:hover { border-color:var(--o); background:rgba(var(--o-rgb),0.06); }
   .file-box input[type=file] { display:none; }
   .file-box .fb-ico { font-size:24px; flex-shrink:0; }
   .file-box .fb-txt { font-size:13px; color:#cfcfd6; font-weight:600; word-break:break-word; }
@@ -736,7 +781,7 @@
   .tm2-logo-legacy { display:none; }
 
   /* Herramientas — portado de css/admin.css (.tm-*), retocado con la paleta de admin2 */
-  .tm-tools-hero{background:linear-gradient(135deg,rgba(201,169,110,.16),rgba(255,107,53,.10));border:1px solid rgba(201,169,110,.25);border-radius:18px;padding:18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+  .tm-tools-hero{background:linear-gradient(135deg,rgba(var(--gold-rgb),.16),rgba(var(--o-rgb),.10));border:1px solid rgba(var(--gold-rgb),.25);border-radius:18px;padding:18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
   .tm-tools-hero-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--o));display:grid;place-items:center;color:#111;font-size:24px;font-weight:900;flex:0 0 auto}
   .tm-tier{display:flex;align-items:center;gap:10px;margin:14px 0 10px;padding:8px 10px;border:1px solid var(--border);background:rgba(255,255,255,.025);border-radius:12px}
   .tm-tier h4{margin:0;color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
@@ -745,7 +790,7 @@
   .tm-tier-badge.purple{background:var(--purple);color:#21082f}
   .tm-tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
   .tm-tool-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px;min-height:90px;cursor:pointer;transition:.15s}
-  .tm-tool-card:hover{border-color:rgba(201,169,110,.4);transform:translateY(-1px)}
+  .tm-tool-card:hover{border-color:rgba(var(--gold-rgb),.4);transform:translateY(-1px)}
   .tm-tool-card .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:9px;font-size:17px}
   .tm-tool-card h5{margin:0 0 4px;color:#fff;font-size:12.5px;line-height:1.2}
   .tm-tool-card p{margin:0;color:var(--muted);font-size:10.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -773,7 +818,7 @@
   .tm-note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.4}
   .tm-ok{color:var(--green)}
   .tm-mini{font-size:10.5px;padding:5px 8px;border-radius:8px}
-  .tm-csv-drop{border:1px dashed rgba(201,169,110,.45);border-radius:12px;padding:14px;text-align:center;color:var(--muted);background:rgba(201,169,110,.06)}
+  .tm-csv-drop{border:1px dashed rgba(var(--gold-rgb),.45);border-radius:12px;padding:14px;text-align:center;color:var(--muted);background:rgba(var(--gold-rgb),.06)}
   @media (max-width:600px){ .tm-tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))} .tm-form-grid{grid-template-columns:1fr} .tm-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))} .tm-actions .tm-btn:only-child{grid-column:1/-1} }
   @media (max-width:380px){ .tm-tools-grid{grid-template-columns:1fr} .tm-actions{grid-template-columns:1fr} }
 
@@ -787,15 +832,15 @@
   body::before {
     content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
-      radial-gradient(760px 420px at 12% -8%, rgba(255,107,53,0.07), transparent 60%),
-      radial-gradient(680px 500px at 100% 0%, rgba(201,169,110,0.06), transparent 55%);
+      radial-gradient(760px 420px at 12% -8%, rgba(var(--o-rgb),0.07), transparent 60%),
+      radial-gradient(680px 500px at 100% 0%, rgba(var(--gold-rgb),0.06), transparent 55%);
   }
   .layout { position:relative; z-index:1; }
 
   /* — Hero de inventario: glow, borde vivo y línea dorada animada — */
   .hero-inv {
     background:
-      radial-gradient(420px 200px at 82% -30%, rgba(201,169,110,0.16), transparent 65%),
+      radial-gradient(420px 200px at 82% -30%, rgba(var(--gold-rgb),0.16), transparent 65%),
       linear-gradient(155deg, #201a13, var(--card2) 55%, var(--card));
     box-shadow:0 18px 40px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
   }
@@ -804,7 +849,7 @@
     background-size:200% 100%; animation:tmShimmer 5.5s linear infinite;
   }
   @keyframes tmShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-  .hero-inv .hi-val { text-shadow:0 2px 20px rgba(201,169,110,0.28); }
+  .hero-inv .hi-val { text-shadow:0 2px 20px rgba(var(--gold-rgb),0.28); }
 
   /* — Tarjetas elevadas: superficie más clara, borde definido, esquinas
        redondas y sombra real → dejan de verse "planas sobre el fondo" — */
@@ -859,7 +904,7 @@
   }
   .section::before {
     content:''; position:absolute; top:0; left:20px; right:20px; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(201,169,110,0.55),transparent);
+    background:linear-gradient(90deg,transparent,rgba(var(--gold-rgb),0.55),transparent);
   }
   .section:hover { border-color:rgba(255,255,255,0.14); box-shadow:0 22px 46px -22px rgba(0,0,0,0.9); }
   /* acento vertical dorado grueso antes del título de cada sección
@@ -869,7 +914,7 @@
     content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
     width:4px; height:16px; border-radius:3px;
     background:linear-gradient(180deg,var(--gold),var(--o));
-    box-shadow:0 0 12px rgba(201,169,110,0.6);
+    box-shadow:0 0 12px rgba(var(--gold-rgb),0.6);
   }
 
   /* — Gráfico de barras: líneas guía, barras doradas glossy y crecida real — */
@@ -891,7 +936,7 @@
   }
   .bar-chart .bar:hover { filter:brightness(1.12) saturate(1.15); box-shadow:0 0 24px 1px rgba(255,140,60,0.75), inset 0 2px 0 rgba(255,255,255,0.45); }
   .bar-chart .bar .v {
-    top:-22px; background:rgba(255,107,53,0.14); border:1px solid rgba(255,107,53,0.3);
+    top:-22px; background:rgba(var(--o-rgb),0.14); border:1px solid rgba(var(--o-rgb),0.3);
     color:#ffd9c4; border-radius:20px; padding:2px 0; font-weight:800;
     box-shadow:0 2px 8px -3px rgba(0,0,0,0.6);
   }
@@ -902,30 +947,30 @@
   @keyframes tmBarGrow { from{clip-path:inset(100% 0 0 0)} to{clip-path:inset(0 0 0 0)} }
 
   /* — Tablas: header dorado, zebra sutil y hover cálido — */
-  th { background:linear-gradient(180deg, rgba(201,169,110,0.1), rgba(255,255,255,0.02)); color:var(--gold); }
+  th { background:linear-gradient(180deg, rgba(var(--gold-rgb),0.1), rgba(255,255,255,0.02)); color:var(--gold); }
   tr:nth-child(even) td { background:rgba(255,255,255,0.015); }
-  tr:hover td { background:rgba(255,107,53,0.055) !important; }
+  tr:hover td { background:rgba(var(--o-rgb),0.055) !important; }
 
   /* — Botones: glow en primario y dorado — */
-  .btn-primary { box-shadow:0 6px 18px -8px rgba(255,107,53,0.6); }
-  .btn-primary:hover { box-shadow:0 10px 24px -8px rgba(255,107,53,0.75); }
-  .btn-gold:hover { box-shadow:0 10px 24px -10px rgba(201,169,110,0.7); }
+  .btn-primary { box-shadow:0 6px 18px -8px rgba(var(--o-rgb),0.6); }
+  .btn-primary:hover { box-shadow:0 10px 24px -8px rgba(var(--o-rgb),0.75); }
+  .btn-gold:hover { box-shadow:0 10px 24px -10px rgba(var(--gold-rgb),0.7); }
 
   /* — Tarjeta de producto (lista): hover con elevación y glow cálido — */
   .pcard { transition:transform .2s cubic-bezier(.22,1,.36,1), border-color .2s, box-shadow .2s; }
-  .pcard:hover { transform:translateY(-2px); border-color:rgba(255,107,53,0.28);
-    box-shadow:0 16px 34px -22px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,107,53,0.06); }
+  .pcard:hover { transform:translateY(-2px); border-color:rgba(var(--o-rgb),0.28);
+    box-shadow:0 16px 34px -22px rgba(0,0,0,0.8), 0 0 0 1px rgba(var(--o-rgb),0.06); }
   .prod-card:hover { box-shadow:0 16px 34px -22px rgba(0,0,0,0.8); }
 
   /* — Sidebar activo con glow pulsante suave — */
-  .side-btn.active { box-shadow:0 4px 14px rgba(255,107,53,0.45); animation:tmSideGlow 3.2s ease-in-out infinite; }
+  .side-btn.active { box-shadow:0 4px 14px rgba(var(--o-rgb),0.45); animation:tmSideGlow 3.2s ease-in-out infinite; }
   @keyframes tmSideGlow {
-    0%,100% { box-shadow:0 4px 14px rgba(255,107,53,0.35); }
-    50%     { box-shadow:0 4px 22px rgba(255,107,53,0.6); }
+    0%,100% { box-shadow:0 4px 14px rgba(var(--o-rgb),0.35); }
+    50%     { box-shadow:0 4px 22px rgba(var(--o-rgb),0.6); }
   }
 
   /* — Reviews: número grande con glow dorado — */
-  .rev-hero .big { text-shadow:0 2px 22px rgba(201,169,110,0.35); }
+  .rev-hero .big { text-shadow:0 2px 22px rgba(var(--gold-rgb),0.35); }
 
   @media (prefers-reduced-motion:reduce) {
     .hero-inv::before, .kpi, .bar-chart .bar, .side-btn.active { animation:none !important; }
@@ -1465,7 +1510,13 @@
              distinguir al dueño de un desconocido, porque un permiso de
              LECTURA no ve nada de lo que manda el cliente. Por eso /ventas
              estaba abierto a quien supiera la URL. -->
-        <div class="section" id="tmCuentaBox" style="margin-bottom:16px">
+        <div class="section" id="tmPielBox" style="margin-bottom:16px">
+<h3>🎨 Estilo del panel</h3>
+<p style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Cambia el color del panel cuando quieras. Se guarda en este dispositivo y <b style="color:var(--text)">no toca la tienda ni los carteles</b>: lo que ve el cliente sigue saliendo en naranja TiendaMax.</p>
+<div id="tmPielOpciones" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+</div>
+
+<div class="section" id="tmCuentaBox" style="margin-bottom:16px">
           <h3>👤 Tu cuenta</h3>
           <p id="tmCuentaEstado" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Comprobando…</p>
           <div id="tmCuentaForm">
@@ -1736,7 +1787,7 @@
     <div id="pedit-preview" class="ppv-wrap"></div>
     <input type="hidden" id="pedit-id">
     <div class="form-group"><label class="form-label" for="pedit-nombre">Nombre</label><input class="form-input" id="pedit-nombre"></div>
-    <div class="form-group" style="margin-top:12px;background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:12px;padding:12px">
+    <div class="form-group" style="margin-top:12px;background:rgba(var(--o-rgb),.05);border:1px solid rgba(var(--o-rgb),.18);border-radius:12px;padding:12px">
       <label class="form-label">📸 Fotos del producto</label>
       <p style="font-size:11px;color:var(--muted);margin:0 0 8px;line-height:1.5">Toca una foto para hacerla <b style="color:var(--gold)">⭐ principal</b> · Toca la <b>✕</b> para quitarla · Usa "Agregar fotos nuevas" para sumar más. La principal es la que se ve en la tienda.</p>
       <div id="pedit-fotos-lista" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
@@ -1968,6 +2019,69 @@ function tmGuardarLS(clave, valor){
 function showToast(t,b){ $('#toast-t').textContent=t; $('#toast-b').textContent=b||''; const el=$('#toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2600); }
 
 /* ============ Navegación ============ */
+
+/* ── PIEL DEL PANEL ────────────────────────────────────────────────
+   Cuatro pieles además de la de casa. Sólo cambian tokens CSS, así
+   que no hay nada que "aplicar" campo a campo: se pone el atributo en
+   <html> y el panel entero se repinta.
+
+   Lo que NO cambia con la piel, a propósito:
+   · Los carteles y las imágenes que genera el canvas (las ve el
+     cliente y llevan el naranja de TiendaMax a fuego).
+   · El oro de la moneda nacional, que significa MN en todo el panel.
+
+   Se guarda en localStorage y no en Firebase porque es un gusto de
+   este dispositivo, no un dato de la tienda: en el teléfono puedes
+   quererlo oscuro y en la laptop no. */
+const TM_PIELES = [
+  ['naranja',  'Naranja',  '#FF6B35', '#e0521a'],
+  ['lima',     'Lima',     '#C6F24E', '#A8D62F'],
+  ['azul',     'Azul',     '#3B82F6', '#2563EB'],
+  ['violeta',  'Violeta',  '#8B5CF6', '#7C3AED'],
+  ['grafito',  'Grafito',  '#E4E4E7', '#A1A1AA']
+];
+
+function tmPielActual(){
+  try{ return localStorage.getItem('tm_piel') || 'naranja'; }catch(e){ return 'naranja'; }
+}
+
+function tmPonerPiel(id){
+  const valida = TM_PIELES.some(p => p[0] === id) ? id : 'naranja';
+  if(valida === 'naranja') document.documentElement.removeAttribute('data-piel');
+  else document.documentElement.setAttribute('data-piel', valida);
+  try{ localStorage.setItem('tm_piel', valida); }catch(e){}
+  tmPintarPieles();
+  // La barra del navegador también se tiñe: si no, en el móvil queda
+  // una franja naranja encima de un panel azul.
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta){
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if(bg) meta.setAttribute('content', bg);
+  }
+  const nom = (TM_PIELES.find(p => p[0] === valida) || [])[1] || valida;
+  if(typeof mostrarToast === 'function') mostrarToast('🎨 Estilo ' + nom);
+}
+
+function tmPintarPieles(){
+  const cont = document.getElementById('tmPielOpciones');
+  if(!cont) return;
+  const hoy = tmPielActual();
+  cont.innerHTML = TM_PIELES.map(function(p){
+    const activa = p[0] === hoy;
+    return '<button type="button" onclick="tmPonerPiel(' + JSON.stringify(p[0]).replace(/"/g,'&quot;') + ')"' +
+      ' aria-pressed="' + activa + '"' +
+      ' style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 9px;border-radius:99px;' +
+      'font-size:13px;font-weight:600;cursor:pointer;' +
+      'border:1px solid ' + (activa ? 'var(--o)' : 'var(--border)') + ';' +
+      'background:' + (activa ? 'rgba(var(--o-rgb),.12)' : 'var(--card2)') + ';' +
+      'color:' + (activa ? 'var(--o)' : 'var(--muted)') + '">' +
+      '<span style="width:18px;height:18px;border-radius:99px;display:block;flex:none;' +
+      'background:linear-gradient(140deg,' + p[2] + ',' + p[3] + ');' +
+      'box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)"></span>' + p[1] +
+      (activa ? ' ✓' : '') + '</button>';
+  }).join('');
+}
+
 function go(view, btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   const target = document.getElementById('view-'+view) || document.getElementById('view-soon');
@@ -1979,6 +2093,7 @@ function go(view, btn){
   // El panel de espacio se mide al entrar, no al cargar la página: así el
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
+  if(view==='config' && typeof tmPintarPieles==='function'){ try{ tmPintarPieles(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
   if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
   if(view==='reservas'){ try{ renderReservas(); }catch(e){}
@@ -2658,7 +2773,7 @@ function ventaRenderCart(){
   box.innerHTML=VENTA_CART.map(it=>{
     const rebajada = Number(it.comision) < Number(it.comisionOriginal||0);
     const sufijo = it.comisionMoneda==='MN' ? 'MN' : 'USD';
-    return `<div style="padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px">
+    return `<div style="padding:8px 10px;background:rgba(var(--o-rgb),0.08);border:1px solid rgba(var(--o-rgb),0.3);border-radius:8px;margin-bottom:5px">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div>
         <button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${escJsAttr(String(it.id))}',-1)">−</button>
@@ -2741,7 +2856,7 @@ function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id
 function comboQty(id,d){ const it=COMBO_SEL.find(x=>String(x.id)===String(id)); if(it){ it.cantidad=Math.max(1,(it.cantidad||1)+d); } comboRenderItems(); comboCalc(); }
 function comboRenderItems(){
   const box=$('#combo-items'); if(!box) return;
-  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${esc(String(it.id))}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
+  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(var(--o-rgb),0.08);border:1px solid rgba(var(--o-rgb),0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${esc(String(it.id))}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
 }
 function comboCalc(){
   const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
@@ -3145,7 +3260,7 @@ function qrImprimir(data, titulo){
 /* ============ PRODUCTOS ============ */
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
 let _apFiltroFav=false;
-function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
+function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(var(--gold-rgb),0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
 function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur;
   // mismo listado en el ajuste masivo de precios
   const bp=$('#bp-cat'); if(bp){ const bcur=bp.value; bp.innerHTML='<option value="">Todas</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(bcur)) bp.value=bcur; }
@@ -3554,14 +3669,14 @@ function renderCategorias(){
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
       if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
       if(!subs || !subs.length) return '';
       const ce=escJsAttr(nm);
-      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=escJsAttr(s);return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
+      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=escJsAttr(s);return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
   $('#cat-list').innerHTML = pills + addForm + body;
@@ -3807,7 +3922,7 @@ function renderAlmacen(){
           <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nombre||'—')}</div>
           <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.direccion||'')}${a.ubicacion?' · <a href="'+esc(a.ubicacion)+'" target="_blank" rel="noopener" style="color:var(--o)">Ver ubicación</a>':''}</div>
         </div>
-        <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(id)} prod.</span>
+        <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(id)} prod.</span>
         <button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Editar" onclick="almRenombrar('${id}')">✏️</button>
         <button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="almBorrar('${id}','${esc(a.nombre||'').replace(/'/g,"\\'")}')">🗑️</button>
       </div>
@@ -6131,6 +6246,7 @@ cargarDatos();
 // moneyP/esMN salen a window porque el <script> de Herramientas es otro IIFE
 // —y admin-copilot.js otro fichero— y también pintan precios de productos.
 window.moneyP=moneyP; window.esMN=esMN;
+window.tmPonerPiel=tmPonerPiel; window.tmPintarPieles=tmPintarPieles;
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
@@ -6234,7 +6350,7 @@ ${tier('TIER 3 — DIFERENCIADORES','Escala','purple')}
 <div id="tmToolPanel" class="tm-panel"></div>`}
 function tier(t,b,cls){return `<div class="tm-tier"><h4>${t}</h4><span class="tm-tier-badge ${cls||''}">${b}</span></div>`}
 function card(id,ico,t,p){return `<div class="tm-tool-card" data-tool="${id}"><div class="ico" style="background:${color(id)}">${ico}</div><h5>${t}</h5><p>${p}</p></div>`}
-function color(id){const m={ai:'rgba(155,89,182,.18)',compress:'rgba(201,169,110,.18)',duplicate:'rgba(52,152,219,.18)',history:'rgba(46,204,113,.18)',csv:'rgba(255,107,53,.18)',dups:'rgba(155,89,182,.18)',schedule:'rgba(52,152,219,.18)',coupons:'rgba(201,169,110,.18)',locations:'rgba(255,107,53,.18)',ab:'rgba(46,204,113,.18)',totp:'rgba(155,89,182,.18)',roles:'rgba(52,152,219,.18)',competitors:'rgba(155,89,182,.18)',margin:'rgba(46,204,113,.18)',posts:'rgba(255,107,53,.18)',heatmap:'rgba(201,169,110,.18)',crm:'rgba(52,152,219,.18)',shipping:'rgba(155,89,182,.18)'};return m[id]||'rgba(255,255,255,.08)'}
+function color(id){const m={ai:'rgba(155,89,182,.18)',compress:'rgba(var(--gold-rgb),.18)',duplicate:'rgba(52,152,219,.18)',history:'rgba(46,204,113,.18)',csv:'rgba(var(--o-rgb),.18)',dups:'rgba(155,89,182,.18)',schedule:'rgba(52,152,219,.18)',coupons:'rgba(var(--gold-rgb),.18)',locations:'rgba(var(--o-rgb),.18)',ab:'rgba(46,204,113,.18)',totp:'rgba(155,89,182,.18)',roles:'rgba(52,152,219,.18)',competitors:'rgba(155,89,182,.18)',margin:'rgba(46,204,113,.18)',posts:'rgba(var(--o-rgb),.18)',heatmap:'rgba(var(--gold-rgb),.18)',crm:'rgba(52,152,219,.18)',shipping:'rgba(155,89,182,.18)'};return m[id]||'rgba(255,255,255,.08)'}
 function bind(sec){sec.addEventListener('click',e=>{const c=e.target.closest('[data-tool]');if(c) openTool(c.dataset.tool); const a=e.target.closest('[data-act]'); if(a) actions(a.dataset.act,a);});}
 function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button type="button" class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
 function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — ${moneyP(p, p.precioActual||p.price||0)}</option>`).join('')}
