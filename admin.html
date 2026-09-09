@@ -236,63 +236,6 @@ try{var _piel=localStorage.getItem('tm_piel');
   /* Tarjeta de producto — calcada del admin anterior (foto grande, botones
      grandes tintados en fila, stock abajo con −/+ cuadrados y uds en color) */
   #prod-grid.rows { display:flex; flex-direction:column; gap:12px; }
-
-  /* ── FILA DE PRODUCTO ────────────────────────────────────────────
-     Antes cada producto era una tarjeta de ~130 px con el stock en una
-     segunda línea: entraban 3 en una pantalla y con 132 productos son
-     44 pantallas de scroll. Ahora es una fila de 44 px con todo en la
-     misma línea, así que entran 14. El color de la pastilla dice el
-     estado sin leer el número.
-     En el teléfono no caben todas las columnas, así que la comisión y
-     el precio se van a una segunda línea pequeña: sigue siendo la
-     mitad de alto que la tarjeta vieja. */
-  #prod-grid.rows { gap:0; }
-  .pfila { display:grid; grid-template-columns:22px 30px minmax(0,1fr) auto auto auto auto;
-    gap:10px; align-items:center; padding:0 10px; height:44px;
-    border-bottom:1px solid var(--line); }
-  .pfila:last-child { border-bottom:0; }
-  .pfila:hover { background:rgba(var(--o-rgb),.05); }
-  .pfila.sel { background:rgba(var(--o-rgb),.09); }
-  .pf-cb { width:18px; height:18px; accent-color:var(--o); cursor:pointer; }
-  .pf-img { width:30px; height:30px; object-fit:cover; border-radius:7px;
-    background:rgba(255,255,255,.05); border:1px solid var(--border); }
-  .pf-nm { min-width:0; display:flex; align-items:baseline; gap:8px; }
-  .pf-nm b { font-size:13.5px; font-weight:600; color:var(--text);
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .pf-nm i { font-style:normal; font-size:10.5px; color:var(--dim);
-    white-space:nowrap; flex:none; }
-  .pf-pr { font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;
-    text-align:right; white-space:nowrap; }
-  .pf-pr s { color:var(--dim); font-weight:400; font-size:11px; }
-  .pf-co { font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums;
-    text-align:right; white-space:nowrap; min-width:62px; }
-  .pf-co.mn { color:var(--gold); }
-  /* El stock: pastilla de estado y los botones pegados a ella */
-  .pf-st { display:flex; align-items:center; gap:4px; }
-  .pf-chip { font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px;
-    font-variant-numeric:tabular-nums; min-width:52px; text-align:center; }
-  .pf-chip.ok { background:rgba(46,204,113,.14); color:var(--green); }
-  .pf-chip.low { background:rgba(241,196,15,.16); color:var(--yellow); }
-  .pf-chip.out { background:rgba(231,76,60,.15); color:var(--red); }
-  .pf-mas, .pf-menos { width:24px; height:24px; border-radius:7px; border:1px solid var(--border);
-    background:rgba(255,255,255,.05); color:var(--text); font-size:15px; line-height:1;
-    display:grid; place-items:center; cursor:pointer; flex:none; }
-  .pf-mas:hover, .pf-menos:hover { border-color:var(--o); color:var(--o); }
-  .pf-ac { display:flex; gap:3px; }
-  .pf-ac button { width:26px; height:26px; border-radius:7px; border:1px solid transparent;
-    background:transparent; color:var(--dim); font-size:13px; display:grid; place-items:center;
-    cursor:pointer; }
-  .pf-ac button:hover { background:rgba(255,255,255,.07); color:var(--text); }
-  .pf-ac .fav.on { color:var(--yellow); }
-  @media (max-width:820px){
-    .pfila { grid-template-columns:20px 30px minmax(0,1fr) auto auto; height:auto;
-      padding:7px 10px; row-gap:2px; }
-    .pfila .pf-co { grid-column:3; grid-row:2; text-align:left; font-size:10.5px; min-width:0; }
-    .pfila .pf-pr { grid-column:3; grid-row:2; justify-self:end; }
-    .pfila .pf-ac { grid-column:5; grid-row:1/3; }
-    .pfila .pf-st { grid-column:4; grid-row:1/3; }
-  }
-
   .pcard { background:rgba(255,255,255,0.035); border:1px solid var(--border); border-radius:18px; padding:15px 14px; }
   .pcard-h { display:flex; gap:10px; align-items:center; }
   .pcard-cb { width:22px; height:22px; accent-color:var(--o); flex-shrink:0; cursor:pointer; border-radius:6px; }
@@ -1979,7 +1922,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=d62cd652"></script>
+<script src="js/admin-copilot.js?v=e9ec3138"></script>
 
 <script>
 (function(){
@@ -3374,35 +3317,32 @@ function apBulkDel(){
 function apCardHTML(p){
   const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
   const id=String(p.id);
-  const img = p.imagen
-    ? `<img class="pf-img" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.visibility='hidden'">`
-    : `<span class="pf-img"></span>`;
-  // El precio tachado sólo si de verdad hay rebaja, no si el original es 0.
-  const orig = Number(p.precioOriginal)||0, act = Number(p.precioActual)||0;
-  const tachado = (orig > act) ? ` <s>${moneyP({precioActual:orig, moneda:p.moneda})}</s>` : '';
-  const com = Number(p.comision)>0
-    ? `<span class="pf-co${p.comisionMoneda==='MN'?' mn':''}">${p.comisionMoneda==='MN'
-        ? Number(p.comision).toLocaleString('en-US')+' MN'
-        : '$'+Number(p.comision).toFixed(0)}</span>`
-    : `<span class="pf-co"></span>`;
-  const cat = esc(p.subcategoria || p.categoria || '');
-  return `<div class="pfila${AP_SEL.has(id)?' sel':''}" data-id="${id}">
-  <input type="checkbox" class="pf-cb" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')" aria-label="Seleccionar ${esc(p.nombre||'')}">
-  ${img}
-  <span class="pf-nm"><b>${esc(p.nombre||'')}</b><i>${cat}</i></span>
-  <span class="pf-pr">${moneyP(p)}${tachado}</span>
-  ${com}
-  <span class="pf-st">
-    <button type="button" class="pf-menos" onclick="apStock('${id}',-1)" title="Quitar uno" ${st<=0?'disabled style="opacity:.3"':''}>−</button>
-    <span class="pf-chip ${cls}">${st<=0?'Agotado':(st+' u.')}</span>
-    <button type="button" class="pf-mas" onclick="apStock('${id}',1)" title="Añadir uno">+</button>
-  </span>
-  <span class="pf-ac">
-    <button type="button" onclick="apEdit('${id}')" title="Editar">✏️</button>
-    <button type="button" class="fav${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">${p.masVendido?'★':'☆'}</button>
-    <button type="button" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
-  </span>
-</div>`;
+  const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:34px">${emojiCat(p.categoria)}</div>`;
+  const off = (Number(p.descuento)>0) ? ` <span style="color:var(--red);font-size:12px">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` <span style="color:var(--red);font-size:12px">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
+  const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión:<b>${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</b></div>` : '';
+  return `<div class="pcard">
+    <div class="pcard-h">
+      <input type="checkbox" class="pcard-cb" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')">
+      ${img}
+      <div class="pcard-info">
+        <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
+        <div class="pcard-meta">${moneyP(p)}${off}</div>
+        ${comm}
+      </div>
+      <div class="pcard-acts">
+        <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
+        <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
+        <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
+      </div>
+    </div>
+    <div class="pcard-stock">
+      <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
+      <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
+      <span class="st-label">Stock:</span>
+      <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
+      <button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado" ${st<=0?'disabled style="opacity:.35"':''}>→0</button>
+    </div>
+  </div>`;
 }
 // Subagrupa una lista de productos por subcategoría (Cargadores, Inversores,
 // Routers...) para que no salgan regados dentro de la misma categoría — solo
