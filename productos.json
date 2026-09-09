@@ -1609,51 +1609,6 @@
     ]
   },
   {
-    "id": 1778214214360,
-    "nombre": "Mannol 4 - Takt Motorbike 10W - 40 7812. 1L",
-    "precioActual": 10,
-    "imagen": "https://tiendamax.org/imagenes/img_1778214214360.webp",
-    "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
-    "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812. 1L | TiendaMax",
-    "seoDescription": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "MANNOL"
-      },
-      {
-        "k": "Viscosidad (SAE)",
-        "v": "10W-40"
-      },
-      {
-        "k": "Categoría",
-        "v": "Aceites y lubricantes"
-      },
-      {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
-      }
-    ],
-    "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
-    ],
-    "incluye": [
-      "1x Mannol 4 - Takt Motorbike 10W - 40 7812. 1L"
-    ],
-    "specs": [
-      "⚙ Viscosidad (SAE): 10W-40"
-    ],
-    "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro."
-  },
-  {
     "id": 1778336613589,
     "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
     "precioActual": 35,
@@ -2965,7 +2920,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778634712732.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACCESORIOS",
-    "stock": 9,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2975,7 +2930,6 @@
     "comision": 2,
     "seoTitle": "CAPA PARA MOTO en Cuba | TiendaMax",
     "seoDescription": "Talla XL ideal para estos tiempos de lluvia 😏",
-    "descripcion": "Cubre-moto (funda protectora) 100% polietileno, impermeable, marca Junlang. Protege del sol, la lluvia y el polvo cuando la moto está parqueada. Disponible en varias tallas según el tamaño de la moto (S/M/L/XL/XXL).",
     "ficha": [
       {
         "k": "Marca",
@@ -2995,7 +2949,8 @@
     ],
     "incluye": [
       "1x Capa Para Moto"
-    ]
+    ],
+    "descripcion": "Cubre-moto (funda protectora) 100% polietileno, impermeable, marca Junlang. Protege del sol, la lluvia y el polvo cuando la moto está parqueada. Disponible en varias tallas según el tamaño de la moto (S/M/L/XL/XXL)."
   },
   {
     "id": 1778636088295,
@@ -4957,51 +4912,6 @@
       "📏 Medida: 15x6",
       "🔩 Patrón de tornillos: 4x100 / 4x114.3",
       "✨ Diseño: 5 rayos"
-    ]
-  },
-  {
-    "id": 1778601482845,
-    "nombre": "Mannol 4 - Takt Motorbike 10W - 40 7812 1L",
-    "precioActual": 10,
-    "imagen": "https://tiendamax.org/imagenes/img_1778601479670.webp",
-    "categoria": "MOTOS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
-    "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812 1L | TiendaMax",
-    "seoDescription": "Specifications SAE 10W-40 API SP JASO MA/MA2",
-    "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro.",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "MANNOL"
-      },
-      {
-        "k": "Viscosidad (SAE)",
-        "v": "10W-40"
-      },
-      {
-        "k": "Categoría",
-        "v": "Aceites y lubricantes"
-      },
-      {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
-      }
-    ],
-    "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
-    ],
-    "incluye": [
-      "1x Mannol 4 - Takt Motorbike 10W - 40 7812 1L"
-    ],
-    "specs": [
-      "⚙ Viscosidad (SAE): 10W-40"
     ]
   },
   {
