@@ -353,6 +353,46 @@ a{color:var(--acc);text-decoration:none}
   .fila .st{grid-area:st}
 }
 
+
+/* ── CATEGORÍAS ───────────────────────────────────────────────────
+   Cada categoría es una tarjeta con su emoji, sus cuentas y sus
+   subcategorías como pastillas. Todo editable en el sitio: el panel
+   clásico usa prompt() del navegador; aquí va un modal propio, que
+   en un teléfono se puede leer. */
+.cat-card{border:1px solid var(--edge);background:var(--glass);border-radius:var(--r);
+  box-shadow:var(--lift);margin-bottom:11px;overflow:hidden}
+.cat-cab{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:13px 15px}
+.cat-emoji{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;
+  background:var(--glass-2);border:1px solid var(--edge);cursor:pointer}
+.cat-emoji:hover{border-color:var(--acc)}
+.cat-nom{min-width:0}
+.cat-nom b{display:block;font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.cat-nom span{font-size:11.5px;color:var(--mut)}
+.cat-acts{display:flex;gap:5px}
+.cat-acts button{width:32px;height:32px;border-radius:10px;border:1px solid var(--edge);
+  background:var(--glass);color:var(--mut);display:grid;place-items:center}
+.cat-acts button:hover{border-color:var(--edge-2);color:var(--ink)}
+.cat-acts .ico{width:15px;height:15px}
+.cat-acts .del:hover{color:var(--crit);border-color:rgba(251,113,133,.4)}
+.cat-subs{display:flex;flex-wrap:wrap;gap:7px;padding:0 15px 14px;align-items:center}
+.subchip{display:inline-flex;align-items:center;gap:7px;padding:5px 6px 5px 12px;border-radius:99px;
+  border:1px solid var(--edge);background:var(--glass-2);font-size:12px;font-weight:600}
+.subchip .n{font-family:var(--m);font-size:10px;color:var(--dim)}
+.subchip.suelta{border-style:dashed;color:var(--mut)}
+.subchip button{width:20px;height:20px;border-radius:99px;color:var(--dim);display:grid;
+  place-items:center;flex:none}
+.subchip button:hover{background:rgba(var(--br),.16);color:var(--acc)}
+.subchip button .ico{width:11px;height:11px}
+.subchip .del:hover{background:rgba(251,113,133,.16);color:var(--crit)}
+.sub-add{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:99px;
+  border:1px dashed var(--edge-2);background:transparent;color:var(--mut);font-size:12px;
+  font-weight:600}
+.sub-add:hover{border-color:var(--acc);color:var(--acc)}
+.sub-add .ico{width:12px;height:12px}
+.cat-vacia{padding:0 15px 14px;font-size:12px;color:var(--dim)}
+
 /* ── Ventas ─────────────────────────────────────────────── */
 .vt-lista{display:flex;flex-direction:column}
 .vt{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;
@@ -563,12 +603,14 @@ html[data-piel="grafito"] .modal{background:#131315}
 
     <!-- ── CATEGORÍAS ── -->
     <section class="vista" id="v-categorias">
-      <div class="cab"><div><h1>Categorías</h1><p id="cat-sub">—</p></div></div>
-      <div class="rej" id="cat-rej"></div>
-      <div class="tj">
-        <h3><svg class="ico"><use href="#i-etiqueta"/></svg>Desglose</h3>
-        <div id="cat-lista"></div>
+      <div class="cab">
+        <div><h1>Categorías</h1><p id="cat-sub">—</p></div>
+        <div class="sp"></div>
+        <button class="btn btn-p" id="cat-nueva"><svg class="ico"><use href="#i-mas"/></svg>Nueva categoría</button>
       </div>
+      <div class="rej" id="cat-rej"></div>
+      <div id="cat-lista"></div>
+      <div class="tj tj-p" id="cat-huerfanas" hidden></div>
     </section>
 
     <!-- ── VENTAS ── -->
@@ -1268,26 +1310,235 @@ function abrirEditor(id){
   velo.addEventListener('keydown', e => { if(e.key === 'Escape') cerrar(); });
 }
 
-/* ── CATEGORÍAS ── */
+
+/* ── CATEGORÍAS: edición ──────────────────────────────────────────
+   Mismo modelo que el panel clásico, con sus mismas tres claves:
+     categorias            -> ["WIFI","ENERGIA",…]
+     iconosPersonalizados  -> {"WIFI":"🌐",…}
+     subcategorias         -> {"WIFI":["ROUTERS",…],…}
+   Renombrar arrastra a los productos, igual que allí: si no, quedan
+   apuntando a una categoría que ya no existe y desaparecen de la
+   tienda sin que nada avise. */
+let CATS = [], ICONOS = {}, SUBS = {};
+
+async function cargarCategorias(){
+  CATS = leer('categorias', null);
+  ICONOS = leer('iconosPersonalizados', null);
+  SUBS = leer('subcategorias', null);
+  if(!Array.isArray(CATS) || !CATS.length || !ICONOS){
+    const j = await traer('categorias.json');
+    if(j){
+      if(!Array.isArray(CATS) || !CATS.length) CATS = Array.isArray(j.nombres) ? j.nombres : [];
+      if(!ICONOS) ICONOS = j.iconos || {};
+    }
+  }
+  if(!SUBS) SUBS = (await traer('subcategorias.json')) || {};
+  if(!Array.isArray(CATS)) CATS = [];
+  if(!ICONOS || typeof ICONOS !== 'object') ICONOS = {};
+  if(!SUBS || typeof SUBS !== 'object') SUBS = {};
+  // Las categorías que sólo existen en los productos se añaden: si no, no
+  // hay forma de tocarlas desde aquí y sus productos quedan huérfanos.
+  porCategoria().forEach(([c]) => { if(c && CATS.indexOf(c) < 0) CATS.push(c); });
+}
+function guardarCategorias(){
+  guardar('categorias', CATS);
+  guardar('iconosPersonalizados', ICONOS);
+  guardar('subcategorias', SUBS);
+}
+function subsDe(cat){
+  const dec = Array.isArray(SUBS[cat]) ? SUBS[cat].slice() : [];
+  // Las que sólo aparecen en productos se enseñan aparte, con borde punteado:
+  // existen de hecho aunque nadie las declarara.
+  const enProd = [...new Set(PRODUCTOS.filter(p => p.categoria === cat)
+    .map(p => String(p.subcategoria || '').trim()).filter(Boolean))];
+  return {declaradas: dec, sueltas: enProd.filter(x => dec.indexOf(x) < 0)};
+}
+function cuentaSub(cat, sub){
+  return PRODUCTOS.filter(p => p.categoria === cat && p.subcategoria === sub).length;
+}
+
+/* Un modal de una sola pregunta. El clásico usa prompt() del navegador, que
+   en un teléfono sale minúsculo y sin decir de qué va. */
+function pedirTexto(opts, alAceptar){
+  const velo = document.createElement('div');
+  velo.className = 'velo';
+  velo.innerHTML = `<div class="modal" role="dialog" aria-modal="true" aria-label="${esc(opts.titulo)}">
+    <h3>${esc(opts.titulo)}<span class="sp"></span>
+      <button data-cerrar title="Cerrar"><svg class="ico" style="width:17px;height:17px"><use href="#i-cerrar"/></svg></button></h3>
+    <div class="cuerpo">
+      <div class="campo"><label for="pt-val">${esc(opts.etiqueta || 'Nombre')}</label>
+        <input id="pt-val" type="text" value="${esc(opts.valor || '')}" placeholder="${esc(opts.pista || '')}"></div>
+      ${opts.nota ? `<p style="font-size:11.5px;color:var(--dim);line-height:1.5">${esc(opts.nota)}</p>` : ''}
+    </div>
+    <div class="pie"><button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn btn-p" data-ok>${esc(opts.boton || 'Guardar')}</button></div>
+  </div>`;
+  document.body.appendChild(velo);
+  const inp = velo.querySelector('#pt-val');
+  setTimeout(() => { inp.focus(); inp.select(); }, 40);
+  const cerrar = () => velo.remove();
+  const aceptar = () => {
+    const v = inp.value.trim();
+    if(!v){ inp.focus(); return; }
+    cerrar(); alAceptar(v);
+  };
+  velo.addEventListener('click', e => {
+    if(e.target === velo || e.target.closest('[data-cerrar]')) cerrar();
+    else if(e.target.closest('[data-ok]')) aceptar();
+  });
+  velo.addEventListener('keydown', e => {
+    if(e.key === 'Escape') cerrar();
+    if(e.key === 'Enter'){ e.preventDefault(); aceptar(); }
+  });
+}
+
+function tocadoCatalogo(){
+  guardarCategorias();
+  guardarProductos();
+  $('#n-cat').textContent = CATS.length;
+  // El filtro de Inventario tiene que reflejar los nombres nuevos.
+  const sel = $('#inv-cat'), antes = sel.value;
+  sel.innerHTML = '<option value="">Todas las categorías</option>'
+    + porCategoria().map(([c,n]) => `<option value="${esc(c)}">${esc(c)} · ${n}</option>`).join('');
+  sel.value = [...sel.options].some(o => o.value === antes) ? antes : '';
+  pintarCategorias();
+}
+
+function catNueva(){
+  pedirTexto({titulo:'Nueva categoría', etiqueta:'Nombre', pista:'Ej: CLIMATIZACIÓN',
+    boton:'Crear', nota:'Se crea vacía. Los productos se le asignan al editarlos.'}, v => {
+    const nom = v.toUpperCase();
+    if(CATS.some(c => c.toUpperCase() === nom)){ aviso('Ya existe esa categoría'); return; }
+    CATS.push(nom); SUBS[nom] = SUBS[nom] || [];
+    tocadoCatalogo(); aviso('Categoría creada · ' + nom);
+  });
+}
+function catRenombrar(cat){
+  pedirTexto({titulo:'Renombrar categoría', etiqueta:'Nombre', valor:cat, boton:'Renombrar',
+    nota:'Los productos de esta categoría se actualizan solos.'}, v => {
+    const nom = v.toUpperCase();
+    if(nom === cat) return;
+    if(CATS.some(c => c.toUpperCase() === nom)){ aviso('Ya existe esa categoría'); return; }
+    CATS = CATS.map(c => c === cat ? nom : c);
+    if(ICONOS[cat]){ ICONOS[nom] = ICONOS[cat]; delete ICONOS[cat]; }
+    if(SUBS[cat]){ SUBS[nom] = SUBS[cat]; delete SUBS[cat]; }
+    let n = 0;
+    PRODUCTOS.forEach(p => { if(p.categoria === cat){ p.categoria = nom; n++; } });
+    tocadoCatalogo();
+    aviso('Renombrada · ' + n + ' producto' + (n===1?'':'s') + ' actualizado' + (n===1?'':'s'));
+  });
+}
+function catEmoji(cat){
+  pedirTexto({titulo:'Emoji de ' + cat, etiqueta:'Pega un emoji', valor:ICONOS[cat] || '',
+    pista:'🌐', boton:'Cambiar',
+    nota:'Sale en la tienda al lado del nombre de la categoría.'}, v => {
+    if(v.length > 8){ aviso('Eso no parece un emoji'); return; }
+    ICONOS[cat] = v; tocadoCatalogo(); aviso('Emoji cambiado');
+  });
+}
+function catBorrar(cat){
+  const n = PRODUCTOS.filter(p => p.categoria === cat).length;
+  const msg = '¿Borrar la categoría "' + cat + '"?' +
+    (n ? '\n\nTiene ' + n + ' producto' + (n===1?'':'s') + ', que quedarán SIN categoría y desaparecerán de la tienda hasta que les pongas otra.' : '');
+  if(!confirm(msg)) return;
+  CATS = CATS.filter(c => c !== cat);
+  delete ICONOS[cat]; delete SUBS[cat];
+  tocadoCatalogo(); aviso('Categoría borrada');
+}
+function subNueva(cat){
+  pedirTexto({titulo:'Nueva subcategoría', etiqueta:'Nombre', pista:'Ej: ROUTERS',
+    boton:'Crear', nota:'Dentro de ' + cat + '.'}, v => {
+    const nom = v.toUpperCase();
+    if(!Array.isArray(SUBS[cat])) SUBS[cat] = [];
+    if(SUBS[cat].some(x => x.toUpperCase() === nom)){ aviso('Ya existe'); return; }
+    SUBS[cat].push(nom); tocadoCatalogo(); aviso('Subcategoría creada');
+  });
+}
+function subRenombrar(cat, sub){
+  pedirTexto({titulo:'Renombrar subcategoría', etiqueta:'Nombre', valor:sub, boton:'Renombrar',
+    nota:'Los productos que la usan se actualizan solos.'}, v => {
+    const nom = v.toUpperCase();
+    if(nom === sub) return;
+    if(Array.isArray(SUBS[cat])) SUBS[cat] = SUBS[cat].map(x => x === sub ? nom : x);
+    else SUBS[cat] = [nom];
+    let n = 0;
+    PRODUCTOS.forEach(p => { if(p.categoria === cat && p.subcategoria === sub){ p.subcategoria = nom; n++; } });
+    tocadoCatalogo();
+    aviso('Renombrada · ' + n + ' producto' + (n===1?'':'s'));
+  });
+}
+function subBorrar(cat, sub){
+  const n = cuentaSub(cat, sub);
+  if(!confirm('¿Borrar la subcategoría "' + sub + '"?' +
+    (n ? '\n\n' + n + ' producto' + (n===1?'':'s') + ' se queda' + (n===1?'':'n') + ' sin subcategoría; siguen en ' + cat + '.' : ''))) return;
+  if(Array.isArray(SUBS[cat])) SUBS[cat] = SUBS[cat].filter(x => x !== sub);
+  PRODUCTOS.forEach(p => { if(p.categoria === cat && p.subcategoria === sub) delete p.subcategoria; });
+  tocadoCatalogo(); aviso('Subcategoría borrada');
+}
+function subAdoptar(cat, sub){
+  if(!Array.isArray(SUBS[cat])) SUBS[cat] = [];
+  if(SUBS[cat].indexOf(sub) < 0) SUBS[cat].push(sub);
+  tocadoCatalogo(); aviso('Añadida a la lista · ' + sub);
+}
+
+/* ── CATEGORÍAS: pintado ── */
 function pintarCategorias(){
-  const cats = porCategoria();
-  $('#cat-sub').textContent = cats.length + ' categorías · ' + PRODUCTOS.length + ' productos';
+  const cuenta = c => PRODUCTOS.filter(p => p.categoria === c).length;
   const conStock = c => PRODUCTOS.filter(p => p.categoria === c && num(p.stock) > 0).length;
   const valor = c => PRODUCTOS.filter(p => p.categoria === c && !esMN(p))
-    .reduce((s,p) => s + num(p.precioActual)*num(p.stock), 0);
-  const top = cats.slice(0,4);
-  $('#cat-rej').innerHTML = top.map(([c,n]) => `
-    <div class="tj"><div class="chip"><svg class="ico"><use href="#i-etiqueta"/></svg></div>
-      <div class="k">${esc(c)}</div><div class="v">${n}</div>
+    .reduce((s,p) => s + num(p.precioActual) * num(p.stock), 0);
+
+  const nSubs = CATS.reduce((a,c) => a + subsDe(c).declaradas.length, 0);
+  $('#cat-sub').textContent = CATS.length + ' categorías · ' + nSubs + ' subcategorías · '
+    + PRODUCTOS.length + ' productos';
+
+  const orden = CATS.slice().sort((a,b) => cuenta(b) - cuenta(a));
+  $('#cat-rej').innerHTML = orden.slice(0,4).map(c => `
+    <div class="tj"><div class="chip" style="font-size:15px">${esc(ICONOS[c] || '🏷️')}</div>
+      <div class="k">${esc(c)}</div><div class="v">${cuenta(c)}</div>
       <div class="foot"><span class="prop g">${conStock(c)} con stock</span></div></div>`).join('');
-  $('#cat-lista').innerHTML = cats.map(([c,n]) => {
-    const cs = conStock(c);
-    return `<div class="tarea" data-e="info">
-      <span class="ic"><svg class="ico"><use href="#i-etiqueta"/></svg></span>
-      <span class="tx"><b>${esc(c)}</b><span>${n} producto${n>1?'s':''} · ${cs} con stock ·
-        $${miles(valor(c))} en almacén</span></span>
-      <button class="btn btn-sm" data-ir="inventario" data-cat="${esc(c)}">Ver</button></div>`;
+
+  $('#cat-lista').innerHTML = orden.map(c => {
+    const {declaradas, sueltas} = subsDe(c);
+    const n = cuenta(c);
+    const chips = declaradas.map(sub => `
+      <span class="subchip">${esc(sub)}<span class="n">${cuentaSub(c,sub)}</span>
+        <button data-subren="${esc(c)}|${esc(sub)}" title="Renombrar"><svg class="ico"><use href="#i-lapiz"/></svg></button>
+        <button class="del" data-subdel="${esc(c)}|${esc(sub)}" title="Borrar"><svg class="ico"><use href="#i-cerrar"/></svg></button>
+      </span>`).join('')
+      + sueltas.map(sub => `
+      <span class="subchip suelta" title="Está en los productos pero no en la lista">${esc(sub)}
+        <span class="n">${cuentaSub(c,sub)}</span>
+        <button data-subadopt="${esc(c)}|${esc(sub)}" title="Añadir a la lista"><svg class="ico"><use href="#i-mas"/></svg></button>
+      </span>`).join('');
+    return `<div class="cat-card">
+      <div class="cat-cab">
+        <button class="cat-emoji" data-catemoji="${esc(c)}" title="Cambiar emoji">${esc(ICONOS[c] || '🏷️')}</button>
+        <span class="cat-nom"><b>${esc(c)}</b>
+          <span>${n} producto${n===1?'':'s'} · ${conStock(c)} con stock · $${miles(valor(c))} en almacén</span></span>
+        <span class="cat-acts">
+          <button data-ir="inventario" data-cat="${esc(c)}" title="Ver productos"><svg class="ico"><use href="#i-caja"/></svg></button>
+          <button data-catren="${esc(c)}" title="Renombrar"><svg class="ico"><use href="#i-lapiz"/></svg></button>
+          <button class="del" data-catdel="${esc(c)}" title="Borrar"><svg class="ico"><use href="#i-papelera"/></svg></button>
+        </span>
+      </div>
+      <div class="cat-subs">${chips}
+        <button class="sub-add" data-subnueva="${esc(c)}"><svg class="ico"><use href="#i-mas"/></svg>Subcategoría</button>
+      </div>
+    </div>`;
   }).join('');
+
+  // Productos cuya categoría no está en la lista: no se ven en la tienda.
+  const conocidas = new Set(CATS);
+  const huerfanos = PRODUCTOS.filter(p => p.categoria && !conocidas.has(p.categoria));
+  const caja = $('#cat-huerfanas');
+  if(huerfanos.length){
+    const cs = [...new Set(huerfanos.map(p => p.categoria))];
+    caja.hidden = false;
+    caja.innerHTML = `<div class="k">Atención</div>
+      <div class="t">${huerfanos.length} productos en categorías que no están en la lista</div>
+      <p style="font-size:12.5px;color:var(--mut);margin-top:8px">${cs.map(esc).join(' · ')}</p>`;
+  } else caja.hidden = true;
 }
 
 /* ── VENTAS ── */
@@ -1819,6 +2070,20 @@ function delegar(){
     if(dl){ borrarProducto(dl.dataset.del); return; }
     const pl = e.target.closest('[data-piel]');
     if(pl){ ponerPiel(pl.dataset.piel); return; }
+    const cr = e.target.closest('[data-catren]');
+    if(cr){ catRenombrar(cr.dataset.catren); return; }
+    const ce = e.target.closest('[data-catemoji]');
+    if(ce){ catEmoji(ce.dataset.catemoji); return; }
+    const cd = e.target.closest('[data-catdel]');
+    if(cd){ catBorrar(cd.dataset.catdel); return; }
+    const sn = e.target.closest('[data-subnueva]');
+    if(sn){ subNueva(sn.dataset.subnueva); return; }
+    const sr = e.target.closest('[data-subren]');
+    if(sr){ const [c,x] = sr.dataset.subren.split('|'); subRenombrar(c,x); return; }
+    const sd = e.target.closest('[data-subdel]');
+    if(sd){ const [c,x] = sd.dataset.subdel.split('|'); subBorrar(c,x); return; }
+    const sa = e.target.closest('[data-subadopt]');
+    if(sa){ const [c,x] = sa.dataset.subadopt.split('|'); subAdoptar(c,x); return; }
   });
   document.addEventListener('change', e => {
     const cb = e.target.closest('[data-sel]');
@@ -1829,6 +2094,7 @@ function delegar(){
   $('#inv-cat').addEventListener('change', pintarInventario);
   $('#inv-est').addEventListener('change', pintarInventario);
   $('#ag-guardar').addEventListener('click', guardarNuevo);
+  $('#cat-nueva').addEventListener('click', catNueva);
   $('#a2-mas').addEventListener('click', abrirHoja);
   $('#a2-hoja').addEventListener('click', e => { if(e.target.id === 'a2-hoja') cerrarHoja(); });
   $('#vt-nueva').addEventListener('click', () => {
@@ -1843,10 +2109,11 @@ function delegar(){
 
 async function abrirPanel(){
   await cargarDatos();
+  await cargarCategorias();
   $('#a2-login').hidden = true;
   $('#a2-panel').hidden = false;
   $('#n-prod').textContent = PRODUCTOS.length;
-  $('#n-cat').textContent = porCategoria().length;
+  $('#n-cat').textContent = CATS.length;
   $('#n-ventas').textContent = VENTAS.length;
   const cats = porCategoria();
   $('#inv-cat').innerHTML = '<option value="">Todas las categorías</option>'

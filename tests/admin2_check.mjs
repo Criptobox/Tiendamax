@@ -69,8 +69,55 @@ const guardado = await p.evaluate(()=>{const d=JSON.parse(localStorage.getItem('
 ok('el editor guarda precio y garantía', guardado);
 ok('el editor se cierra al guardar', await p.evaluate(()=>!document.querySelector('.velo')));
 
+// ── categorías: se ven las subcategorías y se pueden editar
+await p.click('.a2-lat [data-v="categorias"]'); await p.waitForTimeout(700);
+const cat=await p.evaluate(()=>({
+  tarjetas:document.querySelectorAll('.cat-card').length,
+  subs:document.querySelectorAll('.subchip').length,
+  botones:document.querySelectorAll('[data-catren],[data-catdel],[data-subnueva]').length}));
+ok('salen las categorías en tarjetas ('+cat.tarjetas+')', cat.tarjetas>=10);
+ok('con sus subcategorías ('+cat.subs+')', cat.subs>=20);
+ok('y con botones de editar', cat.botones>=30);
+
+// crear una subcategoría
+const c0=await p.evaluate(()=>document.querySelector('[data-subnueva]').dataset.subnueva);
+const subAntes=await p.evaluate(c=>((JSON.parse(localStorage.getItem('subcategorias')||'{}'))[c]||[]).length, c0);
+await p.click('[data-subnueva]'); await p.waitForTimeout(400);
+await p.fill('.velo #pt-val','PRUEBA SUB');
+await p.click('.velo [data-ok]'); await p.waitForTimeout(500);
+ok('crear subcategoría la guarda', await p.evaluate(c=>
+  ((JSON.parse(localStorage.getItem('subcategorias')||'{}'))[c]||[]).includes('PRUEBA SUB'), c0));
+
+// renombrar una categoría tiene que arrastrar a sus productos
+const cNom=await p.evaluate(()=>document.querySelector('[data-catren]').dataset.catren);
+const nEnCat=await p.evaluate(c=>JSON.parse(localStorage.getItem('productos')).filter(x=>x.categoria===c).length, cNom);
+await p.click(`[data-catren="${cNom}"]`); await p.waitForTimeout(400);
+await p.fill('.velo #pt-val','CAT RENOMBRADA');
+await p.click('.velo [data-ok]'); await p.waitForTimeout(600);
+const tras=await p.evaluate(()=>{const d=JSON.parse(localStorage.getItem('productos'));
+  return {nuevos:d.filter(x=>x.categoria==='CAT RENOMBRADA').length,
+    enLista:(JSON.parse(localStorage.getItem('categorias')||'[]')).includes('CAT RENOMBRADA'),
+    subMovida:'CAT RENOMBRADA' in JSON.parse(localStorage.getItem('subcategorias')||'{}')};});
+ok('renombrar arrastra a los '+nEnCat+' productos', tras.nuevos===nEnCat && nEnCat>0);
+ok('y mueve la categoría y sus subcategorías', tras.enLista && tras.subMovida);
+
+// crear una categoría
+const catN=await p.evaluate(()=>JSON.parse(localStorage.getItem('categorias')||'[]').length);
+await p.click('#cat-nueva'); await p.waitForTimeout(400);
+await p.fill('.velo #pt-val','CATEGORIA NUEVA');
+await p.click('.velo [data-ok]'); await p.waitForTimeout(500);
+ok('crear categoría la guarda', await p.evaluate(n=>
+  JSON.parse(localStorage.getItem('categorias')||'[]').length===n+1, catN));
+
+// borrar pregunta antes
+p.once('dialog', d => d.dismiss());
+const antesDel=await p.evaluate(()=>JSON.parse(localStorage.getItem('categorias')||'[]').length);
+await p.click('[data-catdel]'); await p.waitForTimeout(450);
+ok('borrar categoría pregunta, y si dices que no, no borra', await p.evaluate(()=>
+  JSON.parse(localStorage.getItem('categorias')||'[]').length)===antesDel);
+
 // ── pieles
-await p.click('[data-v="config"]'); await p.waitForTimeout(500);
+await p.click('.a2-lat [data-v="config"]'); await p.waitForTimeout(500);
 await p.click('[data-piel="azul"]'); await p.waitForTimeout(400);
 const piel = await p.evaluate(()=>({attr:document.documentElement.getAttribute('data-piel'),
   ls:localStorage.getItem('tm_piel'),

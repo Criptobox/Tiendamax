@@ -60,14 +60,18 @@ def _contraste(a, b):
 class DatosCompartidosTest(unittest.TestCase):
 
     def test_usa_las_mismas_claves_que_el_panel_clasico(self):
-        for clave in ("'productos'", "'registroVentas'", "'tm_piel'"):
+        for clave in ("'productos'", "'registroVentas'", "'tm_piel'",
+                      "'categorias'", "'subcategorias'", "'iconosPersonalizados'"):
             self.assertIn(clave, A2,
                           f"admin2 no usa {clave}: los dos paneles dejarían de verse los datos")
 
     def test_no_escribe_en_una_clave_propia_de_catalogo(self):
         claves = set(re.findall(r"localStorage\.setItem\(\s*'([a-zA-Z_0-9]+)'", A2))
         claves |= set(re.findall(r"guardar\(\s*'([a-zA-Z_0-9]+)'", A2))
-        permitidas = {"productos", "registroVentas", "tm_piel"}
+        # Todas son claves del panel clásico. Si admin2 inventara una propia,
+        # editarías aquí y publicarías desde allí el catálogo viejo.
+        permitidas = {"productos", "registroVentas", "tm_piel",
+                      "categorias", "subcategorias", "iconosPersonalizados"}
         self.assertEqual(claves - permitidas, set(),
                          f"admin2 guarda en claves que el panel clásico no lee: {claves - permitidas}")
 
