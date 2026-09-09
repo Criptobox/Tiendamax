@@ -25,7 +25,10 @@ ROOT = Path(__file__).resolve().parents[1]
 # vale.html también: es una página propia (app instalable aparte) y carga
 # js/auth.js y js/reservas.js. Sin pasar por aquí, su ?v= se quedaría
 # congelado y el navegador serviría una versión vieja de esos dos.
-HTML_FILES = ["index.html", "admin.html", "404.html", "vale.html"]
+# admin2.html es el panel nuevo: carga auth.js y tm-bundle.js igual que
+# admin.html, así que necesita el mismo cache-busting o el dueño se queda con
+# un bundle viejo y no se entera.
+HTML_FILES = ["index.html", "admin.html", "admin2.html", "404.html", "vale.html"]
 
 # Captura: (atributo)="(ruta .js, .css, .png, .ico, .svg, .webp, .jpg)?v=(version)"
 PATTERN = re.compile(r'(href|src|content)="([^"?]+\.(?:js|css|png|ico|svg|webp|jpe?g))\?v=([^"]*)"')
