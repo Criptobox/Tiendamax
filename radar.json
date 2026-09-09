@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-08T14:55:33.083207+00:00",
-  "fecha": "2026-09-08",
+  "actualizado": "2026-09-09T15:01:28.166407+00:00",
+  "fecha": "2026-09-09",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 15.0,
         "mediana": 30.0,
-        "n": 13
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -34,6 +34,10 @@
         },
         {
           "fecha": "2026-09-08",
+          "mediana": 30.0
+        },
+        {
+          "fecha": "2026-09-09",
           "mediana": 30.0
         }
       ],
@@ -68,16 +72,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "30 USD 🔀 Switch Ethernet Gigabit 8 Puertos 🔀 AX | E01 | 30 USD",
+          "titulo": "30 USD 🌐 Switch Gigabit de 8 Puertos",
           "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
+          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-57301738",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
+          "titulo": "30 USD 🔀 Switch Ethernet Gigabit 8 Puertos 🔀 AX | E01 | 30 USD",
           "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
+          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
           "dias": null
         }
       ]
@@ -97,10 +101,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-26",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-08-27",
           "mediana": 82.5
@@ -152,6 +152,10 @@
         {
           "fecha": "2026-09-08",
           "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-09",
+          "mediana": 82.5
         }
       ],
       "muestras": [
@@ -201,12 +205,12 @@
     },
     {
       "id": 1788626436047,
-      "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
+      "nombre": "⚡ Inversor Tataliken 3500W",
       "tuPrecio": 170.0,
       "mercado": {
-        "min": 100.0,
+        "min": 90.0,
         "mediana": 170.0,
-        "n": 8
+        "n": 13
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -225,14 +229,18 @@
         {
           "fecha": "2026-09-08",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-09",
+          "mediana": 170.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "titulo": "90 USD inversor TATALIKEN 1500W",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-1500w-56526177",
           "dias": null
         },
         {
@@ -240,6 +248,20 @@
           "titulo": "170 USD Inversor Tataliken 3500W 12V [170]",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-3500w-12v-170-57272682",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor 3500W Tataliken [170]",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-3500w-tataliken-170-57132969",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-3500w-57078348",
           "dias": null
         },
         {
@@ -254,20 +276,6 @@
           "titulo": "170 USD Inversor Tataliken de 12V 3500W $170",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57214908",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57144336",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor 3500W Tataliken [170]",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-3500w-tataliken-170-57132969",
           "dias": null
         }
       ]
