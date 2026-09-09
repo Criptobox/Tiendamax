@@ -1,21 +1,11 @@
 {
-  "generado": "2026-09-08T13:11:27.640770+00:00",
-  "productos": 138,
-  "urgentes": 6,
+  "generado": "2026-09-09T13:16:45.267694+00:00",
+  "productos": 132,
+  "urgentes": 3,
   "advertencias": 0,
   "info": 7,
-  "resumen": "Anoche revisé tus 138 productos y encontré 6 urgente(s), 7 de info.",
+  "resumen": "Anoche revisé tus 132 productos y encontré 3 urgente(s), 7 de info.",
   "detalle": [
-    {
-      "tipo": "nombre",
-      "nombre": "⚡ Inversor  Tataliken 4000W ( 12V )",
-      "detalle": "→ ⚡ Inversor Tataliken 4000W ( 12V )"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "📟 Controlador Solar POWMR M100 PRO - MPPT de 100 A",
-      "detalle": "→ 📟 Controlador Solar POWMR M100 PRO - MPPT de 100 a"
-    },
     {
       "tipo": "nombre",
       "nombre": "🌐  MikroTik SXT SA5 ac",
@@ -23,18 +13,13 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "🌐MikroTik hEX S (RB760iGS)",
-      "detalle": "→ 🌐MikroTik hEX s (RB760iGS)"
+      "nombre": "🌐 MikroTik hEX S RB760iGS",
+      "detalle": "→ 🌐 MikroTik hEX s RB760iGS"
     },
     {
       "tipo": "nombre",
       "nombre": "⚡Conectores MC4 10 pares",
       "detalle": "→ ⚡Conectores MC4 10 Pares"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "⚡ Inversor  Tataliken 3500W ( 12V )",
-      "detalle": "→ ⚡ Inversor Tataliken 3500W ( 12V )"
     },
     {
       "tipo": "stock_bajo",
@@ -63,13 +48,13 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🛜TP-Link Archer BE230",
+      "nombre": "🛜 TP-Link Archer BE230",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
-      "nombre": "62 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Inversor  Tataliken 4000W ( 12V ), 🌐 Router Wavlink AC1200 Dual Band y 59 más"
+      "nombre": "59 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Inversor Tataliken 4000W, ⚖️ Báscula Digital de Alta Definición y 56 más"
     }
   ]
 }
