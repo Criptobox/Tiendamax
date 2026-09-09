@@ -333,6 +333,24 @@ try{var _piel=localStorage.getItem('tm_piel');
   .ai-banner .t { font-size:12px; font-weight:800; color:#c4b5fd; margin-bottom:3px; }
   .ai-banner .m { font-size:11px; color:#b4a5d4; line-height:1.5; }
   .ai-banner .m b { color:#fff; }
+  /* Agenda de Inicio — las tareas del Copiloto, fuera de la burbuja */
+  .agenda { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:13px 14px; margin-bottom:14px; }
+  .agenda-h { display:flex; align-items:center; gap:8px; font-size:11.5px; font-weight:800; color:#fff; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:11px; }
+  .agenda-h .cu { background:rgba(var(--o-rgb),0.16); color:var(--o); border-radius:6px; padding:2px 7px; font-size:10px; }
+  .agenda-t { display:grid; grid-template-columns:auto minmax(0,1fr); gap:11px; padding:11px 0; border-top:1px solid var(--border); }
+  .agenda-t:first-of-type { border-top:0; padding-top:0; }
+  .agenda-t .ic { width:30px; height:30px; border-radius:10px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:15px; border-left:3px solid var(--blue); }
+  .agenda-t.u2 .ic { border-left-color:var(--o); }
+  .agenda-t.u3 .ic { border-left-color:var(--red); }
+  .agenda-t b { display:block; font-size:13.5px; font-weight:800; color:#fff; line-height:1.3; }
+  .agenda-t small { display:block; font-size:11.5px; color:var(--muted); line-height:1.45; margin-top:3px; }
+  .agenda-t .ac { display:flex; gap:7px; margin-top:9px; flex-wrap:wrap; }
+  .agenda-t .ac button { border:none; border-radius:8px; padding:7px 12px; font-size:11.5px; font-weight:800; cursor:pointer; font-family:inherit; }
+  .agenda-t .ac .go { background:var(--o); color:var(--o-tinta); }
+  .agenda-t .ac .ok { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .agenda-mas { width:100%; margin-top:11px; background:transparent; border:1px dashed var(--border); border-radius:9px; padding:9px; color:var(--muted); font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .agenda-pie { margin-top:11px; padding-top:10px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.5; }
+  .agenda-pie b { color:var(--text); }
 
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
@@ -1276,10 +1294,7 @@ try{var _piel=localStorage.getItem('tm_piel');
           </div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
-        <div class="ai-banner">
-          <div style="font-size:28px">🤖</div>
-          <div style="flex:1"><div class="t">Resumen — datos reales de tu tienda</div><div class="m" id="inicio-resumen">Cargando…</div></div>
-        </div>
+        <div class="agenda" id="inicio-agenda"></div>
         <div class="section">
           <h3>📈 Ventas — Últimos 7 días <span class="badge">registro real</span></h3>
           <div class="bar-chart-wrap"><div class="bar-chart" id="chart-ventas"></div></div>
@@ -1946,7 +1961,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=c65d3434"></script>
+<script src="js/admin-copilot.js?v=d6b76c4d"></script>
 
 <script>
 (function(){
@@ -3058,6 +3073,89 @@ function ventaTotales(v){
 function hoyKey(){ return new Date().toISOString().slice(0,10); }
 
 /* ============ INICIO ============ */
+/* ── 🤖 Agenda de Inicio ────────────────────────────────────────────────────
+   Aquí había un banner que repetía las cifras de las tarjetas: "132 productos,
+   59 agotados, 23 con stock bajo, $3,420 en 16 ventas" — las cuatro ya estaban
+   a la vista dos centímetros más arriba.
+
+   Ahora enseña las TAREAS que el Copiloto ya calcula y que hasta hoy había que
+   abrir la burbuja 🤖 para ver: el producto con muchas vistas y ningún
+   WhatsApp, los clientes que esperan una reposición, lo que lleva días sin
+   publicarse. Se LEEN de window.tmCopilotoTareas(); no se recalcula nada aquí
+   y los botones ejecutan por el mismo camino que los de la burbuja
+   (tmCopilotoAbrirTarea). Dos motores analizando lo mismo acaban diciendo
+   cosas distintas, y el que se equivoque será siempre el que nadie mira.
+
+   Regla que no se toca: los NÚMEROS los calcula el panel, nunca el modelo. Una
+   cifra inventada en esta pantalla no hay manera de detectarla — es la misma
+   razón por la que la cotización de Max no estima autonomías. El modelo
+   escribe textos de publicación, y eso vive en el preview de Facebook. */
+const AGENDA_N = 3;
+let _agendaDesde = 0, _agendaTimer = null;
+function _agendaResumen(){
+  const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
+  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
+  let m = `<b>${PRODUCTOS.length}</b> productos`;
+  if(agotados) m += ` · <b>${agotados}</b> agotados`;
+  if(bajo) m += ` · <b>${bajo}</b> con poco stock`;
+  m += VENTAS.length ? ` · <b>${dosMonedas(sumaMonedas(VENTAS, ventaTotales))}</b> en ${VENTAS.length} ventas`
+                     : ' · sin ventas registradas en este dispositivo';
+  return m;
+}
+function renderAgendaInicio(){
+  const box = $('#inicio-agenda'); if(!box) return;
+  const hayCopiloto = typeof window.tmCopilotoTareas === 'function';
+  const tareas = hayCopiloto ? window.tmCopilotoTareas() : [];
+  // Tres estados, no dos. "Aún no lo ha calculado" NO es "no hay nada que
+  // hacer": mientras el motor no termina una pasada, la agenda decía
+  // "✅ Nada urgente" con 59 productos agotados, que es exactamente la mentira
+  // que esta pantalla existe para no contar.
+  const yaCalculo = hayCopiloto && typeof window.tmCopilotoListo === 'function' && window.tmCopilotoListo();
+
+  let cuerpo;
+  const nota = t => `<div class="agenda-pie" style="border-top:0;margin:0;padding:0">${t}</div>`;
+  if(!hayCopiloto){
+    cuerpo = nota('No pude cargar el copiloto — recarga la página para ver la agenda.');
+  } else if(!yaCalculo){
+    // Si la primera pasada tarda demasiado es que algo no está respondiendo
+    // (sin sesión, sin datos, o conexión caída). Mejor decirlo que dejar el
+    // "revisando…" girando para siempre.
+    if(!_agendaDesde) _agendaDesde = Date.now();
+    cuerpo = nota(Date.now()-_agendaDesde > 25000
+      ? '⚠️ No pude revisar tu tienda. Comprueba la conexión o vuelve a entrar con tu cuenta.'
+      : 'Revisando tu tienda…');
+    clearTimeout(_agendaTimer); _agendaTimer = setTimeout(renderAgendaInicio, 6000);
+  } else if(!tareas.length){
+    cuerpo = nota('✅ Nada urgente ahora mismo.');
+  } else {
+    const ver = tareas.slice(0, AGENDA_N);
+    cuerpo = ver.map(t=>`<div class="agenda-t u${Number(t.urgency)||1}">
+      <div class="ic">${esc(t.icon||'•')}</div>
+      <div>
+        <b>${esc(t.title||'')}</b>
+        ${t.detail?`<small>${esc(t.detail)}</small>`:''}
+        <div class="ac">
+          <button type="button" class="go" onclick="agendaAbrir('${esc(String(t.tab||'inicio'))}')">${esc(t.action||'Abrir')}</button>
+          <button type="button" class="ok" onclick="agendaHecho('${esc(String(t.id))}')">Hecho</button>
+        </div>
+      </div>
+    </div>`).join('');
+    if(tareas.length > ver.length){
+      cuerpo += `<button type="button" class="agenda-mas" onclick="agendaVerTodas()">Ver las otras ${tareas.length-ver.length} →</button>`;
+    }
+  }
+  box.innerHTML = `<div class="agenda-h">🤖 Hoy${tareas.length?`<span class="cu">${tareas.length}</span>`:''}</div>
+    ${cuerpo}
+    <div class="agenda-pie">${_agendaResumen()}</div>`;
+}
+function agendaAbrir(tab){ if(typeof window.tmCopilotoAbrirTarea==='function') window.tmCopilotoAbrirTarea(tab); }
+function agendaHecho(id){ if(typeof window.tmCopilotoDescartarTarea==='function') window.tmCopilotoDescartarTarea(id); }
+function agendaVerTodas(){ if(typeof window.tmCopilotOpen==='function') window.tmCopilotOpen(); }
+// El Copiloto llama a esto cuando termina de recalcular (arranque y cada 90 s):
+// Inicio se pinta antes de que las tareas existan, así que sin este aviso la
+// agenda se quedaría con "Revisando tu tienda…" hasta que cambiaras de pestaña.
+window.tmInicioAgenda = renderAgendaInicio;
+
 function renderInicio(){
   $('#inicio-fecha').textContent = new Date().toLocaleDateString('es-CU',{weekday:'long',day:'numeric',month:'long'}) + ' · vista general';
   const hoy = hoyKey();
@@ -3076,13 +3174,7 @@ function renderInicio(){
   ];
   $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
   cargarVisitasWeb();
-  // Resumen honesto
-  let msg = `Tienes <b>${PRODUCTOS.length} productos</b>. `;
-  if(agotados) msg += `⚠️ <b>${agotados} agotados</b> y ${stockBajo} con stock bajo. `;
-  else if(stockBajo) msg += `<b>${stockBajo}</b> con stock bajo. `;
-  if(VENTAS.length) msg += `Llevas <b>${dosMonedas(totalVendido)}</b> en ${VENTAS.length} ventas registradas.`;
-  else msg += `Aún no hay ventas registradas en este dispositivo.`;
-  $('#inicio-resumen').innerHTML = msg;
+  renderAgendaInicio();
   // Chart 7 días (real)
   const slots={}; const dias=[];
   let mn7d=0;
@@ -6190,6 +6282,9 @@ cargarDatos();
 // —y admin-copilot.js otro fichero— y también pintan precios de productos.
 window.moneyP=moneyP; window.esMN=esMN;
 window.tmPonerPiel=tmPonerPiel; window.tmPintarPieles=tmPintarPieles;
+// Los onclick= de la agenda se resuelven contra el ámbito global, y esto vive
+// dentro de un IIFE: sin estos tres, los botones son decorativos.
+window.agendaAbrir=agendaAbrir; window.agendaHecho=agendaHecho; window.agendaVerTodas=agendaVerTodas;
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;

@@ -84,7 +84,17 @@ async function _firma(path){
   if (!_PRIVADAS.some(p => path.indexOf(p) === 0)) return '';
   try {
     if (typeof TMAuth === 'undefined') return '';
-    const t = await TMAuth.token();
+    // Con tope. TMAuth.token() espera a init(), que baja el SDK de Firebase de
+    // gstatic; con la conexión mala —o si gstatic no responde— ese await se
+    // queda colgado. Y está FUERA del AbortController de getJson, así que los
+    // 6 s de ahí no lo cortan: buildTasks no termina nunca, state.loading se
+    // queda en true y el guard de su primera línea bloquea todos los refrescos
+    // siguientes. El copiloto deja de dar tareas PARA SIEMPRE y no avisa: la
+    // burbuja se queda en cero y parece que no hay nada que hacer.
+    const t = await Promise.race([
+      TMAuth.token(),
+      new Promise(r => setTimeout(() => r(null), 4000))
+    ]);
     return t ? '&auth=' + encodeURIComponent(t) : '';
   } catch(e) { return ''; }
 }
@@ -443,7 +453,9 @@ async function buildTasks(){
   state.metrics = { productos: ps.length, criticas: tasks.filter(t=>t.urgency>=3).length, interesados: pendInt.length, avisos: facts.avisosTotal, subs: facts.tokens, hot: hot.length };
   state.tasks = tasks.slice(0,18);
   state.loading = false;
+  state.tasksListas = true;
   updateBubble();
+  avisarAInicio();
   maybeBrowserNotify();
   return state;
 }
@@ -1233,6 +1245,27 @@ async function iaLlamarModelo(prompt, imagen){
       j=await _iaFetchJSON('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
       return j ? (j.candidates?.[0]?.content?.parts?.[0]?.text||null) : null;
     }
+    // Claude. Iba faltando: el ajuste se llama `anthropicApiKey` y el CSP ya
+    // permitía api.anthropic.com, pero ninguna rama miraba `sk-ant-`, así que
+    // una clave de Claude caía en el `else` de abajo y se mandaba al endpoint
+    // de DeepSeek con el header equivocado. Daba 401 y parecía clave mala.
+    // El header `anthropic-dangerous-direct-browser-access` es obligatorio
+    // para llamar desde el navegador; sin él lo corta CORS.
+    if(key.startsWith('sk-ant-')){
+      const contenido = (imagen && imagen.data)
+        ? [{type:'image', source:{type:'base64', media_type:imagen.mime||'image/jpeg', data:imagen.data}}, {type:'text', text:prompt}]
+        : prompt;
+      j=await _iaFetchJSON('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
+        'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'},signal:ctrl.signal,
+        body:JSON.stringify({model:'claude-opus-5',max_tokens:1024,messages:[{role:'user',content:contenido}]})});
+      if(!j) return null;
+      // Con `stop_reason: 'refusal'` la respuesta llega con 200 y sin texto:
+      // hay que mirarlo antes de leer content o se devuelve null sin motivo.
+      if(j.stop_reason==='refusal'){ _iaUltimoError='El modelo declinó responder a esa petición.'; return null; }
+      const bloque = Array.isArray(j.content) ? j.content.find(b=>b && b.type==='text') : null;
+      return bloque ? (bloque.text||null) : null;
+    }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
       : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
       : {url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'};
@@ -1242,6 +1275,23 @@ async function iaLlamarModelo(prompt, imagen){
   finally{ clearTimeout(tid); }
 }
 window.iaLlamarModelo = iaLlamarModelo;
+/* Las vistas previas de Facebook y de Revólico (js/revolico_integration.js)
+   piden su texto llamando a tmAIChat(). Nadie la definía nunca: el guard
+   `typeof tmAIChat !== 'function'` saltaba SIEMPRE y los dos botones
+   "✨ Mejorar con IA" llevaban muertos desde que se escribieron, contestando
+   "Módulo IA no cargado" pasara lo que pasara. No hay error en consola ni
+   nada roto a la vista: el botón simplemente nunca hizo nada.
+
+   Se resuelve aquí y no allá porque el que sabe hablar con el modelo es este
+   archivo. Lanza en vez de devolver null: quien llama muestra e.message, así
+   que el dueño ve POR QUÉ falló en vez de un "Error IA" pelado. */
+window.tmAIChat = async function(prompt){
+  if(!(localStorage.getItem('anthropicApiKey')||'').trim())
+    throw new Error('Configura tu API key en ⚙️ Configuración');
+  const r = await iaLlamarModelo(String(prompt||''));
+  if(!r || !String(r).trim()) throw new Error(_iaUltimoError || 'El modelo no devolvió texto');
+  return r;
+};
 // Prompt compartido: usa SOLO datos reales del producto (+ foto si el modelo
 // la soporta), nunca inventa specs/materiales/compatibilidades.
 // Estilo "ficha de producto": primera oración = qué es + beneficio principal,
@@ -1908,6 +1958,42 @@ function switchTo(tab){
   closeSheet();
   setTimeout(()=>{ try { document.querySelector('.tm-main')?.scrollTo({top:0,behavior:'smooth'}); } catch(e){} },80);
 }
+// Abrir una tarea. Vive aparte porque la llaman dos sitios —el botón de la
+// burbuja y la agenda de Inicio— y si cada uno tuviera su copia, arreglar el
+// caso de 'publicar-ahora' en uno dejaría el otro roto sin que se note.
+function abrirTarea(tab){
+  // 'publicar-ahora' no es una pestaña: dispara la publicación real a la tienda.
+  if(tab==='publicar-ahora'){
+    closeSheet();
+    if(typeof window.sincronizarTodoConGitHub==='function'){ try{ window.sincronizarTodoConGitHub(); }catch(e){ toast('No pude iniciar la publicación.'); } }
+    else { toast('No pude iniciar la publicación.'); }
+    return;
+  }
+  switchTo(tab || 'inicio');
+}
+function descartarTarea(id){
+  const set=dismissedSet(); set.add(id); saveDismissed(set);
+  state.tasks = state.tasks.filter(t=>t.id!==id);
+  updateBubble(); renderSheet(); avisarAInicio();
+}
+// Inicio enseña las mismas tareas que la burbuja. Se le pasa una COPIA: si le
+// diera state.tasks, cualquier retoque desde fuera cambiaría lo que ve el
+// Copiloto sin que este se entere.
+window.tmCopilotoTareas = function(){ return (state.tasks||[]).map(t=>({...t})); };
+// Tres estados distintos, no dos: "todavía no lo he calculado" no es lo mismo
+// que "no hay nada que hacer", y confundirlos hace que Inicio diga que todo
+// está bien con 59 productos agotados. Por eso mira si ya TERMINÓ una pasada,
+// no si está cargando ahora: entre pasada y pasada `loading` es false y las
+// tareas siguen siendo las buenas.
+window.tmCopilotoListo = function(){ return !!state.tasksListas; };
+window.tmCopilotoAbrirTarea = abrirTarea;
+window.tmCopilotoDescartarTarea = descartarTarea;
+// Las tareas se recalculan solas cada 90 s y al arrancar; Inicio se pinta
+// antes de que lleguen. En vez de que Inicio pregunte cada tanto, se le avisa.
+function avisarAInicio(){
+  if(typeof window.tmInicioAgenda==='function'){ try{ window.tmInicioAgenda(); }catch(e){ console.error('[agenda]',e); } }
+}
+
 async function queuePushForProduct(pid, opts){
   opts = opts || {};
   const ps = products(); const p = ps.find(x=>String(x.id)===String(pid));
@@ -2013,17 +2099,8 @@ function bindEvents(){
     if(act==='enableAlerts') enableAlerts();
     if(act==='openInicio') switchTo('inicio');
     if(act==='snooze'){ localStorage.setItem(LS.snooze, String(Date.now()+2*60*60*1000)); closeSheet(); toast('Copiloto oculto por 2 horas'); }
-    if(act==='task'){
-      // 'publicar-ahora' no es una pestaña: dispara la publicación real a la tienda.
-      if(el.dataset.tab==='publicar-ahora'){
-        closeSheet();
-        if(typeof window.sincronizarTodoConGitHub==='function'){ try{ window.sincronizarTodoConGitHub(); }catch(e){ toast('No pude iniciar la publicación.'); } }
-        else { toast('No pude iniciar la publicación.'); }
-      } else {
-        switchTo(el.dataset.tab || 'inicio');
-      }
-    }
-    if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
+    if(act==='task') abrirTarea(el.dataset.tab);
+    if(act==='dismiss') descartarTarea(el.dataset.id);
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
     if(act==='smartPush'){
       const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(!p){ toast('No encontré el producto.'); return; }
