@@ -16,6 +16,8 @@ también fácil de romper de dos formas que NO se ven como un fallo:
 
 3. Que el texto sobre el acento se quede en blanco. Con la piel lima o la
    grafito el acento es clarísimo y un botón blanco con letra blanca no se ve.
+   Pasa en dos sitios: el botón primario y el destino activo de la barra
+   lateral, que también se pinta con el acento de fondo.
 """
 import re
 import unittest
@@ -82,6 +84,23 @@ class PielesTest(unittest.TestCase):
             if c < 4.5:
                 flojos[piel] = f"{o} sobre {tinta} = {c:.2f}:1"
         self.assertEqual(flojos, {}, f"pieles con el botón principal ilegible: {flojos}")
+
+    def test_nada_pinta_blanco_fijo_encima_del_acento(self):
+        # Cualquier regla que ponga el acento de fondo tiene que sacar la tinta
+        # del token, no de un #fff: con la lima o la grafito el acento es casi
+        # blanco y lo de encima desaparece. Pasó con .btn-primary y volvió a
+        # pasar con .side-btn.active.
+        malos = []
+        for regla in re.findall(r'\.[a-z-]+(?:\.[a-z-]+)?\s*\{[^}]*\}', ADMIN):
+            if "var(--o)" not in regla and "var(--oo)" not in regla:
+                continue
+            if "background" not in regla:
+                continue
+            m = re.search(r'color:\s*(#[0-9a-fA-F]{3,6}|white)', regla)
+            if m:
+                malos.append(regla.strip()[:70])
+        self.assertEqual(malos, [],
+                         "estas reglas ponen un color fijo encima del acento: %r" % malos)
 
     def test_el_rgb_del_acento_coincide_con_el_hex(self):
         # --o-rgb alimenta los brillos: si se desincroniza del --o, el halo

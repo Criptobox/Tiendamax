@@ -95,7 +95,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
   /* Top bar */
   .topbar { background:rgba(10,10,18,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:14px 18px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; }
-  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; flex-shrink:0; box-shadow:0 4px 12px rgba(var(--o-rgb),0.3); }
+  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:var(--o-tinta); flex-shrink:0; box-shadow:0 4px 12px rgba(var(--o-rgb),0.3); }
   .topbar h1 { font-size:16px; font-weight:800; color:#fff; flex:1; }
   .topbar h1 small { display:block; font-size:11px; color:var(--muted); font-weight:500; }
   .tb-actions { display:flex; gap:8px; }
@@ -142,7 +142,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   .side-btn svg.tm-ico-tab { width:21px; height:21px; }
   .side-btn { width:42px; height:42px; border-radius:9px; background:rgba(255,255,255,0.03); border:1px solid transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:18px; position:relative; }
   .side-btn:hover { background:rgba(var(--o-rgb),0.12); color:var(--o); }
-  .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:#fff; box-shadow:0 2px 8px rgba(var(--o-rgb),0.3); }
+  .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:var(--o-tinta); box-shadow:0 2px 8px rgba(var(--o-rgb),0.3); }
   .side-btn .badge { position:absolute; top:-4px; right:-4px; background:var(--red); color:#fff; border-radius:10px; min-width:18px; height:18px; font-size:9px; font-weight:900; padding:0 4px; display:flex; align-items:center; justify-content:center; border:2px solid var(--bg); }
   .side-btn .new-tag { position:absolute; bottom:-6px; right:-6px; background:var(--gold); color:#111; border-radius:10px; padding:0 5px; font-size:8px; font-weight:900; letter-spacing:0.4px; border:2px solid var(--bg); }
   .side-btn.soon { opacity:0.4; }
@@ -255,7 +255,7 @@ try{var _piel=localStorage.getItem('tm_piel');
             background:rgba(255,255,255,0.05); color:#c9c9d2; font-size:12.5px; font-weight:700;
             white-space:nowrap; cursor:pointer; transition:background .15s, color .15s; }
   .vp-cat:hover { background:rgba(255,255,255,0.09); }
-  .vp-cat.on { background:var(--o); border-color:var(--o); color:#fff; }
+  .vp-cat.on { background:var(--o); border-color:var(--o); color:var(--o-tinta); }
   .vp-cat span { opacity:.6; margin-left:5px; font-weight:700; }
   .vp-lista { max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:2px; }
   .vp-card { display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border-radius:14px;
@@ -362,7 +362,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   .pub-act:hover { filter:brightness(1.12); }
   .pub-act.wa { background:#25D366; color:#04351d; }
   .pub-act.fb { background:#1877F2; }
-  .pub-act.estado { background:linear-gradient(135deg,var(--o),var(--gold)); color:#1a1006; }
+  .pub-act.estado { background:linear-gradient(135deg,var(--o),var(--gold)); color:var(--o-tinta); }
   .pub-act.ghost { background:rgba(255,255,255,0.07); border:1px solid var(--border); color:#ccc; }
   @media (max-width:380px) { .pub-share-actions { grid-template-columns:repeat(2,1fr); } }
   /* "Hoy toca publicar": la misma tarjeta, en horizontal y con los tres
@@ -428,8 +428,27 @@ try{var _piel=localStorage.getItem('tm_piel');
     .body { grid-template-columns:minmax(0,1fr) !important; }
     /* Tabs ARRIBA (sticky bajo el borde superior): abajo chocaban con la barra
        de gestos del navegador móvil y a veces quedaban tapadas */
-    .sidebar { position:sticky; top:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-bottom:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; -webkit-overflow-scrolling:touch; }
-    .side-btn { flex-shrink:0; }
+    /* Barra en píldora: contenedor redondo con desenfoque detrás y el destino
+       activo como círculo lleno, en vez de una tira de cuadraditos pegada al
+       borde. Sigue ARRIBA a propósito — abajo la tapa la barra de gestos del
+       teléfono, que es justo por lo que se subió en su día. */
+    .sidebar { position:sticky; top:8px; z-index:80; flex-direction:row !important;
+      overflow-x:auto !important; overflow-y:hidden; justify-content:flex-start !important;
+      gap:4px !important; margin:8px 10px 4px !important; padding:6px !important;
+      border-right:none !important; border-bottom:none !important;
+      border:1px solid rgba(255,255,255,.13); border-radius:999px !important;
+      background:rgba(16,16,26,.86) !important;
+      backdrop-filter:blur(16px) !important; -webkit-backdrop-filter:blur(16px);
+      box-shadow:0 14px 30px -16px rgba(0,0,0,.9);
+      -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none; }
+    .sidebar::-webkit-scrollbar { display:none; }
+    .side-btn { flex-shrink:0; width:44px; height:44px; border-radius:999px !important;
+      background:transparent; border:1px solid transparent; }
+    .side-btn:hover { background:rgba(var(--o-rgb),.14); }
+    .side-btn.active { box-shadow:0 8px 20px -6px rgba(var(--o-rgb),.75); }
+    /* Las pegatinas se salían del círculo al redondearlo */
+    .side-btn .badge { top:-2px; right:-2px; }
+    .side-btn .new-tag { bottom:-3px; right:-3px; }
     .side-sep { display:none !important; }
     /* En móvil la burbuja sube a bottom:76px, así que tapa hasta 138px del
        final. Se reserva ese alto más el área segura del teléfono. */
@@ -782,7 +801,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
   /* Herramientas — portado de css/admin.css (.tm-*), retocado con la paleta de admin2 */
   .tm-tools-hero{background:linear-gradient(135deg,rgba(var(--gold-rgb),.16),rgba(var(--o-rgb),.10));border:1px solid rgba(var(--gold-rgb),.25);border-radius:18px;padding:18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
-  .tm-tools-hero-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--o));display:grid;place-items:center;color:#111;font-size:24px;font-weight:900;flex:0 0 auto}
+  .tm-tools-hero-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--o));display:grid;place-items:center;color:var(--o-tinta);font-size:24px;font-weight:900;flex:0 0 auto}
   .tm-tier{display:flex;align-items:center;gap:10px;margin:14px 0 10px;padding:8px 10px;border:1px solid var(--border);background:rgba(255,255,255,.025);border-radius:12px}
   .tm-tier h4{margin:0;color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
   .tm-tier-badge{margin-left:auto;font-size:10px;font-weight:900;padding:3px 8px;border-radius:999px;background:var(--green);color:#08210f}
@@ -807,7 +826,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   .tm-field textarea{min-height:90px;resize:vertical}
   .tm-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .tm-btn{border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;font-size:12.5px}
-  .tm-btn.primary{background:var(--o);border-color:transparent;color:#fff}
+  .tm-btn.primary{background:var(--o);border-color:transparent;color:var(--o-tinta)}
   .tm-btn.gold{background:linear-gradient(135deg,var(--gold),#E8C88A);border-color:transparent;color:#111}
   .tm-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
   .tm-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:12px;padding:10px}
