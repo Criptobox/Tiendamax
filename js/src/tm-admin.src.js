@@ -149,7 +149,6 @@ function pubSwitchPanel(name) {
     if (name === 'oferta') {
         setTimeout(poblarSelectOfertaDia, 100);
     }
-    if (name === 'promo') setTimeout(() => { if (typeof window.pubMountPromo === 'function') window.pubMountPromo(); }, 150);
 }
 window.pubSwitchPanel = pubSwitchPanel;
 

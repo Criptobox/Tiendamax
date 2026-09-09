@@ -34,10 +34,13 @@ def ids_que_existen():
     """Todo lo que llega a ser un id en el navegador.
 
     No basta con los `id="..."` del HTML: hay elementos que crea el JS, y hay
-    ids que se pasan como ARGUMENTO al constructor del HTML —
-    `tmCartelCardHTML('tmPubCartel')` acaba escribiendo id="${id}"— que ninguna
-    búsqueda de `id="tmPubCartel"` encuentra. Sin esas dos fuentes el resultado
-    se llena de fantasmas que sí existen.
+    constructores que reciben el id como ARGUMENTO —`algoHTML('miCaja')` acaba
+    escribiendo id="${id}"— que ninguna búsqueda de `id="miCaja"` encuentra.
+    Sin esas dos fuentes el resultado se llena de fantasmas que sí existen.
+
+    Ese último patrón hoy no lo usa nadie (lo traía el generador de carteles,
+    que se quitó); se deja porque en cuanto vuelva a aparecer, sin él este test
+    empieza a inventarse fantasmas.
     """
     ids = set()
     for p in PAGINAS + FUENTES:

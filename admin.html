@@ -55,8 +55,8 @@ try{var _piel=localStorage.getItem('tm_piel');
      · --green/--red/--yellow son ESTADO, así que en cada piel se
        eligen para no confundirse con el acento: en la lima el verde
        de "con stock" se va al turquesa porque el acento ya es verde.
-     Y lo que NO entra aquí: los carteles y las imágenes de canvas
-     llevan el naranja de TiendaMax a fuego. Los ve el cliente. */
+     Y lo que NO entra aquí: las imágenes de anuncio que dibuja el
+     canvas llevan el naranja de TiendaMax a fuego. Las ve el cliente. */
   html[data-piel="lima"]{
     --bg:#0C0D0A; --card:#14170F; --card2:#191D14;
     --text:#F1F6EC; --muted:#8E9885; --dim:#5A6353;
@@ -1873,7 +1873,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=32e1d381"></script>
+<script src="js/tm-bundle.js?v=b8955045"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -1923,7 +1923,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=40a3562f"></script>
+<script src="js/revolico_integration.js?v=6c62fea6"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -1946,7 +1946,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=e9ec3138"></script>
+<script src="js/admin-copilot.js?v=c65d3434"></script>
 
 <script>
 (function(){
@@ -2050,8 +2050,8 @@ function showToast(t,b){ $('#toast-t').textContent=t; $('#toast-b').textContent=
    <html> y el panel entero se repinta.
 
    Lo que NO cambia con la piel, a propósito:
-   · Los carteles y las imágenes que genera el canvas (las ve el
-     cliente y llevan el naranja de TiendaMax a fuego).
+   · Las imágenes de anuncio que genera el canvas (las ve el cliente
+     y llevan el naranja de TiendaMax a fuego).
    · El oro de la moneda nacional, que significa MN en todo el panel.
 
    Se guarda en localStorage y no en Firebase porque es un gusto de
@@ -4983,7 +4983,7 @@ function renderPublicar(){
     // y con siete pills ninguna cabía entera en el móvil.
     P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('wizard','🪄 3 redes')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners'); }
   const body=$('#pub-body'); if(!body) return;
-  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); pubRenderCartelPreview(); }
+  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); }
   else if(PUB_VIEW==='wizard'){ body.innerHTML=pubWizardHTML(); pubWizardInit(); }
   else if(PUB_VIEW==='plantillas'){ body.innerHTML=pubPlantillasHTML(); pubPlantillasInit(); }
   else if(PUB_VIEW==='historial'){ body.innerHTML=pubHistorialHTML(); }
@@ -5103,7 +5103,7 @@ async function wzCopiar(redId){
 }
 
 /* ── 📝 PLANTILLAS DE TEXTO ──────────────────────────────────────────────
-   Solo TEXTO: el generador de carteles no se toca. Las plantillas viven en
+   Solo TEXTO: la imagen del anuncio no se toca aquí. Las plantillas viven en
    localStorage (tm-publicar.src.js) y llevan variables tipo {nombre} que se
    sustituyen con los datos reales del producto al copiarlas. */
 let PL_EDIT=null;   // plantilla en edición, o null
@@ -5448,54 +5448,6 @@ const PUB_SHARE_PAGINA = 20;
 let PUB_SHARE_VISIBLES = PUB_SHARE_PAGINA;
 function pubShareReset(){ PUB_SHARE_VISIBLES = PUB_SHARE_PAGINA; pubRenderShareList(); }
 function pubShareVerMas(){ PUB_SHARE_VISIBLES += PUB_SHARE_PAGINA; pubRenderShareList(); }
-// Plantilla del cartel que generan "🖼️ Estado" / "📘 Facebook" (per-producto,
-// abajo) y el modal de grupos — se guarda en localStorage y la lee tmCartelHTML()
-// (admin-copilot.js) directamente, así que elegir acá aplica en TODOS lados
-// sin plumbing extra. La vista previa es el DOM real (misma función que genera
-// el cartel de verdad), no una maqueta aparte — lo que ves es lo que sale.
-function pubCartelVariante(){
-  const v=localStorage.getItem('tmCartelVariante');
-  return (v==='pro2'||v==='horizontal'||v==='tecno') ? v : 'clasico';
-}
-function pubSetCartelVariante(v){
-  const vv=(v==='pro2'||v==='horizontal'||v==='tecno')?v:'clasico';
-  localStorage.setItem('tmCartelVariante', vv);
-  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2'), bh=$('#pub-cartel-horizontal'), bt=$('#pub-cartel-tecno');
-  if(bc) bc.className='btn '+(vv==='clasico'?'btn-primary':'btn-ghost');
-  if(bp) bp.className='btn '+(vv==='pro2'?'btn-primary':'btn-ghost');
-  if(bh) bh.className='btn '+(vv==='horizontal'?'btn-primary':'btn-ghost');
-  if(bt) bt.className='btn '+(vv==='tecno'?'btn-primary':'btn-ghost');
-  // El tamaño de la tarjeta cambia con la plantilla (760x1140 vertical vs
-  // 1200x675 horizontal), así que hay que regenerar el wrapper completo,
-  // no solo rellenar el contenido.
-  const outer=$('#pub-cartel-preview-outer');
-  if(outer && typeof window.tmCartelCardHTML==='function') outer.innerHTML=window.tmCartelCardHTML('pub-cartel-preview', true);
-  pubRenderCartelPreview();
-  showToast(vv==='pro2' ? '✨ Plantilla Pro v2 activada'
-    : vv==='horizontal' ? '🖥️ Plantilla Horizontal activada'
-    : vv==='tecno' ? '📡 Plantilla Tecno activada'
-    : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
-}
-function pubCartelColoresHTML(){
-  const cur=localStorage.getItem('tmCartelColor')||'#FF6B1A';
-  const colores = (typeof window.TM_CARTEL_COLORES!=='undefined') ? window.TM_CARTEL_COLORES : [
-    ['#FF6B1A','Naranja'],['#EF4444','Rojo'],['#F59E0B','Ámbar'],['#EAB308','Dorado'],['#EC4899','Rosa'],
-    ['#3B82F6','Azul'],['#06B6D4','Cian'],['#6366F1','Índigo'],['#A855F7','Púrpura'],['#14B8A6','Verde azulado'],['#22C55E','Verde']
-  ];
-  return colores.map(([hex,nombre])=>`<button type="button" title="${esc(nombre)}" onclick="pubSetCartelColor('${hex}')" style="width:34px;height:34px;border-radius:10px;background:${hex};border:2.5px solid ${cur.toUpperCase()===hex?'#fff':'transparent'};box-shadow:0 0 0 1px rgba(255,255,255,.15)${cur.toUpperCase()===hex?',0 0 0 3px '+hex+'55':''};cursor:pointer;flex-shrink:0"></button>`).join('');
-}
-function pubSetCartelColor(hex){
-  localStorage.setItem('tmCartelColor', hex);
-  const cw=$('#pub-cartel-colores'); if(cw) cw.innerHTML=pubCartelColoresHTML();
-  pubRenderCartelPreview();
-}
-function pubRenderCartelPreview(){
-  const box=$('#pub-cartel-preview'); if(!box) return;
-  if(typeof window.tmCartelHTML!=='function'){ box.innerHTML=''; return; }
-  const demo = PRODUCTOS.find(p=>Number(p.stock||0)>0 && ((Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen)) || PRODUCTOS[0];
-  if(!demo){ box.innerHTML=''; return; }
-  box.innerHTML = window.tmCartelHTML(demo);
-}
 /* ── 🎯 HOY TOCA ─────────────────────────────────────────────────────────
    El tab abría con los 75 productos con stock y 5 botones cada uno: 15.000px
    de scroll y ninguna pista de por dónde empezar. Esto elige tres y los pone
@@ -5587,21 +5539,7 @@ function pubRenderHoy(otros){
 }
 
 function pubCompartirHTML(){
-  const variante = pubCartelVariante();
   return `<div id="pub-hoy">${pubHoyHTML()}</div>
-  <div class="section">
-    <h3>🎨 Diseño del cartel</h3>
-    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Elige cómo se ven las imágenes de <b>🖼️ Estado</b>, <b>📘 Facebook</b> y grupos — aplica a todos los productos.</p>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button type="button" class="btn ${variante==='clasico'?'btn-primary':'btn-ghost'}" id="pub-cartel-clasico" style="flex:1" onclick="pubSetCartelVariante('clasico')">🏷️ Clásico</button>
-      <button type="button" class="btn ${variante==='pro2'?'btn-primary':'btn-ghost'}" id="pub-cartel-pro2" style="flex:1" onclick="pubSetCartelVariante('pro2')">✨ Pro v2</button>
-      <button type="button" class="btn ${variante==='horizontal'?'btn-primary':'btn-ghost'}" id="pub-cartel-horizontal" style="flex:1" onclick="pubSetCartelVariante('horizontal')">🖥️ Horizontal</button>
-      <button type="button" class="btn ${variante==='tecno'?'btn-primary':'btn-ghost'}" id="pub-cartel-tecno" style="flex:1" onclick="pubSetCartelVariante('tecno')">📡 Tecno</button>
-    </div>
-    <p style="font-size:11px;color:var(--muted);margin:-4px 0 10px">🎨 Color de la marca — aplica a las 4 plantillas:</p>
-    <div id="pub-cartel-colores" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">${pubCartelColoresHTML()}</div>
-    <div id="pub-cartel-preview-outer">${(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('pub-cartel-preview', true) : '<div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>'}</div>
-  </div>
   <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
@@ -5970,9 +5908,8 @@ async function pubCatUpdatePreview(){
       <button type="button" class="pub-act ghost" onclick="pubCatAct('img')">🖼️ Descargar imagen</button>
     </div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
-      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">🖼️ Carteles individuales de la categoría</div>
-      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Un cartel promo por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos. El <b>texto + hashtags</b> de la categoría se copia solo al portapapeles.</p>
-      <button type="button" id="pub-cat-autocolor" class="btn ${pubAutoColorCat()?'btn-primary':'btn-ghost'}" style="width:100%;margin-bottom:8px;justify-content:center" onclick="pubSetAutoColorCat(!pubAutoColorCat())">${pubAutoColorCat()?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'}</button>
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">🖼️ Anuncios individuales de la categoría</div>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Una imagen de anuncio por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos. El <b>texto + hashtags</b> de la categoría se copia solo al portapapeles.</p>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
         <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir todas</button>
         <button type="button" class="pub-act ghost pub-cat-lote-btn" onclick="pubCatCartelesLote('','download')">⬇️ Descargar todas</button>
@@ -6041,52 +5978,38 @@ async function pubCatAct(act){
 
 function pubRoundRect(ctx,x,y,w,h,r){ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath(); }
 
-/* ── Carteles promo POR LOTE de una categoría ─────────────────────────────
-   Reusa el MISMO generador de cartel por producto que "🖼️ Estado"
-   (tmCartelHTML + html2canvas). Genera un PNG por producto de la categoría y
-   deja compartir todos de un tirón (hoja nativa) o descargarlos. Si el toggle
-   "color por categoría" está activo, pinta cada cartel con el color de la
-   tabla (tmColorCategoria) — restaurando el color manual al terminar. */
-const PUB_CAT_LOTE_MAX = 12; // tope: html2canvas es costoso y la hoja de compartir se satura
-function pubAutoColorCat(){ return localStorage.getItem('tmCartelAutoColorCat') !== '0'; } // default ON
-function pubSetAutoColorCat(on){
-  localStorage.setItem('tmCartelAutoColorCat', on ? '1' : '0');
-  const b=$('#pub-cat-autocolor'); if(b){ b.className='btn '+(on?'btn-primary':'btn-ghost'); b.textContent=(on?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'); }
-}
+/* ── Anuncios POR LOTE de una categoría ───────────────────────────────────
+   Reusa el MISMO lienzo que "🖼️ Estado" y que el anuncio de Revólico
+   (tmAnuncioImagen, js/revolico_integration.js), en cuadrado. Genera un JPEG
+   por producto de la categoría y deja compartirlos todos de un tirón (hoja
+   nativa) o descargarlos. El color de cada uno sale de su categoría, dentro
+   del propio lienzo: no hay nada que elegir aquí. */
+const PUB_CAT_LOTE_MAX = 12; // tope: la hoja de compartir se satura y son 12 fotos a descargar
 // Último motivo de fallo real (no solo "null" en silencio) — para poder
 // mostrarle al admin POR QUÉ no salió el lote, en vez de un genérico.
 let _pubLoteLastError = '';
 async function pubGenCartelBlob(p){
-  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){ _pubLoteLastError='No cargó el generador de carteles (recarga la página)'; return null; }
-  const holder=document.createElement('div');
-  holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
-  holder.innerHTML=(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('__tcpBatch', false) : '<div class="tcp-card" id="__tcpBatch"></div>';
-  document.body.appendChild(holder);
+  if(typeof window.tmAnuncioImagen!=='function'){ _pubLoteLastError='No cargó el generador de imágenes (recarga la página)'; return null; }
   try{
-    const node=holder.querySelector('#__tcpBatch');
-    node.innerHTML=window.tmCartelHTML(p);
-    if(!node.innerHTML.trim()) throw new Error('cartel vacío');
-    await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
-    const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
-    const blob=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
-    if(!blob) throw new Error('canvas vacío (posible foto sin permiso CORS)');
+    const cv=document.createElement('canvas');
+    const hayFoto=await window.tmAnuncioImagen(cv, p, {formato:'cuadrado', texto:true});
+    // Un lote de doce no se revisa foto a foto antes de subirlo: si la de un
+    // producto no cargó, mejor dejarlo fuera y decir cuál que colar un anuncio
+    // con el marcador de cámara entre los demás.
+    if(!hayFoto) throw new Error('la foto no cargó');
+    const blob=await new Promise(res=>cv.toBlob(res,'image/jpeg',.88));
+    if(!blob) throw new Error('lienzo vacío');
     return blob;
-  }catch(e){ console.error('[cartel-lote]',p.id,p.nombre,e); _pubLoteLastError=(p.nombre||('#'+p.id))+': '+(e.message||e); return null; }
-  finally{ holder.remove(); }
+  }catch(e){ console.error('[anuncio-lote]',p.id,p.nombre,e); _pubLoteLastError=(p.nombre||('#'+p.id))+': '+(e.message||e); return null; }
 }
 // Genera los carteles de todos los productos (con stock) de la categoría.
 async function pubCatGenCarteles(cat, onProgress){
   const prods=pubCatProds(cat).slice(0, PUB_CAT_LOTE_MAX);
-  // El color por categoría lo resuelve el propio generador de carteles
-  // (_cartelColorPara en js/admin-copilot.js) a partir de la categoría del
-  // producto. Antes se hacía aquí pisando localStorage y restaurándolo al
-  // final, lo que solo pintaba bien los carteles de este lote y dejaba el
-  // resto (cartel individual, Copiloto, Facebook) con el color manual.
   const files=[];
   for(let i=0;i<prods.length;i++){
     if(onProgress) onProgress(i+1, prods.length);
     const blob=await pubGenCartelBlob(prods[i]);
-    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id,'otra','Cartel por categoría'); }
+    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.jpg',{type:'image/jpeg'})); pubMarcarPublicado(prods[i].id,'otra','Cartel por categoría'); }
   }
   return files;
 }
@@ -6110,8 +6033,8 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   cat=cat||_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
   const total=pubCatProds(cat).length;
   if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
-  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){
-    showToast('⚠️ Recarga la página','No se pudo cargar el generador de carteles'); return;
+  if(typeof window.tmAnuncioImagen!=='function'){
+    showToast('⚠️ Recarga la página','No se pudo cargar el generador de imágenes'); return;
   }
   // Barra y botones deshabilitados YA, antes de cualquier await — así se ve
   // que el click sí hizo algo aunque lo de abajo tarde o falle.
@@ -6160,37 +6083,35 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   } finally { btns.forEach(b=>b.disabled=false); }
 }
 async function pubShareStory(p){
-  // ── Cartel Pro (diseño premium via html2canvas). tmCartelHTML inyecta su
-  //    propio CSS (.tcp-*) al llamarse, así funciona aunque no se haya abierto
-  //    el Copiloto. html2canvas viene local (js/vendor). No hay cartel viejo. ──
-  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){
-    showToast('⚠️ Recarga la página','No se pudo cargar el generador de carteles'); return;
-  }
-  const holder=document.createElement('div');
-  // position:absolute (no fixed) + top:0 → queda en y=0 del documento; así
-  // html2canvas no corta el tope aunque la página esté scrolleada.
-  holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
-  holder.innerHTML=(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('__tcpShare', false) : '<div class="tcp-card" id="__tcpShare"></div>';
-  document.body.appendChild(holder);
+  // La imagen del Estado la dibuja el MISMO lienzo que el anuncio de Revólico
+  // (js/revolico_integration.js), en vertical y con el nombre y el precio
+  // encima. Antes se montaba un cartel en HTML y se fotografiaba con
+  // html2canvas: dependía de que el CSS del cartel se hubiera inyectado, de
+  // que las fotos vinieran con permiso CORS y de un nodo escondido fuera de
+  // pantalla, y cada uno de esos tres fallaba en silencio dejando un PNG en
+  // blanco.
+  if(typeof window.tmAnuncioImagen!=='function'){
+    showToast('⚠️ Recarga la página','No se pudo cargar el generador de imágenes'); return; }
   try{
-    const node=holder.querySelector('#__tcpShare');
-    node.innerHTML=window.tmCartelHTML(p);
-    if(!node.innerHTML.trim()){ throw new Error('cartel vacío'); }
-    await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
-    const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
-    const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
-    const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
+    const cv=document.createElement('canvas');
+    const hayFoto=await window.tmAnuncioImagen(cv, p, {formato:'vertical', texto:true});
+    const blob0=await new Promise(res=>cv.toBlob(res,'image/jpeg',.9));
+    if(!blob0) throw new Error('lienzo vacío');
+    // Que la foto no cargue no impide publicar, pero el anuncio sale con el
+    // marcador de cámara: hay que decirlo ANTES de que se suba.
+    if(!hayFoto) showToast('⚠️ La foto no cargó','La imagen sale con el icono de cámara — revisa la conexión');
+    const file0=new File([blob0],'tiendamax-estado-'+p.id+'.jpg',{type:'image/jpeg'});
     const text0='🔥 '+p.nombre+'\n📲 Pídelo aquí: '+pubWaLink(p,'story');
     if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
       try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
     }
     const a0=document.createElement('a'); a0.href=URL.createObjectURL(blob0); a0.download=file0.name; a0.click(); setTimeout(()=>URL.revokeObjectURL(a0.href),1000);
     try{ await navigator.clipboard.writeText(text0); }catch(e){}
-    showToast('🖼️ Cartel descargado','Súbelo a WhatsApp Estado');
+    showToast('🖼️ Imagen descargada','Súbela a WhatsApp Estado');
   }catch(e){
-    console.error('[cartel]',e);
-    showToast('❌ No se pudo generar el cartel','Intenta de nuevo');
-  }finally{ holder.remove(); }
+    console.error('[anuncio-estado]',e);
+    showToast('❌ No se pudo generar la imagen','Intenta de nuevo');
+  }
 }
 async function pubShareAct(id,act){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
@@ -6257,8 +6178,6 @@ async function pubBannersPublicar(){
   }catch(e){ showToast('❌ No se pudo publicar', (e&&e.message)||''); }
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
-window.pubSetCartelVariante=pubSetCartelVariante; window.pubRenderCartelPreview=pubRenderCartelPreview;
-window.pubSetCartelColor=pubSetCartelColor; window.pubCartelColoresHTML=pubCartelColoresHTML;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
 window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct;
 
@@ -6297,7 +6216,7 @@ window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManu
 // exporte acá NO existe para los onclick="" del HTML: el botón queda mudo,
 // sin error visible. Estas faltaban y por eso no hacían nada.
 window.renderClientes=renderClientes;
-window.pubCatCartelesLote=pubCatCartelesLote; window.pubAutoColorCat=pubAutoColorCat; window.pubSetAutoColorCat=pubSetAutoColorCat;
+window.pubCatCartelesLote=pubCatCartelesLote;
 window.pubToggleSinPublicar=pubToggleSinPublicar;
 // Las llaman los onclick del HTML que genera este mismo bloque; sin
 // exportarlas el botón existe pero no hace nada (el bloque es un IIFE).

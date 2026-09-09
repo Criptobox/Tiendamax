@@ -5,8 +5,10 @@ on:
     paths:
       - 'scripts/**'
       - 'tests/**'
-      # test_cartel_titulos.py verifica la lógica del cartel promo, que vive
-      # en js/admin-copilot.js y se valida contra productos.json.
+      # test_anuncio.py dibuja la imagen de anuncio de los 132 productos y
+      # comprueba el reparto del lienzo; vive en js/revolico_integration.js y
+      # saca el color de categoría de js/admin-copilot.js.
+      - 'js/revolico_integration.js'
       - 'js/admin-copilot.js'
       - 'productos.json'
       # test_admin_handlers.py comprueba que ningún botón de admin.html quede
@@ -16,6 +18,7 @@ on:
     paths:
       - 'scripts/**'
       - 'tests/**'
+      - 'js/revolico_integration.js'
       - 'js/admin-copilot.js'
       - 'productos.json'
       - 'admin.html'

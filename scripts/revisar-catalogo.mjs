@@ -1,13 +1,13 @@
 /**
- * Revisa lo que el cartel promo va a PUBLICAR de cada producto, buscando
- * contradicciones dentro de los propios datos del catálogo.
+ * Revisa lo que se va a PUBLICAR de cada producto, buscando contradicciones
+ * dentro de los propios datos del catálogo.
  *
  *     node scripts/revisar-catalogo.mjs
  *
- * Para qué sirve: el generador de carteles solo muestra texto que ya está en
- * productos.json (eso lo garantiza tests/cartel_titulos_check.mjs), así que
- * nunca inventa nada. Pero si la ficha de un producto está mal escrita, el
- * cartel publica el error igual de fiel. Esto busca justo eso.
+ * Para qué sirve: los anuncios (Revólico, Facebook, Estado de WhatsApp) solo
+ * muestran texto que ya está en productos.json, así que nunca inventan nada.
+ * Pero si la ficha de un producto está mal escrita, el anuncio publica el
+ * error igual de fiel. Esto busca justo eso.
  *
  * Qué comprueba, todo verificable sin salir del repositorio:
  *   - el código de modelo del nombre (AX3000, AC1200) contra las velocidades

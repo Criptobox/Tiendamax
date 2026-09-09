@@ -210,8 +210,55 @@ function _revOscurecer(hex, objetivo) {
 // Luminancia del #c0390a de siempre: el listón que igualan las demás.
 const _REV_LUM = (0.2126*0xc0 + 0.7152*0x39 + 0.0722*0x0a) / 255;
 
-async function _dibujarImagenAnuncio(canvas, producto) {
-    const W = 1080, H = 1080;
+// ── Formatos del anuncio ─────────────────────────────────────────────────────
+// El cuadrado es el de siempre: Revólico y Facebook enseñan la imagen entera.
+// El vertical existe porque el Estado de WhatsApp ocupa la pantalla completa
+// del teléfono y recorta por arriba y por abajo lo que no sea 9:16 — un anuncio
+// cuadrado publicado ahí pierde el precio o la franja de marca sin avisar.
+const _ANUNCIO_FORMATOS = { cuadrado: {W:1080, H:1080}, vertical: {W:1080, H:1920} };
+
+// Parte un texto en como mucho `maxLineas` renglones que quepan en `maxW`, y
+// corta con puntos suspensivos lo que sobre. Sin esto un nombre largo se
+// dibujaba de un tirón y se salía del lienzo por la derecha: canvas no avisa ni
+// recorta, simplemente pinta fuera y no se ve.
+function _anuPartir(ctx, texto, maxW, maxLineas) {
+    const palabras = String(texto == null ? '' : texto).trim().split(/\s+/).filter(Boolean);
+    const lineas = [];
+    let actual = '', truncado = false;
+    for (let i = 0; i < palabras.length; i++) {
+        const tent = actual ? actual + ' ' + palabras[i] : palabras[i];
+        // `!actual`: una palabra sola más ancha que la caja entra igual y se
+        // recorta abajo; si no, se perdería el renglón entero.
+        if (!actual || ctx.measureText(tent).width <= maxW) { actual = tent; continue; }
+        if (lineas.length + 1 >= maxLineas) { lineas.push(actual); actual = ''; truncado = true; break; }
+        lineas.push(actual); actual = palabras[i];
+    }
+    if (actual) lineas.push(actual);
+    if (truncado && lineas.length) {
+        let ult = lineas[lineas.length - 1] + '…';
+        while (ctx.measureText(ult).width > maxW && ult.length > 2) ult = ult.slice(0, -2) + '…';
+        lineas[lineas.length - 1] = ult;
+    }
+    return { lineas: lineas, truncado: truncado };
+}
+
+/* Dibuja el anuncio en `canvas`. Devuelve false si la foto del producto no
+   cargó (el lienzo sale con el marcador de cámara y quien publica tiene que
+   enterarse ANTES de subirlo).
+
+   opciones = { formato: 'cuadrado' | 'vertical', texto: bool }
+
+   `texto:false` es el anuncio de Revólico: solo foto y marca, porque Revólico
+   ya pide el título, el precio y la descripción en sus propios campos y
+   repetirlos dentro de la imagen sobra. En Facebook y en el Estado de WhatsApp
+   la imagen va sola —el pie se lee después o no se lee—, así que ahí sí lleva
+   encima el nombre y el precio. */
+async function _dibujarImagenAnuncio(canvas, producto, opciones) {
+    const opt = opciones || {};
+    const fmt = _ANUNCIO_FORMATOS[opt.formato] || _ANUNCIO_FORMATOS.cuadrado;
+    const conTexto = !!opt.texto;
+    const vertical = fmt.H > fmt.W;
+    const W = fmt.W, H = fmt.H;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
@@ -230,13 +277,73 @@ async function _dibujarImagenAnuncio(canvas, producto) {
     ctx.strokeStyle = 'rgba(201,169,110,.8)'; ctx.lineWidth = 9;
     _revRoundRect(ctx, 38, 38, W-76, H-76, 46); ctx.stroke();
 
-    // Foto del producto
+    const precio = Number((producto && producto.precioActual) || 0);
+    const antes  = Number((producto && producto.precioOriginal) || 0);
+    const hayDesc = antes > precio && precio > 0;
+    const pct = hayDesc ? Math.round((antes - precio) / antes * 100) : 0;
+
+    // El bloque de texto se MIDE antes de repartir el alto. Con un reparto
+    // fijo, un nombre de dos renglones más un "antes" tachado no cabía y el
+    // precio acababa pintado encima del "TiendaMax" de la franja — sin error
+    // ninguno, solo un anuncio ilegible ya publicado.
+    const barraH = conTexto ? (vertical ? 240 : 180) : 200;
+    let fN = vertical ? 62 : 54;
+    const fA = 40, fP = vertical ? 112 : 100;
+    const fU = Math.round(fP * 0.33);
+    let lineasNombre = [], altoTexto = 0, yFinTexto = 0;
+    if (conTexto) {
+        // Nombre sin el emoji de delante: a este tamaño pesa como una palabra
+        // más y lo que tiene que leerse de lejos es el nombre.
+        const nombre = (typeof tmPartirEmoji === 'function')
+            ? (tmPartirEmoji((producto && producto.nombre) || '').texto || ((producto && producto.nombre) || ''))
+            : String((producto && producto.nombre) || '');
+        // Se prueba con la letra grande y se va bajando hasta que el nombre
+        // entero quepa. Cortar el final es lo que hacía que "Protector TOMZN
+        // TOVPD1-60" saliera sin el 60 y "Proteína ... 962g" sin el gramaje:
+        // justo lo que distingue un producto de su hermano de al lado.
+        const maxLineas = vertical ? 3 : 3;
+        for (fN = vertical ? 62 : 54; fN >= 34; fN -= 4) {
+            ctx.font = '800 ' + fN + 'px system-ui,Arial';
+            const r = _anuPartir(ctx, nombre, W - 190, maxLineas);
+            lineasNombre = r.lineas;
+            if (!r.truncado) break;
+        }
+        altoTexto = Math.round(fN * 1.16) * lineasNombre.length
+                  + Math.round(fN * 0.50)
+                  + (hayDesc ? Math.round(fA * 1.55) : 0)
+                  + Math.round(fP * 1.05)
+                  + 34;
+    }
+    // Foto del producto. En vertical sobra alto y el texto va DEBAJO de ella.
+    // En cuadrado no cabe: descontarle el texto la dejaba en una tira de 2:1,
+    // y apoyar el texto sobre su pie dejaba asomar las esquinas redondeadas
+    // por los lados, que se lee como un fallo. Va a sangre hasta el borde y el
+    // velo la oscurece: es la foto la que llega abajo, no un recuadro cortado.
     const im = await _revLoadImg(producto.imagen || '');
-    const px = 76, py = 76, pw = W-152, ph = H - 76 - 200;
+    const px = 76, py = 76, pw = W-152;
+    const ph = (conTexto && !vertical)
+        ? H - 46 - py
+        : H - barraH - altoTexto - py;
     if (im) {
         ctx.save(); _revRoundRect(ctx, px, py, pw, ph, 32); ctx.clip();
-        const r = Math.max(pw/im.width, ph/im.height);
-        ctx.drawImage(im, px+(pw-im.width*r)/2, py+(ph-im.height*r)/2, im.width*r, im.height*r);
+        const rLlenar = Math.max(pw/im.width, ph/im.height);
+        const rCaber  = Math.min(pw/im.width, ph/im.height);
+        const pinta = r => ctx.drawImage(im, px+(pw-im.width*r)/2, py+(ph-im.height*r)/2, im.width*r, im.height*r);
+        // Cuánta foto se pierde al recortarla para llenar la caja. Un recorte
+        // pequeño no se nota; una foto apaisada dentro del formato vertical
+        // perdía el 40% del ancho y el producto salía cortado por la mitad.
+        // Cuando pasa de ahí se mete entera y el hueco lo tapa la misma foto
+        // ampliada y desenfocada, como hacen las apps de historias: rellenar
+        // con un color plano deja dos franjas que parecen un error de montaje.
+        // Solo con texto: el anuncio de Revólico se queda exactamente igual.
+        if (conTexto && 1 - rCaber/rLlenar > 0.22) {
+            ctx.filter = 'blur(48px)'; ctx.globalAlpha = .55;
+            pinta(rLlenar);
+            ctx.filter = 'none'; ctx.globalAlpha = 1;
+            pinta(rCaber);
+        } else {
+            pinta(rLlenar);
+        }
         ctx.restore();
     } else {
         ctx.save(); _revRoundRect(ctx, px, py, pw, ph, 32); ctx.clip();
@@ -250,8 +357,87 @@ async function _dibujarImagenAnuncio(canvas, producto) {
     }
     const _sinFoto = !im;
 
+    if (conTexto) {
+        // Sello de descuento en la esquina de la foto. Solo con rebaja de
+        // verdad y a partir del 5%: un "-1%" es ruido y le resta credibilidad
+        // a los descuentos buenos.
+        if (pct >= 5) {
+            const txt = '-' + pct + '%';
+            ctx.font = '900 54px system-ui,Arial';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const anchoSello = ctx.measureText(txt).width + 52;
+            const sx = px + pw - anchoSello - 26, sy = py + 26;
+            ctx.fillStyle = '#e0301e';
+            _revRoundRect(ctx, sx, sy, anchoSello, 78, 20); ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.fillText(txt, sx + anchoSello/2, sy + 41);
+        }
+
+        // Velo oscuro bajo el texto. El fondo lo pone la categoría y algunas
+        // son claras (Energía es amarillo): sin esto el nombre blanco y el
+        // precio dorado se apoyan en un marrón claro y pierden contraste, y no
+        // se nota hasta publicar un producto de esa categoría.
+        const veloY = H - barraH - altoTexto;
+        const velo = ctx.createLinearGradient(0, veloY, 0, H);
+        velo.addColorStop(0, 'rgba(8,6,4,0)');
+        velo.addColorStop(.14, 'rgba(8,6,4,.92)');
+        velo.addColorStop(1, 'rgba(8,6,4,.97)');
+        ctx.fillStyle = velo; ctx.fillRect(0, veloY, W, H - veloY);
+
+        const cx = W/2;
+        let y = veloY + Math.round(fN * 0.42);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.font = '800 ' + fN + 'px system-ui,Arial';
+        ctx.fillStyle = '#fff';
+        for (const l of lineasNombre) { ctx.fillText(l, cx, y); y += Math.round(fN * 1.16); }
+        y += Math.round(fN * 0.22);
+
+        // Precio anterior tachado — solo si la rebaja existe. Un "antes"
+        // inventado se nota y quema la tienda.
+        if (hayDesc) {
+            ctx.font = fA + 'px system-ui,Arial';
+            ctx.fillStyle = 'rgba(255,255,255,.55)';
+            const txtA = _precioTxt(producto, antes);
+            ctx.fillText(txtA, cx, y);
+            const wA = ctx.measureText(txtA).width;
+            ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(cx - wA/2 - 8, y + fA*0.58); ctx.lineTo(cx + wA/2 + 8, y + fA*0.58);
+            ctx.stroke();
+            y += Math.round(fA * 1.55);
+        }
+
+        // La cifra y la moneda se miden juntas y se pintan desde la izquierda:
+        // centrando cada una por su lado, el conjunto queda descuadrado.
+        const cifra  = '$' + (_esMN(producto) ? Math.round(precio) : precio);
+        const moneda = ' ' + _monedaDe(producto);
+        ctx.textAlign = 'left';
+        ctx.font = '900 ' + fP + 'px system-ui,Arial';
+        const wC = ctx.measureText(cifra).width;
+        ctx.font = '700 ' + fU + 'px system-ui,Arial';
+        const wM = ctx.measureText(moneda).width;
+        const x0 = cx - (wC + wM)/2;
+        ctx.font = '900 ' + fP + 'px system-ui,Arial'; ctx.fillStyle = '#C9A96E';
+        ctx.fillText(cifra, x0, y);
+        ctx.font = '700 ' + fU + 'px system-ui,Arial'; ctx.fillStyle = 'rgba(201,169,110,.72)';
+        ctx.fillText(moneda, x0 + wC, y + Math.round((fP - fU) * 0.66));
+        ctx.textAlign = 'center';
+        yFinTexto = y + Math.round(fP * 1.05);
+    }
+
+    // Dónde acabó de verdad el texto, frente a dónde se le había reservado
+    // sitio. Son dos cuentas distintas y separarlas es justo lo que pone el
+    // precio encima del "TiendaMax": el test lo cruza producto a producto.
+    try {
+        if (conTexto && canvas.dataset) canvas.dataset.tmAnuncio = JSON.stringify({
+            W: W, H: H, barraTop: H - barraH, altoFoto: ph,
+            lineasNombre: lineasNombre.length, yFinTexto: yFinTexto,
+            titulo: lineasNombre.join(' '), cuerpoTitulo: fN,
+        });
+    } catch (e) { /* OffscreenCanvas u otro lienzo sin dataset */ }
+
     // Franja de marca abajo
-    const barY = H - 200;
+    const barY = H - barraH;
     const barGrad = ctx.createLinearGradient(0, barY, 0, H);
     barGrad.addColorStop(0, 'rgba(8,6,4,0)');
     barGrad.addColorStop(.35, 'rgba(8,6,4,.88)');
@@ -260,11 +446,25 @@ async function _dibujarImagenAnuncio(canvas, producto) {
 
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = 'bold 68px system-ui,Arial'; ctx.fillStyle = '#FF6B35';
-    ctx.fillText('TiendaMax', W/2, H - 112);
+    ctx.fillText('TiendaMax', W/2, H - Math.round(barraH * 0.56));
     ctx.font = '36px system-ui,Arial'; ctx.fillStyle = 'rgba(255,255,255,.4)';
-    ctx.fillText('tiendamax.org', W/2, H - 58);
+    ctx.fillText('tiendamax.org', W/2, H - Math.round(barraH * 0.29));
+
+    // El velo del texto se traga el borde por abajo, así que se repasa. Solo
+    // con texto: sin él, el anuncio de Revólico se queda como estaba.
+    if (conTexto) {
+        ctx.strokeStyle = 'rgba(201,169,110,.8)'; ctx.lineWidth = 9;
+        _revRoundRect(ctx, 38, 38, W-76, H-76, 46); ctx.stroke();
+    }
     return !_sinFoto;
 }
+
+// Un solo lienzo para las tres redes. Lo llaman la vista previa de Revólico
+// (aquí abajo), la de Facebook y el "🖼️ Estado" de admin.html, que antes
+// montaba un cartel en HTML y lo fotografiaba con html2canvas.
+window.tmAnuncioImagen = function(canvas, producto, opciones) {
+    return _dibujarImagenAnuncio(canvas, producto, opciones);
+};
 
 // ── end canvas helpers ────────────────────────────────────────────────────────
 
@@ -346,7 +546,6 @@ function previsualizarFacebook(productoId, grupoUrl) {
     modal.id = 'fbPreviewModal';
     modal.className = 'modal';
     modal.style.display = 'flex';
-    const imgSrc = producto.imagen || '';
     const fbUrl = grupoUrl || 'https://www.facebook.com';
     const sBtnBase = 'border:none;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;';
 
@@ -357,7 +556,19 @@ function previsualizarFacebook(productoId, grupoUrl) {
           <button class="close-btn" onclick="cerrarFbPreview()" type="button">✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;">
-          ${imgSrc ? `<img src="${imgSrc}" alt="" style="width:100%;max-height:160px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.05);">` : ''}
+          <!-- Imagen de anuncio con branding — el mismo lienzo que Revólico,
+               aquí con el nombre y el precio encima porque en Facebook la
+               imagen es lo primero (y a veces lo único) que se mira. -->
+          <div>
+            <canvas id="fbImgCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
+            <div id="fbImgAviso" style="display:none;margin-top:8px;padding:9px 11px;border-radius:9px;font-size:12px;font-weight:700;line-height:1.4;background:rgba(231,76,60,.14);border:1px solid rgba(231,76,60,.4);color:#ff9a90;">⚠️ La foto de este producto no cargó — la imagen saldría con el icono de cámara. Revisa la conexión y vuelve a abrir la vista previa.</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button id="btnCopyFbImg" type="button"
+                style="${sBtnBase}flex:1;padding:8px 12px;background:rgba(59,89,152,.18);border:1px solid rgba(59,89,152,.4);color:#93c5fd;">📋 Copiar imagen</button>
+              <button id="btnDlFbImg" type="button"
+                style="${sBtnBase}flex:1;padding:8px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#ccc;">⬇️ Descargar</button>
+            </div>
+          </div>
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <label for="fbPostTA" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Texto del post</label>
@@ -382,6 +593,42 @@ function previsualizarFacebook(productoId, grupoUrl) {
 
     document.body.appendChild(modal);
     document.getElementById('fbPostTA').value = _textoFacebook(producto);
+
+    const fbCanvas = document.getElementById('fbImgCanvas');
+    if (fbCanvas) {
+        const _aviso = document.getElementById('fbImgAviso');
+        _dibujarImagenAnuncio(fbCanvas, producto, { formato: 'cuadrado', texto: true }).then(hayFoto => {
+            if (_aviso) _aviso.style.display = hayFoto ? 'none' : 'block';
+        }).catch(() => {
+            fbCanvas.style.display = 'none';
+            if (_aviso) { _aviso.textContent = '⚠️ No se pudo generar la imagen del anuncio.'; _aviso.style.display = 'block'; }
+        });
+    }
+
+    // Facebook no deja publicar desde fuera: el flujo es copiar la imagen,
+    // pegarla en el grupo y pegar debajo el texto. Por eso los dos botones,
+    // igual que en Revólico.
+    document.getElementById('btnCopyFbImg')?.addEventListener('click', function() {
+        const cv = document.getElementById('fbImgCanvas');
+        if (!cv) return;
+        cv.toBlob(async blob => {
+            try {
+                await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+                mostrarNotificacion('✅ Imagen copiada — pégala en la publicación de Facebook', 'success');
+            } catch(e) {
+                mostrarNotificacion('❌ No se pudo copiar — usa ⬇️ Descargar', 'error');
+            }
+        }, 'image/png');
+    });
+
+    document.getElementById('btnDlFbImg')?.addEventListener('click', function() {
+        const cv = document.getElementById('fbImgCanvas');
+        if (!cv) return;
+        const a = document.createElement('a');
+        a.download = `tiendamax-fb-${producto.id}.jpg`;
+        a.href = cv.toDataURL('image/jpeg', 0.9);
+        a.click();
+    });
 
     // Abrir TODOS los grupos a la vez: abre las pestañas (síncrono, para que el
     // navegador no bloquee los pop-ups) y luego copia el texto. Pegas en cada una.
@@ -707,12 +954,15 @@ function previsualizarRevolico(productoId) {
         if (!cv) return;
         cv.toBlob(async blob => {
             try {
-                await navigator.clipboard.write([new ClipboardItem({'image/jpeg': blob})]);
+                await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
                 mostrarNotificacion('✅ Imagen copiada — pégala en el campo de foto de Revolico', 'success');
             } catch(e) {
                 mostrarNotificacion('❌ No se pudo copiar — usa ⬇️ Descargar', 'error');
             }
-        }, 'image/jpeg', 0.85);
+        // El portapapeles del navegador solo acepta PNG: con image/jpeg,
+        // clipboard.write() lanzaba y este botón caía SIEMPRE en el aviso de
+        // error. La descarga sigue en JPEG, que es lo que se sube.
+        }, 'image/png');
     });
 
     document.getElementById('btnDlRevImg')?.addEventListener('click', function() {
