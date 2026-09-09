@@ -37,10 +37,10 @@ ok('el panel abre solo con sesión', await p.evaluate(()=>!document.getElementBy
 
 // ── stock ±
 await p.click('[data-v="inventario"]'); await p.waitForTimeout(700);
-const antes = await p.evaluate(()=>{const f=document.querySelector('.fila');
+const antes = await p.evaluate(()=>{const f=document.querySelector('.pcard');
   return {id:f.dataset.id, txt:f.querySelector('.chip-st').textContent};});
-await p.click(`.fila[data-id="${antes.id}"] [data-st="1"]`); await p.waitForTimeout(400);
-const desp = await p.evaluate(id=>{const f=document.querySelector(`.fila[data-id="${id}"]`);
+await p.click(`.pcard[data-id="${antes.id}"] [data-st="1"]`); await p.waitForTimeout(400);
+const desp = await p.evaluate(id=>{const f=document.querySelector(`.pcard[data-id="${id}"]`);
   return {txt:f.querySelector('.chip-st').textContent,
     ls:(JSON.parse(localStorage.getItem('productos')).find(x=>String(x.id)===id)||{}).stock};}, antes.id);
 ok('el + sube el stock en pantalla', antes.txt!==desp.txt);
@@ -48,18 +48,18 @@ ok('y se guarda en localStorage', String(desp.ls)===desp.txt.replace(' u.','').t
 
 // ── buscar
 await p.fill('#inv-q','mannol'); await p.waitForTimeout(500);
-const nb = await p.evaluate(()=>document.querySelectorAll('.fila').length);
+const nb = await p.evaluate(()=>document.querySelectorAll('.pcard').length);
 ok('la búsqueda filtra ('+nb+' resultados)', nb>0 && nb<40);
 await p.fill('#inv-q',''); await p.waitForTimeout(400);
 
 // ── filtro de estado
 await p.selectOption('#inv-est','sing'); await p.waitForTimeout(500);
-const ns = await p.evaluate(()=>document.querySelectorAll('.fila').length);
+const ns = await p.evaluate(()=>document.querySelectorAll('.pcard').length);
 ok('el filtro «sin garantía» funciona ('+ns+')', ns>0);
 await p.selectOption('#inv-est',''); await p.waitForTimeout(400);
 
 // ── editor
-await p.click('.fila [data-edit]'); await p.waitForTimeout(450);
+await p.click('.pcard [data-edit]'); await p.waitForTimeout(450);
 ok('el editor abre', await p.evaluate(()=>!!document.querySelector('.velo .modal')));
 await p.fill('.velo #e-gar','3 meses');
 await p.fill('.velo #e-precio','999');
@@ -81,8 +81,22 @@ ok('la piel sobrevive a recargar', await p.evaluate(()=>document.documentElement
 
 // ── íconos reales de la tienda
 await p.click('[data-v="inventario"]'); await p.waitForTimeout(700);
-const ic = await p.evaluate(()=>document.querySelectorAll('.fila .nm svg.a2-ip').length);
-ok('usa los íconos de línea de TM_ICONOS ('+ic+' filas)', ic>10);
+const ic = await p.evaluate(()=>document.querySelectorAll('.pcard .pc-nm svg.a2-ip').length);
+ok('usa los íconos de línea de TM_ICONOS ('+ic+' tarjetas)', ic>10);
+
+// ── las acciones nuevas de la tarjeta
+const idc = await p.evaluate(()=>document.querySelector('.pcard').dataset.id);
+await p.click(`.pcard[data-id="${idc}"] [data-cero]`); await p.waitForTimeout(450);
+ok('el botón →0 marca agotado y lo guarda', await p.evaluate(id=>
+  Number((JSON.parse(localStorage.getItem('productos')).find(x=>String(x.id)===id)||{}).stock)===0, idc));
+const cbAntes = await p.evaluate(()=>{const c=document.querySelector('.pc-cb'); c.click();
+  return c.closest('.pcard').classList.contains('sel');});
+ok('la casilla marca la tarjeta', cbAntes);
+p.once('dialog', d => d.dismiss());
+const nAntes = await p.evaluate(()=>JSON.parse(localStorage.getItem('productos')).length);
+await p.click('.pcard [data-del]'); await p.waitForTimeout(450);
+ok('eliminar pregunta antes, y si dices que no, no borra', await p.evaluate(()=>
+  JSON.parse(localStorage.getItem('productos')).length) === nAntes);
 
 // ── navegación: TODAS las vistas, y que ninguna salga en blanco
 const VISTAS=['inicio','inventario','agregar','categorias','combos','almacenes',

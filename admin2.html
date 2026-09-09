@@ -249,6 +249,59 @@ a{color:var(--acc);text-decoration:none}
 .grupo-cat .n{font-family:var(--m);font-size:10.5px;color:var(--dim)}
 .grupo-cat .sp{flex:1}
 
+
+/* ── TARJETA DE PRODUCTO ──────────────────────────────────────────
+   En Inventario van tarjetas, no filas: se ve mejor y cada producto
+   se lee de un vistazo sin apretar los ojos. En escritorio se
+   embaldosan solas según el ancho; en el teléfono, una por línea.
+   La fila (.fila) se queda para las listas cortas de Copiloto,
+   Reposición y Publicar, donde sólo hay que ojear. */
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+  gap:11px;padding:11px 14px}
+@media (max-width:820px){ .tarjetas{grid-template-columns:1fr;gap:9px;padding:9px 12px} }
+.pcard{border:1px solid var(--edge);background:var(--glass);border-radius:var(--r);
+  padding:12px;box-shadow:var(--lift);display:flex;flex-direction:column;gap:11px}
+.pcard:hover{border-color:var(--edge-2)}
+.pcard.sel{border-color:var(--acc);background:rgba(var(--br),.07)}
+.pc-top{display:grid;grid-template-columns:19px 62px minmax(0,1fr) auto;gap:11px;align-items:start}
+.pc-cb{width:18px;height:18px;accent-color:var(--acc);cursor:pointer;margin-top:3px}
+.pc-img{width:62px;height:62px;border-radius:12px;object-fit:cover;border:1px solid var(--edge);
+  background:var(--glass-2)}
+.pc-info{min-width:0;display:flex;flex-direction:column;gap:3px}
+.pc-nm{font-size:14px;font-weight:700;line-height:1.25;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-cat{font-family:var(--m);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim)}
+.pc-precio{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-top:2px}
+.pc-precio b{font-family:var(--m);font-size:15.5px;font-weight:600;
+  font-variant-numeric:tabular-nums}
+.pc-precio s{font-family:var(--m);font-size:11.5px;color:var(--dim);font-weight:400}
+.pc-precio .off{font-family:var(--m);font-size:11px;font-weight:600;color:var(--crit);
+  background:rgba(251,113,133,.13);padding:2px 7px;border-radius:99px}
+.pc-com{font-family:var(--m);font-size:11.5px;color:var(--ok);font-variant-numeric:tabular-nums}
+.pc-com.mn{color:var(--gold)}
+.pc-com span{color:var(--dim)}
+.pc-acts{display:flex;flex-direction:column;gap:5px}
+.pc-acts button{width:32px;height:32px;border-radius:10px;border:1px solid var(--edge);
+  background:var(--glass);color:var(--mut);display:grid;place-items:center}
+.pc-acts button:hover{border-color:var(--edge-2);color:var(--ink)}
+.pc-acts .ico{width:15px;height:15px}
+.pc-acts .fav.on{color:var(--gold);border-color:rgba(232,196,138,.4);
+  background:rgba(232,196,138,.1)}
+.pc-acts .del:hover{color:var(--crit);border-color:rgba(251,113,133,.4)}
+/* La barra de stock: lo que más se toca, así que va grande y separada */
+.pc-stock{display:flex;align-items:center;gap:9px;padding-top:11px;
+  border-top:1px solid var(--edge)}
+.pc-stock .lbl2{font-size:11.5px;color:var(--dim);flex:1}
+.pc-stock button{width:36px;height:36px;border-radius:11px;border:1px solid var(--edge);
+  background:var(--glass);color:var(--ink);font-size:19px;line-height:1;display:grid;
+  place-items:center;flex:none}
+.pc-stock button:hover{border-color:var(--acc);color:var(--acc)}
+.pc-stock button:disabled{opacity:.3;cursor:default}
+.pc-stock button:disabled:hover{border-color:var(--edge);color:var(--ink)}
+.pc-stock .chip-st{font-size:12.5px;padding:5px 12px;min-width:70px}
+.pc-stock .cero{font-family:var(--m);font-size:11px;width:auto;padding:0 10px;height:36px}
+
 /* La fila. En escritorio una línea; en el teléfono DOS renglones con sitio
    de sobra — la vez pasada quise meterlo todo en una y el nombre se montó
    encima de la foto. */
@@ -737,6 +790,7 @@ html[data-piel="grafito"] .modal{background:#131315}
 <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></symbol>
 <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><path d="M13.5 13.5h3v3M20.5 20.5h-3v-3"/></symbol>
 <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6V3Z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></symbol>
+<symbol id="i-papelera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/></symbol>
 </defs></svg>
 
 <script src="js/auth.js?v=4c7b6472"></script>
@@ -1025,12 +1079,14 @@ function pintarInventario(){
 
   let html = '';
   Object.keys(grupos).sort().forEach(c => {
-    html += cabeceraGrupo(c, grupos[c].length)
-      + grupos[c].sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')).map(filaHTML).join('');
+    html += cabeceraGrupo(c, grupos[c].length) + '<div class="tarjetas">'
+      + grupos[c].sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')).map(tarjetaHTML).join('')
+      + '</div>';
   });
   if(agotados.length){
-    html += cabeceraGrupo('Agotados', agotados.length, true)
-      + agotados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')).map(filaHTML).join('');
+    html += cabeceraGrupo('Agotados', agotados.length, true) + '<div class="tarjetas">'
+      + agotados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')).map(tarjetaHTML).join('')
+      + '</div>';
   }
   cont.innerHTML = html;
 }
@@ -1039,6 +1095,51 @@ function cabeceraGrupo(c, n, esAgotado){
     <svg class="ico"><use href="#${esAgotado?'i-abajo':'i-etiqueta'}"/></svg>
     <b>${esc(c)}</b><span class="n">${n}</span></div>`;
 }
+function tarjetaHTML(p){
+  const id = String(p.id);
+  const [cls, txt] = estado(p);
+  const st = num(p.stock);
+  const nm = partirNombre(p.nombre);
+  const ico = iconoProducto(nm.emoji);
+  const img = p.imagen
+    ? `<img class="pc-img" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+    : `<span class="pc-img"></span>`;
+  const orig = num(p.precioOriginal), act = num(p.precioActual);
+  const off = num(p.descuento) > 0 ? Math.round(num(p.descuento))
+            : (orig > act && orig ? Math.round((1 - act/orig) * 100) : 0);
+  const com = num(p.comision)
+    ? `<div class="pc-com${comMN(p)?' mn':''}"><span>Comisión</span> ${comMN(p)
+        ? miles(p.comision) + ' MN'
+        : '$' + num(p.comision).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>`
+    : '';
+  return `<div class="pcard" data-id="${esc(id)}">
+  <div class="pc-top">
+    <input type="checkbox" class="pc-cb" data-sel="${esc(id)}" aria-label="Seleccionar ${esc(nm.texto)}">
+    ${img}
+    <div class="pc-info">
+      <div class="pc-nm">${ico}${esc(nm.texto)}${p.masVendido?' <svg class="ico" style="width:13px;height:13px;color:var(--gold)"><use href="#i-fuego"/></svg>':''}</div>
+      <div class="pc-cat">${esc(p.subcategoria || p.categoria || '')}</div>
+      <div class="pc-precio"><b>${precio(p)}</b>
+        ${orig > act ? `<s>${esMN(p) ? miles(orig)+' MN' : '$'+miles(orig)}</s>` : ''}
+        ${off ? `<span class="off">−${off}%</span>` : ''}</div>
+      ${com}
+    </div>
+    <div class="pc-acts">
+      <button data-edit="${esc(id)}" title="Editar"><svg class="ico"><use href="#i-lapiz"/></svg></button>
+      <button class="fav${p.masVendido?' on':''}" data-fav="${esc(id)}" title="${p.masVendido?'Quitar de destacados':'Destacar'}"><svg class="ico"><use href="#i-estrella"/></svg></button>
+      <button class="del" data-del="${esc(id)}" title="Eliminar"><svg class="ico"><use href="#i-papelera"/></svg></button>
+    </div>
+  </div>
+  <div class="pc-stock">
+    <button data-st="-1" data-id="${esc(id)}" title="Quitar uno" ${st<=0?'disabled':''}>−</button>
+    <button data-st="1" data-id="${esc(id)}" title="Añadir uno">+</button>
+    <span class="lbl2">Stock</span>
+    <span class="chip-st ${cls}">${txt}</span>
+    <button class="cero" data-cero="${esc(id)}" title="Marcar agotado" ${st<=0?'disabled':''}>→0</button>
+  </div>
+</div>`;
+}
+
 function filaHTML(p){
   const id = String(p.id);
   const [cls, txt] = estado(p);
@@ -1086,6 +1187,28 @@ function alternarFav(id){
   guardarProductos();
   pintarInventario();
   aviso(p.masVendido ? 'Destacado' : 'Ya no está destacado');
+}
+
+
+function stockCero(id){
+  const p = buscarProducto(id); if(!p) return;
+  p.stock = 0;
+  guardarProductos();
+  pintarInventario();
+  aviso('Marcado agotado · ' + partirNombre(p.nombre).texto.slice(0,24));
+}
+function borrarProducto(id){
+  const p = buscarProducto(id); if(!p) return;
+  const nom = partirNombre(p.nombre).texto;
+  // Borrar es lo único que no se deshace desde aquí, así que se pregunta.
+  if(!confirm('¿Eliminar "' + nom + '" del catálogo?\n\nSe quita de este dispositivo. Para que desaparezca de la tienda hay que sincronizar desde el panel clásico.')) return;
+  const i = PRODUCTOS.findIndex(x => String(x.id) === String(id));
+  if(i < 0) return;
+  PRODUCTOS.splice(i, 1);
+  guardarProductos();
+  $('#n-prod').textContent = PRODUCTOS.length;
+  pintarInventario();
+  aviso('Eliminado · quedan ' + PRODUCTOS.length);
 }
 
 /* ── Editar (modal) ── */
@@ -1690,8 +1813,16 @@ function delegar(){
     if(ed){ abrirEditor(ed.dataset.edit); return; }
     const fv = e.target.closest('[data-fav]');
     if(fv){ alternarFav(fv.dataset.fav); return; }
+    const c0 = e.target.closest('[data-cero]');
+    if(c0){ stockCero(c0.dataset.cero); return; }
+    const dl = e.target.closest('[data-del]');
+    if(dl){ borrarProducto(dl.dataset.del); return; }
     const pl = e.target.closest('[data-piel]');
     if(pl){ ponerPiel(pl.dataset.piel); return; }
+  });
+  document.addEventListener('change', e => {
+    const cb = e.target.closest('[data-sel]');
+    if(cb) cb.closest('.pcard').classList.toggle('sel', cb.checked);
   });
   let t;
   $('#inv-q').addEventListener('input', () => { clearTimeout(t); t = setTimeout(pintarInventario, 160); });
