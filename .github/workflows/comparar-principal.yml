@@ -1,0 +1,87 @@
+name: Comparar con la tienda principal
+
+on:
+  schedule:
+    # Cada 3 h dentro del horario en que se vende. La principal repone a
+    # cualquier hora, pero el aviso al móvil solo sale de día (lo decide
+    # es_hora_diurna en send_notifications.py), así que correr de madrugada
+    # solo serviría para gastar minutos y commits.
+    - cron: '0 11,14,17,20,23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write   # para disparar el deploy de Pages (los commits del bot no lo hacen solos)
+
+concurrency:
+  group: comparar-principal
+  cancel-in-progress: false
+
+jobs:
+  comparar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install -r scripts/requirements.txt
+
+      # El script detecta las reposiciones comparando con el fichero que dejó
+      # la corrida anterior, así que necesita el checkout de siempre — no una
+      # copia limpia — y por eso no se le pasa fetch-depth.
+      - name: Leer el catálogo de la principal
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python scripts/comparar_principal.py
+
+      - name: Commit y push
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add principal-catalogo.json principal-fichas.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en el catálogo de la principal."
+            exit 0
+          fi
+          git commit -m "chore: actualizar el catálogo de la tienda principal"
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              echo "✅ Catálogo de la principal subido."
+              exit 0
+            fi
+            echo "Push rechazado (rama detrás); reintegrando sobre origin/main…"
+            git fetch origin main
+            # Son ficheros generados: ante conflicto gana SIEMPRE la versión
+            # que acaba de crear esta corrida (en rebase, «theirs» = la nuestra).
+            if ! git rebase -X theirs origin/main; then
+              git checkout --theirs -- principal-catalogo.json principal-fichas.json 2>/dev/null || true
+              git add principal-catalogo.json principal-fichas.json
+              GIT_EDITOR=true git rebase --continue || git rebase --abort
+            fi
+            sleep $((i * 2))
+          done
+          echo "❌ No se pudo subir el catálogo de la principal tras varios intentos." >&2
+          exit 1
+
+      - name: Publicar en GitHub Pages
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pages.yml/dispatches" \
+            -d '{"ref":"main"}'

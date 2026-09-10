@@ -293,6 +293,34 @@ try{var _piel=localStorage.getItem('tm_piel');
      partido en tres líneas: no se parece en nada al resto del panel y cuesta
      leerlo. Aquí van las mismas categorías como tira de chips y los productos
      como tarjetas con su foto, que es como se ven en el resto del admin. */
+  /* Comparar con la principal */
+  .cmp-bloque { padding-top:10px; }
+  .cmp-cab { display:flex; align-items:center; gap:10px; width:100%; background:none; border:0;
+    padding:0; color:#fff; font-family:inherit; cursor:pointer; text-align:left; }
+  .cmp-n { background:rgba(var(--o-rgb),0.18); color:var(--o); border:1px solid rgba(var(--o-rgb),0.35);
+    border-radius:20px; min-width:26px; padding:2px 8px; font-size:12px; font-weight:900;
+    text-align:center; flex:none; }
+  .cmp-tit { font-size:14px; font-weight:800; flex:1; min-width:0; }
+  .cmp-chev { color:var(--muted); font-size:13px; flex:none; }
+  .cmp-porque { font-size:11.5px; color:var(--muted); line-height:1.5; margin:7px 0 0; }
+  .cmp-filas { margin-top:11px; display:flex; flex-direction:column; gap:7px; }
+  .cmp-fila { display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.07); border-radius:11px; padding:8px 10px; }
+  .cmp-foto { width:38px; height:38px; border-radius:8px; object-fit:cover; flex:none;
+    background:rgba(255,255,255,.05); }
+  /* minmax(0,·) y no 1fr: el nombre de un producto no parte, y con el mínimo
+     automático la fila se estira más allá de la pantalla en vez de recortar. */
+  .cmp-txt { flex:1; min-width:0; }
+  .cmp-txt b { display:block; font-size:12.5px; font-weight:700; color:#fff;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cmp-txt small { display:block; font-size:11px; color:var(--muted); margin-top:2px; }
+  .cmp-btns { flex:none; display:flex; gap:6px; }
+  .cmp-b { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
+    color:var(--muted); border-radius:9px; padding:7px 11px; font-size:11.5px; font-weight:800;
+    font-family:inherit; cursor:pointer; white-space:nowrap; }
+  .cmp-b-ok { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:var(--o); }
+  .cmp-b:active { transform:scale(.97); }
+  #cmp-foto-aviso a { color:var(--o); text-decoration:underline; }
   .vo-chips { display:flex; flex-wrap:wrap; gap:6px; }
   .vo-chip { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.14); color:var(--muted);
     border-radius:20px; padding:7px 12px; font-size:12.5px; font-weight:700; cursor:pointer;
@@ -1301,6 +1329,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
+      <button class="side-btn" data-view="comparar" title="Comparar con la tienda principal">🔀<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
@@ -1769,6 +1798,19 @@ try{var _piel=localStorage.getItem('tm_piel');
       </div>
 
       <!-- AGREGAR (se porta del admin actual) -->
+      <!-- Comparar con la principal. Los productos no son del gestor: se los da
+           otra tienda que cambia precios, repone y saca productos nuevos sin
+           avisar, y hasta ahora enterarse era abrir las dos webs y mirar 132
+           fichas a mano. El cruce lo hace el navegador con PRODUCTOS, que ya
+           está en memoria; de la principal solo baja un fichero de 4 KB que
+           deja preparado scripts/comparar_principal.py. -->
+      <div id="view-comparar" class="view">
+        <div class="ph">
+          <div><h2>🔀 Comparar con la principal</h2><p id="cmp-sub">Cargando…</p></div>
+          <button class="btn btn-ghost" id="cmp-refrescar" onclick="cmpRefrescar()">🔄 Actualizar</button>
+        </div>
+        <div id="cmp-cuerpo"></div>
+      </div>
       <div id="view-agregar" class="view">
         <div class="ph"><div><h2>➕ Agregar producto</h2><p>Formulario real · sube la imagen y publica solo</p></div></div>
         <form id="productForm" onsubmit="agregarProductoForm(event)">
@@ -1826,6 +1868,10 @@ try{var _piel=localStorage.getItem('tm_piel');
               <label class="file-box" for="productImage"><span class="fb-ico">📷</span><span class="fb-txt" id="productImage-name">Elegir foto principal *</span><input type="file" id="productImage" accept="image/*" required onchange="fileName(this,'productImage-name','Elegir foto principal *')"></label>
               <label class="file-box" for="productImagesExtra"><span class="fb-ico">🖼️</span><span class="fb-txt" id="productImagesExtra-name">Fotos extra (opcional)</span><input type="file" id="productImagesExtra" accept="image/*" multiple onchange="fileName(this,'productImagesExtra-name','Fotos extra (opcional)')"></label>
             </div>
+            <!-- Al venir desde 🔀 Comparar, aquí sale el enlace a la foto que
+                 tiene la principal: el navegador no deja rellenar un input de
+                 fichero desde código, así que se abre para guardarla y subirla. -->
+            <div id="cmp-foto-aviso" style="margin-top:10px;font-size:12.5px"></div>
             <button type="button" id="btnAnalizarFoto" onclick="analizarFotoYCompletar()" class="btn btn-ghost" style="width:100%;margin-top:10px">🤖 Analizar foto y completar</button>
             <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Escribe el nombre, elige la foto principal, y esto llena Descripción y Specs mirando la foto real (con Gemini) — revísalas antes de guardar.</p>
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px">💾 Guardar y publicar producto</button>
@@ -2184,6 +2230,7 @@ function go(view, btn){
   if(view==='config' && typeof tmPintarPieles==='function'){ try{ tmPintarPieles(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
   if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
+  if(view==='comparar' && typeof cmpCargar==='function'){ try{ cmpCargar(); }catch(e){} }
   if(view==='reservas'){ try{ renderReservas(); }catch(e){}
     // Traerse lo cerrado desde otro dispositivo antes de enseñar la lista.
     try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
@@ -4363,6 +4410,323 @@ function renderRadar(){
     return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div><div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> ${n?`(${n} anuncios)`:''}</div><div>${comp}</div></div>${det}</div>`;
   }).join('');
 }
+
+
+/* ============ COMPARAR CON LA TIENDA PRINCIPAL ============
+   Los productos de esta tienda son de otra: AXONTECH. Ella cambia precios,
+   repone y saca productos nuevos sin avisar, así que sin esta pantalla la
+   única forma de enterarse era abrir las dos webs y mirar ficha por ficha.
+
+   El fichero de la principal lo deja preparado scripts/comparar_principal.py
+   (cron): 4 KB comprimidos, sin descripciones. El CRUCE se hace aquí, contra
+   PRODUCTOS, que ya está en memoria — así, en cuanto se arregla un precio la
+   fila desaparece sin esperar a la próxima corrida del cron.
+
+   LA REGLA QUE SOSTIENE TODA LA PANTALLA: una comisión de 1500 MN y una de
+   $1,80 son casi el mismo dinero (1500 ÷ 687 ≈ $2,18). Compararlas como
+   números sueltos convierte cada producto en MN en una diferencia enorme que
+   no existe, y manda a cambiar una comisión que estaba bien. Aquí solo se
+   comparan comisiones de la MISMA moneda; las demás se enseñan aparte, sin
+   dar una diferencia. Lo mismo con las 5 que la principal se contradice a sí
+   misma (viene marcado desde el script como `comisionDudosa`). */
+
+const CMP_CAT = 'principal-catalogo.json';
+const CMP_FICHAS = 'principal-fichas.json';
+// Bajo esto no merece la pena avisar: son redondeos, no cambios de precio.
+const CMP_EPS = 0.005;
+let CMP_DATOS = null, CMP_FICHAS_CACHE = null, CMP_ABIERTO = {};
+
+function cmpNorm(s){
+  return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
+function cmpNum(v){ const n = Number(v); return isFinite(n) ? n : 0; }
+
+/* La moneda de MI comisión. El catálogo propio tampoco la declara siempre:
+   14 productos traen comisionMoneda vacío. Se deduce igual que en el script
+   —por tamaño, que separa sin ambigüedad— para no comparar a ciegas. */
+function cmpMonedaMia(p){
+  const m = p && p.comisionMoneda;
+  if(m === 'MN' || m === 'USD') return m;
+  return cmpNum(p && p.comision) >= 100 ? 'MN' : 'USD';
+}
+
+/* Empareja un producto de la principal con el mío. Primero por id, que las
+   dos tiendas comparten; si no, por nombre normalizado, que recupera los que
+   se subieron a mano y cogieron un id nuevo. */
+function cmpEmparejar(pri, porId, porNombre){
+  return porId[String(pri.id)] || porNombre[cmpNorm(pri.nombre)] || null;
+}
+
+/* El corazón: qué tiene que ver el gestor y en qué orden.
+   El orden es el del dinero — primero lo que se puede vender hoy, después lo
+   que se está vendiendo y no se puede entregar, y al final lo que hay que
+   corregir. */
+function cmpAnalizar(datos, mios){
+  const porId = {}, porNombre = {};
+  (mios||[]).forEach(p => { porId[String(p.id)] = p; porNombre[cmpNorm(p.nombre)] = p; });
+  const g = { repuestos:[], fantasma:[], faltan:[], precio:[], comision:[], dudosas:[] };
+
+  (datos.productos||[]).forEach(pri => {
+    const mio = cmpEmparejar(pri, porId, porNombre);
+
+    if(!mio){
+      // Solo se ofrece subir lo que la principal puede servir hoy. Subir un
+      // agotado es publicar una ficha que no vende y que además hay que
+      // mantener.
+      if(pri.stock > 0) g.faltan.push({pri});
+      return;
+    }
+
+    const miStock = cmpNum(mio.stock);
+    if(pri.stock > 0 && miStock <= 0) g.repuestos.push({pri, mio});
+    if(pri.stock <= 0 && miStock > 0) g.fantasma.push({pri, mio});
+
+    const pp = cmpNum(pri.precio), pm = cmpNum(mio.precioActual);
+    if(pp > 0 && Math.abs(pp - pm) > CMP_EPS) g.precio.push({pri, mio, de:pm, a:pp});
+
+    if(pri.comisionDudosa){
+      g.dudosas.push({pri, mio, porque: pri.comisionDudosa});
+    } else if(pri.comision != null){
+      const monPri = pri.comisionMoneda || 'USD', monMio = cmpMonedaMia(mio);
+      const cp = cmpNum(pri.comision), cm = cmpNum(mio.comision);
+      if(monPri !== monMio){
+        // Distinta moneda: NO es una diferencia de dinero comparable. Se
+        // enseña para que lo mire una persona, sin decir cuál es mayor.
+        g.dudosas.push({pri, mio, porque:'tú la tienes en ' + monMio + ' y la principal en ' + monPri});
+      } else if(Math.abs(cp - cm) > CMP_EPS){
+        g.comision.push({pri, mio, de:cm, a:cp, moneda:monPri});
+      }
+    }
+  });
+
+  // Lo que más deja primero dentro de cada grupo.
+  g.repuestos.sort((a,b) => cmpNum(b.pri.precio) - cmpNum(a.pri.precio));
+  g.faltan.sort((a,b) => cmpNum(b.pri.precio) - cmpNum(a.pri.precio));
+  return g;
+}
+
+function cmpDinero(v, moneda){
+  const n = cmpNum(v);
+  return moneda === 'MN'
+    ? '<span style="color:var(--gold)">' + n.toLocaleString('es-US') + ' MN</span>'
+    : '$' + n.toLocaleString('es-US', {maximumFractionDigits:2});
+}
+
+function cmpFila(clave, texto, botones, foto){
+  return '<div class="cmp-fila">'
+    + (foto ? '<img class="cmp-foto" src="' + esc(foto) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : '')
+    + '<div class="cmp-txt">' + texto + '</div>'
+    + '<div class="cmp-btns">' + botones + '</div></div>';
+}
+
+function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto){
+  if(!filas.length) return '';
+  const abierto = (CMP_ABIERTO[id] !== undefined) ? CMP_ABIERTO[id] : !!abiertoPorDefecto;
+  return '<div class="section cmp-bloque">'
+    + `<button type="button" class="cmp-cab" aria-expanded="${abierto}" onclick="cmpPlegar('${id}')">`
+    + '<span class="cmp-n">' + filas.length + '</span>'
+    + '<span class="cmp-tit">' + icono + ' ' + esc(titulo) + '</span>'
+    + '<span class="cmp-chev">' + (abierto ? '▾' : '▸') + '</span></button>'
+    + '<p class="cmp-porque">' + porque + '</p>'
+    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' : '')
+    + '</div>';
+}
+function cmpPlegar(id){
+  const cab = document.querySelector(`.cmp-cab[onclick*="'${id}'"]`);
+  CMP_ABIERTO[id] = !(cab && cab.getAttribute('aria-expanded') === 'true');
+  cmpRender();
+}
+
+/* Los botones se escriben con plantillas `${…}` y no concatenando cadenas,
+   igual que el resto de admin.html. No es estilo: un onclick construido a
+   trozos deja escrito dentro del atributo el `escJsAttr(String(x))` que lo
+   arma, y entonces ni una persona leyendo el HTML ni test_onclick_global.py
+   pueden ver cuál es la función que se llama de verdad al tocarlo. */
+function cmpIdAttr(p){ return escJsAttr(String((p||{}).id)); }
+
+function cmpRender(){
+  const caja = $('#cmp-cuerpo'), sub = $('#cmp-sub');
+  if(!caja) return;
+  if(!CMP_DATOS){
+    caja.innerHTML = '<div class="empty" style="padding:26px"><div class="ico">🔀</div>'
+      + 'No se pudo leer el catálogo de la principal. Toca 🔄 Actualizar.</div>';
+    if(sub) sub.textContent = 'Sin datos';
+    return;
+  }
+  syncProductos();
+  const g = cmpAnalizar(CMP_DATOS, PRODUCTOS);
+  const total = g.repuestos.length + g.fantasma.length + g.faltan.length
+              + g.precio.length + g.comision.length;
+
+  if(sub){
+    const cuando = CMP_DATOS.actualizado ? new Date(CMP_DATOS.actualizado) : null;
+    const hace = cuando ? Math.round((Date.now() - cuando.getTime()) / 3600000) : null;
+    sub.textContent = CMP_DATOS.total + ' productos en la principal · leído '
+      + (hace === null ? '—' : hace < 1 ? 'hace menos de 1 h' : 'hace ' + hace + ' h');
+  }
+
+  if(!total && !g.dudosas.length){
+    caja.innerHTML = '<div class="empty" style="padding:26px"><div class="ico">✅</div>'
+      + 'Tu catálogo coincide con la principal: mismos precios, mismas comisiones '
+      + 'y nada por subir.</div>';
+    return;
+  }
+
+  const bloques = [];
+
+  bloques.push(cmpBloque('rep', '🔄', 'La principal repuso y tú los tienes agotados',
+    'Son ventas que puedes hacer hoy: tu web dice agotado y la principal sí tiene.',
+    g.repuestos.map(r => cmpFila('rep',
+      '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio)
+        + ' · la principal tiene ' + r.pri.stock + '</small>',
+      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',${r.pri.stock})">Poner ${r.pri.stock}</button>`,
+      r.mio.imagen)), true));
+
+  bloques.push(cmpBloque('fan', '⚠️', 'Tú los vendes y la principal está en cero',
+    'Tu web los ofrece disponibles y la principal no los tiene: si alguien los pide, no hay qué entregar.',
+    g.fantasma.map(r => cmpFila('fan',
+      '<b>' + esc(r.pri.nombre) + '</b><small>tú tienes ' + cmpNum(r.mio.stock) + ' · la principal, 0</small>',
+      `<button type="button" class="cmp-b" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',0)">Poner en 0</button>`,
+      r.mio.imagen)), true));
+
+  bloques.push(cmpBloque('fal', '➕', 'Te faltan por subir',
+    'Están en la principal con existencias y no en tu web. El botón abre el formulario ya relleno; tú revisas y guardas.',
+    g.faltan.map(r => cmpFila('fal',
+      '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio)
+        + ' · ' + r.pri.stock + ' disponibles'
+        + (r.pri.categoria ? ' · ' + esc(r.pri.categoria) : '') + '</small>',
+      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpRellenar('${cmpIdAttr(r.pri)}')">Rellenar</button>`,
+      r.pri.foto))));
+
+  bloques.push(cmpBloque('pre', '💲', 'Precio distinto',
+    'La principal cambió el precio y tu web sigue con el viejo.',
+    g.precio.map(r => cmpFila('pre',
+      '<b>' + esc(r.pri.nombre) + '</b><small>tú ' + cmpDinero(r.de) + ' → principal '
+        + cmpDinero(r.a) + '</small>',
+      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerPrecio('${cmpIdAttr(r.mio)}',${r.a})">Poner ${cmpDinero(r.a)}</button>`,
+      r.mio.imagen))));
+
+  bloques.push(cmpBloque('com', '💵', 'Comisión distinta',
+    'Lo que ganas tú por vender cada uno. Solo se comparan las que están en la misma moneda.',
+    g.comision.map(r => cmpFila('com',
+      '<b>' + esc(r.pri.nombre) + '</b><small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
+        + cmpDinero(r.a, r.moneda) + '</small>',
+      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerComision('${cmpIdAttr(r.mio)}',${r.a},'${r.moneda}')">Poner ${cmpDinero(r.a, r.moneda)}</button>`,
+      r.mio.imagen))));
+
+  // Sin botón a propósito: no hay una cifra de la que fiarse, así que ofrecer
+  // "ponerla" sería ofrecer copiar un dato roto.
+  bloques.push(cmpBloque('dud', '🔍', 'Comisiones que no puedo comparar',
+    'La principal se contradice o la tienes en otra moneda. Pregúntale antes de tocarlas: '
+    + '1500 MN y $1,80 son casi lo mismo, y cambiar una por otra te cuesta dinero de verdad.',
+    g.dudosas.map(r => cmpFila('dud',
+      '<b>' + esc(r.pri.nombre) + '</b><small>' + esc(r.porque) + '</small>',
+      `<button type="button" class="cmp-b" onclick="cmpAbrirEnProductos('${cmpIdAttr(r.mio)}')">Ver el mío</button>`,
+      r.mio.imagen))));
+
+  caja.innerHTML = bloques.join('') || '';
+}
+
+/* ── Los botones ────────────────────────────────────────────────────
+   Todos siguen el camino de apStock/apFav: tocan PRODUCTOS, marcan el
+   producto como modificado y guardan. Nada se publica hasta que se toca
+   "Actualizar tienda ahora", igual que cualquier otro cambio del panel. */
+function cmpAplicar(id, cambio, aviso){
+  const p = apFind(id);
+  if(!p){ showToast('⚠️ No encontré ese producto'); return; }
+  cambio(p);
+  try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(id); }catch(e){}
+  apSaveProds();
+  cmpRender();
+  try{ renderProductos(); }catch(e){}
+  showToast(aviso, 'Recuerda pulsar 🔄 Actualizar tienda para publicarlo');
+}
+function cmpPonerStock(id, n){
+  cmpAplicar(id, p => { p.stock = Math.max(0, Number(n)||0); },
+             n > 0 ? '📦 Stock puesto en ' + n : '📦 Marcado como agotado');
+}
+function cmpPonerPrecio(id, v){
+  cmpAplicar(id, p => { p.precioActual = Number(v)||0; }, '💲 Precio actualizado');
+}
+function cmpPonerComision(id, v, moneda){
+  cmpAplicar(id, p => { p.comision = Number(v)||0; p.comisionMoneda = moneda; },
+             '💵 Comisión actualizada');
+}
+function cmpAbrirEnProductos(id){
+  go('productos');
+  const q = $('#prod-q'); if(q){ q.value = (apFind(id)||{}).nombre || ''; try{ renderProductos(); }catch(e){} }
+}
+
+/* Rellenar el formulario con un producto de la principal.
+   La descripción vive en un fichero aparte que solo se baja aquí: son 13 KB
+   comprimidos y solo hacen falta al usar este botón. Nada se guarda: se deja
+   el formulario escrito y la foto abierta en otra pestaña, y el gestor
+   revisa, elige la foto y guarda él. */
+async function cmpRellenar(idPri){
+  const pri = (CMP_DATOS.productos||[]).find(p => String(p.id) === String(idPri));
+  if(!pri) return;
+  if(!CMP_FICHAS_CACHE){
+    try{
+      const r = await fetch(CMP_FICHAS + '?_=' + Date.now(), {cache:'no-store'});
+      CMP_FICHAS_CACHE = r.ok ? (await r.json()).fichas || {} : {};
+    }catch(e){ CMP_FICHAS_CACHE = {}; }
+  }
+  const ficha = CMP_FICHAS_CACHE[String(pri.id)] || {};
+  go('agregar');
+  const set = (sel, v) => { const el = $(sel); if(el && v != null && v !== '') el.value = v; };
+  set('#productName', pri.nombre);
+  set('#productDescription', ficha.descripcion || '');
+  set('#productPriceActual', pri.precio || '');
+  set('#productStock', pri.stock || 0);
+  set('#productGarantia', ficha.garantia || '');
+  if(pri.comision != null){
+    set('#productComision', pri.comision);
+    set('#productComisionMoneda', pri.comisionMoneda || 'USD');
+  }
+  // La categoría solo se pone si existe con ese nombre en este catálogo:
+  // inventar una crea una categoría nueva con un producto dentro.
+  const selCat = $('#productCategory');
+  if(selCat && pri.categoria){
+    const op = Array.from(selCat.options).find(o => cmpNorm(o.value) === cmpNorm(pri.categoria));
+    if(op){ selCat.value = op.value; try{ agregarFillSubcats(); }catch(e){} }
+  }
+  const falta = [];
+  if(!selCat || !selCat.value) falta.push('la categoría');
+  falta.push('la foto');
+  showToast('📋 Formulario relleno con los datos de la principal',
+            'Te falta ' + falta.join(' y ') + '. Revísalo antes de guardar.');
+  // La foto de la principal, abierta aparte para poder guardarla y subirla:
+  // el navegador no deja rellenar un <input type=file> desde código.
+  if(pri.foto){
+    const av = $('#cmp-foto-aviso');
+    if(av){ av.innerHTML = '<a href="' + esc(pri.foto) + '" target="_blank" rel="noopener">📷 Abrir la foto de la principal</a>'; }
+  }
+}
+
+async function cmpCargar(forzar){
+  const caja = $('#cmp-cuerpo');
+  if(caja && !CMP_DATOS) caja.innerHTML = '<div class="empty" style="padding:26px"><div class="ico">⏳</div>Leyendo el catálogo de la principal…</div>';
+  try{
+    const r = await fetch(CMP_CAT + (forzar ? '?_=' + Date.now() : ''), forzar ? {cache:'no-store'} : {});
+    if(r.ok){
+      const d = await r.json();
+      if(d && Array.isArray(d.productos)) CMP_DATOS = d;
+    }
+  }catch(e){}
+  cmpRender();
+}
+function cmpRefrescar(){
+  CMP_FICHAS_CACHE = null;
+  cmpCargar(true);
+}
+window.cmpPlegar = cmpPlegar;
+window.cmpRefrescar = cmpRefrescar;
+window.cmpPonerStock = cmpPonerStock;
+window.cmpPonerPrecio = cmpPonerPrecio;
+window.cmpPonerComision = cmpPonerComision;
+window.cmpAbrirEnProductos = cmpAbrirEnProductos;
+window.cmpRellenar = cmpRellenar;
 
 /* ============ VENTAS ============ */
 function renderVentas(){

@@ -1,0 +1,1086 @@
+{
+ "actualizado": "2026-09-10T06:36:06Z",
+ "origen": "https://axontech92.github.io/AXONTECH/",
+ "total": 108,
+ "productos": [
+  {
+   "id": "1778336789459",
+   "nombre": "AC1200 WIFI ROUTER",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778336789459.webp"
+  },
+  {
+   "id": "1778384646214",
+   "nombre": "Adaptador poe UBIQUITI de 0.3A",
+   "precio": 20.0,
+   "stock": 86,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384646214.webp"
+  },
+  {
+   "id": "1780887747583",
+   "nombre": "Altavoz Bluetooth Portátil RGB",
+   "precio": 20.0,
+   "stock": 0,
+   "categoria": "Celulares",
+   "comision": 1000.0,
+   "comisionMoneda": "USD",
+   "comisionDudosa": "«$1000 USD» en USD sobre un producto de $20",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780887747583.webp"
+  },
+  {
+   "id": "1785078905092",
+   "nombre": "Audifonos Gaming NUBWO",
+   "precio": 50.0,
+   "stock": 4,
+   "categoria": "Juegos",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785078905092.webp"
+  },
+  {
+   "id": "1780543090267",
+   "nombre": "AUDÍFONOS ERGONÓMICOS",
+   "precio": 10.0,
+   "stock": 0,
+   "categoria": "Celulares",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780543090267.webp"
+  },
+  {
+   "id": "1778103783319",
+   "nombre": "Bateria LUBRIM de 75A",
+   "precio": 85.0,
+   "stock": 1,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778103783319.webp"
+  },
+  {
+   "id": "1778104115783",
+   "nombre": "BATERÍA MUST TIPO LIFEPO4",
+   "precio": 270.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104115783.webp"
+  },
+  {
+   "id": "1780887971522",
+   "nombre": "BEAT BOOM F10! 🎶🔥",
+   "precio": 40.0,
+   "stock": 0,
+   "categoria": "Celulares",
+   "comision": 1000.0,
+   "comisionMoneda": "USD",
+   "comisionDudosa": "«$1000 USD» en USD sobre un producto de $40",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780887971522.webp"
+  },
+  {
+   "id": "1778104985977",
+   "nombre": "BLUETTI AC 180P",
+   "precio": 695.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 20.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104985977.webp"
+  },
+  {
+   "id": "1786594651216",
+   "nombre": "Breker digital ajustable",
+   "precio": 20.0,
+   "stock": 2,
+   "categoria": "Energia",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786594651216.webp"
+  },
+  {
+   "id": "1787349543585",
+   "nombre": "Cable de red categoría 6",
+   "precio": 280.0,
+   "stock": 855,
+   "categoria": "Wifi",
+   "comision": null,
+   "comisionMoneda": null,
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787349543585-d9deb06c.webp"
+  },
+  {
+   "id": "1778907260915",
+   "nombre": "Calentador electrico de 220V",
+   "precio": 125.0,
+   "stock": 5,
+   "categoria": "Hogar",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778907260915.webp"
+  },
+  {
+   "id": "1785079567810",
+   "nombre": "Camara de Panel",
+   "precio": 100.0,
+   "stock": 4,
+   "categoria": "Seguridad",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079567810.webp"
+  },
+  {
+   "id": "1786893425174",
+   "nombre": "Camara de vigilancia IP inalambrica",
+   "precio": 25.0,
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786893425174-df9f00ac.webp"
+  },
+  {
+   "id": "1778104423316",
+   "nombre": "CARGADOR 10 AMPERES",
+   "precio": 50.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104423316.webp"
+  },
+  {
+   "id": "1786214838717",
+   "nombre": "Cargador COREBOX 12v 15A",
+   "precio": 65.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786214838717.webp"
+  },
+  {
+   "id": "1777923552923",
+   "nombre": "CARGADOR INTELIGENTE 20A",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1781111210796",
+   "nombre": "CARGADOR INTELIGENTE 30A",
+   "precio": 100.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1785076318779",
+   "nombre": "Cargador inteligente de 12v(35A) y 24v(15A) configurable",
+   "precio": 145.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785076318779.webp"
+  },
+  {
+   "id": "1778104191957",
+   "nombre": "CARGADOR INTELIGENTE DE 15 AMPERES:",
+   "precio": 65.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104191957.webp"
+  },
+  {
+   "id": "1786160284390",
+   "nombre": "Cargador inteligente VEVOR de 6,12 y24V 35A",
+   "precio": 145.0,
+   "stock": 38,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786160284390-28622650.webp"
+  },
+  {
+   "id": "1787375387767",
+   "nombre": "Cargador VEVOR 6v, 12v y 24v,  30A",
+   "precio": 130.0,
+   "stock": 28,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787375387767-495c7dd5.webp"
+  },
+  {
+   "id": "1779205929131",
+   "nombre": "CARGADORES INTELIGENTES DE 25A",
+   "precio": 90.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1779205929131.webp"
+  },
+  {
+   "id": "1778820912552",
+   "nombre": "CASA DE CAMPAÑA LIGERA",
+   "precio": 100.0,
+   "stock": 0,
+   "categoria": "Utiles",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778820912552.webp"
+  },
+  {
+   "id": "1778384158283",
+   "nombre": "Cerradura inteligente",
+   "precio": 60.0,
+   "stock": 5,
+   "categoria": "Seguridad",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384158283.webp"
+  },
+  {
+   "id": "1786161303797",
+   "nombre": "Compresor/Inflador de neumáticos",
+   "precio": 40.0,
+   "stock": 38,
+   "categoria": "Carros",
+   "comision": 3.0,
+   "comisionMoneda": "MN",
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786161303797-682a20bb.webp"
+  },
+  {
+   "id": "1788155221143",
+   "nombre": "Conecectores MC4 en  \"Y\" para paneles solares",
+   "precio": 28.0,
+   "stock": 22,
+   "categoria": "Energia",
+   "comision": null,
+   "comisionMoneda": null,
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788155221143-2be6777c.webp"
+  },
+  {
+   "id": "1788155775988",
+   "nombre": "Conectores MC4 (10 pares)",
+   "precio": 13.0,
+   "stock": 12,
+   "categoria": "Energia",
+   "comision": null,
+   "comisionMoneda": null,
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788155775988-7596cd1a.webp"
+  },
+  {
+   "id": "1785079145272",
+   "nombre": "Controlador 100amp",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079145272.webp"
+  },
+  {
+   "id": "1785079217591",
+   "nombre": "Controlador 150amp",
+   "precio": 90.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079217591.webp"
+  },
+  {
+   "id": "1786596117205",
+   "nombre": "Controlador solar de 120A Y&H",
+   "precio": 260.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786596117205.webp"
+  },
+  {
+   "id": "1779208523952",
+   "nombre": "CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA",
+   "precio": 180.0,
+   "stock": 5,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1779208523952.webp"
+  },
+  {
+   "id": "1787089756274",
+   "nombre": "Controlador solar mppt de 48/60/72 V y 1200 W",
+   "precio": 90.0,
+   "stock": 40,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787089756274-f04ab9a3.webp"
+  },
+  {
+   "id": "1779562612951",
+   "nombre": "CONTROLADOR SOLAR POWMR M100 PRO de 80A",
+   "precio": 220.0,
+   "stock": 7,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1779562612951.webp"
+  },
+  {
+   "id": "1778104512761",
+   "nombre": "Controlador solar PowMr MM100 PRO de 100A",
+   "precio": 260.0,
+   "stock": 10,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104512761.webp"
+  },
+  {
+   "id": "1781377297283",
+   "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
+   "precio": 25.0,
+   "stock": 11,
+   "categoria": "Gym",
+   "comision": 1000.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1781377297283-cc909b2a.webp"
+  },
+  {
+   "id": "1778384078432",
+   "nombre": "CÁMARAS DE SEGURIDAD (V380 PRO )",
+   "precio": 25.0,
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 1.8,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384078432.webp"
+  },
+  {
+   "id": "1777924248270",
+   "nombre": "ENRUTADOR WIFI WAVLINK AC1200",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1778104924836",
+   "nombre": "ESTACION DE CARGA PORTÁTIL",
+   "precio": 665.0,
+   "stock": 14,
+   "categoria": "Energia",
+   "comision": 15.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104924836.webp"
+  },
+  {
+   "id": "1778104735789",
+   "nombre": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE TRANSMISIÓN WIFI DE 150 MBPS",
+   "precio": 130.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104735789.webp"
+  },
+  {
+   "id": "1780873821409",
+   "nombre": "FENVI AC1200",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1778213413973",
+   "nombre": "Forros de asientos de lujo para autos",
+   "precio": 150.0,
+   "stock": 1,
+   "categoria": "Carros",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778213413973.webp"
+  },
+  {
+   "id": "1778547214210",
+   "nombre": "GAMESIR X5 LITE",
+   "precio": 70.0,
+   "stock": 0,
+   "categoria": "Juegos",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778547214210.webp"
+  },
+  {
+   "id": "1780887557334",
+   "nombre": "Gorro de buseo",
+   "precio": 10.0,
+   "stock": 2,
+   "categoria": "Utiles",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1780887557334-38b7381d.webp"
+  },
+  {
+   "id": "1786160676965",
+   "nombre": "Hamaca con mosquitero",
+   "precio": 20.0,
+   "stock": 18,
+   "categoria": "Hogar",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786160676965-b34f4749.webp"
+  },
+  {
+   "id": "1778104662477",
+   "nombre": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED",
+   "precio": 900.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 35.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104662477.webp"
+  },
+  {
+   "id": "1778104599386",
+   "nombre": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW",
+   "precio": 550.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 25.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104599386.webp"
+  },
+  {
+   "id": "1786509014605",
+   "nombre": "Inversor Tataliken de 12V 4000W",
+   "precio": 180.0,
+   "stock": 2,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509014605.webp"
+  },
+  {
+   "id": "1777924118004",
+   "nombre": "Inversor Tataliken de 24V 4000W",
+   "precio": 180.0,
+   "stock": 2,
+   "categoria": "Energia",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1777924118004.webp"
+  },
+  {
+   "id": "1778384314795",
+   "nombre": "KIT de 4 camaras Zosi (sin disco duro)",
+   "precio": 230.0,
+   "stock": 3,
+   "categoria": "Seguridad",
+   "comision": 20.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384314795.webp"
+  },
+  {
+   "id": "1778636088295",
+   "nombre": "KIT DE 4 CÁMARAS ZOSI ( CON SU DISCO DURO )",
+   "precio": 280.0,
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 20.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778636088295.webp"
+  },
+  {
+   "id": "1778384507302",
+   "nombre": "Linterna de cabeza superpotente",
+   "precio": 30.0,
+   "stock": 3,
+   "categoria": "Utiles",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384507302.webp"
+  },
+  {
+   "id": "1778820983383",
+   "nombre": "LINTERNA MARCA REGISTRADA \"HECLOUD\"",
+   "precio": 35.0,
+   "stock": 0,
+   "categoria": "Utiles",
+   "comision": 1.8,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778820983383.webp"
+  },
+  {
+   "id": "1786953872887",
+   "nombre": "Maquina de soldar YESWELDER FLUX-140 FLEX",
+   "precio": 275.0,
+   "stock": 0,
+   "categoria": "Utiles",
+   "comision": 15.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786953872887-4c049552.webp"
+  },
+  {
+   "id": "1786509419466",
+   "nombre": "Mikrotik hap ax3",
+   "precio": 260.0,
+   "stock": 7,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509419466.webp"
+  },
+  {
+   "id": "1788015580929",
+   "nombre": "MikroTik hEX S (2025) – E60iUGS",
+   "precio": 140.0,
+   "stock": 9,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788015580929-00dbb51e.webp"
+  },
+  {
+   "id": "1786509644554",
+   "nombre": "Mikrotik lhg 5ax",
+   "precio": 240.0,
+   "stock": 2,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509644554.webp"
+  },
+  {
+   "id": "1786858727482",
+   "nombre": "Mikrotik mANTBox 15s",
+   "precio": 380.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 20.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786858727482-883d0b7e.webp"
+  },
+  {
+   "id": "1785079709511",
+   "nombre": "Mikrotik Router Board 750gr",
+   "precio": 130.0,
+   "stock": 4,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079709511.webp"
+  },
+  {
+   "id": "1786509734474",
+   "nombre": "Mikrotik SXT SA 5 ac",
+   "precio": 220.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509734474.webp"
+  },
+  {
+   "id": "1788124513018",
+   "nombre": "mikrotik sxt sq 5ax",
+   "precio": 160.0,
+   "stock": 42,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788124513018-46338072.webp"
+  },
+  {
+   "id": "1787265463792",
+   "nombre": "Mikrotik SXT sq lite 2",
+   "precio": 120.0,
+   "stock": 8,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787265463792-09e56024.webp"
+  },
+  {
+   "id": "1786510034029",
+   "nombre": "Mikrotik SXTsq 5 lite",
+   "precio": 150.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786510034029.webp"
+  },
+  {
+   "id": "1788278326719",
+   "nombre": "NanoStation 5AC Loco",
+   "precio": 140.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788278326719-85eac473.webp"
+  },
+  {
+   "id": "1786509569058",
+   "nombre": "Nanostation loco m5",
+   "precio": 160.0,
+   "stock": 18,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509569058.webp"
+  },
+  {
+   "id": "1786509790425",
+   "nombre": "Nanostation m2",
+   "precio": 230.0,
+   "stock": 41,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509790425.webp"
+  },
+  {
+   "id": "1786858233037",
+   "nombre": "Nanostation m2 loco",
+   "precio": 150.0,
+   "stock": 37,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786858233037-c26e7f82.webp"
+  },
+  {
+   "id": "1786510211408",
+   "nombre": "Nanostation m5",
+   "precio": 230.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786510211408.webp"
+  },
+  {
+   "id": "1786816725748",
+   "nombre": "Panel de Césped Artificial 25cm x 25cm",
+   "precio": 4.0,
+   "stock": 142,
+   "categoria": "Hogar",
+   "comision": 0.5,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786816725748-a0ff89bd.webp"
+  },
+  {
+   "id": "1788152657796",
+   "nombre": "Pesa / báscula digital inteligente",
+   "precio": 25.0,
+   "stock": 27,
+   "categoria": "Gym",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788152657796-9215b5a4.webp"
+  },
+  {
+   "id": "1778336613589",
+   "nombre": "PISTOLA DE MASAJE PROFESIONAL",
+   "precio": 35.0,
+   "stock": 0,
+   "categoria": "Utiles",
+   "comision": 1.8,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778336613589.webp"
+  },
+  {
+   "id": "1778103856933",
+   "nombre": "Pistola de masaje recargable",
+   "precio": 25.0,
+   "stock": 0,
+   "categoria": "Utiles",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778103856933.webp"
+  },
+  {
+   "id": "1787114047916",
+   "nombre": "Planta de soldar Bielmeier FLUXMAX 140 (3 en 1)",
+   "precio": 275.0,
+   "stock": 4,
+   "categoria": "Utiles",
+   "comision": 15.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787114047916-ce51532d.webp"
+  },
+  {
+   "id": "1778384428890",
+   "nombre": "PORTACELULARES",
+   "precio": 15.0,
+   "stock": 0,
+   "categoria": "Celulares",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384428890.webp"
+  },
+  {
+   "id": "1781365019871",
+   "nombre": "Probador/ tester  digital de baterías",
+   "precio": 20.0,
+   "stock": 7,
+   "categoria": "Utiles",
+   "comision": 1000.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1781365019871.webp"
+  },
+  {
+   "id": "1784726857748",
+   "nombre": "Repetidor Wi-Fi TP-Link RE205 AC750 Reacondicionado",
+   "precio": 30.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1784726857748.webp"
+  },
+  {
+   "id": "1777924315386",
+   "nombre": "REPETIDOR WIFI 5",
+   "precio": 25.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1777924315386.webp"
+  },
+  {
+   "id": "1785078992522",
+   "nombre": "Router ASUS AX1800",
+   "precio": 150.0,
+   "stock": 2,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785078992522.webp"
+  },
+  {
+   "id": "1780873638627",
+   "nombre": "ROUTER FENVI AX3000 Wi-Fi 6",
+   "precio": 110.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1778104287395",
+   "nombre": "Router KUWIFI de linea de 1.150MBPS",
+   "precio": 130.0,
+   "stock": 13,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778104287395-885659f8.webp"
+  },
+  {
+   "id": "1785077900654",
+   "nombre": "Router Tenda AX12 pro AX3000",
+   "precio": 130.0,
+   "stock": 2,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785077900654.webp"
+  },
+  {
+   "id": "1780510681519",
+   "nombre": "ROUTER TENDA RX2 PRO - WIFI 6 DUAL - BAND GIGABIT",
+   "precio": 110.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780510681519.webp"
+  },
+  {
+   "id": "1786858003270",
+   "nombre": "Router Tp link archer ax22 AX1800",
+   "precio": 120.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786858003270-7199b45b.webp"
+  },
+  {
+   "id": "1788329740120",
+   "nombre": "Router Tp-link Archer A6",
+   "precio": 110.0,
+   "stock": 4,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788329740120-3d5fec45.webp"
+  },
+  {
+   "id": "1787114204179",
+   "nombre": "Router TP-Link Archer C54 Reacondicionado",
+   "precio": 60.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787114204179-dabd97ce.webp"
+  },
+  {
+   "id": "1785077980600",
+   "nombre": "Router Wavlink AC1200 pequeño",
+   "precio": 70.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785077980600.webp"
+  },
+  {
+   "id": "1777924173211",
+   "nombre": "ROUTER WIFI 6",
+   "precio": 130.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD"
+  },
+  {
+   "id": "1778383966832",
+   "nombre": "SISTEMA DE ALARMA",
+   "precio": 170.0,
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778383966832.webp"
+  },
+  {
+   "id": "1788025891931",
+   "nombre": "Sistema de Alarma",
+   "precio": 180.0,
+   "stock": 2,
+   "categoria": "Seguridad",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788025891931-11c057ae.webp"
+  },
+  {
+   "id": "1780542909435",
+   "nombre": "Sistema de seguridad ZOSI de 8 camaras con disco duro de 1TB",
+   "precio": 420.0,
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 20.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780542909435.webp"
+  },
+  {
+   "id": "1788809267605",
+   "nombre": "Soundcore Select 3",
+   "precio": 75.0,
+   "stock": 9,
+   "categoria": "Hogar",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788809267605-4cfdb190.webp"
+  },
+  {
+   "id": "1778336689684",
+   "nombre": "SWITCH DE 5 PUERTOS",
+   "precio": 20.0,
+   "stock": 11,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778336689684.webp"
+  },
+  {
+   "id": "1778102214012",
+   "nombre": "Switch dE 8 puertos",
+   "precio": 30.0,
+   "stock": 3,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778102214012.webp"
+  },
+  {
+   "id": "1778384840618",
+   "nombre": "Timbre inteligente",
+   "precio": 25.0,
+   "stock": 6,
+   "categoria": "Seguridad",
+   "comision": 1000.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384840618.webp"
+  },
+  {
+   "id": "1787952316385",
+   "nombre": "Toldo malla para sombra",
+   "precio": 40.0,
+   "stock": 11,
+   "categoria": "Hogar",
+   "comision": 3.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787952316385-a70dcd86.webp"
+  },
+  {
+   "id": "1787962342861",
+   "nombre": "Toldo malla para sombra verde obscuro 2x7m",
+   "precio": 40.0,
+   "stock": 0,
+   "categoria": "Hogar",
+   "comision": 3.0,
+   "comisionMoneda": "MN",
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
+  },
+  {
+   "id": "1778336859697",
+   "nombre": "Toldo para sombra",
+   "precio": 20.0,
+   "stock": 25,
+   "categoria": "Utiles",
+   "comision": 3.0,
+   "comisionMoneda": "MN",
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
+  },
+  {
+   "id": "1787375561622",
+   "nombre": "Tp Link Archer ax55, ax3000",
+   "precio": 150.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787375561622-74c433ef.webp"
+  },
+  {
+   "id": "1786207539390",
+   "nombre": "Tplink Archer AX1450 Doble Banda",
+   "precio": 80.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786207539390.webp"
+  },
+  {
+   "id": "1785079508918",
+   "nombre": "Transfer 2 polos 110v",
+   "precio": 65.0,
+   "stock": 10,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079508918.webp"
+  },
+  {
+   "id": "1785079428055",
+   "nombre": "Transfer 3 polos 220v",
+   "precio": 70.0,
+   "stock": 9,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1785079428055.webp"
+  },
+  {
+   "id": "1787930017841",
+   "nombre": "Ubiquiti Litebeam m5",
+   "precio": 150.0,
+   "stock": 0,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787930017841-5a594c52.webp"
+  },
+  {
+   "id": "1786509303890",
+   "nombre": "Ubiquiti Unifi AC Mesh",
+   "precio": 250.0,
+   "stock": 14,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786509303890.webp"
+  },
+  {
+   "id": "1781365135486",
+   "nombre": "Ventilador de techo",
+   "precio": 35.0,
+   "stock": 10,
+   "categoria": "Hogar",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1781365135486.webp"
+  },
+  {
+   "id": "1778384769262",
+   "nombre": "Ventilador para carro de 3 cabezales",
+   "precio": 30.0,
+   "stock": 0,
+   "categoria": "Carros",
+   "comision": 1000.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778384769262.webp"
+  },
+  {
+   "id": "1780344659047",
+   "nombre": "ZOSI - Camara de seguridad CCTV",
+   "precio": 45.0,
+   "stock": 23,
+   "categoria": "Seguridad",
+   "comision": 1500.0,
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1780344659047-5feab86d.webp"
+  },
+  {
+   "id": "1778104850733",
+   "nombre": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A",
+   "precio": 70.0,
+   "stock": 0,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778104850733.webp"
+  },
+  {
+   "id": "1788560867958",
+   "nombre": "📡 TP-Link Archer BE230",
+   "precio": 200.0,
+   "stock": 12,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788560867958-06577344.webp"
+  }
+ ]
+}
