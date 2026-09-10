@@ -101,6 +101,47 @@ class CaminoIATest(unittest.TestCase):
                       "no termina nunca y el copiloto se queda mudo.")
 
 
+class VisitasMismoPeriodoTest(unittest.TestCase):
+    """La cifra de visitas y su sparkline tienen que medir lo MISMO.
+
+    La tarjeta dice "7 días", pero su número lo rellenaba
+    `/analytics/visitas/count`, que es el contador acumulado desde que se
+    instaló analytics. El dibujo de al lado sí eran 7 días. Nada falla: sale
+    un 408 con una línea que sube y baja debajo, y no hay forma de notar que
+    hablan de periodos distintos.
+    """
+
+    def setUp(self):
+        ini = ADMIN.index("async function cargarVisitasWeb(")
+        fin = ADMIN.index("\n// Top productos por interés real", ini)
+        # Sin comentarios: los de esta función NOMBRAN #inicio-visitas al
+        # contar el fallo, y con ellos dentro el test se da por bueno —o por
+        # roto— leyendo prosa en vez de código.
+        cuerpo = re.sub(r"^\s*//.*$", "", ADMIN[ini:fin], flags=re.M)
+        # El corte es la línea que abre el bloque de los 7 días, no la URL:
+        # `spark` se declara ahí, una línea antes del fetch.
+        corte = cuerpo.index("const chart=$('#chart-visitas')")
+        self.acumulado, self.dias = cuerpo[:corte], cuerpo[corte:]
+
+    def test_la_cifra_no_sale_del_contador_acumulado(self):
+        self.assertIn("visitas/count.json", self.acumulado,
+                      "cambió la forma de la función; revisa el corte")
+        self.assertNotIn("#inicio-visitas", self.acumulado,
+                         "la tarjeta de Inicio vuelve a leer el contador "
+                         "acumulado mientras su dibujo enseña 7 días.")
+
+    def test_la_cifra_y_el_dibujo_salen_de_la_misma_lectura(self):
+        self.assertIn("#inicio-visitas-spark", self.dias)
+        self.assertIn("$('#inicio-visitas')", self.dias,
+                      "el número de la tarjeta salió del bloque que lee los "
+                      "7 días; volverá a medir otra cosa que su sparkline.")
+
+    def test_la_tarjeta_dice_de_cuando_es(self):
+        self.assertIn("'7 días'", ADMIN,
+                      "la tarjeta de visitas dejó de decir de qué periodo "
+                      "habla; un número sin periodo no se puede comprobar.")
+
+
 class AgendaSinMotorPropioTest(unittest.TestCase):
     """La agenda LEE las tareas del copiloto; no las vuelve a calcular.
 

@@ -197,8 +197,24 @@ try{var _piel=localStorage.getItem('tm_piel');
   .hero-inv .hi-gan b { display:block; font-size:27px; font-weight:900; color:#fff; line-height:1.05;
     font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
   .hero-inv .hi-gan .mn b { color:var(--gold); }
+  /* Un mes sin nada en esa moneda sigue enseñándose —esconderlo haría creer
+     que no existe—, pero apagado: si no, "$0 MN" en oro y a 27 px pesa lo
+     mismo que la ganancia de verdad que hay al lado. */
+  .hero-inv .hi-gan .cero b, .hero-inv .hi-gan .cero.mn b { color:var(--dim); font-size:21px; }
+  .hero-inv .hi-gan .cero small { color:var(--dim); }
   .hero-inv .hi-gan small { display:block; font-size:10px; font-weight:800; letter-spacing:0.1em;
     color:var(--muted); margin-top:5px; }
+  /* La flecha compara con el mes pasado, por moneda. No hay una sola cifra
+     de "creciste un 12%": crecer en dólares y bajar en pesos es un caso real,
+     y un porcentaje mezclado lo escondería. */
+  .hero-inv .hi-gan em { display:block; font-style:normal; font-size:11px; font-weight:800; margin-top:4px; }
+  .hero-inv .hi-gan em.sube { color:var(--green); }
+  .hero-inv .hi-gan em.baja { color:var(--red); }
+  .hero-inv .hi-gan em.igual { color:var(--dim); }
+  .hero-inv .hi-pie { display:flex; flex-direction:column; gap:7px; margin-top:16px; padding-top:13px; border-top:1px solid var(--border); }
+  .hero-inv .hi-pie > div { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .hero-inv .hi-pie span { font-size:11.5px; color:var(--muted); font-weight:600; }
+  .hero-inv .hi-pie b { font-size:13px; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; text-align:right; }
   @media (max-width:400px) { .hero-inv .hi-gan b { font-size:23px; } }
   @media (max-width:480px) { .hero-inv .hi-val { font-size:30px; } }
 
@@ -212,7 +228,12 @@ try{var _piel=localStorage.getItem('tm_piel');
   .kpi.gold::before { background:var(--gold); }
   .kpi.usd::before { background:var(--blue); }
   .kpi .lbl { font-size:10px; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px; font-weight:700; margin-bottom:6px; }
-  .kpi .val { font-size:24px; font-weight:900; color:#fff; line-height:1; }
+  /* El adorno de la tarjeta: anillo o sparkline. Va absoluto a la derecha
+     para que no empuje la cifra, y con pointer-events:none para no comerse
+     el toque. Solo lo llevan las tarjetas donde el dibujo DICE algo (una
+     proporción, una tendencia); ponerlo en todas es decorado. */
+  .kpi .art { position:absolute; right:11px; bottom:11px; pointer-events:none; }
+  .kpi .val { font-size:24px; font-weight:900; color:#fff; line-height:1; position:relative; z-index:1; }
   .kpi .sub { font-size:11px; color:var(--green); margin-top:6px; font-weight:700; }
   .kpi .sub.down { color:var(--red); }
   .kpi .sub.muted { color:var(--muted); }
@@ -1300,17 +1321,14 @@ try{var _piel=localStorage.getItem('tm_piel');
           <div class="ph-actions"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="hero-inv" id="inicio-hero">
-          <div class="hi-lbl">Mi ganancia · en total</div>
+          <div class="hi-lbl" id="hi-mes-l">Resumen del mes</div>
           <div class="hi-gan">
-            <div><b id="hi-gan-usd">$0</b><small>USD</small></div>
-            <div class="mn"><b id="hi-gan-mn">$0</b><small>MN</small></div>
+            <div><b id="hi-gan-usd">$0</b><small>Mi ganancia · USD</small><em id="hi-dif-usd"></em></div>
+            <div class="mn"><b id="hi-gan-mn">$0</b><small>Mi ganancia · MN</small><em id="hi-dif-mn"></em></div>
           </div>
-          <div class="hi-split">
-            <div>
-              <div class="hi-sold-l" id="hi-mes-l">Este mes</div>
-              <div class="hi-sold-v" id="hi-sold-v">$0</div>
-              <div class="hi-sold-s" id="hi-sold-s">—</div>
-            </div>
+          <div class="hi-pie">
+            <div><span>Vendido este mes</span><b id="hi-vendido">—</b></div>
+            <div><span>Ganancia total</span><b id="hi-total">—</b></div>
           </div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
@@ -3232,6 +3250,51 @@ window.tmInicioAgenda = renderAgendaInicio;
    misma escala y una barra que los mezcle no significa nada. Y la fila de una
    moneda sin ninguna comisión no se dibuja — volver a llenar la pantalla de
    ceros es exactamente lo que se venía a quitar. */
+/* La diferencia con el mes pasado, POR MONEDA. No hay un "creciste un 12%"
+   único: subir en dólares y bajar en pesos es un caso real, y un porcentaje
+   mezclado lo escondería. Sin nada con qué comparar, no se inventa una
+   flecha — se dice que es el primer mes. */
+function _pintarDiferencia(el, ahora, antes, fmt, mesAnt){
+  if(!el) return;
+  const a = Number(ahora)||0, b = Number(antes)||0;
+  if(!a && !b){ el.textContent=''; el.className=''; return; }
+  if(!b){ el.textContent = 'primer mes con ganancia'; el.className = 'igual'; return; }
+  const dif = a - b;
+  if(Math.abs(dif) < 0.005){ el.textContent = 'igual que ' + mesAnt; el.className='igual'; return; }
+  const pct = Math.round(Math.abs(dif) / b * 100);
+  el.textContent = (dif>0 ? '↗ ' : '↘ ') + fmt(Math.abs(dif)) + ' (' + pct + '%) vs ' + mesAnt;
+  el.className = dif>0 ? 'sube' : 'baja';
+}
+/* Un anillo con el porcentaje dentro. El radio 16 da 100.5 de circunferencia,
+   que es el número del stroke-dasharray: cambiar uno sin el otro deja el
+   anillo mintiendo sobre su propia proporción. */
+function _anilloSVG(pct, color){
+  const p = Math.max(0, Math.min(100, Math.round(pct))), C = 100.5;
+  return `<svg class="art" width="40" height="40" viewBox="0 0 42 42" aria-hidden="true">
+    <circle cx="21" cy="21" r="16" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="5"/>
+    <circle cx="21" cy="21" r="16" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round"
+            stroke-dasharray="${(p/100*C).toFixed(1)} ${C}" transform="rotate(-90 21 21)"/>
+    <text x="21" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff"
+          font-size="11" font-weight="800" font-family="inherit">${p}%</text>
+  </svg>`;
+}
+/* Sparkline de una serie corta. Con todo a cero sale una raya plana, que es
+   verdad y se lee como tal; con un solo día, un punto. */
+function _sparkSVG(valores, color){
+  const v = (valores||[]).map(n=>Number(n)||0);
+  if(!v.length) return '';
+  const W=58, H=24, max=Math.max(1,...v);
+  const pts = v.map((n,i)=>{
+    const x = v.length>1 ? (i*(W/(v.length-1))) : W/2;
+    return x.toFixed(1)+','+(H-2 - (n/max)*(H-4)).toFixed(1);
+  });
+  const ultimo = pts[pts.length-1].split(',');
+  return `<svg class="art" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${ultimo[0]}" cy="${ultimo[1]}" r="2.4" fill="${color}"/>
+  </svg>`;
+}
 const GRAF_MESES = 6;
 // Tres y cuatro, no cinco y cinco: con los nombres reales del catálogo —"⚡
 // Inversor de Corriente Onda Senoidal Pura UNIZUKI 3000W"— dos listas de cinco
@@ -3281,11 +3344,19 @@ function renderLoQueMasDeja(porProducto){
     box.innerHTML = `<div style="font-size:12px;color:var(--dim);line-height:1.5">Cuando registres una venta con comisión, aquí sale qué producto te deja más.</div>`;
     return;
   }
-  box.innerHTML = filas.map(([nm,c],i)=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:5px">
-    <div style="font-size:15px;flex:0 0 auto">${i===0?'🥇':'💰'}</div>
-    <b style="flex:1;min-width:0;color:#fff;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</b>
-    <span style="font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap;flex:0 0 auto">${esc(dosMonedas({usd:c.usd, mn:c.mn}))}</span>
-  </div>`).join('');
+  // Con la foto se reconoce el producto de un vistazo; el nombre recortado,
+  // solo leyéndolo. Si la foto no carga se deja el emoji, que es lo que había.
+  box.innerHTML = filas.map(([nm,c],i)=>{
+    const prod = PRODUCTOS.find(x=>norm(x.nombre)===norm(nm));
+    const foto = prod && prod.imagen
+      ? `<img src="${esc(prod.imagen)}" alt="" loading="lazy" style="width:30px;height:30px;border-radius:8px;object-fit:cover;flex:0 0 auto;background:rgba(255,255,255,0.05)" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${i===0?'🥇':'💰'}',style:'font-size:16px;flex:0 0 auto'}))">`
+      : `<span style="font-size:16px;flex:0 0 auto">${i===0?'🥇':'💰'}</span>`;
+    return `<div style="display:flex;align-items:center;gap:9px;padding:6px 9px;background:rgba(255,255,255,0.03);border-radius:10px;margin-bottom:5px">
+      ${foto}
+      <b style="flex:1;min-width:0;color:#fff;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</b>
+      <span style="font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap;flex:0 0 auto">${esc(dosMonedas({usd:c.usd, mn:c.mn}))}</span>
+    </div>`;
+  }).join('');
 }
 
 function renderInicio(){
@@ -3302,14 +3373,24 @@ function renderInicio(){
   const gTotal = gananciasDe(VENTAS);
   const vMes   = ventasDelMes(VENTAS);
   const gMes   = gananciasDe(vMes);
-  $('#hi-gan-usd').textContent = money(gTotal.usd);
-  $('#hi-gan-mn').textContent  = moneyMN(gTotal.mn);
   const mesNombre = new Date().toLocaleDateString('es-CU',{month:'long'});
-  $('#hi-mes-l').textContent = 'Mi ganancia · ' + mesNombre;
-  $('#hi-sold-v').textContent = dosMonedas({usd:gMes.usd, mn:gMes.mn});
-  $('#hi-sold-s').textContent = vMes.length
-    ? (vMes.length + ' venta' + (vMes.length!==1?'s':'') + ' en ' + mesNombre)
-    : ('Sin ventas en ' + mesNombre);
+  const _mesAnt = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1);
+  const gPrev = gananciasDe(ventasDelMes(VENTAS, _mesAnt.getFullYear(), _mesAnt.getMonth()));
+  const mesAntNombre = _mesAnt.toLocaleDateString('es-CU',{month:'long'});
+  // Lo grande es EL MES, no el acumulado: el total no se mueve con lo que
+  // hagas hoy y el mes sí. El acumulado baja al pie, que es donde va lo que
+  // se consulta de vez en cuando.
+  $('#hi-mes-l').textContent = mesNombre + ' · ' + (vMes.length
+    ? (vMes.length + ' venta' + (vMes.length!==1?'s':'')) : 'sin ventas todavía');
+  $('#hi-gan-usd').textContent = money(gMes.usd);
+  $('#hi-gan-mn').textContent  = moneyMN(gMes.mn);
+  const _col = (el,v)=>{ const d=el&&el.parentElement; if(d) d.classList.toggle('cero', !v); };
+  _col($('#hi-gan-usd'), gMes.usd);
+  _col($('#hi-gan-mn'),  gMes.mn);
+  _pintarDiferencia($('#hi-dif-usd'), gMes.usd, gPrev.usd, money, mesAntNombre);
+  _pintarDiferencia($('#hi-dif-mn'),  gMes.mn,  gPrev.mn,  moneyMN, mesAntNombre);
+  $('#hi-vendido').textContent = dosMonedas(sumaMonedas(vMes, ventaTotales));
+  $('#hi-total').textContent   = dosMonedas({usd:gTotal.usd, mn:gTotal.mn});
 
   /* ── Tarjetas ───────────────────────────────────────────────────────────
      Fuera "Stock bajo / agotados": es real, pero reponer no depende del
@@ -3325,15 +3406,16 @@ function renderInicio(){
   const anterior = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1);
   const vAnt = ventasDelMes(VENTAS, anterior.getFullYear(), anterior.getMonth());
   const gAnt = gananciasDe(vAnt);
+  const pctVenta = PRODUCTOS.length ? Math.round(conStock/PRODUCTOS.length*100) : 0;
   const k = [
-    ['gold','Ganancia '+anterior.toLocaleDateString('es-CU',{month:'long'}), dosMonedas({usd:gAnt.usd, mn:gAnt.mn}), vAnt.length+' ventas','muted'],
-    ['success','Vendido este mes', dosMonedas(vendidoMes), 'importe cobrado','muted'],
-    ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' hoy','muted'],
-    ['','A la venta', conStock, 'de '+PRODUCTOS.length+' productos','muted'],
-    ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', 'sesiones de clientes','muted'],
-    ['warn','En oferta', enOferta, 'con precio rebajado','muted'],
+    ['gold','Ganancia '+anterior.toLocaleDateString('es-CU',{month:'long'}), dosMonedas({usd:gAnt.usd, mn:gAnt.mn}), vAnt.length+' venta'+(vAnt.length!==1?'s':''),'muted',''],
+    ['success','Vendido este mes', dosMonedas(vendidoMes), 'importe cobrado','muted',''],
+    ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' venta'+(nHoy!==1?'s':''),'muted',''],
+    ['','A la venta', conStock, 'de '+PRODUCTOS.length+' productos','muted', _anilloSVG(pctVenta,'#FF6B35')],
+    ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', '7 días','muted','<span id="inicio-visitas-spark"></span>'],
+    ['warn','En oferta', enOferta, 'con precio rebajado','muted',''],
   ];
-  $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
+  $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc,art])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div>${art||''}</div>`).join('');
   cargarVisitasWeb();
   renderAgendaInicio();
   renderGananciaMeses();
@@ -4428,7 +4510,10 @@ async function cargarFuentes(){
 }
 
 async function cargarVisitasWeb(){
-  const els=[$('#an-visitas'),$('#inicio-visitas')].filter(Boolean);
+  // #inicio-visitas ya no sale de aquí: esa tarjeta dice "7 días" y su cifra
+  // se calcula abajo con la misma lectura que su sparkline. Aquí queda el
+  // acumulado de siempre, que es lo que enseña Analytics.
+  const els=[$('#an-visitas')].filter(Boolean);
   const base=rtdbBase();
   if(els.length){
     if(!base){ els.forEach(e=>e.textContent='—'); }
@@ -4440,17 +4525,27 @@ async function cargarVisitasWeb(){
       }catch(e){ els.forEach(e=>e.textContent='—'); }
     }
   }
-  // Gráfico de barras de los últimos 7 días (mismo estilo que ventas)
-  const chart=$('#chart-visitas'); if(!chart) return;
-  if(!base){ chart.innerHTML=''; return; }
+  // Los últimos 7 días: las barras de Analytics y, con la MISMA lectura, la
+  // sparkline de la tarjeta de Inicio. Dos peticiones para el mismo dato
+  // acabarían enseñando cifras distintas en dos pantallas del mismo panel.
+  const chart=$('#chart-visitas'), spark=$('#inicio-visitas-spark');
+  if(!chart && !spark) return;
+  if(!base){ if(chart) chart.innerHTML=''; if(spark) spark.innerHTML=''; return; }
   const dias=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); dias.push({key:d.toISOString().slice(0,10), lbl:['D','L','M','X','J','V','S'][d.getDay()]}); }
   try{
     const r=await fetch(base+'/analytics/visitas/dias.json?_='+Date.now(),{cache:'no-store'});
     const data=r.ok?await r.json():null;
     const slots=data&&typeof data==='object'?data:{};
-    const max=Math.max(1,...dias.map(d=>Number(slots[d.key])||0));
-    chart.innerHTML=dias.map(d=>{ const val=Number(slots[d.key])||0; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${val}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
-  }catch(e){ chart.innerHTML=''; }
+    const serie=dias.map(d=>Number(slots[d.key])||0);
+    const max=Math.max(1,...serie);
+    if(chart) chart.innerHTML=dias.map((d,i)=>{ const val=serie[i]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${val}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
+    if(spark) spark.innerHTML=_sparkSVG(serie,'#8b5cf6');
+    // La tarjeta de Inicio dice "7 días", así que la cifra tiene que ser la
+    // de 7 días y no el contador acumulado de siempre: el número y su dibujo
+    // hablando de periodos distintos es de las cosas que nadie comprueba.
+    const el7=$('#inicio-visitas');
+    if(el7) el7.textContent = serie.reduce((a,b)=>a+b,0).toLocaleString('es-US');
+  }catch(e){ if(chart) chart.innerHTML=''; if(spark) spark.innerHTML=''; }
 }
 // Top productos por interés real: vistas y clicks de WhatsApp (Firebase analytics)
 function _barListInteres(map, nombreDe, color){

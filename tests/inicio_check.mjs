@@ -72,7 +72,9 @@ await pagina.waitForTimeout(1500);
 const v = await pagina.evaluate(() => ({
     usd: document.getElementById('hi-gan-usd')?.textContent || '',
     mn:  document.getElementById('hi-gan-mn')?.textContent || '',
-    etiqueta: document.querySelector('#inicio-hero .hi-lbl')?.textContent || '',
+    total: document.getElementById('hi-total')?.textContent || '',
+    difUsd: document.getElementById('hi-dif-usd')?.textContent || '',
+    etiqueta: document.getElementById('inicio-hero')?.innerText || '',
     kpis: [...document.querySelectorAll('#inicio-kpis .kpi .lbl')].map(x => x.textContent),
     graficos: document.querySelectorAll('#inicio-graf .bar-chart').length,
     grafTxt: document.getElementById('inicio-graf')?.innerText || '',
@@ -81,31 +83,65 @@ const v = await pagina.evaluate(() => ({
 
 // 1) La tarjeta grande es la ganancia del gestor, no el inventario.
 ok(/ganancia/i.test(v.etiqueta),
-   `la tarjeta grande dejó de ser la ganancia: ${JSON.stringify(v.etiqueta)}`);
+   `la tarjeta grande dejó de hablar de la ganancia: ${JSON.stringify(v.etiqueta.slice(0,90))}`);
 ok(!/inventario/i.test(v.etiqueta),
    'la tarjeta grande volvió al valor del inventario, que no es dinero del gestor.');
 
-// 2) Las dos monedas, en dos sitios, con su comisión × cantidad bien contada.
-//    38 USD de una venta + 22 de la del mes pasado = 60. MN: 300 × 6 = 1800.
-ok(v.usd.includes('60') && !/MN/.test(v.usd),
-   `la ganancia en USD no cuadra o se le coló MN: ${JSON.stringify(v.usd)}`);
+// 2) Lo GRANDE es el mes, no el acumulado: el total no se mueve con lo que
+//    hagas hoy. Del mes hay 38 USD y 1800 MN; el acumulado (60 USD) va al pie.
+ok(v.usd.includes('38') && !/MN/.test(v.usd),
+   `la cifra grande en USD no es la del mes o se le coló MN: ${JSON.stringify(v.usd)}`);
 ok(v.mn.includes('1,800') && /MN/.test(v.mn),
    `la ganancia en MN no cuadra o no dice de qué moneda es: ${JSON.stringify(v.mn)}`);
+ok(v.total.includes('60') && v.total.includes('1,800'),
+   `el acumulado del pie no cuadra: ${JSON.stringify(v.total)}`);
 
-// 3) Nada de stock como alerta: reponer no depende del gestor.
+// 3) La comparación con el mes pasado va por moneda y en su propia moneda:
+//    22 USD el mes pasado contra 38 este = +16. Un porcentaje mezclado
+//    escondería el caso real de subir en dólares y bajar en pesos.
+ok(/↗/.test(v.difUsd) && v.difUsd.includes('16'),
+   `la diferencia con el mes pasado no cuadra: ${JSON.stringify(v.difUsd)}`);
+ok(!/MN/.test(v.difUsd),
+   `la diferencia en USD se escribió con pesos: ${JSON.stringify(v.difUsd)}`);
+
+// 4) Nada de stock como alerta: reponer no depende del gestor.
 const stockEnKpis = v.kpis.filter(l => /agotad|stock bajo/i.test(l));
 ok(stockEnKpis.length === 0,
    `volvió una tarjeta de almacén a Inicio: ${JSON.stringify(stockEnKpis)}`);
 
-// 4) El gráfico separa las monedas en dos, cada una con su escala.
+// 5) El gráfico separa las monedas en dos, cada una con su escala.
 ok(v.graficos === 2, `deberían ser dos gráficos (USD y MN) y hay ${v.graficos}`);
 ok(/EN USD/.test(v.grafTxt) && /EN MN/.test(v.grafTxt),
    'los gráficos no dicen de qué moneda es cada uno.');
 
-// 5) Y "lo que más te deja" es comisión, no unidades vendidas.
+// 6) Y "lo que más te deja" es comisión, no unidades vendidas.
 ok(/\$/.test(v.masDeja), `"lo que más te deja" no enseña dinero: ${JSON.stringify(v.masDeja.slice(0,80))}`);
 
-// 6) Un nombre largo se RECORTA; no estira la fila más que la pantalla.
+// 7) El anillo dice la misma proporción que los números de su tarjeta. Un
+//    anillo al 55% junto a "73 de 132" está bien; si alguien cambia uno y no
+//    el otro, el dibujo miente y nada falla. (La circunferencia de r=16 es
+//    100.5: el stroke-dasharray sale de ahí y los dos van juntos.)
+const anillo = await pagina.evaluate(() => {
+    const t = [...document.querySelectorAll('#inicio-kpis .kpi')].find(k => /a la venta/i.test(k.textContent));
+    if(!t) return null;
+    const svg = t.querySelector('svg.art');
+    return { rotulo: t.querySelector('.val')?.textContent, sub: t.querySelector('.sub')?.textContent,
+             texto: svg?.querySelector('text')?.textContent,
+             dash: svg?.querySelectorAll('circle')[1]?.getAttribute('stroke-dasharray') };
+});
+ok(anillo && anillo.texto, 'la tarjeta "A la venta" perdió su anillo.');
+if (anillo && anillo.texto) {
+    const con = Number(String(anillo.rotulo).replace(/\D/g,''));
+    const total = Number((String(anillo.sub).match(/(\d+)/)||[])[1]);
+    const esperado = Math.round(con/total*100);
+    ok(String(anillo.texto) === esperado+'%',
+       `el anillo dice ${anillo.texto} pero la tarjeta dice ${con} de ${total} (${esperado}%).`);
+    const arco = parseFloat(String(anillo.dash).split(' ')[0]);
+    ok(Math.abs(arco - esperado/100*100.5) < 0.6,
+       `el arco dibujado (${arco}) no corresponde al ${anillo.texto} que escribe dentro.`);
+}
+
+// 8) Un nombre largo se RECORTA; no estira la fila más que la pantalla.
 //    `1fr` en grid significa minmax(AUTO,1fr) y el mínimo "auto" es el ancho
 //    del contenido: con nowrap dentro, la columna crecía hasta 383 px en un
 //    teléfono de 360 y el text-overflow no llegaba a activarse nunca, porque
@@ -124,7 +160,7 @@ ok(anchas.length === 0,
 ok(anchos.scroll <= anchos.pantalla + 1,
    `la página se desplaza en horizontal (${anchos.scroll} > ${anchos.pantalla}).`);
 
-// 7) Sin ninguna comisión, el bloque del gráfico se pliega a una línea en vez
+// 9) Sin ninguna comisión, el bloque del gráfico se pliega a una línea en vez
 //    de dejar 160 px de barras en cero.
 //    Se comprueba como pasa de verdad —una pestaña sin ninguna venta— y no
 //    llamando a la función por dentro: lo que importa es lo que ve quien abre
