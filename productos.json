@@ -1934,79 +1934,6 @@
     "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
-    "id": 1778383966832,
-    "nombre": "🔒 KIT de Alarma Inalámbrica Con Panel Táctil, Sensores y RFID",
-    "precioActual": 170,
-    "imagen": "https://tiendamax.org/imagenes/img_1784572922212.webp",
-    "categoria": "SEGURIDAD",
-    "subcategoria": "ALARMAS",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "sistema-de-alarma",
-    "comision": 10,
-    "seoTitle": "SISTEMA DE ALARMA en Cuba | TiendaMax",
-    "seoDescription": "Sistema de alarma, posee: 🔸4 sensores de movimiento 🔸8 sensores de contacto 🔸3 llaveros 🔸1 sirena 🔸3 mandos para su control 🔸1 botón de emergencia SOS 🔸1…",
-    "precioOriginal": 0,
-    "comisionMoneda": "USD",
-    "specs": [
-      "🚨 Sistema de Alarma Inteligente Inalámbrico para el Hogar",
-      "🛡️ Seguridad Perimetral y Control de Acceso Completo",
-      "🌐 Monitoreo Centralizado con Panel Táctil y RFID"
-    ],
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1784572922212.webp",
-      "https://tiendamax.org/imagenes/img_1778383966832_ext.webp"
-    ],
-    "descripcion": "Sistema de alarma de seguridad inteligente y completo para la protección integral de hogares u oficinas. Incluye una central de control con pantalla táctil, teclado numérico y lector RFID, acompañada de múltiples sensores de movimiento, contactos magnéticos para puertas/ventanas, controles remotos y una sirena de alto rendimiento.",
-    "ficha": [
-      {
-        "k": "Tecnología / Tipo",
-        "v": "Sistema de alarma antirrobo inalámbrico inteligente"
-      },
-      {
-        "k": "Categoría",
-        "v": "Alarmas"
-      },
-      {
-        "k": "Estado",
-        "v": "Nuevo en caja original"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Sistema de alarma de seguridad inteligente y completo para la protección integral de hogares u oficinas. Incluye una central de control con pantalla táctil, teclado numérico y lector RFID, acompañada de múltiples sensores de movimiento, contactos magnéticos para puertas/ventanas, controles remotos y una sirena de alto rendimiento."
-      },
-      {
-        "d": "Unidad principal con pantalla digital, botones táctiles retroiluminados, función SOS dedicada y lector RFID integrado para armado y desarmado rápido."
-      },
-      {
-        "d": "Detectores infrarrojos de presencia para cubrir amplios espacios interiores y detectar movimientos sospechosos."
-      },
-      {
-        "d": "Múltiples contactos magnéticos inalámbricos para puertas y ventanas, ideales para asegurar los puntos de acceso principales."
-      },
-      {
-        "t": "Control y Accesorios",
-        "d": "Incluye controles remotos portátiles, llaveros de proximidad RFID y una sirena de alerta independiente para disuasión acústica."
-      },
-      {
-        "t": "Componentes",
-        "d": "Panel táctil central, sensores de movimiento, sensores de puertas/ventanas, mandos a distancia, llaveros RFID y sirena."
-      }
-    ],
-    "idealPara": [
-      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención.",
-      "Seguridad y automatización residencial o comercial."
-    ],
-    "incluye": [
-      "1x KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid"
-    ]
-  },
-  {
     "id": 1778384078432,
     "nombre": "Cámaras de Seguridad (V380 PRO )",
     "precioActual": 25,
@@ -10136,5 +10063,124 @@
     ],
     "seoTitle": "Toldo de malla 2 x 7 en Cuba | TiendaMax",
     "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…"
+  },
+  {
+    "id": 1789067953023,
+    "nombre": "💨Compresor de Aire",
+    "descripcion": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150 PSI (10.3 BAR). Incorpora una moderna pantalla digital LCD dual retroiluminada que muestra de manera simultánea la presión real del neumático y el valor objetivo deseado. Su tecnología de parada automática detiene el bombeo al alcanzar con exactitud la presión configurada, garantizando un inflado preciso y evitando el riesgo de sobrepresión o roturas accidentales.",
+    "imagen": "https://tiendamax.org/imagenes/img_1789067950442.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789067950442.webp"
+    ],
+    "precioActual": 28,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 15,
+    "comision": 3,
+    "comisionMoneda": "USD",
+    "categoria": "UTILES",
+    "subcategoria": "OTROS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "110/220 V",
+      "Tanque de 24 L",
+      "Presión máxima 8 bar"
+    ],
+    "fechaAgregado": "2026-09-10T19:19:13.023Z",
+    "ficha": [
+      {
+        "k": "Tipo de Producto",
+        "v": "Compresor de Aire Portátil Inalámbrico / Inflador Digital Inteligente"
+      },
+      {
+        "k": "Presión Máxima",
+        "v": "Hasta 150 PSI",
+        "nota": "10.3 BAR"
+      },
+      {
+        "k": "Unidades de Medida Soportadas",
+        "v": "PSI, BAR, KPA, KG/CM²"
+      },
+      {
+        "k": "Pantalla",
+        "v": "Display digital LCD dual retroiluminado",
+        "nota": "lectura simultánea de presión actual y presión objetivo"
+      },
+      {
+        "k": "Modos Preestablecidos",
+        "v": "5 modos inteligentes",
+        "nota": "Automóvil, Motocicleta, Bicicleta, Balones y Modo Personalizado"
+      },
+      {
+        "k": "Batería",
+        "v": "Batería interna recargable de iones de litio de alta capacidad"
+      },
+      {
+        "k": "Puerto de Carga",
+        "v": "USB Tipo C (Entrada) + Puerto USB Tipo A",
+        "nota": "Salida / función Power Bank"
+      },
+      {
+        "k": "Luz de Emergencia",
+        "v": "Linterna LED multi-modo",
+        "nota": "iluminación continua, estroboscópica y auxilio SOS"
+      },
+      {
+        "k": "Función de Parada Automática",
+        "v": "Apagado automático al alcanzar con precisión la presión configurada"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Doble pantalla digital de alta precisión",
+        "d": "visualiza en tiempo real tanto la presión exacta dentro del neumático como la presión deseada, garantizando un calibrado exacto sin necesidad de manómetros externos."
+      },
+      {
+        "t": "Corte automático inteligente",
+        "d": "el compresor detiene el inflado de forma automática en cuanto alcanza el valor fijado, previniendo sobrepresiones accidentales o estallidos."
+      },
+      {
+        "t": "Potencia de inflado de hasta 150 PSI",
+        "d": "motor cilíndrico de alta compresión capaz de inflar rápidamente desde balones deportivos y ruedas de bicicleta de ruta hasta neumáticos de motocicletas y automóviles."
+      },
+      {
+        "t": "Función de Banco de Energía (Power Bank)",
+        "d": "incorpora salida USB que permite recargar teléfonos celulares u otros dispositivos portátiles ante una emergencia en carretera."
+      },
+      {
+        "t": "Linterna LED multifunción",
+        "d": "luz blanca integrada que facilita la conexión de la manguera y el inflado en plena oscuridad nocturna, con modos de advertencia luminosa para averías en la vía."
+      },
+      {
+        "t": "5 Modos de trabajo con memoria",
+        "d": "selector rápido para auto, moto, bici, pelotas o ajuste libre con memoria del último valor calibrado."
+      },
+      {
+        "t": "Refrigeración por rejillas laterales",
+        "d": "chasis microperforado en ambos costados que disipa eficientemente el calor generado por el cilindro interno durante ciclos prolongados de uso."
+      },
+      {
+        "t": "Diseño compacto y portátil",
+        "d": "factor de forma de bolsillo y ergonómico que permite guardarlo fácilmente en la guantera del auto, baúl de la moto o dentro de una mochila."
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento preventivo y calibración regular de la presión de neumáticos en autos sedán, SUVs y camionetas ligeras.",
+      "Motocicletas, scooters eléctricos, bicicletas de montaña y bicicletas de ruta de alta presión.",
+      "Inflado rápido de pelotas deportivas (fútbol, baloncesto, vóley) y artículos inflables de piscina o camping.",
+      "Kit de auxilio y seguridad indispensable para llevar en viajes largos por carretera, paseos en moto o cicloturismo."
+    ],
+    "incluye": [
+      "1× Compresor de aire digital inalámbrico portátil",
+      "1× Manguera flexible de aire reforzada (con boquilla estándar para válvula Schrader/americana)",
+      "1× Adaptador de latón para válvula Presta (bicicletas de carrera)",
+      "1× Aguja metálica para balones y pelotas deportivas",
+      "2× Boquillas cónicas plásticas para salvavidas y colchones inflables",
+      "1× Cable de carga USB a USB Tipo C",
+      "1× Funda textil de almacenamiento y transporte"
+    ]
   }
 ]
