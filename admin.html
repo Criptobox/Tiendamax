@@ -320,6 +320,36 @@ try{var _piel=localStorage.getItem('tm_piel');
     font-family:inherit; cursor:pointer; white-space:nowrap; }
   .cmp-b-ok { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:var(--o); }
   .cmp-b:active { transform:scale(.97); }
+  .cmp-alias { color:#7d746c !important; font-style:italic; }
+  .cmp-pick-ojo { font-size:10.5px; color:var(--muted); line-height:1.4; margin-bottom:2px; }
+  .cmp-acc { display:flex; gap:12px; margin-top:5px; }
+  .cmp-acc button { background:none; border:0; padding:0; font-family:inherit; font-size:11px;
+    font-weight:700; color:var(--muted); cursor:pointer; text-decoration:underline;
+    text-underline-offset:2px; }
+  .cmp-acc button:hover { color:var(--o); }
+  .cmp-pick { margin-top:8px; background:rgba(0,0,0,.32); border:1px solid rgba(var(--o-rgb),0.28);
+    border-radius:10px; padding:9px; display:flex; flex-direction:column; gap:5px; }
+  .cmp-pick-t { font-size:11px; font-weight:800; color:var(--o); }
+  .cmp-pick-q { width:100%; min-width:0; background:#161010; border:1px solid rgba(255,255,255,.14);
+    border-radius:8px; padding:7px 9px; color:#fff; font-size:12.5px; font-family:inherit; }
+  .cmp-pick-op { display:flex; flex-direction:column; align-items:flex-start; gap:1px; width:100%;
+    text-align:left; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+    border-radius:8px; padding:6px 9px; color:#fff; font-size:12px; font-weight:700;
+    font-family:inherit; cursor:pointer; }
+  .cmp-pick-op:hover { background:rgba(var(--o-rgb),0.14); border-color:var(--o); }
+  .cmp-pick-op span { font-size:10.5px; font-weight:600; color:var(--muted); }
+  .cmp-pick-no { font-size:11.5px; color:var(--muted); padding:3px 1px; }
+  .cmp-pick-x { background:none; border:0; color:var(--muted); font-size:11px; font-weight:700;
+    font-family:inherit; cursor:pointer; align-self:flex-start; padding:2px 0; text-decoration:underline; }
+  .cmp-marcas { margin-top:11px; border-top:1px solid rgba(255,255,255,.07); padding-top:9px; }
+  .cmp-marcas-cab { background:none; border:0; padding:0; font-family:inherit; font-size:11.5px;
+    font-weight:700; color:var(--muted); cursor:pointer; text-align:left; }
+  .cmp-marcas-lista { margin-top:7px; display:flex; flex-direction:column; gap:5px; }
+  .cmp-marca { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--muted);
+    line-height:1.45; }
+  .cmp-marca span { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cmp-marca button { flex:none; background:none; border:0; padding:0; font-family:inherit;
+    font-size:11px; font-weight:700; color:var(--o); cursor:pointer; text-decoration:underline; }
   #cmp-foto-aviso a { color:var(--o); text-decoration:underline; }
   .vo-chips { display:flex; flex-wrap:wrap; gap:6px; }
   .vo-chip { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.14); color:var(--muted);
@@ -4434,7 +4464,33 @@ const CMP_CAT = 'principal-catalogo.json';
 const CMP_FICHAS = 'principal-fichas.json';
 // Bajo esto no merece la pena avisar: son redondeos, no cambios de precio.
 const CMP_EPS = 0.005;
-let CMP_DATOS = null, CMP_FICHAS_CACHE = null, CMP_ABIERTO = {};
+let CMP_DATOS = null, CMP_FICHAS_CACHE = null, CMP_ABIERTO = {}, CMP_PICKER = null;
+
+/* Emparejamientos y descartes que hace el gestor a mano.
+   Hacen falta porque el nombre NO se puede emparejar solo. La principal
+   escribe «mikrotik sxt sq 5ax» y aquí es «MikroTik SXTsq 5 AX» —el mismo
+   aparato, con un espacio de más—, y «Nanostation loco m5» es «NanoStation M5
+   Loco», con las palabras al revés. Pero en esta misma gama «hAP ac3» y
+   «hap ax3» son dos routers distintos, y m2 no es m5.
+   Un emparejador por parecido acertaría en los primeros y juntaría los
+   segundos, escondiendo un producto que sí falta sin decírselo a nadie. Así
+   que la pantalla propone y decide la persona.
+
+   Enlazar no es solo ocultar: a partir de ese momento el producto entra en
+   las comparaciones de precio, stock y comisión, que es de donde sale el
+   dinero. Se guarda en este navegador (como el resto de los ajustes del
+   panel), no en el catálogo. */
+const CMP_LS_ENLACES = 'tm_cmp_enlaces', CMP_LS_OCULTOS = 'tm_cmp_ocultos';
+let CMP_ENLACES = {}, CMP_OCULTOS = {};
+function cmpLeerMarcas(){
+  try{ CMP_ENLACES = JSON.parse(localStorage.getItem(CMP_LS_ENLACES) || '{}') || {}; }catch(e){ CMP_ENLACES = {}; }
+  try{ CMP_OCULTOS = JSON.parse(localStorage.getItem(CMP_LS_OCULTOS) || '{}') || {}; }catch(e){ CMP_OCULTOS = {}; }
+}
+function cmpGuardarMarcas(){
+  try{ localStorage.setItem(CMP_LS_ENLACES, JSON.stringify(CMP_ENLACES)); }catch(e){}
+  try{ localStorage.setItem(CMP_LS_OCULTOS, JSON.stringify(CMP_OCULTOS)); }catch(e){}
+}
+cmpLeerMarcas();
 
 function cmpNorm(s){
   return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')
@@ -4455,6 +4511,10 @@ function cmpMonedaMia(p){
    dos tiendas comparten; si no, por nombre normalizado, que recupera los que
    se subieron a mano y cogieron un id nuevo. */
 function cmpEmparejar(pri, porId, porNombre){
+  // El enlace hecho a mano va primero: es el único dato de los tres que
+  // sabemos que miró una persona.
+  const aMano = CMP_ENLACES[String(pri.id)];
+  if(aMano && porId[String(aMano)]) return porId[String(aMano)];
   return porId[String(pri.id)] || porNombre[cmpNorm(pri.nombre)] || null;
 }
 
@@ -4474,7 +4534,10 @@ function cmpAnalizar(datos, mios){
       // Solo se ofrece subir lo que la principal puede servir hoy. Subir un
       // agotado es publicar una ficha que no vende y que además hay que
       // mantener.
-      if(pri.stock > 0) g.faltan.push({pri});
+      // Los ocultos y los ya enlazados salen de la lista. El emparejamiento
+      // a mano ya lo resolvió cmpEmparejar, así que si llega aquí sin `mio`
+      // es que apunta a un producto que ya no existe: vuelve a faltar.
+      if(pri.stock > 0 && !CMP_OCULTOS[String(pri.id)]) g.faltan.push({pri});
       return;
     }
 
@@ -4513,6 +4576,18 @@ function cmpDinero(v, moneda){
     : '$' + n.toLocaleString('es-US', {maximumFractionDigits:2});
 }
 
+/* En las filas que tienen pareja se enseña MI nombre, no el de la principal:
+   el botón cambia mi producto y es el que hay que reconocer en mi catálogo.
+   Cuando los dos nombres no son el mismo se añade el de la principal debajo,
+   que es la única forma de comprobar que el emparejamiento es el correcto. */
+function cmpNombreFila(r){
+  const mio = r.mio && r.mio.nombre ? String(r.mio.nombre) : '';
+  if(!mio) return '<b>' + esc(r.pri.nombre) + '</b>';
+  const distinto = cmpNorm(mio) !== cmpNorm(r.pri.nombre);
+  return '<b>' + esc(mio) + '</b>'
+    + (distinto ? '<small class="cmp-alias">en la principal: ' + esc(r.pri.nombre) + '</small>' : '');
+}
+
 function cmpFila(clave, texto, botones, foto){
   return '<div class="cmp-fila">'
     + (foto ? '<img class="cmp-foto" src="' + esc(foto) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : '')
@@ -4520,8 +4595,8 @@ function cmpFila(clave, texto, botones, foto){
     + '<div class="cmp-btns">' + botones + '</div></div>';
 }
 
-function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto){
-  if(!filas.length) return '';
+function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto, pie){
+  if(!filas.length && !pie) return '';
   const abierto = (CMP_ABIERTO[id] !== undefined) ? CMP_ABIERTO[id] : !!abiertoPorDefecto;
   return '<div class="section cmp-bloque">'
     + `<button type="button" class="cmp-cab" aria-expanded="${abierto}" onclick="cmpPlegar('${id}')">`
@@ -4529,7 +4604,7 @@ function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto){
     + '<span class="cmp-tit">' + icono + ' ' + esc(titulo) + '</span>'
     + '<span class="cmp-chev">' + (abierto ? '▾' : '▸') + '</span></button>'
     + '<p class="cmp-porque">' + porque + '</p>'
-    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' : '')
+    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' + (pie || '') : '')
     + '</div>';
 }
 function cmpPlegar(id){
@@ -4578,7 +4653,7 @@ function cmpRender(){
   bloques.push(cmpBloque('rep', '🔄', 'La principal repuso y tú los tienes agotados',
     'Son ventas que puedes hacer hoy: tu web dice agotado y la principal sí tiene.',
     g.repuestos.map(r => cmpFila('rep',
-      '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio)
+      cmpNombreFila(r) + '<small>' + cmpDinero(r.pri.precio)
         + ' · la principal tiene ' + r.pri.stock + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',${r.pri.stock})">Poner ${r.pri.stock}</button>`,
       r.mio.imagen)), true));
@@ -4586,23 +4661,30 @@ function cmpRender(){
   bloques.push(cmpBloque('fan', '⚠️', 'Tú los vendes y la principal está en cero',
     'Tu web los ofrece disponibles y la principal no los tiene: si alguien los pide, no hay qué entregar.',
     g.fantasma.map(r => cmpFila('fan',
-      '<b>' + esc(r.pri.nombre) + '</b><small>tú tienes ' + cmpNum(r.mio.stock) + ' · la principal, 0</small>',
+      cmpNombreFila(r) + '<small>tú tienes ' + cmpNum(r.mio.stock) + ' · la principal, 0</small>',
       `<button type="button" class="cmp-b" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',0)">Poner en 0</button>`,
       r.mio.imagen)), true));
 
   bloques.push(cmpBloque('fal', '➕', 'Te faltan por subir',
-    'Están en la principal con existencias y no en tu web. El botón abre el formulario ya relleno; tú revisas y guardas.',
+    'Están en la principal con existencias y no aparecen en tu web. Si alguno ya lo tienes con otro nombre, '
+    + 'dilo con «ya lo tengo» y desde entonces se le comparan precio, stock y comisión.',
     g.faltan.map(r => cmpFila('fal',
       '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio)
         + ' · ' + r.pri.stock + ' disponibles'
-        + (r.pri.categoria ? ' · ' + esc(r.pri.categoria) : '') + '</small>',
+        + (r.pri.categoria ? ' · ' + esc(r.pri.categoria) : '') + '</small>'
+        + `<div class="cmp-acc">`
+        + `<button type="button" onclick="cmpAbrirPicker('${cmpIdAttr(r.pri)}')">✓ ya lo tengo</button>`
+        + `<button type="button" onclick="cmpOcultar('${cmpIdAttr(r.pri)}')">✕ no me interesa</button>`
+        + `</div>`
+        + (CMP_PICKER === String(r.pri.id) ? cmpPickerHTML(r.pri) : ''),
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpRellenar('${cmpIdAttr(r.pri)}')">Rellenar</button>`,
-      r.pri.foto))));
+      r.pri.foto)),
+    false, cmpPieMarcas()));
 
   bloques.push(cmpBloque('pre', '💲', 'Precio distinto',
     'La principal cambió el precio y tu web sigue con el viejo.',
     g.precio.map(r => cmpFila('pre',
-      '<b>' + esc(r.pri.nombre) + '</b><small>tú ' + cmpDinero(r.de) + ' → principal '
+      cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de) + ' → principal '
         + cmpDinero(r.a) + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerPrecio('${cmpIdAttr(r.mio)}',${r.a})">Poner ${cmpDinero(r.a)}</button>`,
       r.mio.imagen))));
@@ -4610,7 +4692,7 @@ function cmpRender(){
   bloques.push(cmpBloque('com', '💵', 'Comisión distinta',
     'Lo que ganas tú por vender cada uno. Solo se comparan las que están en la misma moneda.',
     g.comision.map(r => cmpFila('com',
-      '<b>' + esc(r.pri.nombre) + '</b><small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
+      cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
         + cmpDinero(r.a, r.moneda) + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerComision('${cmpIdAttr(r.mio)}',${r.a},'${r.moneda}')">Poner ${cmpDinero(r.a, r.moneda)}</button>`,
       r.mio.imagen))));
@@ -4621,7 +4703,7 @@ function cmpRender(){
     'La principal se contradice o la tienes en otra moneda. Pregúntale antes de tocarlas: '
     + '1500 MN y $1,80 son casi lo mismo, y cambiar una por otra te cuesta dinero de verdad.',
     g.dudosas.map(r => cmpFila('dud',
-      '<b>' + esc(r.pri.nombre) + '</b><small>' + esc(r.porque) + '</small>',
+      cmpNombreFila(r) + '<small>' + esc(r.porque) + '</small>',
       `<button type="button" class="cmp-b" onclick="cmpAbrirEnProductos('${cmpIdAttr(r.mio)}')">Ver el mío</button>`,
       r.mio.imagen))));
 
@@ -4703,6 +4785,143 @@ async function cmpRellenar(idPri){
     if(av){ av.innerHTML = '<a href="' + esc(pri.foto) + '" target="_blank" rel="noopener">📷 Abrir la foto de la principal</a>'; }
   }
 }
+
+
+/* ── «Ya lo tengo»: emparejar a mano ────────────────────────────────
+   La pantalla PROPONE candidatos y decide la persona. El orden sale de
+   contar palabras y trozos en común, que sirve para poner arriba los
+   probables — no para elegir por su cuenta: «hAP ac3» y «hap ax3» sacan
+   casi la misma puntuación y son dos routers distintos. */
+function cmpTrozos(s){
+  const n = cmpNorm(s);
+  const palabras = n.split(' ').filter(Boolean);
+  const trozos = new Set(palabras);
+  // Trigramas del nombre sin espacios: es lo que empareja «sxt sq» con
+  // «sxtsq», que es exactamente cómo difieren la mitad de los nombres.
+  const seguido = n.replace(/ /g, '');
+  for(let i = 0; i + 3 <= seguido.length; i++) trozos.add(seguido.slice(i, i + 3));
+  return trozos;
+}
+function cmpParecido(a, b){
+  const A = cmpTrozos(a), B = cmpTrozos(b);
+  if(!A.size || !B.size) return 0;
+  let comunes = 0;
+  A.forEach(t => { if(B.has(t)) comunes++; });
+  return comunes / Math.max(A.size, B.size);
+}
+function cmpCandidatos(pri, filtro){
+  syncProductos();
+  const q = cmpNorm(filtro || '');
+  // Los ya enlazados a otro producto de la principal no se vuelven a ofrecer.
+  const tomados = new Set(Object.entries(CMP_ENLACES)
+    .filter(([k]) => k !== String(pri.id)).map(([, v]) => String(v)));
+  return (PRODUCTOS || [])
+    .filter(p => !tomados.has(String(p.id)))
+    .filter(p => !q || cmpNorm(p.nombre).includes(q))
+    .map(p => ({p, n: q ? 1 : cmpParecido(pri.nombre, p.nombre)}))
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 6);
+}
+function cmpPickerHTML(pri){
+  const filtro = (CMP_PICKER_Q || '');
+  const lista = cmpCandidatos(pri, filtro);
+  return '<div class="cmp-pick">'
+    + '<div class="cmp-pick-t">¿Cuál de los tuyos es?</div>'
+    // El orden es solo para no hacer bajar la lista: NO dice que se parezcan.
+    // En esta gama la letra que cambia es el producto —«hAP ac3» y «hap ax3»
+    // son dos routers, m2 no es m5— y la pareja que más puntúa de todo el
+    // catálogo resulta ser una equivocada. Léete el modelo entero.
+    + '<div class="cmp-pick-ojo">Mira el modelo entero: m2 no es m5, ac3 no es ax3.</div>'
+    + `<input class="cmp-pick-q" type="search" placeholder="Buscar en mi catálogo…" `
+    + `value="${esc(filtro)}" oninput="cmpPickerBuscar(this.value)" `
+    + `onkeydown="if(event.key==='Escape'){cmpCerrarPicker();}">`
+    + (lista.length
+        ? lista.map(c => `<button type="button" class="cmp-pick-op" `
+            + `onclick="cmpEnlazar('${cmpIdAttr(pri)}','${cmpIdAttr(c.p)}')">`
+            + esc(c.p.nombre) + '<span>' + cmpDinero(cmpNum(c.p.precioActual))
+            + ' · ' + cmpNum(c.p.stock) + ' u.</span></button>').join('')
+        : '<div class="cmp-pick-no">Ninguno coincide con esa búsqueda.</div>')
+    + '<button type="button" class="cmp-pick-x" onclick="cmpCerrarPicker()">Cancelar</button>'
+    + '</div>';
+}
+let CMP_PICKER_Q = '';
+function cmpAbrirPicker(idPri){
+  CMP_PICKER = (CMP_PICKER === String(idPri)) ? null : String(idPri);
+  CMP_PICKER_Q = '';
+  cmpRender();
+}
+function cmpCerrarPicker(){ CMP_PICKER = null; CMP_PICKER_Q = ''; cmpRender(); }
+function cmpPickerBuscar(v){
+  CMP_PICKER_Q = v;
+  cmpRender();
+  // Repintar mata el foco y con él el teclado del móvil a media palabra.
+  const c = $('.cmp-pick-q');
+  if(c){ c.focus(); c.setSelectionRange(c.value.length, c.value.length); }
+}
+function cmpEnlazar(idPri, idMio){
+  CMP_ENLACES[String(idPri)] = String(idMio);
+  delete CMP_OCULTOS[String(idPri)];
+  cmpGuardarMarcas();
+  CMP_PICKER = null; CMP_PICKER_Q = '';
+  cmpRender();
+  const mio = apFind(idMio);
+  showToast('🔗 Emparejado con «' + ((mio && mio.nombre) || '') + '»',
+            'A partir de ahora se le comparan precio, stock y comisión');
+}
+function cmpOcultar(idPri){
+  CMP_OCULTOS[String(idPri)] = 1;
+  cmpGuardarMarcas();
+  CMP_PICKER = null;
+  cmpRender();
+  showToast('Oculto de la lista', 'Puedes recuperarlo abajo, en «marcados a mano»');
+}
+function cmpDesmarcar(idPri){
+  delete CMP_ENLACES[String(idPri)];
+  delete CMP_OCULTOS[String(idPri)];
+  cmpGuardarMarcas();
+  cmpRender();
+}
+
+/* El pie: lo marcado a mano, siempre visible y siempre deshacible.
+   Una lista que esconde cosas sin decir cuántas ni cuáles es una lista en la
+   que no se puede confiar, y a la primera duda se deja de mirar. */
+let CMP_MARCAS_ABIERTO = false;
+function cmpPieMarcas(){
+  const enl = Object.keys(CMP_ENLACES), oc = Object.keys(CMP_OCULTOS);
+  const n = enl.length + oc.length;
+  if(!n) return '';
+  const nombre = id => {
+    const p = (CMP_DATOS.productos || []).find(x => String(x.id) === String(id));
+    return p ? p.nombre : id;
+  };
+  let html = '<div class="cmp-marcas">'
+    + `<button type="button" class="cmp-marcas-cab" onclick="cmpVerMarcas()">`
+    + (CMP_MARCAS_ABIERTO ? '▾' : '▸') + ' ' + n + ' marcado' + (n !== 1 ? 's' : '')
+    + ' a mano · ' + enl.length + ' emparejado' + (enl.length !== 1 ? 's' : '')
+    + ', ' + oc.length + ' oculto' + (oc.length !== 1 ? 's' : '') + '</button>';
+  if(CMP_MARCAS_ABIERTO){
+    html += '<div class="cmp-marcas-lista">'
+      + enl.map(id => {
+          const mio = apFind(CMP_ENLACES[id]);
+          return '<div class="cmp-marca"><span>🔗 ' + esc(nombre(id)) + ' → '
+            + esc((mio && mio.nombre) || 'un producto que ya no existe') + '</span>'
+            + `<button type="button" onclick="cmpDesmarcar('${escJsAttr(String(id))}')">deshacer</button></div>`;
+        }).join('')
+      + oc.map(id => '<div class="cmp-marca"><span>✕ ' + esc(nombre(id)) + '</span>'
+          + `<button type="button" onclick="cmpDesmarcar('${escJsAttr(String(id))}')">deshacer</button></div>`).join('')
+      + '</div>';
+  }
+  return html + '</div>';
+}
+function cmpVerMarcas(){ CMP_MARCAS_ABIERTO = !CMP_MARCAS_ABIERTO; cmpRender(); }
+
+window.cmpAbrirPicker = cmpAbrirPicker;
+window.cmpCerrarPicker = cmpCerrarPicker;
+window.cmpPickerBuscar = cmpPickerBuscar;
+window.cmpEnlazar = cmpEnlazar;
+window.cmpOcultar = cmpOcultar;
+window.cmpDesmarcar = cmpDesmarcar;
+window.cmpVerMarcas = cmpVerMarcas;
 
 async function cmpCargar(forzar){
   const caja = $('#cmp-cuerpo');

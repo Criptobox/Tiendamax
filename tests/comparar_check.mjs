@@ -64,6 +64,10 @@ const PRINCIPAL = {
         // Falta pero ella también lo tiene agotado: no se ofrece subir.
         { id: '106', nombre: 'Agotado en las dos', precio: 20, stock: 0, categoria: 'Hogar',
           comision: 5, comisionMoneda: 'USD' },
+        // Segundo faltante: uno se empareja y el otro se oculta, que son los
+        // dos caminos y hay que poder probarlos por separado.
+        { id: '108', nombre: 'Otra que falta', precio: 15, stock: 5, categoria: 'Hogar',
+          comision: 5, comisionMoneda: 'USD' },
         // Mío sin moneda declarada (14 productos están así). Se deduce MN por
         // el tamaño, así que SÍ es comparable con los 1000 MN de la principal.
         { id: '107', nombre: 'Sin moneda', precio: 20, stock: 2, categoria: 'Hogar',
@@ -154,7 +158,7 @@ ok(dud && dud.filas.every(f => !/cmpPonerComision/.test(f.onclick || '')),
 
 // ── 3) Solo se ofrece subir lo que la principal puede servir ──────────
 const fal = await bloque('Te faltan');
-ok(fal && fal.n === 1, `«Te faltan» debería ofrecer solo la Cámara nueva, ofrece ${fal ? fal.n : '?'}`);
+ok(fal && fal.n === 2, `«Te faltan» debería ofrecer la Cámara nueva y Otra que falta, ofrece ${fal ? fal.n : '?'}`);
 ok(fal && !fal.filas.some(f => f.texto.includes('Agotado en las dos')),
    'no se ofrece subir un producto que la principal también tiene agotado');
 
@@ -206,7 +210,76 @@ const repDespues = await bloque('repuso');
 ok(!repDespues || !repDespues.filas.some(f => f.texto.includes('Router')),
    'tras poner el stock, el Router debe salir de la lista en el momento');
 
-// ── 7) Rellenar el formulario ─────────────────────────────────────────
+// ── 7) Emparejar a mano: la lista no se puede arreglar sola ──────────
+// La principal escribe «mikrotik sxt sq 5ax» y aquí es «MikroTik SXTsq 5 AX»
+// —el mismo aparato— mientras que «hAP ac3» y «hap ax3» son dos routers. La
+// pareja que más puntúa de todo el catálogo real resulta ser una equivocada
+// (0,89) y una correcta saca 0,41: no hay umbral que las separe, así que
+// emparejar es cosa de la persona y la pantalla solo ordena candidatos.
+await pagina.evaluate(() => { go('comparar'); if (!document.querySelector('.cmp-pick')) cmpAbrirPicker('105'); });
+await pagina.waitForTimeout(400);
+const pick = await pagina.evaluate(() => {
+    const c = document.querySelector('.cmp-pick');
+    return c ? { ojo: (c.querySelector('.cmp-pick-ojo') || {}).textContent || '',
+                 ops: [...c.querySelectorAll('.cmp-pick-op')].length } : null;
+});
+ok(pick && pick.ops > 0, 'el selector no ofreció ningún producto propio');
+ok(pick && /m2|m5|ac3|ax3/.test(pick.ojo),
+   'el selector debe avisar de que el modelo entero importa: es su única defensa contra emparejar m2 con m5');
+
+const faltanAntes = (await bloque('Te faltan')).n;
+await pagina.evaluate(() => cmpEnlazar('105', '104'));
+await pagina.waitForTimeout(400);
+const faltanDespues = await bloque('Te faltan');
+ok(!faltanDespues || faltanDespues.n === faltanAntes - 1,
+   'al emparejarlo debe salir de «Te faltan»');
+ok(await pagina.evaluate(() => !!JSON.parse(localStorage.getItem('tm_cmp_enlaces') || '{}')['105']),
+   'el emparejamiento tiene que sobrevivir a un repintado: se guarda en localStorage');
+
+// Lo que hace que emparejar valga la pena: el producto pasa a compararse.
+// La Cámara nueva (ella 6) enlazada con el Router (yo 0 tras el test 5… no:
+// se le puso 7) — se comprueba que aparece en ALGUNA comparación con su
+// nombre propio, no en la lista de los que faltan.
+const dondeSale = await pagina.evaluate(() => [...document.querySelectorAll('.cmp-bloque')]
+    .filter(e => e.textContent.includes('Router'))
+    .map(e => e.querySelector('.cmp-tit').textContent.trim()));
+ok(!dondeSale.some(t => t.includes('Te faltan')),
+   'un producto emparejado no puede seguir contando como que falta');
+
+// La fila enseña MI nombre (es el que cambia el botón) y, debajo, el de la
+// principal cuando no coinciden: sin eso no hay forma de ver si el
+// emparejamiento que hiciste es el correcto.
+const alias = await pagina.evaluate(() => {
+    const a = document.querySelector('.cmp-alias');
+    return a ? a.textContent : null;
+});
+ok(alias && alias.includes('Cámara nueva'),
+   'una fila emparejada debe enseñar también el nombre que tiene en la principal');
+
+// Ocultar uno que SÍ está en la lista: esconder el que ya estaba fuera no
+// prueba nada, y fue justo el agujero que dejó pasar la primera versión.
+await pagina.evaluate(() => cmpOcultar('108'));
+await pagina.waitForTimeout(350);
+const trasOcultar = await bloque('Te faltan');
+ok(!trasOcultar || trasOcultar.n === faltanAntes - 2,
+   `«no me interesa» debe quitarlo de la lista: quedan ${trasOcultar ? trasOcultar.n : 0} de ${faltanAntes - 1}`);
+
+const pie = await pagina.evaluate(() => {
+    const c = document.querySelector('.cmp-marcas-cab');
+    return c ? c.textContent : null;
+});
+ok(pie && /2 marcados/.test(pie), `el pie debería contar los 2 marcados a mano, dice «${pie}»`);
+await pagina.evaluate(() => { cmpVerMarcas(); });
+await pagina.waitForTimeout(300);
+const deshacer = await pagina.evaluate(() => [...document.querySelectorAll('.cmp-marca button')].length);
+ok(deshacer === 2, `cada marca necesita su «deshacer»; hay ${deshacer}`);
+await pagina.evaluate(() => { cmpDesmarcar('105'); cmpDesmarcar('108'); });
+await pagina.waitForTimeout(300);
+const vuelto = await bloque('Te faltan');
+ok(vuelto && vuelto.n === faltanAntes,
+   `al deshacer deben volver los ${faltanAntes} de antes, hay ${vuelto ? vuelto.n : '?'}`);
+
+// ── 8) Rellenar el formulario ─────────────────────────────────────────
 await pagina.evaluate(() => cmpRellenar('105'));
 await pagina.waitForTimeout(800);
 const form = await pagina.evaluate(() => ({
@@ -228,7 +301,7 @@ ok(form.com === '10' && form.mon === 'USD',
    `la comisión del formulario quedó en ${form.com} ${form.mon}, debía ser 10 USD`);
 ok(form.gar === '3 meses', 'la garantía de la principal debería venir rellena');
 
-// ── 8) Nada se publica solo ───────────────────────────────────────────
+// ── 9) Nada se publica solo ───────────────────────────────────────────
 const guardados = await pagina.evaluate(() =>
     (JSON.parse(localStorage.getItem('productos') || '[]')).length);
 ok(guardados === MIOS.length,
@@ -244,4 +317,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 21 comprobaciones OK');
+console.log('✅ Comparar con la principal: 30 comprobaciones OK');
