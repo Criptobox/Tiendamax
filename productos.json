@@ -10184,5 +10184,127 @@
     ],
     "seoTitle": "Compresor de Aire en Cuba | TiendaMax",
     "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…"
+  },
+  {
+    "id": 1789068808568,
+    "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de soldadura multiproceso 3 en 1",
+    "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
+    "imagen": "https://tiendamax.org/imagenes/img_1789068806131.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789068806131.webp"
+    ],
+    "precioActual": 275,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 15,
+    "comisionMoneda": "USD",
+    "categoria": "UTILES",
+    "subcategoria": "HERRAMIENTAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡110V",
+      "⭐Tecnología Inverter IGBT",
+      "💡 Control sinérgico inteligente",
+      "📟 Pantalla digital LED"
+    ],
+    "fechaAgregado": "2026-09-10T19:33:28.568Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Bielmeier"
+      },
+      {
+        "k": "Modelo",
+        "v": "FLUXMAX 140",
+        "nota": "FLUXMAX140"
+      },
+      {
+        "k": "Voltaje de Entrada",
+        "v": "110V / 120V AC",
+        "nota": "Monofásico, 50/60 Hz"
+      },
+      {
+        "k": "Rango de Amperaje de Salida",
+        "v": "20A – 140A"
+      },
+      {
+        "k": "Tecnología del Inversor",
+        "v": "Inverter IGBT con sistema de control sinérgico inteligente",
+        "nota": "Synergy System"
+      },
+      {
+        "k": "Ciclo de Trabajo Nominal",
+        "v": "60% a 140A"
+      },
+      {
+        "k": "Diámetros de Alambre Compatibles",
+        "v": "0.8 mm (.030\") y 0.9 mm (.035\") en bobinas de 1 kg",
+        "nota": "2 lbs / D100"
+      },
+      {
+        "k": "Diámetros de Electrodo Soportados",
+        "v": "1.6 mm a 3.2 mm",
+        "nota": "E6013, E7018, etc."
+      },
+      {
+        "k": "Pantalla",
+        "v": "Display digital LED para ajuste de corriente, voltaje y visualización de modos"
+      },
+      {
+        "k": "Sistema de Seguridad",
+        "v": "SmartUP Advanced",
+        "nota": "protección contra sobrecalentamiento, sobrecorriente y sobretensión"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Sistema sinérgico inteligente (Synergy System)",
+        "d": "ajusta automáticamente el voltaje y la velocidad de avance del alambre en función del amperaje seleccionado, permitiendo soldaduras limpias y estables tanto a principiantes como a usuarios experimentados."
+      },
+      {
+        "d": "Soldadura sin gas con alambre tubular (Flux Core): no requiere cilindros de gas comprimido externos ni reguladores, facilitando el trabajo al aire libre incluso con viento sin porosidades en el cordón."
+      },
+      {
+        "t": "Tecnología Inverter IGBT",
+        "d": "proporciona un arco suave, encendido rápido (Hot Start), antiadherencia de electrodo (Anti-Stick) y un consumo energético eficiente con conexión a cualquier toma doméstica convencional de 110V."
+      },
+      {
+        "t": "Panel frontal digital interactivo",
+        "d": "pantalla LED clara que indica el modo activo (FCAW, MMA, TIG), el diámetro de alambre seleccionado y el amperaje en tiempo real."
+      },
+      {
+        "t": "Mecanismo de arrastre interno estable",
+        "d": "compartimento integrado para bobinas de 1 kg con rodillo de tracción de alimentación fluida que previene atascos de alambre."
+      },
+      {
+        "t": "Refrigeración por aire forzado",
+        "d": "ventilador interno de alto caudal con conductos de ventilación frontal y lateral que evitan el recalentamiento en jornadas prolongadas."
+      },
+      {
+        "t": "Diseño compacto y ultra portátil",
+        "d": "estructura ligera con asa superior ergonómica que facilita su traslado directo a obras, garajes o trabajos en alturas."
+      }
+    ],
+    "idealPara": [
+      "Proyectos de herrería ligera, carpintería metálica, balcones, rejas y cerrajería residencial.",
+      "Mantenimiento general, reparaciones mecánicas rápidas en autos, motos, remolques y herramientas agrícolas.",
+      "Aficionados al bricolaje (DIY) y usuarios que dan sus primeros pasos en la soldadura gracias a la calibración sinérgica automática.",
+      "Reparaciones y montajes al aire libre donde el viento impide el uso de gas de protección."
+    ],
+    "incluye": [
+      "1× Soldadora Inverter Multiproceso Bielmeier FLUXMAX 140",
+      "1× Antorcha integrada para soldadura Flux Core (MIG sin gas)",
+      "1× Pinza portaelectrodo con cable para soldadura MMA",
+      "1× Pinza de masa (tierra) con cable reforzado",
+      "2× Boquillas protectoras para antorcha",
+      "5× Puntas de contacto de repuesto",
+      "1× Martillo picador de escoria con cepillo de alambre de acero integrado",
+      "1× Careta / máscara básica de mano para soldar",
+      "1× Manual de usuario e instrucciones de operación"
+    ]
   }
 ]
