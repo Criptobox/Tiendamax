@@ -88,16 +88,34 @@ class ComisionPorProductoTest(unittest.TestCase):
         html = ADMIN.read_text(encoding="utf-8")
         ini = html.index("function renderVentas(")
         cls.ventas = html[ini:html.index("\n// Anular una venta", ini)]
+        # La cuenta salió de renderVentas y vive en gananciasDe(), porque
+        # Inicio enseña la misma ganancia y dos copias se separan al primer
+        # arreglo. Lo que se protege es lo mismo: por moneda, sin sumar.
+        i2 = html.index("function gananciasDe(ventas){")
+        cls.cuenta = html[i2:html.index("\nfunction ventasDelMes(", i2)]
 
     def test_se_acumula_por_moneda(self):
         self.assertRegex(
-            self.ventas, r"comisPorProd\[nm\]=\{usd:0,mn:0\}",
-            "comisPorProd volvió a ser un solo número por producto.",
+            self.cuenta, r"porProducto\[nm\]=\{usd:0,mn:0\}",
+            "la comisión por producto volvió a ser un solo número.",
         )
         self.assertRegex(
-            self.ventas, r"r\[mon==='MN'\?'mn':'usd'\]\+=g",
+            self.cuenta, r"r\[mon==='MN'\?'mn':'usd'\]\+=g",
             "la comisión no se reparte por su moneda.",
         )
+
+    def test_el_total_tampoco_suma_las_monedas(self):
+        """Los dos totales viven en la misma función; si uno se junta, la
+        ganancia de Inicio y la de Ventas mienten a la vez."""
+        self.assertRegex(
+            self.cuenta, r"if\(mon==='MN'\) mn\+=g; else usd\+=g;",
+            "el total de ganancia dejó de separar USD de MN.",
+        )
+
+    def test_ventas_e_inicio_usan_la_misma_cuenta(self):
+        self.assertIn("gananciasDe(VENTAS)", self.ventas,
+                      "renderVentas volvió a calcular la comisión por su "
+                      "cuenta: dos cifras de ganancia que se separan.")
 
     def test_se_pinta_con_su_moneda(self):
         self.assertIn("dosMonedas(c)", self.ventas,

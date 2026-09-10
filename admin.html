@@ -187,6 +187,19 @@ try{var _piel=localStorage.getItem('tm_piel');
   .hero-inv .hi-sold-v { font-size:18px; font-weight:800; color:#fff; }
   .hero-inv .hi-sold-s { font-size:11px; color:var(--green); margin-top:2px; font-weight:700; }
   .hero-inv .hi-spark { width:110px; height:40px; flex:none; }
+  /* Ganancia en dos columnas. USD y MN NUNCA se suman ni comparten cifra: son
+     monedas distintas y la tasa se mueve cada semana. El oro es MN en todo el
+     panel, y además cada una lleva su etiqueta escrita — el color solo no
+     basta si un día se cambia la piel. */
+  .hero-inv .hi-gan { display:flex; align-items:stretch; gap:16px; margin-top:8px; }
+  .hero-inv .hi-gan > div { flex:1; min-width:0; }
+  .hero-inv .hi-gan > div + div { border-left:1px solid var(--border); padding-left:16px; }
+  .hero-inv .hi-gan b { display:block; font-size:27px; font-weight:900; color:#fff; line-height:1.05;
+    font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+  .hero-inv .hi-gan .mn b { color:var(--gold); }
+  .hero-inv .hi-gan small { display:block; font-size:10px; font-weight:800; letter-spacing:0.1em;
+    color:var(--muted); margin-top:5px; }
+  @media (max-width:400px) { .hero-inv .hi-gan b { font-size:23px; } }
   @media (max-width:480px) { .hero-inv .hi-val { font-size:30px; } }
 
   .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
@@ -1282,25 +1295,24 @@ try{var _piel=localStorage.getItem('tm_piel');
           <div class="ph-actions"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="hero-inv" id="inicio-hero">
-          <div class="hi-lbl">Valor de inventario</div>
-          <div class="hi-val"><small>$</small><span id="hi-val">0</span></div>
+          <div class="hi-lbl">Mi ganancia · en total</div>
+          <div class="hi-gan">
+            <div><b id="hi-gan-usd">$0</b><small>USD</small></div>
+            <div class="mn"><b id="hi-gan-mn">$0</b><small>MN</small></div>
+          </div>
           <div class="hi-split">
             <div>
-              <div class="hi-sold-l">Vendido · 7 días</div>
+              <div class="hi-sold-l" id="hi-mes-l">Este mes</div>
               <div class="hi-sold-v" id="hi-sold-v">$0</div>
               <div class="hi-sold-s" id="hi-sold-s">—</div>
             </div>
-            <svg class="hi-spark" id="hi-spark" viewBox="0 0 110 40" fill="none"></svg>
           </div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
         <div class="agenda" id="inicio-agenda"></div>
-        <div class="section">
-          <h3>📈 Ventas — Últimos 7 días <span class="badge">registro real</span></h3>
-          <div class="bar-chart-wrap"><div class="bar-chart" id="chart-ventas"></div></div>
-        </div>
+        <div id="inicio-graf"></div>
         <div class="grid-2">
-          <div class="section"><h3>🏆 Top productos vendidos</h3><div id="inicio-top"></div></div>
+          <div class="section"><h3>🏆 Lo que más te deja</h3><div id="inicio-top"></div></div>
           <div class="section"><h3>📦 Últimas ventas</h3><div id="inicio-actividad"></div></div>
         </div>
       </div>
@@ -1961,7 +1973,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=d6b76c4d"></script>
+<script src="js/admin-copilot.js?v=94d3d43a"></script>
 
 <script>
 (function(){
@@ -3072,6 +3084,45 @@ function ventaTotales(v){
 }
 function hoyKey(){ return new Date().toISOString().slice(0,10); }
 
+/* Lo que gana el GESTOR en un conjunto de ventas: la comisión, no el importe.
+   Los productos no son suyos — el precio de venta es del dueño; lo suyo es la
+   comisión de cada línea.
+
+   USD y MN van SIEMPRE por separado y nunca se suman: son monedas distintas y
+   la tasa cambia cada semana, así que un total mezclado no significa nada.
+   (Ya pasó en la lista por producto: 300 MN se leían como $300.)
+
+   Vivía dentro de renderVentas(), y ahora Inicio necesita la misma cuenta.
+   Copiarla habría sido tener dos cifras de ganancia que se separan al primer
+   arreglo — y la que se equivoque será la de Inicio, que es la que se mira. */
+function gananciasDe(ventas){
+  let usd=0, mn=0; const porProducto={}, unidades={};
+  const nombreDe = it => it.producto||it.nombre||it.nm||'';
+  (ventas||[]).forEach(v=>{
+    let items=(v.productos||v.items||[]);
+    // Ventas viejas: una sola línea guardada en la raíz de la venta.
+    if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, comision:v.comision, comisionMoneda:v.comisionMoneda, ganancia:(v.ganancia!=null?v.ganancia:v.comision), productoId:v.productoId}];
+    items.forEach(it=>{
+      const nm=nombreDe(it), q=Number(it.cantidad||it.qty||1)||1;
+      if(nm) unidades[nm]=(unidades[nm]||0)+q;
+      const prod=PRODUCTOS.find(x=>String(x.id)===String(it.productoId))||PRODUCTOS.find(x=>norm(x.nombre)===norm(nm))||{};
+      let g=Number(it.ganancia);
+      if(isNaN(g)){ let c=Number(it.comision); if(isNaN(c)) c=Number(prod.comision)||0; g=c*q; }
+      g=g||0;
+      const mon=(it.comisionMoneda||prod.comisionMoneda||'USD');
+      if(mon==='MN') mn+=g; else usd+=g;
+      if(nm){ const r=porProducto[nm]||(porProducto[nm]={usd:0,mn:0}); r[mon==='MN'?'mn':'usd']+=g; }
+    });
+  });
+  return {usd, mn, porProducto, unidades};
+}
+// Las ventas de un mes concreto (0-11). Sin mes, las del mes en curso.
+function ventasDelMes(ventas, anio, mes){
+  const hoy=new Date();
+  const a=(anio==null?hoy.getFullYear():anio), m=(mes==null?hoy.getMonth():mes);
+  return (ventas||[]).filter(v=>{ const d=ventaFecha(v); return d && d.getFullYear()===a && d.getMonth()===m; });
+}
+
 /* ============ INICIO ============ */
 /* ── 🤖 Agenda de Inicio ────────────────────────────────────────────────────
    Aquí había un banner que repetía las cifras de las tarjetas: "132 productos,
@@ -3091,21 +3142,32 @@ function hoyKey(){ return new Date().toISOString().slice(0,10); }
    razón por la que la cotización de Max no estima autonomías. El modelo
    escribe textos de publicación, y eso vive en el preview de Facebook. */
 const AGENDA_N = 3;
+// Lo que el gestor no puede ejecutar. Si algún día los productos son suyos,
+// se vacía este conjunto y vuelven solas.
+const AGENDA_NO_MIAS = new Set(['stockout','lowstock']);
 let _agendaDesde = 0, _agendaTimer = null;
 function _agendaResumen(){
-  const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
-  let m = `<b>${PRODUCTOS.length}</b> productos`;
-  if(agotados) m += ` · <b>${agotados}</b> agotados`;
-  if(bajo) m += ` · <b>${bajo}</b> con poco stock`;
-  m += VENTAS.length ? ` · <b>${dosMonedas(sumaMonedas(VENTAS, ventaTotales))}</b> en ${VENTAS.length} ventas`
-                     : ' · sin ventas registradas en este dispositivo';
+  // El pie contaba agotados y stock bajo. Al gestor eso no le dice qué hacer
+  // —reponer no depende de él—; lo que necesita saber de un vistazo es cuánto
+  // puede vender y cuánto lleva ganado. USD y MN, separados como siempre.
+  const conStock = PRODUCTOS.filter(p=>Number(p.stock)>0).length;
+  const g = gananciasDe(VENTAS);
+  let m = `<b>${conStock}</b> de ${PRODUCTOS.length} productos a la venta`;
+  m += VENTAS.length
+    ? ` · <b>${dosMonedas({usd:g.usd, mn:g.mn})}</b> ganados en ${VENTAS.length} venta${VENTAS.length!==1?'s':''}`
+    : ' · sin ventas registradas en este dispositivo';
   return m;
 }
 function renderAgendaInicio(){
   const box = $('#inicio-agenda'); if(!box) return;
   const hayCopiloto = typeof window.tmCopilotoTareas === 'function';
-  const tareas = hayCopiloto ? window.tmCopilotoTareas() : [];
+  const todas = hayCopiloto ? window.tmCopilotoTareas() : [];
+  // Quien usa este panel es el GESTOR: los productos no son suyos. "59
+  // agotados" y "3 con stock bajo" son datos ciertos, pero reponer no depende
+  // de él, así que como tarea con botón solo ocupan el sitio de lo que sí
+  // puede hacer. El número sigue a la vista en la tarjeta "A la venta", y la
+  // lista entera sigue en la burbuja 🤖 — no se esconde nada, se ordena.
+  const tareas = todas.filter(t => !AGENDA_NO_MIAS.has(t.kind));
   // Tres estados, no dos. "Aún no lo ha calculado" NO es "no hay nada que
   // hacer": mientras el motor no termina una pasada, la agenda decía
   // "✅ Nada urgente" con 59 productos agotados, que es exactamente la mentira
@@ -3140,8 +3202,8 @@ function renderAgendaInicio(){
         </div>
       </div>
     </div>`).join('');
-    if(tareas.length > ver.length){
-      cuerpo += `<button type="button" class="agenda-mas" onclick="agendaVerTodas()">Ver las otras ${tareas.length-ver.length} →</button>`;
+    if(todas.length > ver.length){
+      cuerpo += `<button type="button" class="agenda-mas" onclick="agendaVerTodas()">Ver las otras ${todas.length-ver.length} en el copiloto →</button>`;
     }
   }
   box.innerHTML = `<div class="agenda-h">🤖 Hoy${tareas.length?`<span class="cu">${tareas.length}</span>`:''}</div>
@@ -3156,52 +3218,124 @@ function agendaVerTodas(){ if(typeof window.tmCopilotOpen==='function') window.t
 // agenda se quedaría con "Revisando tu tienda…" hasta que cambiaras de pestaña.
 window.tmInicioAgenda = renderAgendaInicio;
 
+/* ── 📈 Mi ganancia por mes ────────────────────────────────────────────────
+   Aquí había un gráfico de "ventas de los últimos 7 días". Con 16 ventas
+   repartidas a lo largo de meses salía plano en cero casi siempre: 160 px de
+   alto para decir que no pasó nada. Seis meses de comisión sí tienen forma.
+
+   USD y MN van en DOS gráficos y no en uno: un peso y un dólar no caben en la
+   misma escala y una barra que los mezcle no significa nada. Y la fila de una
+   moneda sin ninguna comisión no se dibuja — volver a llenar la pantalla de
+   ceros es exactamente lo que se venía a quitar. */
+const GRAF_MESES = 6;
+function _graficoMes(meses, campo, titulo, fmt, fondo){
+  const max = Math.max(1, ...meses.map(m=>m[campo]));
+  const barras = meses.map(m=>{
+    const h = Math.round(m[campo]/max*100);
+    return `<div class="bar" style="height:${Math.max(2,h)}%;background:${fondo}">`
+         + (m[campo] ? `<span class="v">${esc(fmt(m[campo]))}</span>` : '')
+         + `<span class="lbl">${esc(m.lbl)}</span></div>`;
+  }).join('');
+  return `<div style="font-size:10px;font-weight:800;letter-spacing:0.1em;color:${campo==='mn'?'var(--gold)':'var(--muted)'};margin:2px 0 0 4px">${titulo}</div>
+    <div class="bar-chart-wrap" style="padding:20px 4px 24px"><div class="bar-chart" style="height:104px">${barras}</div></div>`;
+}
+function renderGananciaMeses(){
+  const box = $('#inicio-graf'); if(!box) return;
+  const hoy = new Date(), meses = [];
+  for(let i=GRAF_MESES-1; i>=0; i--){
+    const d = new Date(hoy.getFullYear(), hoy.getMonth()-i, 1);
+    const g = gananciasDe(ventasDelMes(VENTAS, d.getFullYear(), d.getMonth()));
+    meses.push({ lbl:d.toLocaleDateString('es-CU',{month:'short'}).replace('.',''), usd:g.usd, mn:g.mn });
+  }
+  const hayUSD = meses.some(m=>m.usd>0), hayMN = meses.some(m=>m.mn>0);
+  if(!hayUSD && !hayMN){
+    // Plegado a una línea en vez de un bloque vacío de 160 px.
+    box.innerHTML = `<div class="section" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;font-size:12px;color:var(--dim)"><span>📈 Mi ganancia por mes</span><b style="color:var(--muted)">sin comisiones registradas</b></div>`;
+    return;
+  }
+  box.innerHTML = `<div class="section"><h3>📈 Mi ganancia por mes <span class="badge">registro real</span></h3>
+    ${hayUSD ? _graficoMes(meses,'usd','EN USD', n=>'$'+Math.round(n), 'linear-gradient(180deg,var(--o),var(--oo))') : ''}
+    ${hayMN  ? _graficoMes(meses,'mn', 'EN MN',  n=>Math.round(n)+'', 'linear-gradient(180deg,var(--gold),#8a6d3a)') : ''}
+  </div>`;
+}
+/* Qué producto le deja más AL GESTOR. No es lo mismo que el más vendido: uno
+   barato que se vende mucho puede dejar menos que uno caro vendido dos veces,
+   y la comisión la fija el dueño producto a producto. */
+function renderLoQueMasDeja(porProducto){
+  const box = $('#inicio-top'); if(!box) return;
+  const filas = Object.entries(porProducto||{})
+    .filter(([,c]) => c.usd>0 || c.mn>0)
+    .sort((a,b) => (b[1].usd-a[1].usd) || (b[1].mn-a[1].mn))
+    .slice(0,5);
+  if(!filas.length){
+    box.innerHTML = `<div style="font-size:12px;color:var(--dim);line-height:1.5">Cuando registres una venta con comisión, aquí sale qué producto te deja más.</div>`;
+    return;
+  }
+  box.innerHTML = filas.map(([nm,c],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px">
+    <div style="font-size:18px">${i===0?'🥇':'💰'}</div>
+    <div style="flex:1;min-width:0"><b style="color:#fff;font-size:12.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</b></div>
+    <span style="font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap">${esc(dosMonedas({usd:c.usd, mn:c.mn}))}</span>
+  </div>`).join('');
+}
+
 function renderInicio(){
   $('#inicio-fecha').textContent = new Date().toLocaleDateString('es-CU',{weekday:'long',day:'numeric',month:'long'}) + ' · vista general';
   const hoy = hoyKey();
   let ventasHoy={usd:0,mn:0}, nHoy=0;
   VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d && d.toISOString().slice(0,10)===hoy){ const t=ventaTotales(v); ventasHoy.usd+=t.usd; ventasHoy.mn+=t.mn; nHoy++; } });
-  const stockBajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
-  const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  const totalVendido = sumaMonedas(VENTAS, ventaTotales);
+
+  /* ── Mi ganancia ────────────────────────────────────────────────────────
+     La tarjeta grande enseñaba el valor del inventario. Quien usa este panel
+     es el GESTOR: los productos no son suyos, así que ese número ni es su
+     dinero ni depende de él. Lo suyo es la comisión. USD y MN van en dos
+     columnas y no se suman nunca. */
+  const gTotal = gananciasDe(VENTAS);
+  const vMes   = ventasDelMes(VENTAS);
+  const gMes   = gananciasDe(vMes);
+  $('#hi-gan-usd').textContent = money(gTotal.usd);
+  $('#hi-gan-mn').textContent  = moneyMN(gTotal.mn);
+  const mesNombre = new Date().toLocaleDateString('es-CU',{month:'long'});
+  $('#hi-mes-l').textContent = 'Mi ganancia · ' + mesNombre;
+  $('#hi-sold-v').textContent = dosMonedas({usd:gMes.usd, mn:gMes.mn});
+  $('#hi-sold-s').textContent = vMes.length
+    ? (vMes.length + ' venta' + (vMes.length!==1?'s':'') + ' en ' + mesNombre)
+    : ('Sin ventas en ' + mesNombre);
+
+  /* ── Tarjetas ───────────────────────────────────────────────────────────
+     Fuera "Stock bajo / agotados": es real, pero reponer no depende del
+     gestor, así que como alerta solo ocupa sitio. Lo que sí le sirve saber
+     es cuántos productos PUEDE vender ahora mismo, y eso queda en "A la
+     venta". */
+  const conStock = PRODUCTOS.filter(p=>Number(p.stock)>0).length;
+  const enOferta = PRODUCTOS.filter(p=>Number(p.precioOriginal)>Number(p.precioActual) && Number(p.precioActual)>0).length;
+  const vendidoMes = sumaMonedas(vMes, ventaTotales);
+  // El mes pasado, para comparar. La ganancia de ESTE mes ya está en la
+  // tarjeta grande de arriba: repetirla aquí era el mismo defecto que tenía
+  // el banner del robot, decir dos veces lo mismo a dos centímetros.
+  const anterior = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1);
+  const vAnt = ventasDelMes(VENTAS, anterior.getFullYear(), anterior.getMonth());
+  const gAnt = gananciasDe(vAnt);
   const k = [
-    ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' ventas hoy','muted'],
-    ['success','Vendido total', dosMonedas(totalVendido), VENTAS.length+' ventas','muted'],
-    ['warn','Stock bajo', stockBajo, agotados+' agotados', stockBajo?'down':'muted'],
-    ['','Productos', PRODUCTOS.length, PRODUCTOS.filter(p=>p.masVendido).length+' destacados','muted'],
+    ['gold','Ganancia '+anterior.toLocaleDateString('es-CU',{month:'long'}), dosMonedas({usd:gAnt.usd, mn:gAnt.mn}), vAnt.length+' ventas','muted'],
+    ['success','Vendido este mes', dosMonedas(vendidoMes), 'importe cobrado','muted'],
+    ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' hoy','muted'],
+    ['','A la venta', conStock, 'de '+PRODUCTOS.length+' productos','muted'],
     ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', 'sesiones de clientes','muted'],
-    ['gold','En radar', radarVigilados().length, 'vigilados','muted'],
+    ['warn','En oferta', enOferta, 'con precio rebajado','muted'],
   ];
   $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
   cargarVisitasWeb();
   renderAgendaInicio();
-  // Chart 7 días (real)
-  const slots={}; const dias=[];
-  let mn7d=0;
-  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const key=d.toISOString().slice(0,10); slots[key]=0; dias.push({key,lbl:['D','L','M','X','J','V','S'][d.getDay()]}); }
-  // Las barras miden USD. Un peso y un dólar no caben en la misma escala, así
-  // que lo vendido en MN se cuenta aparte y se dice debajo, en vez de deformar
-  // la altura de los días en que hubo una venta en pesos.
-  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d) return; const k=d.toISOString().slice(0,10); if(!(k in slots)) return; const t=ventaTotales(v); slots[k]+=t.usd; mn7d+=t.mn; });
-  const max=Math.max(1,...dias.map(d=>slots[d.key]));
-  $('#chart-ventas').innerHTML = dias.map(d=>{ const val=slots[d.key]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${Math.round(val)}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
-  // Hero: valor de inventario + vendido 7 días (mismo cálculo del gráfico de arriba)
-  const valorInventario = valorInvPorMoneda(PRODUCTOS);
-  const vendido7d = dias.reduce((s,d)=>s+slots[d.key],0);
-  const nVentas7d = VENTAS.reduce((s,v)=>{ const d=ventaFecha(v); return s+(d && (d.toISOString().slice(0,10) in slots)?1:0); },0);
-  $('#hi-val').textContent = valorInvTexto(valorInventario).replace(/^\$/,'');
-  $('#hi-sold-v').textContent = dosMonedas({usd:vendido7d, mn:mn7d});
-  $('#hi-sold-s').textContent = nVentas7d ? ('↑ '+nVentas7d+' venta'+(nVentas7d!==1?'s':'')) : 'Sin ventas esta semana';
-  const sparkPts = dias.map((d,i)=>{ const x = i*(110/6); const y = 38 - Math.round((slots[d.key]/max)*34); return x+','+y; }).join(' ');
-  $('#hi-spark').innerHTML = `<polyline points="${sparkPts}" stroke="#C9A96E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${110}" cy="${38 - Math.round((slots[dias[6].key]/max)*34)}" r="2.6" fill="#C9A96E"/>`;
-  // Top productos por ventas reales
-  const cont={};
-  VENTAS.forEach(v=>{ (v.productos||v.items||[]).forEach(it=>{ const nm=it.nombre||it.nm||''; if(!nm) return; cont[nm]=(cont[nm]||0)+(Number(it.cantidad||it.qty||1)); }); });
-  const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  $('#inicio-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:20px">${i===0?'🏆':'📦'}</div><div style="flex:1"><b style="color:#fff;font-size:13px">${esc(nm)}</b><small style="color:var(--muted);font-size:10px;display:block">${q} vendidos</small></div></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle de productos aún.</div>`;
-  // Actividad = últimas ventas
+  renderGananciaMeses();
+  renderLoQueMasDeja(gTotal.porProducto);
+
+  // Actividad = últimas ventas, con la comisión de cada una
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
-  $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${dosMonedas(ventaTotales(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
+  $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{
+    const d=ventaFecha(v), g=gananciasDe([v]);
+    const tuyo = (g.usd||g.mn) ? dosMonedas({usd:g.usd, mn:g.mn}) : '—';
+    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1;min-width:0"><b style="color:#fff">${dosMonedas(ventaTotales(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span><small style="display:block;color:var(--gold);font-size:10.5px;font-weight:700;margin-top:2px">Tu comisión: ${tuyo}</small></div></div>`;
+  }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
   // Badge alertas topbar: pinta primero lo cacheado (para que no quede en
   // blanco) y de inmediato pide el número real a Firebase para corregirlo.
   const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
@@ -4094,27 +4228,10 @@ function renderVentas(){
   ventaRenderPicker();
   const total=sumaMonedas(VENTAS, ventaTotales);
   const hoy=hoyKey(); let tHoy={usd:0,mn:0},nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){const t=ventaTotales(v); tHoy.usd+=t.usd; tHoy.mn+=t.mn; nHoy++;}});
-  // ganancias (comisiones) separadas por moneda: USD y MN
-  let ganUSD=0, ganMN=0; const comisPorProd={}; const cont={};
-  const itName = it => it.producto||it.nombre||it.nm||'';
-  VENTAS.forEach(v=>{
-    let items=(v.productos||v.items||[]);
-    if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, comision:v.comision, comisionMoneda:v.comisionMoneda, ganancia:(v.ganancia!=null?v.ganancia:v.comision), productoId:v.productoId}];
-    items.forEach(it=>{ const nm=itName(it); const q=Number(it.cantidad||it.qty||1)||1;
-      if(nm) cont[nm]=(cont[nm]||0)+q;
-      const prod=PRODUCTOS.find(x=>String(x.id)===String(it.productoId))||PRODUCTOS.find(x=>norm(x.nombre)===norm(nm))||{};
-      let g=Number(it.ganancia); if(isNaN(g)){ let c=Number(it.comision); if(isNaN(c)) c=Number(prod.comision)||0; g=c*q; }
-      g=g||0;
-      const mon=(it.comisionMoneda||prod.comisionMoneda||'USD');
-      if(mon==='MN') ganMN+=g; else ganUSD+=g;
-      // Por producto también hay que separar: hay productos cuya comisión se
-      // cobra en pesos, y sumarla con las de dólares daba una lista donde 300
-      // MN se leían como $300. El total de arriba ya lo separaba; esta lista
-      // no, y es la que dice qué producto deja más.
-      if(nm){ const r=comisPorProd[nm]||(comisPorProd[nm]={usd:0,mn:0});
-              r[mon==='MN'?'mn':'usd']+=g; }
-    });
-  });
+  // Ganancias (comisiones) separadas por moneda. La cuenta vive en
+  // gananciasDe(): Inicio enseña la misma y no puede salirle otra cifra.
+  const _g = gananciasDe(VENTAS);
+  const ganUSD=_g.usd, ganMN=_g.mn, comisPorProd=_g.porProducto, cont=_g.unidades;
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
   $('#ventas-kpis').innerHTML=[['usd','Hoy',dosMonedas(tHoy),nHoy+' ventas'],['success','Total vendido',dosMonedas(total),VENTAS.length+' ventas'],['gold','Ganancia USD',money(ganUSD),''],['gold','Ganancia MN',moneyMN(ganMN),''],['info','Ticket promedio',dosMonedas(VENTAS.length?{usd:total.usd/VENTAS.length, mn:total.mn/VENTAS.length}:{usd:0,mn:0}),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
   // top productos vendidos

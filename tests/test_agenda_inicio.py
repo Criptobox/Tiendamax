@@ -34,16 +34,24 @@ COPILOTO = (RAIZ / "js" / "admin-copilot.js").read_text(encoding="utf-8")
 REVOLICO = (RAIZ / "js" / "revolico_integration.js").read_text(encoding="utf-8")
 ADMIN = (RAIZ / "admin.html").read_text(encoding="utf-8")
 CHECK = RAIZ / "tests" / "agenda_check.mjs"
+CHECK_INICIO = RAIZ / "tests" / "inicio_check.mjs"
 
 
 class AgendaNavegadorTest(unittest.TestCase):
-    def test_regresion_en_navegador(self):
+    def _correr(self, script):
         node = shutil.which("node")
         if not node:
             self.skipTest("node no está disponible en este entorno")
-        r = subprocess.run([node, str(CHECK)], cwd=str(RAIZ),
+        r = subprocess.run([node, str(script)], cwd=str(RAIZ),
                            capture_output=True, text=True, timeout=180)
         self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
+
+    def test_regresion_en_navegador(self):
+        self._correr(CHECK)
+
+    def test_inicio_de_gestor_en_navegador(self):
+        """La tarjeta grande, las dos monedas y los bloques que se pliegan."""
+        self._correr(CHECK_INICIO)
 
 
 class CaminoIATest(unittest.TestCase):

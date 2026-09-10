@@ -42,7 +42,7 @@ Several tests exist because the failure they catch is **silent** — nothing err
 - `test_enlazado_interno.py` — asserts no `/c/` or `/p/` page is left without incoming links and no product page is a dead end. Orphan pages serve fine and break nothing; they just rank badly.
 - `test_contraste.py` — WCAG ratios for the generated pages, plus a check that the colours it validates are still the ones the generator writes.
 - `tests/anuncio_check.mjs` (+ `test_anuncio.py`) — the ad image: see "The ad image" below. It needs a real browser because everything it checks depends on `measureText()`.
-- `tests/agenda_check.mjs` (+ `test_agenda_inicio.py`) — the Inicio agenda and the AI path: see "The Copiloto" below. Its point is a lie, not an exception — a screen that says nothing is urgent because the engine hasn't answered yet.
+- `tests/inicio_check.mjs` and `tests/agenda_check.mjs` (+ `test_agenda_inicio.py`) — the Inicio screen, its agenda and the AI path: see "Who uses the panel" and "The Copiloto" below. Its point is a lie, not an exception — a screen that says nothing is urgent because the engine hasn't answered yet.
 - `test_alcance.py` — walks from the roots (HTML `onclick`/`data-action`, plus each file's top-level code) and follows the calls. `test_codigo_muerto.py` only counts *references*, which cannot see a clique: 23 functions in `revolico_integration.js` kept each other "referenced" while the only door into the group rendered into a container that does not exist. Nothing errored; the bundle just shipped them to every phone.
 - `test_ids_fantasma.py` — `getElementById('x').algo` where no HTML creates `#x`. A null that gets checked is fine and common on purpose (one bundle serves index/admin/product pages); a null dereferenced immediately throws and silently truncates the rest of the function. That is how `cargarConfiguracionGitHub` filled three fields and then died, invisibly, on every ⚙️ Configuración.
 - `test_cola_vigente.py` + `notificaciones_check.mjs` — a push sits in the customer's tray with frozen text until they swipe it away, so "🏷️ 4 productos rebajados" has to be true *at send time* and cannot be corrected afterwards. The queue fills every cron run but only drains in daylight hours, and in between products sell out, discounts get reverted by `revertir_ofertas.py`, and the same product gets `extend`ed in twice.
@@ -95,6 +95,20 @@ The background tone comes from `tmColorCategoria()` (`TM_CAT_COLORES` in `js/adm
 ### The CSS cascade (css/)
 
 Similarly, `css/*.css` source files get concatenated (not merged/deduped) into `css/bundle.css`. **Load order is the primary way conflicting rules get resolved** — later files win ties in specificity, and several files exist specifically to override earlier ones (see the comments in `build_css.py`'s `ORDEN`). `modal-v4.css` loads last and is treated as "wins everything" by convention. `styles.css` and `premium-theme.css` are historically pre-minified (single-line) with no separate readable source — that's expected, not a build artifact gone wrong.
+
+### Who uses the panel: a *gestor*, not the owner
+
+**The person running `admin.html` sells products that are not theirs.** They earn a per-product **commission** (`comision` + `comisionMoneda` on each product, copied onto each sale line), not the sale price. This is the single most load-bearing fact about the Inicio screen, and getting it wrong is what made the old one useless:
+
+- Inicio's big card used to show **valor de inventario**. That is the owner's money and it does not move day to day — the largest type on the screen was the number the user could do least about. It now shows **their commission**: total, with the month underneath.
+- **Restocking is not theirs to do.** "59 agotados" and "23 con stock bajo" are true, but as *tasks with a button* they only take the place of something actionable. Inicio's agenda filters them out via `AGENDA_NO_MIAS` in `admin.html` (`stockout`, `lowstock`); the full list stays one tap away in the Copiloto bubble, and the number stays visible as the "A la venta" tile (73 of 132 — what they *can* sell). If the products ever become theirs, empty that Set.
+- Customers waiting on `/avisos_stock` are **not** a stock chore — they are people who want to buy. That task used to say "Reponer" and open Productos; it now says "Ver quiénes son" and opens Clientes → Avisos, where a gestor can actually write to them.
+
+**`gananciasDe(ventas)` is the one place commission is counted** (`{usd, mn, porProducto, unidades}`), used by both `renderInicio` and `renderVentas`. It lived inline inside `renderVentas`; Inicio needed the same figure and a second copy would have drifted — the one that went wrong would have been Inicio's, the screen that gets looked at. `ventasDelMes(ventas, año, mes)` sits next to it.
+
+**USD and MN are never added together, anywhere.** They are different currencies and the rate moves weekly, so a merged total is a number that does not exist. The hero puts them in two columns with a divider and an explicit `USD` / `MN` label under each; the by-month chart draws **two** charts with independent scales rather than one; `dosMonedas()` renders "$X + $Y MN" and never sums. Gold means MN throughout the panel. This already went wrong once in the per-product commission list, where 300 MN sorted and read as $300.
+
+**Blocks with nothing to show collapse to one line.** The old "Ventas — últimos 7 días" chart was flat zero almost always (16 sales spread over months) and spent 160px saying nothing; it is now "Mi ganancia por mes" over six months, which has shape. When there is no commission at all it becomes a single line saying so, and `tests/inicio_check.mjs` asserts that collapsed block stays under 90px.
 
 ### The Copiloto: one task engine, and the AI path
 

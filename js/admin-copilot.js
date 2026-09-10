@@ -428,7 +428,11 @@ async function buildTasks(){
   const pendInt = facts.interesados.filter(x=>x.ts && !atendidos.has(x.ts));
   if (pendInt.length) addTask(tasks,{kind:'interesados',urgency:3,icon:'💬',title:`${pendInt.length} interesado${pendInt.length>1?'s':''} sin atender`,detail:[...new Set(pendInt.slice(0,8).map(x=>x.producto || byId[String(x.pid)]?.nombre || x.pid))].slice(0,3).join(', '),action:'Ver ahora',tab:'inicio'});
 
-  if (facts.avisosTotal) addTask(tasks,{kind:'avisos',urgency:2,icon:'🔔',title:`${facts.avisosTotal} cliente${facts.avisosTotal!==1?'s':''} esperan reposición`,detail:`${Object.keys(facts.avisos).length} producto${Object.keys(facts.avisos).length!==1?'s':''} con aviso de stock.`,action:'Reponer',tab:'manage-products'});
+  // Esto NO es una tarea de almacén: son personas que dejaron su aviso porque
+  // quieren comprar. Llevaba "Reponer" y mandaba a Productos, que es lo único
+  // que el gestor no puede hacer — los productos no son suyos. Lo que sí puede
+  // es escribirles u ofrecerles otra cosa, y eso está en Clientes → Avisos.
+  if (facts.avisosTotal) addTask(tasks,{kind:'avisos',urgency:2,icon:'🔔',title:`${facts.avisosTotal} cliente${facts.avisosTotal!==1?'s':''} esperando un producto`,detail:`${Object.keys(facts.avisos).length} producto${Object.keys(facts.avisos).length!==1?'s':''} con gente apuntada. Escríbeles u ofréceles algo parecido.`,action:'Ver quiénes son',tab:'clientes-ia'});
 
   const hot = ps.map(p=>{
     const id = String(p.id); const views = num(facts.vistas[id]); const wa = num(facts.whats[id]);
