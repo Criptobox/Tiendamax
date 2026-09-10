@@ -84,7 +84,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 0,
+    "stock": 2,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -106,7 +106,6 @@
     "seoTitle": "Inversor Tataliken 4000W en Cuba | TiendaMax",
     "seoDescription": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales…",
     "radar": true,
-    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
     "ficha": [
       {
         "k": "Marca",
@@ -155,7 +154,8 @@
       "1x Inversor Tataliken 4000W 12V",
       "1x Par de pinzas caimán para batería",
       "1x Par de mosfet"
-    ]
+    ],
+    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar."
   },
   {
     "id": 1778102214012,
@@ -1872,7 +1872,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778336859697.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 25,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1882,7 +1882,6 @@
     "comision": 1.8,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
     "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
-    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
     "ficha": [
       {
         "k": "📐 Medidas",
@@ -1924,7 +1923,8 @@
       "☀️ Bloqueo UV: 90%",
       "🎨 Color: Beige",
       "🧵 Tela: Transpirable"
-    ]
+    ],
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
     "id": 1778383966832,
@@ -2159,7 +2159,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 0,
+    "stock": 3,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2179,7 +2179,6 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778384314795_ext.webp"
     ],
-    "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores.",
     "ficha": [
       {
         "k": "Marca",
@@ -2226,7 +2225,8 @@
     ],
     "incluye": [
       "1x KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
-    ]
+    ],
+    "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores."
   },
   {
     "id": 1778384428890,
@@ -2454,7 +2454,7 @@
   {
     "id": 1778384840618,
     "nombre": "🔒 Timbre Inteligente Con Cámara HD y WiFi",
-    "precioActual": 30,
+    "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
@@ -2465,7 +2465,7 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "protege-tu-hogar-videoportero-wifi",
-    "comision": 1500,
+    "comision": 1000,
     "seoTitle": "PROTEGE TU HOGAR en Cuba | TiendaMax",
     "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
     "precioOriginal": 0,
@@ -2479,7 +2479,6 @@
       "https://tiendamax.org/imagenes/img_1784572695580.webp",
       "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
     ],
-    "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.",
     "ficha": [
       {
         "k": "Tecnología / Tipo",
@@ -2517,7 +2516,8 @@
     ],
     "incluye": [
       "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
-    ]
+    ],
+    "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz."
   },
   {
     "id": 1778384976624,
@@ -3086,7 +3086,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784008196606.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3096,7 +3096,6 @@
     "comision": 5,
     "seoTitle": "CASA DE CAMPAÑA LIGERA en Cuba | TiendaMax",
     "seoDescription": "Casa de campaña ligera Portatil, impermeable con mosquiteros en las 2 puertas y las 2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2…",
-    "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "specs": [
@@ -3142,7 +3141,8 @@
     ],
     "incluye": [
       "Estacas de fijación, cuerdas de sujeción y bolsa de transporte."
-    ]
+    ],
+    "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas."
   },
   {
     "id": 1778820983383,
@@ -3618,7 +3618,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 7,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3637,7 +3637,6 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785284197964.webp"
     ],
-    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.",
     "ficha": [
       {
         "k": "Marca",
@@ -3682,7 +3681,8 @@
     "incluye": [
       "1x Controlador Solar PowMr 80A MPPT",
       "1x Manual de conexión"
-    ]
+    ],
+    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real."
   },
   {
     "id": 1780017975657,
@@ -8931,7 +8931,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787933030028.webp"
     ],
-    "precioActual": 140,
+    "precioActual": 150,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 0,
@@ -9778,7 +9778,7 @@
     "precioActual": 240,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 2,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
