@@ -255,7 +255,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 27,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1020,7 +1020,7 @@
   {
     "id": 1778104850733,
     "nombre": "⚡ Controlador MPPT 100A",
-    "precioActual": 70,
+    "precioActual": 80,
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
@@ -1841,8 +1841,8 @@
   },
   {
     "id": 1778336859697,
-    "nombre": "Toldo Para Sombra",
-    "precioActual": 20,
+    "nombre": "🏕️Toldo Para Sombra 2x4",
+    "precioActual": 23,
     "imagen": "https://tiendamax.org/imagenes/img_1778336859697.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
@@ -1853,13 +1853,13 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "toldo-para-sombra-beige-3x2",
-    "comision": 1.8,
+    "comision": 3,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
     "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
     "ficha": [
       {
         "k": "📐 Medidas",
-        "v": "3m x 6m"
+        "v": "2m x 4m"
       },
       {
         "k": "🎨 Color",
@@ -1882,21 +1882,27 @@
       "Patios, piscinas y terrazas que necesitan sombra sin obra."
     ],
     "incluye": [
-      "1x Toldo de sombra 3m x 6m"
+      "1x Toldo de sombra 2m x 4m"
     ],
     "caracteristicas": [
       {
-        "d": "Tela transpirable: deja pasar el aire en vez de acumular calor debajo."
+        "t": "Tela transpirable",
+        "d": "deja pasar el aire en vez de acumular calor debajo."
       },
       {
         "d": "Se instala amarrado a postes o paredes, sin estructura fija."
       }
     ],
     "specs": [
-      "📐 Medidas: 3m x 6m",
+      "📐 Medidas: 2m x 4m",
       "☀️ Bloqueo UV: 90%",
       "🎨 Color: Beige",
       "🧵 Tela: Transpirable"
+    ],
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ]
   },
   {
@@ -2240,8 +2246,8 @@
   },
   {
     "id": 1778384507302,
-    "nombre": "Linterna de Cabeza",
-    "precioActual": 30,
+    "nombre": "🔦Linterna de Cabeza",
+    "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
     "categoria": "UTILES",
     "subcategoria": "ILUMINACIÓN",
@@ -2373,7 +2379,7 @@
   {
     "id": 1778384769262,
     "nombre": "Ventilador Para Carro",
-    "precioActual": 35,
+    "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1778384769262_ext.webp",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
@@ -4947,7 +4953,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 4,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -5489,7 +5495,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 10,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -6107,7 +6113,7 @@
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 4,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7540,7 +7546,7 @@
     "precioActual": 260,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8807,7 +8813,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787933030028.webp"
     ],
-    "precioActual": 150,
+    "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 0,
