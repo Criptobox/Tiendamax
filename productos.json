@@ -84,7 +84,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 0,
+    "stock": 2,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1869,7 +1869,7 @@
     "id": 1778336859697,
     "nombre": "🏕️Toldo Para Sombra 2x4",
     "precioActual": 23,
-    "imagen": "https://tiendamax.org/imagenes/img_1778336859697.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1789064842557.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
     "stock": 25,
@@ -1925,12 +1925,13 @@
       "🎨 Color: Beige",
       "🧵 Tela: Transpirable"
     ],
-    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789064842557.webp",
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
-    ]
+    ],
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
     "id": 1778383966832,
@@ -2280,7 +2281,7 @@
     "id": 1778384507302,
     "nombre": "🔦Linterna de Cabeza",
     "precioActual": 25,
-    "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1789064746975.webp",
     "categoria": "UTILES",
     "subcategoria": "ILUMINACIÓN",
     "stock": 5,
@@ -2299,6 +2300,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789064746975.webp",
       "https://tiendamax.org/imagenes/img_1778384507302_ext.webp"
     ],
     "ficha": [
@@ -9897,5 +9899,129 @@
     "seoTitle": "Mikrotik lhg 5ax en Cuba | TiendaMax",
     "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
     "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
+  },
+  {
+    "id": 1789065257613,
+    "nombre": "🔊Anker Soundcore Motion 300",
+    "descripcion": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente en cualquier lugar. Equipado con una configuración estéreo de 30W RMS (dos transductores de rango completo acompañados de radiadores pasivos duales), ofrece agudos cristalinos, voces definidas y graves profundos impulsados por la tecnología BassUp™.",
+    "imagen": "https://tiendamax.org/imagenes/img_1789065256344.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789065256344.webp"
+    ],
+    "precioActual": 75,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "AUDIO",
+    "subcategoria": "AUDIO",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🔋Hasta 13 horas de autonomía",
+      "💧 Resistencia al agua IPX7",
+      "📏Dimensiones: 200 × 53 × 93 mm",
+      "⚖️Peso: 780 g"
+    ],
+    "fechaAgregado": "2026-09-10T18:34:17.613Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Anker",
+        "nota": "Soundcore"
+      },
+      {
+        "k": "Modelo",
+        "v": "Motion 300"
+      },
+      {
+        "k": "Potencia de Salida",
+        "v": "30W RMS",
+        "nota": "Sonido Estéreo: 2× transductores de rango completo de 15W + radiadores pasivos duales"
+      },
+      {
+        "k": "Certificación de Audio",
+        "v": "Hi-Res Wireless Audio",
+        "nota": "Soporte nativo de códec LDAC de hasta 990 kbps / 24-bit/96 kHz"
+      },
+      {
+        "k": "Conectividad Inalámbrica",
+        "v": "Bluetooth 5.3",
+        "nota": "alcance de hasta 15-20 m"
+      },
+      {
+        "k": "Autonomía de Batería",
+        "v": "Hasta 13 horas de reproducción continua",
+        "nota": "volumen moderado"
+      },
+      {
+        "k": "Puerto de Carga",
+        "v": "USB Tipo C",
+        "nota": "5V / 2A"
+      },
+      {
+        "k": "Grado de Protección",
+        "v": "IPX7",
+        "nota": "totalmente impermeable y sumergible en agua dulce hasta 1 m durante 30 min"
+      },
+      {
+        "k": "Tecnologías de Sonido",
+        "v": "SmartTune™ (ecualización adaptativa por sensor de inclinación), BassUp™ (refuerzo de bajos), TWS",
+        "nota": "True Wireless Stereo"
+      },
+      {
+        "k": "Personalización",
+        "v": "Compatible con la App Soundcore",
+        "nota": "Ecualizador gráfico Pro de 9 bandas y ajustes preestablecidos"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Sonido estéreo de 30W con graves profundos",
+        "d": "dos drivers de rango completo y radiadores pasivos enfrentados que entregan un sonido claro, potente y sin distorsión armónica incluso a volúmenes altos."
+      },
+      {
+        "d": "Audio inalámbrico de alta resolución (Hi-Res LDAC): transmite hasta 3 veces más datos que los códecs Bluetooth convencionales (SBC/AAC), preservando cada detalle y matiz acústico de las pistas."
+      },
+      {
+        "t": "Tecnología exclusiva SmartTune™",
+        "d": "incorpora un sensor de orientación que detecta automáticamente si la bocina está de pie, recostada boca arriba o colgada de su correa, ajustando la curva de ecualización en tiempo real para ofrecer siempre el mejor perfil sonoro."
+      },
+      {
+        "t": "Certificación impermeable IPX7",
+        "d": "chasis hermético resistente a la lluvia torrencial, salpicaduras en piscina, arena y caídas accidentales al agua."
+      },
+      {
+        "t": "Batería de larga duración (hasta 13 horas)",
+        "d": "permite disfrutar de música continua durante todo el día en viajes, paseos o campamentos sin depender de un tomacorriente."
+      },
+      {
+        "t": "Ecualizador Pro personalizable vía App",
+        "d": "acceso a múltiples perfiles de fábrica o ajuste manual banda por banda a través de la aplicación móvil Soundcore."
+      },
+      {
+        "t": "Modo TWS (True Wireless Stereo)",
+        "d": "permite enlazar inalámbricamente dos bocinas Motion 300 para duplicar la potencia y crear un canal izquierdo/derecho real."
+      },
+      {
+        "t": "Diseño ultraportátil con correa desmontable",
+        "d": "estructura compacta con recubrimiento de goma de tacto suave, rejilla metálica frontal y correa de transporte para llevarla fácilmente en la mano, mochila o manillar."
+      }
+    ],
+    "idealPara": [
+      "Salidas al aire libre, días de piscina, playa, senderismo o campamentos gracias a su resistencia total al agua (IPX7) y cuerpo de goma anti-impactos.",
+      "Usuarios y audiófilos que buscan fidelidad de sonido Hi-Res y códec LDAC en un altavoz verdaderamente portátil de bolsillo o mochila.",
+      "Espacios interiores como salas de estudio, terrazas, balcones, dormitorios y oficinas para escuchar música, podcasts o videollamadas con sonido nítido.",
+      "Fiestas y reuniones pequeñas combinando dos unidades en modo estéreo TWS."
+    ],
+    "incluye": [
+      "1× Bocina portátil Bluetooth Anker Soundcore Motion 300",
+      "1× Correa de transporte reforzada desmontable",
+      "1× Cable de carga USB-C a USB-C",
+      "1× Guía de seguridad e inicio rápido"
+    ]
   }
 ]
