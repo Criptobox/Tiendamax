@@ -100,9 +100,29 @@ const navegador = await chromium.launch({ executablePath: '/opt/pw-browsers/chro
 const ctx = await navegador.newContext({ viewport: { width: 412, height: 900 }, serviceWorkers: 'block' });
 const erroresJs = [];
 await ctx.route('**/*.firebaseio.com/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: 'null' }));
-await ctx.route(u => !u.hostname.includes('localhost'), r => r.abort());
+await ctx.route(u => !u.hostname.includes('localhost') && u.hostname !== 'api.github.com', r => r.abort());
 await ctx.route(u => u.pathname.endsWith('/principal-catalogo.json'),
     r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(PRINCIPAL) }));
+/* El "repositorio": lo que devuelve comparar-marcas.json y lo que se le sube.
+   Sin esto el test escribiría de verdad contra api.github.com. */
+let REPO = null;
+const SUBIDAS = [];
+await ctx.route(u => u.pathname.endsWith('/comparar-marcas.json'),
+    r => REPO ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(REPO) })
+              : r.fulfill({ status: 404, body: '' }));
+await ctx.route(u => u.hostname === 'api.github.com', r => {
+    const req = r.request();
+    if (req.method() === 'PUT') {
+        const cuerpo = JSON.parse(req.postData() || '{}');
+        const texto = Buffer.from(cuerpo.content, 'base64').toString('utf8');
+        SUBIDAS.push({ ruta: req.url().split('/contents/')[1], datos: JSON.parse(texto) });
+        REPO = JSON.parse(texto);
+        return r.fulfill({ status: 200, contentType: 'application/json', body: '{"content":{"sha":"x"}}' });
+    }
+    if (req.url().includes('/contents/'))
+        return r.fulfill({ status: 200, contentType: 'application/json', body: '{"sha":"sha1"}' });
+    return r.fulfill({ status: 200, contentType: 'application/json', body: '{"default_branch":"main"}' });
+});
 await ctx.route(u => u.pathname.endsWith('/principal-fichas.json'),
     r => r.fulfill({ status: 200, contentType: 'application/json',
                      body: JSON.stringify({ fichas: { '105': { descripcion: 'Descripción de prueba', garantia: '3 meses' } } }) }));
@@ -111,6 +131,9 @@ const pagina = await ctx.newPage();
 pagina.on('pageerror', e => erroresJs.push(String(e).slice(0, 200)));
 await pagina.addInitScript(prods => {
     localStorage.setItem('productos', JSON.stringify(prods));
+    localStorage.setItem('githubUser', 'quien');
+    localStorage.setItem('githubRepo', 'repo');
+    localStorage.setItem('githubToken', 'ghp_de_mentira');
 }, MIOS);
 await pagina.goto(`http://localhost:${PUERTO}/admin.html`);
 await pagina.waitForTimeout(2400);
@@ -233,8 +256,10 @@ await pagina.waitForTimeout(400);
 const faltanDespues = await bloque('Te faltan');
 ok(!faltanDespues || faltanDespues.n === faltanAntes - 1,
    'al emparejarlo debe salir de «Te faltan»');
-ok(await pagina.evaluate(() => !!JSON.parse(localStorage.getItem('tm_cmp_enlaces') || '{}')['105']),
-   'el emparejamiento tiene que sobrevivir a un repintado: se guarda en localStorage');
+ok(await pagina.evaluate(() => {
+       const m = JSON.parse(localStorage.getItem('tm_cmp_marcas') || '{}')['105'];
+       return !!(m && m.mio === '104');
+   }), 'el emparejamiento se guarda en el momento: si solo viviera en memoria, cerrar la pestaña antes de que suba al repositorio lo perdería');
 
 // Lo que hace que emparejar valga la pena: el producto pasa a compararse.
 // La Cámara nueva (ella 6) enlazada con el Router (yo 0 tras el test 5… no:
@@ -279,7 +304,44 @@ const vuelto = await bloque('Te faltan');
 ok(vuelto && vuelto.n === faltanAntes,
    `al deshacer deben volver los ${faltanAntes} de antes, hay ${vuelto ? vuelto.n : '?'}`);
 
-// ── 8) Rellenar el formulario ─────────────────────────────────────────
+// ── 8) Lo marcado a mano se guarda en el repositorio ─────────────────
+// Marcar cuesta trabajo: si vive solo en este navegador, cambiar de teléfono
+// lo tira. Y como puede marcarse desde dos aparatos, guardar el fichero
+// entero pisaría lo del otro sin avisar — por eso se fusiona marca a marca.
+await pagina.evaluate(() => { cmpEnlazar('105', '104'); cmpOcultar('108'); });
+await pagina.waitForTimeout(600);
+const estadoPre = await pagina.evaluate(() => (document.getElementById('cmp-estado') || {}).textContent || '');
+ok(/sin guardar/.test(estadoPre),
+   `mientras no ha subido, el pie debe decirlo; dice «${estadoPre}»`);
+ok(SUBIDAS.length === 0, 'dos toques seguidos no pueden ser dos commits: hay un respiro antes de subir');
+
+await pagina.waitForTimeout(4600);
+ok(SUBIDAS.length === 1, `tras el respiro debe haber UNA subida, hay ${SUBIDAS.length}`);
+ok(SUBIDAS[0] && SUBIDAS[0].ruta === 'comparar-marcas.json',
+   `se sube a comparar-marcas.json, no a ${SUBIDAS[0] && SUBIDAS[0].ruta}`);
+const subido = (SUBIDAS[0] && SUBIDAS[0].datos && SUBIDAS[0].datos.marcas) || {};
+ok(subido['105'] && subido['105'].mio === '104', 'el emparejamiento no llegó al fichero');
+ok(subido['108'] && subido['108'].oculto, 'el oculto no llegó al fichero');
+ok(Object.values(subido).every(m => m.ts), 'cada marca necesita su fecha: es lo que decide quién gana al fusionar');
+const estadoPost = await pagina.evaluate(() => (document.getElementById('cmp-estado') || {}).textContent || '');
+ok(/guardado/.test(estadoPost), `tras subir, el pie debe confirmarlo; dice «${estadoPost}»`);
+
+// Otro aparato marcó algo más mientras tanto: fusionar, no pisar.
+REPO = { actualizado: new Date().toISOString(), marcas: Object.assign({}, subido,
+    { '106': { oculto: true, ts: Date.now() } }) };
+await pagina.evaluate(() => cmpDesmarcar('108'));
+await pagina.waitForTimeout(4800);
+const ultimo = SUBIDAS[SUBIDAS.length - 1].datos.marcas;
+ok(ultimo['106'] && ultimo['106'].oculto,
+   'lo que marcó el otro aparato entre medias no puede desaparecer al subir lo de este');
+ok(ultimo['108'] && ultimo['108'].borrado,
+   'deshacer se guarda como lápida: si la marca se borrara sin más, el otro aparato la volvería a subir');
+ok(ultimo['105'] && ultimo['105'].mio === '104', 'el emparejamiento de antes sigue');
+
+await pagina.evaluate(() => { cmpDesmarcar('105'); cmpDesmarcar('106'); });
+await pagina.waitForTimeout(400);
+
+// ── 9) Rellenar el formulario ─────────────────────────────────────────
 await pagina.evaluate(() => cmpRellenar('105'));
 await pagina.waitForTimeout(800);
 const form = await pagina.evaluate(() => ({
@@ -301,7 +363,7 @@ ok(form.com === '10' && form.mon === 'USD',
    `la comisión del formulario quedó en ${form.com} ${form.mon}, debía ser 10 USD`);
 ok(form.gar === '3 meses', 'la garantía de la principal debería venir rellena');
 
-// ── 9) Nada se publica solo ───────────────────────────────────────────
+// ── 10) Nada se publica solo ──────────────────────────────────────────
 const guardados = await pagina.evaluate(() =>
     (JSON.parse(localStorage.getItem('productos') || '[]')).length);
 ok(guardados === MIOS.length,
@@ -317,4 +379,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 30 comprobaciones OK');
+console.log('✅ Comparar con la principal: 41 comprobaciones OK');

@@ -344,6 +344,9 @@ try{var _piel=localStorage.getItem('tm_piel');
   .cmp-marcas { margin-top:11px; border-top:1px solid rgba(255,255,255,.07); padding-top:9px; }
   .cmp-marcas-cab { background:none; border:0; padding:0; font-family:inherit; font-size:11.5px;
     font-weight:700; color:var(--muted); cursor:pointer; text-align:left; }
+  .cmp-estado { font-size:10.5px; color:var(--muted); margin-top:4px; }
+  .cmp-estado button { background:none; border:0; padding:0; font-family:inherit; font-size:10.5px;
+    font-weight:700; color:var(--o); cursor:pointer; text-decoration:underline; }
   .cmp-marcas-lista { margin-top:7px; display:flex; flex-direction:column; gap:5px; }
   .cmp-marca { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--muted);
     line-height:1.45; }
@@ -4480,15 +4483,127 @@ let CMP_DATOS = null, CMP_FICHAS_CACHE = null, CMP_ABIERTO = {}, CMP_PICKER = nu
    las comparaciones de precio, stock y comisión, que es de donde sale el
    dinero. Se guarda en este navegador (como el resto de los ajustes del
    panel), no en el catálogo. */
-const CMP_LS_ENLACES = 'tm_cmp_enlaces', CMP_LS_OCULTOS = 'tm_cmp_ocultos';
-let CMP_ENLACES = {}, CMP_OCULTOS = {};
+const CMP_MARCAS_ARCHIVO = 'comparar-marcas.json';
+const CMP_LS_MARCAS = 'tm_cmp_marcas';
+// Las bajas se guardan como lápida en vez de borrarse. Sin eso, deshacer algo
+// en el móvil no llega nunca al PC: el PC no ve la marca en el fichero, ve la
+// suya en local, y la vuelve a subir. Las viejas se tiran al escribir.
+const CMP_LAPIDA_DIAS = 90;
+
+/* CMP_MARCAS es la fuente: { idDeLaPrincipal: {mio|oculto|borrado, ts} }.
+   CMP_ENLACES y CMP_OCULTOS se derivan de ahí y son las que lee la pantalla. */
+let CMP_MARCAS = {}, CMP_ENLACES = {}, CMP_OCULTOS = {}, CMP_ESTADO = 'local';
+
+function cmpDerivar(){
+  CMP_ENLACES = {}; CMP_OCULTOS = {};
+  Object.entries(CMP_MARCAS).forEach(([id, m]) => {
+    if(!m || m.borrado) return;
+    if(m.mio) CMP_ENLACES[id] = String(m.mio);
+    else if(m.oculto) CMP_OCULTOS[id] = 1;
+  });
+}
+
+/* Fusión: gana la marca más reciente de cada producto, venga de donde venga.
+   Sin esto, marcar en el teléfono y abrir el panel en la computadora borra lo
+   del teléfono en cuanto la computadora publique: no falla nada, simplemente
+   el trabajo desaparece. Se fusiona por marca y no por fichero entero. */
+function cmpFusionar(a, b){
+  const out = Object.assign({}, a || {});
+  Object.entries(b || {}).forEach(([id, m]) => {
+    if(!m || typeof m !== 'object') return;
+    const previa = out[id];
+    if(!previa || (Number(m.ts) || 0) > (Number(previa.ts) || 0)) out[id] = m;
+  });
+  return out;
+}
+
+function _cmpIgual(a, b){
+  const orden = o => JSON.stringify(Object.keys(o || {}).sort().map(k => [k, o[k]]));
+  return orden(a) === orden(b);
+}
 function cmpLeerMarcas(){
-  try{ CMP_ENLACES = JSON.parse(localStorage.getItem(CMP_LS_ENLACES) || '{}') || {}; }catch(e){ CMP_ENLACES = {}; }
-  try{ CMP_OCULTOS = JSON.parse(localStorage.getItem(CMP_LS_OCULTOS) || '{}') || {}; }catch(e){ CMP_OCULTOS = {}; }
+  try{ CMP_MARCAS = JSON.parse(localStorage.getItem(CMP_LS_MARCAS) || '{}') || {}; }
+  catch(e){ CMP_MARCAS = {}; }
+  cmpDerivar();
 }
 function cmpGuardarMarcas(){
-  try{ localStorage.setItem(CMP_LS_ENLACES, JSON.stringify(CMP_ENLACES)); }catch(e){}
-  try{ localStorage.setItem(CMP_LS_OCULTOS, JSON.stringify(CMP_OCULTOS)); }catch(e){}
+  try{ localStorage.setItem(CMP_LS_MARCAS, JSON.stringify(CMP_MARCAS)); }catch(e){}
+  cmpDerivar();
+  cmpPublicarLuego();
+}
+function cmpMarcar(idPri, marca){
+  CMP_MARCAS[String(idPri)] = Object.assign({ts: Date.now()}, marca);
+  cmpGuardarMarcas();
+}
+
+/* Publicar al repo, con un respiro. Marcar diez productos seguidos son diez
+   toques en unos segundos; sin esperar serían diez commits y diez viajes de
+   ida y vuelta desde un móvil cubano. Lo de localStorage ya está guardado en
+   el toque, así que este retraso no arriesga nada. */
+let _cmpPubTimer = null, _cmpPubEnCurso = false;
+function cmpPublicarLuego(){
+  CMP_ESTADO = 'pendiente';
+  clearTimeout(_cmpPubTimer);
+  _cmpPubTimer = setTimeout(() => { cmpPublicar(); }, 4000);
+}
+async function cmpPublicar(){
+  const user = localStorage.getItem('githubUser'),
+        repo = localStorage.getItem('githubRepo'),
+        token = localStorage.getItem('githubToken');
+  if(!user || !repo || !token){ CMP_ESTADO = 'sin-token'; cmpPintarEstado(); return false; }
+  if(_cmpPubEnCurso) return false;
+  if(typeof subirArchivoAGitHub !== 'function'){ CMP_ESTADO = 'sin-token'; cmpPintarEstado(); return false; }
+  _cmpPubEnCurso = true;
+  CMP_ESTADO = 'guardando'; cmpPintarEstado();
+  try{
+    // Releer el fichero justo antes de escribir y fusionar: entre que se cargó
+    // la pantalla y ahora, el otro aparato puede haber subido lo suyo.
+    const remoto = await cmpBajarMarcas();
+    CMP_MARCAS = cmpPodar(cmpFusionar(remoto, CMP_MARCAS));
+    try{ localStorage.setItem(CMP_LS_MARCAS, JSON.stringify(CMP_MARCAS)); }catch(e){}
+    cmpDerivar();
+    await subirArchivoAGitHub(user, repo, token, CMP_MARCAS_ARCHIVO, {
+      actualizado: new Date().toISOString(),
+      marcas: CMP_MARCAS,
+    });
+    CMP_ESTADO = 'guardado';
+    cmpRender();
+    return true;
+  }catch(e){
+    CMP_ESTADO = 'error';
+    cmpPintarEstado();
+    showToast('⚠️ No se pudo guardar en el repositorio', (e && e.message) || 'Se queda en este teléfono');
+    return false;
+  }finally{ _cmpPubEnCurso = false; }
+}
+function cmpPodar(marcas){
+  const corte = Date.now() - CMP_LAPIDA_DIAS * 86400000;
+  const out = {};
+  Object.entries(marcas || {}).forEach(([id, m]) => {
+    if(m && m.borrado && (Number(m.ts) || 0) < corte) return;   // lápida vieja
+    if(m) out[id] = m;
+  });
+  return out;
+}
+async function cmpBajarMarcas(){
+  try{
+    const r = await fetch(CMP_MARCAS_ARCHIVO + '?_=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) return {};
+    const d = await r.json();
+    return (d && d.marcas && typeof d.marcas === 'object') ? d.marcas : {};
+  }catch(e){ return {}; }
+}
+function cmpPintarEstado(){
+  const el = $('#cmp-estado');
+  if(el) el.textContent = cmpEstadoTexto();
+}
+function cmpEstadoTexto(){
+  if(CMP_ESTADO === 'guardando') return '⏳ guardando…';
+  if(CMP_ESTADO === 'pendiente') return '⏳ sin guardar todavía';
+  if(CMP_ESTADO === 'guardado') return '✅ guardado en el repositorio';
+  if(CMP_ESTADO === 'error') return '⚠️ no se pudo guardar: solo en este aparato';
+  if(CMP_ESTADO === 'sin-token') return '📵 solo en este aparato (falta el token de GitHub)';
+  return '';
 }
 cmpLeerMarcas();
 
@@ -4604,7 +4719,11 @@ function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto, pie){
     + '<span class="cmp-tit">' + icono + ' ' + esc(titulo) + '</span>'
     + '<span class="cmp-chev">' + (abierto ? '▾' : '▸') + '</span></button>'
     + '<p class="cmp-porque">' + porque + '</p>'
-    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' + (pie || '') : '')
+    // El pie va FUERA del plegado: dice qué marcaste a mano y si llegó al
+    // repositorio, y esconderlo detrás de un desplegable es esconder justo la
+    // respuesta a «¿se guardó?».
+    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' : '')
+    + (pie || '')
     + '</div>';
 }
 function cmpPlegar(id){
@@ -4859,9 +4978,7 @@ function cmpPickerBuscar(v){
   if(c){ c.focus(); c.setSelectionRange(c.value.length, c.value.length); }
 }
 function cmpEnlazar(idPri, idMio){
-  CMP_ENLACES[String(idPri)] = String(idMio);
-  delete CMP_OCULTOS[String(idPri)];
-  cmpGuardarMarcas();
+  cmpMarcar(idPri, {mio: String(idMio)});
   CMP_PICKER = null; CMP_PICKER_Q = '';
   cmpRender();
   const mio = apFind(idMio);
@@ -4869,16 +4986,15 @@ function cmpEnlazar(idPri, idMio){
             'A partir de ahora se le comparan precio, stock y comisión');
 }
 function cmpOcultar(idPri){
-  CMP_OCULTOS[String(idPri)] = 1;
-  cmpGuardarMarcas();
+  cmpMarcar(idPri, {oculto: true});
   CMP_PICKER = null;
   cmpRender();
   showToast('Oculto de la lista', 'Puedes recuperarlo abajo, en «marcados a mano»');
 }
 function cmpDesmarcar(idPri){
-  delete CMP_ENLACES[String(idPri)];
-  delete CMP_OCULTOS[String(idPri)];
-  cmpGuardarMarcas();
+  // Lápida, no borrado: hay que poder contarle al otro aparato que esto se
+  // deshizo. Si desapareciera sin más, el otro volvería a subir su copia.
+  cmpMarcar(idPri, {borrado: true});
   cmpRender();
 }
 
@@ -4898,7 +5014,12 @@ function cmpPieMarcas(){
     + `<button type="button" class="cmp-marcas-cab" onclick="cmpVerMarcas()">`
     + (CMP_MARCAS_ABIERTO ? '▾' : '▸') + ' ' + n + ' marcado' + (n !== 1 ? 's' : '')
     + ' a mano · ' + enl.length + ' emparejado' + (enl.length !== 1 ? 's' : '')
-    + ', ' + oc.length + ' oculto' + (oc.length !== 1 ? 's' : '') + '</button>';
+    + ', ' + oc.length + ' oculto' + (oc.length !== 1 ? 's' : '') + '</button>'
+    // Marcar cuesta trabajo y va al repositorio: hay que poder ver si llegó.
+    + '<div class="cmp-estado"><span id="cmp-estado">' + cmpEstadoTexto() + '</span>'
+    + (CMP_ESTADO === 'pendiente' || CMP_ESTADO === 'error'
+        ? ' <button type="button" onclick="cmpPublicar()">guardar ya</button>' : '')
+    + '</div>';
   if(CMP_MARCAS_ABIERTO){
     html += '<div class="cmp-marcas-lista">'
       + enl.map(id => {
@@ -4922,10 +5043,25 @@ window.cmpEnlazar = cmpEnlazar;
 window.cmpOcultar = cmpOcultar;
 window.cmpDesmarcar = cmpDesmarcar;
 window.cmpVerMarcas = cmpVerMarcas;
+window.cmpPublicar = cmpPublicar;
 
 async function cmpCargar(forzar){
   const caja = $('#cmp-cuerpo');
   if(caja && !CMP_DATOS) caja.innerHTML = '<div class="empty" style="padding:26px"><div class="ico">⏳</div>Leyendo el catálogo de la principal…</div>';
+  // Lo marcado desde otro aparato. Se fusiona, no se sustituye: lo de aquí
+  // puede ser más nuevo y estar aún sin publicar.
+  const remoto = await cmpBajarMarcas();
+  CMP_MARCAS = cmpFusionar(remoto, CMP_MARCAS);
+  try{ localStorage.setItem(CMP_LS_MARCAS, JSON.stringify(CMP_MARCAS)); }catch(e){}
+  cmpDerivar();
+  // ¿La fusión aportó algo que el repositorio no tenía? Entonces hay trabajo
+  // de este aparato sin subir —se marcó sin conexión, o falló el guardado— y
+  // se sube ahora en vez de quedarse ahí callado hasta que se toque otra cosa.
+  if(_cmpIgual(CMP_MARCAS, remoto)){
+    if(CMP_ESTADO === 'local') CMP_ESTADO = Object.keys(remoto).length ? 'guardado' : 'local';
+  }else if(CMP_ESTADO !== 'guardando'){
+    cmpPublicarLuego();
+  }
   try{
     const r = await fetch(CMP_CAT + (forzar ? '?_=' + Date.now() : ''), forzar ? {cache:'no-store'} : {});
     if(r.ok){
