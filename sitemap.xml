@@ -100,7 +100,7 @@
     <loc>https://tiendamax.org/p/producto-1777924118004.html</loc>
     <lastmod>2026-09-10</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1778102214012.html</loc>
@@ -878,6 +878,12 @@
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1788797590930.html</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/producto-1789065257613.html</loc>
     <lastmod>2026-09-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
