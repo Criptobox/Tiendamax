@@ -3697,7 +3697,7 @@
     "nombre": "🔊 Xiaomi Sound Outdoor",
     "precioActual": 65,
     "precioOriginal": 75,
-    "imagen": "https://tiendamax.org/imagenes/img_1783836546487.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1789065763743.webp",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 3,
@@ -3715,11 +3715,11 @@
     "seoDescription": "(Nuevo en caja) ¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ⚡ Lo mejor de este altavoz: Potencia de 30W…",
     "comisionMoneda": "USD",
     "imagenes": [
+      "https://tiendamax.org/imagenes/img_1789065763743.webp",
+      "https://tiendamax.org/imagenes/img_1783836630474.webp",
       "https://tiendamax.org/imagenes/img_1783836546487.webp",
-      "https://tiendamax.org/imagenes/img_1780017975657.webp",
-      "https://tiendamax.org/imagenes/img_1783836630474.webp"
+      "https://tiendamax.org/imagenes/img_1780017975657.webp"
     ],
-    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes.",
     "ficha": [
       {
         "k": "Marca",
@@ -3790,7 +3790,8 @@
       "Días de playa, piscina, campamentos, terrazas y reuniones al aire libre donde se requiera resistencia al agua y gran potencia acústica.",
       "Llevar de viaje, paseos en bicicleta o caminatas gracias a su formato compacto, ligero y cordón de transporte.",
       "Disfrutar de música, podcasts y películas desde el móvil, tablet o laptop con sonido claro y graves envolventes."
-    ]
+    ],
+    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes."
   },
   {
     "id": 1780079294429,
@@ -10022,8 +10023,6 @@
       "1× Correa de transporte reforzada desmontable",
       "1× Cable de carga USB-C a USB-C",
       "1× Guía de seguridad e inicio rápido"
-    ],
-    "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
-    "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…"
+    ]
   }
 ]
