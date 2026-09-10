@@ -222,9 +222,14 @@ try{var _piel=localStorage.getItem('tm_piel');
   .section h3 { font-size:13px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:14px; display:flex; align-items:center; gap:8px; justify-content:space-between; }
   .section h3 .badge { background:rgba(255,255,255,0.06); color:var(--muted); padding:2px 8px; border-radius:8px; font-size:10px; font-weight:700; letter-spacing:0.4px; }
 
-  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-  @media (max-width:800px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+  /* minmax(0,1fr) y no 1fr: el mínimo por defecto de una columna de grid es
+     el ancho de su contenido, así que un nombre de producto largo estiraba la
+     columna más que la pantalla y el ellipsis de dentro no se activaba nunca
+     —no había nada que recortar, la caja había crecido—. Pasa en todas las
+     rejillas del panel, no solo en Inicio. */
+  .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+  @media (max-width:800px) { .grid-2,.grid-3 { grid-template-columns:minmax(0,1fr); } }
 
   .empty { text-align:center; padding:34px 18px; color:var(--muted); font-size:13px; line-height:1.6; }
   .empty .ico { font-size:40px; margin-bottom:10px; opacity:0.7; }
@@ -489,8 +494,8 @@ try{var _piel=localStorage.getItem('tm_piel');
     /* En móvil la burbuja sube a bottom:76px, así que tapa hasta 138px del
        final. Se reserva ese alto más el área segura del teléfono. */
     .content { padding:14px 12px calc(150px + env(safe-area-inset-bottom)) !important; }
-    .kpis { grid-template-columns:repeat(2,1fr) !important; }
-    .grid-2, .grid-3 { grid-template-columns:1fr !important; }
+    .kpis { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+    .grid-2, .grid-3 { grid-template-columns:minmax(0,1fr) !important; }
     .topbar h1 small { display:none; }
   }
 
@@ -3228,6 +3233,11 @@ window.tmInicioAgenda = renderAgendaInicio;
    moneda sin ninguna comisión no se dibuja — volver a llenar la pantalla de
    ceros es exactamente lo que se venía a quitar. */
 const GRAF_MESES = 6;
+// Tres y cuatro, no cinco y cinco: con los nombres reales del catálogo —"⚡
+// Inversor de Corriente Onda Senoidal Pura UNIZUKI 3000W"— dos listas de cinco
+// eran 600 px de scroll al final de Inicio para repetir lo que ya está en
+// Ventas. Lo de arriba es el resumen; el detalle vive en su pestaña.
+const MAS_DEJA_N = 3, ULTIMAS_N = 4;
 function _graficoMes(meses, campo, titulo, fmt, fondo){
   const max = Math.max(1, ...meses.map(m=>m[campo]));
   const barras = meses.map(m=>{
@@ -3237,7 +3247,7 @@ function _graficoMes(meses, campo, titulo, fmt, fondo){
          + `<span class="lbl">${esc(m.lbl)}</span></div>`;
   }).join('');
   return `<div style="font-size:10px;font-weight:800;letter-spacing:0.1em;color:${campo==='mn'?'var(--gold)':'var(--muted)'};margin:2px 0 0 4px">${titulo}</div>
-    <div class="bar-chart-wrap" style="padding:20px 4px 24px"><div class="bar-chart" style="height:104px">${barras}</div></div>`;
+    <div class="bar-chart-wrap" style="padding:17px 4px 21px"><div class="bar-chart" style="height:74px">${barras}</div></div>`;
 }
 function renderGananciaMeses(){
   const box = $('#inicio-graf'); if(!box) return;
@@ -3253,7 +3263,7 @@ function renderGananciaMeses(){
     box.innerHTML = `<div class="section" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;font-size:12px;color:var(--dim)"><span>📈 Mi ganancia por mes</span><b style="color:var(--muted)">sin comisiones registradas</b></div>`;
     return;
   }
-  box.innerHTML = `<div class="section"><h3>📈 Mi ganancia por mes <span class="badge">registro real</span></h3>
+  box.innerHTML = `<div class="section"><h3>📈 Mi ganancia por mes</h3>
     ${hayUSD ? _graficoMes(meses,'usd','EN USD', n=>'$'+Math.round(n), 'linear-gradient(180deg,var(--o),var(--oo))') : ''}
     ${hayMN  ? _graficoMes(meses,'mn', 'EN MN',  n=>Math.round(n)+'', 'linear-gradient(180deg,var(--gold),#8a6d3a)') : ''}
   </div>`;
@@ -3266,15 +3276,15 @@ function renderLoQueMasDeja(porProducto){
   const filas = Object.entries(porProducto||{})
     .filter(([,c]) => c.usd>0 || c.mn>0)
     .sort((a,b) => (b[1].usd-a[1].usd) || (b[1].mn-a[1].mn))
-    .slice(0,5);
+    .slice(0, MAS_DEJA_N);
   if(!filas.length){
     box.innerHTML = `<div style="font-size:12px;color:var(--dim);line-height:1.5">Cuando registres una venta con comisión, aquí sale qué producto te deja más.</div>`;
     return;
   }
-  box.innerHTML = filas.map(([nm,c],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px">
-    <div style="font-size:18px">${i===0?'🥇':'💰'}</div>
-    <div style="flex:1;min-width:0"><b style="color:#fff;font-size:12.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</b></div>
-    <span style="font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap">${esc(dosMonedas({usd:c.usd, mn:c.mn}))}</span>
+  box.innerHTML = filas.map(([nm,c],i)=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:5px">
+    <div style="font-size:15px;flex:0 0 auto">${i===0?'🥇':'💰'}</div>
+    <b style="flex:1;min-width:0;color:#fff;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</b>
+    <span style="font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap;flex:0 0 auto">${esc(dosMonedas({usd:c.usd, mn:c.mn}))}</span>
   </div>`).join('');
 }
 
@@ -3330,12 +3340,20 @@ function renderInicio(){
   renderLoQueMasDeja(gTotal.porProducto);
 
   // Actividad = últimas ventas, con la comisión de cada una
-  const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
+  const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0, ULTIMAS_N);
   $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{
     const d=ventaFecha(v), g=gananciasDe([v]);
     const tuyo = (g.usd||g.mn) ? dosMonedas({usd:g.usd, mn:g.mn}) : '—';
-    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1;min-width:0"><b style="color:#fff">${dosMonedas(ventaTotales(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span><small style="display:block;color:var(--gold);font-size:10.5px;font-weight:700;margin-top:2px">Tu comisión: ${tuyo}</small></div></div>`;
-  }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
+    // El importe y la comisión en el mismo renglón: en dos, cinco ventas eran
+    // 330 px. El cliente y la fecha van debajo, en gris, que es lo que menos
+    // se mira.
+    return `<div style="display:flex;align-items:center;gap:9px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:5px;font-size:12px">
+      <span style="font-size:15px;flex:0 0 auto">💰</span>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:baseline;gap:7px"><b style="color:#fff;white-space:nowrap">${dosMonedas(ventaTotales(v))}</b><span style="color:var(--gold);font-weight:800;font-size:11.5px;white-space:nowrap">tuyo ${esc(tuyo)}</span></div>
+        <small style="display:block;color:var(--dim);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.cliente||v.nombre||'sin cliente')}${d?' · '+d.toLocaleDateString('es-CU'):''}</small>
+      </div></div>`;
+  }).join('') : `<div style="font-size:12px;color:var(--dim);line-height:1.5">Aún no hay ventas registradas en este dispositivo.</div>`;
   // Badge alertas topbar: pinta primero lo cacheado (para que no quede en
   // blanco) y de inmediato pide el número real a Firebase para corregirlo.
   const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;

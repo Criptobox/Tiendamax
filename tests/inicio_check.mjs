@@ -46,7 +46,7 @@ const VENTAS = (() => {
     const hoy = new Date(), a = hoy.getFullYear(), m = hoy.getMonth();
     const t = (mes, dia) => new Date(a, mes, dia, 12).getTime();
     return [
-        { id:t(m,1),   total:320, productos:[{producto:'Inversor', cantidad:1, precio:320, comision:38, comisionMoneda:'USD'}] },
+        { id:t(m,1),   total:320, productos:[{producto:'⚡ Inversor de Corriente Onda Senoidal Pura UNIZUKI 3000W con Cargador', cantidad:1, precio:320, comision:38, comisionMoneda:'USD'}] },
         { id:t(m,2),   total:0, totalMN:9000, productos:[{producto:'Bombillo', cantidad:6, precio:1500, moneda:'MN', comision:300, comisionMoneda:'MN'}] },
         { id:t(m-1,5), total:180, productos:[{producto:'Router', cantidad:1, precio:180, comision:22, comisionMoneda:'USD'}] },
     ];
@@ -105,7 +105,26 @@ ok(/EN USD/.test(v.grafTxt) && /EN MN/.test(v.grafTxt),
 // 5) Y "lo que más te deja" es comisión, no unidades vendidas.
 ok(/\$/.test(v.masDeja), `"lo que más te deja" no enseña dinero: ${JSON.stringify(v.masDeja.slice(0,80))}`);
 
-// 6) Sin ninguna comisión, el bloque del gráfico se pliega a una línea en vez
+// 6) Un nombre largo se RECORTA; no estira la fila más que la pantalla.
+//    `1fr` en grid significa minmax(AUTO,1fr) y el mínimo "auto" es el ancho
+//    del contenido: con nowrap dentro, la columna crecía hasta 383 px en un
+//    teléfono de 360 y el text-overflow no llegaba a activarse nunca, porque
+//    no había nada que recortar. Se ve como filas que se salen de la tarjeta.
+const anchos = await pagina.evaluate(() => {
+    const pantalla = document.documentElement.clientWidth;
+    const medir = sel => [...document.querySelectorAll(sel)].map(e => Math.round(e.getBoundingClientRect().width));
+    return { pantalla,
+             nombres: medir('#inicio-top b'),
+             filas: medir('#inicio-top > div, #inicio-actividad > div'),
+             scroll: document.documentElement.scrollWidth };
+});
+const anchas = anchos.nombres.concat(anchos.filas).filter(w => w > anchos.pantalla);
+ok(anchas.length === 0,
+   `hay filas más anchas que la pantalla (${anchos.pantalla}px): ${JSON.stringify(anchas)} — la columna se estira en vez de recortar el nombre.`);
+ok(anchos.scroll <= anchos.pantalla + 1,
+   `la página se desplaza en horizontal (${anchos.scroll} > ${anchos.pantalla}).`);
+
+// 7) Sin ninguna comisión, el bloque del gráfico se pliega a una línea en vez
 //    de dejar 160 px de barras en cero.
 //    Se comprueba como pasa de verdad —una pestaña sin ninguna venta— y no
 //    llamando a la función por dentro: lo que importa es lo que ve quien abre
