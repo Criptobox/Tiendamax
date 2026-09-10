@@ -119,9 +119,9 @@
   .tm-btn:hover{opacity:.85}
   .tm-btn-p{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}
   .tm-btn-w{background:#25D366;color:#062B14}
-  /* Botón secundario para las fichas agotadas: el de WhatsApp deja de ser la
-     acción principal —no se puede pedir lo que no hay— y se queda como "por si
-     quieres preguntar otra cosa". */
+  /* Botón secundario. Con stock lo lleva "Ver más en TiendaMax", porque la
+     acción de la página es pedir; agotado lo lleva el de WhatsApp, porque no
+     se puede pedir lo que no hay y queda como "por si quieres preguntar". */
   .tm-btn-s{background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.35)}
   /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
   .tm-aviso{display:none;flex-direction:column;gap:10px;background:rgba(255,107,53,.07);
@@ -202,11 +202,12 @@
     <p class="tm-desc">Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales.</p>
     <div class="tm-stok-y">En stock (7 disponibles)</div>
     <div class="tm-actions">
-      <a href="https://tiendamax.org/?producto=1787888877372#producto-1787888877372" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>
-      <a href="https://wa.me/5354320170?text=Hola%2C%20me%20interesa%3A%20%F0%9F%8C%90%20MikroTik%20hEX%20S%20RB760iGS.%20https%3A//tiendamax.org/p/producto-1787888877372.html" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
+      <a href="https://wa.me/5354320170?text=Hola%2C%20me%20interesa%3A%20%F0%9F%8C%90%20MikroTik%20hEX%20S%20RB760iGS.%20https%3A//tiendamax.org/p/producto-1787888877372.html" class="tm-btn tm-btn-w" id="tmWa" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
+      <a href="https://tiendamax.org/?producto=1787888877372#producto-1787888877372" class="tm-btn tm-btn-s">🛍️ Ver más en TiendaMax</a>
     </div>
   </div>
 </main>
+
 
 <section class="tm-rel">
   <h2>También te puede interesar</h2>
@@ -224,6 +225,30 @@
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
 </footer>
+
+<script>
+(function(){
+var B="https://tiendamax-8feb5-default-rtdb.firebaseio.com",ID="1787888877372",C=30*60*1000,n=Date.now();if(!B)return;
+function g(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+function p(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+try{if(localStorage.getItem('githubToken')||localStorage.getItem('tm_auth_hash_v3')||localStorage.getItem('tm_es_admin'))return;}catch(e){}
+var F={whatsapp:'whatsapp',wa:'whatsapp','whatsapp-estado':'whatsapp-estado',story:'whatsapp-estado',estado:'whatsapp-estado',facebook:'facebook',fb:'facebook',instagram:'instagram',ig:'instagram',revolico:'revolico',rev:'revolico',copiado:'copiado',copy:'copiado','lote-categoria':'lote-categoria'};
+var q='';try{q=(new URLSearchParams(location.search).get('utm_source')||'').trim().toLowerCase();}catch(e){}
+var c=F[q]||'',h=new Date().toISOString().slice(0,10);
+function mas(r){var u=B+r+'.json',o={method:'PUT',headers:{'Content-Type':'application/json'},keepalive:true};
+fetch(u,Object.assign({body:'{".sv":{"increment":1}}'},o)).then(function(x){if(x.ok)return;
+return fetch(u).then(function(y){return y.ok?y.json():0;}).then(function(v){return fetch(u,Object.assign({body:JSON.stringify((typeof v==='number'?v:0)+1)},o));});}).catch(function(){});}
+function frio(k){var t=parseInt(g('tm_an_'+k)||'0',10)||0;if(t&&n-t<C)return false;p('tm_an_'+k,String(n));return true;}
+if(frio('vistas_'+ID))mas('/analytics/vistas/'+ID+'/count');
+if(!g('tm_visita_contada')){p('tm_visita_contada','1');
+mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
+if(c){mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}}
+var a=document.getElementById('tmWa');
+if(a){if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
+a.addEventListener('click',function(){if(frio('whatsapp_'+ID))mas('/analytics/whatsapp/'+ID+'/count');});}
+})();
+</script>
+
 
 </body>
 </html>

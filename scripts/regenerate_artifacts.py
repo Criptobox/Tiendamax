@@ -28,6 +28,7 @@ CONF = ROOT / "config.json"
 COMM = ROOT / "comisiones.json"
 SUBS = ROOT / "subcategorias.json"
 CATS = ROOT / "categorias.json"
+RESENAS = ROOT / "resenas-cache.json"
 P_DIR = ROOT / "p"
 C_DIR = ROOT / "c"
 OG_MANIFEST = ROOT / "og" / "manifiesto.json"
@@ -193,7 +194,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     "url": "{page_url}",
     "seller": {{"@type": "Organization", "name": "TiendaMax"}},
     "areaServed": {{"@type": "Country", "name": "Cuba"}}
-  }}
+  }}{json_extra}
 }}
 </script>
 
@@ -235,9 +236,9 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-btn:hover{{opacity:.85}}
   .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}}
   .tm-btn-w{{background:#25D366;color:#062B14}}
-  /* Botón secundario para las fichas agotadas: el de WhatsApp deja de ser la
-     acción principal —no se puede pedir lo que no hay— y se queda como "por si
-     quieres preguntar otra cosa". */
+  /* Botón secundario. Con stock lo lleva "Ver más en TiendaMax", porque la
+     acción de la página es pedir; agotado lo lleva el de WhatsApp, porque no
+     se puede pedir lo que no hay y queda como "por si quieres preguntar". */
   .tm-btn-s{{background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.35)}}
   /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
   .tm-aviso{{display:none;flex-direction:column;gap:10px;background:rgba(255,107,53,.07);
@@ -257,7 +258,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-aviso .msg.err{{color:#ff8a6b}}
   .tm-aviso .luego{{font-size:12px;color:#8a8078}}
   .tm-aviso .luego a{{color:#C9A96E;text-decoration:underline}}
-  @media (prefers-reduced-motion:reduce){{*{{transition:none !important}}}}
+{css_extra}  @media (prefers-reduced-motion:reduce){{*{{transition:none !important}}}}
   .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
   .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
   /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
@@ -316,21 +317,103 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       {pct_desc_html}
     </div>
     <p class="tm-desc">{desc_full}</p>
-    {stock_html}
+    {stock_html}{garantia_html}
     <div class="tm-actions">
       {acciones_html}
     </div>
   </div>
 </main>
 
+{resenas_html}
 {related_html}
 
 <footer class="tm-ftr">
   <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
 </footer>
+{medir_js}
 {aviso_js}
 </body>
 </html>
+"""
+
+
+# Estilos que solo necesitan unas pocas fichas. La hoja va en línea dentro
+# de cada página, así que dejarlos fijos sería mandarle a las 132 —y a cada
+# visita— reglas para un bloque que no existe en esa página.
+CSS_GARANTIA = """
+  /* Garantía (solo si el producto la trae escrita). */
+  .tm-gar{display:flex;gap:8px;font-size:13px;color:#C9A96E;background:rgba(201,169,110,.08);
+    border:1px solid rgba(201,169,110,.26);border-radius:10px;padding:10px 13px;
+    margin-bottom:20px;line-height:1.55}
+"""
+
+CSS_RESENAS = """
+  /* Reseñas reales, pintadas al generar (ver _resenas_html). */
+  .tm-res{max-width:1100px;margin:0 auto 44px;padding:0 20px}
+  .tm-res h2{font-size:18px;margin-bottom:14px;color:#f0e6d8}
+  .tm-res-item{background:#161010;border:1px solid rgba(201,169,110,.18);border-radius:12px;
+    padding:14px 16px;margin-bottom:10px}
+  .tm-res-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .tm-res-autor{font-size:14px;font-weight:700;color:#f0e6d8}
+  .tm-res-est{font-size:13px;color:#FFC857;letter-spacing:1px}
+  .tm-res-fecha{font-size:12px;color:#8a8078;margin-left:auto}
+  .tm-res-texto{font-size:14px;line-height:1.65;color:#a09080;white-space:pre-line}
+"""
+
+
+# ── Medir lo que traen los enlaces publicados ───────────────────────────────
+# Estas páginas son el destino de TODO lo que se publica, y hasta ahora no
+# escribían una sola línea en Firebase: solo cargaban gtag. Así que las vistas
+# por producto, los clics de WhatsApp y el canal de procedencia que enseña el
+# panel salían únicamente de quien navegaba tiendamax.org por su cuenta — o
+# sea, el tráfico que genera publicar era invisible justo en el panel donde se
+# decide qué publicar.
+#
+# No se carga js/analytics.js: son 20 KB y además pide config.json. Esto es
+# ~1,5 KB en línea (unos 650 B comprimidos, que es lo que viaja), sin una petición extra al cargar, y escribe en las MISMAS
+# rutas con la misma forma (contador entero en .../count) para que las dos
+# fuentes se sumen en vez de contarse aparte. Va sin comentarios y apretado a
+# propósito: se copia entero en las 132 páginas y cada línea la descarga cada
+# visita en 3G; el porqué de cada trozo está aquí y no allí.
+#
+#   - Las tres marcas de admin son las mismas que mira el sitio: el dueño abre
+#     sus propias fichas para comprobarlas y se contaba como cliente.
+#   - La tabla F es _TM_FUENTES, copiada. La clave termina siendo una ruta de
+#     Firebase, así que aceptar el utm_source tal cual dejaría que un enlace
+#     inventado creara nodos en la base.
+#   - Las llaves de sesión son LAS DEL SITIO, no unas propias: 'tm_an_vistas_ID'
+#     con su ventana de 30 min (analytics.js) y 'tm_visita_contada'
+#     (tm-patches.src.js). Con llaves distintas, quien entra por un enlace
+#     publicado y luego sigue a tiendamax.org contaría dos visitas — y la
+#     duplicada sería justo la del canal que se quiere medir.
+#   - El incremento del servidor es atómico y una sola petición; si la regla lo
+#     rechaza se cae al leer-y-escribir que usa el resto del sitio.
+#   - El utm se le pega al enlace de WhatsApp ya codificado, detrás de la URL
+#     del producto con que acaba el mensaje: sin JS el enlace sigue sirviendo,
+#     solo que sin marca de canal.
+MEDIR_JS = """
+<script>
+(function(){{
+var B={rtdb_json},ID={pid_json},C=30*60*1000,n=Date.now();if(!B)return;
+function g(k){{try{{return sessionStorage.getItem(k);}}catch(e){{return null;}}}}
+function p(k,v){{try{{sessionStorage.setItem(k,v);}}catch(e){{}}}}
+try{{if(localStorage.getItem('githubToken')||localStorage.getItem('tm_auth_hash_v3')||localStorage.getItem('tm_es_admin'))return;}}catch(e){{}}
+var F={{whatsapp:'whatsapp',wa:'whatsapp','whatsapp-estado':'whatsapp-estado',story:'whatsapp-estado',estado:'whatsapp-estado',facebook:'facebook',fb:'facebook',instagram:'instagram',ig:'instagram',revolico:'revolico',rev:'revolico',copiado:'copiado',copy:'copiado','lote-categoria':'lote-categoria'}};
+var q='';try{{q=(new URLSearchParams(location.search).get('utm_source')||'').trim().toLowerCase();}}catch(e){{}}
+var c=F[q]||'',h=new Date().toISOString().slice(0,10);
+function mas(r){{var u=B+r+'.json',o={{method:'PUT',headers:{{'Content-Type':'application/json'}},keepalive:true}};
+fetch(u,Object.assign({{body:'{{".sv":{{"increment":1}}}}'}},o)).then(function(x){{if(x.ok)return;
+return fetch(u).then(function(y){{return y.ok?y.json():0;}}).then(function(v){{return fetch(u,Object.assign({{body:JSON.stringify((typeof v==='number'?v:0)+1)}},o));}});}}).catch(function(){{}});}}
+function frio(k){{var t=parseInt(g('tm_an_'+k)||'0',10)||0;if(t&&n-t<C)return false;p('tm_an_'+k,String(n));return true;}}
+if(frio('vistas_'+ID))mas('/analytics/vistas/'+ID+'/count');
+if(!g('tm_visita_contada')){{p('tm_visita_contada','1');
+mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
+if(c){{mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}}}}
+var a=document.getElementById('tmWa');
+if(a){{if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
+a.addEventListener('click',function(){{if(frio('whatsapp_'+ID))mas('/analytics/whatsapp/'+ID+'/count');}});}}
+}})();
+</script>
 """
 
 
@@ -537,6 +620,97 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
     )
 
 
+def _garantia_html(producto: dict) -> str:
+    """La garantía del producto, si la tiene escrita.
+
+    La rellena el gestor a mano y solo 8 productos la traen; no se deduce ni se
+    rellena por defecto, porque aquí una garantía inventada es una promesa que
+    quien la lee viene luego a cobrar. Los textos cortos ("3 meses") se
+    presentan con su etiqueta; los largos ya vienen redactados y se imprimen
+    tal cual.
+    """
+    texto = (producto.get("garantia") or "").strip()
+    if not texto:
+        return ""
+    if len(texto) > 40:
+        # Los largos ya vienen redactados, con su propio icono a veces; añadirle
+        # el escudo delante deja dos emojis pegados.
+        return f'\n    <div class="tm-gar"><span>{escape(texto)}</span></div>'
+    return ('\n    <div class="tm-gar"><span aria-hidden="true">\U0001F6E1\uFE0F</span>'
+            f'<span>Garantía: {escape(texto)}</span></div>')
+
+
+def _estrellas(n: int) -> str:
+    n = max(0, min(5, int(n or 0)))
+    return "★" * n + "☆" * (5 - n)
+
+
+def _resenas_de(cache: dict, pid: str, limite: int = 3) -> list[dict]:
+    """Las reseñas reales de un producto, de la más nueva a la más vieja."""
+    por = (cache or {}).get("por_producto") or {}
+    lista = [r for r in (por.get(str(pid)) or []) if (r or {}).get("texto")]
+    lista.sort(key=lambda r: r.get("ts") or 0, reverse=True)
+    return lista[:limite]
+
+
+def _resenas_html(resenas: list[dict]) -> str:
+    """Las reseñas, pintadas al generar la página.
+
+    Van en el HTML y no en una petición desde el móvil: son tres líneas de
+    texto que ya existen cuando se genera el fichero, y pedirlas a Firebase
+    costaría una conexión más en 3G para enseñar lo mismo.
+    """
+    if not resenas:
+        return ""
+    filas = []
+    for r in resenas:
+        autor = escape((r.get("autor") or "Cliente").strip())
+        fecha = escape((r.get("fecha") or "").strip())
+        est = int(r.get("estrellas") or 0)
+        estrellas = (
+            f'<span class="tm-res-est" aria-label="{est} de 5 estrellas">{_estrellas(est)}</span>'
+            if est else ""
+        )
+        fecha_html = f'<span class="tm-res-fecha">{fecha}</span>' if fecha else ""
+        filas.append(
+            '<div class="tm-res-item">'
+            f'<div class="tm-res-top"><span class="tm-res-autor">{autor}</span>'
+            f'{estrellas}{fecha_html}</div>'
+            f'<div class="tm-res-texto">{escape((r.get("texto") or "").strip())}</div>'
+            "</div>"
+        )
+    titulo = "Lo que dicen quienes lo compraron" if len(filas) > 1 else "Lo que dice quien lo compró"
+    return (
+        '<section class="tm-res">\n'
+        f"  <h2>{titulo}</h2>\n  " + "\n  ".join(filas) + "\n</section>"
+    )
+
+
+def _resenas_jsonld(resenas: list[dict]) -> str:
+    """Las mismas reseñas para Google, o "" si el producto no tiene ninguna.
+
+    Se emite solo con reseñas de verdad: un aggregateRating sin reseñas debajo
+    es justo lo que Google penaliza, y aquí además sería mentira.
+    """
+    validas = [r for r in resenas if int(r.get("estrellas") or 0) > 0]
+    if not validas:
+        return ""
+    media = round(sum(int(r["estrellas"]) for r in validas) / len(validas), 1)
+    bloques = []
+    for r in validas:
+        bloques.append({
+            "@type": "Review",
+            "reviewRating": {"@type": "Rating", "ratingValue": int(r["estrellas"]),
+                             "bestRating": 5, "worstRating": 1},
+            "author": {"@type": "Person", "name": (r.get("autor") or "Cliente").strip()},
+            "reviewBody": (r.get("texto") or "").strip(),
+        })
+    agregado = {"@type": "AggregateRating", "ratingValue": media,
+                "reviewCount": len(validas), "bestRating": 5, "worstRating": 1}
+    return (',\n  "aggregateRating": ' + json.dumps(agregado, ensure_ascii=False)
+            + ',\n  "review": ' + json.dumps(bloques, ensure_ascii=False))
+
+
 def rtdb_url(config: dict) -> str:
     """La URL de la Realtime Database, sacada de config.json.
 
@@ -551,9 +725,11 @@ def rtdb_url(config: dict) -> str:
 
 
 def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
-                     rtdb: str = "") -> tuple[int, list[str]]:
+                     rtdb: str = "", resenas: dict | None = None) -> tuple[int, list[str]]:
     """Crea/actualiza páginas /p/ y borra las huérfanas."""
     P_DIR.mkdir(exist_ok=True)
+    if resenas is None:
+        resenas = read_json(RESENAS, {})
     written = 0
     valid_files = set()
 
@@ -671,10 +847,14 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         if stock > 0:
             wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
             wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
+            # WhatsApp va primero y es el botón principal: aquí no hay carrito
+            # ni pago, el pedido ES el mensaje. "Ver en TiendaMax" mandaba al
+            # catálogo entero a quien ya estaba mirando justo el producto que
+            # quería, así que pasa a segundo plano.
             acciones_html = (
-                f'<a href="{app_url}" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>\n'
-                f'      <a href="{wa_link}" class="tm-btn tm-btn-w" target="_blank" '
-                f'rel="noopener noreferrer">💬 Pedir por WhatsApp</a>'
+                f'<a href="{wa_link}" class="tm-btn tm-btn-w" id="tmWa" target="_blank" '
+                f'rel="noopener noreferrer">💬 Pedir por WhatsApp</a>\n'
+                f'      <a href="{app_url}" class="tm-btn tm-btn-s">🛍️ Ver más en TiendaMax</a>'
             )
         else:
             # Sin stock la pregunta se le da la vuelta: en vez de que el cliente
@@ -698,14 +878,24 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
                 f'        <div class="luego">¿Prefieres el aviso automático en el móvil? '
                 f'<a href="{app_url}">Actívalo en la tienda</a>.</div>\n'
                 f'      </div>\n'
-                f'      <a href="{wa_link}" class="tm-btn tm-btn-s" target="_blank" '
-                f'rel="noopener noreferrer">💬 Escríbeme</a>'
+                f'      <a href="{wa_link}" class="tm-btn tm-btn-s" id="tmWa" '
+                f'target="_blank" rel="noopener noreferrer">💬 Escríbeme</a>'
             )
 
-        # El JS solo viaja en las fichas agotadas. Las que tienen stock siguen
-        # sin una línea de más: son la mayoría y lo que las hace rápidas.
+        # El formulario de aviso solo viaja en las fichas agotadas: es lo único
+        # que necesitan y no tiene sentido en las que sí se pueden vender.
         aviso_js = "" if stock > 0 else AVISO_JS.format(
             rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid)))
+        # El contador, en cambio, va en todas: medir solo las agotadas sería
+        # medir justo las que no venden.
+        medir_js = MEDIR_JS.format(
+            rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid))) if rtdb else ""
+
+        garantia_html = _garantia_html(p)
+        del_producto = _resenas_de(resenas, pid)
+        resenas_html = _resenas_html(del_producto)
+        json_extra = _resenas_jsonld(del_producto)
+        css_extra = (CSS_GARANTIA if garantia_html else "") + (CSS_RESENAS if resenas_html else "")
 
         cat_slug = slugify(cat) if cat else ""
         breadcrumb_html, json_breadcrumb = _breadcrumb(cat, cat_slug, name, page_url)
@@ -737,6 +927,11 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             stock_html=stock_html,
             acciones_html=acciones_html,
             aviso_js=aviso_js,
+            medir_js=medir_js,
+            garantia_html=garantia_html,
+            resenas_html=resenas_html,
+            json_extra=json_extra,
+            css_extra=css_extra,
             breadcrumb_html=breadcrumb_html,
             json_breadcrumb=json_breadcrumb,
             related_html=related_html,

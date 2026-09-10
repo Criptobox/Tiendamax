@@ -446,6 +446,13 @@ function guardarVenta(venta) {
 }
 
 
+// Canales que puede llevar una venta. Los cinco primeros son los mismos que
+// cuenta /analytics/fuentes, para poder cruzar visitas con ventas del mismo
+// canal; 'conocido' es el que no viene de publicar nada y que, en una tienda
+// de barrio, suele ser el que más vende.
+const VENTA_ORIGENES = ['whatsapp', 'whatsapp-estado', 'facebook', 'instagram', 'revolico', 'conocido'];
+
+
 // Registra un pedido con uno o varios productos como UNA sola venta (un vale).
 // `cliente` es opcional: {nombre, tel}. Se guarda SOLO en localStorage — ver
 // más abajo, en el bloque que sube el pedido a Firebase.
@@ -507,6 +514,16 @@ function registrarVentaPedido(items, cliente, opts) {
         ganancia: ganancia,
         gananciaMN: gananciaMN
     };
+    // De dónde salió esta venta. Un toque opcional en el formulario, no un
+    // campo que haya que rellenar: la mitad de las ventas se anotan con prisa
+    // y un desplegable obligatorio acabaría con todas marcadas como lo primero
+    // de la lista, que es peor que no saberlo.
+    //
+    // Se queda en localStorage y NO viaja al pedido de Firebase: /pedidos/$id
+    // es de lectura pública y por dónde vende la tienda es cuenta suya.
+    const org = String((opts && opts.origen) || '').trim().toLowerCase();
+    if (VENTA_ORIGENES.indexOf(org) !== -1) venta.origen = org;
+
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
     // v.telefono) y salía vacío porque nadie los escribía nunca.
     if (cliente) {

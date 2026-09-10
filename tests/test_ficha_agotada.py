@@ -156,9 +156,12 @@ class ElScriptGeneradoEsValidoTest(unittest.TestCase):
         prod, html = _una(agotado=True)
         if not html:
             self.skipTest("no hay ninguna ficha de producto agotado")
-        m = re.search(r"<script>\n(\(function\(\)\{.*?)</script>", html, re.S)
-        self.assertIsNotNone(m, "no se encontró el script del aviso")
-        js = m.group(1)
+        # Se busca POR CONTENIDO, no por ser el primer <script>: la ficha lleva
+        # también el contador de visitas, que va antes y compila aparte (lo
+        # comprueba tests/test_ficha_venta.py).
+        guiones = re.findall(r"<script>\n(\(function\(\)\{.*?)</script>", html, re.S)
+        js = next((g for g in guiones if "tmAvisarBtn" in g), None)
+        self.assertIsNotNone(js, "no se encontró el script del aviso")
         self.assertNotIn("{{", js, "quedó un escape de format() sin resolver")
         self.assertNotIn("}}", js, "quedó un escape de format() sin resolver")
         r = subprocess.run([node, "--check", "-"], input=js,

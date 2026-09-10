@@ -293,6 +293,11 @@ try{var _piel=localStorage.getItem('tm_piel');
      partido en tres líneas: no se parece en nada al resto del panel y cuesta
      leerlo. Aquí van las mismas categorías como tira de chips y los productos
      como tarjetas con su foto, que es como se ven en el resto del admin. */
+  .vo-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .vo-chip { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.14); color:var(--muted);
+    border-radius:20px; padding:7px 12px; font-size:12.5px; font-weight:700; cursor:pointer;
+    font-family:inherit; white-space:nowrap; }
+  .vo-chip[aria-pressed="true"] { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:#fff; }
   .vp-cats { display:flex; gap:7px; overflow-x:auto; padding:2px 2px 9px; -ms-overflow-style:none; scrollbar-width:none; }
   .vp-cats::-webkit-scrollbar { display:none; }
   .vp-cat { flex:0 0 auto; padding:7px 13px; border-radius:999px; border:1px solid var(--border);
@@ -1473,6 +1478,15 @@ try{var _piel=localStorage.getItem('tm_piel');
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-cliente">Cliente <span style="color:var(--gray);font-weight:600">— opcional</span></label><input class="form-input" id="venta-cliente" placeholder="Nombre" autocomplete="off"></div>
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-tel">WhatsApp <span style="color:var(--gray);font-weight:600">— para el seguimiento</span></label><input class="form-input" id="venta-tel" placeholder="5355551234" inputmode="tel" autocomplete="off"></div>
           </div>
+          <!-- ¿De dónde salió esta venta? Un toque, y opcional. Es la otra
+               mitad del contador de /analytics/fuentes: ese dice cuánta gente
+               trae cada canal, y esto cuántos de esos compran. Sin él, un
+               canal con 200 visitas y cero ventas se ve igual que uno con 20
+               visitas y tres. Se puede volver a tocar para quitarlo. -->
+          <div class="form-group" style="margin:10px 0 0">
+            <label class="form-label">¿Por dónde llegó? <span style="color:var(--gray);font-weight:600">— opcional, un toque</span></label>
+            <div class="vo-chips" id="venta-origen" role="group" aria-label="Canal de la venta"></div>
+          </div>
           <button class="btn btn-primary" id="venta-registrar-btn" style="width:100%;margin-top:12px;display:none" onclick="ventaRegistrar()">✅ Registrar venta</button>
         </div>
         <div class="kpis" id="ventas-kpis"></div>
@@ -1923,7 +1937,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=b8955045"></script>
+<script src="js/tm-bundle.js?v=5158ceff"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2868,6 +2882,32 @@ function ventaRenderCart(){
   }).join('');
   ventaRenderTotales();
 }
+/* ── ¿Por dónde llegó la venta? ─────────────────────────────────────────
+   Cinco canales y un toque. Las claves son las MISMAS que cuenta
+   /analytics/fuentes (VENTA_ORIGENES en tm-ui.src.js), que es lo que permite
+   poner las visitas de un canal al lado de sus ventas; 'conocido' es el que
+   no viene de publicar nada.
+
+   Nada obligatorio y nada preseleccionado: un canal por defecto se quedaría
+   puesto en las ventas que se anotan con prisa y contaría ventas que no son
+   suyas — un dato falso, que es peor que la casilla vacía. */
+const VENTA_ORIGEN_CHIPS = [
+  ['whatsapp','💬 WhatsApp'], ['whatsapp-estado','🖼️ Estado'], ['facebook','📘 Facebook'],
+  ['instagram','📷 Instagram'], ['revolico','🟠 Revólico'], ['conocido','🤝 Conocido']
+];
+let VENTA_ORIGEN = '';
+function ventaRenderOrigen(){
+  const box=$('#venta-origen'); if(!box) return;
+  box.innerHTML = VENTA_ORIGEN_CHIPS.map(([k,txt])=>
+    `<button type="button" class="vo-chip" aria-pressed="${VENTA_ORIGEN===k}" `
+    + `onclick="ventaOrigenTocar('${escJsAttr(k)}')">${esc(txt)}</button>`).join('');
+}
+function ventaOrigenTocar(k){
+  VENTA_ORIGEN = (VENTA_ORIGEN===k) ? '' : k;   // volver a tocarlo lo quita
+  ventaRenderOrigen();
+}
+window.ventaOrigenTocar = ventaOrigenTocar;
+
 function ventaRegistrar(){
   if(!VENTA_CART.length)return;
   if(typeof registrarVentaPedido!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
@@ -2879,11 +2919,12 @@ function ventaRegistrar(){
     nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
     tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
   };
-  registrarVentaPedido(vendidos, cliente);
+  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN});
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
   VENTA_CART=[]; ventaRenderCart(); ventaRenderPicker();
+  VENTA_ORIGEN=''; ventaRenderOrigen();
   if($('#venta-cliente')) $('#venta-cliente').value='';
   if($('#venta-tel')) $('#venta-tel').value='';
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
@@ -4325,7 +4366,7 @@ function renderRadar(){
 
 /* ============ VENTAS ============ */
 function renderVentas(){
-  ventaRenderPicker();
+  ventaRenderPicker(); ventaRenderOrigen();
   const total=sumaMonedas(VENTAS, ventaTotales);
   const hoy=hoyKey(); let tHoy={usd:0,mn:0},nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){const t=ventaTotales(v); tHoy.usd+=t.usd; tHoy.mn+=t.mn; nHoy++;}});
   // Ganancias (comisiones) separadas por moneda. La cuenta vive en
@@ -4479,34 +4520,55 @@ const AN_FUENTE_ETIQUETA = {
   'whatsapp':'💬 WhatsApp', 'whatsapp-estado':'🖼️ Estado de WhatsApp',
   'facebook':'📘 Facebook', 'instagram':'📷 Instagram',
   'revolico':'🟠 Revólico', 'copiado':'🔗 Enlace copiado',
-  'lote-categoria':'🗂️ Lote por categoría'
+  'lote-categoria':'🗂️ Lote por categoría', 'conocido':'🤝 Conocido'
 };
+// Ventas por canal, de lo que se tocó en el formulario. Es la mitad que
+// convierte el contador en una decisión: 200 visitas de un canal que no
+// vende nada y 20 de otro que vende tres dicen dónde hay que publicar, y
+// por separado no lo dice ninguno de los dos.
+function ventasPorCanal(ventas){
+  const m = {};
+  (ventas||[]).forEach(v => { const k = v && v.origen; if(k) m[k] = (m[k]||0) + 1; });
+  return m;
+}
 async function cargarFuentes(){
   const box=$('#an-fuentes'); if(!box) return;
   const base=rtdbBase();
   if(!base){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>Configura Firebase para ver de dónde llegan.</div>'; return; }
   let datos=null;
   try{ const r=await fetch(base+'/analytics/fuentes.json?_='+Date.now(),{cache:'no-store'}); datos=r.ok?await r.json():null; }catch(e){}
-  const filas=Object.entries(datos||{})
-    .map(([k,v])=>[k, Number(v&&v.count)||0]).filter(([,n])=>n>0)
-    .sort((a,b)=>b[1]-a[1]);
+  const vpc = ventasPorCanal(VENTAS);
+  // Un canal que trajo ventas pero ninguna visita contada (se vendió por
+  // WhatsApp sin que nadie abriera el enlace, o 'conocido', que nunca la
+  // tiene) sigue apareciendo: la fila que falta es justo la que interesa.
+  const claves = new Set([...Object.keys(datos||{}), ...Object.keys(vpc)]);
+  const filas=[...claves]
+    .map(k=>[k, Number((datos||{})[k] && datos[k].count)||0, vpc[k]||0])
+    .filter(([,n,ven])=>n>0 || ven>0)
+    .sort((a,b)=>(b[2]-a[2]) || (b[1]-a[1]));
   if(!filas.length){
     box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>'
       + 'Todavía no hay visitas con canal marcado. Empieza a contar en cuanto alguien abra uno de los enlaces que publiques a partir de ahora.</div>';
     return;
   }
   const total=filas.reduce((s,[,n])=>s+n,0);
-  box.innerHTML=filas.map(([k,n])=>{
-    const pct=Math.round(n/total*100);
+  const totalVen=filas.reduce((s,[,,v])=>s+v,0);
+  box.innerHTML=filas.map(([k,n,ven])=>{
+    const pct=total?Math.round(n/total*100):0;
+    const ventasTxt = ven
+      ? `<span style="color:var(--green);font-weight:700">${ven} venta${ven!==1?'s':''}</span>`
+      : (n>=20 ? '<span style="color:var(--muted)">sin ventas todavía</span>' : '');
     return `<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:#fff;margin-bottom:4px">
-        <span>${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o)">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
+      <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700;color:#fff;margin-bottom:4px">
+        <span>${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o);white-space:nowrap">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
       </div>
       <div style="height:7px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden">
         <div style="height:100%;width:${pct}%;background:var(--o);border-radius:4px"></div>
       </div>
+      ${ventasTxt?`<div style="font-size:11.5px;margin-top:3px">${ventasTxt}</div>`:''}
     </div>`;
-  }).join('') + `<div style="font-size:11px;color:var(--muted);margin-top:8px">${total.toLocaleString('es-US')} visita(s) con canal identificado.</div>`;
+  }).join('') + `<div style="font-size:11px;color:var(--muted);margin-top:8px">${total.toLocaleString('es-US')} visita(s) con canal identificado`
+    + (totalVen?` · ${totalVen} venta(s) con canal marcado`:'') + `.</div>`;
 }
 
 async function cargarVisitasWeb(){

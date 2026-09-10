@@ -60,7 +60,7 @@ class DatosDelClienteTest(unittest.TestCase):
         self.assertIn('id="venta-cliente"', self.admin, "falta el campo de nombre en la venta")
         self.assertIn('id="venta-tel"', self.admin, "falta el campo de WhatsApp en la venta")
         self.assertRegex(
-            self.admin, r"registrarVentaPedido\(\s*vendidos\s*,\s*cliente\s*\)",
+            self.admin, r"registrarVentaPedido\(\s*vendidos\s*,\s*cliente\s*[,)]",
             "ventaRegistrar debe pasarle el cliente al motor",
         )
 
