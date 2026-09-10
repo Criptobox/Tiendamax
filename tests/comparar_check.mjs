@@ -52,9 +52,13 @@ const PRINCIPAL = {
         // Diferencia de verdad: misma moneda, otro número.
         { id: '102', nombre: 'Timbre', precio: 25, stock: 3, categoria: 'Hogar',
           comision: 1000, comisionMoneda: 'MN' },
-        // Precio distinto, sin más.
+        // Precio distinto, sin más. Los dos con stock: se puede vender hoy.
         { id: '103', nombre: 'Batería', precio: 270, precioMoneda: 'USD', stock: 2,
           categoria: 'Energia', comision: 10, comisionMoneda: 'USD' },
+        // Precio distinto pero agotado EN LAS DOS: es verdad y no es trabajo
+        // de hoy. Con el catálogo real esto era 5 de cada 6 filas.
+        { id: '115', nombre: 'Dormido', precio: 90, precioMoneda: 'USD', stock: 0,
+          categoria: 'Hogar', comision: 5, comisionMoneda: 'USD' },
         // La principal se contradice consigo misma: su página dice 55 y su
         // ficha interna 60. Va aparte para que ninguna otra comprobación lo
         // toque antes.
@@ -112,6 +116,7 @@ const MIOS = [
     // Lo vendo yo y la principal ni lo tiene: no sale en ninguna lista.
     // Mismo id que la primera ficha «Alarma» de la principal: empareja sola.
     { id: 112, nombre: 'KIT de alarma con panel', precioActual: 170, stock: 0, comision: 5, comisionMoneda: 'USD' },
+    { id: 115, nombre: 'Dormido', precioActual: 100, stock: 0, comision: 5, comisionMoneda: 'USD' },
     { id: 900, nombre: 'Solo mío', precioActual: 10, stock: 3, comision: 2, comisionMoneda: 'USD' },
 ];
 
@@ -462,6 +467,49 @@ ok(ultimo['105'] && ultimo['105'].mio === '104', 'el emparejamiento de antes sig
 await pagina.evaluate(() => { cmpDesmarcar('105'); cmpDesmarcar('106'); });
 await pagina.waitForTimeout(400);
 
+// ── 9) Lo agotado no estorba, pero tampoco se borra ─────────────────
+// Una diferencia de precio en algo que está en cero es verdad y no es
+// trabajo de hoy: no se puede vender. En el catálogo real eran 5 de 6 filas,
+// y mezcladas convertían la pantalla en ruido que escondía la única útil.
+await pagina.evaluate(() => {
+    const c = document.querySelector(`.cmp-cab[onclick*="'pre'"]`);
+    if (c && c.getAttribute('aria-expanded') !== 'true') cmpPlegar('pre');
+});
+await pagina.waitForTimeout(400);
+const preDorm = await pagina.evaluate(() => {
+    const b = [...document.querySelectorAll('.cmp-bloque')]
+        .find(e => e.querySelector('.cmp-tit').textContent.includes('Precio distinto'));
+    if (!b) return null;
+    return {
+        badge: Number(b.querySelector('.cmp-n').textContent),
+        visibles: [...b.querySelectorAll('.cmp-filas > .cmp-fila')].map(f => f.textContent),
+        linea: (b.querySelector('.cmp-dorm > button') || {}).textContent || '',
+    };
+});
+ok(preDorm, 'el bloque de precio debería existir');
+ok(preDorm && preDorm.badge === 1,
+   `el número grande cuenta lo que se puede hacer HOY (1, la Batería), dice ${preDorm && preDorm.badge}`);
+ok(preDorm && !preDorm.visibles.some(t => /Dormido/.test(t)),
+   'un producto agotado en las dos tiendas no puede estar entre las filas de trabajo');
+ok(preDorm && /1 más, agotado/.test(preDorm.linea),
+   `tiene que decir cuántas aparta y por qué; dice «${preDorm && preDorm.linea}»`);
+
+// Apartar no es borrar: cuando vuelva el stock el precio tiene que estar bien.
+await pagina.evaluate(() => cmpVerDormidas('pre'));
+await pagina.waitForTimeout(400);
+const abierto = await pagina.evaluate(() => {
+    const b = [...document.querySelectorAll('.cmp-bloque')]
+        .find(e => e.querySelector('.cmp-tit').textContent.includes('Precio distinto'));
+    const f = [...b.querySelectorAll('.cmp-fila')].find(x => x.textContent.includes('Dormido'));
+    return f ? { hay: true, marcada: f.classList.contains('cmp-fila-dorm'),
+                 tag: !!f.querySelector('.cmp-tag-dorm'),
+                 boton: !!f.querySelector('.cmp-b') } : { hay: false };
+});
+ok(abierto.hay, 'la fila apartada tiene que poder abrirse: no se ha borrado');
+ok(abierto.marcada && abierto.tag,
+   'y verse como lo que es, agotada, o al abrirla vuelve a confundir');
+ok(abierto.boton, 'sigue teniendo su botón: el precio hay que poder arreglarlo igual');
+
 // ── 9) Rellenar el formulario ─────────────────────────────────────────
 await pagina.evaluate(() => cmpRellenar('105'));
 await pagina.waitForTimeout(800);
@@ -500,4 +548,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 54 comprobaciones OK');
+console.log('✅ Comparar con la principal: 61 comprobaciones OK');

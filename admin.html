@@ -320,6 +320,15 @@ try{var _piel=localStorage.getItem('tm_piel');
     font-family:inherit; cursor:pointer; white-space:nowrap; }
   .cmp-b-ok { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:var(--o); }
   .cmp-b:active { transform:scale(.97); }
+  .cmp-n-dorm { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.14);
+    color:var(--muted); }
+  .cmp-dorm { margin-top:9px; }
+  .cmp-dorm > button { background:none; border:0; padding:0; font-family:inherit; font-size:11.5px;
+    font-weight:700; color:var(--muted); cursor:pointer; text-align:left; }
+  .cmp-fila-dorm { opacity:.62; }
+  .cmp-txt .cmp-tag-dorm { display:inline-block; margin-top:3px; font-size:10px; font-weight:800;
+    letter-spacing:.4px; text-transform:uppercase; color:var(--muted);
+    background:rgba(255,255,255,.06); border-radius:5px; padding:1px 5px; }
   .cmp-alias { color:#7d746c !important; font-style:italic; }
   .cmp-otro { color:#7d746c; font-style:italic; }
   .cmp-pick-ojo { font-size:10.5px; color:var(--muted); line-height:1.4; margin-bottom:2px; }
@@ -4705,28 +4714,36 @@ function cmpAnalizar(datos, mios){
     if(pri.stock > 0 && miStock <= 0) g.repuestos.push({pri, mio});
     if(pri.stock <= 0 && miStock > 0) g.fantasma.push({pri, mio});
 
+    /* Una diferencia de precio o comisión en algo que está en cero —en mi web
+       o en la principal— es verdad, pero no es trabajo de hoy: no se puede
+       vender. Con el catálogo real son 5 de 6 filas, así que dejarlas
+       mezcladas convierte la pantalla en ruido y esconde la única que sí
+       importa. No se borran: se apartan detrás de una línea, porque cuando
+       vuelva el stock el precio tiene que estar bien. */
+    const dormido = miStock <= 0 || pri.stock <= 0;
+
     const pp = cmpNum(pri.precio), pm = cmpNum(mio.precioActual);
     const monP = pri.precioMoneda || 'USD', monM = cmpMonedaPrecioMia(mio);
     if(pp > 0 && monP !== monM){
       // «280 cup» no son 280 dólares. Comparar el número suelto es el mismo
       // error que enfrentar 1500 MN con $1,80.
-      g.dudosas.push({pri, mio, porque:'la principal lo pone en ' + monP + ' y tú en ' + monM
+      g.dudosas.push({pri, mio, dormido, porque:'la principal lo pone en ' + monP + ' y tú en ' + monM
         + ': el precio no se puede comparar sin convertir'});
     }else if(pp > 0 && Math.abs(pp - pm) > CMP_EPS){
-      g.precio.push({pri, mio, de:pm, a:pp, moneda:monP, otro:pri.precioOtro});
+      g.precio.push({pri, mio, dormido, de:pm, a:pp, moneda:monP, otro:pri.precioOtro});
     }
 
     if(pri.comisionDudosa){
-      g.dudosas.push({pri, mio, porque: pri.comisionDudosa});
+      g.dudosas.push({pri, mio, dormido, porque: pri.comisionDudosa});
     } else if(pri.comision != null){
       const monPri = pri.comisionMoneda || 'USD', monMio = cmpMonedaMia(mio);
       const cp = cmpNum(pri.comision), cm = cmpNum(mio.comision);
       if(monPri !== monMio){
         // Distinta moneda: NO es una diferencia de dinero comparable. Se
         // enseña para que lo mire una persona, sin decir cuál es mayor.
-        g.dudosas.push({pri, mio, porque:'tú la tienes en ' + monMio + ' y la principal en ' + monPri});
+        g.dudosas.push({pri, mio, dormido, porque:'tú la tienes en ' + monMio + ' y la principal en ' + monPri});
       } else if(Math.abs(cp - cm) > CMP_EPS){
-        g.comision.push({pri, mio, de:cm, a:cp, moneda:monPri});
+        g.comision.push({pri, mio, dormido, de:cm, a:cp, moneda:monPri});
       }
     }
   });
@@ -4763,29 +4780,56 @@ function cmpNombreFila(r){
     + (distinto ? '<small class="cmp-alias">en la principal: ' + esc(r.pri.nombre) + '</small>' : '');
 }
 
-function cmpFila(clave, texto, botones, foto){
-  return '<div class="cmp-fila">'
+function cmpFila(clave, texto, botones, foto, dormido){
+  return '<div class="cmp-fila' + (dormido ? ' cmp-fila-dorm' : '') + '">'
     + (foto ? '<img class="cmp-foto" src="' + esc(foto) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : '')
-    + '<div class="cmp-txt">' + texto + '</div>'
+    + '<div class="cmp-txt">' + texto
+    + (dormido ? '<small class="cmp-tag-dorm">agotado</small>' : '') + '</div>'
     + '<div class="cmp-btns">' + botones + '</div></div>';
 }
 
-function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto, pie){
-  if(!filas.length && !pie) return '';
+function cmpBloque(id, icono, titulo, porque, filas, abiertoPorDefecto, pie, dormidas){
+  dormidas = dormidas || [];
+  if(!filas.length && !dormidas.length && !pie) return '';
   const abierto = (CMP_ABIERTO[id] !== undefined) ? CMP_ABIERTO[id] : !!abiertoPorDefecto;
+  // El número grande cuenta lo que se puede hacer HOY. Cuando no hay nada
+  // que hacer pero sí filas dormidas, el número sale apagado en vez de un
+  // «0» que parece un error.
+  const soloDormidas = !filas.length && dormidas.length > 0;
   return '<div class="section cmp-bloque">'
     + `<button type="button" class="cmp-cab" aria-expanded="${abierto}" onclick="cmpPlegar('${id}')">`
-    + '<span class="cmp-n">' + filas.length + '</span>'
+    + '<span class="cmp-n' + (soloDormidas ? ' cmp-n-dorm' : '') + '">'
+    + (soloDormidas ? dormidas.length : filas.length) + '</span>'
     + '<span class="cmp-tit">' + icono + ' ' + esc(titulo) + '</span>'
     + '<span class="cmp-chev">' + (abierto ? '▾' : '▸') + '</span></button>'
     + '<p class="cmp-porque">' + porque + '</p>'
     // El pie va FUERA del plegado: dice qué marcaste a mano y si llegó al
     // repositorio, y esconderlo detrás de un desplegable es esconder justo la
     // respuesta a «¿se guardó?».
-    + (abierto ? '<div class="cmp-filas">' + filas.join('') + '</div>' : '')
+    + (abierto && filas.length ? '<div class="cmp-filas">' + filas.join('') + '</div>' : '')
+    + (abierto && dormidas.length ? cmpDormidas(id, dormidas, filas.length > 0) : '')
     + (pie || '')
     + '</div>';
 }
+/* Las que ahora mismo no se pueden vender: se cuentan, se pueden abrir, y
+   no estorban. Borrarlas sería peor —cuando el producto vuelva, el precio
+   seguiría mal— y dejarlas mezcladas es lo que hacía la pantalla confusa. */
+let CMP_DORM = {};
+function cmpDormidas(id, filas, hayActivas){
+  const abierto = !!CMP_DORM[id];
+  // «1 más» solo se puede decir si hay algo de lo que sea más.
+  const n = filas.length;
+  const texto = (hayActivas ? n + ' más, agotado' : n + ' agotado')
+    + (n !== 1 ? 's' : '') + ' ahora mismo';
+  return '<div class="cmp-dorm">'
+    + `<button type="button" onclick="cmpVerDormidas('${id}')">`
+    + (abierto ? '▾' : '▸') + ' ' + texto + '</button>'
+    + (abierto ? '<div class="cmp-filas" style="margin-top:8px">' + filas.join('') + '</div>' : '')
+    + '</div>';
+}
+function cmpVerDormidas(id){ CMP_DORM[id] = !CMP_DORM[id]; cmpRender(); }
+window.cmpVerDormidas = cmpVerDormidas;
+
 function cmpPlegar(id){
   const cab = document.querySelector(`.cmp-cab[onclick*="'${id}'"]`);
   CMP_ABIERTO[id] = !(cab && cab.getAttribute('aria-expanded') === 'true');
@@ -4798,6 +4842,15 @@ function cmpPlegar(id){
    arma, y entonces ni una persona leyendo el HTML ni test_onclick_global.py
    pueden ver cuál es la función que se llama de verdad al tocarlo. */
 function cmpIdAttr(p){ return escJsAttr(String((p||{}).id)); }
+
+/* Parte un grupo en lo que se puede hacer hoy y lo que está agotado, usando
+   el MISMO pintor para las dos mitades: dos pintores distintos acabarían
+   enseñando cosas distintas, y la mitad escondida es la que nadie revisa. */
+function cmpPartir(grupo, pintor){
+  const hoy = [], dormidas = [];
+  (grupo || []).forEach(r => (r.dormido ? dormidas : hoy).push(pintor(r)));
+  return {hoy, dormidas};
+}
 
 function cmpRender(){
   const caja = $('#cmp-cuerpo'), sub = $('#cmp-sub');
@@ -4865,9 +4918,7 @@ function cmpRender(){
       r.pri.foto)),
     false, cmpPieMarcas()));
 
-  bloques.push(cmpBloque('pre', '💲', 'Precio distinto',
-    'La principal cambió el precio y tu web sigue con el viejo.',
-    g.precio.map(r => cmpFila('pre',
+  const _pre = cmpPartir(g.precio, r => cmpFila('pre',
       cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
         + cmpDinero(r.a, r.moneda)
         // La principal guarda el precio dos veces y a veces no coinciden. Se
@@ -4877,25 +4928,30 @@ function cmpRender(){
             + cmpDinero(r.otro, r.moneda) + ')</em>' : '')
         + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerPrecio('${cmpIdAttr(r.mio)}',${r.a})">Poner ${cmpDinero(r.a, r.moneda)}</button>`,
-      r.mio.imagen))));
+      r.mio.imagen, r.dormido));
+  bloques.push(cmpBloque('pre', '💲', 'Precio distinto',
+    'La principal cambió el precio y tu web sigue con el viejo.',
+    _pre.hoy, false, '', _pre.dormidas));
 
-  bloques.push(cmpBloque('com', '💵', 'Comisión distinta',
-    'Lo que ganas tú por vender cada uno. Solo se comparan las que están en la misma moneda.',
-    g.comision.map(r => cmpFila('com',
+  const _com = cmpPartir(g.comision, r => cmpFila('com',
       cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
         + cmpDinero(r.a, r.moneda) + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerComision('${cmpIdAttr(r.mio)}',${r.a},'${r.moneda}')">Poner ${cmpDinero(r.a, r.moneda)}</button>`,
-      r.mio.imagen))));
+      r.mio.imagen, r.dormido));
+  bloques.push(cmpBloque('com', '💵', 'Comisión distinta',
+    'Lo que ganas tú por vender cada uno. Solo se comparan las que están en la misma moneda.',
+    _com.hoy, false, '', _com.dormidas));
 
   // Sin botón a propósito: no hay una cifra de la que fiarse, así que ofrecer
   // "ponerla" sería ofrecer copiar un dato roto.
+  const _dud = cmpPartir(g.dudosas, r => cmpFila('dud',
+      cmpNombreFila(r) + '<small>' + esc(r.porque) + '</small>',
+      `<button type="button" class="cmp-b" onclick="cmpAbrirEnProductos('${cmpIdAttr(r.mio)}')">Ver el mío</button>`,
+      r.mio.imagen, r.dormido));
   bloques.push(cmpBloque('dud', '🔍', 'Lo que no puedo comparar',
     'La principal se contradice, o el dato está en otra moneda. Pregúntale antes de tocarlo: '
     + '1500 MN y $1,80 son casi lo mismo, y cambiar uno por otro te cuesta dinero de verdad.',
-    g.dudosas.map(r => cmpFila('dud',
-      cmpNombreFila(r) + '<small>' + esc(r.porque) + '</small>',
-      `<button type="button" class="cmp-b" onclick="cmpAbrirEnProductos('${cmpIdAttr(r.mio)}')">Ver el mío</button>`,
-      r.mio.imagen))));
+    _dud.hoy, false, '', _dud.dormidas));
 
   caja.innerHTML = bloques.join('') || '';
 }
