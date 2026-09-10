@@ -91,6 +91,40 @@ class ComisionTest(unittest.TestCase):
         return (c["moneda"], c["valor"])
 
 
+class PrecioTest(unittest.TestCase):
+    """El precio se lee como lo lee la propia página de la principal.
+
+    Guarda el precio DOS veces —`precio`, un texto («$115», «280 cup»), y
+    `precioActual`, un número— y en 12 de sus 108 productos no coinciden. Su
+    catálogo pinta `precio` (buildCatalogHTML, en su app.js), así que ese es
+    el que ve cualquiera que abra la página. Leyendo el número, la pantalla
+    decía que un cargador VEVOR costaba $145 mientras la página de la
+    principal, abierta al lado, decía $125.
+    """
+
+    def test_manda_el_texto_que_pinta_su_pagina(self):
+        p = cp.precio_de({"precio": "$115", "precioActual": 130})
+        self.assertEqual(115.0, p["valor"])
+        self.assertEqual(130.0, p["otro"], "el número que discrepa se conserva para poder enseñarlo")
+
+    def test_sin_texto_se_usa_el_numero(self):
+        self.assertEqual(80.0, cp.precio_de({"precioActual": 80})["valor"])
+
+    def test_cuando_coinciden_no_hay_nada_que_avisar(self):
+        self.assertIsNone(cp.precio_de({"precio": "$80 USD", "precioActual": 80})["otro"])
+
+    def test_280_cup_no_son_280_dolares(self):
+        # Caso real: «Cable de red categoría 6». Salía en la pantalla como
+        # $280 —encabezando la lista de lo que falta por subir— cuando son
+        # unos 4 dólares. Es el error de la Linterna, en el precio.
+        p = cp.precio_de({"precio": "280 cup", "precioActual": 280})
+        self.assertEqual("MN", p["moneda"])
+        self.assertIsNone(p["otro"], "en monedas distintas, el otro número no es comparable")
+
+    def test_lo_normal_es_USD(self):
+        self.assertEqual("USD", cp.precio_de({"precio": "$45", "precioActual": 45})["moneda"])
+
+
 class NoSeLlevaNadaDeLosClientesTest(unittest.TestCase):
     """De data.json solo salen productos y categorías. Nada más."""
 
@@ -262,6 +296,20 @@ class ElFicheroPublicadoTest(unittest.TestCase):
             if p.get("comision") is not None:
                 self.assertIn(p.get("comisionMoneda"), ("USD", "MN"),
                               f"{p['nombre']}: una comisión sin moneda no se puede comparar")
+
+    def test_cada_precio_declara_su_moneda(self):
+        for p in self.datos["productos"]:
+            self.assertIn(p.get("precioMoneda"), ("USD", "MN"),
+                          f"{p['nombre']}: un precio sin moneda se lee como dólares")
+
+    def test_los_precios_son_los_que_ensena_su_pagina(self):
+        # Comprobación contra el catálogo real: el cargador VEVOR que motivó
+        # todo esto. Si vuelve a salir a $145, se está leyendo precioActual.
+        v = [p for p in self.datos["productos"] if "VEVOR" in p["nombre"] and "35A" in p["nombre"]]
+        if not v:
+            self.skipTest("ese producto ya no está en la principal")
+        self.assertEqual(125.0, v[0]["precio"],
+                         "su página enseña $125; $145 es el número viejo del import")
 
     def test_pesa_poco_porque_lo_abre_un_movil_en_cuba(self):
         kb = (RAIZ / "principal-catalogo.json").stat().st_size / 1024

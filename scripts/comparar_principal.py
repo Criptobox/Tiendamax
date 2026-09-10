@@ -102,7 +102,7 @@ def _moneda_del_texto(v):
     """MN / USD si el propio texto lo dice; None si no lo dice."""
     s = str(v or "")
     if re.search(r"\bMN\b|\bCUP\b", s, re.I):
-        return "MN"
+        return "MN"     # «280 cup» y «1500 MN» son la misma moneda escrita distinto
     if "$" in s or re.search(r"\bUSD\b", s, re.I):
         return "USD"
     return None
@@ -148,6 +148,35 @@ def comision_de(producto: dict) -> dict:
     return {"valor": valor, "moneda": moneda, "fiable": True, "porque": ""}
 
 
+def precio_de(producto: dict) -> dict:
+    """{valor, moneda, otro} del precio, leído como lo lee su propia página.
+
+    La principal guarda el precio DOS veces —`precio`, un texto («$115»,
+    «280 cup»), y `precioActual`, un número— y en 12 de sus 108 productos los
+    dos no coinciden. Su catálogo pinta `precio` (buildCatalogHTML en su
+    app.js), así que ese es el que ve todo el mundo, incluido el gestor cuando
+    abre la página a comprobar; `precioActual` se quedó con el valor del
+    import. Leyendo el número, la pantalla decía que un cargador costaba $145
+    cuando la página de al lado decía $125.
+
+    Y el texto trae moneda: «280 cup» no son 280 dólares. Compararlo contra un
+    precio en USD es el mismo error que sumar 1500 MN con $1,80 — el mismo que
+    ya se cuidó en la comisión y que aquí se había dejado pasar.
+    """
+    texto = producto.get("precio")
+    del_texto = _num(texto)
+    numero = _num(producto.get("precioActual"))
+    moneda = _moneda_del_texto(texto) or "USD"
+
+    if del_texto is None:
+        return {"valor": numero or 0.0, "moneda": "USD", "otro": None}
+    # `precioActual` solo se enseña como "el otro dato" cuando discrepa y las
+    # dos cifras hablan de la misma moneda; en CUP no significa lo mismo.
+    otro = (numero if numero is not None and moneda == "USD"
+            and abs(numero - del_texto) > 0.005 else None)
+    return {"valor": del_texto, "moneda": moneda, "otro": otro}
+
+
 def normalizar(producto: dict, categorias: dict[str, str] | None = None) -> dict | None:
     """Un producto de la principal, con lo justo para compararlo."""
     pid = producto.get("id")
@@ -162,15 +191,19 @@ def normalizar(producto: dict, categorias: dict[str, str] | None = None) -> dict
     cat = str(producto.get("categoria") or "").strip()
     if not cat and producto.get("catId") is not None:
         cat = (categorias or {}).get(str(producto.get("catId")), "")
+    pre = precio_de(producto)
     fila = {
         "id": str(pid),
         "nombre": nombre,
-        "precio": _num(producto.get("precioActual") or producto.get("precio")) or 0,
+        "precio": pre["valor"],
+        "precioMoneda": pre["moneda"],
         "stock": int(_num(producto.get("stock")) or 0),
         "categoria": cat,
         "comision": com["valor"],
         "comisionMoneda": com["moneda"],
     }
+    if pre["otro"] is not None:
+        fila["precioOtro"] = pre["otro"]
     if not com["fiable"]:
         fila["comisionDudosa"] = com["porque"]
     for campo, clave in (("descripcion", "descripcion"), ("description", "descripcion"),

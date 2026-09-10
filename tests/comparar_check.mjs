@@ -52,9 +52,21 @@ const PRINCIPAL = {
         // Diferencia de verdad: misma moneda, otro número.
         { id: '102', nombre: 'Timbre', precio: 25, stock: 3, categoria: 'Hogar',
           comision: 1000, comisionMoneda: 'MN' },
-        // Precio distinto.
-        { id: '103', nombre: 'Batería', precio: 270, stock: 2, categoria: 'Energia',
-          comision: 10, comisionMoneda: 'USD' },
+        // Precio distinto, sin más.
+        { id: '103', nombre: 'Batería', precio: 270, precioMoneda: 'USD', stock: 2,
+          categoria: 'Energia', comision: 10, comisionMoneda: 'USD' },
+        // La principal se contradice consigo misma: su página dice 55 y su
+        // ficha interna 60. Va aparte para que ninguna otra comprobación lo
+        // toque antes.
+        { id: '110', nombre: 'Con dos precios', precio: 55, precioMoneda: 'USD', precioOtro: 60,
+          stock: 3, categoria: 'Hogar', comision: 5, comisionMoneda: 'USD' },
+        // «280 cup» no son 280 dólares. Con pareja, no se compara contra un
+        // precio en USD; sin pareja, no se pinta con un $ delante. Hacen
+        // falta los dos: la fila de «te falta» no pasa por la comparación.
+        { id: '109', nombre: 'Cable en CUP', precio: 280, precioMoneda: 'MN', stock: 9,
+          categoria: 'Wifi', comision: 5, comisionMoneda: 'USD' },
+        { id: '111', nombre: 'Rollo CUP sin pareja', precio: 280, precioMoneda: 'MN',
+          stock: 4, categoria: 'Wifi', comision: 5, comisionMoneda: 'USD' },
         // Repuesto: ella tiene, yo estoy en cero.
         { id: '104', nombre: 'Router', precio: 50, stock: 7, categoria: 'Wifi',
           comision: 5, comisionMoneda: 'USD' },
@@ -80,6 +92,9 @@ const MIOS = [
     { id: 103, nombre: 'Batería', precioActual: 300, stock: 2, comision: 10, comisionMoneda: 'USD' },
     { id: 104, nombre: 'Router', precioActual: 50, stock: 0, comision: 5, comisionMoneda: 'USD' },
     { id: 107, nombre: 'Sin moneda', precioActual: 20, stock: 2, comision: 1500 },
+    // El mío en dólares; el de la principal, en CUP. No son comparables.
+    { id: 109, nombre: 'Cable en CUP', precioActual: 4, stock: 9, comision: 5, comisionMoneda: 'USD' },
+    { id: 110, nombre: 'Con dos precios', precioActual: 50, stock: 3, comision: 5, comisionMoneda: 'USD' },
     // Lo vendo yo y la principal ni lo tiene: no sale en ninguna lista.
     { id: 900, nombre: 'Solo mío', precioActual: 10, stock: 3, comision: 2, comisionMoneda: 'USD' },
 ];
@@ -181,7 +196,7 @@ ok(dud && dud.filas.every(f => !/cmpPonerComision/.test(f.onclick || '')),
 
 // ── 3) Solo se ofrece subir lo que la principal puede servir ──────────
 const fal = await bloque('Te faltan');
-ok(fal && fal.n === 2, `«Te faltan» debería ofrecer la Cámara nueva y Otra que falta, ofrece ${fal ? fal.n : '?'}`);
+ok(fal && fal.n === 3, `«Te faltan» debería ofrecer la Cámara nueva, Otra que falta y el Rollo en CUP, ofrece ${fal ? fal.n : '?'}`);
 ok(fal && !fal.filas.some(f => f.texto.includes('Agotado en las dos')),
    'no se ofrece subir un producto que la principal también tiene agotado');
 
@@ -304,6 +319,34 @@ const vuelto = await bloque('Te faltan');
 ok(vuelto && vuelto.n === faltanAntes,
    `al deshacer deben volver los ${faltanAntes} de antes, hay ${vuelto ? vuelto.n : '?'}`);
 
+// ── 8) El precio, con su moneda y con la contradicción a la vista ────
+await pagina.evaluate(() => { CMP_ABIERTO_TODO = 1; ['pre', 'dud'].forEach(k => { if (!document.querySelector('.cmp-bloque')) return; }); });
+await pagina.evaluate(() => { ['pre', 'dud'].forEach(k => {
+    const c = document.querySelector(`.cmp-cab[onclick*="'${k}'"]`);
+    if (c && c.getAttribute('aria-expanded') !== 'true') cmpPlegar(k); }); });
+await pagina.waitForTimeout(400);
+const pre = await bloque('Precio distinto');
+const dosPrecios = pre && pre.filas.find(f => f.texto.includes('Con dos precios'));
+ok(dosPrecios && /55/.test(dosPrecios.boton || ''),
+   `el botón debe poner el precio que enseña su página (55), dice «${dosPrecios && dosPrecios.boton}»`);
+ok(dosPrecios && /60/.test(dosPrecios.texto),
+   'cuando la principal se contradice, la otra cifra se enseña en vez de esconderse: '
+   + 'es lo único que deja comprobarlo de un vistazo');
+
+// El de CUP no se compara contra uno en USD ni se pinta con un $.
+const dudPrecio = await bloque('no puedo comparar');
+ok(dudPrecio && dudPrecio.filas.some(f => /Cable en CUP/.test(f.texto) && /MN/.test(f.texto)),
+   'un precio en MN frente a uno en USD no es una diferencia: 280 CUP son unos $4');
+// Y en «te faltan», que no pasa por la comparación y pinta el precio a pelo.
+const filaCup = await pagina.evaluate(() => {
+    const f = [...document.querySelectorAll('.cmp-fila')].find(x => x.textContent.includes('Rollo CUP sin pareja'));
+    return f ? f.textContent.replace(/\s+/g, ' ') : '';
+});
+ok(filaCup && !/\$\s?280/.test(filaCup),
+   `«280 cup» no se puede pintar como $280; la fila dice «${filaCup.slice(0, 90)}»`);
+ok(/280\s*MN/.test(filaCup),
+   `la fila debe decir la moneda; dice «${filaCup.slice(0, 90)}»`);
+
 // ── 8) Lo marcado a mano se guarda en el repositorio ─────────────────
 // Marcar cuesta trabajo: si vive solo en este navegador, cambiar de teléfono
 // lo tira. Y como puede marcarse desde dos aparatos, guardar el fichero
@@ -379,4 +422,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 41 comprobaciones OK');
+console.log('✅ Comparar con la principal: 47 comprobaciones OK');

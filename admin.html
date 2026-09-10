@@ -321,6 +321,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   .cmp-b-ok { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:var(--o); }
   .cmp-b:active { transform:scale(.97); }
   .cmp-alias { color:#7d746c !important; font-style:italic; }
+  .cmp-otro { color:#7d746c; font-style:italic; }
   .cmp-pick-ojo { font-size:10.5px; color:var(--muted); line-height:1.4; margin-bottom:2px; }
   .cmp-acc { display:flex; gap:12px; margin-top:5px; }
   .cmp-acc button { background:none; border:0; padding:0; font-family:inherit; font-size:11px;
@@ -4622,6 +4623,22 @@ function cmpMonedaMia(p){
   return cmpNum(p && p.comision) >= 100 ? 'MN' : 'USD';
 }
 
+/* La moneda de MI precio. Un producto del catálogo propio la declara en
+   `moneda`; hoy solo uno está en MN, y ese es justo el que rompería la
+   comparación si se leyera como dólares. */
+function cmpMonedaPrecioMia(p){ return (p && p.moneda === 'MN') ? 'MN' : 'USD'; }
+
+/* La tasa del panel, solo para poder ORDENAR una lista que mezcla monedas.
+   No se usa para convertir nada que se enseñe ni para comparar: la tasa se
+   mueve cada semana y un precio convertido es un número que no existe. */
+function cmpTasaMN(){
+  let t = 0;
+  try{ t = Number(localStorage.getItem('tasaMN')) || 0; }catch(e){}
+  // Sin tasa guardada, cualquier número sirve para ordenar mientras separe
+  // las dos escalas: lo que no puede pasar es que 280 CUP adelante a $250.
+  return t > 0 ? t : 400;
+}
+
 /* Empareja un producto de la principal con el mío. Primero por id, que las
    dos tiendas comparten; si no, por nombre normalizado, que recupera los que
    se subieron a mano y cogieron un id nuevo. */
@@ -4661,7 +4678,15 @@ function cmpAnalizar(datos, mios){
     if(pri.stock <= 0 && miStock > 0) g.fantasma.push({pri, mio});
 
     const pp = cmpNum(pri.precio), pm = cmpNum(mio.precioActual);
-    if(pp > 0 && Math.abs(pp - pm) > CMP_EPS) g.precio.push({pri, mio, de:pm, a:pp});
+    const monP = pri.precioMoneda || 'USD', monM = cmpMonedaPrecioMia(mio);
+    if(pp > 0 && monP !== monM){
+      // «280 cup» no son 280 dólares. Comparar el número suelto es el mismo
+      // error que enfrentar 1500 MN con $1,80.
+      g.dudosas.push({pri, mio, porque:'la principal lo pone en ' + monP + ' y tú en ' + monM
+        + ': el precio no se puede comparar sin convertir'});
+    }else if(pp > 0 && Math.abs(pp - pm) > CMP_EPS){
+      g.precio.push({pri, mio, de:pm, a:pp, moneda:monP, otro:pri.precioOtro});
+    }
 
     if(pri.comisionDudosa){
       g.dudosas.push({pri, mio, porque: pri.comisionDudosa});
@@ -4678,9 +4703,16 @@ function cmpAnalizar(datos, mios){
     }
   });
 
-  // Lo que más deja primero dentro de cada grupo.
-  g.repuestos.sort((a,b) => cmpNum(b.pri.precio) - cmpNum(a.pri.precio));
-  g.faltan.sort((a,b) => cmpNum(b.pri.precio) - cmpNum(a.pri.precio));
+  // Lo que más deja primero dentro de cada grupo. Ordenar por el número
+  // suelto pondría «280 cup» (unos $4) por encima de un router de $250, así
+  // que para ORDENAR —y solo para eso— se pasa a una escala común. La cifra
+  // que se enseña sigue siendo la suya, en su moneda.
+  const paraOrdenar = r => {
+    const v = cmpNum(r.pri.precio);
+    return (r.pri.precioMoneda === 'MN') ? v / (cmpTasaMN() || 1) : v;
+  };
+  g.repuestos.sort((a,b) => paraOrdenar(b) - paraOrdenar(a));
+  g.faltan.sort((a,b) => paraOrdenar(b) - paraOrdenar(a));
   return g;
 }
 
@@ -4772,7 +4804,7 @@ function cmpRender(){
   bloques.push(cmpBloque('rep', '🔄', 'La principal repuso y tú los tienes agotados',
     'Son ventas que puedes hacer hoy: tu web dice agotado y la principal sí tiene.',
     g.repuestos.map(r => cmpFila('rep',
-      cmpNombreFila(r) + '<small>' + cmpDinero(r.pri.precio)
+      cmpNombreFila(r) + '<small>' + cmpDinero(r.pri.precio, r.pri.precioMoneda)
         + ' · la principal tiene ' + r.pri.stock + '</small>',
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',${r.pri.stock})">Poner ${r.pri.stock}</button>`,
       r.mio.imagen)), true));
@@ -4788,7 +4820,7 @@ function cmpRender(){
     'Están en la principal con existencias y no aparecen en tu web. Si alguno ya lo tienes con otro nombre, '
     + 'dilo con «ya lo tengo» y desde entonces se le comparan precio, stock y comisión.',
     g.faltan.map(r => cmpFila('fal',
-      '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio)
+      '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio, r.pri.precioMoneda)
         + ' · ' + r.pri.stock + ' disponibles'
         + (r.pri.categoria ? ' · ' + esc(r.pri.categoria) : '') + '</small>'
         + `<div class="cmp-acc">`
@@ -4803,9 +4835,15 @@ function cmpRender(){
   bloques.push(cmpBloque('pre', '💲', 'Precio distinto',
     'La principal cambió el precio y tu web sigue con el viejo.',
     g.precio.map(r => cmpFila('pre',
-      cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de) + ' → principal '
-        + cmpDinero(r.a) + '</small>',
-      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerPrecio('${cmpIdAttr(r.mio)}',${r.a})">Poner ${cmpDinero(r.a)}</button>`,
+      cmpNombreFila(r) + '<small>tú ' + cmpDinero(r.de, r.moneda) + ' → principal '
+        + cmpDinero(r.a, r.moneda)
+        // La principal guarda el precio dos veces y a veces no coinciden. Se
+        // usa el que pinta su página, pero el otro se enseña en vez de
+        // esconderlo: es lo que deja comprobarlo de un vistazo.
+        + (r.otro != null ? ' <em class="cmp-otro">(su ficha interna dice '
+            + cmpDinero(r.otro, r.moneda) + ')</em>' : '')
+        + '</small>',
+      `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerPrecio('${cmpIdAttr(r.mio)}',${r.a})">Poner ${cmpDinero(r.a, r.moneda)}</button>`,
       r.mio.imagen))));
 
   bloques.push(cmpBloque('com', '💵', 'Comisión distinta',
@@ -4818,9 +4856,9 @@ function cmpRender(){
 
   // Sin botón a propósito: no hay una cifra de la que fiarse, así que ofrecer
   // "ponerla" sería ofrecer copiar un dato roto.
-  bloques.push(cmpBloque('dud', '🔍', 'Comisiones que no puedo comparar',
-    'La principal se contradice o la tienes en otra moneda. Pregúntale antes de tocarlas: '
-    + '1500 MN y $1,80 son casi lo mismo, y cambiar una por otra te cuesta dinero de verdad.',
+  bloques.push(cmpBloque('dud', '🔍', 'Lo que no puedo comparar',
+    'La principal se contradice, o el dato está en otra moneda. Pregúntale antes de tocarlo: '
+    + '1500 MN y $1,80 son casi lo mismo, y cambiar uno por otro te cuesta dinero de verdad.',
     g.dudosas.map(r => cmpFila('dud',
       cmpNombreFila(r) + '<small>' + esc(r.porque) + '</small>',
       `<button type="button" class="cmp-b" onclick="cmpAbrirEnProductos('${cmpIdAttr(r.mio)}')">Ver el mío</button>`,
@@ -4957,7 +4995,7 @@ function cmpPickerHTML(pri){
     + (lista.length
         ? lista.map(c => `<button type="button" class="cmp-pick-op" `
             + `onclick="cmpEnlazar('${cmpIdAttr(pri)}','${cmpIdAttr(c.p)}')">`
-            + esc(c.p.nombre) + '<span>' + cmpDinero(cmpNum(c.p.precioActual))
+            + esc(c.p.nombre) + '<span>' + cmpDinero(cmpNum(c.p.precioActual), cmpMonedaPrecioMia(c.p))
             + ' · ' + cmpNum(c.p.stock) + ' u.</span></button>').join('')
         : '<div class="cmp-pick-no">Ninguno coincide con esa búsqueda.</div>')
     + '<button type="button" class="cmp-pick-x" onclick="cmpCerrarPicker()">Cancelar</button>'
