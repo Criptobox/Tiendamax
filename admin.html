@@ -323,6 +323,12 @@ try{var _piel=localStorage.getItem('tm_piel');
   .cmp-alias { color:#7d746c !important; font-style:italic; }
   .cmp-otro { color:#7d746c; font-style:italic; }
   .cmp-pick-ojo { font-size:10.5px; color:var(--muted); line-height:1.4; margin-bottom:2px; }
+  .cmp-gemela { font-size:11px; color:#c4b5a4; line-height:1.5; margin-top:5px;
+    background:rgba(var(--gold-rgb),0.09); border:1px solid rgba(var(--gold-rgb),0.28);
+    border-radius:8px; padding:6px 8px; }
+  .cmp-gemela b { color:var(--gold); font-weight:700; }
+  .cmp-gemela button { background:none; border:0; padding:0; font-family:inherit; font-size:11px;
+    font-weight:800; color:var(--o); cursor:pointer; text-decoration:underline; white-space:nowrap; }
   .cmp-acc { display:flex; gap:12px; margin-top:5px; }
   .cmp-acc button { background:none; border:0; padding:0; font-family:inherit; font-size:11px;
     font-weight:700; color:var(--muted); cursor:pointer; text-decoration:underline;
@@ -4650,6 +4656,26 @@ function cmpEmparejar(pri, porId, porNombre){
   return porId[String(pri.id)] || porNombre[cmpNorm(pri.nombre)] || null;
 }
 
+/* La principal reintroduce productos: «Sistema de Alarma» está en su catálogo
+   dos veces, con dos ids y dos precios, y una de las dos ya es un producto de
+   este catálogo. Sin decirlo, la otra se queda en «te faltan» para siempre y
+   el gestor jura —con razón— que sí lo tiene.
+
+   Esto NO es emparejar por parecido: se comparan dos fichas de la MISMA
+   tienda cuyo nombre normalizado es idéntico. Es un duplicado suyo, no una
+   suposición mía. */
+function cmpGemelaYaMia(pri, datos, porId, porNombre){
+  const clave = cmpNorm(pri.nombre);
+  if(!clave) return null;
+  for(const otra of (datos.productos || [])){
+    if(String(otra.id) === String(pri.id)) continue;
+    if(cmpNorm(otra.nombre) !== clave) continue;
+    const mio = cmpEmparejar(otra, porId, porNombre);
+    if(mio) return {otra, mio};
+  }
+  return null;
+}
+
 /* El corazón: qué tiene que ver el gestor y en qué orden.
    El orden es el del dinero — primero lo que se puede vender hoy, después lo
    que se está vendiendo y no se puede entregar, y al final lo que hay que
@@ -4669,7 +4695,9 @@ function cmpAnalizar(datos, mios){
       // Los ocultos y los ya enlazados salen de la lista. El emparejamiento
       // a mano ya lo resolvió cmpEmparejar, así que si llega aquí sin `mio`
       // es que apunta a un producto que ya no existe: vuelve a faltar.
-      if(pri.stock > 0 && !CMP_OCULTOS[String(pri.id)]) g.faltan.push({pri});
+      if(pri.stock > 0 && !CMP_OCULTOS[String(pri.id)]){
+        g.faltan.push({pri, gemela: cmpGemelaYaMia(pri, datos, porId, porNombre)});
+      }
       return;
     }
 
@@ -4823,6 +4851,11 @@ function cmpRender(){
       '<b>' + esc(r.pri.nombre) + '</b><small>' + cmpDinero(r.pri.precio, r.pri.precioMoneda)
         + ' · ' + r.pri.stock + ' disponibles'
         + (r.pri.categoria ? ' · ' + esc(r.pri.categoria) : '') + '</small>'
+        + (r.gemela
+            ? `<div class="cmp-gemela">La principal lo tiene dos veces: la otra ficha ya es tu `
+              + `<b>${esc(r.gemela.mio.nombre)}</b>. `
+              + `<button type="button" onclick="cmpEnlazar('${cmpIdAttr(r.pri)}','${cmpIdAttr(r.gemela.mio)}')">es el mismo</button></div>`
+            : '')
         + `<div class="cmp-acc">`
         + `<button type="button" onclick="cmpAbrirPicker('${cmpIdAttr(r.pri)}')">✓ ya lo tengo</button>`
         + `<button type="button" onclick="cmpOcultar('${cmpIdAttr(r.pri)}')">✕ no me interesa</button>`
@@ -4969,13 +5002,25 @@ function cmpParecido(a, b){
 function cmpCandidatos(pri, filtro){
   syncProductos();
   const q = cmpNorm(filtro || '');
-  // Los ya enlazados a otro producto de la principal no se vuelven a ofrecer.
-  const tomados = new Set(Object.entries(CMP_ENLACES)
-    .filter(([k]) => k !== String(pri.id)).map(([, v]) => String(v)));
+  /* Un producto propio puede valer para DOS fichas de la principal, y hay que
+     dejarlo: la principal reintroduce el mismo producto con otro nombre y otro
+     id —«Sistema de Alarma» está dos veces, y la misma soldadora aparece como
+     YESWELDER y como Bielmeier— así que quien tiene UNA no puede taparlas las
+     dos. Antes se escondía el que ya estuviera enlazado, y eso dejaba filas
+     imposibles de quitar: el gestor las ve como «no lo tengo» para siempre.
+     Se ofrece igual, diciendo con qué está ya emparejado. */
+  const yaCon = {};
+  Object.entries(CMP_ENLACES).forEach(([k, v]) => {
+    if(k !== String(pri.id)) yaCon[String(v)] = k;
+  });
   return (PRODUCTOS || [])
-    .filter(p => !tomados.has(String(p.id)))
     .filter(p => !q || cmpNorm(p.nombre).includes(q))
-    .map(p => ({p, n: q ? 1 : cmpParecido(pri.nombre, p.nombre)}))
+    .map(p => {
+      const otro = yaCon[String(p.id)];
+      const fichaOtro = otro && (CMP_DATOS.productos || []).find(x => String(x.id) === otro);
+      return {p, n: q ? 1 : cmpParecido(pri.nombre, p.nombre),
+              ya: fichaOtro ? fichaOtro.nombre : (otro ? 'otra ficha' : '')};
+    })
     .sort((a, b) => b.n - a.n)
     .slice(0, 6);
 }
@@ -4996,7 +5041,8 @@ function cmpPickerHTML(pri){
         ? lista.map(c => `<button type="button" class="cmp-pick-op" `
             + `onclick="cmpEnlazar('${cmpIdAttr(pri)}','${cmpIdAttr(c.p)}')">`
             + esc(c.p.nombre) + '<span>' + cmpDinero(cmpNum(c.p.precioActual), cmpMonedaPrecioMia(c.p))
-            + ' · ' + cmpNum(c.p.stock) + ' u.</span></button>').join('')
+            + ' · ' + cmpNum(c.p.stock) + ' u.'
+            + (c.ya ? ' · ya emparejado con «' + esc(c.ya) + '»' : '') + '</span></button>').join('')
         : '<div class="cmp-pick-no">Ninguno coincide con esa búsqueda.</div>')
     + '<button type="button" class="cmp-pick-x" onclick="cmpCerrarPicker()">Cancelar</button>'
     + '</div>';

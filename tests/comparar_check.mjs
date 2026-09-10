@@ -76,6 +76,20 @@ const PRINCIPAL = {
         // Falta pero ella también lo tiene agotado: no se ofrece subir.
         { id: '106', nombre: 'Agotado en las dos', precio: 20, stock: 0, categoria: 'Hogar',
           comision: 5, comisionMoneda: 'USD' },
+        // La principal tiene el MISMO producto dos veces, con dos ids y dos
+        // precios. Uno coincide con un producto propio por id; el otro se
+        // quedaba en «te faltan» para siempre y el gestor juraba, con razón,
+        // que sí lo tenía. Caso real: «Sistema de Alarma».
+        { id: '112', nombre: 'Alarma', precio: 170, stock: 0, categoria: 'Seguridad',
+          comision: 5, comisionMoneda: 'USD' },
+        { id: '113', nombre: 'ALARMA', precio: 180, stock: 2, categoria: 'Seguridad',
+          comision: 5, comisionMoneda: 'USD' },
+        // Parecidísimo a «Alarma» pero NO es el mismo nombre. No puede contar
+        // como duplicado: si el criterio fuera el parecido, volvemos a
+        // emparejar solo, que es justo lo que no se puede hacer aquí
+        // (hAP ac3 y hap ax3 son dos routers distintos).
+        { id: '114', nombre: 'Alarma Pro', precio: 200, stock: 3, categoria: 'Seguridad',
+          comision: 5, comisionMoneda: 'USD' },
         // Segundo faltante: uno se empareja y el otro se oculta, que son los
         // dos caminos y hay que poder probarlos por separado.
         { id: '108', nombre: 'Otra que falta', precio: 15, stock: 5, categoria: 'Hogar',
@@ -96,6 +110,8 @@ const MIOS = [
     { id: 109, nombre: 'Cable en CUP', precioActual: 4, stock: 9, comision: 5, comisionMoneda: 'USD' },
     { id: 110, nombre: 'Con dos precios', precioActual: 50, stock: 3, comision: 5, comisionMoneda: 'USD' },
     // Lo vendo yo y la principal ni lo tiene: no sale en ninguna lista.
+    // Mismo id que la primera ficha «Alarma» de la principal: empareja sola.
+    { id: 112, nombre: 'KIT de alarma con panel', precioActual: 170, stock: 0, comision: 5, comisionMoneda: 'USD' },
     { id: 900, nombre: 'Solo mío', precioActual: 10, stock: 3, comision: 2, comisionMoneda: 'USD' },
 ];
 
@@ -196,7 +212,9 @@ ok(dud && dud.filas.every(f => !/cmpPonerComision/.test(f.onclick || '')),
 
 // ── 3) Solo se ofrece subir lo que la principal puede servir ──────────
 const fal = await bloque('Te faltan');
-ok(fal && fal.n === 3, `«Te faltan» debería ofrecer la Cámara nueva, Otra que falta y el Rollo en CUP, ofrece ${fal ? fal.n : '?'}`);
+ok(fal && fal.n === 5,
+   `«Te faltan» debería ofrecer la Cámara nueva, Otra que falta, el Rollo en CUP, la ficha `
+   + `duplicada de la Alarma y la Alarma Pro, ofrece ${fal ? fal.n : '?'}`);
 ok(fal && !fal.filas.some(f => f.texto.includes('Agotado en las dos')),
    'no se ofrece subir un producto que la principal también tiene agotado');
 
@@ -319,6 +337,66 @@ const vuelto = await bloque('Te faltan');
 ok(vuelto && vuelto.n === faltanAntes,
    `al deshacer deben volver los ${faltanAntes} de antes, hay ${vuelto ? vuelto.n : '?'}`);
 
+// ── 8) Duplicados de la propia principal, y muchos-a-uno ─────────────
+// La principal reintroduce productos: la misma alarma está con dos ids. Uno
+// coincide con un producto propio, el otro se quedaba en «te faltan» para
+// siempre. No es emparejar por parecido: son dos fichas de la MISMA tienda
+// con el nombre idéntico una vez normalizado.
+const avisoGemela = await pagina.evaluate(() => {
+    const g = document.querySelector('.cmp-gemela');
+    return g ? { texto: g.textContent.replace(/\s+/g, ' ').trim(),
+                 boton: !!g.querySelector('button') } : null;
+});
+ok(avisoGemela, 'la ficha duplicada debe avisar de que la principal la tiene dos veces');
+ok(avisoGemela && /KIT de alarma con panel/.test(avisoGemela.texto),
+   `el aviso tiene que nombrar el producto propio que ya es esa otra ficha; dice «${avisoGemela && avisoGemela.texto}»`);
+ok(avisoGemela && avisoGemela.boton, 'el aviso necesita el botón para emparejarlo de un toque');
+const cuantosAvisos = await pagina.evaluate(() => document.querySelectorAll('.cmp-gemela').length);
+ok(cuantosAvisos === 1,
+   `solo «ALARMA» es un duplicado de «Alarma»; «Alarma Pro» se le parece mucho y NO lo es. `
+   + `Hay ${cuantosAvisos} avisos: si son 2, el criterio dejó de ser el nombre idéntico`);
+
+const faltanConGemela = (await bloque('Te faltan')).n;
+// Sin `?.` esto revienta el proceso cuando el aviso no existe y el fallo se
+// queda sin explicar: un test que muere no dice qué se rompió.
+const pulsado = await pagina.evaluate(() => {
+    const b = document.querySelector('.cmp-gemela button');
+    if (!b) return false;
+    b.click();
+    return true;
+});
+if (pulsado) {
+    await pagina.waitForTimeout(400);
+    const trasGemela = await bloque('Te faltan');
+    ok(!trasGemela || trasGemela.n === faltanConGemela - 1,
+       'al decir «es el mismo» la ficha duplicada sale de la lista');
+    ok(await pagina.evaluate(() => {
+           const m = JSON.parse(localStorage.getItem('tm_cmp_marcas') || '{}');
+           return String((m['113'] || {}).mio) === '112';
+       }), 'el emparejamiento del duplicado se guarda como cualquier otro');
+} else {
+    ok(false, 'sin aviso de duplicado no hay botón que pulsar');
+    ok(false, '(y por tanto tampoco se puede comprobar que se guarde)');
+}
+
+// Un producto propio tiene que poder valer para DOS fichas de la principal:
+// si no, quien tiene UNA soldadora no puede tapar las dos que la principal
+// tiene de ella, y esa fila no se quita nunca.
+await pagina.evaluate(() => cmpAbrirPicker('105'));
+await pagina.waitForTimeout(300);
+await pagina.evaluate(() => cmpPickerBuscar('KIT de alarma'));
+await pagina.waitForTimeout(400);
+const conYa = await pagina.evaluate(() => [...document.querySelectorAll('.cmp-pick-op')]
+    .map(e => e.textContent.replace(/\s+/g, ' ').trim()));
+ok(conYa.some(t => /KIT de alarma con panel/.test(t)),
+   'un producto ya emparejado con otra ficha se sigue ofreciendo: la principal duplica productos');
+ok(conYa.some(t => /ya emparejado/.test(t)),
+   'pero tiene que decir con qué está emparejado ya, o se empareja a ciegas');
+await pagina.evaluate(() => cmpCerrarPicker());
+await pagina.waitForTimeout(300);
+await pagina.evaluate(() => cmpDesmarcar('113'));
+await pagina.waitForTimeout(300);
+
 // ── 8) El precio, con su moneda y con la contradicción a la vista ────
 await pagina.evaluate(() => { CMP_ABIERTO_TODO = 1; ['pre', 'dud'].forEach(k => { if (!document.querySelector('.cmp-bloque')) return; }); });
 await pagina.evaluate(() => { ['pre', 'dud'].forEach(k => {
@@ -422,4 +500,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 47 comprobaciones OK');
+console.log('✅ Comparar con la principal: 54 comprobaciones OK');
