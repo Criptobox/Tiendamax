@@ -258,7 +258,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 27,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -280,7 +280,6 @@
       "https://tiendamax.org/imagenes/img_1784007772666.webp",
       "https://tiendamax.org/imagenes/img_1778102507659_94aef1.webp"
     ],
-    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
     "ficha": [
       {
         "k": "Capacidad Máxima",
@@ -325,7 +324,8 @@
     ],
     "idealPara": [
       "Monitoreo de peso personal y control de salud."
-    ]
+    ],
+    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar."
   },
   {
     "id": 1778102582909,
@@ -1033,7 +1033,7 @@
   {
     "id": 1778104850733,
     "nombre": "⚡ Controlador MPPT 100A",
-    "precioActual": 70,
+    "precioActual": 80,
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
@@ -1051,7 +1051,6 @@
     ],
     "seoTitle": "Controlador MPPT 100A en Cuba | TiendaMax",
     "seoDescription": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente…",
-    "descripcion": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente de carga en tiempo real, botones de configuración (reset, menú, encendido/apagado). Medidas 19.5 x 18.3cm, para montar en pared.",
     "ficha": [
       {
         "k": "Voltajes",
@@ -1086,7 +1085,8 @@
     ],
     "incluye": [
       "1x Controlador de Carga Solar MPPT - 100A"
-    ]
+    ],
+    "descripcion": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente de carga en tiempo real, botones de configuración (reset, menú, encendido/apagado). Medidas 19.5 x 18.3cm, para montar en pared."
   },
   {
     "id": 1778104924836,
@@ -1867,8 +1867,8 @@
   },
   {
     "id": 1778336859697,
-    "nombre": "Toldo Para Sombra",
-    "precioActual": 20,
+    "nombre": "🏕️Toldo Para Sombra 2x4",
+    "precioActual": 23,
     "imagen": "https://tiendamax.org/imagenes/img_1778336859697.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
@@ -1879,13 +1879,13 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "toldo-para-sombra-beige-3x2",
-    "comision": 1.8,
+    "comision": 3,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
     "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
     "ficha": [
       {
         "k": "📐 Medidas",
-        "v": "3m x 6m"
+        "v": "2m x 4m"
       },
       {
         "k": "🎨 Color",
@@ -1908,23 +1908,29 @@
       "Patios, piscinas y terrazas que necesitan sombra sin obra."
     ],
     "incluye": [
-      "1x Toldo de sombra 3m x 6m"
+      "1x Toldo de sombra 2m x 4m"
     ],
     "caracteristicas": [
       {
-        "d": "Tela transpirable: deja pasar el aire en vez de acumular calor debajo."
+        "t": "Tela transpirable",
+        "d": "deja pasar el aire en vez de acumular calor debajo."
       },
       {
         "d": "Se instala amarrado a postes o paredes, sin estructura fija."
       }
     ],
     "specs": [
-      "📐 Medidas: 3m x 6m",
+      "📐 Medidas: 2m x 4m",
       "☀️ Bloqueo UV: 90%",
       "🎨 Color: Beige",
       "🧵 Tela: Transpirable"
     ],
-    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778336859697.webp"
+    ]
   },
   {
     "id": 1778383966832,
@@ -2272,8 +2278,8 @@
   },
   {
     "id": 1778384507302,
-    "nombre": "Linterna de Cabeza",
-    "precioActual": 30,
+    "nombre": "🔦Linterna de Cabeza",
+    "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
     "categoria": "UTILES",
     "subcategoria": "ILUMINACIÓN",
@@ -2407,7 +2413,7 @@
   {
     "id": 1778384769262,
     "nombre": "Ventilador Para Carro",
-    "precioActual": 35,
+    "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1778384769262_ext.webp",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
@@ -2421,7 +2427,6 @@
     "comision": 1.8,
     "seoTitle": "VENTILADOR PARA CARRO en Cuba | TiendaMax",
     "seoDescription": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.",
-    "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado.",
     "ficha": [
       {
         "k": "🔢 Cabezales",
@@ -2449,7 +2454,8 @@
     "specs": [
       "🧰 Cabezales: 3",
       "🔌 Alimentación: Toma del encendedor (cigarrera)"
-    ]
+    ],
+    "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado."
   },
   {
     "id": 1778384840618,
@@ -5022,7 +5028,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 4,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -5138,7 +5144,6 @@
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "PANEL DECORATIVO DE HOJAS ARTIFICIALES en Cuba | TiendaMax",
     "seoDescription": "🌿 Panel de Pared de Césped y Plantas Artificiales Renueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped…",
-    "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento.",
     "ficha": [
       {
         "k": "🌿 Tipo",
@@ -5167,7 +5172,8 @@
       {
         "d": "Al ser artificial no necesita luz, riego ni poda."
       }
-    ]
+    ],
+    "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento."
   },
   {
     "id": 1782439688529,
@@ -5574,7 +5580,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 10,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5591,7 +5597,6 @@
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
     "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
     "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…",
-    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.",
     "ficha": [
       {
         "k": "Marca",
@@ -5635,7 +5640,8 @@
     "incluye": [
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
-    ]
+    ],
+    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina."
   },
   {
     "id": 1783179800783,
@@ -6200,7 +6206,7 @@
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 4,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7650,7 +7656,7 @@
     "precioActual": 260,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8931,7 +8937,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787933030028.webp"
     ],
-    "precioActual": 150,
+    "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 0,
