@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-10T13:14:01.353109+00:00",
-  "productos": 132,
-  "urgentes": 3,
+  "generado": "2026-09-11T13:08:11.170969+00:00",
+  "productos": 135,
+  "urgentes": 5,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 132 productos y encontré 3 urgente(s), 7 de info.",
+  "info": 9,
+  "resumen": "Anoche revisé tus 135 productos y encontré 5 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -22,9 +22,29 @@
       "detalle": "→ ⚡Conectores MC4 10 Pares"
     },
     {
+      "tipo": "nombre",
+      "nombre": "⛱️Toldo de malla 2 x 7",
+      "detalle": "→ ⛱️Toldo de Malla 2 x 7"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de soldadura multiproceso 3 en 1",
+      "detalle": "→ 🛠️Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "⚡ Inversor Tataliken 4000W",
+      "detalle": "quedan 2"
+    },
+    {
       "tipo": "stock_bajo",
       "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
       "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "🔒 KIT de Cámaras Zosi Con DVR 8 Canales",
+      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
@@ -53,8 +73,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "59 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Inversor Tataliken 4000W, ⚖️ Báscula Digital de Alta Definición y 56 más"
+      "nombre": "52 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Pistola Fascia Gun, Cargador Inteligente 15A y 49 más"
     }
   ]
 }
