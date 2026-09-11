@@ -1,15 +1,15 @@
 {
-  "actualizado": "2026-09-10T14:51:46.899763+00:00",
-  "fecha": "2026-09-10",
+  "actualizado": "2026-09-11T14:51:13.316476+00:00",
+  "fecha": "2026-09-11",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 4,
+    "vigilados": 5,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -22,7 +22,7 @@
         "mediana": 180.0,
         "n": 13
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -30,6 +30,10 @@
       "historial": [
         {
           "fecha": "2026-09-10",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-09-11",
           "mediana": 180.0
         }
       ],
@@ -50,8 +54,8 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "175 USD Inversor Tataliken de 12V 4000W",
-          "precio": 175.0,
+          "titulo": "170 USD Inversor Tataliken de 12V 4000W",
+          "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-4000w-57091109",
           "dias": null
         },
@@ -108,6 +112,10 @@
         {
           "fecha": "2026-09-10",
           "mediana": 30.0
+        },
+        {
+          "fecha": "2026-09-11",
+          "mediana": 30.0
         }
       ],
       "muestras": [
@@ -116,6 +124,13 @@
           "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
           "precio": 15.0,
           "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD 🌐 Switch Gigabit de 5 Puertos",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-de-5-puertos-57350797",
           "dias": null
         },
         {
@@ -145,12 +160,35 @@
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-57301738",
           "dias": null
-        },
+        }
+      ]
+    },
+    {
+      "id": 1778102507659,
+      "nombre": "⚖️ Báscula Digital de Alta Definición",
+      "tuPrecio": 25.0,
+      "mercado": {
+        "min": 25.0,
+        "mediana": 25.0,
+        "n": 1
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-09-11",
+          "mediana": 25.0
+        }
+      ],
+      "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "30 USD 🔀 Switch Ethernet Gigabit 8 Puertos 🔀 AX | E01 | 30 USD",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
+          "titulo": "25 USD Báscula o pesa digital gramera de cocina nueva en su caja",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/bascula-o-pesa-digital-gramera-de-cocina-nueva-en-su-caja-40575069",
           "dias": null
         }
       ]
@@ -161,19 +199,15 @@
       "tuPrecio": 75.0,
       "mercado": {
         "min": 70.0,
-        "mediana": 82.5,
-        "n": 12
+        "mediana": 75.0,
+        "n": 11
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -7.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-28",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-08-29",
           "mediana": 82.5
@@ -225,6 +259,10 @@
         {
           "fecha": "2026-09-10",
           "mediana": 82.5
+        },
+        {
+          "fecha": "2026-09-11",
+          "mediana": 75.0
         }
       ],
       "muestras": [
@@ -279,7 +317,7 @@
       "mercado": {
         "min": 90.0,
         "mediana": 170.0,
-        "n": 11
+        "n": 12
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -305,6 +343,10 @@
         },
         {
           "fecha": "2026-09-10",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-11",
           "mediana": 170.0
         }
       ],
