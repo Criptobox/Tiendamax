@@ -4379,7 +4379,7 @@ async function almCompartir(id, campo){
   const texto = (a.nombre||'Almacén')+' — '+(campo==='ubicacion'?'Ubicación':'Dirección')+': '+valor;
   try{
     if(navigator.share){ await navigator.share({title:a.nombre||'Almacén', text:texto}); return; }
-  }catch(e){ if(/abort/i.test(e.message||'')) return; }
+  }catch(e){ if(pubCancelado(e)) return; }
   try{ await navigator.clipboard.writeText(texto); showToast('📋 Copiado','Pégalo donde quieras'); }
   catch(e){ showToast('No se pudo compartir'); }
 }
@@ -6668,6 +6668,15 @@ function _pubMigrarHistViejo(){
     });
   }catch(e){}
 }
+/* Cancelar la hoja de compartir. Se miraba `e.message` con /abort/i, y el
+   navegador no promete ese texto: Chrome rechaza con un DOMException de
+   nombre AbortError y mensaje «Share canceled», que no lleva «abort» por
+   ninguna parte. Con eso, cerrar la hoja no se distinguía de un fallo real y
+   el código seguía por el camino de respaldo: descargaba las doce imágenes
+   igual y las apuntaba como publicadas. El nombre sí está garantizado. */
+function pubCancelado(e){
+  return !!e && (e.name === 'AbortError' || /abort|cancel/i.test(e.message || ''));
+}
 function pubMarcarPublicado(id, red, destino){
   try{ tmRegistrarPublicacion(id, red||'otra', destino||''); }catch(e){}
 }
@@ -7012,28 +7021,138 @@ function pubCatBadge(p){
   return null;
 }
 function pubCatTag(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,''); }
+/* Palabras que aparecen en los nombres y que nadie busca: como etiqueta no
+   traen a nadie y sí gastan el sitio de una marca. */
+const PUB_TAG_VACIAS = new Set(['adaptador','cable','exterior','interior','internacional','original',
+  'nuevo','nueva','juego','unidad','puertos','puerto','metros','pulgadas','color','modelo','marca',
+  'para','desde','hasta','doble','simple','grande','pequeno','negro','blanco','plus','pack','kit',
+  'loco','patch','tipo','serie','version','pieza','piezas','watts','voltios']);
+/* Salían veintidós etiquetas por publicación —#Adaptador, #Exterior, #Loco,
+   #Patch— porque se cogían las dos primeras palabras largas de CADA producto.
+   Ni Facebook ni Instagram premian la cantidad, y una etiqueta que nadie
+   busca no trae a nadie. Se quedan las que se repiten en dos productos o más:
+   las marcas y las familias se repiten (MikroTik, NanoStation, Switch), los
+   restos de un nombre suelto no. */
 function pubCatHashtags(cat,prods){
-  const tags=new Set(['TiendaMax','Cuba']);
-  const ct=pubCatTag(cat); if(ct) tags.add(ct);
-  prods.slice(0,18).forEach(p=>{
-    String(p.nombre||'').split(/\s+/).map(w=>pubCatTag(w)).filter(t=>t.length>3).slice(0,2).forEach(t=>tags.add(t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()));
+  const tags=['TiendaMax','Cuba'];
+  const ct=pubCatTag(cat); if(ct) tags.push(ct);
+  const cuenta=new Map();
+  (prods||[]).forEach(p=>{
+    const vistos=new Set();
+    String(p.nombre||'').split(/[\s/·,()]+/).forEach(w=>{
+      const t=pubCatTag(w);
+      if(t.length<4 || PUB_TAG_VACIAS.has(t.toLowerCase()) || /^\d+$/.test(t)) return;
+      const k=t.charAt(0).toUpperCase()+t.slice(1).toLowerCase();
+      if(vistos.has(k)) return; vistos.add(k);       // repetir dentro de un nombre no cuenta
+      cuenta.set(k,(cuenta.get(k)||0)+1);
+    });
   });
-  return [...tags].map(t=>'#'+t).join(' ');
+  let extra=[...cuenta.entries()].filter(([,n])=>n>1).sort((a,b)=>b[1]-a[1]).map(([k])=>k);
+  // Una tanda de productos sin nada en común no se queda sin etiquetas.
+  if(!extra.length) extra=[...cuenta.keys()].slice(0,3);
+  const fuera=new Set(tags.map(t=>t.toLowerCase()));
+  return tags.concat(extra.filter(t=>!fuera.has(t.toLowerCase())).slice(0,5)).map(t=>'#'+t).join(' ');
 }
-function pubCatText(cat){
-  const prods=pubCatProds(cat); if(!prods.length) return '';
-  const sep='━'.repeat(16);
-  const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n`;
-  const lines=prods.map(p=>{
-    const _pre=_catEmojiPre(p.nombre,cat); let l=`${_pre?_pre+' ':''}${_catClean(p.nombre)} — ${moneyP(p)}`;
-    const st=Number(p.stock||0);
+const PUB_CAT_LISTA_MAX = 14; // en el texto: pasada esa cifra ya nadie baja
+
+/* Lo que se puede prometer de ESTOS productos, no de la tienda en general.
+   «Garantía» la escribe el gestor producto a producto (campo `garantia`) y de
+   los que tienen stock la traen muy pocos: imprimirla en la categoría entera
+   es una promesa que el cliente vuelve a cobrar — el mismo motivo por el que
+   las páginas /p/ solo la imprimen cuando existe de verdad. */
+function pubCatConfianza(prods){
+  const arr=prods||[];
+  const con=arr.length && arr.every(p=>String(p.garantia||'').trim());
+  return '✅ '+(con?'Garantía · ':'')+'Pruébalo al recibir · Atención personalizada';
+}
+/* El texto de cobertura que el propio gestor configuró en ⚙️ Envíos. Sin él no
+   se inventa ni una zona ni un plazo. */
+function pubCatEnvioTxt(){ try{ return (localStorage.getItem('envioTexto')||'').trim(); }catch(e){ return ''; } }
+/* «desde X», con la moneda dicha. Nunca un mínimo único cuando hay dos
+   monedas en la tanda: el de dólares deja fuera algo más barato en MN, el de
+   MN se lee como dólares, y convertir por la tasa del día inventa un precio
+   que mañana no vale. Salen los dos, cada uno con su moneda. Misma regla que
+   en 🔀 Comparar. */
+function pubCatDesde(prods){
+  const val=p=>Number(p.precioActual||0);
+  const usd=(prods||[]).filter(p=>!esMN(p)&&val(p)>0).map(val);
+  const mn=(prods||[]).filter(p=>esMN(p)&&val(p)>0).map(val);
+  const a=usd.length?'desde $'+Math.round(Math.min(...usd)):'';
+  const b=mn.length?'desde '+Math.round(Math.min(...mn))+' MN':'';
+  // El «desde» se repite a propósito: «desde $20 · 280 MN» se lee como un
+  // solo precio puesto en las dos monedas, que es justo lo contrario.
+  return [a,b].filter(Boolean).join(' · ');
+}
+/* El precio dentro de un anuncio no es el precio dentro del panel. moneyP
+   escribe «$130.00 USD» —dos decimales siempre y la moneda detrás—, que en la
+   ficha está bien y en doce líneas seguidas de Facebook es ruido: los
+   céntimos son cero en los 83 productos con stock. Aquí se quitan cuando no
+   dicen nada, y MN se escribe «280 MN» y no «$280 MN», que es la confusión de
+   siempre. */
+function pubCatPrecio(p){
+  const v=Number(p.precioActual||0);
+  const n=(v%1===0) ? String(Math.round(v)) : v.toFixed(2);
+  return esMN(p) ? Number(n).toLocaleString('es-US')+' MN' : '$'+Number(n).toLocaleString('es-US',{maximumFractionDigits:2});
+}
+function pubCatLinea(p,cat,plano){
+  const pre=plano?'':_catEmojiPre(p.nombre,cat);
+  let l=`${pre?pre+' ':''}${_catClean(p.nombre)} — ${pubCatPrecio(p)}`;
+  const st=Number(p.stock||0);
+  if(!plano){
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
-    if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
-    return l;
-  }).join('\n');
-  const cierre=`\n\n⏳ Precios de HOY — mañana suben con la tasa\n✅ Garantía · Pruébalo al recibir · Atención personalizada`;
-  const cta=`\n\n📲 Escribe "QUIERO" por WhatsApp y te lo aparto 24 h\n🔗 tiendamax.org`;
-  return header+lines+cierre+cta+`\n\n${pubCatHashtags(cat,prods)}`;
+  }else if(st>0&&st<=2){ l+=st===1?' (queda 1)':` (últimas ${st})`; }
+  if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes ${pubCatPrecio({precioActual:p.precioOriginal,moneda:p.moneda})})`;
+  return l;
+}
+/* UN TEXTO POR RED. Era uno solo para las cuatro, y cada una lo castiga de una
+   manera distinta:
+     · Facebook corta en «Ver más» a las dos primeras líneas, y ahí estaba
+       «🏪 TIENDAMAX — WIFI», que es lo que menos vende de todo lo que hay
+       debajo. Ahora esas dos líneas llevan el gancho y el dato concreto
+       (cuántos hay y desde cuánto); los hashtags al final sí trabajan.
+     · WhatsApp es un chat: los hashtags leen como spam y decir «escríbeme por
+       WhatsApp» a quien ya te está escribiendo por WhatsApp sobra.
+     · Instagram no hace clicable el enlace del pie de foto — mandar a
+       tiendamax.org ahí es mandar a copiarlo a mano. El enlace está en la bio.
+     · Revólico es un formulario con sus propios campos de título, precio y
+       descripción, y lo muestra en texto plano: la cabecera de marca y los
+       hashtags son relleno que empuja los precios fuera de la vista. */
+function pubCatText(cat, red, prods){
+  const todos=(prods&&prods.length)?prods:pubCatProds(cat);
+  if(!todos.length) return '';
+  red=red||'wa';
+  const lista=todos.slice(0,PUB_CAT_LISTA_MAX), resto=todos.length-lista.length;
+  const sep='━'.repeat(16);
+  const plano=red==='rev';
+  const cuerpo=lista.map(p=>pubCatLinea(p,cat,plano)).join('\n')
+    + (resto>0 ? (plano?`\n(y ${resto} más en tiendamax.org)`:`\n\n…y ${resto} más en tiendamax.org`) : '');
+  const confianza=pubCatConfianza(lista);
+  const desde=pubCatDesde(lista);
+  const envio=pubCatEnvioTxt();
+  if(plano){
+    return `${_catClean(cat)} — ${lista.length} disponibles${desde?', '+desde:''}\n\n${cuerpo}`
+      + `\n\nPrecios de HOY: mañana suben con la tasa.\n${confianza.replace('✅ ','')}`
+      + (envio?`\n${envio}`:'')
+      + `\n\nEscríbeme por WhatsApp. Catálogo completo en tiendamax.org`;
+  }
+  const urgencia='⏳ Precios de HOY — mañana suben con la tasa';
+  if(red==='fb'){
+    const l2=`${_catClean(cat)}: ${lista.length} en stock${desde?' · '+desde:''}${(envio&&envio.length<=42)?' · '+envio:''}`;
+    return `${pubCatGancho(cat)}\n${l2}\n${sep}\n\n${cuerpo}`
+      + `\n\n${urgencia}\n${confianza}`
+      + `\n\n📲 Comenta "QUIERO" o escríbeme por WhatsApp — te lo aparto 24 h\n🔗 tiendamax.org`
+      + `\n\n${pubCatHashtags(cat,lista)}`;
+  }
+  if(red==='ig'){
+    return `${pubCatGancho(cat)}\n${_catClean(cat)}${desde?' · '+desde:''}\n${sep}\n\n${cuerpo}`
+      + `\n\n${urgencia}\n${confianza}`
+      + `\n\n📲 Escríbeme por WhatsApp — el enlace está en la bio`
+      + `\n\n${pubCatHashtags(cat,lista)}`;
+  }
+  return `🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n${cuerpo}`
+    + `\n\n${urgencia}\n${confianza}`
+    + (envio?`\n📦 ${envio}`:'')
+    + `\n\n📲 Responde a este mensaje y te lo aparto 24 h\n🔗 tiendamax.org`;
 }
 function pubCatWrapName(ctx,text,maxW,maxLines){
   const words=String(text).split(/\s+/).filter(Boolean);
@@ -7106,8 +7225,8 @@ function _catSubtitle(p){
   const s=_catClean(p.subcategoria); if(s && s.toLowerCase()!=='todas') return s;
   return _catClean(p.categoria)||'Disponible';
 }
-function tmCatalogHTML(cat){
-  const prods=pubCatProds(cat).slice(); if(!prods.length) return '';
+function tmCatalogHTML(cat, lote){
+  const prods=((lote&&lote.length)?lote:pubCatProds(cat)).slice(); if(!prods.length) return '';
   const money=n=>'$'+Math.round(Number(n)||0);
   let tops=prods.filter(p=>p.masVendido).slice(0,2);
   if(tops.length<2){ const rest=prods.filter(p=>!tops.includes(p)).slice().sort((a,b)=>Number(b.precioActual||0)-Number(a.precioActual||0)); while(tops.length<2 && rest.length) tops.push(rest.shift()); }
@@ -7128,22 +7247,22 @@ function tmCatalogHTML(cat){
   });
   const moreLink=extra>0?`<div class="tmcat-more">+ ${extra} referencia${extra!==1?'s':''} más en tienda →</div>`:'';
   return `<div class="tmcat-card">
-    <div class="tmcat-hd"><div class="tmcat-brand">TIENDAMAX</div><div class="tmcat-tag">${esc(pubCatGancho(cat))}</div><div class="tmcat-pill">${esc(String(cat).toUpperCase())}</div><div class="tmcat-envio">⚡ ENVÍO HOY EN LA HABANA</div></div>
+    <div class="tmcat-hd"><div class="tmcat-brand">TIENDAMAX</div><div class="tmcat-tag">${esc(pubCatGancho(cat))}</div><div class="tmcat-pill">${esc(String(cat).toUpperCase())}</div><div class="tmcat-envio">${esc(pubCatEnvioTxt()||'⚡ ENVÍO HOY EN LA HABANA')}</div></div>
     ${topBox}${sectionsHtml}${moreLink}
     <div class="tmcat-urg">⏰ Precios HOY — con la tasa de mañana suben</div>
-    <div class="tmcat-trust"><span class="g">✅</span> Garantía real · Pruébalo al recibir · Atención personalizada</div>
+    <div class="tmcat-trust"><span class="g">✅</span> ${esc(pubCatConfianza(prods).replace('✅ ',''))}</div>
     <div class="tmcat-cta"><div class="tmcat-cta-m">📲 QUIERO →</div><div class="tmcat-cta-s">Escríbenos por WhatsApp · Te lo apartamos 24h</div></div>
     <div class="tmcat-ft">🌐 tiendamax.org</div>
   </div>`;
 }
-async function pubCatGenImg(cat){
-  const prods=pubCatProds(cat); if(!prods.length) return null;
+async function pubCatGenImg(cat, lote){
+  const prods=(lote&&lote.length)?lote:pubCatProds(cat); if(!prods.length) return null;
   if(typeof window.html2canvas==='function'){
     try{
       pubCatEnsureCss();
       const holder=document.createElement('div');
       holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
-      holder.innerHTML=tmCatalogHTML(cat);
+      holder.innerHTML=tmCatalogHTML(cat, prods);
       document.body.appendChild(holder);
       const node=holder.querySelector('.tmcat-card');
       const canvas=await window.html2canvas(node,{backgroundColor:'#0a0a0a',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
@@ -7151,10 +7270,10 @@ async function pubCatGenImg(cat){
       return await new Promise(res=>canvas.toBlob(res,'image/png',.95));
     }catch(e){ console.error('[catalogo]',e); }
   }
-  return _pubCatGenImgLegacy(cat);
+  return _pubCatGenImgLegacy(cat, prods);
 }
-async function _pubCatGenImgLegacy(cat){
-  const prods=pubCatProds(cat); if(!prods.length) return null;
+async function _pubCatGenImgLegacy(cat, lote){
+  const prods=(lote&&lote.length)?lote:pubCatProds(cat); if(!prods.length) return null;
   try{ if(_pubCatBag&&!_pubCatBag.complete){ await new Promise(r=>{ _pubCatBag.onload=r; _pubCatBag.onerror=r; setTimeout(r,1500); }); } }catch(e){}
   const W=1080;
   const NF='38px system-ui,Arial,sans-serif', PF='bold 42px system-ui,Arial,sans-serif';
@@ -7203,7 +7322,7 @@ async function _pubCatGenImgLegacy(cat){
   pubRoundRect(ctx,60,fy,W-120,76,16); ctx.fillStyle='rgba(231,76,60,.14)'; ctx.fill(); ctx.strokeStyle='rgba(231,76,60,.5)'; ctx.lineWidth=2; ctx.stroke();
   ctx.textAlign='center'; ctx.fillStyle='#ff7a6a'; ctx.font='bold 30px system-ui,Arial,sans-serif'; ctx.fillText('⏳ Precios de HOY — mañana suben con la tasa',W/2,fy+48);
   fy+=96;
-  ctx.fillStyle='#9fd8a8'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.fillText('✅ Garantía · Pruébalo al recibir · Atención personalizada',W/2,fy+26);
+  ctx.fillStyle='#9fd8a8'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.fillText(pubCatConfianza(prods),W/2,fy+26);
   fy+=52;
   const cg=ctx.createLinearGradient(60,0,W-60,0); cg.addColorStop(0,'#FF6B35'); cg.addColorStop(1,'#C9A96E');
   pubRoundRect(ctx,60,fy,W-120,150,20); ctx.fillStyle=cg; ctx.fill();
@@ -7214,7 +7333,24 @@ async function _pubCatGenImgLegacy(cat){
   ctx.fillStyle=gb; ctx.fillRect(60,H-43,W-120,9);
   return new Promise(res=>cv.toBlob(res,'image/png',.95));
 }
-let _pubCatSel='', _pubCatPvUrl=null, _pubCatPvTimer=null, _pubCatPvSeq=0;
+let _pubCatSel='', _pubCatPvUrl=null, _pubCatPvTimer=null, _pubCatPvSeq=0, _pubCatTanda=0;
+/* TANDAS. El lote sale de doce en doce (más satura la hoja de compartir y son
+   doce descargas), pero el tope se aplicaba con un slice(0,12) fijo: en WIFI
+   (17), ENERGÍA (16) y CARROS (13) siempre salían los MISMOS doce y el resto
+   no había forma de publicarlo por aquí. Avisaba «de 17, tope 12» y ahí
+   moría. Ahora la categoría se parte y se puede avanzar a la siguiente. */
+function pubCatTandas(cat){ return Math.max(1, Math.ceil(pubCatProds(cat).length / PUB_CAT_LOTE_MAX)); }
+function pubCatTandaIdx(cat){ return Math.min(Math.max(0,_pubCatTanda), pubCatTandas(cat)-1); }
+function pubCatProdsTanda(cat, t){
+  const todos=pubCatProds(cat);
+  const i=(t==null)?pubCatTandaIdx(cat):Math.min(Math.max(0,t), pubCatTandas(cat)-1);
+  return todos.slice(i*PUB_CAT_LOTE_MAX, (i+1)*PUB_CAT_LOTE_MAX);
+}
+function pubCatTandaIr(d){
+  const n=pubCatTandas(_pubCatSel); if(n<2) return;
+  _pubCatTanda=((pubCatTandaIdx(_pubCatSel)+d)%n+n)%n;
+  pubCatUpdatePreview();
+}
 function pubCategoriaHTML(){
   const cs=pubCatCats();
   if(cs.length && !cs.includes(_pubCatSel)) _pubCatSel=cs[0];
@@ -7227,17 +7363,18 @@ function pubCategoriaHTML(){
 }
 function pubCategoriaInit(){ if(pubCatCats().length) pubCatUpdatePreview(); }
 // Debounce: generar el canvas 1080px es costoso; al cambiar rápido de categoría solo dibuja la última
-function pubCatOnSelect(v){ _pubCatSel=v; clearTimeout(_pubCatPvTimer); _pubCatPvTimer=setTimeout(pubCatUpdatePreview,250); }
+function pubCatOnSelect(v){ _pubCatSel=v; _pubCatTanda=0; clearTimeout(_pubCatPvTimer); _pubCatPvTimer=setTimeout(pubCatUpdatePreview,250); }
 async function pubCatUpdatePreview(){
   const box=$('#pub-cat-preview'); if(!box||!_pubCatSel) return;
   const seq=++_pubCatPvSeq;
-  const prods=pubCatProds(_pubCatSel);
-  const precios=prods.map(p=>Number(p.precioActual||0)).filter(n=>n>0);
-  const min=precios.length?Math.min(...precios):0;
+  const total=pubCatProds(_pubCatSel).length;
+  const nTandas=pubCatTandas(_pubCatSel), iTanda=pubCatTandaIdx(_pubCatSel);
+  const prods=pubCatProdsTanda(_pubCatSel);
+  const desde=pubCatDesde(prods);
   box.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px">⏳ Generando vista previa…</div>`;
   let imgHtml='';
   try{
-    const blob=await pubCatGenImg(_pubCatSel);
+    const blob=await pubCatGenImg(_pubCatSel, prods);
     if(seq!==_pubCatPvSeq) return; // llegó una selección más nueva mientras dibujaba
     if(blob){ const url=URL.createObjectURL(blob); if(_pubCatPvUrl) URL.revokeObjectURL(_pubCatPvUrl); _pubCatPvUrl=url;
       imgHtml=`<div style="border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px"><img src="${url}" style="display:block;width:100%;height:auto" alt="Vista previa"></div>`;
@@ -7245,7 +7382,12 @@ async function pubCatUpdatePreview(){
   }catch(e){ console.warn('[pubCat] preview:',e); }
   if(seq!==_pubCatPvSeq) return;
   box.innerHTML = `${imgHtml}
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${prods.length} producto${prods.length!==1?'s':''}${min?' · desde $'+min.toFixed(2):''}</div>
+    ${nTandas>1?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <button type="button" class="pub-act ghost" style="flex:0 0 auto;padding:6px 12px" onclick="pubCatTandaIr(-1)" aria-label="Tanda anterior">◀</button>
+      <div style="flex:1;text-align:center;font-size:12px;color:var(--muted);line-height:1.35"><b style="color:#fff">Tanda ${iTanda+1} de ${nTandas}</b><br>productos ${iTanda*PUB_CAT_LOTE_MAX+1}–${iTanda*PUB_CAT_LOTE_MAX+prods.length} de ${total}</div>
+      <button type="button" class="pub-act ghost" style="flex:0 0 auto;padding:6px 12px" onclick="pubCatTandaIr(1)" aria-label="Tanda siguiente">▶</button>
+    </div>`:''}
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${prods.length} producto${prods.length!==1?'s':''}${desde?' · '+desde:''}${nTandas>1?' en esta tanda':''}</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
       <button type="button" class="pub-act wa" onclick="pubCatAct('wa')">💬 WhatsApp</button>
       <button type="button" class="pub-act fb" onclick="pubCatAct('fb')">📘 Facebook + 📷</button>
@@ -7258,36 +7400,51 @@ async function pubCatUpdatePreview(){
     </div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
       <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">🖼️ Anuncios individuales de la categoría</div>
-      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Una imagen de anuncio por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos. El <b>texto + hashtags</b> de la categoría se copia solo al portapapeles.</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Una imagen de anuncio por producto (${prods.length}${nTandas>1?' de esta tanda':''}) — compártelas de un tirón o descárgalas. El <b>texto de Facebook + hashtags</b> se copia solo al portapapeles.${nTandas>1?' Al terminar pasa sola a la tanda siguiente.':''}</p>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
-        <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir todas</button>
-        <button type="button" class="pub-act ghost pub-cat-lote-btn" onclick="pubCatCartelesLote('','download')">⬇️ Descargar todas</button>
+        <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir ${prods.length}</button>
+        <button type="button" class="pub-act ghost pub-cat-lote-btn" onclick="pubCatCartelesLote('','download')">⬇️ Descargar ${prods.length}</button>
       </div>
       <div id="pub-cat-lote-bar" style="display:none;height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px"><div id="pub-cat-lote-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B1A,#e8501e);transition:width .25s;border-radius:6px"></div></div>
       <div id="pub-cat-lote-info" style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;min-height:16px"></div>
     </div>`;
 }
+/* Publicar la tarjeta de una categoría ES publicar esos productos: hasta
+   ahora no quedaba anotado en ninguna parte, así que los badges seguían en
+   blanco y «Hoy toca publicar» los volvía a proponer al rato. Se apunta la
+   red de verdad, y SOLO cuando la publicación salió. */
+const PUB_CAT_RED={wa:'wa', fb:'fb', rev:'revolico', ig:'otra', img:'otra', copy:'otra', lote:'otra'};
+const PUB_CAT_DST={wa:'Chat WhatsApp', fb:'Facebook', rev:'Revolico', ig:'Instagram', img:'Imagen descargada', copy:'Texto copiado', lote:'Anuncios por categoría'};
+function pubCatMarcarLote(prods, act, cat){
+  const red=PUB_CAT_RED[act]||'otra';
+  const dst=(PUB_CAT_DST[act]||'')+(cat?' · '+cat:'');
+  (prods||[]).forEach(p=>pubMarcarPublicado(p.id, red, dst));
+  setTimeout(()=>{ try{ pubRenderShareList(); pubRenderHoy(); }catch(e){} }, 600);
+}
 async function pubCatAct(act){
   const cat=_pubCatSel; if(!cat) return;
-  const text=pubCatText(cat);
-  if(act==='copy'){ try{ await navigator.clipboard.writeText(text); showToast('📋 Texto copiado'); }catch(e){ showToast('No se pudo copiar'); } return; }
-  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer'); return; }
+  const prods=pubCatProdsTanda(cat);
+  const text=pubCatText(cat, act, prods);
+  const marcar=()=>pubCatMarcarLote(prods, act, cat);
+  if(act==='copy'){ try{ await navigator.clipboard.writeText(text); marcar(); showToast('📋 Texto copiado'); }catch(e){ showToast('No se pudo copiar'); } return; }
+  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer'); marcar(); return; }
   if(act==='fb'){
     // Facebook NO permite subir imágenes vía sharer.php. La única forma de compartir
     // una imagen a Facebook es usando navigator.share({files:[...]}) que abre la hoja
     // de compartir nativa del dispositivo (móvil) donde el usuario elige "Facebook".
     // En desktop sin soporte de share, caemos a: descargar imagen + copiar texto + abrir FB.
     try{ await navigator.clipboard.writeText(text); }catch(e){}
-    const blob = await pubCatGenImg(cat);
+    const blob = await pubCatGenImg(cat, prods);
     if(!blob){ showToast('Sin productos con stock para generar imagen'); return; }
     const file = new File([blob], 'tiendamax-'+pubCatTag(cat)+'.png', {type:'image/png'});
     // ¿El dispositivo soporta compartir archivos? (móvil moderno)
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
       try{
         await navigator.share({ files:[file], title:'TiendaMax — '+cat, text });
+        marcar();
         showToast('📷 Imagen lista','📋 Texto + hashtags copiados — mantén pulsado y pégalos en Facebook');
         return;
-      }catch(e){ if(/abort/i.test(e.message||'')) return; }
+      }catch(e){ if(pubCancelado(e)) return; }
     }
     // Fallback desktop: descargar imagen, abrir Facebook, usuario la adjunta manualmente
     const a=document.createElement('a');
@@ -7296,31 +7453,34 @@ async function pubCatAct(act){
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
     window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org'),'_blank','noopener,noreferrer');
+    marcar();
     showToast('📷 Imagen descargada · 📋 Texto copiado · Pega ambos en Facebook','');
     return;
   }
-  if(act==='rev'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.revolico.com/','_blank','noopener,noreferrer'); showToast('Texto copiado — pégalo al crear tu anuncio en Revólico'); return; }
+  if(act==='rev'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.revolico.com/','_blank','noopener,noreferrer'); marcar(); showToast('Texto en limpio copiado — pégalo en la descripción del anuncio'); return; }
   if(act==='ig'){
     try{ await navigator.clipboard.writeText(text); }catch(e){}
-    const blob=await pubCatGenImg(cat); if(!blob){ showToast('Sin productos con stock'); return; }
+    const blob=await pubCatGenImg(cat, prods); if(!blob){ showToast('Sin productos con stock'); return; }
     const file=new File([blob],'tiendamax-'+pubCatTag(cat)+'.png',{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat}); showToast('Texto copiado — pégalo como pie de foto en Instagram'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat}); marcar(); showToast('Texto copiado — pégalo como pie de foto en Instagram'); return; }catch(e){ if(pubCancelado(e)) return; }
     }
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    marcar();
     showToast('📸 Imagen descargada y texto copiado — súbelos a Instagram');
     return;
   }
   if(act==='img'){
-    const blob=await pubCatGenImg(cat); if(!blob){ showToast('Sin productos con stock'); return; }
+    const blob=await pubCatGenImg(cat, prods); if(!blob){ showToast('Sin productos con stock'); return; }
     const file=new File([blob],'tiendamax-'+pubCatTag(cat)+'.png',{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat,text}); showToast('¡Listo para compartir!'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat,text}); marcar(); showToast('¡Listo para compartir!'); return; }catch(e){ if(pubCancelado(e)) return; }
     }
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     try{ await navigator.clipboard.writeText(text); }catch(e){}
+    marcar();
     showToast('Imagen descargada · Texto copiado');
   }
 }
@@ -7351,16 +7511,21 @@ async function pubGenCartelBlob(p){
     return blob;
   }catch(e){ console.error('[anuncio-lote]',p.id,p.nombre,e); _pubLoteLastError=(p.nombre||('#'+p.id))+': '+(e.message||e); return null; }
 }
-// Genera los carteles de todos los productos (con stock) de la categoría.
+/* Genera los carteles de la tanda que se está viendo.
+   NO apunta nada en el registro: apuntaba aquí dentro, mientras dibujaba, y
+   entonces bastaba con abrir la hoja de compartir y darle atrás para que doce
+   productos quedaran como publicados sin haber salido. Nada fallaba; el
+   Historial los daba por hechos y «Hoy toca publicar», que lee ese mismo
+   registro, dejaba de proponerlos. Se apunta arriba, y solo si salió. */
 async function pubCatGenCarteles(cat, onProgress){
-  const prods=pubCatProds(cat).slice(0, PUB_CAT_LOTE_MAX);
-  const files=[];
+  const prods=pubCatProdsTanda(cat);
+  const files=[], hechos=[];
   for(let i=0;i<prods.length;i++){
     if(onProgress) onProgress(i+1, prods.length);
     const blob=await pubGenCartelBlob(prods[i]);
-    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.jpg',{type:'image/jpeg'})); pubMarcarPublicado(prods[i].id,'otra','Cartel por categoría'); }
+    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.jpg',{type:'image/jpeg'})); hechos.push(prods[i]); }
   }
-  return files;
+  return {files, hechos};
 }
 function _pubLoteProgress(txt, cur, total){
   const el=$('#pub-cat-lote-info'); if(el) el.textContent=txt||'';
@@ -7380,7 +7545,8 @@ async function _pubDownloadFiles(files){
 }
 async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   cat=cat||_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
-  const total=pubCatProds(cat).length;
+  const total=pubCatProdsTanda(cat).length;
+  const nTandas=pubCatTandas(cat), iTanda=pubCatTandaIdx(cat);
   if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
   if(typeof window.tmAnuncioImagen!=='function'){
     showToast('⚠️ Recarga la página','No se pudo cargar el generador de imágenes'); return;
@@ -7388,13 +7554,13 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   // Barra y botones deshabilitados YA, antes de cualquier await — así se ve
   // que el click sí hizo algo aunque lo de abajo tarde o falle.
   const btns=document.querySelectorAll('.pub-cat-lote-btn'); btns.forEach(b=>b.disabled=true);
-  const nGen=Math.min(total, PUB_CAT_LOTE_MAX);
+  const nGen=total;
   _pubLoteProgress('⏳ Generando imágenes… 0/'+nGen, 0, nGen);
   // Texto + hashtags de la categoría, copiado al portapapeles (para pegarlo
   // donde se suban las imágenes). Con timeout: en algunos navegadores/
   // webviews el permiso de portapapeles se queda esperando sin resolver NI
   // rechazar nunca — eso trababa todo el lote antes de generar nada.
-  const texto=(typeof pubCatText==='function') ? pubCatText(cat) : '';
+  const texto=(typeof pubCatText==='function') ? pubCatText(cat, 'fb', pubCatProdsTanda(cat)) : '';
   let copiado=false;
   if(texto){
     try{
@@ -7407,26 +7573,35 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   const hashSufijo = copiado ? ' · 📋 texto + hashtags copiados' : '';
   try{
     _pubLoteLastError='';
-    const files=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…', i, n));
+    const {files, hechos}=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…', i, n));
+    // Salió: queda anotado, y si la categoría tiene más tandas la pantalla
+    // pasa sola a la siguiente — el trabajo es «publicar la categoría», no
+    // «publicar doce y acordarse del resto».
+    const salio=()=>{
+      pubCatMarcarLote(hechos, 'lote', cat);
+      if(nTandas>1){ _pubCatTanda=(iTanda+1)%nTandas; setTimeout(()=>{ try{ pubCatUpdatePreview(); }catch(e){} }, 900); }
+    };
     if(!files.length){
       _pubLoteProgress('❌ '+(_pubLoteLastError||'No se pudo generar ninguna imagen'));
       showToast('❌ No se pudieron generar las imágenes', _pubLoteLastError||'Intenta de nuevo');
       return;
     }
-    const extra = total>files.length ? ' (de '+total+', tope '+PUB_CAT_LOTE_MAX+')' : '';
+    const extra = total>files.length ? ' (de '+total+' de la tanda)' : (nTandas>1 ? ' · tanda '+(iTanda+1)+' de '+nTandas : '');
     if(modo==='share'){
       if(navigator.canShare && navigator.canShare({files}) && navigator.share){
-        try{ await navigator.share({files, title:'TiendaMax — '+cat, text:texto}); _pubLoteProgress('✅ '+files.length+' imágenes compartidas'+extra+hashSufijo); return; }
-        catch(e){ if(/abort/i.test(e.message||'')){ _pubLoteProgress(''); return; } }
+        try{ await navigator.share({files, title:'TiendaMax — '+cat, text:texto}); salio(); _pubLoteProgress('✅ '+files.length+' imágenes compartidas'+extra+hashSufijo); return; }
+        catch(e){ if(pubCancelado(e)){ _pubLoteProgress('Cancelado — no se apuntó nada como publicado'); return; } }
       }
       // Sin soporte de compartir varios archivos → descargar como respaldo
       showToast('Tu dispositivo no comparte varias imágenes a la vez — descargando…');
       await _pubDownloadFiles(files);
+      salio();
       _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra+hashSufijo);
       return;
     }
     // modo download
     await _pubDownloadFiles(files);
+    salio();
     _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra+hashSufijo);
     showToast('⬇️ '+files.length+' imágenes descargadas', copiado?'📋 Texto + hashtags copiados — pégalos al subir':'');
   } finally { btns.forEach(b=>b.disabled=false); }
@@ -7452,7 +7627,7 @@ async function pubShareStory(p){
     const file0=new File([blob0],'tiendamax-estado-'+p.id+'.jpg',{type:'image/jpeg'});
     const text0='🔥 '+p.nombre+'\n📲 Pídelo aquí: '+pubWaLink(p,'story');
     if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
-      try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+      try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(pubCancelado(e)) return; }
     }
     const a0=document.createElement('a'); a0.href=URL.createObjectURL(blob0); a0.download=file0.name; a0.click(); setTimeout(()=>URL.revokeObjectURL(a0.href),1000);
     try{ await navigator.clipboard.writeText(text0); }catch(e){}
@@ -7528,7 +7703,10 @@ async function pubBannersPublicar(){
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
-window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct;
+window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct; window.pubCatTandaIr=pubCatTandaIr;
+window.pubCatText=pubCatText; window.pubCatConfianza=pubCatConfianza; window.pubCatDesde=pubCatDesde;
+window.pubCatProdsTanda=pubCatProdsTanda; window.pubCatTandas=pubCatTandas;
+window.tmCatalogHTML=tmCatalogHTML; window.pubCatProds=pubCatProds; window.pubCatUpdatePreview=pubCatUpdatePreview;
 
 /* ============ Init ============ */
 cargarDatos();
