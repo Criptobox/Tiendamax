@@ -2,9 +2,12 @@
 
 Dos propiedades que importan y no son obvias:
 
-1. Las plantillas y el registro viven en localStorage, NO en Firebase. Meterlos
-   en la base obligaría a abrirlos a escritura anónima —no hay autenticación—
-   y ya sabemos cómo acaba eso: cualquiera reescribiendo o borrando.
+1. Nada de esto va a Firebase. Meterlo en la base obligaría a abrirlo a
+   escritura anónima —el panel escribe sin autenticación— y ya sabemos cómo
+   acaba eso: cualquiera reescribiendo o borrando. Las plantillas se quedan en
+   localStorage; el registro de publicaciones también, y además se copia al
+   repositorio por la API de GitHub (ver tests/test_publicar_repo.py), que es
+   otra cosa: va firmado con el token del dueño.
 
 2. Los enlaces que salen de una plantilla tienen que llevar el mismo
    utm_source que el resto del panel. Sin eso, todo lo publicado desde aquí
@@ -35,9 +38,25 @@ class ModuloTest(unittest.TestCase):
         self.assertIn('"tm-publicar.js"', orden)
 
     def test_no_escribe_en_firebase(self):
-        for prohibido in ("firebaseio", "rtdbBase", "_fbRtdbUrl", "fetch("):
+        # El registro SÍ sale ya del dispositivo, pero al repositorio y por la
+        # API de GitHub, con el token del dueño. A Firebase no puede ir: el
+        # panel escribe ahí sin autenticación, así que el nodo tendría que
+        # quedar abierto a cualquiera — y esto es el registro de trabajo del
+        # gestor, no datos del sitio.
+        for prohibido in ("firebaseio", "rtdbBase", "_fbRtdbUrl"):
             self.assertNotIn(prohibido, self.src,
-                             f"{prohibido}: esto debe quedarse en el dispositivo")
+                             f"{prohibido}: esto no puede acabar en Firebase")
+
+    def test_lo_unico_que_baja_es_su_propio_fichero(self):
+        # `fetch(` era la forma vieja de decir «no habla con la red», y dejó
+        # de valer al llevar el registro al repositorio. La regla de verdad es
+        # más estrecha: la única URL que pide es la suya.
+        import re as _re
+        destinos = _re.findall(r"fetch\(\s*([A-Za-z_$][\w$.]*)", self.src)
+        self.assertTrue(destinos, "si ya no hay fetch, sobra esta comprobación")
+        for d in destinos:
+            self.assertEqual("TM_PUBLOG_ARCHIVO", d,
+                             f"fetch({d}…): este módulo solo se baja publicaciones.json")
 
     def test_no_toca_el_generador_de_carteles(self):
         # Se pidió explícitamente no cambiar los diseños del generador. Se mira

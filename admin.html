@@ -329,6 +329,14 @@ try{var _piel=localStorage.getItem('tm_piel');
   .cmp-txt .cmp-tag-dorm { display:inline-block; margin-top:3px; font-size:10px; font-weight:800;
     letter-spacing:.4px; text-transform:uppercase; color:var(--muted);
     background:rgba(255,255,255,.06); border-radius:5px; padding:1px 5px; }
+  .pub-sinpedir-fila { display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:8px 10px; margin-bottom:6px; }
+  .pub-sinpedir-fila span { flex:1; min-width:0; font-size:12.5px; font-weight:700; color:#fff;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pub-sinpedir-fila b { flex:none; font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap; }
+  .pub-sinpedir-fila button { flex:none; background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.15); color:var(--muted); border-radius:9px;
+    padding:6px 10px; font-size:11.5px; font-weight:800; font-family:inherit; cursor:pointer; }
   .cmp-alias { color:#7d746c !important; font-style:italic; }
   .cmp-otro { color:#7d746c; font-style:italic; }
   .cmp-pick-ojo { font-size:10.5px; color:var(--muted); line-height:1.4; margin-bottom:2px; }
@@ -2032,7 +2040,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=5158ceff"></script>
+<script src="js/tm-bundle.js?v=453c641c"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -6219,6 +6227,48 @@ function avisoLimpiar(pid, nombre){
 /* ============ PUBLICAR / COMPARTIR ============ */
 let PUB_VIEW='compartir', PUB_SHARE_ID='', PUB_BANNERS=null;
 function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
+/* ── Lo que ya se está midiendo, traído a donde se decide ───────────────
+   /analytics/vistas y /analytics/whatsapp se escriben desde hace días —las
+   fichas /p/ los llenan solas— pero vivían solo en el tab Analytics. Quien
+   decide qué publicar está aquí, y sin esto ordena a ciegas: un producto con
+   60 visitas y ningún clic de WhatsApp no necesita que lo publiques otra vez,
+   necesita otro precio u otra foto; el que nadie ha visto sí.
+
+   REGLA: mientras no hayan llegado, NO se ordena por ellos. Un producto sin
+   datos parece «0 visitas», que es justo lo más urgente de la lista — y así
+   lo más urgente sería siempre lo que no cargó. `PUB_STATS.listo` distingue
+   «nadie lo ha visto» de «todavía no sé». */
+let PUB_STATS = { listo:false, vistas:{}, wa:{}, error:false };
+async function pubCargarStats(){
+  const base = (typeof rtdbBase==='function') ? rtdbBase() : null;
+  if(!base){ PUB_STATS.error = true; return; }
+  const leer = async ruta => {
+    try{
+      const r = await fetch(base + ruta + '?_=' + Date.now(), {cache:'no-store'});
+      if(!r.ok) return null;
+      const d = await r.json();
+      if(!d || typeof d !== 'object') return {};
+      const out = {};
+      Object.keys(d).forEach(k => { out[k] = Number(d[k] && d[k].count) || 0; });
+      return out;
+    }catch(e){ return null; }
+  };
+  const [v, w] = await Promise.all([leer('/analytics/vistas.json'), leer('/analytics/whatsapp.json')]);
+  if(v === null || w === null){ PUB_STATS.error = true; return; }
+  PUB_STATS = { listo:true, vistas:v, wa:w, error:false };
+  try{ if(PUB_VIEW==='compartir') pubRenderHoy(); }catch(e){}
+}
+function pubVistasDe(id){ return Number(PUB_STATS.vistas[String(id)]) || 0; }
+function pubWaDe(id){ return Number(PUB_STATS.wa[String(id)]) || 0; }
+
+/* Se ve mucho y no lo pide nadie: publicarlo otra vez no arregla nada. El
+   umbral es bajo a propósito — la tienda es nueva y 12 visitas ya son gente
+   que miró la ficha entera y se fue. */
+const PUB_VISTAS_SIN_PEDIR = 12;
+function pubSeVePeroNadieLoPide(id){
+  return PUB_STATS.listo && pubVistasDe(id) >= PUB_VISTAS_SIN_PEDIR && pubWaDe(id) === 0;
+}
+
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
@@ -6226,7 +6276,16 @@ function renderPublicar(){
     // y con siete pills ninguna cabía entera en el móvil.
     P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('wizard','🪄 3 redes')+pill('plantillas','📝 Plantillas')+pill('historial','🕐 Historial')+pill('banners','🖼️ Banners'); }
   const body=$('#pub-body'); if(!body) return;
-  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); }
+  if(PUB_VIEW==='compartir'){
+    body.innerHTML=pubCompartirHTML(); pubRenderShareList();
+    // Una sola vez por sesión: dos lecturas de Firebase, y la pantalla se
+    // repinta sola cuando llegan.
+    if(!PUB_STATS.listo && !PUB_STATS.error){ try{ pubCargarStats(); }catch(e){} }
+    // Lo publicado desde otros aparatos.
+    if(typeof tmPublogSincronizar==='function'){
+      try{ tmPublogSincronizar().then(()=>{ try{ if(PUB_VIEW==='compartir'){ pubRenderHoy(); pubRenderShareList(); } }catch(e){} }); }catch(e){}
+    }
+  }
   else if(PUB_VIEW==='wizard'){ body.innerHTML=pubWizardHTML(); pubWizardInit(); }
   else if(PUB_VIEW==='plantillas'){ body.innerHTML=pubPlantillasHTML(); pubPlantillasInit(); }
   else if(PUB_VIEW==='historial'){ body.innerHTML=pubHistorialHTML(); }
@@ -6711,17 +6770,51 @@ function pubHoyCandidatos(){
   const hr=pubHistRed();
   return PRODUCTOS
     .filter(p=>p.activo!==false && Number(p.stock||0)>0)
+    // Se ve y nadie lo pide: eso no se arregla publicándolo otra vez, así que
+    // no ocupa un sitio en la cola. Sale aparte, debajo.
+    .filter(p=>!pubSeVePeroNadieLoPide(p.id))
     .map(p=>{
       const faltan=pubRedesPendientes(p.id, hr);
       const fila=hr[String(p.id)]||{};
       // El más reciente de sus canales: mide cuánto lleva el producto sin que
       // nadie lo vea por ningún lado.
       const ultimo=Object.keys(fila).reduce((m,k)=>Math.max(m, fila[k]||0), 0);
-      return {p, faltan, ultimo};
+      return {p, faltan, ultimo, vistas:pubVistasDe(p.id)};
     })
     .filter(x=>x.faltan.length)
-    .sort((a,b)=>(b.faltan.length-a.faltan.length) || (a.ultimo-b.ultimo))
+    // Con los datos delante, primero lo que nadie ha visto: es donde publicar
+    // cambia algo. SIN ellos se ordena como siempre — ordenar por unas visitas
+    // que no han llegado pondría arriba justo lo que no cargó, y nadie podría
+    // notar la diferencia entre «nadie lo ha visto» y «todavía no sé».
+    .sort((a,b)=> PUB_STATS.listo
+        ? ((a.vistas-b.vistas) || (b.faltan.length-a.faltan.length) || (a.ultimo-b.ultimo))
+        : ((b.faltan.length-a.faltan.length) || (a.ultimo-b.ultimo)))
     .map(x=>x.p);
+}
+
+/* Los que se ven y nadie pide. Es el otro lado de la misma moneda: la cola de
+   arriba dice qué publicar, y esto dice de qué no sirve publicar más. */
+function pubSeVenYNadieLosPide(){
+  if(!PUB_STATS.listo) return [];
+  return PRODUCTOS
+    .filter(p=>p.activo!==false && Number(p.stock||0)>0 && pubSeVePeroNadieLoPide(p.id))
+    .sort((a,b)=>pubVistasDe(b.id)-pubVistasDe(a.id));
+}
+function pubSeVenHTML(){
+  const lista=pubSeVenYNadieLosPide();
+  if(!lista.length) return '';
+  const filas=lista.slice(0,4).map(p=>`<div class="pub-sinpedir-fila">
+      <span>${esc(p.nombre||'')}</span>
+      <b>${pubVistasDe(p.id)} visitas · 0 pedidos</b>
+      <button type="button" onclick="apEdit('${escJsAttr(String(p.id))}')">Revisar</button>
+    </div>`).join('');
+  return `<div class="section">
+    <h3>🤔 Se ven y nadie los pide</h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">La gente abre la ficha y se va sin escribir.
+      Publicarlos otra vez no cambia eso: mira el precio, la foto o la descripción.</p>
+    ${filas}
+    ${lista.length>4?`<p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">y ${lista.length-4} más.</p>`:''}
+  </div>`;
 }
 function pubHoyToca(){
   const c=pubHoyCandidatos();
@@ -6779,10 +6872,20 @@ function pubHoyHTML(){
 function pubRenderHoy(otros){
   if(otros) PUB_HOY_SALTO++;
   const c=$('#pub-hoy'); if(c) c.innerHTML=pubHoyHTML();
+  const v=$('#pub-seven'); if(v) v.innerHTML=pubSeVenHTML();
+  const e=$('#pub-publog'); if(e && typeof tmPublogEstadoTexto==='function') e.textContent=tmPublogEstadoTexto();
 }
+/* El registro sube con un respiro de 4 s: sin esto la línea se queda en
+   «sin guardar todavía» aunque ya haya llegado, que es justo la duda que
+   viene a responder. */
+window.tmPublogAlCambiar = function(){
+  const e=$('#pub-publog');
+  if(e && typeof tmPublogEstadoTexto==='function') e.textContent=tmPublogEstadoTexto();
+};
 
 function pubCompartirHTML(){
   return `<div id="pub-hoy">${pubHoyHTML()}</div>
+  <div id="pub-seven">${pubSeVenHTML()}</div>
   <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
@@ -6800,6 +6903,9 @@ function pubCompartirHTML(){
     <div class="banner-info">Tip: usa <b>🖼️ Estado</b> para generar una imagen vertical lista para WhatsApp Estado.</div>
     <p id="pub-share-agotados" style="font-size:11.5px;color:var(--muted);margin:8px 0 0"></p>
     <div id="pub-share-list" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
+    <!-- Lo publicado se guarda en el repositorio para que te siga entre
+         teléfonos. Si no llegó, hay que poder verlo. -->
+    <p id="pub-publog" style="font-size:10.5px;color:var(--muted);margin:10px 0 0;text-align:center"></p>
   </div>`;
 }
 function pubRenderShareList(){

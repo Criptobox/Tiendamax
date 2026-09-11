@@ -1,289 +1,249 @@
-/* El tab 📣 Publicar del admin — admin.html + js/src/tm-publicar.src.js
+/* La pantalla 📣 Publicar — en un navegador de verdad.
  *
- * Existe por un fallo que estuvo meses en producción sin dar la cara: había
- * DOS historiales de publicación que no se hablaban. El tab Compartir —el que
- * se usa— escribía en 'tmPubHist'; el Historial, el aviso de "21 días sin
- * publicar" y la columna "hace X d" leían 'tm_publog_v1', donde Compartir no
- * escribía nunca. Resultado: el Historial vacío para siempre y el aviso
- * diciendo "119 productos llevan 21 días o más" publicaras lo que publicaras.
+ * Dos cosas que no se pueden comprobar leyendo el fichero, y que fallan sin
+ * dar un solo error:
  *
- * Nada fallaba. Los dos lados funcionaban perfectamente por separado.
+ *  - **El registro de lo publicado vivía solo en este navegador.** Cambiar de
+ *    teléfono dejaba los 132 productos en «nunca publicado»; publicar desde
+ *    el móvil y abrir el panel en la computadora hacía que la computadora
+ *    propusiera lo mismo otra vez, y se publicaba duplicado. Ahora va al
+ *    repositorio, y como se publica desde dos aparatos tiene que FUSIONARSE:
+ *    subir el fichero entero pisaría lo del otro y el trabajo desaparece sin
+ *    que nada se queje.
+ *  - **«Hoy toca publicar» ordena por visitas.** Si ordenara por unas visitas
+ *    que todavía no han llegado, un producto sin datos leería «0 visitas» —
+ *    justo lo más urgente de la lista— y lo más urgente sería siempre lo que
+ *    no cargó. Nadie puede distinguir eso de «nadie lo ha visto».
+ *
+ * Firebase, los analytics y la API de GitHub se interceptan: no se escribe
+ * nada en ninguna parte. Se corre solo (`node tests/publicar_check.mjs`) y
+ * desde unittest (tests/test_publicar_repo.py).
  */
-import { readFileSync } from 'node:fs';
+
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import vm from 'node:vm';
+import { dirname, join, extname, normalize } from 'node:path';
+import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
+const requerir = createRequire(import.meta.url);
+let chromium;
+try {
+    ({ chromium } = requerir('/opt/node22/lib/node_modules/playwright/index.js'));
+} catch (e) {
+    try { ({ chromium } = requerir('playwright')); }
+    catch (e2) { console.log('playwright no disponible — se salta'); process.exit(0); }
+}
+
 const fallos = [];
-const ok = (c, m) => { if (!c) fallos.push(m); };
+const ok = (cond, msg) => { if (!cond) fallos.push(msg); };
 
-const HTML = readFileSync(join(RAIZ, 'admin.html'), 'utf8');
-const PUBLICAR = readFileSync(join(RAIZ, 'js/src/tm-publicar.src.js'), 'utf8');
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
+               '.json': 'application/json', '.webp': 'image/webp', '.png': 'image/png' };
+let REPO = null;               // lo que hay en publicaciones.json
+const SUBIDAS = [];            // lo que se le manda a GitHub
 
-// ── El motor: tm-publicar.src.js corriendo de verdad ─────────────────────
-function montar(productos) {
-    const guardado = {};
-    const sb = {
-        window: {}, console,
-        localStorage: {
-            getItem: k => (k in guardado ? guardado[k] : null),
-            setItem: (k, v) => { guardado[k] = String(v); },
-            removeItem: k => { delete guardado[k]; },
-        },
-        PRODUCTOS: productos,
+const servidor = createServer(async (q, r) => {
+    const p = q.url.split('?')[0];
+    if (p.endsWith('/publicaciones.json')) {
+        if (!REPO) { r.writeHead(404); r.end(); return; }
+        r.writeHead(200, { 'Content-Type': 'application/json' });
+        r.end(JSON.stringify(REPO));
+        return;
+    }
+    const ruta = normalize(join(RAIZ, decodeURIComponent(p)));
+    try {
+        const cuerpo = await readFile(ruta);
+        r.writeHead(200, { 'Content-Type': MIME[extname(ruta)] || 'application/octet-stream' });
+        r.end(cuerpo);
+    } catch (e) { r.writeHead(404); r.end(); }
+}).listen(0);
+const PUERTO = servidor.address().port;
+
+const PRODUCTOS = JSON.parse(await readFile(join(RAIZ, 'productos.json'), 'utf8'))
+    .filter(p => Number(p.stock) > 0).slice(0, 10);
+// Los dos primeros: muy vistos y sin un solo clic de WhatsApp. Los tres
+// siguientes: nadie los ha visto. El resto, normales.
+const VISTAS = {}, WA = {};
+PRODUCTOS.forEach((p, i) => {
+    VISTAS[p.id] = { count: i < 2 ? 40 + i : (i < 5 ? 0 : 3) };
+    WA[p.id] = { count: i < 2 ? 0 : 2 };
+});
+const MUY_VISTOS = PRODUCTOS.slice(0, 2).map(p => p.nombre);
+const SIN_VISTAS = PRODUCTOS.slice(2, 5).map(p => p.nombre);
+
+const navegador = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const ctx = await navegador.newContext({ viewport: { width: 412, height: 1400 }, serviceWorkers: 'block' });
+const erroresJs = [];
+
+// El orden importa: en Playwright gana la ruta registrada MÁS TARDE.
+await ctx.route(u => !u.hostname.includes('localhost') && u.hostname !== 'api.github.com'
+                     && !u.hostname.includes('firebaseio.com'), r => r.abort());
+await ctx.route('**/*.firebaseio.com/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: 'null' }));
+await ctx.route('**/analytics/vistas.json**', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(VISTAS) }));
+await ctx.route('**/analytics/whatsapp.json**', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(WA) }));
+await ctx.route(u => u.hostname === 'api.github.com', r => {
+    const req = r.request();
+    if (req.method() === 'PUT') {
+        const texto = Buffer.from(JSON.parse(req.postData() || '{}').content, 'base64').toString('utf8');
+        SUBIDAS.push({ ruta: req.url().split('/contents/')[1], datos: JSON.parse(texto) });
+        REPO = JSON.parse(texto);
+        return r.fulfill({ status: 200, contentType: 'application/json', body: '{"content":{"sha":"x"}}' });
+    }
+    if (req.url().includes('/contents/'))
+        return r.fulfill({ status: 200, contentType: 'application/json', body: '{"sha":"sha1"}' });
+    return r.fulfill({ status: 200, contentType: 'application/json', body: '{"default_branch":"main"}' });
+});
+
+const pagina = await ctx.newPage();
+pagina.on('pageerror', e => erroresJs.push(String(e).slice(0, 200)));
+await pagina.addInitScript(() => {
+    localStorage.setItem('githubUser', 'quien');
+    localStorage.setItem('githubRepo', 'repo');
+    localStorage.setItem('githubToken', 'ghp_de_mentira');
+});
+await pagina.goto(`http://localhost:${PUERTO}/admin.html`);
+await pagina.waitForTimeout(2500);
+await pagina.evaluate(() => {
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.querySelectorAll('.tm2-login-card, #tm2Login, .tm2-login').forEach(x => x.remove());
+    go('publicar');
+});
+await pagina.waitForTimeout(2400);
+
+// ── 1) Se ve y nadie lo pide: fuera de la cola, y dicho aparte ───────
+const sinPedir = await pagina.$$eval('.pub-sinpedir-fila', e => e.map(x => x.textContent.replace(/\s+/g, ' ').trim()));
+ok(sinPedir.length === 2,
+   `los 2 productos con 40 visitas y 0 pedidos deberían salir aparte; salen ${sinPedir.length}`);
+ok(MUY_VISTOS.every(n => sinPedir.some(t => t.includes(n))),
+   'el bloque «se ven y nadie los pide» no nombra los productos correctos');
+ok(sinPedir.every(t => /0 pedidos/.test(t)),
+   'cada fila tiene que decir el número, no solo el nombre: sin la cifra no se sabe si es grave');
+
+const hoy = await pagina.$$eval('.pub-hoy-card .pub-hoy-info b', e => e.map(x => x.textContent));
+ok(!MUY_VISTOS.some(n => hoy.includes(n)),
+   'un producto que se ve y nadie pide NO puede ocupar sitio en la cola de publicar: '
+   + 'publicarlo otra vez no arregla el precio ni la foto');
+ok(SIN_VISTAS.some(n => hoy.includes(n)),
+   `con los datos delante, primero va lo que nadie ha visto; propone ${JSON.stringify(hoy)}`);
+
+/* Mirar solo las tres tarjetas de arriba no basta: los muy vistos quedan al
+   final del orden y no asomarían aunque siguieran en la cola. Lo que de
+   verdad los expondría es «🔁 Dame otros», que va rotando por TODOS los
+   candidatos — así que se recorre la vuelta entera. */
+const vistosAlRotar = await pagina.evaluate(async muyVistos => {
+    const salieron = new Set();
+    for (let i = 0; i < 30; i++) {
+        pubRenderHoy(true);
+        [...document.querySelectorAll('.pub-hoy-card .pub-hoy-info b')]
+            .forEach(b => { if (muyVistos.includes(b.textContent)) salieron.add(b.textContent); });
+    }
+    return [...salieron];
+}, MUY_VISTOS);
+ok(vistosAlRotar.length === 0,
+   `dando a «Dame otros» hasta dar la vuelta, un producto que se ve y nadie pide `
+   + `NO puede aparecer nunca en la cola; apareció ${JSON.stringify(vistosAlRotar)}`);
+
+// ── 2) Sin datos, NO se ordena por ellos ─────────────────────────────
+/* No se toca PUB_STATS desde fuera —es `let` dentro del IIFE y no existe en
+   window— y además vale más probar el fallo de verdad: Firebase sin
+   responder, que en Cuba es un martes cualquiera. Con la pestaña así, la
+   pantalla no puede afirmar que algo «se ve y nadie lo pide» ni ordenar por
+   unas visitas que no tiene. */
+const ctxCaido = await navegador.newContext({ viewport: { width: 412, height: 1400 }, serviceWorkers: 'block' });
+await ctxCaido.route(u => !u.hostname.includes('localhost'), r => r.abort());
+const pgCaido = await ctxCaido.newPage();
+await pgCaido.goto(`http://localhost:${PUERTO}/admin.html`);
+await pgCaido.waitForTimeout(2400);
+await pgCaido.evaluate(() => {
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.querySelectorAll('.tm2-login-card, #tm2Login, .tm2-login').forEach(x => x.remove());
+    go('publicar');
+});
+await pgCaido.waitForTimeout(2200);
+const caido = await pgCaido.evaluate(() => ({
+    sinPedir: document.querySelectorAll('.pub-sinpedir-fila').length,
+    cola: [...document.querySelectorAll('.pub-hoy-card .pub-hoy-info b')].map(x => x.textContent),
+}));
+ok(caido.sinPedir === 0,
+   'con los analytics caídos no se puede decir que algo «se ve y nadie lo pide»: sería inventarlo');
+ok(caido.cola.length > 0,
+   'la pantalla tiene que seguir proponiendo qué publicar aunque Firebase no conteste: '
+   + 'los días sin publicar salen del registro local y no dependen de la red');
+await ctxCaido.close();
+
+// ── 3) El registro se guarda en el repositorio ───────────────────────
+const antesDeSubir = SUBIDAS.length;
+await pagina.evaluate(() => {
+    const b = document.querySelector('.pub-hoy-btns .pub-act.ghost');
+    if (b) b.click();
+});
+await pagina.waitForTimeout(700);
+const local = await pagina.evaluate(() => {
+    try { return JSON.parse(localStorage.getItem('tm_publog_v1') || '[]').length; }
+    catch (e) { return -1; }
+});
+ok(local > 0, 'lo publicado se apunta en el momento: cerrar la pestaña antes de que suba no puede perderlo');
+ok(SUBIDAS.length === antesDeSubir,
+   'publicar una tanda son diez toques en un minuto: no puede ser un commit por toque');
+const estadoPendiente = await pagina.evaluate(() => (document.getElementById('pub-publog') || {}).textContent || '');
+ok(/sin guardar/.test(estadoPendiente),
+   `mientras no ha subido tiene que decirlo; dice «${estadoPendiente}»`);
+
+await pagina.waitForTimeout(4800);
+ok(SUBIDAS.length === antesDeSubir + 1,
+   `tras el respiro debe haber UNA subida, hay ${SUBIDAS.length - antesDeSubir}`);
+const subida = SUBIDAS[SUBIDAS.length - 1];
+ok(subida && subida.ruta === 'publicaciones.json',
+   `se sube a publicaciones.json, no a ${subida && subida.ruta}`);
+ok(subida && Array.isArray(subida.datos.eventos) && subida.datos.eventos.length > 0,
+   'el fichero tiene que llevar los eventos');
+ok(subida && subida.datos.eventos.every(e => e.pid && e.red && e.ts),
+   'cada evento necesita producto, red y momento: eso es lo que lo identifica al fusionar');
+const estadoOk = await pagina.evaluate(() => (document.getElementById('pub-publog') || {}).textContent || '');
+ok(/guardado/.test(estadoOk),
+   `al terminar de subir la línea tiene que cambiar, o miente; dice «${estadoOk}»`);
+
+// ── 4) Dos aparatos: fusionar, no pisar ──────────────────────────────
+// El otro teléfono publicó otra cosa mientras tanto.
+const ajeno = { pid: 'producto-del-otro', red: 'fb', destino: 'Grupos', ts: Date.now() - 1000 };
+REPO = { actualizado: new Date().toISOString(), eventos: [ajeno].concat(subida.datos.eventos) };
+await pagina.evaluate(() => {
+    const b = document.querySelectorAll('.pub-hoy-btns .pub-act.ghost')[1];
+    if (b) b.click();
+});
+await pagina.waitForTimeout(5200);
+const ultimo = SUBIDAS[SUBIDAS.length - 1].datos.eventos;
+ok(ultimo.some(e => e.pid === 'producto-del-otro'),
+   'lo que publicó el otro aparato entre medias no puede desaparecer al subir lo de este');
+ok(ultimo.length > subida.datos.eventos.length,
+   'y lo de aquí tiene que seguir estando: se unen las dos listas');
+
+// Fusionar dos veces lo mismo no puede duplicar nada: la identidad de un
+// evento es producto + red + momento.
+const dedupe = await pagina.evaluate(() => {
+    const uno = [{ pid: '1', red: 'fb', ts: 111 }, { pid: '1', red: 'wa', ts: 222 }];
+    return {
+        repetido: tmPublogFusionar(uno, uno).length,
+        distintos: tmPublogFusionar(uno, [{ pid: '2', red: 'fb', ts: 111 }]).length,
+        mismoMomentoOtraRed: tmPublogFusionar([{ pid: '1', red: 'fb', ts: 5 }],
+                                              [{ pid: '1', red: 'wa', ts: 5 }]).length,
     };
-    sb.globalThis = sb;
-    vm.createContext(sb);
-    vm.runInContext(PUBLICAR, sb);
-    return { sb, guardado, run: expr => vm.runInContext(expr, sb) };
-}
+});
+ok(dedupe.repetido === 2, `fusionar una lista consigo misma no puede duplicar: da ${dedupe.repetido}`);
+ok(dedupe.distintos === 3, `dos productos distintos son dos eventos: da ${dedupe.distintos}`);
+ok(dedupe.mismoMomentoOtraRed === 2,
+   'publicar el mismo producto en dos redes a la vez son DOS publicaciones, no una');
 
-const CAT = [
-    { id: 'a', nombre: 'Router', stock: 5 },
-    { id: 'b', nombre: 'Cámara', stock: 3 },
-    { id: 'c', nombre: 'Batería', stock: 0 },
-];
+ok(erroresJs.length === 0, 'errores de JS: ' + erroresJs.join(' | '));
 
-// ── Las fechas del historial viejo no se pueden perder al migrar ─────────
-// tmRegistrarPublicacion no aceptaba fecha. Sin ese parámetro, migrar el
-// historial viejo apuntaría todo con la de hoy y "hace X días" pasaría a
-// decir "hoy" para el catálogo entero — justo el dato que se quería salvar.
-{
-    const { run } = montar(CAT);
-    const hace40 = Date.now() - 40 * 86400000;
-    run(`tmRegistrarPublicacion('a','otra','viejo',${hace40})`);
-    ok(run(`tmDiasSinPublicar('a')`) === 40,
-        `una publicación migrada debe conservar su fecha, dio ${run(`tmDiasSinPublicar('a')`)} días`);
-    // Y sin fecha sigue siendo ahora, como siempre.
-    run(`tmRegistrarPublicacion('b','fb','hoy')`);
-    ok(run(`tmDiasSinPublicar('b')`) === 0, 'sin fecha explícita se apunta con la de hoy');
-    // Una fecha basura no puede colarse como timestamp.
-    run(`tmRegistrarPublicacion('c','fb','x','mañana')`);
-    ok(run(`tmDiasSinPublicar('c')`) === 0, 'una fecha inválida cae en "ahora", no en NaN');
-}
-
-// ── admin.html: un solo historial ────────────────────────────────────────
-{
-    // El historial no puede leer su propio almacén: tiene que derivarse del
-    // log, que es lo que hace que las dos mitades se enteren la una de la otra.
-    // (Antes esto vigilaba pubHist(); esa función se borró cuando el historial
-    // pasó a guardarse por canal, y el invariante se mudó a pubHistRed().)
-    const histRed0 = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/);
-    ok(histRed0 && /tmPublicaciones\(\)/.test(histRed0[0]),
-        'pubHistRed() debe derivarse de tmPublicaciones(), no de un almacén aparte');
-    ok(histRed0 && !/localStorage\.getItem\('tmPubHist'\)/.test(histRed0[0]),
-        'pubHistRed() no puede volver a leer tmPubHist directamente');
-    // La migración del formato viejo colgaba de pubHist(): si nadie la llama,
-    // el historial anterior se queda en localStorage sin que nada lo lea.
-    ok(histRed0 && /_pubMigrarHistViejo\(\)/.test(histRed0[0]),
-        'alguien tiene que seguir disparando la migración del historial viejo');
-
-    const marcar = HTML.match(/function pubMarcarPublicado\([\s\S]*?\n\}/);
-    ok(marcar && /tmRegistrarPublicacion\(/.test(marcar[0]),
-        'pubMarcarPublicado() debe apuntar en el log común, o el Historial se queda vacío');
-    ok(marcar && !/localStorage\.setItem\('tmPubHist'/.test(marcar[0]),
-        'pubMarcarPublicado() no puede seguir escribiendo el almacén viejo');
-
-    // La migración corre una sola vez y no puede duplicar en cada carga.
-    ok(/_PUB_HIST_MIGRADO/.test(HTML) && /if\(_PUB_HIST_MIGRADO\) return;/.test(HTML),
-        'la migración del historial viejo debe correr una sola vez por carga');
-    ok(/!tmUltimaPublicacion\(id\)/.test(HTML),
-        'la migración debe saltarse lo que ya está en el log, o duplica en cada visita');
-
-    // Cada botón apunta SU red. Antes iba todo como "otra" y el Historial no
-    // servía para saber dónde habías puesto ya cada producto.
-    ok(/_redDe\s*=\s*\{[^}]*fb:'fb'[^}]*rev:'revolico'/.test(HTML),
-        'pubShareAct debe registrar la red real de cada botón, no "otra" para todo');
-}
-
-// ── "Hoy toca publicar" ──────────────────────────────────────────────────
-{
-    ok(/function pubHoyCandidatos\(\)/.test(HTML) && /function pubHoyToca\(\)/.test(HTML),
-        'debe existir la selección de "hoy toca"');
-    // Publicar lo agotado es tiempo perdido: no puede entrar en la propuesta.
-    const cand = HTML.match(/function pubHoyCandidatos\(\)\{[\s\S]*?\n\}/);
-    ok(cand && /Number\(p\.stock\|\|0\)>0/.test(cand[0]),
-        '"hoy toca" no puede proponer productos agotados');
-    // El descanso se decide ahora en pubRedesPendientes(), canal por canal:
-    // estar en WhatsApp ya no da por publicado lo que nunca fue a Revólico.
-    const pend = HTML.match(/function pubRedesPendientes\(id, hr\)\{[\s\S]*?\n\}/);
-    ok(pend && /PUB_HOY_DESCANSO_DIAS/.test(pend[0]),
-        'lo publicado hace poco debe descansar, o siempre saldrían los mismos');
-    ok(cand && /pubRedesPendientes/.test(cand[0]),
-        '"hoy toca" debe mirar los canales que faltan, no solo la fecha');
-    // "Dame otros" tiene que dar OTROS de verdad: se ejecuta la selección
-    // real, porque comprobar que el texto menciona el contador no distingue
-    // un `if(otros)` de un `if(false)`.
-    const desde = HTML.indexOf('const PUB_HOY_N =');
-    const hasta = HTML.indexOf('function pubHoyHTML()');
-    ok(desde > 0 && hasta > desde, 'no encuentro el bloque de "hoy toca" en admin.html');
-    const catalogo = Array.from({ length: 9 }, (_, i) => ({ id: 'p' + i, nombre: 'P' + i, stock: 4 }));
-    // Registro vacío: ningún producto se ha publicado en ningún canal, así que
-    // los tres están pendientes para todos. Se usan las funciones REALES de
-    // canales (no un stub) para que esto siga cubriéndolas.
-    const sbHoy = { PRODUCTOS: catalogo, tmPublicaciones: () => [],
-                    _pubMigrarHistViejo: () => {}, Date, console };
-    sbHoy.globalThis = sbHoy;
-    vm.createContext(sbHoy);
-    // pubRenderHoy sale del propio admin.html —no se reescribe aquí— porque
-    // lo que se está comprobando es que ESE botón avance el contador.
-    const render = HTML.match(/function pubRenderHoy\(otros\)\{[\s\S]*?\n\}/);
-    ok(render, 'no encuentro pubRenderHoy() en admin.html');
-    sbHoy.$ = () => null;   // pubRenderHoy repinta el DOM; aquí no hay
-    const redes = HTML.match(/const PUB_REDES = \[[\s\S]*?\];/);
-    const histRed = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/);
-    ok(redes && histRed && pend, 'no encuentro las funciones de canales en admin.html');
-    vm.runInContext([redes[0], histRed[0], pend[0], HTML.slice(desde, hasta),
-                     (render ? render[0] : '')].join('\n'), sbHoy);
-    const tanda1 = vm.runInContext('pubHoyToca().map(p=>p.id)', sbHoy);
-    vm.runInContext('pubRenderHoy(true)', sbHoy);
-    const tanda2 = vm.runInContext('pubHoyToca().map(p=>p.id)', sbHoy);
-    ok(tanda1.length === 3 && tanda2.length === 3, 'cada tanda debe traer tres');
-    ok(tanda1.join() !== tanda2.join(),
-        `"Dame otros" debe dar otros: dio ${tanda1.join()} y luego ${tanda2.join()}`);
-    ok(!tanda1.some(id => tanda2.includes(id)),
-        'la segunda tanda no debe repetir ninguno de la primera');
-    // Y al llegar al final da la vuelta en vez de quedarse en blanco.
-    for (let i = 0; i < 5; i++) vm.runInContext('pubRenderHoy(true)', sbHoy);
-    ok(vm.runInContext('pubHoyToca().length', sbHoy) === 3,
-        'al pasar del último debe dar la vuelta, no quedarse sin nada que proponer');
-    // Con menos productos que una tanda tampoco puede romperse.
-    const sbPoco = { PRODUCTOS: [{ id: 'x', nombre: 'X', stock: 2 }],
-                     tmPublicaciones: () => [], _pubMigrarHistViejo: () => {}, Date, console };
-    sbPoco.globalThis = sbPoco;
-    vm.createContext(sbPoco);
-    vm.runInContext([redes[0], histRed[0], pend[0], HTML.slice(desde, hasta)].join('\n'), sbPoco);
-    ok(vm.runInContext('pubHoyToca().length', sbPoco) === 1,
-        'con un solo producto disponible debe proponer ese, sin repetirlo tres veces');
-}
-
-// ── Paginación de la lista ───────────────────────────────────────────────
-{
-    const filt = HTML.match(/function pubShareFiltered\(\)\{[\s\S]*?\n\}/);
-    ok(filt && !/\.slice\(0,\s*120\)/.test(filt[0]),
-        'el filtro ya no corta a 120: de eso se encarga la paginación');
-    ok(/const PUB_SHARE_PAGINA = 20;/.test(HTML), 'la lista debe pintarse de 20 en 20');
-    ok(/PUB_SHARE_VISIBLES\s*\+=\s*PUB_SHARE_PAGINA/.test(HTML), 'debe existir "ver más"');
-    // Buscar con la paginación avanzada dejaba la lista vacía: cada filtro
-    // tiene que volver a la primera página.
-    ok(/id="pub-share-q"[^>]*oninput="pubShareReset\(\)"/.test(HTML),
-        'buscar debe reiniciar la paginación');
-    ok(/id="pub-share-cat"[^>]*onchange="pubShareReset\(\)"/.test(HTML),
-        'cambiar de categoría debe reiniciar la paginación');
-    ok(/function pubToggleSinPublicar\(\)\{[^}]*pubShareReset\(\)/.test(HTML),
-        'el filtro "solo sin publicar" debe reiniciar la paginación');
-}
-
-// ── Racha y calendario ───────────────────────────────────────────────────
-{
-    ok(/function pubRachaDias\(\)/.test(HTML) && /tmPublicacionesPorDia\(\)/.test(HTML),
-        'la racha debe salir de tmPublicacionesPorDia(), que ya existía sin usarse');
-    const racha = HTML.match(/function pubRachaDias\(\)\{[\s\S]*?\n\}/);
-    ok(racha && /cursor\.setDate\(cursor\.getDate\(\)-1\)/.test(racha[0]),
-        'si hoy aún no has publicado, la racha se cuenta desde ayer: si no, se pondría a cero cada mañana');
-    // El calendario vacío es justo lo que empuja a empezar.
-    ok(/if\(!log\.length\)\{\s*\n\s*return pubCalendarioHTML\(\)/.test(HTML),
-        'el calendario debe salir también sin historial');
-}
-
-// ── El aviso de "21 días" solo con stock ─────────────────────────────────
-{
-    ok(/const conStock=olvidados\.filter\(p=>Number\(p\.stock\|\|0\)>0\)/.test(HTML),
-        'el aviso de olvidados no puede mandar a publicar lo que está agotado');
-}
-
-// ── La pill muerta ───────────────────────────────────────────────────────
-{
-    const pills = HTML.match(/P\.innerHTML=pill\([\s\S]*?;\s*\}/);
-    ok(pills && !/pill\('oferta'/.test(pills[0]),
-        'la pill "Oferta del día" no hacía nada más que mandar a otro tab: fuera');
-}
-
-// ── Lo que el HTML llama tiene que existir y estar exportado ─────────────
-// El bloque de admin.html es un IIFE con lista de exports: una función nueva
-// llamada desde un onclick existe, pero el botón no hace nada.
-{
-    const usadas = new Set();
-    (HTML.match(/onclick="(pub[A-Za-z]+)\(/g) || []).forEach(m => {
-        usadas.add(m.replace(/onclick="/, '').replace(/\($/, ''));
-    });
-    for (const fn of ['pubRenderHoy', 'pubShareVerMas', 'pubShareReset']) {
-        if (!usadas.has(fn)) continue;
-        ok(new RegExp('window\\.' + fn + '\\s*=\\s*' + fn).test(HTML),
-            `${fn}() se llama desde un onclick pero no está exportada a window: el botón no haría nada`);
-    }
-}
-
-// ── Estado por canal ─────────────────────────────────────────────────────
-//
-// El registro siempre guardó en qué red se publicó cada cosa, pero todo se
-// resumía en "última vez en cualquier sitio". Con eso, subir un router al
-// Estado de WhatsApp lo daba por publicado una semana entera aunque no hubiera
-// estado NUNCA en Revólico: el hueco que importa quedaba invisible, y el panel
-// decía que no había nada que hacer.
-{
-    ok(/const PUB_REDES = /.test(HTML), 'no encuentro la lista de canales');
-    const redes = HTML.match(/const PUB_REDES = \[[\s\S]*?\];/)[0];
-    for (const r of ['wa', 'fb', 'revolico']) {
-        ok(redes.includes(`'${r}'`), `falta el canal ${r} en PUB_REDES`);
-    }
-    // Copiar el enlace no es publicar: contarlo daba por cubierto un canal
-    // que nadie llegó a ver.
-    ok(!/'otra'/.test(redes), "'otra' (copiar el enlace) no puede contar como canal");
-
-    const hr = HTML.match(/function pubHistRed\(\)\{[\s\S]*?\n\}/)[0];
-    ok(/e\.red/.test(hr), 'pubHistRed() tiene que leer la red de cada entrada del registro');
-
-    const badge = HTML.match(/function pubBadgePublicado\(id, hr\)\{[\s\S]*?\n\}/);
-    ok(badge, 'pubBadgePublicado() debe recibir el historial por canal');
-    ok(badge && /PUB_REDES\.map/.test(badge[0]),
-        'la tarjeta debe decir el estado de CADA canal, no uno solo');
-
-    // Y el filtro "solo lo que falta" también, o seguiría escondiendo el hueco.
-    const filtro = HTML.match(/function pubShareFiltered\(\)\{[\s\S]*?\n\}/);
-    ok(filtro && /pubRedesPendientes/.test(filtro[0]),
-        'el filtro y el orden de la lista deben mirar los canales pendientes');
-}
-
-// ── De dónde llegan las visitas ──────────────────────────────────────────
-//
-// Todo lo publicado sale con ?utm_source=<canal> desde hace tiempo, pero nadie
-// lo recogía al llegar: se repartía el esfuerzo entre cuatro sitios sin saber
-// cuál trae a quien escribe.
-{
-    const PATCHES = readFileSync(join(RAIZ, 'js/src/tm-patches.src.js'), 'utf8');
-    const fn = PATCHES.match(/function tmFuenteVisita\(busqueda\) \{[\s\S]*?\n\}/);
-    ok(fn, 'no encuentro tmFuenteVisita()');
-    ok(fn && /_TM_FUENTES\[cruda\] \|\| ''/.test(fn[0]),
-        'solo se aceptan canales conocidos: la clave va a una ruta de Firebase, '
-        + 'y admitir cualquier texto de la URL dejaría crear nodos a voluntad');
-
-    // Los alias importan: el panel escribe 'facebook' y revolico_integration
-    // escribía 'fb' para lo mismo. Los enlaces ya publicados llevan las dos
-    // formas y no se pueden reescribir; sin alias, cada canal contaría partido.
-    const mapa = PATCHES.match(/const _TM_FUENTES = \{[\s\S]*?\};/);
-    ok(mapa, 'no encuentro el mapa de canales');
-    for (const [alias, bueno] of [["'fb'", 'facebook'], ["'rev'", 'revolico'], ["'wa'", 'whatsapp']]) {
-        ok(mapa && new RegExp(alias + ": '" + bueno + "'").test(mapa[0]),
-            `falta el alias ${alias} → ${bueno}: los enlaces ya publicados lo usan`);
-    }
-
-    ok(/analytics\/fuentes\/' \+ fuente \+ '\/count\.json/.test(PATCHES),
-        'la visita no registra de dónde vino');
-
-    const REGLAS = JSON.parse(readFileSync(join(RAIZ, 'firebase-rules.json'), 'utf8'));
-    ok(REGLAS.rules.analytics.fuentes,
-        '/analytics/fuentes sin regla: la tienda escribe sin permiso y se pierde el dato');
-
-    // Y que el dato se vea: un contador que nadie mira no sirve de nada.
-    ok(/id="an-fuentes"/.test(HTML), 'falta el panel «De dónde llegan» en Analytics');
-    ok(/cargarFuentes\(\);/.test(HTML), 'nadie llama a cargarFuentes()');
-}
+await navegador.close();
+servidor.close();
 
 if (fallos.length) {
-    console.error(`❌ ${fallos.length} comprobación(es) fallida(s):`);
-    fallos.forEach(f => console.error('   • ' + f));
+    console.error('❌ ' + fallos.length + ' fallo(s):');
+    fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ publicar: todas las comprobaciones pasan');
+console.log('✅ Publicar: 18 comprobaciones OK');

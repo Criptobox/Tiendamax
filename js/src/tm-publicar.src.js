@@ -2,9 +2,12 @@
    TiendaMax — módulo: tm-publicar
    Plantillas de texto para los posts y registro de publicaciones.
 
-   Todo vive en localStorage, no en Firebase, y es a propósito: son datos de
-   trabajo del admin, no del sitio. Meterlos en la base obligaría a abrirlos a
-   escritura anónima (no hay autenticación), y ya sabemos cómo acaba eso.
+   Nada de esto va a Firebase, y es a propósito: son datos de trabajo del
+   admin, no del sitio, y meterlos en la base obligaría a abrirlos a escritura
+   anónima (el panel escribe sin autenticación). Las plantillas se quedan en
+   localStorage; el registro de publicaciones también, pero además se copia al
+   REPOSITORIO —con el token del dueño— para que te siga entre teléfonos. El
+   porqué, en su propio bloque más abajo.
 
    NO toca el generador de carteles: aquí solo se arma TEXTO.
    ============================================================ */
@@ -195,6 +198,8 @@ function tmRegistrarPublicacion(productoId, red, destino, ts) {
                    ts: (isFinite(cuando) && cuando > 0) ? cuando : Date.now() });
         localStorage.setItem(TM_PUBLOG_KEY, JSON.stringify(log.slice(-TM_PUBLOG_MAX)));
     } catch (e) {}
+    // Local en el acto, repositorio con un respiro. Ver el bloque de abajo.
+    try { tmPublogSubirLuego(); } catch (e) {}
 }
 
 function tmPublicaciones() {
@@ -203,6 +208,128 @@ function tmPublicaciones() {
         return Array.isArray(v) ? v : [];
     } catch (e) { return []; }
 }
+
+
+/* ── El registro también vive en el repositorio ──────────────────────────
+   Vivía SOLO en este navegador, y eso costaba trabajo de verdad:
+
+     · Cambiar de teléfono dejaba los 132 productos en «nunca publicado».
+       Los badges en blanco, el Historial vacío, y «Hoy toca publicar»
+       proponiendo al azar.
+     · Publicar desde el móvil y abrir el panel en la computadora hacía que
+       la computadora propusiera lo mismo otra vez — y se publicaba duplicado.
+     · El Copiloto lee este mismo registro para su «Publica esto hoy», así
+       que heredaba el agujero.
+
+   Mismo camino que comparar-marcas.json: fichero en el repo, publicado con
+   subirArchivoAGitHub. La fusión, en cambio, es MÁS SIMPLE que la de las
+   marcas y a propósito: publicar solo añade. No hay nada que deshacer, así
+   que no hacen falta lápidas — basta con unir las dos listas y quitar los
+   repetidos. La identidad de un evento es producto + red + momento.
+
+   Se guarda en local en el acto y se sube con un respiro: publicar una tanda
+   son diez toques en un minuto, y sin esa espera serían diez commits desde un
+   móvil cubano. */
+const TM_PUBLOG_ARCHIVO = 'publicaciones.json';
+let _tmPublogTimer = null, _tmPublogSubiendo = false;
+let TM_PUBLOG_ESTADO = 'local';   // local | pendiente | guardando | guardado | error | sin-token
+
+/* El estado cambia dentro de una espera de 4 s y de una subida a GitHub, así
+   que quien lo pinta no se entera solo. El bundle no toca el DOM —lo sirven
+   también las páginas públicas— así que avisa y el panel decide qué repintar. */
+function _tmPublogAviso(){
+    try{ if(typeof window.tmPublogAlCambiar === 'function') window.tmPublogAlCambiar(TM_PUBLOG_ESTADO); }catch(e){}
+}
+
+function _tmPublogClave(e){
+    return String(e && e.pid) + '|' + String(e && e.red) + '|' + Number(e && e.ts);
+}
+/** Une dos listas de publicaciones sin repetir. Un evento es el mismo si
+ *  coincide producto, red y momento: eso es lo que se repite al volver a
+ *  fusionar lo que ya estaba, no dos publicaciones distintas. */
+function tmPublogFusionar(a, b) {
+    const vistos = new Set();
+    const out = [];
+    [].concat(a || [], b || []).forEach(e => {
+        if (!e || !e.pid || !e.red) return;
+        const k = _tmPublogClave(e);
+        if (vistos.has(k)) return;
+        vistos.add(k);
+        out.push(e);
+    });
+    out.sort((x, y) => (Number(x.ts) || 0) - (Number(y.ts) || 0));
+    return out.slice(-TM_PUBLOG_MAX);
+}
+
+async function tmPublogBajar() {
+    try {
+        const r = await fetch(TM_PUBLOG_ARCHIVO + '?_=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) return [];
+        const d = await r.json();
+        return Array.isArray(d && d.eventos) ? d.eventos : [];
+    } catch (e) { return []; }
+}
+
+/** Trae lo publicado desde otros aparatos y lo mezcla con lo de aquí.
+ *  Si esto tenía algo que allá no estaba, se sube: así un guardado que falló
+ *  —o publicar sin conexión— se arregla solo en vez de quedarse callado. */
+async function tmPublogSincronizar() {
+    const remoto = await tmPublogBajar();
+    const local = tmPublicaciones();
+    const fusion = tmPublogFusionar(remoto, local);
+    try { localStorage.setItem(TM_PUBLOG_KEY, JSON.stringify(fusion)); } catch (e) {}
+    if (fusion.length !== remoto.length) {
+        if (TM_PUBLOG_ESTADO !== 'guardando') tmPublogSubirLuego();
+    } else if (TM_PUBLOG_ESTADO === 'local') {
+        TM_PUBLOG_ESTADO = remoto.length ? 'guardado' : 'local';
+    }
+    return fusion;
+}
+
+function tmPublogSubirLuego() {
+    TM_PUBLOG_ESTADO = 'pendiente';
+    _tmPublogAviso();
+    clearTimeout(_tmPublogTimer);
+    _tmPublogTimer = setTimeout(() => { tmPublogSubir(); }, 4000);
+}
+
+async function tmPublogSubir() {
+    const user = localStorage.getItem('githubUser'),
+          repo = localStorage.getItem('githubRepo'),
+          token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) { TM_PUBLOG_ESTADO = 'sin-token'; _tmPublogAviso(); return false; }
+    if (_tmPublogSubiendo || typeof subirArchivoAGitHub !== 'function') return false;
+    _tmPublogSubiendo = true;
+    TM_PUBLOG_ESTADO = 'guardando';
+    _tmPublogAviso();
+    try {
+        // Releer justo antes de escribir: el otro aparato puede haber
+        // publicado entre que se abrió la pantalla y ahora.
+        const fusion = tmPublogFusionar(await tmPublogBajar(), tmPublicaciones());
+        try { localStorage.setItem(TM_PUBLOG_KEY, JSON.stringify(fusion)); } catch (e) {}
+        await subirArchivoAGitHub(user, repo, token, TM_PUBLOG_ARCHIVO, {
+            actualizado: new Date().toISOString(),
+            eventos: fusion,
+        });
+        TM_PUBLOG_ESTADO = 'guardado';
+    _tmPublogAviso();
+        return true;
+    } catch (e) {
+        TM_PUBLOG_ESTADO = 'error';
+    _tmPublogAviso();
+        return false;
+    } finally { _tmPublogSubiendo = false; }
+}
+
+function tmPublogEstadoTexto() {
+    if (TM_PUBLOG_ESTADO === 'guardando') return '⏳ guardando el historial…';
+    if (TM_PUBLOG_ESTADO === 'pendiente') return '⏳ historial sin guardar todavía';
+    if (TM_PUBLOG_ESTADO === 'guardado')  return '✅ historial guardado en el repositorio';
+    if (TM_PUBLOG_ESTADO === 'error')     return '⚠️ no se pudo guardar: el historial solo está en este aparato';
+    if (TM_PUBLOG_ESTADO === 'sin-token') return '📵 el historial solo está en este aparato (falta el token de GitHub)';
+    return '';
+}
+
 
 /** Última vez que se publicó ese producto (en una red concreta o en cualquiera). */
 function tmUltimaPublicacion(productoId, red) {
