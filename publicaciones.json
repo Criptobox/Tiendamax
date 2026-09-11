@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-11T18:13:48.153Z",
+  "actualizado": "2026-09-11T20:35:21.771Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -528,6 +528,24 @@
       "red": "revolico",
       "destino": "Revolico",
       "ts": 1789075489973
+    },
+    {
+      "pid": "1780017975657",
+      "red": "fb",
+      "destino": "Facebook · AUDIO",
+      "ts": 1789158917158
+    },
+    {
+      "pid": "1782439428159",
+      "red": "fb",
+      "destino": "Facebook · AUDIO",
+      "ts": 1789158917159
+    },
+    {
+      "pid": "1789065257613",
+      "red": "fb",
+      "destino": "Facebook · AUDIO",
+      "ts": 1789158917159
     }
   ]
 }
