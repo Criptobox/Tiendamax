@@ -82,6 +82,12 @@ await ctx.route(u => !u.hostname.includes('localhost') && u.hostname !== 'api.gi
                      && !u.hostname.includes('firebaseio.com'), r => r.abort());
 await ctx.route('**/*.firebaseio.com/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: 'null' }));
 await ctx.route('**/analytics/vistas.json**', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(VISTAS) }));
+/* Canales. facebook trae muchas visitas y ninguna venta —es el dato que hace
+   dejar de perder el rato ahí—; revolico trae pocas y ninguna, que no
+   significa nada todavía; whatsapp vende; y 'conocido' vendió sin que nadie
+   abriera un enlace, así que nunca tendrá visitas y tiene que salir igual. */
+const FUENTES = { facebook:{count:240}, whatsapp:{count:30}, revolico:{count:4} };
+await ctx.route('**/analytics/fuentes.json**', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(FUENTES) }));
 await ctx.route('**/analytics/whatsapp.json**', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(WA) }));
 await ctx.route(u => u.hostname === 'api.github.com', r => {
     const req = r.request();
@@ -99,6 +105,11 @@ await ctx.route(u => u.hostname === 'api.github.com', r => {
 const pagina = await ctx.newPage();
 pagina.on('pageerror', e => erroresJs.push(String(e).slice(0, 200)));
 await pagina.addInitScript(() => {
+    localStorage.setItem('registroVentas', JSON.stringify([
+        { id:'v1', fecha:'2026-01-02', origen:'whatsapp', items:[] },
+        { id:'v2', fecha:'2026-01-03', origen:'whatsapp', items:[] },
+        { id:'v3', fecha:'2026-01-04', origen:'conocido', items:[] },
+    ]));
     localStorage.setItem('githubUser', 'quien');
     localStorage.setItem('githubRepo', 'repo');
     localStorage.setItem('githubToken', 'ghp_de_mentira');
@@ -165,13 +176,53 @@ await pgCaido.waitForTimeout(2200);
 const caido = await pgCaido.evaluate(() => ({
     sinPedir: document.querySelectorAll('.pub-sinpedir-fila').length,
     cola: [...document.querySelectorAll('.pub-hoy-card .pub-hoy-info b')].map(x => x.textContent),
+    canales: (document.getElementById('pub-fuentes') || {}).textContent || '',
 }));
 ok(caido.sinPedir === 0,
    'con los analytics caídos no se puede decir que algo «se ve y nadie lo pide»: sería inventarlo');
 ok(caido.cola.length > 0,
    'la pantalla tiene que seguir proponiendo qué publicar aunque Firebase no conteste: '
    + 'los días sin publicar salen del registro local y no dependen de la red');
+ok(/no pude leer/i.test(caido.canales),
+   `sin red, «no pude leerlo» y «todavía no hay datos» se ven igual y significan lo contrario; `
+   + `dice «${caido.canales}»`);
+ok(!/Todavía no hay visitas/.test(caido.canales),
+   'un bloque vacío por un fallo de red se lee como «no funciona ningún canal», que es la conclusión contraria');
 await ctxCaido.close();
+
+// ── 2b) Qué canal trae ventas, en la pantalla donde se decide ────────
+const canales = await pagina.evaluate(() => {
+    const c = document.getElementById('pub-fuentes');
+    return { txt: (c || {}).textContent || '', hay: !!c };
+});
+ok(canales.hay, 'el bloque de canales tiene que estar en 📣 Publicar, que es donde se decide dónde publicar');
+ok(/Facebook/.test(canales.txt) && /240/.test(canales.txt),
+   `las visitas por canal tienen que salir; sale «${canales.txt.slice(0,140)}»`);
+ok(/2 ventas/.test(canales.txt),
+   'y las ventas marcadas de ese canal al lado: por separado ninguno de los dos dice dónde publicar');
+ok(/Conocido|conocido/.test(canales.txt),
+   'un canal que vendió sin que nadie abriera un enlace no tiene visitas y es justo la fila que interesa');
+const fbFila = canales.txt.slice(canales.txt.indexOf('Facebook'));
+ok(/sin ventas todavía/.test(fbFila.slice(0, 80)),
+   '240 visitas y 0 ventas es el dato que hace dejar de perder el rato ahí; hay que decirlo');
+ok(!/Revólico[^]{0,60}sin ventas todavía/.test(canales.txt),
+   'con 4 visitas no hay muestra: acusar a un canal de no rendir con eso es mandar a dejar de publicar donde sí funciona');
+
+/* El mismo pintor en las dos pantallas. Dos pintores sobre los mismos
+   números acaban dando cifras distintas en dos pestañas del mismo panel. */
+const mismos = await pagina.evaluate(async () => {
+    go('analytics');
+    await new Promise(r => setTimeout(r, 1500));
+    const an = (document.getElementById('an-fuentes') || {}).textContent || '';
+    go('publicar');
+    await new Promise(r => setTimeout(r, 800));
+    const pu = (document.getElementById('pub-fuentes') || {}).textContent || '';
+    const cifras = t => (t.match(/\d+/g) || []).join(',');
+    return { an: cifras(an), pu: cifras(pu), anTxt: an.slice(0, 120) };
+});
+ok(mismos.an.length > 0, `Analytics tiene que seguir pintando lo suyo; salió «${mismos.anTxt}»`);
+ok(mismos.an.startsWith(mismos.pu) || mismos.pu.startsWith(mismos.an) || mismos.an === mismos.pu,
+   `las dos pantallas no pueden dar cifras distintas del mismo dato: Analytics «${mismos.an}» vs Publicar «${mismos.pu}»`);
 
 // ── 3) El registro se guarda en el repositorio ───────────────────────
 const antesDeSubir = SUBIDAS.length;
@@ -246,4 +297,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Publicar: 18 comprobaciones OK');
+console.log('✅ Publicar: 28 comprobaciones OK');

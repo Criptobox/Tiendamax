@@ -148,8 +148,20 @@ function addTask(list,t){
   list.push({...t, id});
 }
 
+/* A la venta y sin saber cuánto deja. Vive aquí, en el fichero que analiza la
+   tienda, y Productos la USA para su filtro (window.tmSinComision): con una
+   copia en cada sitio, el número de la tarea y la lista que abre su botón
+   acaban siendo conjuntos distintos, y el que se equivoca es el que nadie
+   vuelve a contar. Un `comision: "0"` escrito a mano cuenta como sin definir:
+   es la misma ganancia cero, escrita de otra manera. */
+function sinComision(p){
+  return !!p && p.activo !== false && num(p.stock) > 0 && !num(p.comision);
+}
+window.tmSinComision = sinComision;
+
 function agentForKind(kind){
   if (['stockout','lowstock','avisos'].includes(kind)) return 'stock';
+  if (['comision'].includes(kind)) return 'ventas';
   if (['interesados'].includes(kind)) return 'crm';
   if (['hot','offer'].includes(kind)) return 'marketing';
   if (['seo','ai'].includes(kind)) return 'seo';
@@ -159,6 +171,7 @@ function agentForKind(kind){
 function buildAgentsFromTasks(tasks, facts){
   const defs = [
     {id:'stock', icon:'📦', name:'Agente Inventario', goal:'Stock, agotados y reposición'},
+    {id:'ventas', icon:'💰', name:'Agente Ganancia', goal:'Comisiones y lo que te deja cada producto'},
     {id:'crm', icon:'👥', name:'Agente CRM', goal:'Interesados y clientes calientes'},
     {id:'marketing', icon:'📣', name:'Agente Marketing', goal:'Campañas, ofertas y productos calientes'},
     {id:'seo', icon:'🔎', name:'Agente SEO/IA', goal:'Textos, SEO y recomendaciones'},
@@ -423,6 +436,21 @@ async function buildTasks(){
 
   const low = ps.filter(p=>p.activo!==false && num(p.stock)>0 && num(p.stock)<=2);
   if (low.length) addTask(tasks,{kind:'lowstock',urgency:2,icon:'⚠️',title:`${low.length} producto${low.length>1?'s':''} con stock bajo`,detail:low.slice(0,3).map(p=>`${p.nombre} (${p.stock})`).join(', '),action:'Ver stock',tab:'manage-products'});
+
+  /* Lo que el gestor vende sin saber cuánto gana. Es SU dinero, no el del
+     dueño, y es de las pocas cosas de esta lista que puede arreglar él solo
+     en dos minutos: la línea de la venta copia `comision`, así que un 0 aquí
+     sale como ganancia cero en Inicio y deja la fila fuera de las comisiones
+     que 🔀 Comparar cruza con la principal. El Asesor ya lo decía, pero en
+     una pestaña de la burbuja que no es la pantalla que se mira. */
+  const sinCom = ps.filter(sinComision);
+  if (sinCom.length){
+    const uds = sinCom.reduce((t,p)=>t+num(p.stock),0);
+    addTask(tasks,{kind:'comision',urgency:2,icon:'❓',
+      title:`${sinCom.length} producto${sinCom.length!==1?'s':''} que vendes sin comisión`,
+      detail:`${uds} unidad${uds!==1?'es':''} en venta de las que no sabes cuánto te dejan. Tu ganancia de Inicio las cuenta como cero.`,
+      action:'Ponerles la comisión', tab:'productos-sin-comision'});
+  }
 
   const atendidos = (()=>{try{return new Set(JSON.parse(localStorage.getItem('tm_int_atendidos')||'[]'))}catch(e){return new Set()}})();
   const pendInt = facts.interesados.filter(x=>x.ts && !atendidos.has(x.ts));
@@ -1966,6 +1994,15 @@ function switchTo(tab){
 // burbuja y la agenda de Inicio— y si cada uno tuviera su copia, arreglar el
 // caso de 'publicar-ahora' en uno dejaría el otro roto sin que se note.
 function abrirTarea(tab){
+  // Tampoco es una pestaña: es Productos con el filtro ya puesto. Mandar a
+  // Productos a secas deja la tarea a medias —132 fichas y ningún indicio de
+  // cuáles eran los catorce.
+  if(tab==='productos-sin-comision'){
+    closeSheet();
+    if(typeof window.apFiltrarSinComision==='function'){ try{ window.apFiltrarSinComision(); return; }catch(e){} }
+    switchTo('manage-products');
+    return;
+  }
   // 'publicar-ahora' no es una pestaña: dispara la publicación real a la tienda.
   if(tab==='publicar-ahora'){
     closeSheet();

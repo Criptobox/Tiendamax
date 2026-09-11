@@ -1435,7 +1435,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-com" onclick="apToggleFiltroComision()" title="Ver los que vendes sin comisión declarada">❓ Sin comisión</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div id="prod-bulkbar" style="display:none;position:sticky;top:64px;z-index:60;background:rgba(20,16,10,0.97);border:1px solid var(--o);border-radius:11px;padding:9px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px;flex-wrap:wrap">
           <b id="prod-bulk-count" style="color:var(--o);font-size:13px">0 seleccionados</b>
@@ -3754,7 +3754,36 @@ function qrImprimir(data, titulo){
 
 /* ============ PRODUCTOS ============ */
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
-let _apFiltroFav=false;
+let _apFiltroFav=false, _apFiltroCom=false;
+/* Los que están a la venta sin comisión declarada. Es dinero del gestor, no
+   del dueño: la línea de la venta copia `comision`, así que un 0 aquí es una
+   ganancia que no se cuenta en Inicio y una comisión que 🔀 Comparar no puede
+   cruzar con la principal. El Copiloto ya lo detectaba, pero solo en la
+   pestaña 📊 Asesor de la burbuja; esto es la lista sobre la que se trabaja.
+   Quién cuenta como «sin comisión» lo decide `tmSinComision` en
+   js/admin-copilot.js y NO se copia aquí: si el número de la tarea y la lista
+   que abre su botón fueran dos conjuntos, el que se equivoca es el que nadie
+   vuelve a contar. */
+function apSinComision(p){
+  return (typeof window.tmSinComision==='function') ? !!window.tmSinComision(p) : false;
+}
+function apPintarFiltroCom(){
+  const b=$('#prod-filtro-com'); if(!b) return;
+  b.style.background=_apFiltroCom?'rgba(255,107,26,0.22)':'';
+  b.style.color=_apFiltroCom?'var(--o)':'';
+  b.style.borderColor=_apFiltroCom?'var(--o)':'';
+}
+function apToggleFiltroComision(){ _apFiltroCom=!_apFiltroCom; apPintarFiltroCom(); renderProductos(); }
+/* Puerta para el Copiloto: enciende el filtro y lleva a Productos. Enciende,
+   no alterna — llegar desde la tarea y que se apague porque ya estaba puesto
+   sería lo contrario de lo que pide el botón. */
+function apFiltrarSinComision(){
+  _apFiltroCom=true; _apFiltroFav=false;
+  const bs=$('#prod-buscar'); if(bs) bs.value='';
+  const cf=$('#prod-cat-filtro'); if(cf) cf.value='';
+  go('productos');
+  apPintarFiltroCom(); renderProductos();
+}
 function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(var(--gold-rgb),0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
 function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur;
   // mismo listado en el ajuste masivo de precios
@@ -3897,16 +3926,29 @@ function renderProductos(){
   if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
   if(catF) list = list.filter(p=>p.categoria===catF);
   if(_apFiltroFav) list = list.filter(p=>p.masVendido);
-  $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
+  if(_apFiltroCom) list = list.filter(apSinComision);
+  const sinMotor = _apFiltroCom && typeof window.tmSinComision!=='function';
+  $('#prod-count').textContent = sinMotor
+    ? 'No pude revisar las comisiones: no cargó el Copiloto'
+    : (_apFiltroCom ? list.length + ' a la venta sin comisión declarada'
+                    : list.length + ' de ' + PRODUCTOS.length + ' productos');
   apSelBar();
-  if(!list.length){ grid.innerHTML=`<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`; return; }
+  if(!list.length){
+    // Una lista vacía porque el motor no cargó se lee como «ya no queda
+    // ninguno», que es justo lo contrario. Son dos estados, no uno.
+    grid.innerHTML = sinMotor
+      ? `<div class="empty"><div class="ico">🤖</div>No cargó el Copiloto, así que no puedo decirte cuáles van sin comisión.<br>Recarga la página.</div>`
+      : (_apFiltroCom ? `<div class="empty"><div class="ico">✅</div>Todo lo que está a la venta tiene su comisión puesta.</div>`
+                      : `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`);
+    return;
+  }
   // En-stock arriba (agrupado por categoría/subcategoría, alfabético) y TODOS
   // los agotados juntos en una sola sección al final — no repartidos.
   const conStock=list.filter(p=>!_apAgotado(p)).sort(_apOrdName);
   const agotados=list.filter(_apAgotado);
-  if(!q && !catF && !_apFiltroFav){
+  if(!q && !catF && !_apFiltroFav && !_apFiltroCom){
     grid.innerHTML = apGrupoPorCatHTML(conStock) + apAgotadosSectionHTML(agotados);
-  } else if(catF && !q && !_apFiltroFav){
+  } else if(catF && !q && !_apFiltroFav && !_apFiltroCom){
     // Una sola categoría filtrada ("Ver solo →"): en-stock subagrupado por
     // subcategoría arriba, agotados de esa categoría juntos al final.
     grid.innerHTML = apSubgroupHTML(conStock.slice(0,300)) + apAgotadosSectionHTML(agotados.slice(0,300));
@@ -5398,33 +5440,49 @@ function ventasPorCanal(ventas){
   (ventas||[]).forEach(v => { const k = v && v.origen; if(k) m[k] = (m[k]||0) + 1; });
   return m;
 }
-async function cargarFuentes(){
-  const box=$('#an-fuentes'); if(!box) return;
+/* UN solo pintor para dos pantallas. La tabla vive en Analytics desde
+   siempre, pero la decisión que contesta —«¿dónde publico hoy?»— se toma en
+   📣 Publicar, dos pestañas más allá, y allí no estaba. Se monta en los dos
+   sitios con la MISMA función: dos pintores sobre los mismos números acaban
+   dando cifras distintas en dos pantallas del mismo panel, y la que se
+   equivoca es la que nadie vuelve a mirar. */
+let _anFuentesCache = null;   // {datos, ts} — la segunda pantalla no vuelve a pedirlo
+const AN_FUENTES_TTL = 300000;
+async function anFuentesDatos(){
+  if(_anFuentesCache && Date.now()-_anFuentesCache.ts < AN_FUENTES_TTL) return _anFuentesCache;
   const base=rtdbBase();
-  if(!base){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>Configura Firebase para ver de dónde llegan.</div>'; return; }
-  let datos=null;
-  try{ const r=await fetch(base+'/analytics/fuentes.json?_='+Date.now(),{cache:'no-store'}); datos=r.ok?await r.json():null; }catch(e){}
+  if(!base) return {estado:'sin-firebase'};
+  try{
+    const r=await fetch(base+'/analytics/fuentes.json?_='+Date.now(),{cache:'no-store'});
+    if(!r.ok) return {estado:'error'};
+    _anFuentesCache={estado:'ok', datos:(await r.json())||{}, ts:Date.now()};
+    return _anFuentesCache;
+  }catch(e){ return {estado:'error'}; }
+}
+function anFuentesFilas(datos){
   const vpc = ventasPorCanal(VENTAS);
   // Un canal que trajo ventas pero ninguna visita contada (se vendió por
   // WhatsApp sin que nadie abriera el enlace, o 'conocido', que nunca la
   // tiene) sigue apareciendo: la fila que falta es justo la que interesa.
   const claves = new Set([...Object.keys(datos||{}), ...Object.keys(vpc)]);
-  const filas=[...claves]
+  return [...claves]
     .map(k=>[k, Number((datos||{})[k] && datos[k].count)||0, vpc[k]||0])
     .filter(([,n,ven])=>n>0 || ven>0)
     .sort((a,b)=>(b[2]-a[2]) || (b[1]-a[1]));
-  if(!filas.length){
-    box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📣</div>'
-      + 'Todavía no hay visitas con canal marcado. Empieza a contar en cuanto alguien abra uno de los enlaces que publiques a partir de ahora.</div>';
-    return;
-  }
+}
+/* Umbral para decir «se ve y no vende». Por debajo de esto no hay muestra:
+   3 visitas sin venta no significan nada y acusar a un canal de no rendir
+   con ese dato es mandar a dejar de publicar donde sí funciona. */
+const AN_FUENTE_MIN = 20;
+function anFuentesHTML(filas, compacto){
   const total=filas.reduce((s,[,n])=>s+n,0);
   const totalVen=filas.reduce((s,[,,v])=>s+v,0);
-  box.innerHTML=filas.map(([k,n,ven])=>{
+  const lista=compacto?filas.slice(0,5):filas;
+  const cuerpo=lista.map(([k,n,ven])=>{
     const pct=total?Math.round(n/total*100):0;
     const ventasTxt = ven
       ? `<span style="color:var(--green);font-weight:700">${ven} venta${ven!==1?'s':''}</span>`
-      : (n>=20 ? '<span style="color:var(--muted)">sin ventas todavía</span>' : '');
+      : (n>=AN_FUENTE_MIN ? '<span style="color:var(--muted)">sin ventas todavía</span>' : '');
     return `<div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700;color:#fff;margin-bottom:4px">
         <span>${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o);white-space:nowrap">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
@@ -5434,8 +5492,29 @@ async function cargarFuentes(){
       </div>
       ${ventasTxt?`<div style="font-size:11.5px;margin-top:3px">${ventasTxt}</div>`:''}
     </div>`;
-  }).join('') + `<div style="font-size:11px;color:var(--muted);margin-top:8px">${total.toLocaleString('es-US')} visita(s) con canal identificado`
-    + (totalVen?` · ${totalVen} venta(s) con canal marcado`:'') + `.</div>`;
+  }).join('');
+  const resto = compacto && filas.length>lista.length
+    ? `<div style="font-size:11px;color:var(--muted)">y ${filas.length-lista.length} canal(es) más en 📈 Analytics.</div>` : '';
+  return cuerpo + `<div style="font-size:11px;color:var(--muted);margin-top:8px">${total.toLocaleString('es-US')} visita(s) con canal identificado`
+    + (totalVen?` · ${totalVen} venta(s) con canal marcado`:'') + `.</div>` + resto;
+}
+async function cargarFuentes(destino, compacto){
+  const box=$(destino||'#an-fuentes'); if(!box) return;
+  const r=await anFuentesDatos();
+  const vacio = t => compacto
+    ? `<p style="font-size:11.5px;color:var(--muted);margin:0">${t}</p>`
+    : `<div class="empty" style="padding:16px"><div class="ico">📣</div>${t}</div>`;
+  // Tres estados, no dos: «sin datos todavía» no es lo mismo que «no pude
+  // leerlos». Un bloque vacío por un fallo de red se lee como «no funciona
+  // ningún canal», que es la conclusión contraria.
+  if(r.estado==='sin-firebase'){ box.innerHTML=vacio('Configura Firebase para ver de dónde llegan.'); return; }
+  if(r.estado==='error'){ box.innerHTML=vacio('No pude leer los canales ahora mismo. Vuelve a entrar cuando haya conexión.'); return; }
+  const filas=anFuentesFilas(r.datos);
+  if(!filas.length){
+    box.innerHTML=vacio('Todavía no hay visitas con canal marcado. Empieza a contar en cuanto alguien abra uno de los enlaces que publiques a partir de ahora.');
+    return;
+  }
+  box.innerHTML=anFuentesHTML(filas, compacto);
 }
 
 async function cargarVisitasWeb(){
@@ -6281,6 +6360,8 @@ function renderPublicar(){
     // Una sola vez por sesión: dos lecturas de Firebase, y la pantalla se
     // repinta sola cuando llegan.
     if(!PUB_STATS.listo && !PUB_STATS.error){ try{ pubCargarStats(); }catch(e){} }
+    // Los canales: una lectura, cacheada 5 min, compartida con Analytics.
+    try{ cargarFuentes('#pub-fuentes', true); }catch(e){}
     // Lo publicado desde otros aparatos.
     if(typeof tmPublogSincronizar==='function'){
       try{ tmPublogSincronizar().then(()=>{ try{ if(PUB_VIEW==='compartir'){ pubRenderHoy(); pubRenderShareList(); } }catch(e){} }); }catch(e){}
@@ -6892,9 +6973,21 @@ window.tmPublogAlCambiar = function(){
   if(e && typeof tmPublogEstadoTexto==='function') e.textContent=tmPublogEstadoTexto();
 };
 
+/* Visitas y ventas por canal, aquí y no solo en 📈 Analytics: un canal con
+   200 visitas y ninguna venta y otro con 20 y tres dicen dónde vale la pena
+   gastar el rato, y esa decisión se toma en esta pantalla. Lo pinta la misma
+   cargarFuentes() que Analytics — ver el comentario de esa función. */
+function pubFuentesHTML(){
+  return `<div class="section">
+    <h3>📣 Qué canal te trae ventas</h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Visitas que llegaron por cada enlace publicado, con las ventas que marcaste de ese canal al lado. Lo completo, en 📈 Analytics.</p>
+    <div id="pub-fuentes"><p style="font-size:11.5px;color:var(--muted);margin:0">⏳ Mirando…</p></div>
+  </div>`;
+}
 function pubCompartirHTML(){
   return `<div id="pub-hoy">${pubHoyHTML()}</div>
   <div id="pub-seven">${pubSeVenHTML()}</div>
+  ${pubFuentesHTML()}
   <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
@@ -7703,7 +7796,8 @@ async function pubBannersPublicar(){
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
-window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct; window.pubCatTandaIr=pubCatTandaIr;
+window.pubFuentesHTML=pubFuentesHTML; window.cargarFuentes=cargarFuentes;
+window.anFuentesFilas=anFuentesFilas; window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct; window.pubCatTandaIr=pubCatTandaIr;
 window.pubCatText=pubCatText; window.pubCatConfianza=pubCatConfianza; window.pubCatDesde=pubCatDesde;
 window.pubCatProdsTanda=pubCatProdsTanda; window.pubCatTandas=pubCatTandas;
 window.tmCatalogHTML=tmCatalogHTML; window.pubCatProds=pubCatProds; window.pubCatUpdatePreview=pubCatUpdatePreview;
@@ -7723,7 +7817,8 @@ window.agendaAbrir=agendaAbrir; window.agendaHecho=agendaHecho; window.agendaVer
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
-window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditFillSubcats=apEditFillSubcats; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
+window.apToggleFiltroFav=apToggleFiltroFav; window.apToggleFiltroComision=apToggleFiltroComision;
+window.apFiltrarSinComision=apFiltrarSinComision; window.apSinComision=apSinComision; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditFillSubcats=apEditFillSubcats; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
