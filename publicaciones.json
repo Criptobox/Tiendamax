@@ -1,0 +1,533 @@
+{
+  "actualizado": "2026-09-11T18:13:48.153Z",
+  "eventos": [
+    {
+      "pid": "1778383966832",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371114925
+    },
+    {
+      "pid": "1778384158283",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371115660
+    },
+    {
+      "pid": "1778384314795",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371116410
+    },
+    {
+      "pid": "1778384840618",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371117102
+    },
+    {
+      "pid": "1780344659047",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371117818
+    },
+    {
+      "pid": "1784405087402",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371118543
+    },
+    {
+      "pid": "1784571782777",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786371119265
+    },
+    {
+      "pid": "1778103783319",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634448845
+    },
+    {
+      "pid": "1778104924836",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634449697
+    },
+    {
+      "pid": "1781365019871",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634450645
+    },
+    {
+      "pid": "1783179800783",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634451494
+    },
+    {
+      "pid": "1783473894756",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634452214
+    },
+    {
+      "pid": "1786633494382",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634453045
+    },
+    {
+      "pid": "1786633899405",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786634453890
+    },
+    {
+      "pid": "1781377297283",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786811283448
+    },
+    {
+      "pid": "1786807706672",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786811284430
+    },
+    {
+      "pid": "1786807859244",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786811285327
+    },
+    {
+      "pid": "1786808152310",
+      "red": "otra",
+      "destino": "Cartel por categoría",
+      "ts": 1786811286265
+    },
+    {
+      "pid": "1782438922547",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799157190
+    },
+    {
+      "pid": "1781711424820",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799227435
+    },
+    {
+      "pid": "1783453597496",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799331447
+    },
+    {
+      "pid": "1783543451116",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799446070
+    },
+    {
+      "pid": "1784569265085",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799526732
+    },
+    {
+      "pid": "1784732614444",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799623983
+    },
+    {
+      "pid": "1784732715417",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788799698677
+    },
+    {
+      "pid": "1782438922547",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788800703247
+    },
+    {
+      "pid": "1778102214012",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788800742723
+    },
+    {
+      "pid": "1782438922547",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804014678
+    },
+    {
+      "pid": "1782438922547",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804099260
+    },
+    {
+      "pid": "1784732715417",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804124449
+    },
+    {
+      "pid": "1784732614444",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804195702
+    },
+    {
+      "pid": "1784569265085",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804247507
+    },
+    {
+      "pid": "1783543451116",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804341669
+    },
+    {
+      "pid": "1783453597496",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804394719
+    },
+    {
+      "pid": "1781711424820",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804645827
+    },
+    {
+      "pid": "1788625483027",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804727163
+    },
+    {
+      "pid": "1788625483027",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788804738043
+    },
+    {
+      "pid": "1778104287395",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817500025
+    },
+    {
+      "pid": "1778336689684",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817507617
+    },
+    {
+      "pid": "1778384646214",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817513318
+    },
+    {
+      "pid": "1786631549331",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817518183
+    },
+    {
+      "pid": "1786632255672",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817521727
+    },
+    {
+      "pid": "1787157254207",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817525841
+    },
+    {
+      "pid": "1787604262771",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817529730
+    },
+    {
+      "pid": "1787698473597",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817533275
+    },
+    {
+      "pid": "1787888877372",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817536215
+    },
+    {
+      "pid": "1788389384026",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817538876
+    },
+    {
+      "pid": "1788797303584",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817540794
+    },
+    {
+      "pid": "1788797590930",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817542837
+    },
+    {
+      "pid": "1778102214012",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817544872
+    },
+    {
+      "pid": "1784732715417",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817548764
+    },
+    {
+      "pid": "1784732614444",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817552544
+    },
+    {
+      "pid": "1784569265085",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817555586
+    },
+    {
+      "pid": "1778104512761",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817578465
+    },
+    {
+      "pid": "1782439688529",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817583801
+    },
+    {
+      "pid": "1787071784077",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817587920
+    },
+    {
+      "pid": "1787079480177",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817591761
+    },
+    {
+      "pid": "1788626436047",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817596771
+    },
+    {
+      "pid": "1788627372873",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817600042
+    },
+    {
+      "pid": "1778104924836",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817603556
+    },
+    {
+      "pid": "1781365019871",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817606816
+    },
+    {
+      "pid": "1783179800783",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817610056
+    },
+    {
+      "pid": "1786633494382",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817613038
+    },
+    {
+      "pid": "1778104512761",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817615856
+    },
+    {
+      "pid": "1787071784077",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788817622175
+    },
+    {
+      "pid": "1788625483027",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1788892609997
+    },
+    {
+      "pid": "1778102582909",
+      "red": "wa",
+      "destino": "Estado WhatsApp",
+      "ts": 1788995337796
+    },
+    {
+      "pid": "1778103783319",
+      "red": "wa",
+      "destino": "Chat WhatsApp",
+      "ts": 1788995360182
+    },
+    {
+      "pid": "1778212195565",
+      "red": "fb",
+      "destino": "Grupos de Facebook",
+      "ts": 1788995373952
+    },
+    {
+      "pid": "1777924118004",
+      "red": "fb",
+      "destino": "Grupos de Facebook",
+      "ts": 1789073480827
+    },
+    {
+      "pid": "1778102507659",
+      "red": "fb",
+      "destino": "Grupos de Facebook",
+      "ts": 1789073643463
+    },
+    {
+      "pid": "1783474747296",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789073958899
+    },
+    {
+      "pid": "1786631968221",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074042838
+    },
+    {
+      "pid": "1783543451116",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074104521
+    },
+    {
+      "pid": "1783453597496",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074107698
+    },
+    {
+      "pid": "1778104287395",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074110701
+    },
+    {
+      "pid": "1778336689684",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074245249
+    },
+    {
+      "pid": "1778384646214",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074293855
+    },
+    {
+      "pid": "1786632255672",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074440835
+    },
+    {
+      "pid": "1787157254207",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074570943
+    },
+    {
+      "pid": "1787698473597",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074705904
+    },
+    {
+      "pid": "1787888877372",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789074899816
+    },
+    {
+      "pid": "1788389384026",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075008083
+    },
+    {
+      "pid": "1788797303584",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075131887
+    },
+    {
+      "pid": "1778102214012",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075311617
+    },
+    {
+      "pid": "1787604262771",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075410886
+    },
+    {
+      "pid": "1787604262771",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075418031
+    },
+    {
+      "pid": "1788625483027",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1789075489973
+    }
+  ]
+}
