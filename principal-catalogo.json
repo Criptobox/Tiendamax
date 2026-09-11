@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-11T19:27:46Z",
+ "actualizado": "2026-09-11T22:15:12Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -120,7 +120,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 830,
+   "stock": 730,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -285,7 +285,7 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 37,
+   "stock": 36,
    "categoria": "Carros",
    "comision": 3.0,
    "comisionMoneda": "MN",
@@ -397,7 +397,7 @@
    "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 11,
+   "stock": 10,
    "categoria": "Gym",
    "comision": 1000.0,
    "comisionMoneda": "MN",
@@ -925,7 +925,7 @@
    "nombre": "Router Tp-link Archer A6",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 4,
+   "stock": 3,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -964,17 +964,6 @@
    "comisionMoneda": "USD"
   },
   {
-   "id": "1778383966832",
-   "nombre": "SISTEMA DE ALARMA",
-   "precio": 170.0,
-   "precioMoneda": "USD",
-   "stock": 0,
-   "categoria": "Seguridad",
-   "comision": 10.0,
-   "comisionMoneda": "USD",
-   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778383966832.webp"
-  },
-  {
    "id": "1788025891931",
    "nombre": "Sistema de Alarma",
    "precio": 180.0,
@@ -984,6 +973,17 @@
    "comision": 10.0,
    "comisionMoneda": "USD",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788025891931-11c057ae.webp"
+  },
+  {
+   "id": "1778383966832",
+   "nombre": "SISTEMA DE ALARMA",
+   "precio": 170.0,
+   "precioMoneda": "USD",
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778383966832.webp"
   },
   {
    "id": "1780542909435",
@@ -1172,7 +1172,7 @@
    "nombre": "ZOSI - Camara de seguridad CCTV",
    "precio": 50.0,
    "precioMoneda": "USD",
-   "stock": 23,
+   "stock": 19,
    "categoria": "Seguridad",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1196,7 +1196,7 @@
    "nombre": "📡 TP-Link Archer BE230",
    "precio": 200.0,
    "precioMoneda": "USD",
-   "stock": 12,
+   "stock": 11,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
