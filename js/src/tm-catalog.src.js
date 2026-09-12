@@ -171,10 +171,27 @@ function cargarConfiguracionGitHub() {
 
 function guardarConfiguracionGitHub(event) {
     event.preventDefault();
+    const token = document.getElementById('githubToken').value.trim();
     localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
     localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
-    localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
-    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
+    localStorage.setItem('githubToken', token);
+    // Duración y antelación del aviso, si el formulario los trae.
+    const dEl = document.getElementById('ghTokenDias');
+    const aEl = document.getElementById('ghTokenAviso');
+    const cambios = {};
+    if (dEl && Number(dEl.value) > 0) cambios.dias = Math.min(400, Number(dEl.value));
+    if (aEl && Number(aEl.value) > 0) cambios.aviso = Math.min(60, Number(aEl.value));
+    if (typeof tmTokenGuardarMeta === 'function' && Object.keys(cambios).length) tmTokenGuardarMeta(cambios);
+    /* Token distinto = token nuevo = el reloj vuelve a empezar. Es lo único
+       que hace que el aviso siga sirviendo sin que nadie apunte fechas a
+       mano; volver a pulsar Guardar con el mismo token no renueva nada en
+       GitHub, así que tampoco aquí. */
+    let nuevo = null;
+    if (typeof tmTokenMarcarSiCambio === 'function') nuevo = tmTokenMarcarSiCambio(token);
+    mostrarNotificacion(nuevo
+        ? '✅ Token nuevo guardado — el aviso vuelve a contar desde hoy'
+        : '✅ Configuración de GitHub guardada localmente');
+    if (typeof tmTokenPintarEstado === 'function') tmTokenPintarEstado();
 }
 
 

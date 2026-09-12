@@ -7,6 +7,7 @@ usando Firebase Realtime Database para evitar conflictos de Git.
 """
 
 import json
+import math
 import os
 import re
 import sys
@@ -803,6 +804,7 @@ SEG_HITOS = [
     ("recompra", 90, None),
 ]
 SEG_COOLDOWN_S = 20 * 3600   # como mucho un aviso de seguimiento al día
+TOKEN_COOLDOWN_S = 20 * 3600 # y como mucho uno del token de GitHub
 
 
 def seguimientos_vencidos(registro, ahora_ms=None) -> list:
@@ -913,6 +915,62 @@ def procesar_seguimientos(messaging_api, database, ultimo_push):
         ultimo_push["seguimientos"] = ahora
 
 
+def avisar_token_github(messaging_api, database, ultimo_push):
+    """El token de GitHub caduca y nadie se entera hasta que falla.
+
+    Cuando vence, «Actualizar tienda» responde 401 y el panel lo enseña como
+    un fallo de red: se vuelve a tocar, y otra vez, y el catálogo se queda sin
+    publicar sin que nada explique por qué. El aviso del panel (la tarea
+    `token` del Copiloto) solo sirve si ese día se abre el panel — que es
+    justo lo que no pasa cuando no hay nada urgente. Este es el que llega al
+    teléfono.
+
+    Los números los pone el gestor en ⚙️ Configuración y viven en
+    /privado/github_token (solo su cuenta lee y escribe; ahí NO va el token,
+    solo tres cifras). Sin `creado` no se avisa de nada: un «te quedan 90
+    días» contado desde hoy sobre un token que lleva tres meses puesto es
+    inventar el dato que se venía a dar.
+    """
+    if not es_hora_diurna():
+        return                                  # el móvil del dueño también duerme
+    ahora = time.time()
+    try:
+        previo = float(ultimo_push.get("token_github", 0) or 0)
+    except (TypeError, ValueError):
+        previo = 0.0
+    if previo and (ahora - previo) < TOKEN_COOLDOWN_S:
+        return
+    try:
+        meta = database.reference("privado/github_token").get()
+    except Exception as e:
+        print(f"⚠️ No se pudo leer /privado/github_token: {e}", file=sys.stderr)
+        return
+    if not isinstance(meta, dict):
+        return
+    creado = _num(meta.get("creado"))
+    if creado <= 0:
+        return                                  # no se sabe: no se inventa
+    dias = _num(meta.get("dias")) or 90
+    aviso = _num(meta.get("aviso")) or 5
+    vence_ms = creado + dias * 86400000
+    restan = math.ceil((vence_ms - ahora * 1000) / 86400000)
+    if restan > aviso:
+        return
+    if restan < 0:
+        titulo = "🔴 El token de GitHub venció"
+        cuerpo = (f"Hace {abs(restan)} día(s). Publicar está fallando con un error que "
+                  "parece falta de internet. Genera otro en GitHub y pégalo en ⚙️.")
+    elif restan == 0:
+        titulo = "🔑 El token de GitHub vence hoy"
+        cuerpo = "En cuanto venza, «Actualizar tienda» dejará de funcionar. Cámbialo ahora."
+    else:
+        titulo = f"🔑 El token de GitHub vence en {restan} día(s)"
+        cuerpo = "Genera otro en GitHub y pégalo en ⚙️ Configuración antes de que falle."
+    if enviar_push_admin(messaging_api, database, titulo, cuerpo,
+                         link="/admin.html#config", tag="admin-token"):
+        ultimo_push["token_github"] = ahora
+
+
 # ============================================================
 # MAIN
 # ============================================================
@@ -1005,6 +1063,12 @@ def main():
         procesar_seguimientos(msg_api, db_api, ultimo_push)
     except Exception as e:
         print(f"⚠️ Error procesando seguimientos: {e}", file=sys.stderr)
+
+    # El token de GitHub, antes de que caduque y publicar empiece a fallar.
+    try:
+        avisar_token_github(msg_api, db_api, ultimo_push)
+    except Exception as e:
+        print(f"⚠️ Error avisando del token: {e}", file=sys.stderr)
 
     # Serie diaria de suscriptores, para que el panel pueda enseñar si sube o
     # baja en vez de un número suelto sin contexto.

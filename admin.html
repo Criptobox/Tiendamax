@@ -1734,8 +1734,19 @@ try{var _piel=localStorage.getItem('tm_piel');
               <div class="form-group"><label class="form-label" for="githubUser">Usuario</label><input class="form-input" id="githubUser" placeholder="usuario"></div>
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubRepo">Repositorio</label><input class="form-input" id="githubRepo" placeholder="Tiendamax"></div>
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubToken">Token</label><input class="form-input" id="githubToken" type="password" placeholder="ghp_…"></div>
+              <div class="form-group" style="margin-top:10px">
+                <label class="form-label" for="ghTokenDias">Cuándo hay que cambiarlo</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input class="form-input" id="ghTokenDias" type="number" min="1" max="400" placeholder="90" style="flex:1" aria-label="El token dura, en días">
+                  <span style="font-size:12px;color:var(--muted);white-space:nowrap">días · avisar</span>
+                  <input class="form-input" id="ghTokenAviso" type="number" min="1" max="60" placeholder="5" style="width:80px" aria-label="Avisarme estos días antes">
+                  <span style="font-size:12px;color:var(--muted);white-space:nowrap">antes</span>
+                </div>
+              </div>
+              <p id="ghTokenVence" style="font-size:12px;margin:8px 0 0;line-height:1.45"></p>
               <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">💾 Guardar GitHub</button>
             </form>
+            <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="tmTokenRenovadoHoy()">🔁 Ya lo cambié hoy</button>
             <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="tmProbarToken()">🔌 Probar token</button>
             <p id="tmTokenStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
             <button class="btn btn-success" style="width:100%;margin-top:10px;justify-content:center" onclick="sincronizarTodoConGitHub()">🔄 Actualizar tienda ahora</button>
@@ -2048,7 +2059,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=c5b26507"></script>
+<script src="js/tm-bundle.js?v=d38c4a2a"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2121,7 +2132,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=3d478795"></script>
+<script src="js/admin-copilot.js?v=ab3cc64d"></script>
 
 <script>
 (function(){
@@ -2497,10 +2508,45 @@ async function cargarVentasFirebase(){
     lsVentas().forEach(v=>{ porId[String(v.id)] = v; });
     fb.filter(v=>!_ventaEsPrueba(v)).forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
     const merged = Object.values(porId).filter(v=>!_ventaEsPrueba(v)).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
+    await tmClientesDesdeFirebase(base, merged);
     tmGuardarLS('registroVentas', merged.slice(0,500));
     VENTAS = merged;
     renderVentas(); renderInicio(); renderClientes();
   }catch(e){}
+}
+
+/* Nombre y teléfono: viven en /privado/clientes/<idVenta>, no dentro de la
+   venta. Los dos motivos están en _fbGuardarCliente (js/src/tm-ui.src.js).
+   Aquí se vuelven a pegar a la venta en memoria, que es como los espera el
+   tab Clientes y el seguimiento post-venta de tm-crm.
+
+   Lo local MANDA sobre lo remoto: si escribiste el nombre en este teléfono y
+   la subida falló, la copia buena es la de aquí. Y lo que falte arriba se
+   sube ahora — es el mismo arreglarse solo de comparar-marcas.json: una
+   subida que falló, o una venta anotada sin cobertura, se cura al siguiente
+   arranque en vez de quedarse callada. */
+async function tmClientesDesdeFirebase(base, ventas){
+  let remoto = null;
+  try{ remoto = await jget(base+'/privado/clientes.json'); }catch(e){}
+  // null puede ser "no hay ninguno" o "no pude leer". En los dos casos lo
+  // local sigue valiendo, así que no se borra nada; solo no se pega nada.
+  if(remoto && typeof remoto==='object'){
+    ventas.forEach(v=>{
+      const c = remoto[String(v.id)];
+      if(!c) return;
+      if(!v.cliente && c.n) v.cliente = c.n;
+      if(!v.telefono && c.t) v.telefono = c.t;
+    });
+  }
+  const faltan = ventas.filter(v=>{
+    if(!v.cliente && !v.telefono) return false;
+    const c = (remoto||{})[String(v.id)];
+    return !c || (v.cliente && !c.n) || (v.telefono && !c.t);
+  });
+  if(faltan.length && typeof _fbGuardarCliente==='function'){
+    // De a poco: son PUT firmados y esto corre al abrir el panel.
+    for(const v of faltan.slice(0,40)){ try{ await _fbGuardarCliente(v); }catch(e){} }
+  }
 }
 
 function renderTodo(){
@@ -2533,6 +2579,15 @@ function fillConfig(){
   set('githubRepo', localStorage.getItem('githubRepo')||'Tiendamax');
   set('githubToken', localStorage.getItem('githubToken'));
   set('adminTasaMN', localStorage.getItem('tasaMN'));
+  if(typeof tmTokenMeta==='function'){
+    const tm=tmTokenMeta();
+    const dEl=$('#ghTokenDias'); if(dEl && !dEl.value) dEl.value=tm.dias;
+    const aEl=$('#ghTokenAviso'); if(aEl && !aEl.value) aEl.value=tm.aviso;
+    // Lo que apuntó el otro aparato: sin esto, cambiar de teléfono es volver
+    // a no saber cuándo toca.
+    if(typeof tmTokenBajarMeta==='function'){ tmTokenBajarMeta().then(()=>tmTokenPintarEstado()); }
+    tmTokenPintarEstado();
+  }
   const m=localStorage.getItem('margenMN'); const mEl=$('#adminMargenMN'); if(mEl && !mEl.value && m!=null) mEl.value=m;
   // Ojo: 'adminWhatsappNum' es el id del INPUT, no una clave de localStorage.
   // Había aquí un `|| localStorage.getItem('adminWhatsappNum')` que parecía leer
@@ -7825,6 +7880,39 @@ window.agendaAbrir=agendaAbrir; window.agendaHecho=agendaHecho; window.agendaVer
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
+/* La línea que dice cuándo vence el token, y el botón de «ya lo cambié».
+   Tres estados, no dos: no lo sé / faltan N / ya venció. El primero es el que
+   importa — decir «te quedan 90 días» contando desde hoy sobre un token que
+   lleva tres meses puesto es inventarse el dato que se venía a dar. */
+function tmTokenPintarEstado(){
+  const el=$('#ghTokenVence'); if(!el || typeof tmTokenMeta!=='function') return;
+  const m=tmTokenMeta();
+  const d=tmTokenDiasRestantes(m);
+  if(d===null){
+    el.innerHTML='<span style="color:var(--gold)">⚠️ No sé desde cuándo tienes este token.</span> '
+      + 'Guarda la configuración (o toca «Ya lo cambié hoy») y empiezo a contar.';
+    return;
+  }
+  const vence=new Date(tmTokenVence(m)).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+  if(d<0){
+    el.innerHTML=`<span style="color:var(--red);font-weight:700">🔴 Venció hace ${Math.abs(d)} día${Math.abs(d)!==1?'s':''}</span> (${esc(vence)}).<br>`
+      + 'Publicar va a fallar con un error que parece falta de internet. Genera otro en GitHub y pégalo arriba.';
+    return;
+  }
+  const color = d<=m.aviso ? 'var(--red)' : (d<=m.aviso*3 ? 'var(--gold)' : 'var(--muted)');
+  const icono = d<=m.aviso ? '🔴' : (d<=m.aviso*3 ? '🟡' : '🟢');
+  el.innerHTML=`<span style="color:${color}">${icono} Vence el ${esc(vence)} — `
+    + `${d===0?'hoy mismo':'faltan '+d+' día'+(d!==1?'s':'')}.</span>`;
+}
+function tmTokenRenovadoHoy(){
+  if(typeof tmTokenGuardarMeta!=='function') return;
+  tmTokenGuardarMeta({creado:Date.now()});
+  tmTokenPintarEstado();
+  mostrarNotificacion('✅ Anotado: el aviso vuelve a contar desde hoy');
+  try{ if(typeof tmCopilotRefresh==='function') tmCopilotRefresh(); }catch(e){}
+}
+window.tmTokenPintarEstado=tmTokenPintarEstado; window.tmTokenRenovadoHoy=tmTokenRenovadoHoy;
+window.cargarVentasFirebase=cargarVentasFirebase; window.tmClientesDesdeFirebase=tmClientesDesdeFirebase;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apToggleFiltroComision=apToggleFiltroComision;
 window.apFiltrarSinComision=apFiltrarSinComision; window.apSinComision=apSinComision; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditFillSubcats=apEditFillSubcats; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;

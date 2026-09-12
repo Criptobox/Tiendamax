@@ -413,6 +413,147 @@ function _ventaParaFirebase(venta) {
     return v;
 }
 
+/* El cliente va aparte, en /privado/clientes/<idVenta>.
+
+   Quitarlo de Firebase del todo dejaba el nombre y el teléfono en un solo
+   teléfono: perderlo es perder la lista de clientes, y ese es el trabajo de
+   meses. Pero tampoco puede ir dentro de /ventas, y no por lo público —ese
+   nodo ya es solo para la cuenta del dueño— sino por dos cosas del propio
+   nodo: cualquiera puede CREAR filas ahí sin cuenta (".write":
+   "!data.exists()", a propósito, para que una venta no se pierda con el token
+   caducado), y una vez escrita no se corrige ni se borra.
+
+   /privado pide la cuenta del dueño para leer Y para escribir, y ahí la fila
+   sí se puede reescribir y borrar: un teléfono mal tecleado se corrige y un
+   cliente se puede quitar. Eso es lo mínimo que tiene que poder hacerse con
+   un dato personal, y en /ventas no se podía. */
+function _fbGuardarCliente(venta) {
+    const n = String(venta && venta.cliente || '').trim();
+    const t = String(venta && venta.telefono || '').trim();
+    if (!n && !t) return Promise.resolve(false);
+    return (async () => {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        const qs = await _fbAuthQS();
+        // Sin firma no se manda: /privado la exige y un PUT a pelo sería un
+        // 401 mudo. Se queda local y el próximo arranque lo sube (ver
+        // tmSubirClientesPendientes en admin.html).
+        if (!url || !qs) return false;
+        const r = await fetch(`${url}/privado/clientes/${venta.id}.json${qs}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ n: n || undefined, t: t || undefined })
+        });
+        return r.ok;
+    })().catch(() => false);
+}
+
+/* ── Cuándo hay que cambiar el token de GitHub ────────────────────────────
+   Un PAT caduca, y el día que caduca «Actualizar tienda» empieza a fallar
+   con un 401 que desde el panel se lee como «no hay internet». El aviso no
+   puede salir de adivinar: GitHub no dice desde el navegador cuándo vence,
+   así que el gestor pone cuánto dura (90 días es lo normal) y con cuántos de
+   antelación quiere el aviso, y el panel cuenta.
+
+   Sin fecha de creación NO se inventa una: un «te quedan 90 días» contado
+   desde hoy, sobre un token que puede llevar tres meses puesto, es peor que
+   no decir nada. Se pide. A partir del primer guardado el reloj se pone y se
+   reinicia solo cada vez que se guarda un token distinto.
+
+   Vive en /privado/github_token —solo la cuenta del dueño lee y escribe—
+   porque si estuviera solo aquí, cambiar de teléfono sería quedarse otra vez
+   sin saber. Ahí no va el token, solo tres números. */
+const TM_TOKEN_META_KEY = 'tm_token_meta';
+const TM_TOKEN_DIAS_DEF = 90;
+const TM_TOKEN_AVISO_DEF = 5;
+const TM_TOKEN_HUELLA_KEY = 'tm_token_huella';
+
+function tmTokenMeta() {
+    let m = {};
+    try { m = JSON.parse(localStorage.getItem(TM_TOKEN_META_KEY) || '{}') || {}; } catch (e) {}
+    const dias = Number(m.dias) > 0 ? Number(m.dias) : TM_TOKEN_DIAS_DEF;
+    const aviso = Number(m.aviso) > 0 ? Number(m.aviso) : TM_TOKEN_AVISO_DEF;
+    const creado = Number(m.creado) > 0 ? Number(m.creado) : 0;   // 0 = no se sabe
+    return { creado, dias, aviso: Math.min(aviso, dias) };
+}
+function tmTokenVence(m) {
+    m = m || tmTokenMeta();
+    return m.creado ? m.creado + m.dias * 86400000 : 0;
+}
+/* Días que faltan, redondeando hacia arriba: a las 23:00 del día anterior
+   quedan 0.04 días y lo que el gestor necesita leer es «mañana», no «hoy».
+   null cuando no se sabe cuándo se creó — que no es lo mismo que cero. */
+function tmTokenDiasRestantes(m) {
+    const v = tmTokenVence(m);
+    return v ? Math.ceil((v - Date.now()) / 86400000) : null;
+}
+function tmTokenToca(m) {
+    m = m || tmTokenMeta();
+    const d = tmTokenDiasRestantes(m);
+    return d !== null && d <= m.aviso;
+}
+// Huella del token para saber si cambió, sin guardar el token dos veces.
+function _tmTokenHuella(t) {
+    const s = String(t || '');
+    if (!s) return '';
+    let h = 0;
+    for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; }
+    return String(h) + ':' + s.length;
+}
+function tmTokenGuardarMeta(cambios) {
+    const m = Object.assign(tmTokenMeta(), cambios || {});
+    try { localStorage.setItem(TM_TOKEN_META_KEY, JSON.stringify(m)); } catch (e) {}
+    _tmTokenSubir(m);
+    return m;
+}
+/* Token nuevo → el reloj vuelve a empezar. Se llama al guardar la config; si
+   el token es el mismo de antes no se toca la fecha, porque volver a pulsar
+   «Guardar» no renueva nada en GitHub. */
+function tmTokenMarcarSiCambio(token) {
+    const huella = _tmTokenHuella(token);
+    if (!huella) return null;
+    let previa = '';
+    try { previa = localStorage.getItem(TM_TOKEN_HUELLA_KEY) || ''; } catch (e) {}
+    if (huella === previa) return null;
+    try { localStorage.setItem(TM_TOKEN_HUELLA_KEY, huella); } catch (e) {}
+    return tmTokenGuardarMeta({ creado: Date.now() });
+}
+function _tmTokenSubir(m) {
+    (async () => {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        const qs = await _fbAuthQS();
+        if (!url || !qs) return;   // sin firma /privado responde 401 mudo
+        await fetch(`${url}/privado/github_token.json${qs}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ creado: m.creado || 0, dias: m.dias, aviso: m.aviso })
+        });
+    })().catch(() => {});
+}
+async function tmTokenBajarMeta() {
+    try {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        const qs = await _fbAuthQS();
+        if (!url || !qs) return null;
+        const r = await fetch(`${url}/privado/github_token.json${qs}`, { cache: 'no-store' });
+        if (!r.ok) return null;
+        const remoto = await r.json();
+        if (!remoto || typeof remoto !== 'object') return null;
+        // El de aquí manda solo si es más reciente: cambiar el token en el
+        // otro aparato tiene que verse en este.
+        const local = tmTokenMeta();
+        if (Number(remoto.creado || 0) > local.creado) {
+            const m = { creado: Number(remoto.creado) || 0,
+                        dias: Number(remoto.dias) > 0 ? Number(remoto.dias) : local.dias,
+                        aviso: Number(remoto.aviso) > 0 ? Number(remoto.aviso) : local.aviso };
+            try { localStorage.setItem(TM_TOKEN_META_KEY, JSON.stringify(m)); } catch (e) {}
+            return m;
+        }
+        return local;
+    } catch (e) { return null; }
+}
+
 // Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
 function _fbGuardarVenta(venta) {
     (async () => {
@@ -480,6 +621,7 @@ function guardarVenta(venta) {
     localStorage.setItem('registroVentas', JSON.stringify(ventas.slice(0, 500)));
     // Persistir en Firebase (no bloquea la UI)
     _fbGuardarVenta(venta);
+    _fbGuardarCliente(venta);
 }
 
 

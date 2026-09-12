@@ -162,6 +162,7 @@ window.tmSinComision = sinComision;
 function agentForKind(kind){
   if (['stockout','lowstock','avisos'].includes(kind)) return 'stock';
   if (['comision'].includes(kind)) return 'ventas';
+  if (['token'].includes(kind)) return 'system';
   if (['interesados'].includes(kind)) return 'crm';
   if (['hot','offer'].includes(kind)) return 'marketing';
   if (['seo','ai'].includes(kind)) return 'seo';
@@ -443,6 +444,27 @@ async function buildTasks(){
      sale como ganancia cero en Inicio y deja la fila fuera de las comisiones
      que 🔀 Comparar cruza con la principal. El Asesor ya lo decía, pero en
      una pestaña de la burbuja que no es la pantalla que se mira. */
+  /* El token de GitHub caduca, y el día que caduca «Actualizar tienda»
+     empieza a fallar con un 401 que en el panel se lee como «no hay
+     internet»: se toca otra vez, y otra, y el catálogo se queda sin
+     publicar sin que nada diga por qué. El aviso no se adivina — lo calcula
+     tm-ui con lo que el gestor puso en ⚙️ (cuánto dura, cuántos días antes)
+     y sin fecha de creación no dice nada, que es distinto de decir cero. */
+  if (typeof tmTokenToca === 'function' && tmTokenToca()) {
+    const d = tmTokenDiasRestantes();
+    const vencido = d < 0;
+    addTask(tasks, {
+      kind: 'token', urgency: 3, icon: vencido ? '🔴' : '🔑',
+      title: vencido
+        ? `El token de GitHub venció hace ${Math.abs(d)} día${Math.abs(d) !== 1 ? 's' : ''}`
+        : `El token de GitHub vence ${d === 0 ? 'hoy' : 'en ' + d + ' día' + (d !== 1 ? 's' : '')}`,
+      detail: vencido
+        ? 'Publicar está fallando con un error que parece falta de internet. Genera otro en GitHub y pégalo en ⚙️.'
+        : 'Cuando venza, «Actualizar tienda» fallará con un 401 que no se distingue de estar sin conexión.',
+      action: vencido ? 'Cambiarlo' : 'Renovarlo ya', tab: 'configuracion'
+    });
+  }
+
   const sinCom = ps.filter(sinComision);
   if (sinCom.length){
     const uds = sinCom.reduce((t,p)=>t+num(p.stock),0);
