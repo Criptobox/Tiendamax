@@ -1288,6 +1288,15 @@
     if(filterFn) list = list.filter(x => filterFn(x.p));
     if(!includeAgotados) list = list.filter(x => x.p.stock > 0);
     if(presupuesto) list = list.filter(x => x.p.precio <= presupuesto);
+    /* Lo que puntúa a menos de un tercio del primero no está «relacionado»:
+       es ruido con una palabra en común. «¿Qué precio tiene el compresor?»
+       sacaba el Compresor de Aire y, al lado, el Changan CS75. El corte es
+       relativo a propósito: en una consulta floja el mejor también puntúa
+       poco y ahí no hay nada que cortar. */
+    if(list.length > 1){
+      const _tope = Math.max(...list.map(x => x.s));
+      list = list.filter(x => x.s * 3 >= _tope);
+    }
     return list
       .sort((a,b) => b.s - a.s)
       .slice(0, n)
@@ -1354,7 +1363,7 @@
       const nombre = cleanForMatch(p.nombre);
       if(!nombre) continue;
       if(nombre.length >= 5 && t.includes(nombre)){
-        mentions.push({p, score: nombre.length, exactMatch:true});
+        mentions.push({p, nombre, score: nombre.length, exactMatch:true});
         continue;
       }
       const todas = nombre.split(' ').filter(Boolean);
@@ -1380,6 +1389,24 @@
        con un "tengo 150" suelto no hay modelo que respetar y descartar por
        ahí dejaría fuera medio catálogo por una cifra que no era un modelo.
        Y un producto sin modelo en el nombre no contradice nada: se queda. */
+    /* Un nombre completo escrito tal cual no es una pista: es el producto.
+       Con «TP-Link Archer A6» salían los seis Archer del catálogo y el A6 no
+       era el primero; con «NanoStation M5 Loco», la M5 Internacional al lado.
+
+       Tres nombres del catálogo están contenidos dentro de otro («Inversor
+       Tataliken 4000W» dentro de «… 4000W (24V)», «Controlador MPPT 100A»
+       dentro de otros dos), así que escribir el largo casa con los dos y eso
+       devolvía el índice de la subcategoría encabezado por otro producto.
+       Cuando uno contiene a todos los demás, gana el largo: es el más
+       específico y el corto solo está ahí por ser su principio. Dos nombres
+       que NO se contienen son dos productos nombrados de verdad («compara el
+       A con el B») y se quedan los dos. */
+    const _exactos = mentions.filter(m => m.exactMatch);
+    if(_exactos.length === 1) return [_exactos[0].p];
+    if(_exactos.length > 1){
+      const _largo = _exactos.reduce((a,b) => b.nombre.length > a.nombre.length ? b : a);
+      if(_exactos.every(m => m === _largo || _largo.nombre.includes(m.nombre))) return [_largo.p];
+    }
     const modelosPedidos = palabrasT.filter(u => esModelo(u) || esCifra(u));
     const modelosReales = modelosPedidos.filter(u =>
       mentions.some(m => m.modelos && m.modelos.includes(u)));
@@ -1388,9 +1415,14 @@
       const limpio = mentions.filter(m => m.exactMatch || !m.modelos || !m.modelos.length || m.modelosCasan);
       if(limpio.length) finalistas = limpio;
     }
+    /* Un nombre escrito ENTERO manda sobre uno adivinado por palabras
+       sueltas, aunque el segundo puntúe más alto: la puntuación de un
+       parcial crece con el número de palabras y puede pasar por encima de
+       la longitud del nombre exacto. Eso es lo que ponía seis Archer por
+       delante del Archer A6 que el cliente había escrito completo. */
     const seen = new Set();
     return finalistas
-      .sort((a,b) => b.score - a.score)
+      .sort((a,b) => (b.exactMatch?1:0) - (a.exactMatch?1:0) || b.score - a.score)
       .filter(m => { if(seen.has(m.p.id)) return false; seen.add(m.p.id); return true; })
       .map(m => m.p);
   }
@@ -1719,13 +1751,26 @@
     if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
     if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
 
-    if(/\b(c[oó]mo compro|c[oó]mo pedir|c[oó]mo hago.*pedido|c[oó]mo comprar|quiero comprar|quiero pedir|hacer.*pedido|proceso.*compra)\b/.test(m)) return 'comprar';
+    if(/\b(c[oó]mo compro|c[oó]mo pedir|c[oó]mo hago.*pedido|c[oó]mo comprar|quiero comprar|quiero pedir|hacer.*pedido|proceso.*compra)\b/.test(m)){
+      // Querer comprar algo que no se vende no se contesta con el
+      // instructivo de cómo comprar. noVendemosPara ya deja pasar la
+      // pregunta si el catálogo tiene con stock algo que encaje.
+      if(noVendemosPara(text)) return 'noVendemos';
+      // Y si nombró UN producto, lo que quiere es esa ficha con su botón de
+      // pedir, no el instructivo de cómo se compra en general.
+      if(detectProductMentions(text).length === 1) return 'detalle';
+      return 'comprar';
+    }
     // "cobertura" a secas ya NO cuenta: es la palabra con la que se pide un
     // repetidor ("quiero mejorar la cobertura de mi casa"), y hasta el
     // producto se llama "Repetidor Wi-fi Extensor de Cobertura". Se llevaba
     // esas preguntas a la tabla de provincias. Aquí solo cuenta cuando habla
     // de la cobertura del ENVÍO.
     if(/cobertura (de )?(env[ií]o|mensajer[ií]a|entrega|reparto)|(env[ií]o|mensajer[ií]a|entrega|reparto)[^.?]{0,15}cobertura|\bcobertura\b[^.?]{0,20}\b(provincia|municipio|pa[ií]s|isla|habana|oriente|occidente)\b/.test(m)) return 'envios';
+    /* «¿En cuánto tiempo llega?» no llevaba ninguna palabra de envío —«llega»
+       solo contaba seguido de «a» o «hasta»— y se iba a la búsqueda difusa,
+       que contestaba con un timbre y un bidón de aceite. */
+    if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora)\b/.test(m)) return 'envios';
     if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
        || /\b(oriente|occidente|centro del pa[ií]s|toda la isla|todo el pa[ií]s)\b/.test(m)
        ) return 'envios';
@@ -1742,6 +1787,7 @@
     // "Interruptor de Transferencia" y "Transferencia Automática o Manual", y
     // eran inalcanzables escribiendo su propio nombre.
     if(/transferencia (bancaria|banc|por banco)|hacer una transferencia|pago por transferencia|acepta[ns]? transferencia/.test(m)) return 'pago';
+    if(/\bmlc\b/.test(m)) return 'pago';
     if(/\b(pago|pagar|pago|tarjeta|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
@@ -1796,7 +1842,12 @@
     }
 
     // AUTONOMÍA: "cuánto dura esta batería con mi nevera"
-    if(/\b(cu[aá]nto dura|cu[aá]ntas horas|autonom[ií]a|duraci[oó]n|cu[aá]nto tiempo aguanta)\b/.test(m) && /\b(bater[ií]a|inversor|sistema|nevera|aire|ventilador)\b/.test(m)) return 'autonomia';
+    /* "¿Cuánto tiempo me dura si pongo un fan y 3 bombillos?" no casaba por
+       las dos mitades: ni "cuánto tiempo me dura" —con el "me" en medio— ni
+       "fan"/"bombillos" entre los equipos. Se iba a la búsqueda difusa y
+       contestaba con un litro de aceite Fanfaro. */
+    if(/\b(cu[aá]nto (tiempo )?(me )?(dura|duran|aguanta|aguantan)|cu[aá]ntas horas|autonom[ií]a|duraci[oó]n)\b/.test(m)
+       && /\b(bater[ií]a|bater[ií]as|inversor|sistema|nevera|refrigerador|aire|ventilador|fan|bombillo\w*|luces|bomba|tv|televisor|planta)\b/.test(m)) return 'autonomia';
 
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
     if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)
@@ -1813,11 +1864,22 @@
 
     // "¿cuál es el mejor router?" pide una recomendación, no la definición de
     // lo que es un router — que es lo que contestaba al caer en 'tecnico'.
+    /* Y "¿cuál es el router más barato?" es la misma pregunta con otro
+       criterio: se iba a 'ofertas' —por la regla de \bbarato\b de más
+       abajo, que solo miraba que no hubiera verbo de petición— y contestaba
+       con cuatro juegos de llantas rebajadas a alguien que pedía un router.
+       R.recomendacion ya ordena por precio y ya afina por subcategoría. */
+    const _pideSuperlativo = /\b(m[aá]s|mas) (barat\w*|econom\w*|car\w*|costos\w*)\b/.test(m);
     if(/\b(el|la|los|las) mejor(es)?\b/.test(m) && !/\bvs\b|versus|diferencia/.test(m)){
       const _cats = ['camara','camaras','bateria','baterias','cargador','inversor','inversores','router','routers',
                      'switch','antena','alarma','cerradura','panel','paneles','controlador','controladores'];
       if(_cats.some(c => new RegExp('\\b' + c + '\\b').test(normalize(m)))) return 'recomendacion';
     }
+    /* "¿Qué es lo más barato que tienes?" sin decir de qué tipo: los extremos
+       del catálogo, que es lo que se preguntó. Cuando SÍ dice el tipo
+       ("la cámara más barata") no se toca: el índice de subcategoría ya
+       contesta con la lista ordenada por precio, que es mejor respuesta. */
+    if(_pideSuperlativo && !_detectarSubcategoria(text) && !_detectarCategoriaPedida(m)) return 'recomendacion';
 
     // AVERÍA: "mi inversor pita", "el router se cae", "error 04".
     // Va después de compatibilidad para no robarle "¿no funciona con...?",
@@ -1863,17 +1925,43 @@
     // Ofertas (solo si NO hay verbo de necesidad)
     // Con \b al final, "descuentos" y "rebajas" en plural no casaban.
     if(/\b(oferta|ofertas|descuento|rebaja|promoci[oó]n|rebajad)\w*/.test(m)) return 'ofertas';
-    if(/\bbarato\b/.test(m) && !verbosNecesidad.test(m)) return 'ofertas';
+    if(/\bbarato\b/.test(m) && !verbosNecesidad.test(m) && !_pideSuperlativo) return 'ofertas';
 
     // Stock — pero "¿está agotado el inversor Must?" pregunta por UN producto,
     // no por el inventario entero: la ficha ya dice si queda o no. Contestaba
     // con el conteo global del catálogo, que no responde nada.
-    if(/\b(stock|disponible|disponibilidad|agotad\w*|queda[n]?)\b/.test(m)
-       && detectProductMentions(text).length === 1) return 'detalle';
+    const _esPregStock = /\b(stock|disponible|disponibilidad|agotad\w*|queda[n]?)\b/.test(m);
+    if(_esPregStock && detectProductMentions(text).length === 1) return 'detalle';
+    /* detectProductMentions pide dos palabras del nombre y hay productos que
+       se nombran con una sola («el compresor») o solo por su modelo («el hap
+       ac3»): esas preguntas contestaban con el conteo global del catálogo,
+       que no responde nada. Si en las 132 fichas hay UNA que puntúe, no hay
+       ambigüedad que resolver — no es una elección entre candidatos, es el
+       único candidato. */
+    if(_esPregStock){
+      const _qs = _expandirConsulta(cleanForMatch(text));
+      const _unico = PRODUCTOS.map(p => ({p, s: scoreProduct(p, _qs)})).filter(x => x.s > 0);
+      /* Y tiene que estar NOMBRADO: que puntúe una sola ficha no basta,
+         porque "¿cuántos productos tienen agotados" —que pregunta por el
+         inventario entero— rozaba una palabra de la descripción de un
+         exhibidor y se quedaba sola. La palabra tiene que salir en el
+         NOMBRE, que es lo que significa nombrar un producto. */
+      if(_unico.length === 1){
+        const _nom = cleanForMatch(_unico[0].p.nombre);
+        const _porNombre = cleanForMatch(text).split(' ')
+          .filter(w => w.length >= 4 || (w.length >= 2 && /[a-z]/.test(w) && /\d/.test(w)))
+          .some(w => new RegExp('(^|[^a-z0-9])' + w + '($|[^a-z0-9])').test(_nom));
+        if(_porNombre) return 'detalle';
+      }
+    }
     // Va ANTES de categorías: "qué hay disponible" contiene "qué hay" y se lo
     // llevaba el índice de categorías, que no dice cuántos quedan.
+    // "disponibles" en plural no casaba con \bdisponible\b, y "cuántos
+    // productos tienen disponibles" —que pregunta por el inventario— se iba
+    // a la búsqueda difusa y contestaba con unos shorts.
     if(/\b(stock|disponibilidad|agotad\w*|existencias?)\b/.test(m)
-       || /qu[eé] (hay|tienen|queda) disponible/.test(m)) return 'stock';
+       || /qu[eé] (hay|tienen|queda[n]?) disponible/.test(m)
+       || /cu[aá]nto[s]? (productos|cosas|art[ií]culos|cat[aá]logo)/.test(m)) return 'stock';
 
     // Categorías
     if(/\b(categor[ií]a|categor[ií]as|secci[oó]n|secciones|qu[eé] tienen|qu[eé] venden|qu[eé] hay|cat[aá]logo)\b/.test(m)) return 'categorias';
@@ -2019,7 +2107,15 @@
     }
 
     if(/\b(cu[aá]nto|tarda|demora|tiempo|cuando|llega|provincias|todas las provincias|cobertura|donde llevan|a donde llegan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a)\b/.test(m)){
-      let body = `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\n`;
+      /* Preguntó por el TIEMPO y la tabla de abajo solo dice el dónde. No hay
+         un plazo publicado —depende del municipio y del mensajero— y
+         inventarse un «24-48 h» es prometer algo que el cliente viene a
+         cobrar. Se dice lo que hay y se manda a coordinarlo. */
+      let body = '';
+      if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)){
+        body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero que cubra la ruta, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla. Escríbenos con tu dirección y te decimos el día.\n\n`;
+      }
+      body += `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\n`;
       body += `📍 <strong>Zona con mensajería directa</strong> (pago contra entrega):\n`;
       body += `• <strong>La Habana</strong> — todos los municipios\n`;
       ENVIOS_PROVINCIAS.forEach(p => {
@@ -2142,7 +2238,15 @@
     quickReplies: ['💬 Contactar Soporte','🛡️ Política de garantía','📦 Ver productos']
   });
 
-  R.tasa = () => ({
+  /* Sin tasa cargada esto anunciaba «1 USD = 0 MN», «tasa base 0 MN» y «un
+     producto de $100 → pagas 0 MN». Es el mismo cero que fmtMN y METODOS_PAGO
+     ya se niegan a imprimir, en la única respuesta que va ENTERA sobre la
+     tasa. Y pasa de verdad: la config llega por su cuenta y en Cuba puede no
+     llegar. */
+  R.tasa = () => (!TASA_MN || TASA_MN <= 0) ? {
+    response: `💱 <strong>Tasa de cambio</strong>\n\nAhora mismo no tengo la tasa del día cargada, y prefiero no darte un número inventado. La tasa que aplicamos es la de <strong>elTOQUE</strong> más un margen operativo fijo, y el precio en MN que ves en el catálogo ya la lleva dentro.\n\nEscríbenos por WhatsApp (<code>+${WHATSAPP}</code>) y te decimos la de hoy.`,
+    quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
+  } : ({
     response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nDesglose:\n• <strong>Tasa base elTOQUE:</strong> ${TASA_BASE_MN} MN\n  <em>(elTOQUE es la referencia de tasa de cambio en Cuba, se actualiza a diario)</em>\n• <strong>Margen operativo:</strong> +${MARGEN_MN} MN\n• <strong>Total que pagas:</strong> ${TASA_MN} MN por USD\n\nEl precio en MN que ves en el catálogo <strong>ya incluye la tasa + el margen</strong>. No hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
     quickReplies: ['💳 Métodos de pago','📦 Ver productos','💬 WhatsApp']
   });
@@ -2639,7 +2743,11 @@
     'CONTROLADORES SOLARES': /\bcontrolador|mppt|pwm|regulador\b/,
     'BATERÍAS': /\bbater[ií]a|bateria|acumulador\b/,
     'CÁMARAS': /\bc[aá]mara|camara|c[aá]maras|videovigilancia|dvr\b/,
-    'ROUTERS': /\brouter|antena|cpe|nanostation|repetidor|access point\b/
+    'ROUTERS': /\brouter|antena|cpe|nanostation|repetidor|access point\b/,
+    // Los paneles no se venden aquí, pero el que tiene uno que no genera
+    // viene a preguntar igual, y la familia es lo que deja que el triaje
+    // arranque en vez de contestar con el panel decorativo de hojas.
+    'PANELES SOLARES': /\bpanel(es)? solar|placa solar|fotovoltaic/
   };
   const _FAMILIA_VAGA = { 'ROUTERS': /\bwifi|wi-fi|internet|se[ñn]al|red\b/ };
 
@@ -2656,7 +2764,12 @@
      recibía un catálogo de baterías en vez de "deja de cargarla ahora mismo".
      Igual con "calienta mucho" (sin el "se") y "no coge carga". */
   const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calienta\w*|calentando|hinchad\w*|hinch[oó]\b|hincha\b|inflad\w*|infl[oó]\b|abombad\w*|abomb[oó]\b|huele\b|oli[oó]\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos|no coge carga|no agarra carga)/i;
-  const _AVERIA_DEBIL = /\b(no enciende|no prende|no carga|no coge carga|no agarra carga|no funciona|no conecta|se apaga|se corta|se reinicia|se desconecta|se cae|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fall[ao]\w*|se ve blanco|no da (internet|se[ñn]al|corriente|imagen|video)|no graba|no transmite|no muestra|no llega (internet|se[ñn]al)|no agarra se[ñn]al)/i;
+  /* El «me» en medio es como se escribe aquí, y partía estas en dos: «se me
+     apaga el inversor solo» no casaba con «se apaga» y acababa en el índice
+     de INVERSORES —una lista para comprar, a quien ya tiene uno y se le
+     apaga—. Y «no genera» faltaba entero: «el panel no genera nada» devolvía
+     el Panel Decorativo de Hojas Artificiales. */
+  const _AVERIA_DEBIL = /\b(no (me |le )?(enciende|prende|carga|coge carga|agarra carga|funciona|conecta)|se (me )?apaga|se (me )?corta|se (me )?reinicia|se (me )?desconecta|se (me )?cae|no (me )?(genera|produce)|sin internet|no hay internet|sin se[ñn]al|sin conexi[oó]n|no navega|fall[ao]\w*|se ve blanco|no da (internet|se[ñn]al|corriente|imagen|video)|no graba|no transmite|no muestra|no llega (internet|se[ñn]al)|no agarra se[ñn]al)/i;
 
   /** ¿Está describiendo una avería? */
   function esAveria(text){
@@ -4275,7 +4388,11 @@ ${notasHTML}
   //  RECOMENDACIÓN (con presupuesto)
   // ════════════════════════════════════════════════════════════
   R.recomendacion = (text) => {
-    const t = text.toLowerCase();
+    const t = normalize(text);
+    /* Pedir "lo más caro" y recibir los cuatro más baratos es contestar lo
+       contrario. El orden por defecto sigue siendo de menor a mayor. */
+    const _caro = /\b(m[aá]s|mas) (car\w*|costos\w*)\b/.test(t);
+    const _barato = /\b(m[aá]s|mas) (barat\w*|econom\w*)\b/.test(t);
     let categoria = null;
     if(/(vigilar|vigilancia|c[aá]mara.*seguridad|casa.*segura|negocio.*segur|robo|ladrones|intrusos|proteger.*casa|cuidar.*casa|esp[ií]a)/.test(t)) categoria = 'SEGURIDAD';
     // El TIPO de producto manda sobre la tecnología que lo acompaña: "cámara
@@ -4323,6 +4440,17 @@ ${notasHTML}
           };
         }
       }
+      /* Superlativo sin decir de qué: los extremos del catálogo, que es lo
+         que se preguntó. */
+      if(_caro || _barato){
+        const _todos = PRODUCTOS.filter(p => p.stock > 0)
+          .sort((a,b) => _caro ? b.precio - a.precio : a.precio - b.precio).slice(0,4);
+        if(_todos.length) return {
+          response: `💰 Lo <strong>${_caro ? 'más caro' : 'más barato'}</strong> que tengo disponible ahora mismo:\n\nSi me dices de qué tipo lo buscas (router, cámara, inversor…) te lo afino.`,
+          products: _todos,
+          quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+        };
+      }
       const prods = findProducts(text.replace(/^(necesito|busco|quiero|recomi[ée]ndame|sugi[ée]reme|para)/g,' ').trim(), 4);
       if(prods.length > 0){
         return {
@@ -4360,7 +4488,7 @@ ${notasHTML}
       }
       prods = _dentro;
     }
-    prods = prods.sort((a,b) => a.precio - b.precio);
+    prods = prods.sort((a,b) => _caro ? b.precio - a.precio : a.precio - b.precio);
     if(!prods.length){
       return {
         response: `📂 No tengo nada disponible en <strong>${catIcon(categoria)} ${categoria}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Dime otro presupuesto y te busco de nuevo, o mira las ofertas.`,
@@ -4374,7 +4502,7 @@ ${notasHTML}
       body += `💰 Filtrando por tu presupuesto de <strong>${fmtUSD(_context.presupuesto)}</strong>:\n\n`;
     }
     const _n = Math.min(4, prods.length);
-    body += `Te muestro <em>${_n}</em> ${_n === 1 ? 'opción disponible' : 'opciones disponibles'}, ordenada${_n === 1 ? '' : 's'} por precio (de menor a mayor). ¿Cuál te llama la atención?\n\n`;
+    body += `Te muestro <em>${_n}</em> ${_n === 1 ? 'opción disponible' : 'opciones disponibles'}, ordenada${_n === 1 ? '' : 's'} por precio (de ${_caro ? 'mayor a menor' : 'menor a mayor'}). ¿Cuál te llama la atención?\n\n`;
     body += `<strong>Tip:</strong> Si quieres, me dices <em>"compara el A vs el B"</em> y te armo la tabla lado a lado.`;
     return {
       response: body,
@@ -4629,6 +4757,19 @@ ${notasHTML}
         products: prods,
         sinRespuesta: true,
         quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
+      };
+    }
+    /* "¿Venden celulares?", "¿tienen comida?", "¿venden medicamentos?"
+       caían aquí y recibían "no entendí tu pregunta", que suena a bot roto
+       cuando la pregunta se entendió perfectamente: la respuesta es que no.
+       No hace falta una lista de lo que no se vende —llegar hasta aquí ya
+       significa que ninguna de las 132 fichas puntúa—, y esa es justo la
+       comprobación que mantiene honesta a NO_VENDEMOS. */
+    if(/\b(vende[ns]?|venden|tiene[ns]?|tienen|hay|manejan|maneja|trabajan con|consiguen|consigues|te queda[n]?)\b/.test(normalize(text))){
+      return {
+        response: `🙅 <strong>Eso no lo manejo</strong> — no está en el catálogo y prefiero decírtelo claro antes que enseñarte otra cosa parecida.\n\nLo que sí tengo es equipamiento de <em>wifi y redes, energía y solar, seguridad, carros, motos, hogar y herramientas</em>.\n\nSi lo necesitas igual, escríbeme por WhatsApp y te digo si puedo conseguírtelo.`,
+        sinRespuesta: true,
+        quickReplies: ['📦 Categorías','💬 WhatsApp','🔥 Ofertas']
       };
     }
     return {

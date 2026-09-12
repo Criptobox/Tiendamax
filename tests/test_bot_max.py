@@ -54,6 +54,51 @@ class BuscarProductoTest(unittest.TestCase):
         self.assertEqual(0, r.returncode, "\n" + (r.stderr or r.stdout).strip())
 
 
+class BotPulidoTest(unittest.TestCase):
+    """El repaso a fondo: ~130 preguntas seguidas contra el catálogo real.
+
+    Lo que salió no fueron matices, fueron respuestas falsas o absurdas a
+    preguntas de todos los días — la tasa anunciada como «1 USD = 0 MN», «el
+    router más barato» contestado con cuatro juegos de llantas, el stock de
+    un producto contestado con el conteo del catálogo entero, «¿venden
+    celulares?» contestado con «no entendí tu pregunta». Ninguna daba error.
+
+    El detalle de cada una está en el .mjs, con la pregunta que la destapó.
+    """
+
+    def test_repaso_en_node(self):
+        import shutil
+        import subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(ROOT / "tests" / "max_pulido_check.mjs")],
+                           cwd=str(ROOT), capture_output=True, text=True, timeout=600)
+        self.assertEqual(0, r.returncode, "\n" + (r.stderr or r.stdout).strip())
+
+    def test_lo_que_no_se_vende_se_dice_despues_de_mirar_el_catalogo(self):
+        """«Eso no lo manejo» va DESPUÉS de la rama que sí encontró productos.
+
+        Es el orden lo que mantiene honesta la respuesta: llegar al fallback
+        sin productos es lo que demuestra que de verdad no hay nada, igual
+        que `noVendemosPara` deja pasar la pregunta cuando el catálogo tiene
+        con stock algo que encaja. Puesta delante, negaría cosas que sí se
+        venden — y eso no lo puede ver ninguna pregunta, porque hoy ninguna
+        llega al fallback con productos detrás: es una comprobación de
+        estructura o no es nada.
+        """
+        txt = CEREBRO.read_text(encoding="utf-8")
+        i_fb = txt.index("R.fallback = (text) => {")
+        cuerpo = txt[i_fb:i_fb + 3000]
+        i_prods = cuerpo.index("const prods = findProducts(text, 3);")
+        i_niego = cuerpo.index("no lo manejo")
+        self.assertLess(
+            i_prods, i_niego,
+            "En R.fallback, el «eso no lo manejo» tiene que ir después de "
+            "buscar productos: delante negaría cosas que sí están en el "
+            "catálogo.")
+
+
 class BotArchivosTest(unittest.TestCase):
     def test_fuentes_existen(self):
         for f in (CASCARA, CEREBRO):
