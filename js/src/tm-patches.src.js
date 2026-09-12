@@ -946,9 +946,6 @@ async function cargarTasaDesdeGitHub() {
             // Cargar configuración de Firebase y arrancar FCM
             if (cfg.firebaseConfig) {
                 localStorage.setItem('firebaseConfig', JSON.stringify(cfg.firebaseConfig));
-                if (cfg.fcmServerKey) {
-                    localStorage.setItem('fcmServerKey', cfg.fcmServerKey);
-                }
                 if (cfg.firebaseConfig.vapidKey) {
                     localStorage.setItem('firebaseVapidKey', cfg.firebaseConfig.vapidKey);
                 }

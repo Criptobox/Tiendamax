@@ -376,6 +376,43 @@ async function _fbAuthQS(sep) {
     } catch (e) { return ''; }
 }
 
+/* Lo que de una venta SÍ sube a Firebase, campo a campo.
+   Se armaba con el objeto `venta` entero, así que el nombre y el teléfono del
+   cliente —que el formulario pide y que el comentario de registrarVentaPedido
+   dice que se quedan en este aparato— viajaban a /ventas/$id en cada venta.
+   Ese nodo solo lo lee la cuenta del dueño, así que no era público; pero en
+   este mismo proyecto /tokens, /avisos_stock y /wishlist_avisos estuvieron
+   abiertos por descuido, y el día que una regla se republique floja lo que
+   haya subido ya está subido. Un dato que no hace falta allí no se manda.
+
+   Es una lista blanca a propósito, no un `delete venta.cliente`: con una
+   lista negra, el próximo campo que alguien añada al formulario sube solo.
+   `origen` sí va —no es del cliente, es de la tienda, y sin él el cruce de
+   canales de 📣 Publicar solo contaría las ventas de un teléfono. */
+function _ventaParaFirebase(venta) {
+    const v = {
+        id: venta.id,
+        fecha: venta.fecha,
+        items: (venta.items || []).map(d => ({
+            producto: d.producto, productoId: d.productoId, cantidad: d.cantidad,
+            precio: d.precio, comision: d.comision, comisionMoneda: d.comisionMoneda,
+            moneda: d.moneda, total: d.total, ganancia: d.ganancia
+        })),
+        producto: venta.producto,
+        productoId: venta.productoId,
+        cantidad: venta.cantidad,
+        precio: venta.precio,
+        comision: venta.comision,
+        comisionMoneda: venta.comisionMoneda,
+        total: venta.total,
+        totalMN: venta.totalMN,
+        ganancia: venta.ganancia,
+        gananciaMN: venta.gananciaMN
+    };
+    if (venta.origen) v.origen = venta.origen;
+    return v;
+}
+
 // Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
 function _fbGuardarVenta(venta) {
     (async () => {
@@ -385,7 +422,7 @@ function _fbGuardarVenta(venta) {
         await fetch(`${url}/ventas/${venta.id}.json${await _fbAuthQS()}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(venta)
+            body: JSON.stringify(_ventaParaFirebase(venta))
         });
     })().catch(() => {}); // OPT 3G: silencioso
 }
@@ -526,6 +563,11 @@ function registrarVentaPedido(items, cliente, opts) {
 
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
     // v.telefono) y salía vacío porque nadie los escribía nunca.
+    //
+    // Se quedan en ESTE aparato: ni a /pedidos (público) ni a /ventas (privado
+    // pero Firebase al fin y al cabo) — ver _ventaParaFirebase. La consecuencia
+    // es real y es la buscada: el seguimiento post-venta de una venta anotada
+    // en el teléfono se hace desde ese teléfono, porque el nombre está ahí.
     if (cliente) {
         const nom = String(cliente.nombre || '').trim();
         const tel = String(cliente.tel || '').replace(/\D/g, '');

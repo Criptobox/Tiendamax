@@ -28,9 +28,24 @@ class SeguimientoTest(unittest.TestCase):
 
 
 class DatosDelClienteTest(unittest.TestCase):
-    """El nombre y el teléfono del cliente son datos personales, y este repo no
-    tiene autenticación: /pedidos/$id es ".read": true, así que lo que se suba
-    ahí lo lee cualquiera. Se quedan en localStorage."""
+    """El nombre y el teléfono del cliente son datos personales y se quedan en
+    el aparato donde se escribieron.
+
+    Dos salidas a Firebase, y las dos se vigilan aquí:
+
+      · **/pedidos/$id** es ".read": true — lo lee cualquiera. Obvio.
+      · **/ventas/$id** solo lo lee la cuenta del dueño… y aun así. Durante
+        meses subió el objeto `venta` ENTERO, con nombre y teléfono, tres
+        líneas debajo de un comentario que decía que se quedaban aquí. No era
+        público, pero en este mismo proyecto /tokens, /avisos_stock y
+        /wishlist_avisos estuvieron abiertos por descuido, y una regla que se
+        republica floja no devuelve lo que ya subió. Además ese nodo es
+        inmutable (".write": "!data.exists()"): lo que entra no se corrige
+        desde el panel.
+
+    Los dos payloads se arman con lista blanca, no borrando campos: con una
+    lista negra, el próximo campo del formulario sube solo.
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -53,6 +68,29 @@ class DatosDelClienteTest(unittest.TestCase):
             payload, r"\.\.\.venta|Object\.assign\(\s*\{\s*\}\s*,\s*venta",
             "no vuelques el objeto `venta` entero en el payload: arrastra los datos del cliente",
         )
+
+    def test_la_venta_que_va_a_firebase_no_lleva_al_cliente(self):
+        cuerpo = self.ui[self.ui.index("function _ventaParaFirebase"):]
+        cuerpo = cuerpo[:cuerpo.index("\n}")]
+        for prohibido in ("cliente", "telefono"):
+            self.assertNotIn(
+                prohibido, cuerpo,
+                f"'{prohibido}' no puede viajar a /ventas: ese nodo es inmutable, "
+                "lo que sube no se corrige después",
+            )
+
+    def test_la_venta_sube_por_lista_blanca(self):
+        # El fallo original fue JSON.stringify(venta) a pelo. Que el payload se
+        # construya campo a campo es lo único que impide que el próximo campo
+        # nuevo del formulario suba sin que nadie lo decida.
+        m = re.search(r"/ventas/\$\{venta\.id\}\.json.*?body:\s*JSON\.stringify\((.*?)\)\s*\n",
+                      self.ui, re.S)
+        self.assertIsNotNone(m, "no se encontró el envío de /ventas a Firebase")
+        self.assertEqual("_ventaParaFirebase(venta)", m.group(1).strip(),
+                         "el cuerpo tiene que pasar por la lista blanca, no ser `venta`")
+        self.assertIn("if (venta.origen)", self.ui,
+                      "el canal sí va: no es del cliente y sin él el cruce de "
+                      "canales solo contaría las ventas de un teléfono")
 
     def test_la_venta_captura_nombre_y_telefono(self):
         # Sin esto el tab Clientes vuelve a estar siempre vacío, que es

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a12">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
 <!-- Firebase Auth: la cuenta del dueño. Va lo primero porque el login y
      todas las lecturas privadas (/ventas, /privado) la necesitan. -->
@@ -26,8 +26,16 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Gestión">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<!-- Fuentes locales, igual que index.html. El panel pedía CUATRO familias a
+     fonts.googleapis.com en dos <link> que bloquean el pintado — desde un
+     teléfono en Cuba, dos viajes a un tercero antes de ver la pantalla de
+     entrar. Tres de esas cuatro (DM Sans, Inter, JetBrains Mono) ya viajan en
+     el repo como .woff2 y las sirve css/fonts.css; la cuarta (Manrope) se
+     usaba en dos reglas del login y se cambió por DM Sans. -->
+<link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 <script>
 /* Piel del panel — antes de pintar, para que no parpadee. */
 try{var _piel=localStorage.getItem('tm_piel');
@@ -734,7 +742,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   .tm2-logo-img:hover { transform:scale(1.05) rotate(-2deg); }
 
   .tm2-login-title {
-    font-family:'Manrope',sans-serif; font-size:26px; font-weight:800;
+    font-family:'DM Sans',sans-serif; font-size:26px; font-weight:700;
     letter-spacing:-0.8px; margin:0 0 6px; color:transparent;
     background:linear-gradient(135deg,#FFFFFF 0%, #FFB585 100%);
     -webkit-background-clip:text; background-clip:text;
@@ -861,7 +869,7 @@ try{var _piel=localStorage.getItem('tm_piel');
   /* Botón "Acceder al panel" */
   .tm2-login-btn {
     width:100%; border:none; border-radius:14px; padding:18px;
-    color:#FFFFFF; font-family:'Manrope',sans-serif;
+    color:#FFFFFF; font-family:'DM Sans',sans-serif;
     font-size:14px; font-weight:700; letter-spacing:0.3px; cursor:pointer;
     display:flex; align-items:center; justify-content:center; gap:10px;
     position:relative; overflow:hidden; z-index:1;
@@ -2040,7 +2048,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=453c641c"></script>
+<script src="js/tm-bundle.js?v=c5b26507"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2113,7 +2121,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=94d3d43a"></script>
+<script src="js/admin-copilot.js?v=3d478795"></script>
 
 <script>
 (function(){

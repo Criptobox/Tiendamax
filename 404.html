@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página no encontrada — TiendaMax</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Fuentes locales. Playfair y DM Sans ya viajan en el repo como .woff2:
+         pedírselas a Google es un viaje a un tercero que bloquea el pintado
+         justo en la página que ve quien ya se perdió. -->
+    <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -37,7 +42,9 @@
             font-family: 'Playfair Display', serif;
             font-weight: 900; font-size: 22px;
         }
-        .logo-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+        /* color explícito: el logo es un <a> y sin esto «Tienda» hereda el
+           azul de enlace del navegador — solo «Max» llevaba color propio. */
+        .logo-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
         .logo-text em { color: #C9A96E; font-style: normal; }
         .code-wrap {
             position: relative;

@@ -9,7 +9,11 @@
 <link rel="manifest" href="/vale-manifest.json">
 <link rel="icon" type="image/png" href="/iconos/vale-icon-192.png">
 <link rel="apple-touch-icon" href="/iconos/vale-icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Fuentes locales: Playfair y DM Sans ya viajan en el repo como .woff2. -->
+<link rel="preload" href="/fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/css/fonts.css?v=8b616cbe"></noscript>
 <style>
 :root{--gold:#C9A96E;--gold-dark:#8b6914;--bg:#0D0D0D;--bg2:#141414;--bg3:#181818;--bg4:#222;--border:#2a2a2a;--border-gold:#c8a96e33;--text:#f0e6d3;--muted:#888;--dim:#555;--green-light:#52b788;--orange:#FF6B35}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}

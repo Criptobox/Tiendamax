@@ -542,7 +542,13 @@ async function sincronizarTodoConGitHub() {
         ofertaDiaTexto:      localStorage.getItem('ofertaDiaTexto') || undefined,
         ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
         firebaseConfig:      localStorage.getItem('firebaseConfig') ? tmParse(localStorage.getItem('firebaseConfig'), null) : _configBase.firebaseConfig,
-        fcmServerKey:        localStorage.getItem('fcmServerKey') || _configBase.fcmServerKey || undefined,
+        // Aquí iba `fcmServerKey`. config.json se publica en un repo público
+        // (raw.githubusercontent.com lo sirve a cualquiera) y la Server Key de
+        // FCM manda push a todos los clientes del proyecto. Nunca llegó a
+        // estar en el fichero —nadie escribía esa clave— pero el camino sí
+        // existía: bastaba con que alguien la dejara en localStorage una vez.
+        // Un secreto no se cuela en un fichero público por un renglón que
+        // nadie usa.
         actualizado:         new Date().toISOString(),
     });
     // Preservar el margen MN configurado (puede ser 0). localStorage manda; si no, se
