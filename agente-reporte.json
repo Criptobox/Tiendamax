@@ -1,11 +1,16 @@
 {
-  "generado": "2026-09-11T13:08:11.170969+00:00",
+  "generado": "2026-09-12T12:31:49.318262+00:00",
   "productos": 135,
-  "urgentes": 5,
+  "urgentes": 6,
   "advertencias": 0,
   "info": 9,
-  "resumen": "Anoche revisé tus 135 productos y encontré 5 urgente(s), 9 de info.",
+  "resumen": "Anoche revisé tus 135 productos y encontré 6 urgente(s), 9 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "🔥 Antorcha de soldadura TIG (KIT Profesional)",
+      "detalle": "→ 🔥 Antorcha de Soldadura TIG (KIT Profesional)"
+    },
     {
       "tipo": "nombre",
       "nombre": "🌐  MikroTik SXT SA5 ac",
@@ -73,8 +78,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "52 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Pistola Fascia Gun, Cargador Inteligente 15A y 49 más"
+      "nombre": "53 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 50 más"
     }
   ]
 }
