@@ -1728,7 +1728,15 @@
     if(/cobertura (de )?(env[ií]o|mensajer[ií]a|entrega|reparto)|(env[ií]o|mensajer[ií]a|entrega|reparto)[^.?]{0,15}cobertura|\bcobertura\b[^.?]{0,20}\b(provincia|municipio|pa[ií]s|isla|habana|oriente|occidente)\b/.test(m)) return 'envios';
     if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
        || /\b(oriente|occidente|centro del pa[ií]s|toda la isla|todo el pa[ií]s)\b/.test(m)
-       || /\b(recoger\w*|recojo|lo busco yo|pasar a buscar|buscarlo yo|recogida)\b/.test(m)) return 'envios';
+       ) return 'envios';
+    /* Recoger NO es envío y no se puede contestar con la tabla de cobertura,
+       que fue lo que pasó: «¿se puede pasar a recogerlo?» devolvía el
+       corredor Matanzas–Pinar del Río, que no responde nada. Hay VARIOS
+       puntos de recogida y cuál toca depende del producto, así que el bot no
+       lo puede saber: lo suyo es mandar a preguntar con el producto delante.
+       Va antes que envíos porque «recoger» casa también con sus patrones. */
+    if(/\b(recoger\w*|recojo|recogerlo|recogida|lo busco yo|buscarlo yo|pasar a buscar\w*|paso a buscar\w*|puedo buscarlo|lo recojo)\b/.test(m)
+       && !/devol\w*|garant[ií]a|cambio|reemplaz\w*/.test(m)) return 'recogida';
     if(/\b(acepta[ns]?|admite[ns]?|reciben|recibe)\b[^.?]{0,20}\b(cup|mn|usd|d[oó]lar|peso|efectivo|tarjeta|transferencia|zelle|enzona|moneda)\b/.test(m)) return 'pago';
     // "transferencia" suelta NO: hay dos productos en stock que se llaman
     // "Interruptor de Transferencia" y "Transferencia Automática o Manual", y
@@ -2151,8 +2159,21 @@
   R.ubicacion = () => ({
     response: `📍 TiendaMax es una tienda <strong>100% online</strong>: no tenemos local abierto al público, así que no hay a dónde ir a verlo.\n\n`
       + `Lo que sí puedes hacer es <strong>escribirnos por WhatsApp</strong> (<code>+${WHATSAPP}</code>): te mandamos fotos o video del equipo, te decimos qué queda y coordinamos la entrega en tu casa. 🚚\n\n`
+      + `Si lo que quieres es <strong>recogerlo tú</strong>, sí se puede: hay varios puntos y cuál toca depende del producto, así que pregúntanos por ese en concreto.\n\n`
       + `<em>Y lo pruebas al recibirlo, antes de pagar.</em>`,
     quickReplies: ['💬 Escribir por WhatsApp','📦 Ver productos','🚚 Envíos']
+  });
+
+  /* No hay un punto de recogida, hay varios, y el que toca depende del
+     producto — lo dijo el dueño. Inventar una dirección aquí sería mandar a
+     alguien a cruzar La Habana para nada, así que se dice lo que se sabe (sí
+     se puede, y depende) y se manda a preguntar con el producto delante, que
+     es la única forma de saberlo. */
+  R.recogida = () => ({
+    response: `📦 <strong>Sí puedes recogerlo</strong>, pero el punto depende del producto: no tenemos uno solo, son varios.\n\n`
+      + `Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>) <strong>diciendo cuál quieres</strong> y te decimos dónde se recoge ese. Si prefieres, también te lo llevamos a tu casa.\n\n`
+      + `<em>En los dos casos lo pruebas antes de pagar.</em>`,
+    quickReplies: ['💬 Escribir por WhatsApp','🚚 Envío a domicilio','📦 Ver productos']
   });
 
   R.horario = () => ({

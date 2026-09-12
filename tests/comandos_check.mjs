@@ -161,8 +161,15 @@ const ENCAMINADAS = [
     ['puedo devolverlo si no me gusta', 'devolucion'],
     ['y si llega roto que hago', 'devolucion'],
 
-    // Recogida: no estaba contemplada en ningún sitio.
-    ['puedo recogerlo yo mismo', 'envios'],
+    /* Recogida: tuvo su propia intención después. Iba a 'envios' porque no
+       estaba contemplada en ningún sitio —era mejor que caer en "no te
+       entendí"—, pero contestaba con la tabla de cobertura de mensajería,
+       que no responde la pregunta. Hay varios puntos de recogida y cuál
+       toca depende del producto, así que la respuesta es otra: ver
+       R.recogida y tests/bot_producto_check.mjs. */
+    ['puedo recogerlo yo mismo', 'recogida'],
+    ['lo busco yo', 'recogida'], ['donde lo recojo', 'recogida'],
+    // Enviar sigue siendo enviar.
     ['llegan hasta holguin', 'envios'], ['reparten en la habana', 'envios'],
 
     // "usd" se llevaba a la tasa una pregunta que traía presupuesto.

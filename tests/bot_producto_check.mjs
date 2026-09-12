@@ -127,6 +127,31 @@ for(const q of ['tienen tienda fisica','puedo ir a verlo','donde estan ubicados'
        `«${q}»: decir solo «no hay local» cierra la conversación; hay que mandarlo a escribir. «${r.slice(0,120)}»`);
 }
 
+/* ── 7b) Recoger no es enviar ─────────────────────────────────────────
+   «¿Se puede pasar a recogerlo?» contestaba con la tabla de cobertura de
+   mensajería (el corredor Matanzas–Pinar del Río), que no responde la
+   pregunta. Y el bot NO puede decir dónde se recoge: hay varios puntos y
+   cuál toca depende del producto, así que la única respuesta verdadera es
+   mandar a preguntar por ese producto en concreto. Inventar una dirección
+   aquí manda a alguien a cruzar La Habana para nada. */
+for(const q of ['se puede pasar a recogerlo','lo busco yo','puedo recogerlo yo mismo','donde lo recojo']){
+    const r = await preguntar(q);
+    ok(!/Cobertura de Mensajer[ií]a|corredor/i.test(r),
+       `«${q}» no se contesta con la tabla de envíos: no es la pregunta. «${r.slice(0,110)}»`);
+    ok(/depende del producto|no tenemos uno solo|son varios/i.test(r),
+       `«${q}»: el punto depende del producto y eso hay que decirlo. «${r.slice(0,110)}»`);
+    ok(/WhatsApp/i.test(r),
+       `«${q}»: si el bot no puede saber el punto, tiene que mandar a preguntarlo. «${r.slice(0,110)}»`);
+    ok(!/\b(calle|avenida|esquina|reparto|municipio de)\b/i.test(r),
+       `«${q}»: ni una dirección inventada — mandaría a alguien a cruzar la ciudad para nada`);
+}
+// Pero la recogida de una DEVOLUCIÓN es otra cosa y ya tenía su respuesta.
+ok(/Devoluci[oó]n/i.test(await preguntar('coordinan recogida para devolver')),
+   'recoger para devolver es la política de devolución, no un punto de recogida');
+// Y los envíos siguen siendo los envíos.
+ok(/Cobertura|Matanzas/i.test(await preguntar('hacen envios a matanzas')),
+   'preguntar por el envío sigue dando la cobertura de mensajería');
+
 // ── 8) Nada de lo que ya estaba protegido se rompe ───────────────────
 // Cada una de estas tiene su propia cicatriz en los comentarios del cerebro.
 const noRomper = [
@@ -149,4 +174,4 @@ if(fallos.length){
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Max buscando producto: 25 comprobaciones OK');
+console.log('✅ Max buscando producto: 43 comprobaciones OK');
