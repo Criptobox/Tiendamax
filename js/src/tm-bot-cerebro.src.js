@@ -1320,6 +1320,35 @@
       // como ficha única y dejaba invisibles los 12 aceites del catálogo.
       'para','carro','carros','moto','motos','celular','celulares','auto','autos',
     ]);
+    /* El MODELO es lo más distintivo del nombre y lo tiraba el filtro de
+       longitud. "Necesito nano loco m5" no encontraba la NanoStation M5 Loco
+       —que estaba con 12 en stock— porque `m5` mide dos letras y se caía en
+       `w.length > 3`; quedaba solo "loco", una palabra de tres, y Max
+       contestaba con una lista de recomendaciones. En este catálogo m5 no es
+       m2, ac3 no es ax3 y a6 no es a7: esas dos o tres letras son justo lo
+       que separa un producto de su hermano. */
+    const esModelo = w => w.length >= 2 && w.length <= 6
+      && /[a-z]/.test(w) && /\d/.test(w);           // m5, ax3, a6, 4g, rb750gr3
+    /* Una cifra suelta también identifica, y con UN dígito basta: "Switch
+       Gigabit de 8 Puertos" y "…de 5 Puertos" se diferencian solo en eso.
+       Sin contarla, pedir el de 8 daba la ficha del de 5 —el de 8 está
+       agotado y el filtro de disponibles se quedaba con el otro—: una
+       respuesta segura a una pregunta que nadie hizo. Solo cuenta como
+       palabra entera, así que el 8 de "8 Puertos" sí y el de "RB8" no. */
+    const esCifra  = w => /^\d{1,4}$/.test(w);      // 8, 140, 1800, 65
+    // Buscado como PALABRA ENTERA: "m5" dentro de "xm500" no es el modelo m5.
+    const tienePalabra = (texto, w) =>
+      new RegExp('(^|[^a-z0-9])' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '($|[^a-z0-9])').test(texto);
+    /* Aquí hubo un intento de aceptar abreviaturas ("nano" por
+       "nanostation"): se quitó porque no cambiaba ni una respuesta que el
+       cliente pudiera ver —con el modelo contando ya basta— y a cambio
+       ampliaba el emparejado en un fichero que se descarga entero en cada
+       teléfono que abre el chat. Si vuelve, que venga con un caso real que
+       hoy se conteste mal. */
+    const palabrasT = t.split(' ').filter(Boolean);
+    const casaPalabra = (w) =>
+      (w.length <= 3 || esModelo(w) || esCifra(w)) ? tienePalabra(t, w) : t.includes(w);
+
     const mentions = [];
     for(const p of PRODUCTOS){
       const nombre = cleanForMatch(p.nombre);
@@ -1328,20 +1357,39 @@
         mentions.push({p, score: nombre.length, exactMatch:true});
         continue;
       }
-      const palabras = nombre.split(' ').filter(w => w.length > 3);
+      const todas = nombre.split(' ').filter(Boolean);
+      const modelos = todas.filter(w => esModelo(w) || esCifra(w));
+      const palabras = todas.filter(w => w.length > 3 || esModelo(w) || esCifra(w));
       if(palabras.length >= 2){
-        // Palabras distintivas: las que NO son genéricas
         const distintivas = palabras.filter(w => !GENERICAS.has(w));
-        const foundDistintivas = distintivas.filter(w => t.includes(w)).length;
-        const foundTotal = palabras.filter(w => t.includes(w)).length;
-        // Detectar si hay al menos 1 palabra distintiva relevante Y 2+ palabras totales
+        const foundDistintivas = distintivas.filter(casaPalabra).length;
+        const foundTotal = palabras.filter(casaPalabra).length;
         if(foundDistintivas >= 1 && foundTotal >= 2){
-          mentions.push({p, score: foundDistintivas * 8 + foundTotal * 2, exactMatch:false});
+          const modelosCasan = modelos.filter(casaPalabra).length;
+          mentions.push({p, exactMatch:false, modelos, modelosCasan,
+            score: foundDistintivas * 8 + foundTotal * 2 + modelosCasan * 6});
         }
       }
     }
+    /* Si el cliente NOMBRÓ un modelo, el que lleva otro distinto no es una
+       opción: es el equivocado. Quien escribe "nano loco m5" y recibe la
+       Loco M2 al lado puede comprar la que no era —son dos equipos distintos
+       y el catálogo tiene los dos—. Se descarta, no se baja de puesto.
+
+       Solo se aplica cuando el modelo que escribió EXISTE en algún producto:
+       con un "tengo 150" suelto no hay modelo que respetar y descartar por
+       ahí dejaría fuera medio catálogo por una cifra que no era un modelo.
+       Y un producto sin modelo en el nombre no contradice nada: se queda. */
+    const modelosPedidos = palabrasT.filter(u => esModelo(u) || esCifra(u));
+    const modelosReales = modelosPedidos.filter(u =>
+      mentions.some(m => m.modelos && m.modelos.includes(u)));
+    let finalistas = mentions;
+    if(modelosReales.length){
+      const limpio = mentions.filter(m => m.exactMatch || !m.modelos || !m.modelos.length || m.modelosCasan);
+      if(limpio.length) finalistas = limpio;
+    }
     const seen = new Set();
-    return mentions
+    return finalistas
       .sort((a,b) => b.score - a.score)
       .filter(m => { if(seen.has(m.p.id)) return false; seen.add(m.p.id); return true; })
       .map(m => m.p);
@@ -1719,7 +1767,13 @@
     // (el bloque de pago de arriba ya se quedó con "aceptan cup", que es otra
     //  pregunta: si aceptan esa moneda, no a cuánto está)
     if(/\b(whatsapp|tel[eé]fono|contacto|n[uú]mero|llamar|les escribo)\b/.test(m)) return 'whatsapp';
-    if(/\b(donde est[aá]n|ubicaci[oó]n|direcci[oó]n|donde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)) return 'ubicacion';
+    /* "¿Puedo ir a verlo?" caía en "no te entendí", que es la peor respuesta
+       posible para alguien que está a un paso de comprar y solo quiere
+       comprobar que el equipo existe. */
+    if(/\b(donde est[aá]n|ubicaci[oó]n|direcci[oó]n|donde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)
+       || /\b(ir a ver\w*|pasar (a|por) ver\w*|pasar por (la tienda|all[ií]|el local)|ir (a|hasta) (la tienda|el local)|verlo en persona|ver\w* en persona|presencial\w*|atienden en|visitarlos|visitar la tienda)\b/.test(m)
+       || /\b(puedo|podr[ií]a|se puede)\s+(ir|pasar|llegar\w*|acercar\w*)\b/.test(m)
+       || /\bme\s+(puedo|podr[ií]a)\s+(acercar|llegar|pasar)\w*\b/.test(m)) return 'ubicacion';
     if(/\b(horario|hora.*atienden|qu[eé] hora|abren|abierto|cuando atienden)\b/.test(m)) return 'horario';
     if(/\b(m[aá]s vendido|mas vendido|top ventas|m[aá]s popular|bestseller|lo que m[aá]s sale)\b/.test(m)) return 'masVendidos';
     if(/\b(seguimiento|seguir.*pedido|estado.*pedido|mi pedido|rastrear|d[oó]nde est[aá] mi pedido)\b/.test(m)) return 'seguimiento';
@@ -2090,9 +2144,15 @@
     quickReplies: ['📦 Ver productos','💬 Abrir WhatsApp']
   });
 
+  /* Quien pregunta por el local casi siempre quiere ir a ver el equipo antes
+     de pagar, que es una desconfianza razonable y una venta en juego. Decir
+     solo "no tenemos local" cierra la conversación; lo que la sigue es
+     mandarlo a escribir, que es donde se resuelve. */
   R.ubicacion = () => ({
-    response: `📍 TiendaMax es una tienda <strong>100% online</strong>. No tenemos local físico abierto al público. Todo se gestiona por WhatsApp y te enviamos a la puerta de tu casa. 🚚`,
-    quickReplies: ['💬 WhatsApp','📦 Ver productos']
+    response: `📍 TiendaMax es una tienda <strong>100% online</strong>: no tenemos local abierto al público, así que no hay a dónde ir a verlo.\n\n`
+      + `Lo que sí puedes hacer es <strong>escribirnos por WhatsApp</strong> (<code>+${WHATSAPP}</code>): te mandamos fotos o video del equipo, te decimos qué queda y coordinamos la entrega en tu casa. 🚚\n\n`
+      + `<em>Y lo pruebas al recibirlo, antes de pagar.</em>`,
+    quickReplies: ['💬 Escribir por WhatsApp','📦 Ver productos','🚚 Envíos']
   });
 
   R.horario = () => ({

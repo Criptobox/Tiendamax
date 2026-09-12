@@ -31,6 +31,29 @@ CEREBRO = ROOT / "js" / "src" / "tm-bot-cerebro.src.js"
 INDEX = ROOT / "index.html"
 
 
+class BuscarProductoTest(unittest.TestCase):
+    """Corre tests/bot_producto_check.mjs contra el catálogo real.
+
+    Lo destapó un cliente: escribió «Necesito nano loco m5» con la NanoStation
+    M5 Loco a 12 unidades, y Max contestó con una lista de recomendaciones. El
+    modelo —`m5`, dos caracteres— lo tiraba un filtro `w.length > 3`, y en este
+    catálogo m5 no es m2, ac3 no es ax3 y «8 Puertos» no es «5 Puertos»: esas
+    dos o tres letras son justo lo único que separa un producto de su hermano.
+
+    Leyendo el fichero no se ve nada de esto. Hay que preguntárselo al bot.
+    """
+
+    def test_encuentra_el_producto_que_le_piden(self):
+        import shutil
+        import subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(ROOT / "tests" / "bot_producto_check.mjs")],
+                           cwd=str(ROOT), capture_output=True, text=True, timeout=600)
+        self.assertEqual(0, r.returncode, "\n" + (r.stderr or r.stdout).strip())
+
+
 class BotArchivosTest(unittest.TestCase):
     def test_fuentes_existen(self):
         for f in (CASCARA, CEREBRO):
