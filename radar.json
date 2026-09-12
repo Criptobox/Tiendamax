@@ -1,15 +1,15 @@
 {
-  "actualizado": "2026-09-11T14:51:13.316476+00:00",
-  "fecha": "2026-09-11",
+  "actualizado": "2026-09-12T13:54:17.047291+00:00",
+  "fecha": "2026-09-12",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 5,
+    "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -34,6 +34,10 @@
         },
         {
           "fecha": "2026-09-11",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-09-12",
           "mediana": 180.0
         }
       ],
@@ -83,87 +87,6 @@
       ]
     },
     {
-      "id": 1778102214012,
-      "nombre": "🌐 Switch Gigabit de 8 Puertos",
-      "tuPrecio": 30.0,
-      "mercado": {
-        "min": 15.0,
-        "mediana": 30.0,
-        "n": 14
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-09-07",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-08",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-09",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-10",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-11",
-          "mediana": 30.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
-          "precio": 15.0,
-          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD 🌐 Switch Gigabit de 5 Puertos",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-5-puertos-57350797",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
-          "precio": 29.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD Switch Gigabit de 8 Puertos Ethernet [30]",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD 🌐 Switch Gigabit de 8 Puertos",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-57301738",
-          "dias": null
-        }
-      ]
-    },
-    {
       "id": 1778102507659,
       "nombre": "⚖️ Báscula Digital de Alta Definición",
       "tuPrecio": 25.0,
@@ -172,7 +95,7 @@
         "mediana": 25.0,
         "n": 1
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -180,6 +103,10 @@
       "historial": [
         {
           "fecha": "2026-09-11",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-12",
           "mediana": 25.0
         }
       ],
@@ -195,23 +122,19 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
+      "nombre": "🔥 Antorcha de soldadura TIG (KIT Profesional)",
       "tuPrecio": 75.0,
       "mercado": {
         "min": 70.0,
         "mediana": 75.0,
         "n": 11
       },
-      "deltaAyerMediana": -7.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-29",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-08-30",
           "mediana": 82.5
@@ -262,6 +185,10 @@
         },
         {
           "fecha": "2026-09-11",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-12",
           "mediana": 75.0
         }
       ],
@@ -317,7 +244,7 @@
       "mercado": {
         "min": 90.0,
         "mediana": 170.0,
-        "n": 12
+        "n": 11
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -348,6 +275,10 @@
         {
           "fecha": "2026-09-11",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-12",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -356,6 +287,13 @@
           "titulo": "90 USD inversor TATALIKEN 1500W",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-1500w-56526177",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "90 USD INVERSOR 2000W 110V TATALIKEN",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/inversor-2000w-110v-tataliken-57367230",
           "dias": null
         },
         {
@@ -384,13 +322,6 @@
           "titulo": "170 USD Inversor Tataliken de 12V 3500W Ideal para combatir los apagones",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-ideal-para-combatir-los-apagones-57251727",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57214908",
           "dias": null
         }
       ]
