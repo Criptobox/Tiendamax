@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-12T18:56:25Z",
+ "actualizado": "2026-09-12T21:55:53Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -860,7 +860,7 @@
    "nombre": "Router ASUS AX1800",
    "precio": 150.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
