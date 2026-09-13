@@ -1788,6 +1788,10 @@
     // eran inalcanzables escribiendo su propio nombre.
     if(/transferencia (bancaria|banc|por banco)|hacer una transferencia|pago por transferencia|acepta[ns]? transferencia/.test(m)) return 'pago';
     if(/\bmlc\b/.test(m)) return 'pago';
+    // "tarjeta" a secas NO cuando es una tarjeta SIM o de memoria: son dos
+    // de las cosas que NO se venden y tienen su respuesta, y "necesito una
+    // tarjeta sim" contestaba con los métodos de pago.
+    if(/\btarjeta\w*\s+(sim|de memoria|micro ?sd|sd)\b|\bsim card\b|\bmicro ?sd\b/.test(m)) return 'noVendemos';
     if(/\b(pago|pagar|pago|tarjeta|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
@@ -1920,6 +1924,15 @@
     // son verbos de necesidad y se lo llevaban a una lista arbitraria.
     if(/\b(cat[aá]logo|catalogo)\b/.test(m) || /qu[eé] (productos|cosas|art[ií]culos)\s+(tienen|venden|hay)/.test(m)) return 'categorias';
 
+    /* Lo que no se vende se dice ANTES de enseñar la categoría. Este control
+       ya existía más abajo, pero cualquier verbo de petición saltaba por
+       encima: «¿tienen paneles solares?» contestaba que no, y «quiero un
+       panel solar» —la forma normal de pedirlo— devolvía la categoría
+       ENERGIA con unos conectores MC4 y un probador de baterías, que es
+       justo el cliente yéndose creyendo que sí. noVendemosPara se calla si
+       el catálogo tiene con stock algo que encaje, así que esto no puede
+       negar nada que de verdad esté. */
+    if(noVendemosPara(text)) return 'noVendemos';
     if(verbosNecesidad.test(m) || mencionaPresupuesto || (mencionaCategoria && /\b(mu[eé]strame|muestrame|muestra|ver|dame|buscar|quiero|tienes|hay)\b/i.test(m))) return 'recomendacion';
 
     // Ofertas (solo si NO hay verbo de necesidad)
@@ -4595,6 +4608,14 @@ ${notasHTML}
     // Smart TV con "televisores" y luego dice "eso exacto no lo tengo".
     const _q = _expandirConsulta(cleanForMatch(text));
     const _fuerte = prods.some(p => _matchFuerte(p, _q));
+    /* Uno solo, y casa por nombre: eso es una ficha, no una lista de uno.
+       «¿Tienes el hap ac3?» devolvía «esto es lo que tengo relacionado con
+       tu búsqueda» con una sola tarjeta debajo — el mismo encabezado que
+       cuando hay cuatro. La regla ya existía arriba para las menciones; en
+       el camino difuso faltaba. Se exige el match fuerte a propósito: con un
+       parecido flojo, «eso exacto no lo tengo, lo más cercano es esto» es la
+       respuesta honesta y no debe convertirse en una ficha segura. */
+    if(prods.length === 1 && _fuerte) return buildDetalle(prods[0], text);
     const _tope = _context.presupuesto ? ` (hasta ${fmtUSD(_context.presupuesto)})` : '';
     return {
       response: _fuerte
@@ -5122,6 +5143,109 @@ ${notasHTML}
   // ════════════════════════════════════════════════════════════
   //  RESPONDER
   // ════════════════════════════════════════════════════════════
+  /* ── DOS PREGUNTAS EN UN MENSAJE ──────────────────────────────────────
+     «¿Tienes el hap ac3 y cuánto cuesta con garantía?» devolvía la política
+     de garantía entera y ni mencionaba el router. «¿Precio del archer a6 y
+     hacen envío a Holguín?», solo el envío. Media respuesta a quien preguntó
+     dos cosas es media venta, y encima parece que Max no leyó el mensaje.
+
+     La intención PRINCIPAL se sigue decidiendo sobre el mensaje ENTERO y sin
+     tocar nada: los trozos solo sirven para ver si además hay otra pregunta.
+     Esa es la propiedad que hace barato esto — un corte malo no puede
+     estropear la respuesta de siempre, como mucho deja de añadir la segunda.
+
+     Se contestan en el orden en que se preguntaron, no por importancia:
+     quien escribe «¿tiene garantía y cuánto tarda?» espera leer primero lo
+     de la garantía. Y se usan las respuestas tal cual, sin versiones cortas
+     escritas aparte: un resumen propio se queda desfasado el día que cambie
+     la política y nadie se entera. */
+  const _INTENT_PEGABLE = [
+    // lo que se compra
+    'detalle','busqueda','recomendacion','categoria','categorias','stock',
+    'ofertas','masVendidos','usados','noVendemos',
+    // las condiciones
+    'envios','pago','garantia','devolucion','tasa','horario','recogida',
+    'ubicacion','whatsapp','nautaHogar','tecnico'];
+  const _MULTI_CORTE = /\s+y\s+|\s*[,;]\s+|\s+adem[aá]s\s+|\s+tambi[eé]n\s+/i;
+  const _MULTI_MAX = 2;          // 3 respuestas en total: más es un muro en el móvil
+  const _MULTI_SEP = '\n\n──────────\n\n';
+
+  /* Los trozos del mensaje con la intención de cada uno, en orden. */
+  function _trozosConIntencion(text){
+    if(!_MULTI_CORTE.test(text)) return [];
+    /* Cuatro nombres del catálogo llevan el conector dentro («Cargador y
+       Mantenedor de Baterías», «Protector de Voltaje y Sobrecorriente»,
+       «Huella y Teclado», «Cámara HD y WiFi») y cortar por ahí los parte en
+       dos. Si el mensaje trae uno entero, no se corta y se contesta como
+       siempre. Quién lleva conector lo dice el catálogo, que el dueño edita
+       cada semana, y no una lista escrita aquí que envejecería sola. */
+    if(detectProductMentions(text).some(p => _MULTI_CORTE.test(' ' + cleanForMatch(p.nombre) + ' ')))
+      return [];
+    /* detectIntent escribe en _context (presupuesto, categoría pedida). Sobre
+       un trozo suelto eso es basura que se quedaría puesta para el mensaje
+       siguiente, así que se guarda y se repone. */
+    const _s = { p:_context.presupuesto, pt:_context.presupuestoTurno,
+                 ps:_context.presupuestoSub, cp:_context.categoriaPedida };
+    const out = [];
+    try {
+      for(const trozo of String(text).split(_MULTI_CORTE)){
+        const t = trozo.trim();
+        if(t.split(/\s+/).filter(Boolean).length < 2) continue;
+        let i;
+        try { i = detectIntent(t); } catch(e){ continue; }
+        out.push({ intent:i, trozo:t });
+      }
+    } finally {
+      _context.presupuesto = _s.p; _context.presupuestoTurno = _s.pt;
+      _context.presupuestoSub = _s.ps; _context.categoriaPedida = _s.cp;
+    }
+    return out;
+  }
+
+  /* ¿Se le puede pegar texto detrás? Una tabla comparativa o un selector los
+     pinta la pantalla con su propio widget y no hay dónde meterlo. */
+  function _esTextoPegable(d){
+    return !!(d && d.response && !d.compare && !d.elegirRival && !d.elegirComparar);
+  }
+
+  function _componer(partes){
+    const prods = [], botones = [], vistos = new Set(), vistosB = new Set();
+    for(const d of partes){
+      for(const p of (d.products || [])) if(p && !vistos.has(p.id)){ vistos.add(p.id); prods.push(p); }
+      for(const b of (d.quickReplies || [])) if(!vistosB.has(b)){ vistosB.add(b); botones.push(b); }
+    }
+    // Se conserva el resto del payload de la PRIMERA (siDigoSi, banderas…).
+    const out = Object.assign({}, partes[0], {
+      response: partes.map(d => d.response).filter(Boolean).join(_MULTI_SEP),
+      quickReplies: botones.slice(0, 4)
+    });
+    if(prods.length) out.products = prods.slice(0, 4); else delete out.products;
+    return out;
+  }
+
+  /* La respuesta completa: la principal más las otras preguntas del mensaje,
+     todas en el orden en que se escribieron. */
+  function _responderTodo(text, intent, data){
+    if(!_esTextoPegable(data)) return data;
+    const trozos = _trozosConIntencion(text);
+    // El hueco de la principal: el trozo que pidió lo mismo que ella.
+    const iPrincipal = trozos.findIndex(t => t.intent === intent);
+    const piezas = [];
+    const yaHay = new Set([intent]);
+    trozos.forEach((t, i) => {
+      if(i === iPrincipal){ piezas.push({ i, data }); return; }
+      if(yaHay.has(t.intent) || !_INTENT_PEGABLE.includes(t.intent)) return;
+      const d2 = (R[t.intent] || R.fallback)(t.trozo) || {};
+      if(!_esTextoPegable(d2)) return;
+      yaHay.add(t.intent);
+      piezas.push({ i, data: d2 });
+    });
+    if(iPrincipal === -1) piezas.unshift({ i: -1, data });
+    if(piezas.length < 2) return data;
+    piezas.sort((a, b) => a.i - b.i);
+    return _componer(piezas.slice(0, _MULTI_MAX + 1).map(p => p.data));
+  }
+
   function responder(text){
     // El catálogo llega asincrónico y el admin puede cambiar precios o la
     // tasa mientras el chat está abierto: se releen en cada mensaje.
@@ -5139,7 +5263,7 @@ ${notasHTML}
     // El manejador todavía ve en _context.pendiente lo que Max ofreció el
     // turno anterior — es justo lo que R.confirmacion necesita para saber a
     // qué dijo "sí" el cliente.
-    const data = handler(text) || {};
+    const data = _responderTodo(text, intent, handler(text) || {});
     // Y aquí se renueva con lo que Max acaba de ofrecer. Si no ofreció nada se
     // borra, a propósito: un "sí" cuatro turnos más tarde no puede disparar
     // una oferta que ya nadie recuerda haber recibido.

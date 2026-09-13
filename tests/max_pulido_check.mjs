@@ -274,6 +274,102 @@ for(const q of ['como compro','como hago un pedido','quiero comprar un router'])
        `«${q}» sí pide el instructivo de compra`);
 }
 
+// ── 12) Dos preguntas en un mensaje, una sola respuesta ──────────────
+/* «¿Tienes el hap ac3 y cuánto cuesta con garantía?» devolvía la política de
+   garantía y ni mencionaba el router. «¿Precio del archer a6 y hacen envío a
+   Holguín?», solo el envío. Media respuesta a quien preguntó dos cosas es
+   media venta, y encima parece que Max no leyó el mensaje.
+   Se contestan EN EL ORDEN en que se preguntaron: quien escribe «¿tiene
+   garantía y cuánto tarda?» espera leer primero lo de la garantía. */
+await limpiarHilo();
+const sep = '──────────';
+for(const [q, primero, segundo] of [
+        ['cuanto cuesta el archer a6 y como pago',            /Archer A6/i,   /M[eé]todos de pago/i],
+        ['hola quiero el precio del archer a6 y si hacen envio a holguin', /Archer A6/i, /Holgu[ií]n/i],
+        ['tienes el hap ac3 y cuanto cuesta con garantia',    /hAP ac3/i,     /Garant[ií]a/i],
+        ['tienen camaras y hacen envio a matanzas',           /C[ÁA]MARAS|Zosi/i, /Matanzas/i],
+        ['quiero un panel solar y saber como pago',           /no vendo/i,    /M[eé]todos de pago/i],
+        ['el nanostation m5 loco tiene garantia y cuanto tarda en llegar', /Garant[ií]a/i, /tiempo de entrega|se coordina/i]]){
+    const r = await preguntar(q);
+    ok(r.includes(sep), `«${q}» trae dos preguntas: hay que contestar las dos. «${r.slice(0,150)}»`);
+    const [a, b] = r.split(sep);
+    ok(primero.test(a || ''), `«${q}»: lo primero que preguntó va primero. «${String(a).slice(0,130)}»`);
+    ok(segundo.test(b || ''), `«${q}»: y lo segundo, detrás. «${String(b).slice(0,130)}»`);
+}
+/* Una sola pregunta no puede acabar con dos respuestas pegadas. */
+await limpiarHilo();
+for(const q of ['cuanto cuesta el archer a6','hacen envios a holguin','como pago','tiene garantia','hola','que esta en oferta']){
+    ok(!(await preguntar(q)).includes(sep),
+       `«${q}» es UNA pregunta: no se le pega una segunda respuesta`);
+}
+/* Solo se pegan respuestas cerradas. Un saludo o un "no te entendí" detrás
+   de una respuesta buena la estropea, y «buenas tardes, hacen envíos» trae
+   las dos cosas. */
+for(const [q, noDebe] of [['buenas tardes, hacen envios', /Soy Max, tu asesor/i],
+                          ['asdkjhasd y hacen envios',    /no estoy seguro de haber entendido/i],
+                          ['hacen envios y asdkjhasd qwe',/no estoy seguro de haber entendido/i]]){
+    const r = await preguntar(q);
+    ok(/Cobertura de env[ií]os|mensajer[ií]a/i.test(r) && !noDebe.test(r),
+       `«${q}»: solo se pega lo que contesta algo. «${r.slice(0,150)}»`);
+}
+/* Y cortar por « y » parte cuatro nombres del catálogo. El corte se salta
+   cuando el mensaje trae uno entero — si no, «Cargador y Mantenedor» se
+   respondería en dos mitades. */
+for(const q of ['quiero el Cargador y Mantenedor de Baterías VEVOR 35A',
+                'tienen el Protector de Voltaje y Sobrecorriente TOMZN',
+                'quiero la Cerradura Inteligente Biométrica Con Huella y Teclado',
+                'tienen el Timbre Inteligente Con Cámara HD y WiFi']){
+    const r = await preguntar(q);
+    ok(!r.includes(sep) && /Stock|Precio/i.test(r),
+       `«${q}» es el nombre de UN producto, no dos preguntas: «${r.slice(0,140)}»`);
+}
+
+// ── 13) Lo que no se vende, dicho antes de enseñar la categoría ───────
+/* «¿Tienen paneles solares?» contestaba que no, pero «quiero un panel solar»
+   —la forma normal de pedirlo— devolvía la categoría ENERGIA con unos
+   conectores MC4 y un probador de baterías: el cliente se va creyendo que
+   sí, que es justo el fallo que NO_VENDEMOS vino a arreglar. Cualquier verbo
+   de petición saltaba por encima del control. */
+await limpiarHilo();
+for(const q of ['quiero un panel solar','necesito un panel solar','busco paneles solares',
+                'dame un panel solar','quiero una laptop','necesito una tarjeta sim',
+                'tienen tarjeta de memoria']){
+    const r = await preguntar(q);
+    ok(/no vendo|no manejo/i.test(r),
+       `«${q}» pide algo que no está a la venta: se dice. «${r.slice(0,130)}»`);
+}
+/* Y jamás sobre algo que SÍ está: noVendemosPara se calla si el catálogo
+   tiene con stock algo que encaje, y eso es lo que hay que no romper. */
+for(const [q, debe] of [['quiero un controlador para mi panel solar', /Controlador/i],
+                        ['necesito un generador solar', /Generador Solar/i],
+                        ['quiero un sistema solar', /Sistema solar|Componentes/i],
+                        ['que es un panel solar', /📖|Energ[ií]a solar/i],
+                        ['aceptan tarjeta', /M[eé]todos de pago/i],
+                        ['busco un router', /WIFI|Archer|MikroTik/i]]){
+    const r = await preguntar(q);
+    ok(!/no vendo|no manejo/i.test(r) && debe.test(r),
+       `«${q}» sí lo tienes: no puede negarse. «${r.slice(0,130)}»`);
+}
+
+// ── 14) Un resultado único es una ficha, pero solo si casa de verdad ──
+/* «¿Tienes el hap ac3?» devolvía «esto es lo que tengo relacionado con tu
+   búsqueda» con UNA tarjeta debajo — el mismo encabezado que con cuatro. La
+   regla ya existía para las menciones; en el camino difuso faltaba.
+   Con un parecido flojo NO: «algo para el patio» saca un toldo con el
+   encabezado «eso exacto no lo tengo, lo más parecido es esto», y convertir
+   eso en una ficha es afirmar que el toldo era lo que pedían. */
+await limpiarHilo();
+for(const q of ['tienes el hap ac3','venden televisores','tienen cable de rred']){
+    const r = await preguntar(q);
+    ok(/Stock|Precio/i.test(r) && !/relacionado con tu b[uú]squeda/i.test(r),
+       `«${q}» da un solo producto: eso es su ficha, no una lista de uno. «${r.slice(0,140)}»`);
+}
+for(const q of ['algo para el patio','algo para la piscina']){
+    const r = await preguntar(q);
+    ok(/Eso exacto no lo tengo|lo m[aá]s parecido/i.test(r),
+       `«${q}» no nombra nada: sigue siendo "lo más parecido", no una ficha. «${r.slice(0,140)}»`);
+}
+
 if(fallos.length){
     console.error(`\n❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

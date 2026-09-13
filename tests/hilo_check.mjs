@@ -252,8 +252,11 @@ for (const [q, esperado] of FORMAS) {
 // pintado. Cualquier respuesta que no pasara por ahí dejaba al hilo ciego.
 // Ahora responder() la anota, y por eso todo lo de arriba funciona sin DOM.
 {
-    const src = FUENTE.slice(FUENTE.indexOf('function responder(text)'),
-                             FUENTE.indexOf('function responder(text)') + 1600);
+    /* Hasta la llave que cierra la función, no una ventana de N caracteres:
+       con un número fijo el test empieza a fallar el día que responder()
+       crece un poco, y lo hace señalando un fallo que no existe. */
+    const _ini = FUENTE.indexOf('function responder(text)');
+    const src = FUENTE.slice(_ini, FUENTE.indexOf('\n  }', _ini));
     ok(/_lastProductsShown = data\.products/.test(src),
         'responder() debe anotar lo que enseñó, o el hilo solo funciona con DOM delante');
 }
