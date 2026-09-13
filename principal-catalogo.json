@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-12T21:55:53Z",
+ "actualizado": "2026-09-13T00:36:41Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -739,7 +739,7 @@
    "nombre": "Nanostation m2 loco",
    "precio": 150.0,
    "precioMoneda": "USD",
-   "stock": 34,
+   "stock": 33,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -925,7 +925,7 @@
    "nombre": "Router Tp-link Archer A6",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 1,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
