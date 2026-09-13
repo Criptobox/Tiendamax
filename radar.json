@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-12T13:54:17.047291+00:00",
-  "fecha": "2026-09-12",
+  "actualizado": "2026-09-13T14:48:51.489958+00:00",
+  "fecha": "2026-09-13",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -38,6 +38,10 @@
         },
         {
           "fecha": "2026-09-12",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-09-13",
           "mediana": 180.0
         }
       ],
@@ -108,6 +112,10 @@
         {
           "fecha": "2026-09-12",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-13",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -135,10 +143,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-08-30",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-08-31",
           "mediana": 82.5
@@ -189,6 +193,10 @@
         },
         {
           "fecha": "2026-09-12",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-13",
           "mediana": 75.0
         }
       ],
@@ -244,7 +252,7 @@
       "mercado": {
         "min": 90.0,
         "mediana": 170.0,
-        "n": 11
+        "n": 12
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -278,6 +286,10 @@
         },
         {
           "fecha": "2026-09-12",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-13",
           "mediana": 170.0
         }
       ],
@@ -319,9 +331,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W Ideal para combatir los apagones",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W",
           "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-ideal-para-combatir-los-apagones-57251727",
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57406984",
           "dias": null
         }
       ]
