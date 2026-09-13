@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-13T00:36:41Z",
+ "actualizado": "2026-09-13T14:47:50Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -651,7 +651,7 @@
    "nombre": "Mikrotik Router Board 750gr",
    "precio": 130.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 1,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1045,7 +1045,7 @@
    "nombre": "Toldo malla para sombra",
    "precio": 38.0,
    "precioMoneda": "USD",
-   "stock": 11,
+   "stock": 10,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -1139,7 +1139,7 @@
    "nombre": "Ubiquiti Unifi AC Mesh",
    "precio": 250.0,
    "precioMoneda": "USD",
-   "stock": 13,
+   "stock": 11,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
