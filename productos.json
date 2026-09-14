@@ -1443,7 +1443,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783918032855.webp",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
-    "stock": 7,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1463,7 +1463,6 @@
       "https://tiendamax.org/imagenes/img_1783918032855.webp",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
     ],
-    "descripcion": "Protección de alta gama y diseño ergonómico para interiores de vehículo impecables.",
     "ficha": [
       {
         "k": "Material",
@@ -1504,7 +1503,8 @@
     ],
     "incluye": [
       "Incluye fundas completas para asientos delanteros y traseros."
-    ]
+    ],
+    "descripcion": "Protección de alta gama y diseño ergonómico para interiores de vehículo impecables."
   },
   {
     "id": 1778213940333,
@@ -9107,7 +9107,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
