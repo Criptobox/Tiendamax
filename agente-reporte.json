@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-14T15:30:21.844115+00:00",
+  "generado": "2026-09-15T14:02:18.913898+00:00",
   "productos": 135,
   "urgentes": 6,
   "advertencias": 0,
@@ -44,7 +44,7 @@
     {
       "tipo": "stock_bajo",
       "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
-      "detalle": "quedan 1"
+      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
@@ -78,8 +78,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "55 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 52 más"
+      "nombre": "54 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 51 más"
     }
   ]
 }
