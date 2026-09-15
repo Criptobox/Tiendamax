@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-15T01:09:42Z",
+ "actualizado": "2026-09-15T15:26:46Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -673,7 +673,7 @@
    "nombre": "mikrotik sxt sq 5ax",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 25,
+   "stock": 40,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -717,7 +717,7 @@
    "nombre": "Nanostation loco m5",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 18,
+   "stock": 17,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -964,17 +964,6 @@
    "comisionMoneda": "USD"
   },
   {
-   "id": "1778383966832",
-   "nombre": "SISTEMA DE ALARMA",
-   "precio": 170.0,
-   "precioMoneda": "USD",
-   "stock": 0,
-   "categoria": "Seguridad",
-   "comision": 10.0,
-   "comisionMoneda": "USD",
-   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778383966832.webp"
-  },
-  {
    "id": "1788025891931",
    "nombre": "Sistema de Alarma",
    "precio": 180.0,
@@ -984,6 +973,17 @@
    "comision": 10.0,
    "comisionMoneda": "USD",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788025891931-11c057ae.webp"
+  },
+  {
+   "id": "1778383966832",
+   "nombre": "SISTEMA DE ALARMA",
+   "precio": 170.0,
+   "precioMoneda": "USD",
+   "stock": 0,
+   "categoria": "Seguridad",
+   "comision": 10.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/img_1778383966832.webp"
   },
   {
    "id": "1780542909435",
@@ -1012,7 +1012,7 @@
    "nombre": "SWITCH DE 5 PUERTOS",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 7,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1023,7 +1023,7 @@
    "nombre": "Switch dE 8 puertos",
    "precio": 30.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
