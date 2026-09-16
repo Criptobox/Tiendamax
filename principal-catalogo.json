@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-15T22:51:01Z",
+ "actualizado": "2026-09-16T01:05:22Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -109,7 +109,7 @@
    "nombre": "Breker digital ajustable",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 21,
+   "stock": 22,
    "categoria": "Energia",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1112,7 +1112,7 @@
    "nombre": "Transfer 3 polos 220v",
    "precio": 70.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 2,
    "categoria": "Energia",
    "comision": 5.0,
    "comisionMoneda": "USD",
