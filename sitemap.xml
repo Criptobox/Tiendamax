@@ -106,7 +106,7 @@
     <loc>https://tiendamax.org/p/producto-1778102214012.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1778102507659.html</loc>
@@ -124,7 +124,7 @@
     <loc>https://tiendamax.org/p/producto-1778103783319.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1778103856933.html</loc>
@@ -646,7 +646,7 @@
     <loc>https://tiendamax.org/p/producto-1783474747296.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1783543451116.html</loc>
@@ -896,6 +896,12 @@
   </url>
   <url>
     <loc>https://tiendamax.org/p/producto-1789068808568.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/producto-1789569593128.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
