@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-17T19:59:13Z",
+ "actualizado": "2026-09-17T22:48:04Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -19,7 +19,7 @@
    "nombre": "Adaptador poe UBIQUITI de 0.3A",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 23,
+   "stock": 20,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -120,7 +120,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 165,
+   "stock": 85,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -671,7 +671,7 @@
    "nombre": "mikrotik sxt sq 5ax",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 40,
+   "stock": 34,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
