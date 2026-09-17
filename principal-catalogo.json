@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-16T22:38:44Z",
+ "actualizado": "2026-09-17T01:04:57Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -288,9 +288,8 @@
    "stock": 35,
    "categoria": "Carros",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786161303797-682a20bb.webp"
   },
   {
@@ -386,7 +385,7 @@
    "nombre": "Controlador solar PowMr MM100 PRO de 100A",
    "precio": 260.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Energia",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -572,7 +571,7 @@
    "nombre": "Linterna de cabeza superpotente",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 2,
    "categoria": "Utiles",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -716,7 +715,7 @@
    "nombre": "Nanostation loco m5",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 8,
+   "stock": 7,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1059,9 +1058,8 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1072,9 +1070,8 @@
    "stock": 22,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 20.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
