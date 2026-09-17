@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-16T13:55:50.040311+00:00",
-  "productos": 135,
-  "urgentes": 6,
+  "generado": "2026-09-17T13:59:39.027285+00:00",
+  "productos": 136,
+  "urgentes": 7,
   "advertencias": 0,
   "info": 9,
-  "resumen": "Anoche revisé tus 135 productos y encontré 6 urgente(s), 9 de info.",
+  "resumen": "Anoche revisé tus 136 productos y encontré 7 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -35,6 +35,11 @@
       "tipo": "nombre",
       "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de soldadura multiproceso 3 en 1",
       "detalle": "→ 🛠️Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "📡Mikrotik SXTsq 5 lite",
+      "detalle": "→ 📡MikroTik SXTsq 5 LITE"
     },
     {
       "tipo": "stock_bajo",
@@ -78,8 +83,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "55 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 52 más"
+      "nombre": "59 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🚗 Batería Automotriz Lubrim (75A), ⚡ Pistola Fascia Gun y 56 más"
     }
   ]
 }
