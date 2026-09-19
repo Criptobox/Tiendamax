@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-19T00:57:28Z",
+ "actualizado": "2026-09-19T14:09:51Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -120,7 +120,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 65,
+   "stock": 45,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -288,9 +288,8 @@
    "stock": 35,
    "categoria": "Carros",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786161303797-682a20bb.webp"
   },
   {
@@ -1059,9 +1058,8 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1072,9 +1070,8 @@
    "stock": 22,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 20.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
