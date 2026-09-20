@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-20T19:15:53Z",
+ "actualizado": "2026-09-20T22:11:16Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 108,
  "productos": [
@@ -396,7 +396,7 @@
    "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 7,
+   "stock": 6,
    "categoria": "Gym",
    "comision": 1000.0,
    "comisionMoneda": "MN",
@@ -680,23 +680,25 @@
   {
    "id": "1787265463792",
    "nombre": "Mikrotik SXT sq lite 2",
-   "precio": 120.0,
+   "precio": 110.0,
    "precioMoneda": "USD",
    "stock": 8,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
+   "precioOtro": 120.0,
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787265463792-09e56024.webp"
   },
   {
    "id": "1786510034029",
    "nombre": "Mikrotik SXTsq 5 lite",
-   "precio": 150.0,
+   "precio": 130.0,
    "precioMoneda": "USD",
    "stock": 42,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
+   "precioOtro": 150.0,
    "foto": "https://axontech92.github.io/AXONTECH/photos/img_1786510034029.webp"
   },
   {
@@ -1010,7 +1012,7 @@
    "nombre": "SWITCH DE 5 PUERTOS",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 5,
+   "stock": 4,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
