@@ -165,12 +165,18 @@ ok(cuantos(puts, 'categorias.json') === 0,
    'categorias.json no cambió: subirlo es un commit y un despliegue de Pages para nada');
 // Y lo que SÍ cambió, se sube: es la mitad que de verdad importa.
 ok(cuantos(puts, 'productos.json') === 1, 'el catálogo cambió: tiene que subir');
-ok(cuantos(puts, 'productos-lite.json') === 1, 'y el catálogo lite con él, o la tienda muestra lo viejo');
+/* Y el lite NO se sube desde el panel: son 475 KB en cada publicación para
+   ahorrarle al cliente 9 KB comprimidos, y regenerate-artifacts.yml ya lo
+   deriva de este mismo push. Subirlo era además la forma de que los dos
+   catálogos quedaran descompasados — pasó: el lite del repo tenía el stock
+   viejo de dos productos y la tienda ofrecía un router agotado. */
+ok(cuantos(puts, 'productos-lite.json') === 0,
+   'el lite lo deriva CI de productos.json; subirlo desde el móvil es medio mega de más');
 
 // ── 4. El total ──────────────────────────────────────────────────────────
 /* El número exacto depende de cuántos ficheros cambien; el tope es lo que
    vigila que no vuelvan a colarse idas y vueltas de más. Antes eran 14. */
-ok(LOG.length <= 10, `cambiar un producto no puede costar ${LOG.length} peticiones a GitHub`);
+ok(LOG.length <= 9, `cambiar un producto no puede costar ${LOG.length} peticiones a GitHub`);
 
 // ── 5. Las lecturas van en paralelo ──────────────────────────────────────
 /* Cinco `await` seguidos tardan cinco veces más que cinco a la vez, y eso no

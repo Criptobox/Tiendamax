@@ -605,14 +605,25 @@ async function sincronizarTodoConGitHub() {
     // (p.ej. fotos) hechos desde otra sesión/dispositivo que no están en esta memoria.
     const _prodsFinal = await _tmMergeProductosConRepo(user, repo, _prodRepo);
     try { _tmRegistrarAuditoriaCambios(_prodsFinal); } catch (e) {}
-    const _productosLite = _prodsFinal.map(p => { const { descripcion, ...r } = p; return r; });
+    /* productos-lite.json ya NO se sube desde aquí.
+     *
+     * Es productos.json sin `descripcion`, y lo único que le ahorra al cliente
+     * son 9 KB comprimidos (las descripciones comprimen muy bien). Al gestor le
+     * costaba 475 KB de subida en CADA publicación — a 300 kbps, la mitad de
+     * los 26 segundos que tardaba el botón desde un móvil.
+     *
+     * Y encima era trabajo repetido: regenerate-artifacts.yml ya lo regenera
+     * en cada push a productos.json, con `scripts/build-productos-lite.py`.
+     * Se estaba subiendo medio mega que un workflow reescribía igual minutos
+     * después. Ahora ese paso va el PRIMERO del workflow y con su propio push,
+     * para que la tienda quede desfasada segundos y no lo que tarde en
+     * instalarse Pillow y renderizarse las tarjetas OG. */
     // Anti-pisado: mismo criterio que productos, para no borrar categorías/
     // subcategorías agregadas desde otra sesión/dispositivo al publicar.
     const _catFinal = await _tmMergeCategoriasConRepo(user, repo, _catRepo);
     const _subcatFinal = await _tmMergeSubcategoriasConRepo(user, repo, _subcatRepo);
     const archivos = [
         { path: 'productos.json',              data: _prodsFinal },
-        { path: 'productos-lite.json',         data: _productosLite },
         { path: 'categorias.json',             data: _catFinal },
         { path: 'subcategorias.json',          data: _subcatFinal },
         { path: 'grupos_facebook_config.json', data: { grupos: tmParseArray(localStorage.getItem('gruposFB')), exportado: new Date().toISOString() } },
@@ -626,7 +637,7 @@ async function sincronizarTodoConGitHub() {
     // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
     let archivosFiltrados = hayDelta
-        ? archivos.filter(a => ['productos.json', 'productos-lite.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
+        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
         : archivos;
 
     /* Lo que ya está igual en el repo no se sube.
@@ -737,14 +748,11 @@ async function sincronizarTodoConGitHub() {
         }, 12000);
         mostrarNotificacion(`❌ Error al subir: ${causa}`, 'error');
         console.error('Errores de sincronización:', errors);
-        // Aviso explícito de estado inconsistente: la tienda pública lee
-        // productos-lite.json. Si uno de los dos catálogos subió y el otro no,
-        // los visitantes ven una versión y el admin otra, y hasta ahora eso no
-        // se decía en ninguna parte.
-        const _catalogos = ['productos.json', 'productos-lite.json'];
-        const _mitad = _catalogos.filter(p => subidos.includes(p)).length === 1;
-        if (_mitad) {
-            mostrarNotificacion('⚠️ Quedó a medias: uno de los dos catálogos subió y el otro no, así que la tienda puede mostrar datos viejos. Pulsa "Reintentar" para completarlo.', 'error');
+        /* Ya no hay dos catálogos que puedan quedar descompasados: el panel
+           sube productos.json y el lite lo deriva CI. Lo que sí hay que decir
+           es que si el catálogo no subió, la tienda sigue con lo viejo. */
+        if (fallidos.some(f => f.path === 'productos.json')) {
+            mostrarNotificacion('⚠️ El catálogo no subió, así que la tienda sigue mostrando lo anterior. Pulsa "Reintentar".', 'error');
         }
         _tmMostrarBotonReintento(fallidos.map(f => f.path));
     }
@@ -768,9 +776,8 @@ async function sincronizarConGitHub() {
     try {
         await _tmPreservarDescripciones();
         const _final = await _tmMergeProductosConRepo(user, repo);
-        const _lite = _final.map(p => { const { descripcion, ...r } = p; return r; });
+        // El lite lo regenera CI a partir de este mismo push (ver arriba).
         await subirArchivoAGitHub(user, repo, token, 'productos.json', _final);
-        await subirArchivoAGitHub(user, repo, token, 'productos-lite.json', _lite);
         _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
