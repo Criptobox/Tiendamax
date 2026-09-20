@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-19T12:47:25.299543+00:00",
+  "generado": "2026-09-20T13:21:58.217265+00:00",
   "productos": 136,
   "urgentes": 7,
   "advertencias": 0,
-  "info": 9,
-  "resumen": "Anoche revisé tus 136 productos y encontré 7 urgente(s), 9 de info.",
+  "info": 10,
+  "resumen": "Anoche revisé tus 136 productos y encontré 7 urgente(s), 10 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -68,6 +68,11 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "📶 Repetidor Wi-fi TP-Link TL-WA855RE (N300)",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "quedan 1"
     },
@@ -83,8 +88,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "59 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🚗 Batería Automotriz Lubrim (75A), ⚡ Pistola Fascia Gun y 56 más"
+      "nombre": "56 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, ⚡ Pistola Fascia Gun, Cargador Inteligente 15A y 53 más"
     }
   ]
 }
