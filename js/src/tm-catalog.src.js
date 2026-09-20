@@ -265,9 +265,10 @@ async function _tmLeerJsonRepoFresco(user, repo, token, path) {
     return null;
 }
 
-async function _tmMergeProductosConRepo(user, repo) {
+async function _tmMergeProductosConRepo(user, repo, remotoYaLeido) {
     let remoto = null;
-    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'productos.json');
+    const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
+             : await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'productos.json');
     if (Array.isArray(_j)) remoto = _j; else if (_j && Array.isArray(_j.productos)) remoto = _j.productos;
     if (!Array.isArray(remoto)) return productos.slice();
     _tmUltimoRemotoParaAuditoria = remoto;
@@ -347,10 +348,11 @@ function _tmRegistrarAuditoriaCambios(prodsFinal) {
 // sobreescribía categorias.json con la copia en memoria de ESTA sesión, borrando
 // categorías/emojis agregados desde otro dispositivo/sesión que no se recargó.
 // Nunca borra: nombres/iconos del repo que no están en memoria se conservan.
-async function _tmMergeCategoriasConRepo(user, repo) {
+async function _tmMergeCategoriasConRepo(user, repo, remotoYaLeido) {
     const local = { nombres: (categorias || []).slice(), iconos: Object.assign({}, iconosPersonalizados || {}) };
     let remoto = null;
-    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'categorias.json');
+    const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
+             : await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'categorias.json');
     if (_j && Array.isArray(_j.nombres)) remoto = _j;
     if (!remoto) return local;
 
@@ -363,10 +365,11 @@ async function _tmMergeCategoriasConRepo(user, repo) {
 
 // ── Anti-pisado: igual que la de categorías, pero para subcategorias.json
 // ({ CATEGORIA: [sub, sub...] }). Fusiona por categoría, unión de subcategorías.
-async function _tmMergeSubcategoriasConRepo(user, repo) {
+async function _tmMergeSubcategoriasConRepo(user, repo, remotoYaLeido) {
     const local = tmParseObject(localStorage.getItem('subcategorias'));
     let remoto = null;
-    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'subcategorias.json');
+    const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
+             : await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'subcategorias.json');
     if (_j && typeof _j === 'object' && !Array.isArray(_j)) remoto = _j;
     if (!remoto) return local;
 
@@ -382,12 +385,19 @@ async function _tmMergeSubcategoriasConRepo(user, repo) {
 // Evita que el sync borre descripciones: el admin carga el catálogo lite (sin
 // descripcion), así que antes de subir productos.json recupera descripcion/seoTitle/
 // seoDescription del productos.json del repo para los productos que no las tengan en memoria.
-async function _tmPreservarDescripciones() {
+async function _tmPreservarDescripciones(remotoYaLeido) {
     try {
         if (!Array.isArray(productos) || !productos.some(p => !p.descripcion)) return;
-        const res = await fetch('productos.json?_=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) return;
-        const full = await res.json();
+        /* El catálogo del repo ya lo bajó quien llama (son 425 KB y se estaban
+           descargando DOS veces seguidas en cada publicación: una aquí y otra
+           en _tmMergeProductosConRepo, con medio segundo de diferencia). Si no
+           lo trae, se baja como antes. */
+        let full = Array.isArray(remotoYaLeido) ? remotoYaLeido : null;
+        if (!full) {
+            const res = await fetch('productos.json?_=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) return;
+            full = await res.json();
+        }
         if (!Array.isArray(full)) return;
         const map = {};
         full.forEach(p => { if (p && p.id != null) map[String(p.id)] = p; });
@@ -548,11 +558,20 @@ async function sincronizarTodoConGitHub() {
     // que este sync no gestiona (margenMN, tasaMNAnterior, tasaFuente, tasaActualizada…).
     // Antes se sobreescribía config.json completo y se perdía el margenMN → el bot de
     // Telegram y la tienda volvían al margen por defecto (10).
+    /* Las cuatro lecturas del repo van EN PARALELO, más el listado de shas.
+       Son ficheros distintos y ninguna depende de otra, pero se hacían una
+       detrás de otra: cinco idas y vueltas encadenadas antes de empezar a
+       subir. Desde un móvil en Cuba eso es el grueso de la espera. (Las
+       SUBIDAS siguen en fila: ahí el orden sí importa, ver más abajo.) */
+    const [_cfgRepo, _prodRepo, _catRepo, _subcatRepo, _shasRaiz] = await Promise.all([
+        _tmLeerJsonRepoFresco(user, repo, token, 'config.json').catch(() => null),
+        _tmLeerJsonRepoFresco(user, repo, token, 'productos.json').catch(() => null),
+        _tmLeerJsonRepoFresco(user, repo, token, 'categorias.json').catch(() => null),
+        _tmLeerJsonRepoFresco(user, repo, token, 'subcategorias.json').catch(() => null),
+        _tmShasDeLaRaiz(user, repo, token).catch(() => null),
+    ]);
     let _configBase = {};
-    try {
-        const _cfg = await _tmLeerJsonRepoFresco(user, repo, token, 'config.json');
-        if (_cfg && typeof _cfg === 'object' && !Array.isArray(_cfg)) _configBase = _cfg;
-    } catch (e) {}
+    if (_cfgRepo && typeof _cfgRepo === 'object' && !Array.isArray(_cfgRepo)) _configBase = _cfgRepo;
     const _configSync = Object.assign({}, _configBase, {
         tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || _configBase.tasaMN || undefined,
         ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
@@ -576,17 +595,21 @@ async function sincronizarTodoConGitHub() {
     Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
 
     // No perder descripciones al subir (el admin trabaja con el catálogo lite).
-    await _tmPreservarDescripciones();
+    // Con el catálogo del repo que ya bajamos arriba: son 425 KB y se estaban
+    // descargando dos veces seguidas en cada publicación.
+    const _prodRepoArr = Array.isArray(_prodRepo) ? _prodRepo
+                       : (_prodRepo && Array.isArray(_prodRepo.productos) ? _prodRepo.productos : null);
+    await _tmPreservarDescripciones(_prodRepoArr);
 
     // Anti-pisado: fusionar con el productos.json del repo para no revertir cambios
     // (p.ej. fotos) hechos desde otra sesión/dispositivo que no están en esta memoria.
-    const _prodsFinal = await _tmMergeProductosConRepo(user, repo);
+    const _prodsFinal = await _tmMergeProductosConRepo(user, repo, _prodRepo);
     try { _tmRegistrarAuditoriaCambios(_prodsFinal); } catch (e) {}
     const _productosLite = _prodsFinal.map(p => { const { descripcion, ...r } = p; return r; });
     // Anti-pisado: mismo criterio que productos, para no borrar categorías/
     // subcategorías agregadas desde otra sesión/dispositivo al publicar.
-    const _catFinal = await _tmMergeCategoriasConRepo(user, repo);
-    const _subcatFinal = await _tmMergeSubcategoriasConRepo(user, repo);
+    const _catFinal = await _tmMergeCategoriasConRepo(user, repo, _catRepo);
+    const _subcatFinal = await _tmMergeSubcategoriasConRepo(user, repo, _subcatRepo);
     const archivos = [
         { path: 'productos.json',              data: _prodsFinal },
         { path: 'productos-lite.json',         data: _productosLite },
@@ -602,9 +625,61 @@ async function sincronizarTodoConGitHub() {
 
     // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
-    const archivosFiltrados = hayDelta
+    let archivosFiltrados = hayDelta
         ? archivos.filter(a => ['productos.json', 'productos-lite.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
         : archivos;
+
+    /* Lo que ya está igual en el repo no se sube.
+       Cambiar el precio de UN producto reescribía además categorias.json,
+       config.json y grupos_facebook_config.json byte por byte idénticos: tres
+       idas y vueltas, tres commits y tres despliegues de Pages que se cancelan
+       entre sí para no cambiar nada. El sha del repo ya vino en el listado, así
+       que comparar no cuesta ninguna petición. config.json queda siempre fuera
+       de esta poda: lleva una marca de tiempo, así que nunca coincide. */
+    let _sinCambio = 0;
+    if (_shasRaiz) {
+        const _quedan = [];
+        for (const a of archivosFiltrados) {
+            const mio = await _tmShaDeGit(JSON.stringify(a.data, null, 2));
+            if (mio && _shasRaiz[a.path] === mio) { _sinCambio++; continue; }
+            _quedan.push(a);
+        }
+        archivosFiltrados = _quedan;
+    }
+    /* Dejar memoria y localStorage EXACTAMENTE iguales a lo que quedó
+       publicado. Lo necesitan los dos finales —el que sube y el que no tenía
+       nada que subir—, y con una copia en cada uno la que se queda atrás es
+       la del camino que casi nunca se recorre. */
+    const _cuadrarMemoria = () => {
+        try {
+            if (!Array.isArray(_prodsFinal)) return;
+            if (typeof window.apReplaceProductos === 'function') {
+                window.apReplaceProductos(_prodsFinal.slice());
+            } else {
+                productos.length = 0; _prodsFinal.forEach(p => productos.push(p));
+                localStorage.setItem('productos', JSON.stringify(_prodsFinal));
+            }
+        } catch (e) {}
+    };
+
+    if (!archivosFiltrados.length) {
+        /* Todo idéntico a lo que ya está publicado. Decirlo es la respuesta
+           correcta: subirlo igual son commits que no cambian nada y un
+           despliegue de Pages de propina. */
+        actualizarBarra(1, 1, '✅ Ya estaba todo publicado');
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+        setTimeout(() => {
+            if (barraContenedor) barraContenedor.style.display = 'none';
+            const f = document.getElementById('tmSyncFloat');
+            if (f) f.style.display = 'none';
+        }, 4000);
+        limpiarProductosModificados();
+        if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
+        _cuadrarMemoria();
+        _tmSyncPendientes = [];
+        mostrarNotificacion('✅ No había nada que publicar: la tienda ya estaba al día.');
+        return;
+    }
 
     let ok = 0, errors = [];
     const fallidos = [];   // los archivos concretos que no subieron, para reintentar solo esos
@@ -616,7 +691,8 @@ async function sincronizarTodoConGitHub() {
         actualizarBarra(i, total, `Subiendo ${path}… (${i + 1}/${total})`);
         if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
         try {
-            await subirArchivoAGitHub(user, repo, token, path, data);
+            await subirArchivoAGitHub(user, repo, token, path, data,
+                                      _shasRaiz ? (_shasRaiz[path] || null) : undefined);
             ok++; subidos.push(path);
         } catch (e) {
             errors.push(`${path}: ${e.message}`);
@@ -635,22 +711,13 @@ async function sincronizarTodoConGitHub() {
         }, 4000);
         limpiarProductosModificados();
         if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
-        // Blindaje: dejar la memoria y el localStorage EXACTAMENTE iguales a lo que
-        // quedó publicado (_prodsFinal). Así, tras limpiar productosModificados, ni un
-        // reload ni el catálogo lite pueden "perder" un producto recién agregado ni
-        // resucitar uno agotado — la copia local ya es la publicada.
-        try {
-            if (Array.isArray(_prodsFinal)) {
-                if (typeof window.apReplaceProductos === 'function') {
-                    window.apReplaceProductos(_prodsFinal.slice());
-                } else {
-                    productos.length = 0; _prodsFinal.forEach(p => productos.push(p));
-                    localStorage.setItem('productos', JSON.stringify(_prodsFinal));
-                }
-            }
-        } catch (e) {}
+        // Blindaje: tras limpiar productosModificados, ni un reload ni el catálogo
+        // lite pueden "perder" un producto recién agregado ni resucitar uno
+        // agotado — la copia local ya es la publicada.
+        _cuadrarMemoria();
         _tmPublicarVersionFirebase();
-        const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
+        const info = (hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`)
+                   + (_sinCambio ? `, ${_sinCambio} sin cambios` : '');
         mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
         const primerError = errors[0];
@@ -736,7 +803,55 @@ async function _tmPublicarVersionFirebase() {
     } catch(e) {}
 }
 
-async function subirArchivoAGitHub(user, repo, token, path, data) {
+/* El SHA de TODOS los ficheros de la raíz en UNA petición.
+ *
+ * La Contents API exige el sha del fichero para reemplazarlo, y se pedía uno
+ * por uno: con cinco ficheros eran cinco idas y vueltas antes de subir nada,
+ * encadenadas. El listado del directorio devuelve nombre y sha de los 63
+ * ficheros de la raíz de una vez, y todo lo que publica el panel está ahí.
+ *
+ * Si falla, se devuelve null y cada subida vuelve a pedir el suyo como antes:
+ * esto acelera, no es de lo que depende que se publique. */
+async function _tmShasDeLaRaiz(user, repo, token) {
+    try {
+        const r = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/?ref=main&_=${Date.now()}`, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            cache: 'no-store'
+        });
+        if (!r.ok) return null;
+        const lista = await r.json();
+        if (!Array.isArray(lista)) return null;
+        const mapa = {};
+        lista.forEach(f => { if (f && f.type === 'file' && f.name) mapa[f.name] = f.sha; });
+        return mapa;
+    } catch (e) { return null; }
+}
+
+/* El sha que git le daría a este contenido: sha1("blob <bytes>\0" + bytes).
+ *
+ * Sirve para no subir un fichero que ya está igual en el repo. Cambiar el
+ * precio de UN producto reescribía además categorias.json, config.json y
+ * grupos_facebook_config.json idénticos a como estaban: tres idas y vueltas,
+ * tres commits y tres despliegues de Pages que se cancelan entre sí, para no
+ * cambiar nada. Comparar shas no cuesta ninguna petición — el del repo ya
+ * vino en el listado de arriba.
+ *
+ * Si los bytes no coinciden exactamente (otro formateo, un script de Python
+ * que escribió el fichero) los shas difieren y se sube: el error cae del lado
+ * de subir de más, que no pierde nada. */
+async function _tmShaDeGit(texto) {
+    try {
+        if (!(crypto && crypto.subtle && crypto.subtle.digest)) return null;
+        const cuerpo = new TextEncoder().encode(texto);
+        const cab = new TextEncoder().encode('blob ' + cuerpo.length + '\0');
+        const todo = new Uint8Array(cab.length + cuerpo.length);
+        todo.set(cab, 0); todo.set(cuerpo, cab.length);
+        const h = await crypto.subtle.digest('SHA-1', todo);
+        return Array.from(new Uint8Array(h), b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) { return null; }
+}
+
+async function subirArchivoAGitHub(user, repo, token, path, data, shaConocido) {
     const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
     const jsonStr  = JSON.stringify(data, null, 2);
     const content  = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
@@ -773,7 +888,10 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
 
     // Para archivos < 900KB usar la Contents API normal (más simple)
     if (sizeBytes < 900 * 1024) {
-        let sha = await obtenerSHA();
+        // El sha puede venir del listado de la raíz (una petición para todos)
+        // en vez de pedir uno por fichero. Si viene mal, el reintento de abajo
+        // pide el suyo y reintenta, igual que si no hubiéramos traído ninguno.
+        let sha = (shaConocido !== undefined) ? shaConocido : await obtenerSHA();
         const body = { message: `Actualización de ${path}`, content };
         if (sha) body.sha = sha;
 
