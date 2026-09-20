@@ -103,11 +103,22 @@ ok(/Switch Gigabit de 5 Puertos/i.test(r4), 'y es la ficha de ese producto');
 ok(/\$20|Stock|Ficha/i.test(r4), 'con su precio y su stock, que es lo que se venía a saber');
 
 // ── 5) Lo agotado se dice, no se sustituye ───────────────────────────
+/* El stock lo lee del catálogo, no lo da por sabido: el de 8 puertos estaba
+   agotado cuando esto se escribió y el dueño lo repuso, así que la
+   comprobación se puso en rojo sin que el bot hubiera cambiado. Lo que se
+   vigila es la regla —se habla del que pidieron, no del hermano— y, si está
+   agotado, que se diga. */
+const _p8 = PRODS.find(p => /Switch Gigabit de 8 Puertos/i.test(p.nombre || ''));
 const r5 = await preguntar('quiero un switch de 8 puertos');
 ok(/8 Puertos/i.test(r5),
-   `el de 8 existe (agotado): hay que hablar de ÉL. «${r5.slice(0,140)}»`);
-ok(/agotado/i.test(r5),
-   'y decir que está agotado — el cliente puede apuntarse al aviso de reposición');
+   `pidieron el de 8: hay que hablar de ÉL, no del de 5. «${r5.slice(0,140)}»`);
+if (_p8 && Number(_p8.stock) <= 0) {
+    ok(/agotado/i.test(r5),
+       'agotado se dice — el cliente puede apuntarse al aviso de reposición');
+} else {
+    ok(!/agotado/i.test(r5.split('⟦')[0]),
+       `el de 8 tiene ${_p8 && _p8.stock} en stock: no se le puede llamar agotado. «${r5.slice(0,140)}»`);
+}
 ok(!/^📦 🌐 Switch Gigabit de 5/.test(r5),
    'dar la ficha del de 5 como si fuera lo pedido es una respuesta segura a una pregunta que nadie hizo');
 

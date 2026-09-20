@@ -77,9 +77,19 @@ ok(/Stock|Ficha|Precio/i.test(e1),
    `el nombre completo tiene que dar la ficha, no una lista: «${e1.slice(0,140)}»`);
 ok(!/Internacional|Loco M2|5 AC Loco/i.test(e1),
    `y sin los hermanos al lado: «${e1.slice(0,180)}»`);
+/* El A6 tiene que ser DE QUIEN SE HABLA. Ojo con exigir que ningún otro
+   Archer aparezca: cuando el producto se agota, su ficha lleva alternativas
+   debajo y eso está bien — el catálogo lo edita el dueño cada semana y esta
+   comprobación se puso en rojo el día que el A6 se quedó a cero, sin que el
+   bot hubiera cambiado. La regla es el ORDEN: el que se nombró primero, y
+   cualquier otro solo después y como alternativa. */
 const e2 = await preguntar('TP-Link Archer A6');
-ok(/Archer A6/i.test(e2) && !/BE230|AX1450|AX55|AX21|C54/i.test(e2),
-   `«TP-Link Archer A6» tiene que dar el A6 y ningún otro Archer: «${e2.slice(0,180)}»`);
+const _pos = n => { const i = e2.toLowerCase().indexOf(n.toLowerCase()); return i === -1 ? Infinity : i; };
+ok(_pos('Archer A6') !== Infinity,
+   `«TP-Link Archer A6» tiene que dar el A6: «${e2.slice(0,180)}»`);
+for (const otro of ['BE230','AX1450','AX55','AX21','C54'])
+    ok(_pos('Archer A6') < _pos('Archer ' + otro),
+       `el A6 va primero; el ${otro} solo puede salir detrás, como alternativa: «${e2.slice(0,200)}»`);
 /* Y el caso que apareció al arreglar el anterior: tres nombres del catálogo
    están CONTENIDOS dentro de otro, así que escribir el largo casa con los
    dos y devolvía el índice de la subcategoría encabezado por un producto
@@ -223,9 +233,22 @@ await limpiarHilo();
 const c1 = await preguntar('que precio tiene el compresor');
 ok(!/Changan|Espejos|Fundas/i.test(c1),
    `un compresor no se acompaña de un SUV: «${c1.slice(0,160)}»`);
+/* «mikrotik hex» sacaba los dos hEX y, pegados, el SXTsq Lite2 y el hAP ac3
+   —la marca entera— porque la cola de la búsqueda no se cortaba.
+   El stock se lee del catálogo en vez de darlo por sabido: los dos hEX se
+   quedaron a cero y la comprobación se puso en rojo sin que el bot hubiera
+   cambiado. Con hEX disponible, son los hEX y nadie más; sin ninguno, lo
+   único que no se puede hacer es presentar otro MikroTik como si fuera el
+   que pidieron. */
+const _hexDisponible = PRODS.some(p => /hEX/i.test(p.nombre || '') && Number(p.stock) > 0);
 const c2 = await preguntar('mikrotik hex');
-ok(/hEX/i.test(c2) && !/SXTsq|hAP ac3/i.test(c2),
-   `«mikrotik hex» son los hEX, no toda la marca: «${c2.slice(0,160)}»`);
+if (_hexDisponible) {
+    ok(/hEX/i.test(c2) && !/SXTsq|hAP ac3/i.test(c2),
+       `«mikrotik hex» son los hEX, no toda la marca: «${c2.slice(0,160)}»`);
+} else {
+    ok(/relacionado|no lo tengo|m[aá]s parecido|agotado/i.test(c2),
+       `sin ningún hEX disponible hay que decir que es lo parecido, no darlo por bueno: «${c2.slice(0,160)}»`);
+}
 
 // ── 9) La autonomía no reconocía ni los equipos ni la frase ───────────
 /* «¿Cuánto tiempo me dura si pongo un fan y 3 bombillos?» fallaba por las
