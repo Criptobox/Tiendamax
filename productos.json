@@ -8633,12 +8633,11 @@
   {
     "id": 1787698473597,
     "nombre": "🌐 MikroTik SXTsq Lite2",
-    "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT.",
     "imagen": "https://tiendamax.org/imagenes/img_1787698472400.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787698472400.webp"
     ],
-    "precioActual": 120,
+    "precioActual": 110,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 5,
@@ -8739,7 +8738,8 @@
       "1× Abrazadera metálica de montaje para mástil / tubo"
     ],
     "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
-    "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…"
+    "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…",
+    "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT."
   },
   {
     "id": 1787888877372,
@@ -10312,7 +10312,6 @@
   {
     "id": 1789569593128,
     "nombre": "📡Mikrotik SXTsq 5 lite",
-    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética.",
     "imagen": "https://tiendamax.org/imagenes/img_1789569588325.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789569588325.webp",
@@ -10320,7 +10319,7 @@
       "https://tiendamax.org/imagenes/img_1789569590746.webp",
       "https://tiendamax.org/imagenes/img_1789569591979.webp"
     ],
-    "precioActual": 150,
+    "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 30,
@@ -10444,6 +10443,7 @@
       "(Nota: el soporte articulado ajustable mostrado instalado en poste se adquiere por separado o según la variante de kit)"
     ],
     "seoTitle": "Mikrotik SXTsq 5 lite en Cuba | TiendaMax",
-    "seoDescription": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para…"
+    "seoDescription": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para…",
+    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética."
   }
 ]
