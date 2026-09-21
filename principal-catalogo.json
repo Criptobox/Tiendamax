@@ -1,7 +1,7 @@
 {
- "actualizado": "2026-09-20T22:11:16Z",
+ "actualizado": "2026-09-21T00:49:46Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
- "total": 108,
+ "total": 110,
  "productos": [
   {
    "id": "1778336789459",
@@ -500,6 +500,16 @@
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786160676965-b34f4749.webp"
   },
   {
+   "id": "1789945684800",
+   "nombre": "Hex Poe Lite(RB750gr2)",
+   "precio": 110.0,
+   "precioMoneda": "USD",
+   "stock": 7,
+   "categoria": "Wifi",
+   "comision": 10.0,
+   "comisionMoneda": "USD"
+  },
+  {
    "id": "1778104662477",
    "nombre": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED",
    "precio": 900.0,
@@ -599,6 +609,16 @@
    "comision": 15.0,
    "comisionMoneda": "USD",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786953872887-4c049552.webp"
+  },
+  {
+   "id": "1789945881104",
+   "nombre": "Mikrotik Cheteau pro ax(H53UiG-5HaxQ2HaxQ",
+   "precio": 320.0,
+   "precioMoneda": "USD",
+   "stock": 3,
+   "categoria": "Wifi",
+   "comision": 15.0,
+   "comisionMoneda": "USD"
   },
   {
    "id": "1786509419466",
@@ -1125,7 +1145,7 @@
    "nombre": "Ubiquiti Litebeam m5",
    "precio": 140.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 1,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",

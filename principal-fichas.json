@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-16T15:19:23Z",
+ "actualizado": "2026-09-21T00:49:46Z",
  "fichas": {
   "1780887747583": {
    "descripcion": "[AUDIO]\nAltavoz Bluetooth Portátil RGB – Características principales\n• Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado.\n• Iluminación RGB dinámica que acompaña la música y crea un ambiente atractivo.\n• Batería recargable de larga duración, con hasta 24 horas de reproducción.\n• Múltiples opciones de conexión: Bluetooth, memoria USB y tarjeta TF/microSD.\n• Diseño portátil y resistente con correa integrada para transportarlo fácilmente.\n• Alcance inalámbrico de hasta 30 metros (100 pies) en condiciones ideales.\n• Graves potentes y sonido envolvente para música, películas y juegos.\n• Ideal para el hogar, deportes, viajes, fiestas y actividades al aire libre.\n• Tamaño compacto aproximado: 18.2 × 8.6 × 7.4 cm.\n• Excelente opción de regalo para cumpleaños, aniversarios, San Valentín y otras ocasiones."
@@ -65,11 +65,17 @@
   "1786160676965": {
    "descripcion": "Ideal para los apagones , terrazas, excursiones y campismos..ligera, resistente y en los 3 colores de las fotos. Viene con su soga de nylon tipo linga y 2 mosquetones metálicos para facilitar su fácil colocación y viene con bolsillo también para las pertenencias y el celular."
   },
+  "1789945684800": {
+   "descripcion": "Mikrotik hex poe lite(RB 750gr2)\n\n​5 puertos Fast Ethernet (10/100 Mbps) blindados\n​4 puertos con salida PoE Pasivo (Ether 2 a Ether 5) para alimentar otros dispositivos\n​1 puerto USB 2.0 tipo A\n​Procesador QCA9531 de 1 núcleo a 650 MHz\n​Memoria RAM de 64 MB y almacenamiento Flash de 16 MB\n​Sistema operativo RouterOS con licencia nivel 4\n​Alimentación por Jack DC o PoE-In (8-30 V DC)"
+  },
   "1786509014605": {
    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa\npor horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico.\n--Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos.\n-Se puede alimentar\nde una bateria de *12V*.\n-Posee dos salidas universales que sirven para conectores de corriente plano (el que se usa mayoritariamente en Cuba), europeo o chino\n-Un display digital que muestra los voltajes de entrada (DC) y salida (AC) en tiempo real."
   },
   "1786953872887": {
    "descripcion": "* Maquina de soldar definitiva, completa,profesional, compacta y portátil que ofrece una corriente máxima de 140 A.\n\n* Corriente de entrada 110v.\n\n* Cuenta con 3 modos de soldadura: Stick, Lift TIG y Flux.\n\n* El modo Stick permite utilizar electrodos revestidos convencionales.\n\n* El modo Lift TIG permite realizar soldadura TIG mediante encendido por contacto.\n\n* El modo Flux está pensado para alambre tubular autoprotegido, sin necesidad de gas externo.\n\n* Incorpora una pantalla digital para visualizar y ajustar los parámetros de soldadura.\n\n* El producto incluye:\n_ Maquina de soldar Yeswelder FLUX-140 FLEX \n_Pinzas de tierra y de soldar de exelente calidad y 1metro de cable cada una\n_ Dos rollos de alambre para soldar de 0.8 y 0.9mm cada uno.\n_Antorcha de soldadura Mig con boquillas conductoras de cobre mig/mag 0.8 y 0.9mm\n_ Antorcha de soldadura TIG  con electrodos y accesorios intercambiables.\n_ Manual técnico del equipo."
+  },
+  "1789945881104": {
+   "descripcion": "Mikrotik Cheteau pro ax(H53UiG-5HaxQ2HaxQ\n\n​Router de altas prestaciones para interiores (gama alta / profesional)\n​Tecnología Wi-Fi 6 (802.11ax) Doble Banda AX3600 con MIMO 4x4\n​Velocidad inalámbrica de hasta 1148 Mbps en 2.4 GHz y 2400 Mbps en 5 GHz\n​5 puertos Gigabit Ethernet (10/100/1000 Mbps)\n​1 puerto con salida PoE Pasivo (Ether 5) de hasta 57V para alimentar otros equipos\n​1 puerto USB 3.0 tipo A para almacenamiento o módem LTE de respaldo\n​Procesador IPQ-8072A de 4 núcleos a 2.2 GHz (ARM de 64 bits)\n​Memoria RAM de 1 GB y almacenamiento Flash NAND de 128 MB\n​Sistema operativo RouterOS versión 7 con licencia nivel 6"
   },
   "1786509419466": {
    "descripcion": "Mikrotik hap ax3: \n\n- Arquitectura: ARM de 64 bits\n- UPC: IPQ-6010\n- Número de núcleos de CPU: 4\n- Frecuencia nominal de la CPU: automático (864 – 1800) MHz\n- Modelo de chip de conmutación: IPQ-6010\n- Licencia de RouterOS: 6\n- Sistema operativo: RouterOS versión 7\n- Tamaño de RAM: 1 GB\n- Tamaño de almacenamiento: 128 MB\n- Tipo de almacenamiento: NAND\n- MTBF: Aproximadamente 200.000 horas a 25 °C\n- Temperatura ambiente probada: -40°C a 70°C\n- Aceleración de hardware IPsec: Sí"
