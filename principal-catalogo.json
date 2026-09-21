@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-21T00:49:46Z",
+ "actualizado": "2026-09-21T16:47:08Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 110,
  "productos": [
@@ -285,11 +285,12 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 35,
+   "stock": 33,
    "categoria": "Carros",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786161303797-682a20bb.webp"
   },
   {
@@ -504,10 +505,11 @@
    "nombre": "Hex Poe Lite(RB750gr2)",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 7,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 10.0,
-   "comisionMoneda": "USD"
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1789945684800-999454fb.webp"
   },
   {
    "id": "1778104662477",
@@ -618,7 +620,8 @@
    "stock": 3,
    "categoria": "Wifi",
    "comision": 15.0,
-   "comisionMoneda": "USD"
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1789945881104-42e3d673.webp"
   },
   {
    "id": "1786509419466",
@@ -748,7 +751,7 @@
    "nombre": "Nanostation m2",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 7,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -759,7 +762,7 @@
    "nombre": "Nanostation m2 loco",
    "precio": 150.0,
    "precioMoneda": "USD",
-   "stock": 25,
+   "stock": 24,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1080,8 +1083,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1092,8 +1096,9 @@
    "stock": 22,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 20.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
@@ -1214,7 +1219,7 @@
    "nombre": "📡 TP-Link Archer BE230",
    "precio": 200.0,
    "precioMoneda": "USD",
-   "stock": 9,
+   "stock": 8,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
