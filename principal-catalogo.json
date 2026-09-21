@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-21T16:47:08Z",
+ "actualizado": "2026-09-21T20:47:17Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 110,
  "productos": [
@@ -120,7 +120,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 45,
+   "stock": 65,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -285,12 +285,11 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 33,
+   "stock": 32,
    "categoria": "Carros",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1786161303797-682a20bb.webp"
   },
   {
@@ -494,7 +493,7 @@
    "nombre": "Hamaca con mosquitero",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 17,
+   "stock": 16,
    "categoria": "Hogar",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -694,7 +693,7 @@
    "nombre": "mikrotik sxt sq 5ax",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 33,
+   "stock": 17,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1035,7 +1034,7 @@
    "nombre": "SWITCH DE 5 PUERTOS",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 4,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1046,7 +1045,7 @@
    "nombre": "Switch dE 8 puertos",
    "precio": 30.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1083,9 +1082,8 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1096,9 +1094,8 @@
    "stock": 22,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 20.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
