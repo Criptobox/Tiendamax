@@ -10457,7 +10457,7 @@
     "precioActual": 180,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -10563,8 +10563,6 @@
       "1× Abrazadera metálica de acero para mástil",
       "1× Inyector Gigabit PoE Pasivo (24V, 0.3A) con cable de alimentación AC",
       "1× Guía de inicio rápido"
-    ],
-    "seoTitle": "Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) | TiendaMax",
-    "seoDescription": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a…"
+    ]
   }
 ]
