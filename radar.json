@@ -1,15 +1,15 @@
 {
-  "actualizado": "2026-09-21T16:48:44.165509+00:00",
-  "fecha": "2026-09-21",
+  "actualizado": "2026-09-22T15:26:09.150361+00:00",
+  "fecha": "2026-09-22",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 5,
+    "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -18,11 +18,11 @@
       "nombre": "⚡ Inversor Tataliken 4000W",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 159.0,
+        "min": 160.0,
         "mediana": 179.0,
         "n": 14
       },
-      "deltaAyerMediana": -1.0,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -75,16 +75,13 @@
         {
           "fecha": "2026-09-21",
           "mediana": 179.0
+        },
+        {
+          "fecha": "2026-09-22",
+          "mediana": 179.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "159 USD Inversor de corriente tataliken 4000w",
-          "precio": 159.0,
-          "url": "https://www.revolico.com/item/inversor-de-corriente-tataliken-4000w-57155367",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "160 USD Inversor marca tataliken de 4000w , 12vol (110) onda sinosoidal pura Precio 160 us",
@@ -97,6 +94,13 @@
           "titulo": "170 USD Inversor Tataliken 4000w 12v",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-4000w-12v-57435840",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 24V 4000W y de 12v 3500w",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-24v-4000w-y-de-12v-3500w-57594488",
           "dias": null
         },
         {
@@ -118,91 +122,6 @@
           "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
           "precio": 178.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
-          "dias": null
-        }
-      ]
-    },
-    {
-      "id": 1778102214012,
-      "nombre": "🌐 Switch Gigabit de 8 Puertos",
-      "tuPrecio": 30.0,
-      "mercado": {
-        "min": 15.0,
-        "mediana": 30.0,
-        "n": 14
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-09-16",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-17",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-18",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-19",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-20",
-          "mediana": 30.0
-        },
-        {
-          "fecha": "2026-09-21",
-          "mediana": 30.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "15 USD Switch de 8 puertos gigabit de uso marca CIRCUIT, pero en perfecto estado",
-          "precio": 15.0,
-          "url": "https://www.revolico.com/item/switch-de-8-puertos-gigabit-de-uso-marca-circuit-pero-en-perfecto-estado-56661081",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD 🌐 Switch Gigabit de 5 Puertos",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-5-puertos-57350797",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
-          "precio": 29.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD Switch Gigabit de 8 Puertos Ethernet [30]",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD 🌐 Switch Gigabit de 8 Puertos",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-57301738",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD 🔀 Switch Ethernet Gigabit 8 Puertos 🔀 AX | E01 | 30 USD",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-8-puertos-ax-e01-30-usd-56678587",
           "dias": null
         }
       ]
@@ -265,6 +184,10 @@
         {
           "fecha": "2026-09-21",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-22",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -292,10 +215,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-08",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-09-09",
           "mediana": 82.5
@@ -346,6 +265,10 @@
         },
         {
           "fecha": "2026-09-21",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-22",
           "mediana": 75.0
         }
       ],
@@ -399,7 +322,7 @@
       "nombre": "⚡ Inversor Tataliken 3500W",
       "tuPrecio": 170.0,
       "mercado": {
-        "min": 80.0,
+        "min": 90.0,
         "mediana": 170.0,
         "n": 11
       },
@@ -409,10 +332,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-08",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-09-09",
           "mediana": 170.0
@@ -464,16 +383,13 @@
         {
           "fecha": "2026-09-21",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-22",
+          "mediana": 170.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "80 USD INVERSOR 2000W 110V TATALIKEN",
-          "precio": 80.0,
-          "url": "https://www.revolico.com/item/inversor-2000w-110v-tataliken-57367230",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "90 USD inversor TATALIKEN 1500W",
@@ -507,6 +423,13 @@
           "titulo": "170 USD Inversor Tataliken de 3500W",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-3500w-57078348",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57406984",
           "dias": null
         }
       ]
