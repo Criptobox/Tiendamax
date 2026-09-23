@@ -94,7 +94,12 @@ await ctx.route(u => u.hostname === 'api.github.com', r => {
     const req = r.request(), url = req.url();
     const ruta = (url.split('/contents/')[1] || '').split('?')[0];
     if (req.method() === 'PUT') {
-        LOG.push({ tipo:'PUT', ruta });
+        let cuerpo = null;
+        if (ruta === 'productos.json') {
+            try { cuerpo = JSON.parse(Buffer.from(JSON.parse(req.postData()).content, 'base64').toString('utf8')); }
+            catch (e) {}
+        }
+        LOG.push({ tipo:'PUT', ruta, cuerpo });
         return r.fulfill({ status:200, contentType:'application/json', body:'{"content":{"sha":"nuevo"}}' });
     }
     if (url.includes('/contents/')) {
@@ -233,6 +238,33 @@ await pagina.waitForTimeout(300);
 for (const f of ['banners.json', 'revolico_config.json', 'grupos_facebook_config.json'])
     ok(cuantos(LOG.filter(x => x.tipo === 'PUT'), f) === 0,
        `${f} no se puede pisar desde "Actualizar tienda" con una copia vacía o vieja`);
+
+// ── 8. Lo borrado en otro sitio no vuelve; lo nuevo de aquí sí sube ──────
+/* La fusión con el repo conservaba lo AÑADIDO en otro dispositivo pero no
+   respetaba lo BORRADO: un panel abierto desde antes del borrado lo volvía a
+   subir en la siguiente publicación. El caso contrario tiene que seguir
+   funcionando: un producto recién creado aquí tampoco está en el repo. */
+const BORRADO = CATALOGO[5];
+CUERPOS['productos.json'] = JSON.stringify(CATALOGO.filter(p => p.id !== BORRADO.id), null, 2);
+LOG.length = 0;
+const idNuevo = await pagina.evaluate((idBorrado) => {
+    const enMemoria = productos.some(p => String(p.id) === String(idBorrado));
+    const nuevo = Object.assign({}, productos[1], { id: 4242424242424, nombre: 'Producto recién creado' });
+    productos.push(nuevo);
+    marcarProductoModificado(nuevo.id);           // lo que hace el formulario al crear
+    return enMemoria ? nuevo.id : null;
+}, BORRADO.id);
+ok(idNuevo, 'el producto borrado en el repo tiene que seguir en la memoria del panel (si no, esto no prueba nada)');
+await pagina.evaluate(() => sincronizarTodoConGitHub());
+await pagina.waitForTimeout(300);
+const subido = (LOG.find(x => x.tipo === 'PUT' && x.ruta === 'productos.json') || {}).cuerpo;
+ok(Array.isArray(subido), 'con un producto nuevo, productos.json tiene que subir');
+if (Array.isArray(subido)) {
+    ok(!subido.some(p => String(p.id) === String(BORRADO.id)),
+       'un producto borrado desde otro dispositivo no puede volver a subirse desde este panel');
+    ok(subido.some(p => String(p.id) === String(idNuevo)),
+       'el producto recién creado aquí tiene que subirse, aunque no esté en el repo');
+}
 
 ok(erroresJs.length === 0, 'errores JS en el panel: ' + erroresJs.slice(0,2).join(' | '));
 

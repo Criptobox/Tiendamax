@@ -265,6 +265,20 @@ async function _tmLeerJsonRepoFresco(user, repo, token, path) {
     return null;
 }
 
+/* Los ids que este panel ha visto en productos.json del repo (ver
+   _tmMergeProductosConRepo). null si aún no se ha apuntado ninguno. */
+function _tmIdsVistosEnRepo() {
+    const v = localStorage.getItem('tm_ids_en_repo');
+    return v === null ? null : new Set(tmParseArray(v).map(String));
+}
+function _tmSumarIdsEnRepo(ids, base) {
+    try {
+        const todos = new Set(base || _tmIdsVistosEnRepo() || []);
+        ids.forEach(id => todos.add(String(id)));
+        localStorage.setItem('tm_ids_en_repo', JSON.stringify([...todos]));
+    } catch (e) {}
+}
+
 async function _tmMergeProductosConRepo(user, repo, remotoYaLeido) {
     let remoto = null;
     const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
@@ -279,8 +293,23 @@ async function _tmMergeProductosConRepo(user, repo, remotoYaLeido) {
     const remotoById = {};
     remoto.forEach(p => { if (p && p.id != null) remotoById[String(p.id)] = p; });
 
+    /* Borrado desde OTRO sitio: estaba en el repo, ya no está, y aquí nadie lo
+       tocó. Esto conservaba los productos AÑADIDOS en otro dispositivo pero
+       no respetaba los BORRADOS: un panel abierto desde antes del borrado lo
+       volvía a subir en la siguiente publicación. Para distinguirlo de un
+       producto nuevo creado aquí (que tampoco está en el repo) hace falta
+       saber si este panel lo vio alguna vez EN el repo: eso guarda
+       tm_ids_en_repo. La primera vez no existe, y entonces cuenta como visto
+       lo que había en memoria sin tocar — un producto nuevo se marca como
+       modificado al crearlo, así que ese no entra. */
+    let vistos = _tmIdsVistosEnRepo();
+    if (!vistos) vistos = new Set(productos.map(p => String(p.id)).filter(id => !mods.has(id)));
+    const borradoFuera = p => { const id = String(p.id);
+        return !remotoById[id] && !mods.has(id) && vistos.has(id); };
+    _tmSumarIdsEnRepo(Object.keys(remotoById), vistos);
+
     // Empezar por lo que el admin ve; no-modificados toman la versión del repo.
-    const merged = productos.map(p => {
+    const merged = productos.filter(p => !borradoFuera(p)).map(p => {
         const id = String(p.id);
         if (mods.has(id)) return p;                 // el admin lo cambió esta sesión → su versión
         return remotoById[id] || p;                 // no lo tocó → versión del repo
@@ -747,6 +776,9 @@ async function sincronizarTodoConGitHub() {
             await subirArchivoAGitHub(user, repo, token, path, data,
                                       _shasRaiz ? (_shasRaiz[path] || null) : undefined);
             ok++; subidos.push(path);
+            // Lo que se acaba de subir ya está en el repo: si luego desaparece
+            // de allí sin tocarlo aquí, es que lo borraron en otro sitio.
+            if (path === 'productos.json' && Array.isArray(data)) _tmSumarIdsEnRepo(data.map(p => p.id));
         } catch (e) {
             errors.push(`${path}: ${e.message}`);
             fallidos.push({ path, data });
@@ -820,6 +852,7 @@ async function sincronizarConGitHub() {
         const _final = await _tmMergeProductosConRepo(user, repo);
         // El lite lo regenera CI a partir de este mismo push (ver arriba).
         await subirArchivoAGitHub(user, repo, token, 'productos.json', _final);
+        if (Array.isArray(_final)) _tmSumarIdsEnRepo(_final.map(p => p.id));
         _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
