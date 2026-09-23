@@ -14,6 +14,13 @@
 html body .hero.nd-hero { padding: 26px 0 8px !important; }
 @media (min-width: 900px) { html body .hero.nd-hero { padding: 44px 0 14px !important; } }
 html body .nd-hero-stats { margin-top: 18px !important; }
+/* El hero recorta lo que se sale (overflow:hidden) y deja 8px bajo las
+   cifras, pero su sombra bajaba 40px: quedaba cortada en seco y se veía como
+   una franja de otro color entre las cifras y las categorías. Sombra corta y
+   un poco más de aire, para que termine antes del borde. */
+html body .hero.nd-hero { padding-bottom: 16px !important; }
+html body #ndHeroStats .nd-stat { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 3px 8px rgba(0, 0, 0, .25) !important; }
+html body.light-mode #ndHeroStats .nd-stat { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 3px 8px rgba(0, 0, 0, .07) !important; }
 /* Las cuatro cifras en una sola fila también en el móvil: en 2×2 ocupaban
    casi una pantalla entera y empujaban las categorías fuera de la vista. */
 @media (max-width: 768px) {
@@ -44,6 +51,28 @@ html body #categorias-home .categorias-grid {
     scrollbar-width: none;
 }
 html body #categorias-home .categorias-grid::-webkit-scrollbar { display: none; }
+/* En el móvil la fila llega hasta los bordes de la pantalla y se desvanece a
+   la derecha: la tarjeta que asoma se funde en vez de cortarse en seco
+   contra el margen. La primera sigue alineada con el resto (padding-left =
+   lo que se sale el margin-left). El ::after deja sitio al final para que,
+   desplazada del todo, la última tarjeta no quede dentro del desvanecido. */
+@media (max-width: 899px) {
+    html body #categorias-home .categorias-grid {
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        padding-left: calc(50vw - 50% + 4px) !important;
+        padding-right: 0 !important;
+        width: auto !important; max-width: none !important;
+        /* Sin imán: con scroll-snap la primera tarjeta se pegaba al borde
+           de la pantalla, saltándose el padding de la izquierda. */
+        scroll-snap-type: none !important;
+        -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 48px), transparent 100%);
+        mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 48px), transparent 100%);
+    }
+    html body #categorias-home .categorias-grid::after {
+        content: ""; flex: 0 0 40px; display: block !important;
+    }
+}
 html body #categorias-home .categorias-grid .categoria-card,
 html body #categorias-home .categorias-grid .categoria-card:nth-child(n) {
     flex: none !important;
@@ -106,7 +135,7 @@ html body.light-mode #categorias-home .categorias-grid .categoria-card.cat-color
 html body.light-mode #categorias-home .categorias-grid > .categoria-card.cat-color {
     background: linear-gradient(160deg, rgba(var(--cat-rgb, 255,106,31), .95), rgba(var(--cat-rgb, 255,106,31), .35) 78%), #1c1a18 !important;
     border: 1px solid rgba(0, 0, 0, .06) !important;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, .14) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .10) !important;
 }
 html body.light-mode #categorias-home .categorias-grid .categoria-card.cat-color .cat-icon {
     background: rgba(0, 0, 0, .18) !important;
