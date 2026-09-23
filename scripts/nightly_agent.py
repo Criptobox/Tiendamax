@@ -32,9 +32,9 @@ TYPOS = {
 # Tiene que ser idéntica a IA_SIGLAS en js/admin-copilot.js; un test las cruza.
 # Estaban descuadradas y por eso el reporte proponía una grafía ("CPE") y el
 # botón del panel aplicaba otra ("Cpe").
-SIGLAS = {"WIFI", "USB", "HDMI", "LED", "RGB", "TV", "PC", "TIG", "MPPT", "POE",
+SIGLAS = {"WIFI", "USB", "HDMI", "LED", "RGB", "TV", "PC", "TIG", "MPPT",
           "AC", "DC", "CCTV", "GPS", "LCD", "USD", "MN", "KIT", "PRO", "MAX",
-          "MINI", "PLUS", "ULTRA", "LITE", "XL", "II", "III", "4K", "2K", "HD",
+          "MINI", "PLUS", "ULTRA", "XL", "II", "III", "4K", "2K", "HD",
           "FHD", "UHD", "5G", "4G", "3G", "2T", "4T", "SHPD", "RX", "AX",
           "CPE", "SXT", "LTE", "PV", "UPS", "BMS", "IP", "SSD", "RAM", "OTG",
           "PTZ", "NTRC"}
@@ -53,6 +53,10 @@ MARCAS = {
     "MANNOL": "Mannol", "TATALIKEN": "Tataliken", "MUST": "Must",
     "HAP": "hAP", "HEX": "hEX", "SXTSQ": "SXTsq", "COREBOX": "Corebox",
     "ZOSI": "Zosi", "VEVOR": "VEVOR",
+    # PoE y LiteBeam los escribe así el fabricante. POE y LITE estaban en
+    # SIGLAS y el botón convertía «hEX PoE lite» en «hEX POE LITE». "lite" a
+    # secas ya no se toca a mayúsculas: MikroTik lo escribe en minúscula.
+    "POE": "PoE", "LITEBEAM": "LiteBeam",
 }
 
 

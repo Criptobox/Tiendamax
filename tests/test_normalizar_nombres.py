@@ -153,8 +153,12 @@ class ElCatalogoQuedoLimpioTest(unittest.TestCase):
             for tok in re.findall(r"[A-Za-zÁÉÍÓÚÑáéíóúñ][\w'&+-]*", n):
                 if len(tok) > 2:
                     formas.setdefault(tok.lower(), set()).add(tok)
+        # WIFI/WiFi es cosmético. "lite" lo escribe cada fabricante a su
+        # manera y el dueño lo copia de la caja: MikroTik «hEX PoE lite» en
+        # minúscula, el mando «X5 LITE» en mayúsculas. No es una sugerencia
+        # aceptada a medias, son dos productos distintos.
         dobles = {k: sorted(v) for k, v in formas.items()
-                  if len(v) > 1 and k != "wifi"}   # WIFI/WiFi es cosmético
+                  if len(v) > 1 and k not in ("wifi", "lite")}
         self.assertEqual({}, dobles)
 
     def test_las_marcas_estan_como_las_escribe_el_fabricante(self):
