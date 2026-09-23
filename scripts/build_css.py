@@ -30,6 +30,7 @@ ORDEN = [
     "oficial-plus.css",    # rediseño "Oficial Plus" (header/hero/categorías/beneficios/pasos/reseñas/CTA/footer)
     "ficha-producto.css",  # bloques ampliados del modal (ficha/características/ideal/incluye) — clases tmf-*, no pisa nada
     "oferta-banner.css",   # tarjeta del banner de oferta del inicio — clases propias, no pisa nada
+    "portada.css",         # orden y tamaño de los bloques del inicio — acotado a #vistaInicio
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 

@@ -101,11 +101,6 @@ function contactarWhatsApp() {
     window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener,noreferrer');
 }
 
-function scrollToProductos() {
-    const el = document.querySelector('#categorias-home');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-}
-
 // ═══════════════════════════════════════════════════════
 //  🌗 MODO CLARO / OSCURO
 //  El sitio es OSCURO por defecto (tema premium).
@@ -214,7 +209,9 @@ function tmVistaInicioActiva() {
 function actualizarVisibilidadBannerOferta(esHome) {
     const banner = document.getElementById('urgenciaBanner');
     if (document.body) document.body.classList.toggle('tm-no-oferta-banner', !esHome);
-    if (!banner) return;
+    // La franja #urgenciaBanner ya no existe: las rebajas son #rebajasHome,
+    // dentro del inicio. Al volver a él se repintan igual.
+    if (!banner) { if (esHome) verificarOfertasYMostrarBanner(); return; }
     if (esHome) {
         if (document.body) document.body.classList.remove('tm-no-oferta-banner');
         verificarOfertasYMostrarBanner();
@@ -403,7 +400,10 @@ function _tmCatVerMas(grid, extras) {
         nm.textContent = e.name;
         const ct = document.createElement('span');
         ct.className = 'cat-count';
-        ct.textContent = e.count === 0 ? 'Próximamente' : e.count + ' producto' + (e.count !== 1 ? 's' : '');
+        // Cuentan disponibles (ver renderizarCategoriasHome). Con cero, lo que
+        // hay dentro está agotado: "Próximamente" prometía una reposición que
+        // nadie ha anunciado.
+        ct.textContent = e.count === 0 ? 'Agotados ahora' : e.count + ' disponible' + (e.count !== 1 ? 's' : '');
         c.append(icon, nm, ct);
         c.onclick = () => mostrarVistaCategoria(e.cat);
         wrap.appendChild(c);
@@ -466,11 +466,16 @@ function renderizarCategoriasHome() {
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
     if (typeof tmPintarCategoria === 'function') tmPintarCategoria(cardTodas, 'todos');
-    const totalProductos = productos.length;
+    /* Lo que cuenta cada tarjeta son los DISPONIBLES, no el catálogo entero:
+       "Celulares · 9 productos" con los nueve agotados manda al cliente a una
+       estantería vacía. Una categoría sin nada disponible cae al desplegable
+       "Ver más" (no desaparece: sus agotados siguen ahí para pedir aviso). */
+    const _disp = (lista) => lista.filter(p => Number(p.stock) > 0).length;
+    const totalProductos = _disp(productos);
     cardTodas.innerHTML = `
         <span class="cat-icon">${_svgCat('todos') || '🛍️'}</span>
         <span class="cat-name">Todos</span>
-        <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
+        <span class="cat-count">${safeNum(totalProductos)} disponible${totalProductos !== 1 ? 's' : ''}</span>
     `;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
@@ -489,7 +494,7 @@ function renderizarCategoriasHome() {
     // Incluye las categorías que solo existen dentro de los productos: si no,
     // sus productos no tienen tarjeta por la que llegar (ver tmCategoriasVisibles).
     tmCategoriasVisibles(productos, categorias).forEach(cat => {
-        const count = productos.filter(p => p.categoria === cat).length;
+        const count = _disp(productos.filter(p => p.categoria === cat));
         const displayCat = _catDisplayNames[cat] || cat;
         // Pocas unidades (< 3) → al desplegable "Ver más"
         if (count < TM_CAT_MIN) {
@@ -508,7 +513,7 @@ function renderizarCategoriasHome() {
             <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${_svgCat(cat) || escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(displayCat)}</span>
-            <span class="cat-count">${safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+            <span class="cat-count">${safeNum(count) + ' disponible' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
@@ -668,6 +673,16 @@ function renderizarMasVendidos() {
 
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
     const productosAMostrar = masVendidos.length > 0 ? masVendidos : [...productos].filter(p => p.precioActual > 0 && p.stock > 0).sort((a, b) => b.stock - a.stock).slice(0, 6);
+
+    /* El constructor de tarjetas (_tmCrearCard) lo define renderizarProductos
+       al pintar la rejilla de productos, y en la PRIMERA visita esa rejilla
+       aún no se ha pintado: tm-init solo la pinta al arrancar si el
+       catálogo ya estaba guardado de otra visita. Así, quien entraba por
+       primera vez veía "Productos Destacados" vacío, sin error ninguno; quien
+       repetía, lleno. Se pinta aquí igual que en esa segunda visita. */
+    if (typeof window._tmCrearCard !== 'function' && typeof renderizarProductos === 'function') {
+        try { renderizarProductos(); } catch (e) {}
+    }
 
     // Fade out skeletons before rendering real cards
     if (typeof _tmRemoverSkeletons === 'function') _tmRemoverSkeletons('masVendidosGrid');

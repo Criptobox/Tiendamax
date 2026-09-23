@@ -120,3 +120,27 @@
     .tm-of-cta i { animation: none; }
     .tm-oferta { transition: none; }
 }
+
+/* ── La sección de rebajas del inicio (#rebajasHome) ─────────────────
+   Las mismas tarjetas, ya no en una franja fija arriba sino debajo de las
+   categorías: una a la vez en el móvil y tres en pantalla ancha, rotando por
+   todas las rebajas con stock (window.tmBannerOfertas). */
+.rebajas-home { padding: 6px 0 4px; }
+.rebajas-grid { display: grid; grid-template-columns: 1fr; gap: 12px; transition: opacity .28s ease; }
+.rebajas-grid.tm-of-saliendo { opacity: 0; }
+.rebajas-grid .tm-oferta { max-width: none; min-height: 78px; }
+@media (min-width: 900px) {
+    .rebajas-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rebajas-grid .tm-of-nom { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .rebajas-grid .tm-oferta img { width: 58px; height: 58px; }
+}
+.rebajas-dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; min-height: 8px; }
+.rebajas-dots button {
+    width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px;
+    background: rgba(255, 255, 255, .22); cursor: pointer;
+    transition: width .25s ease, background .25s ease;
+}
+.rebajas-dots button.on { width: 20px; background: #FF6A1F; }
+.rebajas-dots button:focus-visible { outline: 2px solid #F2B632; outline-offset: 2px; }
+body.light-mode .rebajas-dots button:not(.on) { background: rgba(0,0,0,.2); }
+@media (prefers-reduced-motion: reduce) { .rebajas-grid, .rebajas-dots button { transition: none; } }

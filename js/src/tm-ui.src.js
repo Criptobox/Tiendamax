@@ -63,7 +63,11 @@ function renderizarCategoriasHomeInstant() {
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
     if (typeof tmPintarCategoria === 'function') tmPintarCategoria(cardTodas, 'todos');
-    cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">${_svgCatI('todos') || '🛍️'}</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
+    // Disponibles, igual que renderizarCategoriasHome: si este pintado rápido
+    // contara el catálogo entero, las cifras cambiarían al llegar la red.
+    const _dispI = (lista) => lista.filter(p => Number(p.stock) > 0).length;
+    const _todosI = _dispI(localProds);
+    cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">${_svgCatI('todos') || '🛍️'}</span><span class="cat-name">Todos</span><span class="cat-count">${_todosI} disponible${_todosI !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
@@ -73,12 +77,12 @@ function renderizarCategoriasHomeInstant() {
     // aparecerían de golpe.
     const _catsI = (typeof tmCategoriasVisibles === 'function')
         ? tmCategoriasVisibles(localProds, localCats) : localCats;
-    const maxCount = _catsI.length ? Math.max(..._catsI.map(cat => localProds.filter(p => p.categoria === cat).length)) : 0;
+    const maxCount = _catsI.length ? Math.max(..._catsI.map(cat => _dispI(localProds.filter(p => p.categoria === cat)))) : 0;
     const _dn = { 'WIFI': 'REDES' };
     const _extrasI = [];
     const _minI = (typeof TM_CAT_MIN !== 'undefined') ? TM_CAT_MIN : 3;
     _catsI.forEach(cat => {
-        const count = localProds.filter(p => p.categoria === cat).length;
+        const count = _dispI(localProds.filter(p => p.categoria === cat));
         const icon = obtenerIconoCategoria(cat);
         // Pocas unidades (< 3) → desplegable "Ver más"
         if (count < _minI) {
@@ -92,7 +96,7 @@ function renderizarCategoriasHomeInstant() {
         if (typeof tmPintarCategoria === 'function') tmPintarCategoria(card, cat);
         const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
         const cta = '<span class="cat-cta">→ Explorar</span>';
-        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${_svgCatI(cat) || icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
+        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${_svgCatI(cat) || icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' disponible' + (count !== 1 ? 's' : '')}</span>${cta}`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
@@ -1477,7 +1481,13 @@ renderizarProductos = function() {
 
     // Render inicial en lote con DocumentFragment (1 reflow en vez de N appendChild)
     const _frag = document.createDocumentFragment();
-    const _cardsIniciales = productosFiltrados.slice(0, _visibleCount).map(p => _tmCrearCard(p, { lazy: false }));
+    // Las 8 primeras van "eager" para el LCP del catálogo, pero solo si la
+    // rejilla se ve. En el inicio está oculta (vista de catálogo cerrada) y
+    // aun así se pinta —renderizarMasVendidos la necesita para tener
+    // _tmCrearCard—: con eager, el móvil bajaba 8 fotos que nadie miraba.
+    // Lazy dentro de un display:none no descarga hasta que se muestra.
+    const _rejillaVisible = productosGrid.offsetParent !== null;
+    const _cardsIniciales = productosFiltrados.slice(0, _visibleCount).map(p => _tmCrearCard(p, { lazy: !_rejillaVisible }));
     _cardsIniciales.forEach(c => _frag.appendChild(c));
     productosGrid.appendChild(_frag);
     if (window._tmAnimObs) _cardsIniciales.forEach(c => window._tmAnimObs.observe(c));

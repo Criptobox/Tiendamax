@@ -51,6 +51,11 @@
     .tm-bot-bubble svg{width:26px;height:26px;color:#fff;}
     .tm-bot-bubble.has-new::after{content:'';position:absolute;top:5px;right:5px;width:10px;height:10px;background:#2ECC71;border-radius:50%;border:2px solid #0D0D0D;animation:tmBotDotPulse 1.5s ease-in-out infinite;}
     @keyframes tmBotDotPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.6;}}
+    .tm-bot-label{display:none;}
+    @media(min-width:900px){.tm-bot-label{display:block;position:fixed;bottom:31px;right:78px;z-index:99998;background:#1a1a1a;color:#fff;border:1px solid rgba(255,255,255,.12);font:600 13px/1 inherit;padding:9px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap;}
+      .tm-bot-label:hover{border-color:#E8501E;}
+      body:has(.tm-bot-panel.open) .tm-bot-label{display:none;}}
+    body.light-mode .tm-bot-label{background:#fff;color:#1a1a1a;border-color:rgba(0,0,0,.1);box-shadow:0 4px 14px rgba(0,0,0,.12);}
     .tm-bot-badge{position:absolute;top:-5px;right:-5px;background:#2ECC71;color:#fff;font-size:10px;font-weight:700;padding:3px 6px;border-radius:10px;border:2px solid #0D0D0D;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.4);}
     /* ── Cartel de bienvenida ── */
     .tm-bot-welcome{position:fixed;bottom:84px;right:16px;max-width:230px;background:linear-gradient(135deg,#1a1a1a 0%,#1f1f1f 100%);color:#fff;padding:12px 14px 12px 12px;border-radius:14px 4px 14px 14px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:99997;font-size:13px;line-height:1.4;border:1px solid rgba(255,255,255,.12);opacity:0;transform:translateY(8px) scale(.92);transition:opacity .3s ease,transform .3s ease;pointer-events:none;display:flex;align-items:flex-start;gap:10px;}
@@ -226,6 +231,14 @@
     bubble.setAttribute('aria-label', 'Abrir chat con Max');
     bubble.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.86.51 3.6 1.39 5.09L2 22l4.91-1.39C8.4 21.49 10.14 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.66 0-3.22-.45-4.56-1.24l-.33-.2-2.92.83.83-2.92-.2-.33C3.45 15.22 3 13.66 3 12c0-4.96 4.04-9 9-9s9 4.04 9 9-4.04 9-9 9zm5-9.5c0 2.49-2.01 4.5-4.5 4.5-.78 0-1.51-.2-2.15-.55L8 15.5l1.05-2.35C8.7 12.51 8.5 11.78 8.5 11c0-2.49 2.01-4.5 4.5-4.5S17 8.51 17 11z"/></svg><span class="tm-bot-badge" aria-hidden="true">1</span>';
     document.body.appendChild(bubble);
+    // Solo se ve en PC (CSS). Es un botón aparte, no texto dentro de la
+    // burbuja: la burbuja mide 52px y el cerebro la maneja por id.
+    const etiqueta = document.createElement('button');
+    etiqueta.type = 'button';
+    etiqueta.className = 'tm-bot-label';
+    etiqueta.textContent = 'Pregúntale a Max';
+    etiqueta.addEventListener('click', () => bubble.click());
+    document.body.appendChild(etiqueta);
 
     const welcome = document.createElement('div');
     welcome.className = 'tm-bot-welcome';
@@ -395,28 +408,19 @@
         if (e.key === 'Escape' && _panelOpen && !window._tmBotCerebroListo) cerrarPanel();
     });
 
-    // ── Cartel de bienvenida (1 vez por sesión) ──
+    // ── Aviso de que Max existe ──
+    // El globo "¿Buscas algo?" ya no se muestra: aparecía encima de las
+    // tarjetas justo cuando el cliente las estaba leyendo, y junto a la
+    // burbuja eran dos Max en la misma esquina. El elemento #tmBotWelcome
+    // sigue en el DOM porque el cerebro lo busca por id (contrato), pero se
+    // queda oculto. En su lugar: el punto verde en la burbuja una vez por
+    // sesión, y en PC —donde sobra sitio— la etiqueta fija "Pregúntale a Max".
     function mostrarBienvenida() {
         if (sessionStorage.getItem('tm_bot_welcome_shown')) return;
         setTimeout(() => {
             if (_panelOpen) return;
             sessionStorage.setItem('tm_bot_welcome_shown', '1');
-            welcome.classList.add('visible');
             bubble.classList.add('has-new');
-            const _cerrar = () => {
-                if (_panelOpen) return;
-                welcome.classList.remove('visible');
-                window.removeEventListener('scroll', _alDesplazar);
-            };
-            // Se quita solo en cuanto el cliente empieza a mirar. El globo se
-            // queda encima del catálogo, y quien ya está desplazando no
-            // necesita que le ofrezcan ayuda: la necesita quien se quedó
-            // parado. Nueve segundos fijos tapaban dos tarjetas mientras las
-            // estaba leyendo.
-            let _y0 = window.scrollY;
-            const _alDesplazar = () => { if (Math.abs(window.scrollY - _y0) > 120) _cerrar(); };
-            window.addEventListener('scroll', _alDesplazar, { passive: true });
-            setTimeout(_cerrar, 9000);
         }, 4000);
     }
 
