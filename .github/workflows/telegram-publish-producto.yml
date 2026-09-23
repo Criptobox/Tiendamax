@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'productos.json'
+      # Lo que sube el panel desde que dejó de subir el catálogo entero; ver
+      # el paso "Ver el catálogo…" más abajo.
+      - 'cambios/**'
       - 'data.json'
       - 'config.json'
   workflow_dispatch:
@@ -28,15 +31,30 @@ jobs:
 
       - name: Instalar dependencias
         run: pip install -r scripts/requirements.txt
+      - name: Ver el catálogo como estaba y como quedará con los cambios del panel
+        # El push del panel trae solo cambios/*.json: productos.json es el
+        # mismo antes y después, así que comparar HEAD~1 con HEAD no vería
+        # ningún producto nuevo. Se aplican en local los cambios que había en
+        # cada uno de los dos commits, y se compara eso.
+        run: |
+          python scripts/aplicar_cambios.py --ref HEAD~1 --salida "$RUNNER_TEMP/productos-antes.json" \
+            || rm -f "$RUNNER_TEMP/productos-antes.json"
+          python scripts/aplicar_cambios.py --ref HEAD --salida productos.json
+
       - name: Publicar en Telegram y gestionar mensajes
         run: python bot/publish_producto.py
         env:
+          PREV_PRODUCTOS_JSON: ${{ runner.temp }}/productos-antes.json
           BOT_TOKEN:        ${{ secrets.BOT_TOKEN }}
           TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
 
       - name: Guardar IDs de mensajes
         if: always()
         run: |
+          # productos.json quedó con los cambios del panel aplicados solo en
+          # local (paso de arriba): con el árbol sucio, el rebase de abajo se
+          # niega a arrancar y los IDs no se guardan.
+          git checkout -- productos.json 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add bot/telegram_messages.json

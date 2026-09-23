@@ -274,7 +274,15 @@ def msg_oferta_dia(p: dict, texto_oferta: str = "") -> str:
 # ── Lógica principal ─────────────────────────────────────────────────────────
 
 def main() -> int:
-    prev_prods_raw  = git_show("productos.json")
+    # Con cambios del panel, el workflow deja aquí el catálogo ANTERIOR ya con
+    # los cambios que había pendientes en HEAD~1 aplicados (ver
+    # telegram-publish-producto.yml). Sin él, el commit anterior tal cual.
+    _prev = os.environ.get("PREV_PRODUCTOS_JSON")
+    if _prev and os.path.isfile(_prev):
+        with open(_prev, encoding="utf-8") as f:
+            prev_prods_raw = f.read()
+    else:
+        prev_prods_raw = git_show("productos.json")
     prev_config_raw = git_show("config.json")
 
     curr_prods  = cargar_json_file("productos.json")

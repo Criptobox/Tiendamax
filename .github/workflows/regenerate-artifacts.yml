@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - 'productos.json'
+      # Lo que sube el panel al publicar: solo los productos tocados. El
+      # primer paso de abajo los aplica a productos.json.
+      - 'cambios/**'
       - 'subcategorias.json'
       - 'categorias.json'
       - 'scripts/regenerate_artifacts.py'
@@ -40,44 +43,56 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Regenerar productos-lite.json y publicarlo YA
+      - name: Aplicar los cambios del panel, regenerar productos-lite.json y publicarlo YA
         # Va el PRIMERO y con push propio, antes de instalar Pillow y de
-        # renderizar las tarjetas OG, porque desde que el panel dejó de subir
-        # el lite es este paso el que deja la tienda al día: los clientes leen
-        # productos-lite.json, y hasta que esto llegue a Pages siguen viendo el
-        # catálogo anterior. Al final del job serían varios minutos; aquí son
-        # segundos.
+        # renderizar las tarjetas OG: es este paso el que deja la tienda al
+        # día. El panel ya no sube el catálogo entero (~540 KB desde un móvil
+        # en Cuba) sino solo los productos tocados, en cambios/*.json;
+        # aplicar_cambios.py los mete en productos.json y borra los ficheros.
+        # Los clientes leen productos-lite.json (= productos.json sin
+        # `descripcion`), que se deriva de ahí mismo.
         #
-        # El lite es exactamente productos.json sin `descripcion`, así que se
-        # deriva sin ambigüedad de lo que acaba de entrar. Si no cambió, no se
-        # commitea nada.
+        # Si el push choca con otro commit, NO se fusiona: se vuelve a main
+        # y se rehace entero. Aplicar es idempotente (los ficheros aplicados
+        # se borran en el mismo commit), así que rehacer nunca duplica nada, y
+        # un conflicto resuelto a mano en productos.json es justo cómo se
+        # pierde un cambio sin que nadie lo vea.
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python scripts/build-productos-lite.py
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- productos-lite.json; then
-            echo "productos-lite.json ya estaba al día"
-            exit 0
-          fi
-          git add productos-lite.json
-          # [skip ci] como en el resto del repo: evita volver a disparar los
-          # workflows de push. Pages NO se dispara solo con un commit del bot,
-          # así que se pide a mano justo debajo — sin eso el lite quedaría en
-          # main pero la tienda seguiría sirviendo el viejo, que es
-          # exactamente lo que este paso viene a evitar.
-          git commit -m "chore: regenerar productos-lite.json [skip ci]"
-          # Reintento con rebase: entre el checkout y este push pueden haber
-          # entrado otros commits del bot.
           publicado=0
-          for i in 1 2 3; do
+          for i in 1 2 3 4; do
+            python scripts/aplicar_cambios.py
+            python scripts/build-productos-lite.py
+            git add -A -- productos.json productos-lite.json
+            if [ -d cambios ] || git ls-files --error-unmatch cambios >/dev/null 2>&1; then
+              git add -A -- cambios
+            fi
+            if git diff --cached --quiet; then
+              echo "productos.json y productos-lite.json ya estaban al día"
+              break
+            fi
+            # [skip ci] como en el resto del repo: evita volver a disparar los
+            # workflows de push. Pages NO se dispara solo con un commit del
+            # bot, así que se pide a mano justo debajo.
+            git commit -q -m "chore: aplicar cambios del panel y regenerar productos-lite.json [skip ci]"
             if git push; then publicado=1; break; fi
-            git pull --rebase --autostash origin main || break
+            echo "Entró otro commit en main: se rehace desde el principio."
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            sleep $((i * 2))
           done
           if [ "$publicado" != "1" ]; then
-            echo "❌ No se pudo publicar productos-lite.json" >&2
-            exit 1
+            # Sin nada que publicar está bien; con cambios del panel aún en
+            # main, no: el gestor los cree publicados. Que se vea en rojo.
+            git fetch -q origin main
+            if [ -n "$(git ls-tree --name-only origin/main cambios/)" ]; then
+              echo "❌ Quedan cambios del panel sin aplicar en main." >&2
+              exit 1
+            fi
+            exit 0
           fi
           echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
           curl -sS -X POST \

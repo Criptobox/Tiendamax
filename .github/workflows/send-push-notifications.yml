@@ -7,6 +7,10 @@ on:
     paths:
       - 'config.json'
       - 'productos.json'
+      # El panel ya no sube productos.json: sube solo lo tocado en cambios/
+      # (lo aplica regenerate-artifacts, y su commit, al ser del bot, no
+      # dispara este workflow). Por eso se escucha aquí y se aplica en local.
+      - 'cambios/**'
   workflow_dispatch:
 
 permissions:
@@ -43,6 +47,8 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install -r scripts/requirements.txt
+      - name: Ver el catálogo como quedará con los cambios del panel
+        run: python scripts/aplicar_cambios.py --ref HEAD --salida productos.json
       - name: Detectar cambios y enviar
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
