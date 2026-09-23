@@ -2254,7 +2254,7 @@
   },
   {
     "id": 1778384646214,
-    "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
+    "nombre": "🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
     "precioActual": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
@@ -6414,101 +6414,6 @@
     "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
   },
   {
-    "id": 1784404666988,
-    "nombre": "🌐 MikroTik SXTsq LITE5",
-    "imagen": "https://tiendamax.org/imagenes/img_1784404663965.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1784404663965.webp",
-      "https://tiendamax.org/imagenes/img_1784404665140.webp",
-      "https://tiendamax.org/imagenes/img_1784404666146.webp"
-    ],
-    "precioActual": 150,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 10,
-    "comisionMoneda": "USD",
-    "categoria": "WIFI",
-    "subcategoria": "ANTENAS Y CPE",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "📶 Frecuencia y Velocidad: 5 GHz hasta 300 Mbps",
-      "🔌 Puertos: 1× puerto Fast Ethernet RJ45"
-    ],
-    "fechaAgregado": "2026-07-18T19:57:46.989Z",
-    "seoTitle": "Mikrotik Sxtsq LITE5 en Cuba | TiendaMax",
-    "seoDescription": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y…",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "MikroTik"
-      },
-      {
-        "k": "Modelo",
-        "v": "SXTsq Lite5",
-        "nota": "RBSXTsq5nD"
-      },
-      {
-        "k": "Frecuencia y Velocidad",
-        "v": "5 GHz hasta 300 Mbps",
-        "nota": "Wi-Fi 4 / 802.11a/n - Dual Chain 2×2"
-      },
-      {
-        "k": "Puertos",
-        "v": "1× puerto Fast Ethernet RJ45",
-        "nota": "10/100 Mbps con soporte PoE In"
-      },
-      {
-        "k": "Antenas",
-        "v": "Antena direccional de panel integrada de 16 dBi",
-        "nota": "Doble polarización 2×2 MIMO, apertura ~23°"
-      },
-      {
-        "k": "Modos de operación",
-        "v": "CPE / Estación (Cliente), Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 3"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "Frecuencia en banda de 5 GHz (802.11a/n) con modulación 2×2 MIMO para establecer enlaces directos y libres de las interferencias comunes de 2.4 GHz."
-      },
-      {
-        "d": "Antena integrada de 16 dBi con diseño compacto SXTsq, dos veces más delgada que el modelo SXT Lite5 tradicional conservando el mismo rendimiento de ganancia."
-      },
-      {
-        "d": "Procesador Atheros AR9344 a 600 MHz con 64 MB de RAM para una gestión estable de datos y enrutamiento continuo."
-      },
-      {
-        "d": "Sistema operativo RouterOS Nivel 3, con soporte para protocolos inalámbricos propietarios MikroTik (Nv2 y Nstreme), firewall, monitoreo de señal y gestión avanzada."
-      },
-      {
-        "d": "Carcasa para exteriores de alta durabilidad, resistente al agua, rayos UV y temperaturas extremas (-40 °C a +70 °C)."
-      },
-      {
-        "d": "Alimentación eficiente mediante PoE Pasivo (10V a 30V) a través del cable de red Ethernet con consumo energético de apenas 6W."
-      },
-      {
-        "d": "Puntos de anclaje integrados compatibles con abrazaderas para mástil y soportes articulados (como MikroTik QuickMount)."
-      }
-    ],
-    "idealPara": [
-      "Dispositivo cliente (CPE) para abonados en redes de proveedores de Internet inalámbrico (WISP) sobre la banda de 5 GHz.",
-      "Enlaces inalámbricos Punto a Punto (PtP) de corto y mediano alcance (hasta 6-12 km con línea de vista despejada).",
-      "Conexión de cámaras de videovigilancia IP en exteriores e interconexión de redes locales entre edificios cercanos o fincas."
-    ],
-    "incluye": [
-      "1× Antena CPE MikroTik SXTsq Lite5",
-      "1× Adaptador de corriente (24V)",
-      "1× Inyector PoE Fast Ethernet",
-      "1× Abrazadera metálica para fijación en mástil o poste",
-      "1× Guía de inicio rápido"
-    ],
-    "descripcion": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y eficiente permite una instalación sencilla en cualquier entorno, garantizando una señal estable y de alto rendimiento."
-  },
-  {
     "id": 1784405087402,
     "nombre": "🔒 Cámara PTZ WiFi Exterior",
     "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
@@ -8862,7 +8767,7 @@
   },
   {
     "id": 1787933033934,
-    "nombre": "📡Ubiquiti Litebeam M5",
+    "nombre": "📡Ubiquiti LiteBeam M5",
     "imagen": "https://tiendamax.org/imagenes/img_1787933030028.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787933030028.webp"
@@ -10311,7 +10216,7 @@
   },
   {
     "id": 1789569593128,
-    "nombre": "📡Mikrotik SXTsq 5 lite",
+    "nombre": "📡MikroTik SXTsq 5 lite",
     "imagen": "https://tiendamax.org/imagenes/img_1789569588325.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789569588325.webp",
@@ -10583,7 +10488,7 @@
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
-    "subcategoria": "ANTENAS Y CPE",
+    "subcategoria": "ROUTERS",
     "masVendido": false,
     "usado": false,
     "garantia": "",
