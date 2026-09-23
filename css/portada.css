@@ -37,7 +37,9 @@ html body #categorias-home .categorias-grid {
     gap: 10px !important;
     overflow-x: auto !important;
     scroll-snap-type: x proximity;
-    padding: 10px 2px 8px !important;
+    /* Abajo hay aire para la sombra: el overflow-x la recorta en seco y en
+       modo claro se veía como una franja gris detrás de la fila. */
+    padding: 10px 4px 16px !important;
     margin: 0 !important;
     scrollbar-width: none;
 }
@@ -53,7 +55,7 @@ html body #categorias-home .categorias-grid .categoria-card:nth-child(n) {
     scroll-snap-align: start;
     background: linear-gradient(160deg, rgba(var(--cat-rgb, 255,106,31), .95), rgba(var(--cat-rgb, 255,106,31), .28) 78%) !important;
     border: 1px solid rgba(255, 255, 255, .10) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .28) !important;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, .22) !important;
     backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
 html body #categorias-home .categorias-grid .categoria-card:hover { transform: translateY(-3px) !important; }
@@ -94,6 +96,23 @@ html body #categorias-home .categorias-grid .categoria-card .cat-popular-badge {
     html body #categorias-home .categorias-grid .categoria-card:nth-child(n) { width: 104px !important; }
 }
 html body #catVerMasBtn { margin: 6px auto 0 !important; display: block !important; }
+html body #categorias-home #catExtraWrap { margin-top: 10px !important; }
+
+/* Modo claro: el degradado se funde sobre crema y el blanco de "4
+   disponibles" quedaba sin contraste. Con una base oscura debajo, la tarjeta
+   es la misma que en modo oscuro. Mismo peso que la regla de oficial-plus para
+   #catExtraWrap (que las pintaba casi blancas) y gana por ir después. */
+html body.light-mode #categorias-home .categorias-grid .categoria-card.cat-color,
+html body.light-mode #categorias-home .categorias-grid > .categoria-card.cat-color {
+    background: linear-gradient(160deg, rgba(var(--cat-rgb, 255,106,31), .95), rgba(var(--cat-rgb, 255,106,31), .35) 78%), #1c1a18 !important;
+    border: 1px solid rgba(0, 0, 0, .06) !important;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, .14) !important;
+}
+html body.light-mode #categorias-home .categorias-grid .categoria-card.cat-color .cat-icon {
+    background: rgba(0, 0, 0, .18) !important;
+    border: 1px solid rgba(255, 255, 255, .16) !important;
+    color: #fff !important; box-shadow: none !important;
+}
 
 /* ── Destacados: título, sin el texto de relleno ─────────────── */
 html body #mas-vendidos { padding-top: 18px !important; }

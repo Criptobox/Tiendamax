@@ -307,7 +307,7 @@ Every other script in `scripts/` is triggered by a cron or `workflow_dispatch` i
 ### Other services (not part of the static site's own deploy)
 
 - `bot/` — a separate Telegram bot (python-telegram-bot), its own `requirements.txt` and `Procfile`, deployed independently.
-- `mini-services/chat-bot/` — a Cloudflare Worker (TypeScript, own `wrangler.toml`/`package.json`) backing the on-site AI chat widget (`js/tm-bot.js` calls out to it).
+- `mini-services/chat-bot/` — the **retired** Cloudflare Worker the chat used to call (see the bot section above). Kept for reference only; its deploy workflow (`deploy-chat-bot.yml`) was removed, so nothing deploys it.
 - `bot/cloudflare_worker.js` is a *different* Worker, deployed via the root `wrangler.toml` (`name = "tiendamax"`, weekly cron) — don't confuse it with `mini-services/chat-bot`.
 
 ### Deploy

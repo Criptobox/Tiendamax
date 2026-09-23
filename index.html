@@ -260,7 +260,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=7fb5d81c" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=d70afd43" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -271,7 +271,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=aad3b354">
+    <link rel="stylesheet" href="css/bundle.css?v=3a40d991">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -614,7 +614,6 @@
                     <div class="nd-hero-left">
                         <span class="op-chip"><span class="op-pulse"></span><span class="op-chip-txt">Catálogo actualizado · <span id="opChipCount">116</span>&nbsp;productos<span class="op-chip-extra"> · Pedido por WhatsApp</span></span></span>
                         <h1 class="op-h1">Todo lo que necesitas,<br><span class="op-underline">a un</span> <span class="op-accent">mensaje</span> <span class="op-underline">de distancia</span></h1>
-                        <p class="op-lead">Energía, redes, piezas de carro y más. Lo pruebas al recibirlo y pagas al recibir.</p>
                         <!-- Buscador + selector de moneda, integrados en el hero -->
                         <div class="nd-hero-search">
                             <div class="hsb-search">
@@ -1652,7 +1651,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=7fb5d81c" defer></script>
+    <script src="js/tm-bundle.js?v=d70afd43" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

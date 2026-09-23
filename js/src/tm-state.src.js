@@ -417,7 +417,10 @@ function _tmCatVerMas(grid, extras) {
     btn.onclick = () => {
         const abrir = wrap.classList.contains('cat-extra-oculto');
         wrap.classList.toggle('cat-extra-oculto', !abrir);
-        if (abrir) wrap.style.setProperty('display', 'grid', 'important');
+        // flex, no grid: en el inicio las categorías son una fila que se
+        // desliza (css/portada.css). Con grid en línea y !important, el CSS no
+        // podía corregirlo y las extras salían una debajo de otra.
+        if (abrir) wrap.style.setProperty('display', 'flex', 'important');
         else       wrap.style.setProperty('display', 'none', 'important');
         setLabel(abrir);
     };

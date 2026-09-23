@@ -126,7 +126,11 @@
    categorías: una a la vez en el móvil y tres en pantalla ancha, rotando por
    todas las rebajas con stock (window.tmBannerOfertas). */
 .rebajas-home { padding: 6px 0 4px; }
-.rebajas-grid { display: grid; grid-template-columns: 1fr; gap: 12px; transition: opacity .28s ease; }
+.rebajas-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; transition: opacity .28s ease; }
+/* minmax(0,…) y min-width:0: sin ellos la columna crece hasta el nombre
+   entero (va en una línea con puntos suspensivos) y un "Cargador y
+   Mantenedor de Baterías VEVOR 35A" ensanchaba toda la página a 458px. */
+.rebajas-grid > * { min-width: 0; }
 .rebajas-grid.tm-of-saliendo { opacity: 0; }
 .rebajas-grid .tm-oferta { max-width: none; min-height: 78px; }
 @media (min-width: 900px) {
