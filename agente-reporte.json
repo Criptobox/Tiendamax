@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-22T13:47:53.755173+00:00",
-  "productos": 136,
-  "urgentes": 7,
+  "generado": "2026-09-23T13:59:11.843399+00:00",
+  "productos": 138,
+  "urgentes": 8,
   "advertencias": 0,
   "info": 9,
-  "resumen": "Anoche revisé tus 136 productos y encontré 7 urgente(s), 9 de info.",
+  "resumen": "Anoche revisé tus 138 productos y encontré 8 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -38,8 +38,13 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "📡Mikrotik SXTsq 5 lite",
-      "detalle": "→ 📡MikroTik SXTsq 5 LITE"
+      "nombre": "📡MikroTik SXTsq 5 lite",
+      "detalle": "→ 📡MikroTik SXTsq 5 Lite"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "📡MikroTik hEX PoE lite (RB750UPr2)",
+      "detalle": "→ 📡MikroTik hEX PoE Lite (RB750UPr2)"
     },
     {
       "tipo": "stock_bajo",
@@ -83,8 +88,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "62 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 59 más"
+      "nombre": "61 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 58 más"
     }
   ]
 }
