@@ -935,8 +935,10 @@ async function cargarDatosDesdeGitHub() {
             fetchJSON('categorias.json').catch(() => null),
             Promise.resolve(null), // comisiones consolidadas en productos.json
         ]);
-        // Config no crítica: se carga en background sin bloquear la UI
-        setTimeout(async () => {
+        // Config no crítica: se carga en background sin bloquear la UI.
+        // Solo en el panel: grupos de Facebook y Revolico no los usa nada de
+        // la tienda, y eran dos peticiones de más en cada visita de cliente.
+        if (document.getElementById('adminPanel')) setTimeout(async () => {
             try {
                 const [dataG, dataR] = await Promise.all([
                     fetchJSON('grupos_facebook_config.json').catch(() => null),

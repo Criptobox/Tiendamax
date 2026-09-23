@@ -593,6 +593,23 @@ async function sincronizarTodoConGitHub() {
     if (!isNaN(_mLS)) _configSync.margenMN = _mLS;
     // Limpiar claves undefined
     Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
+    /* Las marcas de tiempo solo avanzan si algo cambió de verdad.
+       Estampar la hora en cada pulsación hacía que config.json nunca fuera
+       igual al del repo, así que la poda de "lo que ya está igual no se
+       sube" nunca lo alcanzaba: un PUT, un commit y un despliegue de Pages
+       por publicación sin cambiar nada. Y ofertaDiaActualizado decía que la
+       oferta del día se había tocado cada vez que se publicaba un precio. */
+    if (_cfgRepo && _configBase === _cfgRepo) {
+        if (_configSync.ofertaDiaId === _configBase.ofertaDiaId
+            && _configSync.ofertaDiaTexto === _configBase.ofertaDiaTexto
+            && _configBase.ofertaDiaActualizado) {
+            _configSync.ofertaDiaActualizado = _configBase.ofertaDiaActualizado;
+        }
+        const _sinHora = o => JSON.stringify(Object.assign({}, o, { actualizado: 0 }));
+        if (_configBase.actualizado && _sinHora(_configSync) === _sinHora(_configBase)) {
+            _configSync.actualizado = _configBase.actualizado;
+        }
+    }
 
     // No perder descripciones al subir (el admin trabaja con el catálogo lite).
     // Con el catálogo del repo que ya bajamos arriba: son 425 KB y se estaban
@@ -622,17 +639,32 @@ async function sincronizarTodoConGitHub() {
     // subcategorías agregadas desde otra sesión/dispositivo al publicar.
     const _catFinal = await _tmMergeCategoriasConRepo(user, repo, _catRepo);
     const _subcatFinal = await _tmMergeSubcategoriasConRepo(user, repo, _subcatRepo);
+    /* banners.json y revolico_config.json ya NO se suben desde aquí.
+       El panel no tiene editor de Revolico, y los banners los edita la
+       pestaña Publicar, que lee y escribe banners.json en el repo sin pasar
+       por localStorage. Lo que este botón subía era la copia de la tienda
+       en localStorage: vieja si se acababan de publicar banners nuevos (los
+       revertía) y [] si la copia no había llegado a bajar (3G que se cae,
+       móvil nuevo) — la portada se quedaba sin banners.
+       Los grupos sí se editan aquí, pero la copia también llega en segundo
+       plano: sin la clave, "no lo tengo" no es "está vacío" y no se sube.
+       Si el gestor los borra todos a propósito, la clave existe y vale "[]". */
+    const _siLoCargo = (clave, leer) => {
+        const v = localStorage.getItem(clave);
+        return v === null ? null : leer(v);
+    };
+    const _gruposLS = _siLoCargo('gruposFB', tmParseArray);
     const archivos = [
         { path: 'productos.json',              data: _prodsFinal },
         { path: 'categorias.json',             data: _catFinal },
         { path: 'subcategorias.json',          data: _subcatFinal },
-        { path: 'grupos_facebook_config.json', data: { grupos: tmParseArray(localStorage.getItem('gruposFB')), exportado: new Date().toISOString() } },
-        { path: 'revolico_config.json',        data: tmParseObject(localStorage.getItem('revolicoConfig')) },
-        { path: 'banners.json',                data: tmParseArray(localStorage.getItem('heroBanners')) },
+        // Sin marca de tiempo: nadie la leía y hacía que el fichero cambiara
+        // en cada publicación aunque la lista de grupos fuera la misma.
+        { path: 'grupos_facebook_config.json', data: _gruposLS && { grupos: _gruposLS } },
         // comisiones.json eliminado — consolidado en productos.json
         // ventas_historial.json migrado a Firebase — ya no se sube a GitHub
         { path: 'config.json',                 data: _configSync },
-    ];
+    ].filter(a => a.data !== null);
 
     // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
@@ -645,9 +677,19 @@ async function sincronizarTodoConGitHub() {
        config.json y grupos_facebook_config.json byte por byte idénticos: tres
        idas y vueltas, tres commits y tres despliegues de Pages que se cancelan
        entre sí para no cambiar nada. El sha del repo ya vino en el listado, así
-       que comparar no cuesta ninguna petición. config.json queda siempre fuera
-       de esta poda: lleva una marca de tiempo, así que nunca coincide. */
+       que comparar no cuesta ninguna petición. (config.json entra en la poda
+       porque su marca de tiempo solo avanza si algo cambió, ver arriba.) */
     let _sinCambio = 0;
+    /* config.json se compara por CONTENIDO, no por bytes: el cron de la tasa
+       lo escribe desde Python ("tasaMN": 720.0) y aquí sale 720, así que tras
+       cada cambio de tasa el sha nunca coincidía aunque el número fuera el
+       mismo. Ya lo tenemos leído, así que no cuesta nada. */
+    if (_cfgRepo && _configBase === _cfgRepo
+        && JSON.stringify(_configSync) === JSON.stringify(_configBase)) {
+        const _antes = archivosFiltrados.length;
+        archivosFiltrados = archivosFiltrados.filter(a => a.path !== 'config.json');
+        _sinCambio += _antes - archivosFiltrados.length;
+    }
     if (_shasRaiz) {
         const _quedan = [];
         for (const a of archivosFiltrados) {

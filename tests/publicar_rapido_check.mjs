@@ -56,14 +56,24 @@ const CATALOGO = JSON.parse(await readFile(join(RAIZ, 'productos.json'), 'utf8')
 const leer = async n => JSON.parse(await readFile(join(RAIZ, n), 'utf8'));
 // El panel escribe con JSON.stringify(x, null, 2); el "repo" tiene que estar
 // en ese mismo formato o los shas no coinciden nunca y no se poda nada.
+const GRUPOS = [{ nombre: 'Compra venta Habana', url: 'https://www.facebook.com/groups/123' }];
 const CUERPOS = {
     'productos.json':              JSON.stringify(CATALOGO, null, 2),
     'productos-lite.json':         JSON.stringify(CATALOGO.map(p => { const { descripcion, ...r } = p; return r; }), null, 2),
     'categorias.json':             JSON.stringify(await leer('categorias.json'), null, 2),
     'subcategorias.json':          JSON.stringify(await leer('subcategorias.json'), null, 2),
-    'config.json':                 JSON.stringify(await leer('config.json'), null, 2),
-    'grupos_facebook_config.json': JSON.stringify({ grupos: [], exportado: '' }, null, 2),
+    /* config.json tal como lo deja el cron de la tasa: escrito desde Python
+       (720.0, no 720) y con la hora de la última pasada. Si el panel lo
+       compara por bytes o le pone la hora de ahora, lo sube en cada
+       publicación — pasó: un commit de config.json por cada "Actualizar". */
+    'config.json':                 JSON.stringify(Object.assign(await leer('config.json'),
+                                       { actualizado: '2026-01-01T00:00:00.000Z' }), null, 2)
+                                       .replace(/("tasaMN": \d+)(,?)$/m, '$1.0$2'),
+    // Con un grupo: vacío en los dos lados, subir [] encima no se notaría.
+    'grupos_facebook_config.json': JSON.stringify({ grupos: GRUPOS }, null, 2),
 };
+if (!/"tasaMN": \d+\.0/.test(CUERPOS['config.json']))
+    throw new Error('el config.json de prueba no quedó con la tasa en formato Python');
 const b64 = t => Buffer.from(t, 'utf8').toString('base64');
 const shaGit = t => { const b = Buffer.from(t, 'utf8');
     return createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${b.length}\0`), b])).digest('hex'); };
@@ -112,20 +122,23 @@ await pagina.addInitScript(() => {
     localStorage.setItem('githubToken', 'ghp_de_mentira');
 });
 await pagina.goto(`http://localhost:${PUERTO}/admin.html`);
-await pagina.waitForTimeout(2500);
+// 4.5 s: la copia de grupos y Revolico baja en segundo plano a los 4 s, y
+// tiene que haber llegado ya para no pisar lo que se fija aquí abajo.
+await pagina.waitForTimeout(4500);
 await pagina.evaluate(() => { document.getElementById('adminPanel').classList.remove('hidden'); });
 
 /* Estado de partida: el catálogo completo cargado y UN precio cambiado de
    verdad. Marcar un producto como modificado sin tocarlo mide el caso "no
    cambió nada", que es justo el que la poda se salta: parecería estupendo y
    no probaría nada. */
-await pagina.evaluate(async () => {
+await pagina.evaluate(async (GRUPOS_) => {
     const full = await (await fetch('productos-lite.json')).json();
     if (window.apReplaceProductos) window.apReplaceProductos(full.slice());
     else { productos.length = 0; full.forEach(p => productos.push(p)); }
     productos[0].precioActual = Number(productos[0].precioActual || 0) + 1;
+    localStorage.setItem('gruposFB', JSON.stringify(GRUPOS_));
     localStorage.setItem('productosModificados', JSON.stringify([String(productos[0].id)]));
-});
+}, GRUPOS);
 LOG.length = 0;
 SITIO.length = 0;
 await pagina.evaluate(() => sincronizarTodoConGitHub());
@@ -163,6 +176,10 @@ for (const f of ['grupos_facebook_config.json','productos-lite.json'])
 // ── 3. No se sube lo que ya está igual ───────────────────────────────────
 ok(cuantos(puts, 'categorias.json') === 0,
    'categorias.json no cambió: subirlo es un commit y un despliegue de Pages para nada');
+ok(cuantos(puts, 'config.json') === 0,
+   'config.json no cambió (solo su hora o 720.0 frente a 720): no se sube');
+ok(cuantos(puts, 'grupos_facebook_config.json') === 0,
+   'la lista de grupos no cambió: no se sube');
 // Y lo que SÍ cambió, se sube: es la mitad que de verdad importa.
 ok(cuantos(puts, 'productos.json') === 1, 'el catálogo cambió: tiene que subir');
 /* Y el lite NO se sube desde el panel: son 475 KB en cada publicación para
@@ -194,6 +211,28 @@ await pagina.evaluate(() => sincronizarTodoConGitHub());
 await pagina.waitForTimeout(300);
 ok(LOG.filter(x => x.tipo === 'PUT' && x.ruta === 'productos.json').length === 0,
    'sin tocar nada, el segundo "Actualizar tienda" no vuelve a subir el catálogo');
+ok(LOG.filter(x => x.tipo === 'PUT').length === 0,
+   'sin tocar nada, el segundo "Actualizar tienda" no sube ningún fichero: '
+   + LOG.filter(x => x.tipo === 'PUT').map(x => x.ruta).join(', '));
+
+// ── 7. Lo que el panel no llegó a cargar no se sube vacío ───────────────
+/* Móvil recién estrenado o 3G que se cayó: la copia de grupos no bajó y la
+   de banners es la de la tienda (vieja o ninguna). Publicar "todo" (sin
+   productos marcados) subía [] o la lista vieja encima de la buena: la
+   portada se quedaba sin banners, o volvían los que se acababan de quitar
+   desde la pestaña Publicar. */
+LOG.length = 0;
+await pagina.evaluate(() => {
+    localStorage.removeItem('gruposFB');
+    localStorage.setItem('heroBanners', '[]');
+    localStorage.setItem('revolicoConfig', '{}');
+    localStorage.setItem('productosModificados', '[]');   // → camino "subir todo"
+});
+await pagina.evaluate(() => sincronizarTodoConGitHub());
+await pagina.waitForTimeout(300);
+for (const f of ['banners.json', 'revolico_config.json', 'grupos_facebook_config.json'])
+    ok(cuantos(LOG.filter(x => x.tipo === 'PUT'), f) === 0,
+       `${f} no se puede pisar desde "Actualizar tienda" con una copia vacía o vieja`);
 
 ok(erroresJs.length === 0, 'errores JS en el panel: ' + erroresJs.slice(0,2).join(' | '));
 

@@ -955,7 +955,7 @@ async function guardarGruposFB() {
 
     localStorage.setItem('gruposFB', JSON.stringify(validos));
 
-    const data = { grupos: validos, exportado: new Date().toISOString() };
+    const data = { grupos: validos };   // sin marca de tiempo: ver sincronizarTodoConGitHub
 
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
