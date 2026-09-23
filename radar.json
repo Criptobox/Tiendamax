@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-22T15:26:09.150361+00:00",
-  "fecha": "2026-09-22",
+  "actualizado": "2026-09-23T15:18:56.173253+00:00",
+  "fecha": "2026-09-23",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -18,11 +18,11 @@
       "nombre": "⚡ Inversor Tataliken 4000W",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 160.0,
-        "mediana": 179.0,
-        "n": 14
+        "min": 159.0,
+        "mediana": 178.0,
+        "n": 13
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -1.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -79,9 +79,20 @@
         {
           "fecha": "2026-09-22",
           "mediana": 179.0
+        },
+        {
+          "fecha": "2026-09-23",
+          "mediana": 178.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "159 USD Inversor de corriente tataliken 4000w",
+          "precio": 159.0,
+          "url": "https://www.revolico.com/item/inversor-de-corriente-tataliken-4000w-57155367",
+          "dias": null
+        },
         {
           "fuente": "revolico",
           "titulo": "160 USD Inversor marca tataliken de 4000w , 12vol (110) onda sinosoidal pura Precio 160 us",
@@ -115,13 +126,6 @@
           "titulo": "178 USD ⚡ Inversor Tataliken 24V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
           "precio": 178.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-24v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-57123171",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
-          "precio": 178.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
           "dias": null
         }
       ]
@@ -188,6 +192,10 @@
         {
           "fecha": "2026-09-22",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-23",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -215,10 +223,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-09",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-09-10",
           "mediana": 82.5
@@ -269,6 +273,10 @@
         },
         {
           "fecha": "2026-09-22",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-23",
           "mediana": 75.0
         }
       ],
@@ -333,10 +341,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-09",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-10",
           "mediana": 170.0
         },
@@ -386,6 +390,10 @@
         },
         {
           "fecha": "2026-09-22",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-23",
           "mediana": 170.0
         }
       ],
