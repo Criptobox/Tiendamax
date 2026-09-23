@@ -14,6 +14,10 @@ sw.js, ese `controllerchange` le pasa a casi todo el mundo — o sea que casi
 nadie se contaba nunca.
 
 Nada de esto da error: el panel enseña un número que parece un número.
+
+La tienda ya NO se recarga sola (ver tests/recarga_check.mjs: sacaba al
+cliente de la categoría en la que estaba). El orden de abajo se mantiene
+igual: el cliente también puede recargar a mano en mitad de la espera.
 """
 import re
 import unittest
@@ -30,12 +34,6 @@ def contador():
 
 
 class VisitasTest(unittest.TestCase):
-    def test_la_pagina_se_recarga_sola_al_instalar_el_sw(self):
-        """La premisa del resto del archivo. Si esto dejara de ser cierto, el
-        orden de abajo daría igual — pero mientras lo sea, es obligatorio."""
-        self.assertIn("controllerchange", INDEX)
-        self.assertRegex(INDEX, r"controllerchange[\s\S]{0,400}location\.reload\(\)")
-
     def test_la_marca_se_pone_despues_de_contar_no_antes(self):
         c = contador()
         i_set = c.index("sessionStorage.setItem('tm_visita_contada'")

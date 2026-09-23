@@ -265,7 +265,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=3908c366" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=67578fe4" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1663,7 +1663,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=3908c366" defer></script>
+    <script src="js/tm-bundle.js?v=67578fe4" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1747,7 +1747,7 @@
     </script>
 
     <script>
-    // Service Worker con auto-actualización y reload cuando hay versión nueva
+    // Service Worker: se actualiza solo, sin recargar la página (ver abajo)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(reg => {
@@ -1780,66 +1780,61 @@
                     });
                 });
 
-                // Cuando el nuevo SW toma control, recargar la página
-                let refreshing = false;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (refreshing) return;
-                    refreshing = true;
-                    console.log('[SW] Versión nueva activada, recargando...');
-                    try{sessionStorage.setItem('tm_sw_reloading','1')}catch(e){} window.location.reload();
-                });
-
-                // Escuchar mensajes del SW (ej: actualización forzosa)
-                navigator.serviceWorker.addEventListener('message', (event) => {
-                    if (event.data && event.data.type === 'SW_UPDATED') {
-                        console.log('[SW] Recibido SW_UPDATED:', event.data.version);
-                        if (!refreshing) {
-                            refreshing = true;
-                            try{sessionStorage.setItem('tm_sw_reloading','1')}catch(e){} window.location.reload();
-                        }
-                    }
-                });
+                /* Ni el SW nuevo ni su aviso SW_UPDATED recargan la página.
+                   Recargaba en cuanto el SW tomaba el control: en la PRIMERA
+                   visita (al instalarse) y tras cada cambio de sw.js. Con 3G
+                   eso llega segundos después de entrar, cuando el cliente ya
+                   está dentro de una categoría, y la recarga lo devolvía al
+                   inicio. Y no traía nada: index.html va por la red primero
+                   (sw.js) y los JS/CSS llevan ?v=hash, así que la página que
+                   acaba de abrir YA es la versión nueva. El SW nuevo queda
+                   activo para la siguiente visita. */
             }).catch(() => {});
         });
     }
 
-    // ── Forzar actualización cuando el admin publica una versión nueva ──
-    // Lee /config/version en Firebase; si cambió, fuerza update del SW y recarga.
+    // ── Cuando el gestor publica, refrescar los DATOS de quien ya estaba dentro ──
+    // /config/version (Firebase) lo escribe el panel en cada publicación.
+    // Antes, si al ENTRAR la versión no era la última vista, se recargaba la
+    // página: tras cada publicación, el siguiente cliente que entraba era
+    // devuelto al inicio un segundo después de tocar una categoría — y para
+    // nada, porque lo que acababa de descargar ya era lo nuevo. Ahora al
+    // entrar solo se apunta la versión; y al VOLVER a una pestaña que quedó
+    // abierta, si cambió, se vuelven a pedir los productos sin recargar: el
+    // cliente sigue donde estaba, con los precios y el stock al día.
     (function() {
-        async function _checkDeployVersion() {
+        async function _versionRemota() {
             try {
                 const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
                 const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
-                if (!base) return;
+                if (!base) return null;
                 const r = await fetch(base + '/config/version.json?_=' + Date.now(), { cache: 'no-store' });
-                if (!r.ok) return;
-                const remoto = await r.json();
-                if (!remoto) return;
-                const local = localStorage.getItem('tm_deploy_version');
-                localStorage.setItem('tm_deploy_version', String(remoto));
-                // Tope de una recarga cada 10 min. La regla de config/version
-                // solo puede exigir que el número suba y sea reciente, no saber
-                // quién lo escribe: sin este freno, cualquiera escribiendo
-                // Date.now() en bucle mantiene recargando a todos los
-                // visitantes de la tienda.
-                const ultima = Number(localStorage.getItem('tm_deploy_reload_ts') || 0);
-                if (Date.now() - ultima < 600000) return;
-                if (local && local !== String(remoto)) {
-                    try { localStorage.setItem('tm_deploy_reload_ts', String(Date.now())); } catch(e) {}
-                    // Nueva versión detectada — actualizar SW y recargar
-                    if ('serviceWorker' in navigator) {
-                        const reg = await navigator.serviceWorker.getRegistration();
-                        if (reg) { await reg.update(); }
-                    }
-                    try{sessionStorage.setItem('tm_sw_reloading','1')}catch(e){} window.location.reload();
-                }
-            } catch(e) {}
+                if (!r.ok) return null;
+                const v = await r.json();
+                return v ? String(v) : null;
+            } catch(e) { return null; }
         }
-        // Al cargar la página
-        _checkDeployVersion();
-        // Al volver a la pestaña (cubre usuarios que la dejan abierta días)
+        async function _apuntar() {
+            const v = await _versionRemota();
+            if (v) { try { localStorage.setItem('tm_deploy_version', v); } catch(e) {} }
+        }
+        let _ultimoRefresco = 0;
+        async function _alVolver() {
+            // Tope de un refresco cada 2 min: la regla de config/version solo
+            // exige que el número suba, así que cualquiera puede subirlo en
+            // bucle; esto limita lo que eso le cuesta a cada visitante.
+            if (Date.now() - _ultimoRefresco < 120000) return;
+            const v = await _versionRemota();
+            if (!v) return;
+            let local = null;
+            try { local = localStorage.getItem('tm_deploy_version'); localStorage.setItem('tm_deploy_version', v); } catch(e) {}
+            if (!local || local === v) return;
+            _ultimoRefresco = Date.now();
+            if (typeof cargarDatosDesdeGitHub === 'function') cargarDatosDesdeGitHub();
+        }
+        _apuntar();
         document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'visible') _checkDeployVersion();
+            if (document.visibilityState === 'visible') _alVolver();
         });
     })();
     </script>

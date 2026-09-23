@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 // Cambiar esta versión fuerza la descarga de index/CSS/JS nuevos en instalaciones PWA.
-const CACHE_NAME = 'tiendamax-202609230304';
+const CACHE_NAME = 'tiendamax-202609230329';
 // Solo recursos de la TIENDA que se piden SIN ?v=. Los del admin se cargan
 // bajo demanda. Los .js/.css referenciados con ?v=hash NO se precachean:
 // el cache-first matchea por URL exacta (query incluida), así que un precache
@@ -50,12 +50,9 @@ self.addEventListener('activate', e => {
                 keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
             );
             await self.clients.claim();
-            // Avisar a las páginas abiertas para que muestren opción de recargar,
-            // sin forzar navigate() que vacía el caché y congela el splash en conexión lenta
-            const allClients = await self.clients.matchAll({ type: 'window' });
-            for (const client of allClients) {
-                client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
-            }
+            // Aquí se avisaba a las páginas abiertas (SW_UPDATED) y la tienda
+            // se recargaba al recibirlo: echaba al cliente de la categoría en
+            // la que estaba. Ya nadie escucha ese aviso; ver index.html.
         })()
     );
 });

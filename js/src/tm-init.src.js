@@ -625,20 +625,11 @@ function actualizarCountdownProductSelect() {
         }
     });
 
-    // Mostrar banner también cuando hay SW update disponible
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.addEventListener('message', function(event) {
-            if (event.data && (event.data.type === 'SW_UPDATED' || event.data.type === 'SW_UPDATE_AVAILABLE')) {
-                // Si la app ya está instalada, mostramos aviso de actualización
-                // Solo si no estamos ya mostrando el prompt de instalación
-                if (!deferredPrompt && !isDismissed()) {
-                    if (typeof mostrarNotificacion === 'function') {
-                        mostrarNotificacion('Nueva versión disponible. Recarga para actualizar.', 'info');
-                    }
-                }
-            }
-        });
-    }
+    /* Aquí había un aviso "Nueva versión disponible. Recarga para
+       actualizar" al llegar SW_UPDATED. El SW lo manda al activarse, y eso
+       pasa también en la PRIMERA visita: a quien entraba por primera vez se
+       le pedía recargar. Y recargar no trae nada: la página que se acaba de
+       abrir ya es la nueva (index.html va por la red primero). */
 
     // Inicializar cuando el DOM esté listo
     if (document.readyState === 'loading') {
