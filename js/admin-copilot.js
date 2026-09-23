@@ -500,7 +500,7 @@ async function buildTasks(){
   const sinSeo = ps.filter(p=>p.activo!==false && !p.seoTitle && !p.seoDescription);
   if (sinSeo.length>5) addTask(tasks,{kind:'seo',urgency:1,icon:'🔎',title:`${sinSeo.length} productos sin SEO`,detail:'Puedes usar IA masiva para mejorar títulos y descripciones.',action:'IA masiva',tab:'herramientas'});
 
-  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Gemini/OpenRouter/Groq para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
+  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Claude, Gemini, OpenRouter o Groq para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
 
   tasks.sort((a,b)=>b.urgency-a.urgency);
   state.agents = buildAgentsFromTasks(tasks, facts);
@@ -1288,6 +1288,11 @@ async function _iaFetchJSON(url, opts){
   }
   return j;
 }
+// Qué claves ven la foto del producto: Gemini y Claude reciben la imagen en
+// iaLlamarModelo; las otras ramas (OpenRouter/Groq/DeepSeek) la ignoran.
+// Antes solo contaba Gemini, y con una clave de Claude las descripciones se
+// escribían sin mirar la foto aunque el modelo sí podía.
+function _iaVeFotos(key){ return key.startsWith('AIza') || key.startsWith('sk-ant-'); }
 async function iaLlamarModelo(prompt, imagen){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key) return null;
@@ -1370,7 +1375,7 @@ function _iaPromptDescripcion(p, tieneImagen){
 async function _iaGenerarLoteDescripciones(lista){
   const grupo=[]; let ok=0;
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
-  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
+  const soportaImagen=_iaVeFotos(key);
   for(const p of lista){
     let imagen=null;
     if(soportaImagen){
@@ -1405,7 +1410,7 @@ function _iaPromptAnalisis(p, tieneImagen){
 async function iaAnalizarProducto(p){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key) return null;
-  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
+  const soportaImagen=_iaVeFotos(key);
   let imagen=null;
   if(soportaImagen){
     const url=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen;

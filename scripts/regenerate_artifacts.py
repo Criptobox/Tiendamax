@@ -97,18 +97,6 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
 </style>
 
-<!-- ═══ Google Analytics ═══
-     Estas páginas son el destino de los enlaces que se comparten en Facebook,
-     Revólico, Estado de WhatsApp, etc. Sin gtag aquí, los ?utm_source= de esos
-     enlaces no medían nada y no había forma de saber qué canal trae compradores.
-     Mismo ID que index.html; carga async, no bloquea el render. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KG43FHTCDF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){{dataLayer.push(arguments);}}
-  gtag('js', new Date());
-  gtag('config', 'G-KG43FHTCDF');
-</script>
 </head>
 <body>
 
@@ -283,18 +271,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-rel-mas{{display:inline-block;margin-top:18px;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:8px 16px;border-radius:20px}}
 </style>
 
-<!-- ═══ Google Analytics ═══
-     Estas páginas son el destino de los enlaces que se comparten en Facebook,
-     Revólico, Estado de WhatsApp, etc. Sin gtag aquí, los ?utm_source= de esos
-     enlaces no medían nada y no había forma de saber qué canal trae compradores.
-     Mismo ID que index.html; carga async, no bloquea el render. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KG43FHTCDF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){{dataLayer.push(arguments);}}
-  gtag('js', new Date());
-  gtag('config', 'G-KG43FHTCDF');
-</script>
 </head>
 <body>
 
