@@ -279,12 +279,118 @@ function _tmSumarIdsEnRepo(ids, base) {
     } catch (e) {}
 }
 
+/* ── Subir solo lo tocado ────────────────────────────────────────────────
+ * "Actualizar tienda" subía productos.json ENTERO para cambiar un precio:
+ * ~540 KB en base64, decenas de segundos desde un móvil en Cuba. Ahora sube
+ * cambios/<ms>-<azar>.json con solo los productos que difieren del repo (y
+ * los borrados), y regenerate-artifacts.yml los aplica con
+ * scripts/aplicar_cambios.py. La forma del fichero está documentada allí.
+ *
+ * Entre la subida y que el workflow lo aplique pasa un minuto. Si en ese
+ * minuto se vuelve a publicar, el productos.json del repo todavía es el
+ * viejo, y fusionar contra él devolvería a la memoria del panel los valores
+ * de antes: el siguiente cambio a ese producto los subiría de vuelta. Por eso
+ * lo subido queda en tm_cambios_pendientes y se superpone al repo (ver
+ * _tmConPendientes) hasta que el repo lo refleje, lo que se sabe por `rev`:
+ * la hora de la subida, que viaja dentro del producto. */
+const _TM_PENDIENTES = 'tm_cambios_pendientes';
+const _TM_PENDIENTE_CADUCA = 3 * 24 * 3600 * 1000;
+function _tmPendientes() {
+    const o = tmParseObject(localStorage.getItem(_TM_PENDIENTES));
+    return { productos: o.productos || {}, eliminados: o.eliminados || {} };
+}
+function _tmGuardarPendientes(pend) {
+    try { localStorage.setItem(_TM_PENDIENTES, JSON.stringify(pend)); } catch (e) {}
+}
+function _tmRegistrarPendientes(cambios) {
+    const pend = _tmPendientes();
+    (cambios.productos || []).forEach(p => { pend.productos[String(p.id)] = p; });
+    (cambios.eliminados || []).forEach(id => { pend.eliminados[String(id)] = Date.parse(cambios.creado) || Date.now(); });
+    _tmGuardarPendientes(pend);
+}
+/* El catálogo del repo tal como quedará cuando se apliquen los cambios que
+   este panel ya subió. Lo ya aplicado se quita de la lista. */
+function _tmConPendientes(remoto) {
+    const pend = _tmPendientes();
+    const byId = {};
+    remoto.forEach(p => { if (p && p.id != null) byId[String(p.id)] = p; });
+    const ahora = Date.now();
+    let cambio = false;
+    Object.keys(pend.productos).forEach(id => {
+        const mio = pend.productos[id], suyo = byId[id];
+        const aplicado = suyo && Number(suyo.rev || 0) >= Number(mio.rev || 0);
+        if (aplicado || ahora - Number(mio.rev || 0) > _TM_PENDIENTE_CADUCA) { delete pend.productos[id]; cambio = true; }
+    });
+    Object.keys(pend.eliminados).forEach(id => {
+        if (!byId[id] || ahora - Number(pend.eliminados[id]) > _TM_PENDIENTE_CADUCA) { delete pend.eliminados[id]; cambio = true; }
+    });
+    if (cambio) _tmGuardarPendientes(pend);
+    const out = remoto.filter(p => !(p && pend.eliminados[String(p.id)]))
+                      .map(p => (p && pend.productos[String(p.id)]) || p);
+    Object.keys(pend.productos).forEach(id => { if (!byId[id]) out.push(pend.productos[id]); });
+    return out;
+}
+/* ¿Subidos hace más de 15 min y el repo aún no los refleja? Entonces el
+   workflow que los aplica está fallando, y el gestor tiene que saberlo. */
+function _tmPendientesAtascados() {
+    const pend = _tmPendientes(), limite = Date.now() - 15 * 60 * 1000;
+    return Object.values(pend.productos).filter(p => Number(p.rev || 0) < limite).length
+         + Object.values(pend.eliminados).filter(t => Number(t) < limite).length;
+}
+function _tmMismoProducto(a, b) {
+    const canon = o => JSON.stringify(Object.keys(o).filter(k => k !== 'rev').sort()
+                                            .reduce((r, k) => (r[k] = o[k], r), {}));
+    return canon(a) === canon(b);
+}
+/* Lo que hay que subir: los productos que difieren del repo (con los
+   pendientes ya superpuestos) y los que ya no están. null si nada. */
+function _tmCambiosParaSubir(finales, remoto) {
+    if (!Array.isArray(finales)) return null;
+    const rem = {};
+    (remoto || []).forEach(p => { if (p && p.id != null) rem[String(p.id)] = p; });
+    const idsFinales = new Set(finales.map(p => String(p.id)));
+    const productos = [], posiciones = {};
+    finales.forEach((p, i) => {
+        const id = String(p.id), r = rem[id];
+        if (r) {
+            // El panel trabaja con el catálogo lite: sin descripción no es
+            // "la borró", es que no la tiene (aplicar_cambios la conserva).
+            const a = ('descripcion' in p || !('descripcion' in r)) ? p : Object.assign({}, p, { descripcion: r.descripcion });
+            if (_tmMismoProducto(a, r)) return;
+        } else {
+            posiciones[id] = i ? String(finales[i - 1].id) : null;
+        }
+        productos.push(p);
+    });
+    const eliminados = Array.isArray(remoto) ? Object.keys(rem).filter(id => !idsFinales.has(id)) : [];
+    if (!productos.length && !eliminados.length) return null;
+    const rev = Date.now();
+    return { v: 1, creado: new Date(rev).toISOString(),
+             productos: productos.map(p => Object.assign({}, p, { rev })),
+             eliminados, posiciones };
+}
+function _tmRutaCambios(cambios) {
+    return 'cambios/' + Date.parse(cambios.creado) + '-' + Math.random().toString(36).slice(2, 6) + '.json';
+}
+/* Tras subir con éxito un fichero: lo que implica para la memoria del panel. */
+function _tmTrasSubir(path, data) {
+    if (path.startsWith('cambios/') && data) {
+        _tmRegistrarPendientes(data);
+        _tmSumarIdsEnRepo((data.productos || []).map(p => p.id));
+    } else if (path === 'productos.json' && Array.isArray(data)) {
+        _tmSumarIdsEnRepo(data.map(p => p.id));
+    }
+}
+
 async function _tmMergeProductosConRepo(user, repo, remotoYaLeido) {
     let remoto = null;
+    _tmUltimoRemotoParaAuditoria = null;
     const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
              : await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'productos.json');
     if (Array.isArray(_j)) remoto = _j; else if (_j && Array.isArray(_j.productos)) remoto = _j.productos;
     if (!Array.isArray(remoto)) return productos.slice();
+    // Lo ya subido que el workflow aún no ha aplicado cuenta como del repo.
+    remoto = _tmConPendientes(remoto);
     _tmUltimoRemotoParaAuditoria = remoto;
 
     const mods = new Set(obtenerProductosModificados().map(String));
@@ -484,7 +590,7 @@ async function reintentarSyncPendientes() {
     if (btnR) { btnR.disabled = true; btnR.textContent = '⏳ Reintentando…'; }
     const quedan = [];
     for (const item of _tmSyncPendientes) {
-        try { await subirArchivoAGitHub(user, repo, token, item.path, item.data); }
+        try { await subirArchivoAGitHub(user, repo, token, item.path, item.data); _tmTrasSubir(item.path, item.data); }
         catch (e) { quedan.push(item); }
     }
     _tmSyncPendientes = quedan;
@@ -683,8 +789,10 @@ async function sincronizarTodoConGitHub() {
         return v === null ? null : leer(v);
     };
     const _gruposLS = _siLoCargo('gruposFB', tmParseArray);
+    // Solo lo tocado, no el catálogo entero (ver _tmCambiosParaSubir).
+    const _cambios = _tmCambiosParaSubir(_prodsFinal, _tmUltimoRemotoParaAuditoria);
     const archivos = [
-        { path: 'productos.json',              data: _prodsFinal },
+        { path: _cambios ? _tmRutaCambios(_cambios) : null, data: _cambios },
         { path: 'categorias.json',             data: _catFinal },
         { path: 'subcategorias.json',          data: _subcatFinal },
         // Sin marca de tiempo: nadie la leía y hacía que el fichero cambiara
@@ -698,7 +806,7 @@ async function sincronizarTodoConGitHub() {
     // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
     let archivosFiltrados = hayDelta
-        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
+        ? archivos.filter(a => a.path.startsWith('cambios/') || ['config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
         : archivos;
 
     /* Lo que ya está igual en el repo no se sube.
@@ -776,9 +884,7 @@ async function sincronizarTodoConGitHub() {
             await subirArchivoAGitHub(user, repo, token, path, data,
                                       _shasRaiz ? (_shasRaiz[path] || null) : undefined);
             ok++; subidos.push(path);
-            // Lo que se acaba de subir ya está en el repo: si luego desaparece
-            // de allí sin tocarlo aquí, es que lo borraron en otro sitio.
-            if (path === 'productos.json' && Array.isArray(data)) _tmSumarIdsEnRepo(data.map(p => p.id));
+            _tmTrasSubir(path, data);
         } catch (e) {
             errors.push(`${path}: ${e.message}`);
             fallidos.push({ path, data });
@@ -803,7 +909,11 @@ async function sincronizarTodoConGitHub() {
         _tmPublicarVersionFirebase();
         const info = (hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`)
                    + (_sinCambio ? `, ${_sinCambio} sin cambios` : '');
-        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
+        // Con cambios/ la tienda los ve cuando el workflow los aplica y
+        // despliega Pages: alrededor de un minuto, no treinta segundos.
+        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~1 minuto.`);
+        const _atascados = _tmPendientesAtascados();
+        if (_atascados) mostrarNotificacion(`⚠️ Hay ${_atascados} cambio(s) subidos hace más de 15 min que la tienda todavía no muestra. Revisa en GitHub → Actions el workflow "Regenerar páginas".`, 'error');
     } else {
         const primerError = errors[0];
         const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
@@ -825,7 +935,7 @@ async function sincronizarTodoConGitHub() {
         /* Ya no hay dos catálogos que puedan quedar descompasados: el panel
            sube productos.json y el lite lo deriva CI. Lo que sí hay que decir
            es que si el catálogo no subió, la tienda sigue con lo viejo. */
-        if (fallidos.some(f => f.path === 'productos.json')) {
+        if (fallidos.some(f => f.path.startsWith('cambios/'))) {
             mostrarNotificacion('⚠️ El catálogo no subió, así que la tienda sigue mostrando lo anterior. Pulsa "Reintentar".', 'error');
         }
         _tmMostrarBotonReintento(fallidos.map(f => f.path));
@@ -850,9 +960,12 @@ async function sincronizarConGitHub() {
     try {
         await _tmPreservarDescripciones();
         const _final = await _tmMergeProductosConRepo(user, repo);
-        // El lite lo regenera CI a partir de este mismo push (ver arriba).
-        await subirArchivoAGitHub(user, repo, token, 'productos.json', _final);
-        if (Array.isArray(_final)) _tmSumarIdsEnRepo(_final.map(p => p.id));
+        // Solo lo tocado; regenerate-artifacts.yml lo aplica y rehace el lite.
+        const _cambios = _tmCambiosParaSubir(_final, _tmUltimoRemotoParaAuditoria);
+        if (!_cambios) return;
+        const _ruta = _tmRutaCambios(_cambios);
+        await subirArchivoAGitHub(user, repo, token, _ruta, _cambios, null);
+        _tmTrasSubir(_ruta, _cambios);
         _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);

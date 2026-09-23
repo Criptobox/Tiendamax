@@ -95,7 +95,7 @@ await ctx.route(u => u.hostname === 'api.github.com', r => {
     const ruta = (url.split('/contents/')[1] || '').split('?')[0];
     if (req.method() === 'PUT') {
         let cuerpo = null;
-        if (ruta === 'productos.json') {
+        if (ruta === 'productos.json' || ruta.startsWith('cambios/')) {
             try { cuerpo = JSON.parse(Buffer.from(JSON.parse(req.postData()).content, 'base64').toString('utf8')); }
             catch (e) {}
         }
@@ -152,6 +152,7 @@ await pagina.waitForTimeout(300);
 const gets = LOG.filter(x => x.tipo === 'GET');
 const puts = LOG.filter(x => x.tipo === 'PUT');
 const cuantos = (arr, ruta) => arr.filter(x => x.ruta === ruta).length;
+const deCambios = arr => arr.filter(x => x.tipo === 'PUT' && x.ruta.startsWith('cambios/'));
 
 // ── 1. El catálogo se baja UNA vez ───────────────────────────────────────
 ok(cuantos(gets, 'productos.json') === 1,
@@ -186,7 +187,37 @@ ok(cuantos(puts, 'config.json') === 0,
 ok(cuantos(puts, 'grupos_facebook_config.json') === 0,
    'la lista de grupos no cambió: no se sube');
 // Y lo que SÍ cambió, se sube: es la mitad que de verdad importa.
-ok(cuantos(puts, 'productos.json') === 1, 'el catálogo cambió: tiene que subir');
+/* Y lo que SÍ cambió, se sube — pero solo eso. Subir productos.json entero
+   eran ~540 KB en base64 por cambiar un precio; ahora va un fichero en
+   cambios/ con el producto tocado, y regenerate-artifacts.yml lo aplica. */
+ok(cuantos(puts, 'productos.json') === 0, 'productos.json entero ya no se sube desde el panel');
+const _c1 = deCambios(LOG);
+ok(_c1.length === 1, `el precio cambiado tiene que subir en UN fichero de cambios/ (van ${_c1.length})`);
+const _PRIMERO = CATALOGO[0];
+if (_c1[0] && _c1[0].cuerpo) {
+    const c = _c1[0].cuerpo;
+    ok(c.v === 1 && Array.isArray(c.productos) && c.productos.length === 1
+       && String(c.productos[0].id) === String(_PRIMERO.id),
+       'el fichero de cambios lleva solo el producto tocado: ' + JSON.stringify((c.productos||[]).map(p => p.id)));
+    ok(c.productos[0] && c.productos[0].rev > 0, 'cada producto subido lleva su `rev`, para saber cuándo se aplicó');
+    /* El contrato entre las dos mitades: lo que sube el panel, aplicado por
+       scripts/aplicar_cambios.py al catálogo del repo, tiene que dar
+       EXACTAMENTE lo que el panel habría subido entero (su memoria tras
+       publicar). Si no, la tienda muestra otra cosa que el panel. */
+    const { execFileSync } = await import('node:child_process');
+    const aplicado = JSON.parse(execFileSync('python3', ['-c',
+        'import sys,json; sys.path.insert(0,"scripts"); import aplicar_cambios as a; '
+        + 'd=json.load(sys.stdin); print(json.dumps(a.aplicar(d["cat"], [("x.json", d["cambio"])]), ensure_ascii=False))'],
+        { cwd: RAIZ, input: JSON.stringify({ cat: CATALOGO, cambio: c }) }).toString());
+    const memoria = await pagina.evaluate(() => JSON.parse(JSON.stringify(productos)));
+    const sinRev = arr => arr.map(p => { const { rev, ...r } = p; return JSON.stringify(Object.keys(r).sort().reduce((o, k) => (o[k] = r[k], o), {})); });
+    const a = sinRev(aplicado), m = sinRev(memoria);
+    const distintos = a.filter((x, i) => x !== m[i]).length;
+    ok(a.length === m.length && distintos === 0,
+       `aplicar el fichero de cambios al repo no da lo que el panel tiene: ${distintos} producto(s) distintos de ${a.length} (${m.length} en el panel)`);
+    const kb = Buffer.byteLength(JSON.stringify(c, null, 2)) / 1024;
+    ok(kb < 20, `cambiar un precio no puede costar ${kb.toFixed(0)} KB de subida`);
+}
 /* Y el lite NO se sube desde el panel: son 475 KB en cada publicación para
    ahorrarle al cliente 9 KB comprimidos, y regenerate-artifacts.yml ya lo
    deriva de este mismo push. Subirlo era además la forma de que los dos
@@ -214,7 +245,7 @@ ok(/Promise\.all\(\[[\s\S]{0,600}_tmLeerJsonRepoFresco[\s\S]{0,600}_tmShasDeLaRa
 LOG.length = 0;
 await pagina.evaluate(() => sincronizarTodoConGitHub());
 await pagina.waitForTimeout(300);
-ok(LOG.filter(x => x.tipo === 'PUT' && x.ruta === 'productos.json').length === 0,
+ok(deCambios(LOG).length === 0 && cuantos(LOG.filter(x => x.tipo === 'PUT'), 'productos.json') === 0,
    'sin tocar nada, el segundo "Actualizar tienda" no vuelve a subir el catálogo');
 ok(LOG.filter(x => x.tipo === 'PUT').length === 0,
    'sin tocar nada, el segundo "Actualizar tienda" no sube ningún fichero: '
@@ -257,14 +288,52 @@ const idNuevo = await pagina.evaluate((idBorrado) => {
 ok(idNuevo, 'el producto borrado en el repo tiene que seguir en la memoria del panel (si no, esto no prueba nada)');
 await pagina.evaluate(() => sincronizarTodoConGitHub());
 await pagina.waitForTimeout(300);
-const subido = (LOG.find(x => x.tipo === 'PUT' && x.ruta === 'productos.json') || {}).cuerpo;
-ok(Array.isArray(subido), 'con un producto nuevo, productos.json tiene que subir');
+const _c8 = (deCambios(LOG)[0] || {}).cuerpo;
+const subido = _c8 && _c8.productos;
+ok(Array.isArray(subido), 'con un producto nuevo, tiene que subir un fichero de cambios');
 if (Array.isArray(subido)) {
     ok(!subido.some(p => String(p.id) === String(BORRADO.id)),
        'un producto borrado desde otro dispositivo no puede volver a subirse desde este panel');
     ok(subido.some(p => String(p.id) === String(idNuevo)),
        'el producto recién creado aquí tiene que subirse, aunque no esté en el repo');
+    // Y dónde va: el workflow lo coloca detrás del que tenía delante en el
+    // panel ("Nuevo producto" al final, "Duplicar" arriba).
+    ok(_c8.posiciones && String(idNuevo) in _c8.posiciones,
+       'un producto nuevo tiene que llevar su posición en el fichero de cambios');
 }
+
+// ── 9. Publicar otra vez antes de que el workflow aplique lo anterior ────
+/* Entre subir cambios/ y que regenerate-artifacts los aplique pasa un
+   minuto, y el dueño publica varias veces seguidas (cuatro en tres minutos,
+   visto en el historial). En ese minuto productos.json del repo es el viejo:
+   fusionar contra él devolvía a la memoria el precio de antes, y cambiar
+   luego el stock del mismo producto subía ese precio viejo de vuelta. */
+const PRECIO_PUBLICADO = Number(_PRIMERO.precioActual || 0) + 1;
+LOG.length = 0;
+await pagina.evaluate((id) => {
+    const p = productos.find(x => String(x.id) === String(id));
+    p.stock = Number(p.stock || 0) + 5;
+    marcarProductoModificado(p.id);
+}, _PRIMERO.id);
+await pagina.evaluate(() => sincronizarTodoConGitHub());
+await pagina.waitForTimeout(300);
+const _c9 = (deCambios(LOG)[0] || {}).cuerpo;
+const _p9 = _c9 && (_c9.productos || []).find(p => String(p.id) === String(_PRIMERO.id));
+ok(_p9 && Number(_p9.precioActual) === PRECIO_PUBLICADO,
+   `publicar otra vez antes de que se aplique lo anterior no puede devolver el precio viejo (${_p9 && _p9.precioActual} en vez de ${PRECIO_PUBLICADO})`);
+ok(_p9 && Number(_p9.stock) === Number(_PRIMERO.stock || 0) + 5, 'y el stock nuevo tiene que ir');
+
+// El workflow aplica: el repo ya lo refleja, y sale de pendientes.
+CUERPOS['productos.json'] = JSON.stringify(JSON.parse(CUERPOS['productos.json'])
+    .map(p => String(p.id) === String(_PRIMERO.id) ? _p9 : p), null, 2);
+LOG.length = 0;
+await pagina.evaluate(() => sincronizarTodoConGitHub());
+await pagina.waitForTimeout(300);
+const _siguen = await pagina.evaluate(() =>
+    Object.keys((JSON.parse(localStorage.getItem('tm_cambios_pendientes') || '{}').productos) || {}));
+ok(_p9 && !_siguen.includes(String(_PRIMERO.id)), 'lo que el repo ya refleja deja de estar pendiente');
+ok(deCambios(LOG).length === 0 || !(deCambios(LOG)[0].cuerpo.productos || []).some(p => String(p.id) === String(_PRIMERO.id)),
+   'y no se vuelve a subir');
 
 ok(erroresJs.length === 0, 'errores JS en el panel: ' + erroresJs.slice(0,2).join(' | '));
 
