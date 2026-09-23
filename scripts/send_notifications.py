@@ -16,6 +16,8 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import tasa_aviso
+
 # ============================================================
 # CONFIGURACIÓN
 # ============================================================
@@ -89,7 +91,7 @@ def cargar_cola(database) -> dict:
             "nuevos_pendientes": [],
             "rebajas_pendientes": [],
             "tasa_pendiente": None,
-            "ultima_tasa_notificada": None,
+            "ultima_tasa_avisada": None,
             "ultimo_push": {},
             "ultimo_lote_fecha": ""
         }
@@ -99,7 +101,7 @@ def cargar_cola(database) -> dict:
     # tasa_pendiente puede ser None o [ta, tp]
     tp = data.get("tasa_pendiente")
     data["tasa_pendiente"] = _fb_to_list(tp) if isinstance(tp, dict) else tp
-    data.setdefault("ultima_tasa_notificada", None)
+    data.setdefault("ultima_tasa_avisada", None)
     data.setdefault("ultimo_push", {})
     data.setdefault("ultimo_lote_fecha", "")
     return data
@@ -287,28 +289,29 @@ def detectar_cambios_catalogo(anterior, productos) -> dict:
     return res
 
 
-def detectar_tasa(config_actual, tasa_anterior=None):
-    """(nueva, anterior) si la tasa cambió, o None.
+def decidir_aviso_tasa(cola: dict, config) -> None:
+    """Deja en cola["tasa_pendiente"] el aviso de tasa que toca, o None.
 
-    `tasa_anterior` es la última que vio este script. Se prefiere a
-    `tasaMNAnterior` del propio config.json porque ese campo solo lo escribe
-    update_rate_from_eltoque.py: cuando el dueño cambia la tasa a mano desde el
-    panel se queda con el valor viejo y el cambio pasaba desapercibido.
+    La regla (múltiplos de 5, redondeo de 3 para arriba, y MARGEN pesos desde
+    el último aviso) vive en tasa_aviso.py y es la misma que usa el canal de
+    Telegram. Se compara con el último valor AVISADO, no con el último visto:
+    así da igual que la tasa la cambie el cron de elTOQUE o el dueño a mano.
+
+    Si la tasa vuelve atrás antes de que el aviso salga (solo sale de día),
+    el pendiente se cae: una push se queda en la bandeja con el texto que
+    tenía al enviarse y no se puede corregir después.
     """
-    if not isinstance(config_actual, dict) or "tasaMN" not in config_actual:
-        return None
-    try:
-        ta = float(config_actual["tasaMN"])
-    except (TypeError, ValueError):
-        return None
-    tp = None
-    if tasa_anterior is not None:
-        tp = _num(tasa_anterior, None)
-    elif "tasaMNAnterior" in config_actual:
-        tp = _num(config_actual.get("tasaMNAnterior"), None)
-    if tp is None or tp <= 0:
-        return None
-    return (ta, tp) if abs(ta - tp) >= 0.01 else None
+    cliente = tasa_aviso.tasa_cliente(config)
+    if cliente is None:
+        return
+    ultima = cola.get("ultima_tasa_avisada")
+    if ultima is None:
+        cola["ultima_tasa_avisada"] = tasa_aviso.redondear(cliente)
+        cola["tasa_pendiente"] = None
+        print(f"ℹ️ Tasa apuntada sin avisar (primera pasada): {cola['ultima_tasa_avisada']} MN")
+        return
+    nueva = tasa_aviso.toca_avisar(cliente, ultima)
+    cola["tasa_pendiente"] = [nueva, ultima] if nueva is not None else None
 
 
 def rebajas_vigentes(pendientes, productos, ahora_ms=None):
@@ -1021,18 +1024,11 @@ def main():
         print("ℹ️ Sin estado previo del catálogo: se apunta el actual y no se "
               "notifica nada en esta pasada.")
     cambios = detectar_cambios_catalogo(estado.get("catalogo"), p_act)
-    tasa = detectar_tasa(c_act, estado.get("tasa"))
     if cambios["nuevos"] or cambios["rebajas"] or cambios["restock"]:
         print(f"🔎 Cambios: {len(cambios['nuevos'])} nuevo(s), "
               f"{len(cambios['rebajas'])} rebaja(s), {len(cambios['restock'])} reposición(es)")
 
-    if tasa:
-        ta_nueva = tasa[0]
-        # Solo encolar si esta tasa exacta no fue ya notificada antes
-        if cola.get("ultima_tasa_notificada") != ta_nueva:
-            cola["tasa_pendiente"] = list(tasa)
-        else:
-            print(f"ℹ️ Tasa {ta_nueva} ya fue notificada anteriormente. Se omite.")
+    decidir_aviso_tasa(cola, c_act)
     ahora_ms = time.time() * 1000
     cola["nuevos_pendientes"].extend(estampar(cambios["nuevos"], ahora_ms))
     cola["rebajas_pendientes"].extend(estampar(cambios["rebajas"], ahora_ms))
@@ -1136,7 +1132,7 @@ def main():
     # 1. Tasa (Inmediato si diurno)
     if cola["tasa_pendiente"] and diurno and not _en_descanso("tasa"):
         ta, tp = cola["tasa_pendiente"]
-        txt = f"¡Bajó el dólar! 1 USD = {ta} MN" if ta < tp else f"Nueva tasa: 1 USD = {ta} MN"
+        txt = f"¡Bajó el dólar! 1 USD = {ta:.0f} MN" if ta < tp else f"Nueva tasa: 1 USD = {ta:.0f} MN"
         title = "💱 ¡Bajó el Dólar!" if ta < tp else "💱 Cambio de Tasa"
         avisos.append({"tipo": "tasa", "title": title, "body": txt, "link": "/", "imagen": None})
 
@@ -1207,7 +1203,7 @@ def main():
                     ta_enviada = cola["tasa_pendiente"][0] if cola["tasa_pendiente"] else None
                     cola["tasa_pendiente"] = None
                     if ta_enviada is not None:
-                        cola["ultima_tasa_notificada"] = ta_enviada
+                        cola["ultima_tasa_avisada"] = ta_enviada
                 elif a["tipo"] == "rebajas":
                     _vaciar("rebajas_pendientes")
                 elif a["tipo"] == "nuevos":

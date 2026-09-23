@@ -43,6 +43,23 @@ jobs:
           ELTOQUE_API_URL: ${{ secrets.ELTOQUE_API_URL }}
         run: python scripts/update_rate_from_eltoque.py
 
+      - name: Publicar la tasa en el canal de Telegram (si toca)
+        # Va ANTES del commit: canal_tasa.py apunta en config.json el último
+        # valor publicado (tasaAvisadaTelegram) y tiene que viajar con la tasa.
+        # Solo publica en múltiplos de 5 y cuando la tasa se ha movido de
+        # verdad (scripts/tasa_aviso.py, la misma regla que las push).
+        # Si Telegram falla, la tasa nueva se commitea igual: los precios en
+        # MN de la tienda no pueden quedarse congelados por el canal.
+        env:
+          BOT_TOKEN:        ${{ secrets.BOT_TOKEN }}
+          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
+        run: |
+          if git diff --quiet -- config.json; then
+            echo "La tasa no cambió: nada que publicar."
+            exit 0
+          fi
+          python bot/canal_tasa.py || echo "⚠️ No se pudo publicar en Telegram; se reintenta en la próxima pasada."
+
       - name: Commit y push si hubo cambios
         id: commit
         env:
@@ -69,13 +86,6 @@ jobs:
           done
           git push
           echo "changed=true" >> $GITHUB_OUTPUT
-
-      - name: Publicar tasa del día en canal Telegram
-        if: steps.commit.outputs.changed == 'true'
-        env:
-          BOT_TOKEN:        ${{ secrets.BOT_TOKEN }}
-          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
-        run: python bot/canal_tasa.py
 
       - name: Disparar notificaciones push si cambió la tasa
         if: steps.commit.outputs.changed == 'true'

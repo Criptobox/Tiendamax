@@ -81,24 +81,37 @@ class DeteccionContraElEstadoGuardadoTest(unittest.TestCase):
         self.assertEqual(1, len(c["rebajas"]))
 
 
-class DeteccionDeTasaTest(unittest.TestCase):
+class AvisoDeTasaTest(unittest.TestCase):
+    """La regla en sí está en test_tasa_aviso.py; aquí, cómo la usa la cola."""
 
-    def test_usa_la_ultima_tasa_vista_antes_que_tasaMNAnterior(self):
-        # tasaMNAnterior solo lo escribe update_rate_from_eltoque.py: cuando el
-        # dueño cambia la tasa a mano se queda con el valor viejo y el cambio
-        # pasaba inadvertido.
-        cfg = {"tasaMN": 400, "tasaMNAnterior": 400}
-        self.assertEqual((400.0, 380.0), sn.detectar_tasa(cfg, 380))
+    def cola(self, ultima):
+        return {"tasa_pendiente": None, "ultima_tasa_avisada": ultima}
 
-    def test_sin_cambio_no_devuelve_nada(self):
-        self.assertIsNone(sn.detectar_tasa({"tasaMN": 400}, 400))
+    def test_avisa_la_tasa_del_cliente_redondeada(self):
+        c = self.cola(720)
+        sn.decidir_aviso_tasa(c, {"tasaMN": 714.5, "margenMN": 10})   # 724.5 → 725
+        self.assertEqual([725, 720], c["tasa_pendiente"])
 
-    def test_cae_en_tasaMNAnterior_si_no_hay_estado(self):
-        self.assertEqual((400.0, 390.0),
-                         sn.detectar_tasa({"tasaMN": 400, "tasaMNAnterior": 390}, None))
+    def test_primera_pasada_solo_apunta(self):
+        c = self.cola(None)
+        sn.decidir_aviso_tasa(c, {"tasaMN": 712, "margenMN": 10})
+        self.assertIsNone(c["tasa_pendiente"])
+        self.assertEqual(720, c["ultima_tasa_avisada"])
 
-    def test_sin_referencia_no_inventa_un_cambio(self):
-        self.assertIsNone(sn.detectar_tasa({"tasaMN": 400}, None))
+    def test_si_la_tasa_vuelve_antes_de_enviarse_el_aviso_se_cae(self):
+        """Solo sale de día: de noche puede encolarse y deshacerse."""
+        c = self.cola(720)
+        sn.decidir_aviso_tasa(c, {"tasaMN": 715, "margenMN": 10})
+        self.assertIsNotNone(c["tasa_pendiente"])
+        sn.decidir_aviso_tasa(c, {"tasaMN": 711, "margenMN": 10})
+        self.assertIsNone(c["tasa_pendiente"])
+
+    def test_un_cambio_a_mano_del_dueno_tambien_cuenta(self):
+        """Se compara con lo avisado, no con tasaMNAnterior (que solo escribe
+        el cron de elTOQUE)."""
+        c = self.cola(720)
+        sn.decidir_aviso_tasa(c, {"tasaMN": 730, "tasaMNAnterior": 730, "margenMN": 10})
+        self.assertEqual([740, 720], c["tasa_pendiente"])
 
 
 class LaColaSeVaciaDeVerdadTest(unittest.TestCase):
