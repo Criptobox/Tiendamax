@@ -194,7 +194,7 @@ function renderizarProductos(isLoadMore = false) {
                 <div class="pv2-foot">
                     <div class="pv2-price">
                         ${_tieneDesc
-                            ? `<span class="pv2-old">$${Number(producto.precioOriginal).toFixed(0)}</span>`
+                            ? `<span class="pv2-old"${tmPrecioAntesAttrs(producto)}>${tmPrecioAntesTexto(producto)}</span>`
                             : `<span class="pv2-old pv2-oldrow-ghost" aria-hidden="true">&nbsp;</span>`}
                         <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${_precioNum}${_precioCur}</span>
                         <span class="pv2-tax">Impuestos incluidos</span>
@@ -506,7 +506,11 @@ if (_detailPrecioEl) {
 const _hasPrecioOrigLinea = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
 if (_detailPrecioOldEl) {
     if (_hasPrecioOrigLinea) {
-        _detailPrecioOldEl.textContent = `Antes $${parseFloat(p.precioOriginal).toFixed(2)}`;
+        // El detalle enseña el precio grande siempre en USD (con el "≈ MN" al
+        // lado), así que el de antes va en la misma moneda que ese, no en la
+        // del conmutador. Un producto de precio fijo en MN lleva el suyo.
+        _detailPrecioOldEl.removeAttribute('data-usd-antes');
+        _detailPrecioOldEl.textContent = 'Antes ' + (tmEsMN(p) ? tmPrecioAntesTexto(p) : '$' + Math.round(Number(p.precioOriginal) || 0));
         _detailPrecioOldEl.style.display = 'inline';
     } else {
         _detailPrecioOldEl.style.display = 'none';

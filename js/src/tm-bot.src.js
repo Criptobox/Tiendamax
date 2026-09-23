@@ -51,6 +51,7 @@
     .tm-bot-bubble svg{width:26px;height:26px;color:#fff;}
     .tm-bot-bubble.has-new::after{content:'';position:absolute;top:5px;right:5px;width:10px;height:10px;background:#2ECC71;border-radius:50%;border:2px solid #0D0D0D;animation:tmBotDotPulse 1.5s ease-in-out infinite;}
     @keyframes tmBotDotPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.6;}}
+    .tm-bot-bubble,.tm-bot-label{translate:0 calc(-1 * var(--tmb-esq, 0px));transition:translate .25s ease,transform .25s ease,box-shadow .25s ease;}
     .tm-bot-label{display:none;}
     @media(min-width:900px){.tm-bot-label{display:block;position:fixed;bottom:31px;right:78px;z-index:99998;background:#1a1a1a;color:#fff;border:1px solid rgba(255,255,255,.12);font:600 13px/1 inherit;padding:9px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap;}
       .tm-bot-label:hover{border-color:#E8501E;}
@@ -438,4 +439,39 @@
         send: (txt) => { abrirPanel(); window._tmBotPendiente = txt; },
     };
     window._tmBotCascara = { abrir: abrirPanel, cerrar: cerrarPanel, cargarCerebro: cargarCerebro };
+
+    // ── Que la burbuja no tape un botón de compra ──
+    // Fija abajo a la derecha, en el móvil caía justo encima del "Pedir" de
+    // la columna derecha: el botón que más importa, y al tocarlo se abría
+    // Max. Cuando un botón de compra pasa por debajo, la burbuja sube lo justo
+    // para dejarlo libre y vuelve a su sitio cuando ya no hay nada. Escucha
+    // también el scroll de los carruseles (captura), que no burbujea.
+    const _COMPRA = '.btn-pedir-card,.btn-pedir-whatsapp,.carrito-btn-comprar';
+    let _esq = 0, _esqPend = false;
+    function _esquivar() {
+        _esqPend = false;
+        if (_panelOpen) return;
+        const r = bubble.getBoundingClientRect();
+        // Donde estaría sin el desplazamiento actual.
+        const top = r.top + _esq, bottom = r.bottom + _esq, left = r.left - 6, right = r.right + 6;
+        let sube = 0;
+        document.querySelectorAll(_COMPRA).forEach(b => {
+            const q = b.getBoundingClientRect();
+            if (!q.width || q.bottom < top - 6 || q.top > bottom + 6 || q.right < left || q.left > right) return;
+            sube = Math.max(sube, bottom - q.top + 10);
+        });
+        sube = Math.min(Math.round(sube), 140);
+        if (sube !== _esq) {
+            _esq = sube;
+            document.documentElement.style.setProperty('--tmb-esq', sube + 'px');
+        }
+    }
+    function _pedirEsquiva() {
+        if (_esqPend) return;
+        _esqPend = true;
+        requestAnimationFrame(_esquivar);
+    }
+    document.addEventListener('scroll', _pedirEsquiva, { passive: true, capture: true });
+    window.addEventListener('resize', _pedirEsquiva, { passive: true });
+    setTimeout(_pedirEsquiva, 1500);
 })();

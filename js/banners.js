@@ -41,16 +41,21 @@
                 });
             }
 
-            // Fondo borroso: misma imagen borrosa rellena las barras laterales
+            // Fondo borroso: misma imagen borrosa rellena las barras laterales.
+            // La foto NO se pone aquí: la pone _cargarSlide cuando toca (ver
+            // abajo). Un background-image de CSS no es lazy, así que con la url
+            // puesta de entrada se bajaban los tres banners al abrir la página,
+            // aunque el cliente nunca bajara hasta ellos.
             var bgBlur = document.createElement('div');
             bgBlur.setAttribute('aria-hidden', 'true');
-            bgBlur.style.cssText = 'position:absolute;inset:-5%;background-image:url("' + url.replace(/"/g,'%22') + '");background-size:cover;background-position:center;filter:blur(14px) brightness(0.6);z-index:0;pointer-events:none;';
+            bgBlur.className = 'hb-blur';
+            bgBlur.style.cssText = 'position:absolute;inset:-5%;background-size:cover;background-position:center;filter:blur(14px) brightness(0.6);z-index:0;pointer-events:none;';
             slide.appendChild(bgBlur);
+            slide.setAttribute('data-src', url);
 
             var img = document.createElement('img');
-            img.src = url;
             img.alt = 'Banner TiendaMax';
-            img.loading = 'lazy';
+            img.decoding = 'async';
             img.style.cssText = 'position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center;display:block;pointer-events:none;';
             img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
@@ -73,8 +78,43 @@
             dots.appendChild(d);
         });
 
+        _enVista = false;
         window.irBanner(0);
         startAutoPlay();
+        _vigilar(track);
+    }
+
+    /* Carga la foto de un slide (img + fondo borroso), una sola vez. */
+    function _cargarSlide(i) {
+        var track = document.getElementById('heroBannerTrack');
+        if (!track || !track.children.length) return;
+        var slide = track.children[(i + track.children.length) % track.children.length];
+        if (!slide || slide.getAttribute('data-cargado')) return;
+        var url = slide.getAttribute('data-src');
+        if (!url) return;
+        slide.setAttribute('data-cargado', '1');
+        var img = slide.querySelector('img');
+        if (img) img.src = url;
+        var bg = slide.querySelector('.hb-blur');
+        if (bg) bg.style.backgroundImage = 'url("' + url.replace(/"/g, '%22') + '")';
+    }
+
+    /* Solo cuando el carrusel se acerca a la pantalla: el que se ve y el
+       siguiente. Los demás, al llegarles el turno. Sin IntersectionObserver,
+       se cargan como antes. */
+    var _enVista = false, _obs = null;
+    function _vigilar(track) {
+        if (_obs) _obs.disconnect();
+        if (!('IntersectionObserver' in window)) {
+            _enVista = true;
+            for (var i = 0; i < banners.length; i++) _cargarSlide(i);
+            return;
+        }
+        _obs = new IntersectionObserver(function(es) {
+            _enVista = es[0].isIntersecting;
+            if (_enVista) { _cargarSlide(current); _cargarSlide(current + 1); }
+        }, { rootMargin: '300px 0px' });
+        _obs.observe(track.parentElement || track);
     }
 
     window.irBanner = function(idx) {
@@ -82,6 +122,7 @@
         current = (idx + banners.length) % banners.length;
         var track = document.getElementById('heroBannerTrack');
         if (track) track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        if (_enVista) { _cargarSlide(current); _cargarSlide(current + 1); }
         document.querySelectorAll('.hero-banner-dot').forEach(function(d, i) {
             d.classList.toggle('active', i === current);
         });
@@ -95,7 +136,11 @@
     function startAutoPlay() {
         clearInterval(timer);
         if (banners.length > 1) {
-            timer = setInterval(function() { irBanner(current + 1); }, 8000);
+            // Sin girar mientras no se ve: cada vuelta puede ser una foto nueva.
+            timer = setInterval(function() {
+                if (!_enVista || document.hidden) return;
+                irBanner(current + 1);
+            }, 8000);
         }
     }
 

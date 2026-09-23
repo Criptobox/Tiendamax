@@ -314,7 +314,7 @@ function renderOfertaDelDia() {
     const discEl = document.getElementById('ndDealDisc');
     const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
     if (oldEl) {
-        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        if (hayDesc) { oldEl.style.display = 'block'; tmPintarPrecioAntes(oldEl, prod, ''); }
         else oldEl.style.display = 'none';
     }
     if (discEl) {
@@ -406,7 +406,7 @@ function renderOfertaTiempoLimitado() {
     const discEl = document.getElementById('flashDisc');
     const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
     if (oldEl) {
-        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        if (hayDesc) { oldEl.style.display = 'block'; tmPintarPrecioAntes(oldEl, prod, ''); }
         else oldEl.style.display = 'none';
     }
     if (discEl) {

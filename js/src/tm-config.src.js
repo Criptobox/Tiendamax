@@ -1007,6 +1007,23 @@ function guardarResena() {
     })();
 }
 
+/* resenas-cache.json, leído UNA vez por visita y compartido. Lo pedían cinco
+   sitios (la calificación del hero, las estrellas de las tarjetas, el detalle
+   y dos respaldos de Firebase), cada uno con su propio ?v= para saltarse la
+   caché: la portada lo bajaba tres veces seguidas. Pesa 1,5 KB; lo que cuesta
+   en 3G es cada viaje. Se renueva pasado un minuto, y un fallo no se
+   recuerda (el siguiente que lo pida lo reintenta). Devuelve el JSON o null. */
+let _tmResenasCacheP = null, _tmResenasCacheT = 0;
+function tmResenasCache() {
+    if (_tmResenasCacheP && Date.now() - _tmResenasCacheT < 60000) return _tmResenasCacheP;
+    _tmResenasCacheT = Date.now();
+    _tmResenasCacheP = fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || Date.now()), { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+        .then(d => { if (!d) _tmResenasCacheP = null; return d; });
+    return _tmResenasCacheP;
+}
+
 async function renderizarResenas(productoId) {
     const el = document.getElementById('listaResenas');
     if (!el) return;
@@ -1042,9 +1059,8 @@ async function renderizarResenas(productoId) {
     // Este archivo se sirve desde el mismo origen que la web, así que funciona aunque Firebase esté bloqueado.
     if (resenas.length === 0) {
         try {
-            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
-            if (r.ok) {
-                const cache = await r.json();
+            const cache = await tmResenasCache();
+            if (cache) {
                 const porProd = cache && cache.por_producto && cache.por_producto[pid];
                 if (Array.isArray(porProd) && porProd.length) {
                     resenas = porProd.slice().sort((a,b) => (b.id || 0) - (a.id || 0));
@@ -1222,9 +1238,8 @@ async function cargarTestimoniosFirebase() {
         // Firebase falló (timeout/bloqueo/error). Intentar cache estático.
         usedSource = 'cache';
         try {
-            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
-            if (r.ok) {
-                const cache = await r.json();
+            const cache = await tmResenasCache();
+            if (cache) {
                 const porProd = cache && cache.por_producto || {};
                 Object.keys(porProd).forEach(pid => {
                     if (Array.isArray(porProd[pid])) {
@@ -1238,9 +1253,8 @@ async function cargarTestimoniosFirebase() {
     // Si Firebase no devolvió nada, intentar cache aunque Firebase no haya tirado excepción
     if (allResenas.length === 0) {
         try {
-            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
-            if (r.ok) {
-                const cache = await r.json();
+            const cache = await tmResenasCache();
+            if (cache) {
                 const porProd = cache && cache.por_producto || {};
                 Object.keys(porProd).forEach(pid => {
                     if (Array.isArray(porProd[pid])) {

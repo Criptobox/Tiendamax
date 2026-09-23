@@ -438,9 +438,8 @@ async function _tmCargarRatingHero() {
     const el = document.getElementById('ndStatRating');
     if (!el) return;
     try {
-        const res = await fetch('resenas-cache.json?v=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await tmResenasCache();
+        if (!data) return;
         const porProducto = (data && data.por_producto) || {};
         let suma = 0, total = 0;
         Object.values(porProducto).forEach(arr => {
@@ -456,10 +455,15 @@ function renderizarCategoriasHome() {
 
     grid.innerHTML = '';
 
+    // Lo que se puede comprar hoy, la misma cifra que la tarjeta "Todos".
+    // Antes era productos.length con un "+": 138 contando los agotados, junto
+    // a un "Todos · 77 disponibles" — el cliente veía dos números que no
+    // cuadraban, y el "+" prometía más de lo que hay.
+    const _dispHero = productos.filter(p => Number(p.stock) > 0).length;
     const heroStatProductos = document.getElementById('ndStatProductos');
-    if (heroStatProductos) heroStatProductos.textContent = productos.length + '+';
+    if (heroStatProductos) heroStatProductos.textContent = _dispHero;
     const heroChipCount = document.getElementById('opChipCount');
-    if (heroChipCount) heroChipCount.textContent = productos.length;
+    if (heroChipCount) heroChipCount.textContent = _dispHero;
     _tmCargarRatingHero();
 
     // Ícono de línea (SVG) como el preview; emoji solo de respaldo o si el

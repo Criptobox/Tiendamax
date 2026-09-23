@@ -252,15 +252,16 @@
     </script>
     
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
-    <!-- Preload de la fuente del cuerpo (Latin): empieza a bajar sin esperar a parsear fonts.css -->
-    <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- Inter (--font-sans-glass) se usa en el header/hero rediseñados, visibles sin scroll -->
+    <!-- Inter es la letra de la tienda (body, header, hero, tarjetas): se precarga.
+         DM Sans ya no: en el inicio solo la usaban los dos botones de los canales,
+         al final de la página, y su precarga eran 62 KB en cada visita. Si otra
+         pantalla la necesita, la baja fonts.css cuando toca (font-display: swap). -->
     <link rel="preload" href="fonts/inter-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=d70afd43" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=2445d25e" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -271,7 +272,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=2328fc9a">
+    <link rel="stylesheet" href="css/bundle.css?v=8bdc13f0">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -323,6 +324,9 @@
                 return base > 0 ? base + (m === null ? 10 : _num(m)) : 0;
             } catch(e){ return 0; }
         }
+        function _monedaElegida(){
+            try { return localStorage.getItem('monedaActual') === 'MN' ? 'MN' : 'USD'; } catch(e){ return 'USD'; }
+        }
         function _hayStock(p){ return p && _num(p.stock) > 0 && p.agotado !== true; }
         function _rebaja(p){
             var hoy = _num(p.precioActual), antes = _num(p.precioOriginal);
@@ -372,14 +376,22 @@
         function _tarjeta(p, cd){
             var r = _rebaja(p) || { hoy: _num(p.precioActual), antes: 0 };
             var pct = r.antes > r.hoy ? Math.round((1 - r.hoy/r.antes) * 100) : 0;
-            var tasa = _tasa();
-            var ahorroMN = (tasa && r.antes > r.hoy) ? Math.round((r.antes - r.hoy) * tasa).toLocaleString('es-ES') : '';
+            // Todo en la moneda que eligió el cliente. Antes: "$460 USD" y
+            // debajo "Ahorras 65.700 MN", dos monedas en la misma tarjeta. Un
+            // producto con precio fijo en MN lleva sus números tal cual.
+            var fijoMN = p.moneda === 'MN';
+            var enMN = fijoMN || (_monedaElegida() === 'MN' && _tasa() > 0);
+            var fx = fijoMN ? 1 : (enMN ? _tasa() : 1);
+            function _mn(n){ return '$' + Math.round(n * fx).toLocaleString(); }
+            var txtHoy = enMN ? _mn(r.hoy) + ' MN' : '$' + r.hoy + ' USD';
+            var txtAntes = enMN ? _mn(r.antes) : '$' + r.antes;
+            var ahorro = r.antes > r.hoy ? (enMN ? _mn(r.antes - r.hoy) + ' MN' : '$' + Math.round(r.antes - r.hoy)) : '';
             // "Solo quedan N" solo con 3 o menos: así el aviso es siempre cierto
             // y no se gasta la credibilidad de la escasez.
             var pocas = _num(p.stock) <= 3;
             var sub = [];
             if (cd) sub.push('Termina en <b>' + _restante(cd.endTime - Date.now()) + '</b>');
-            if (ahorroMN) sub.push('Ahorras <b>' + ahorroMN + ' MN</b>');
+            if (ahorro) sub.push('Ahorras <b>' + ahorro + '</b>');
             if (pocas) sub.push('<b>Solo quedan ' + _num(p.stock) + '</b>');
 
             var b = document.createElement('button');
@@ -392,8 +404,8 @@
                     '<span class="tm-of-eyebrow">' + _etiqueta(p, cd) + '</span>' +
                     '<span class="tm-of-nom"></span>' +
                     '<span class="tm-of-precios">' +
-                        (r.antes > r.hoy ? '<span class="tm-of-antes">$' + r.antes + '</span>' : '') +
-                        '<span class="tm-of-hoy">$' + r.hoy + ' USD</span>' +
+                        (r.antes > r.hoy ? '<span class="tm-of-antes">' + txtAntes + '</span>' : '') +
+                        '<span class="tm-of-hoy">' + txtHoy + '</span>' +
                         (pct ? '<span class="tm-of-pct">−' + pct + '%</span>' : '') +
                     '</span>' +
                     (sub.length ? '<span class="tm-of-sub">' + sub.join(' · ') + '</span>' : '') +
@@ -515,6 +527,11 @@
         }
 
         window.tmBannerOfertas = tmBannerOfertas;
+        // Al cambiar USD/MN: repinta la tanda que se ve, sin reiniciar la rotación.
+        window.tmBannerOfertasRepintar = function(){
+            var sec = document.getElementById('rebajasHome');
+            if (sec && sec.style.display !== 'none' && _lista.length) _pintar();
+        };
         window.tmOfertasActivas = tmOfertasActivas;
         window.ocultarBannerOferta = ocultarBannerOferta;
 
@@ -523,8 +540,13 @@
 
         // 2. config.json es la fuente de verdad de la oferta del día: dice si
         //    el admin la activó, la cambió o la quitó.
-        fetch('config.json?_=' + Date.now())
+        //    La misma lectura la reaprovecha cargarTasaDesdeGitHub (bundle) en
+        //    vez de pedir el fichero otra vez 100 ms después.
+        window.__tmConfigInicial = fetch('config.json?_=' + Date.now())
             .then(function(r){ return r.ok ? r.json() : null; })
+            .catch(function(){ return null; });
+        window.__tmConfigInicialT = Date.now();
+        window.__tmConfigInicial
             .then(function(cfg){
                 try {
                     if (cfg && cfg.ofertaDiaId) {
@@ -612,7 +634,7 @@
                 <div class="op-hero-rings" aria-hidden="true"></div>
                 <div class="op-hero-inner">
                     <div class="nd-hero-left">
-                        <span class="op-chip"><span class="op-pulse"></span><span class="op-chip-txt">Catálogo actualizado · <span id="opChipCount">116</span>&nbsp;productos<span class="op-chip-extra"> · Pedido por WhatsApp</span></span></span>
+                        <span class="op-chip"><span class="op-pulse"></span><span class="op-chip-txt">Catálogo actualizado · <span id="opChipCount">77</span>&nbsp;disponibles<span class="op-chip-extra"> · Pedido por WhatsApp</span></span></span>
                         <h1 class="op-h1">Todo lo que necesitas,<br><span class="op-underline">a un</span> <span class="op-accent">mensaje</span> <span class="op-underline">de distancia</span></h1>
                         <!-- Buscador + selector de moneda, integrados en el hero -->
                         <div class="nd-hero-search">
@@ -682,7 +704,7 @@
                         </script>
                         <!-- Confianza real: producto/calificación se actualizan desde datos reales (ver renderizarCategoriasHome / _tmCargarRatingHero) -->
                         <div class="nd-hero-stats" id="ndHeroStats">
-                            <div class="nd-stat"><strong id="ndStatProductos">116+</strong><span>Productos</span></div>
+                            <div class="nd-stat"><strong id="ndStatProductos">77</strong><span>Disponibles</span></div>
                             <div class="nd-stat"><strong id="ndStatRating">4.7<i>★</i></strong><span>Calificación</span></div>
                             <div class="nd-stat"><strong>100%</strong><span>Pago al recibir</span></div>
                             <div class="nd-stat"><strong>&lt;5<i>min</i></strong><span>Respuesta</span></div>
@@ -1651,7 +1673,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=d70afd43" defer></script>
+    <script src="js/tm-bundle.js?v=2445d25e" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1828,14 +1850,14 @@
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/urgencia-ventas.js?v=9d496ce6" defer></script>
-    <script src="js/banners.js?v=3a5fac7a" defer></script>
+    <script src="js/banners.js?v=777017f9" defer></script>
     <script src="js/combos.js?v=43aa68c2" defer></script>
     <script src="js/hero-efectos.js?v=bb44e6ed" defer></script>
     <script src="js/web-vitals-snippet.js?v=53a27047" defer></script>
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=c6320038" defer></script>
+    <script src="js/tm-bot.js?v=3fbeb6ab" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

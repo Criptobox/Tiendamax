@@ -147,3 +147,13 @@ html body.light-mode #categorias-home .categorias-grid .categoria-card.cat-color
 html body #mas-vendidos { padding-top: 18px !important; }
 html body #mas-vendidos .section-eyebrow,
 html body #mas-vendidos .section-subtitle { display: none !important; }
+
+/* ── Botones con la letra de la tienda ────────────────────────
+   Un <button> no hereda la fuente de la página: el "Pedir" de cada tarjeta
+   —el botón que más importa— salía en Arial. Y los botones de los canales
+   iban en DM Sans (de .btn), la única razón para bajar esa fuente en el
+   inicio. Todos heredan Inter. */
+html body .btn-pedir-card,
+html body .hero-banner-prev,
+html body .hero-banner-next,
+html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !important; }

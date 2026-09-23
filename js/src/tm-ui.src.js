@@ -1228,9 +1228,8 @@ async function _tmCargarMetaCatalogo() {
     // Reseñas: cache estático (mismo origen, confiable en Cuba)
     if (!window._tmRatingMap) {
         try {
-            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || Date.now()), { cache: 'no-store' });
-            if (r.ok) {
-                const data = await r.json();
+            const data = await tmResenasCache();
+            if (data) {
                 const pp = (data && data.por_producto) || {};
                 const map = {};
                 Object.keys(pp).forEach(function(id) {
@@ -1462,7 +1461,7 @@ renderizarProductos = function() {
                         // reserve su alto. Si no, la tarjeta con descuento salía ~15px
                         // más alta que sus vecinas y rompía la rejilla.
                         (_hasDescuento
-                            ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span></div>'
+                            ? '<div class="pv2-oldrow"><span class="pv2-old"' + tmPrecioAntesAttrs(producto) + '>' + tmPrecioAntesTexto(producto) + '</span></div>'
                             : '<div class="pv2-oldrow pv2-oldrow-ghost" aria-hidden="true"><span class="pv2-old">&nbsp;</span></div>') +
                         // data-mn marca el precio que ya está en moneda nacional: el conmutador
                         // USD/MN no lo reescribe, porque no es una conversión sino su precio.

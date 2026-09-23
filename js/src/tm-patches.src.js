@@ -914,6 +914,14 @@ async function cargarTasaDesdeGitHub() {
             const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`);
             if (res.ok) cfg = await res.json();
         }
+        // La lectura que hizo el index al arrancar (hace unos ms) vale: pedirlo
+        // otra vez eran dos viajes seguidos por el mismo fichero. Una sola vez
+        // y fresca; las llamadas posteriores leen de nuevo.
+        if (!cfg && window.__tmConfigInicial && Date.now() - (window.__tmConfigInicialT || 0) < 30000) {
+            const p = window.__tmConfigInicial;
+            window.__tmConfigInicial = null;
+            try { cfg = await p; } catch (e) { cfg = null; }
+        }
         if (!cfg) {
             // Fallback: ruta relativa — siempre funciona en GitHub Pages
             const res = await fetch(`config.json?_=${Date.now()}`);
@@ -1005,6 +1013,39 @@ function tmPrecioTexto(p, valor) {
     return formatPrecio(n);
 }
 
+/* El precio de ANTES (el tachado) en la moneda que eligió el cliente.
+   Antes iba siempre en dólares: con MN elegido se veía "$600" tachado encima
+   de "$335,800 MN", que se lee como una rebaja de 335 mil a 600. Sin
+   decimales ni "USD" en dólares — es la línea pequeña. Un producto con
+   precio fijo en MN lleva el suyo tal cual. */
+function formatPrecioCorto(usd) {
+    const n = Number(usd) || 0;
+    if (_monedaActual === 'MN') {
+        const tasa = getTasaMN();
+        if (tasa > 0) return `$${Math.round(n * tasa).toLocaleString()} MN`;
+    }
+    return '$' + Math.round(n);
+}
+function tmPrecioAntesTexto(p) {
+    const n = Number(p && p.precioOriginal) || 0;
+    if (tmEsMN(p)) return '$' + Math.round(n).toLocaleString('es-CU') + ' MN';
+    return formatPrecioCorto(n);
+}
+/* Marca un elemento de precio anterior para que el conmutador USD/MN lo
+   repinte (actualizarPreciosMostrados). Los de precio fijo en MN no se marcan:
+   su número no es una conversión. */
+function tmPintarPrecioAntes(el, p, prefijo) {
+    if (!el) return;
+    if (tmEsMN(p)) el.removeAttribute('data-usd-antes');
+    else el.setAttribute('data-usd-antes', String(Number(p.precioOriginal) || 0));
+    if (prefijo) el.setAttribute('data-prefijo', prefijo); else el.removeAttribute('data-prefijo');
+    el.textContent = (prefijo || '') + tmPrecioAntesTexto(p);
+}
+/* El mismo marcado, como texto, para las tarjetas que se arman con HTML. */
+function tmPrecioAntesAttrs(p) {
+    return tmEsMN(p) ? '' : ' data-usd-antes="' + (Number(p.precioOriginal) || 0) + '"';
+}
+
 function formatPrecio(usd) {
     if (_monedaActual === 'MN') {
         const tasa = getTasaMN();
@@ -1043,6 +1084,16 @@ function actualizarPreciosMostrados() {
                 : ('$' + usd.toFixed(2) + ' USD');
         }
     });
+
+    // Los precios de antes (tachados) y el "Ahorras" siguen a la moneda
+    // elegida, igual que el precio actual.
+    document.querySelectorAll('[data-usd-antes]').forEach(el => {
+        const usd = parseFloat(el.getAttribute('data-usd-antes'));
+        if (Number.isFinite(usd)) el.textContent = (el.getAttribute('data-prefijo') || '') + formatPrecioCorto(usd);
+    });
+    if (typeof window.tmBannerOfertasRepintar === 'function') {
+        try { window.tmBannerOfertasRepintar(); } catch (e) {}
+    }
 
     const detailPrice = document.getElementById('detailPriceActual');
     const _detMN = (typeof tmEsMN === 'function') && tmEsMN(_detalleProductoActual);
