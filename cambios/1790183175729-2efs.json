@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "creado": "2026-09-23T17:06:15.729Z",
+  "productos": [
+    {
+      "id": 1790104688838,
+      "nombre": "📡 Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790104687304.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790104687304.webp"
+      ],
+      "precioActual": 180,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 5 GHz (23 dBi airMAX ac)",
+        "🔌 Consumo máx. 7W",
+        "🎯 Alcance 15 a 20+ km"
+      ],
+      "fechaAgregado": "2026-09-22T19:18:08.839Z",
+      "ficha": [
+        {
+          "k": "Consumo Eléctrico",
+          "v": "7W máximo",
+          "nota": "alta eficiencia para respaldos solares y UPS"
+        },
+        {
+          "k": "Método de Alimentación",
+          "v": "PoE Pasivo Gigabit",
+          "nota": "24V, 0.3A incluido"
+        },
+        {
+          "k": "Frecuencia Inalámbrica",
+          "v": "5 GHz",
+          "nota": "airMAX ac, 5150 – 5875 MHz"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "23 dBi",
+          "nota": "Reflector direccional 2×2 MIMO"
+        },
+        {
+          "k": "Rendimiento / Velocidad",
+          "v": "Hasta 450+ Mbps de rendimiento real"
+        },
+        {
+          "k": "Radio de Gestión",
+          "v": "Wi-Fi integrada de 2.4 GHz para configuración móvil",
+          "nota": "App UISP"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Sistema de Montaje",
+          "v": "Rótula esférica reforzada con ajuste de azimut y elevación por separado"
+        },
+        {
+          "k": "Inmunidad ESD/EMP",
+          "v": "Protección de ±24 kV por contacto y aire"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "airOS 8"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Consumo Mínimo de 7W",
+          "d": "opera durante apagones prolongados con un consumo insignificante sobre baterías e inversores."
+        },
+        {
+          "t": "Tecnología airMAX ac (450+ Mbps)",
+          "d": "procesador dedicado con modulación hasta 256-QAM para enlaces de datos masivos y tráfico continuo."
+        },
+        {
+          "t": "Antena Direccional de 23 dBi",
+          "d": "patrón de emisión estrecho que aísla las señales de fuentes de interferencia cercanas."
+        },
+        {
+          "t": "Radio Wi-Fi Integrada para Gestión",
+          "d": "puesta en marcha rápida desde el suelo o la torre conectándose directamente con la app móvil UISP."
+        },
+        {
+          "t": "Montaje Articulado Mejorado (Gen 2)",
+          "d": "rótula mecánica robusta con abrazadera de acero que facilita una alineación rápida y fija."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet",
+          "d": "aprovecha completamente el caudal inalámbrico sin cuellos de botella de 100 Mbps."
+        },
+        {
+          "t": "airOS 8 con airView en Vivo",
+          "d": "monitoreo espectral independiente para detectar interferencias de canal en tiempo real."
+        }
+      ],
+      "idealPara": [
+        "Terminal cliente (CPE) de largo alcance para proveedores de Internet inalámbrico (WISP) en 5 GHz.",
+        "Enlaces inalámbricos Punto a Punto (PtP) de larga distancia (hasta 15 – 20 km con línea de vista limpia) para unir fincas, almacenes o sucursales.",
+        "Instalaciones alimentadas por paneles solares y bancos de baterías debido a su bajo consumo eléctrico (7W).",
+        "Transporte de datos para sistemas perimetrales de cámaras de seguridad y videovigilancia IP remota."
+      ],
+      "incluye": [
+        "1× Alimentador central (Feedhorn) con radio integrada LiteBeam 5AC Gen 2",
+        "1× Reflector parabólico de 3 piezas (panel central + paneles laterales)",
+        "1× Soporte de montaje con rótula articulada",
+        "1× Abrazadera metálica de acero para mástil",
+        "1× Inyector Gigabit PoE Pasivo (24V, 0.3A) con cable de alimentación AC",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) | TiendaMax",
+      "seoDescription": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a…",
+      "descripcion": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a Punto (PtP) de largo alcance o como terminal cliente (CPE) de alto rendimiento en redes de proveedores WISP. Con un consumo eléctrico extremadamente reducido de apenas 7W, es una opción idónea para operar de forma continua conectado a sistemas de energía solar, bancos de acumuladores a 12V/24V o respaldos UPS sin sobrecargar la capacidad de reserva.",
+      "rev": 1790183175729
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
