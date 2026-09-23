@@ -393,6 +393,25 @@ for(const q of ['algo para el patio','algo para la piscina']){
        `«${q}» no nombra nada: sigue siendo "lo más parecido", no una ficha. «${r.slice(0,140)}»`);
 }
 
+// ── 15) Un hermano nuevo no puede tapar al que nombran ──────────────
+/* Al entrar el MikroTik hAP ax³ —cuya ficha habla de la serie hAP—
+   «tienes el hap ac3» dejó de dar la ficha del ac3 (salían los dos), y
+   «hay stock del hap ac3» contestaba con el conteo global del catálogo. La
+   búsqueda difusa no respetaba el modelo nombrado, que las menciones sí.
+   Y «ax³» se leía «ax»: el cliente que escribe «hap ax3» no lo encontraba
+   por su nombre. Se comprueba solo si los dos siguen en el catálogo. */
+if(hay('hAP ac3') && hay('hAP ax')){
+    await limpiarHilo();
+    for(const [q, sale, no] of [['tienes el hap ac3','hAP ac3','hAP ax'],
+                                ['hay stock del hap ac3','hAP ac3','hAP ax'],
+                                ['hap ax3','hAP ax','hAP ac3']]){
+        const r = await preguntar(q);
+        const tarjetas = r.slice(r.indexOf('⟦'));
+        ok(new RegExp('📦 \\S* ?[^⟦]*' + sale, 'i').test(r.slice(0, 80)) && !new RegExp(no,'i').test(tarjetas),
+           `«${q}» es la ficha del ${sale}, sin el ${no} al lado: «${r.slice(0,140)}»`);
+    }
+}
+
 if(fallos.length){
     console.error(`\n❌ ${fallos.length} comprobación(es) fallida(s):`);
     fallos.forEach(f => console.error('   • ' + f));

@@ -1070,8 +1070,11 @@
   const $ = (s, p=document) => p.querySelector(s);
   const $$ = (s, p=document) => Array.from(p.querySelectorAll(s));
 
+  // NFKD y no NFD: «hAP ax³» tiene que leerse «hap ax3». Con NFD el ³ se
+  // borraba, el modelo quedaba en «ax» y el cliente que escribe «ax3» no
+  // lo encontraba por su nombre.
   function normalize(s){
-    return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    return String(s||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
   }
   function cleanForMatch(s){
     let n = normalize(s).replace(/[^a-z0-9\s.]/g,' ').replace(/\s+/g,' ').trim();
@@ -1293,6 +1296,21 @@
        sacaba el Compresor de Aire y, al lado, el Changan CS75. El corte es
        relativo a propósito: en una consulta floja el mejor también puntúa
        poco y ahí no hay nada que cortar. */
+    /* Si el cliente NOMBRÓ un modelo que existe en algún nombre, el que lleva
+       OTRO modelo no es un pariente: es el equivocado. Mismo criterio que
+       detectProductMentions, que aquí faltaba: al entrar el hAP ax³ (su
+       ficha habla de la serie hAP), «tienes el hap ac3» dejó de dar la ficha
+       del ac3 y sacaba los dos. Solo modelos con letra y cifra: una cifra
+       suelta aquí puede ser un precio («algo por 150»). */
+    const _esMod = w => w.length >= 2 && w.length <= 6 && /[a-z]/.test(w) && /\d/.test(w);
+    const _modsDe = p => cleanForMatch(p.nombre).split(' ').filter(_esMod);
+    const _pedidos = q.split(' ').filter(_esMod)
+      .filter(m => list.some(x => _modsDe(x.p).includes(m)));
+    if(_pedidos.length){
+      const _limpio = list.filter(x => { const ms = _modsDe(x.p);
+        return !ms.length || _pedidos.some(m => ms.includes(m)); });
+      if(_limpio.length) list = _limpio;
+    }
     if(list.length > 1){
       const _tope = Math.max(...list.map(x => x.s));
       list = list.filter(x => x.s * 3 >= _tope);
@@ -1952,8 +1970,11 @@
        ambigüedad que resolver — no es una elección entre candidatos, es el
        único candidato. */
     if(_esPregStock){
-      const _qs = _expandirConsulta(cleanForMatch(text));
-      const _unico = PRODUCTOS.map(p => ({p, s: scoreProduct(p, _qs)})).filter(x => x.s > 0);
+      /* Con findProducts y no con «todo lo que puntúe»: al entrar el hAP ax³
+         —cuya ficha habla de la serie hAP— «hay stock del hap ac3» tenía dos
+         candidatos y volvía al conteo global. findProducts ya descarta el de
+         otro modelo y el que puntúa a menos de un tercio del primero. */
+      const _unico = findProducts(text, 2, { includeAgotados: true }).map(p => ({p}));
       /* Y tiene que estar NOMBRADO: que puntúe una sola ficha no basta,
          porque "¿cuántos productos tienen agotados" —que pregunta por el
          inventario entero— rozaba una palabra de la descripción de un
@@ -3905,11 +3926,27 @@ ${notasHTML}
     }
     return '';
   }
+  /* La banda wifi en la que trabaja un equipo, si lo dice: {'5'}, {'2.4'},
+     las dos, o ninguna si no consta. Un enlace necesita la MISMA banda en
+     las dos puntas: a quien pide la NanoStation M5 (agotada) se le ofrecía
+     la Loco M2 al lado, que no enlaza con la M5 que ya tiene del otro lado. */
+  function _bandas(x){
+    const nom = cleanForMatch(x.nombre);
+    const txt = nom + ' ' + cleanForMatch((x.specs || []).join(' ') + ' ' + (x.descripcion || ''));
+    const b = new Set();
+    if(/\b(m|lite|sa|lhg ?)5\b|\b5 ?a[cx]\b/.test(nom) || /\b5(\.8)? ?ghz\b/.test(txt)) b.add('5');
+    if(/\b(m|lite)2\b/.test(nom) || /\b2[. ]4 ?ghz\b/.test(txt)) b.add('2.4');
+    if(/\b(dual|doble) ?band/.test(txt)) { b.add('5'); b.add('2.4'); }
+    return b;
+  }
   function findAlternativas(p, n=3){
     const base = Number(p.precio) || 0;
     const cabeza = _altCabeza(p.nombre);
+    const bandasP = _bandas(p);
     return PRODUCTOS
       .filter(x => x.categoria === p.categoria && (x.subcategoria||'') === (p.subcategoria||'') && x.id !== p.id && x.stock > 0)
+      .filter(x => { if(!bandasP.size) return true;
+        const bx = _bandas(x); return !bx.size || [...bx].some(v => bandasP.has(v)); })
       .filter(x => {
         const q = Number(x.precio) || 0;
         // Sin precio en alguno de los dos no hay banda que valga: manda la
