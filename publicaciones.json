@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-24T15:46:51.561Z",
+  "actualizado": "2026-09-24T15:48:03.657Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -642,6 +642,12 @@
       "red": "revolico",
       "destino": "Revolico",
       "ts": 1790264806846
+    },
+    {
+      "pid": "1789067953023",
+      "red": "revolico",
+      "destino": "Revolico",
+      "ts": 1790264878991
     }
   ]
 }
