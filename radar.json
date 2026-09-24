@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-23T15:18:56.173253+00:00",
-  "fecha": "2026-09-23",
+  "actualizado": "2026-09-24T15:43:33.079844+00:00",
+  "fecha": "2026-09-24",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -22,16 +22,12 @@
         "mediana": 178.0,
         "n": 13
       },
-      "deltaAyerMediana": -1.0,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-10",
-          "mediana": 180.0
-        },
         {
           "fecha": "2026-09-11",
           "mediana": 180.0
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-09-23",
+          "mediana": 178.0
+        },
+        {
+          "fecha": "2026-09-24",
           "mediana": 178.0
         }
       ],
@@ -196,6 +196,10 @@
         {
           "fecha": "2026-09-23",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-24",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -223,10 +227,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-10",
-          "mediana": 82.5
-        },
         {
           "fecha": "2026-09-11",
           "mediana": 75.0
@@ -277,6 +277,10 @@
         },
         {
           "fecha": "2026-09-23",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-24",
           "mediana": 75.0
         }
       ],
@@ -341,10 +345,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-10",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-11",
           "mediana": 170.0
         },
@@ -394,6 +394,10 @@
         },
         {
           "fecha": "2026-09-23",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-24",
           "mediana": 170.0
         }
       ],
