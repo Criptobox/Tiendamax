@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-23T22:50:11Z",
+ "actualizado": "2026-09-24T01:03:50Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -605,7 +605,7 @@
    "nombre": "Litebeam 5ac gen 2",
    "precio": 180.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -638,7 +638,7 @@
    "nombre": "Mikrotik hap ax3",
    "precio": 260.0,
    "precioMoneda": "USD",
-   "stock": 5,
+   "stock": 4,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -838,7 +838,7 @@
    "nombre": "Planta de soldar Bielmeier FLUXMAX 140 (3 en 1)",
    "precio": 275.0,
    "precioMoneda": "USD",
-   "stock": 4,
+   "stock": 3,
    "categoria": "Utiles",
    "comision": 15.0,
    "comisionMoneda": "USD",
