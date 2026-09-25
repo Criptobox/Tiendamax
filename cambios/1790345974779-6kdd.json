@@ -1,0 +1,543 @@
+{
+  "v": 1,
+  "creado": "2026-09-25T14:19:34.779Z",
+  "productos": [
+    {
+      "id": 1778104287395,
+      "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
+      "precioActual": 130,
+      "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "stock": 6,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "el-enrutador-wifi-de-1-150mbps",
+      "comision": 10,
+      "specs": [
+        "📡 4G LTE",
+        "📶 WiFi de Largo Alcance"
+      ],
+      "seoTitle": "EL ENRUTADOR WIFI DE 1.150MBPS en Cuba | TiendaMax",
+      "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "KuWFi"
+        },
+        {
+          "k": "Modelo",
+          "v": "Router CPE Exterior 4G LTE / Wi-Fi",
+          "nota": "Serie C900 / CPF905 / L100"
+        },
+        {
+          "k": "Velocidad de Red",
+          "v": "4G LTE Cat4 (hasta 150 Mbps de descarga / 50 Mbps de subida) + Wi-Fi 2.4 GHz hasta 300 Mbps",
+          "nota": "802.11b/g/n"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto LAN/WAN Ethernet RJ45 (10/100 Mbps con soporte PoE) + 1× ranura para tarjeta SIM",
+          "nota": "Micro/Nano con adaptador"
+        },
+        {
+          "k": "Antenas",
+          "v": "2× antenas omnidireccionales externas de alta ganancia (5 dBi) para señal celular 4G y cobertura Wi-Fi"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "Modo Router 4G LTE (mediante tarjeta SIM), Modo Punto de Acceso (AP por cable de red), Modo Repetidor Wi-Fi"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Conectividad móvil 4G LTE Plug & Play",
+          "d": "inserta una tarjeta SIM con plan de datos y distribuye Internet por Wi-Fi o cable sin configuraciones complicadas."
+        },
+        {
+          "d": "Punto de acceso inalámbrico en 2.4 GHz con capacidad para conectar de 10 a 32 dispositivos simultáneamente (teléfonos, laptops, Smart TVs, cámaras IP)."
+        },
+        {
+          "d": "Carcasa impermeable con protección IP65 / IP66 resistente al agua, polvo, exposición solar directa y temperaturas extremas para montaje en exteriores."
+        },
+        {
+          "d": "Alimentación versátil mediante PoE Pasivo (12V a 24V) a través del mismo cable de red o mediante entrada de corriente directa DC 12V."
+        },
+        {
+          "d": "Antenas externas desmontables y orientables que optimizan la recepción de señal celular en zonas con cobertura móvil débil."
+        },
+        {
+          "d": "Panel frontal con indicadores LED para verificar en tiempo real el encendido, conexión LAN/WAN, Wi-Fi y potencia de la señal 4G."
+        },
+        {
+          "d": "Interfaz web de configuración para ajuste automático o manual de APN, seguridad WPA/WPA2-PSK y gestión de dispositivos conectados."
+        }
+      ],
+      "idealPara": [
+        "Fincas, casas de campo, naves industriales y zonas suburbanas o rurales donde no hay tendido de fibra óptica ni cable coaxial.",
+        "Centralización y transmisión continua de cámaras de videovigilancia IP instaladas en exteriores o perímetros abiertos.",
+        "Campamentos, obras de construcción, comercios temporales o respaldo de conexión a Internet ante caídas del proveedor principal."
+      ],
+      "incluye": [
+        "1× Router CPE Exterior KuWFi 4G LTE / Wi-Fi",
+        "2× Antenas externas desmontables (4G / Wi-Fi)",
+        "1× Inyector PoE / Adaptador de corriente",
+        "1× Cable de red Ethernet RJ45",
+        "1× Abrazadera / kit de sujeción para montaje en mástil o poste",
+        "1× Manual de usuario"
+      ],
+      "rev": 1790345974779,
+      "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie."
+    },
+    {
+      "id": 1781711154462,
+      "nombre": "📶 Repetidor Wi-fi TP-Link TL-WA855RE (N300)",
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
+      "categoria": "WIFI",
+      "subcategoria": "REPETIDORES",
+      "stock": 9,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "repetidor-wifi-de-rango-extendido-tp-link",
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
+      "seoDescription": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
+      "specs": [
+        "🔌 Puertos: 1× puerto Fast Ethernet RJ45",
+        "📶 Velocidad Wi-Fi: Hasta 300 Mbps en la banda de 2.4 GHz"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "TL-WA855RE",
+          "nota": "N300"
+        },
+        {
+          "k": "Velocidad Wi-Fi",
+          "v": "Hasta 300 Mbps en la banda de 2.4 GHz",
+          "nota": "Estándar 802.11n/g/b"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto Fast Ethernet RJ45",
+          "nota": "10/100 Mbps"
+        },
+        {
+          "k": "Antenas",
+          "v": "2 antenas externas ajustables de alta ganancia con tecnología MIMO"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "Modo Extensor de Rango (Repetidor), Modo Punto de Acceso (AP)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Amplifica la señal Wi-Fi del router principal eliminando zonas muertas en habitaciones, pasillos y áreas de difícil acceso."
+        },
+        {
+          "d": "2 antenas externas con tecnología MIMO que optimizan la recepción y estabilidad de la señal en toda la casa."
+        },
+        {
+          "d": "Indicador de señal LED inteligente que cambia de color para ayudarte a encontrar la ubicación óptima de instalación."
+        },
+        {
+          "d": "Botón WPS para conexión instantánea con el router principal en segundos sin configuraciones complejas."
+        },
+        {
+          "d": "Puerto Fast Ethernet integrado para conectar dispositivos por cable (Smart TV, PC, consola) o convertir una conexión de cable en Wi-Fi (Modo AP)."
+        },
+        {
+          "d": "Control de cobertura y programación de horarios de apagado/encendido para ahorro de energía desde la interfaz."
+        },
+        {
+          "d": "Compatible con cualquier módem, router o punto de acceso inalámbrico estándar."
+        },
+        {
+          "d": "Gestión sencilla desde el smartphone con la app móvil TP-Link Tether (Android / iOS) o navegador web."
+        }
+      ],
+      "idealPara": [
+        "Departamentos y casas donde la señal del módem principal no llega con suficiente fuerza a dormitorios, patios u oficinas de trabajo.",
+        "Conectar por cable equipos que no tienen Wi-Fi o requieren mayor estabilidad (computadoras de escritorio, impresoras de red o decodificadores).",
+        "Teletrabajo, clases virtuales, navegación web y reproducción fluida de contenido en HD."
+      ],
+      "incluye": [
+        "1× Extensor de Cobertura Wi-Fi TP-Link TL-WA855RE (N300)",
+        "1× Guía de instalación rápida"
+      ],
+      "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos.",
+      "rev": 1790345974779
+    },
+    {
+      "id": 1784403677390,
+      "nombre": "🌐 NanoStation 5 AC Loco",
+      "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784403674704.webp",
+        "https://tiendamax.org/imagenes/img_1784403675794.webp",
+        "https://tiendamax.org/imagenes/img_1784403676611.webp"
+      ],
+      "precioActual": 140,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 12,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "❌ Sin POE",
+        "🌐 Enlaces de Alto Rendimiento",
+        "🚀 Velocidad de 450+ Mbps"
+      ],
+      "fechaAgregado": "2026-07-18T19:41:17.390Z",
+      "seoTitle": "Nanostation AC Loco en Cuba | TiendaMax",
+      "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Ubiquiti Networks"
+        },
+        {
+          "k": "Modelo",
+          "v": "NanoStation 5AC Loco",
+          "nota": "Loco5AC"
+        },
+        {
+          "k": "Frecuencia y Velocidad",
+          "v": "5 GHz hasta 450+ Mbps de rendimiento real",
+          "nota": "Tecnología airMAX ac"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto LAN Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Antenas",
+          "v": "Antena direccional integrada de 13 dBi",
+          "nota": "Doble polarización 2×2 MIMO"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "CPE / Estación (Cliente), Punto de Acceso (AP) para enlaces Punto a Punto (PtP) y Punto a Multipunto",
+          "nota": "PtMP"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Rendimiento de alta velocidad con tecnología airMAX ac, superando los 450 Mbps de velocidad real con baja latencia y alta eficiencia espectral."
+        },
+        {
+          "d": "Radio Wi-Fi de gestión independiente en 2.4 GHz para configuración rápida y monitoreo directo desde el teléfono móvil mediante la app UISP (iOS/Android)."
+        },
+        {
+          "d": "Sistema operativo airOS 8 con analizador de espectro en tiempo real (airView), herramientas avanzadas de diagnóstico de señal y compatibilidad con protocolo TDMA."
+        },
+        {
+          "d": "Puerto Gigabit Ethernet que elimina cuellos de botella y aprovecha al máximo el ancho de banda del enlace inalámbrico."
+        },
+        {
+          "d": "Procesador de alto rendimiento y arquitectura optimizada para rechazo de ruido e interferencias en entornos densos."
+        },
+        {
+          "d": "Diseño ultra compacto, discreto y estilizado con protección para exteriores frente a rayos UV, lluvia y descargas electrostáticas (ESD)."
+        },
+        {
+          "d": "Alimentación mediante PoE Pasivo de 24V (consumo máx. ultra bajo de solo 8.5W)."
+        }
+      ],
+      "idealPara": [
+        "Enlaces inalámbricos Punto a Punto (PtP) y Punto a Multipunto (PtMP) de corto y medio alcance (hasta 5-10 km con línea de vista despejada).",
+        "Antena cliente (CPE) para proveedores WISP que ofrecen planes de Internet de alta velocidad a usuarios residenciales o corporativos.",
+        "Transmisión fluida de múltiples cámaras de videovigilancia IP en circuito cerrado, interconexión de naves industriales, oficinas anexas o fincas."
+      ],
+      "incluye": [
+        "1× Antena Ubiquiti NanoStation 5AC Loco",
+        "1× Abrazadera / kit de sujeción para montaje en mástil",
+        "1× Guía de inicio rápido",
+        "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
+      ],
+      "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
+      "rev": 1790345974779
+    },
+    {
+      "id": 1788797303584,
+      "nombre": "📡Ubiquiti Networks (LAP-120)",
+      "imagen": "https://tiendamax.org/imagenes/img_1788797299062.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788797299062.webp"
+      ],
+      "precioActual": 250,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 12,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 5 GHz (5150–5875 MHz)",
+        "📶 2x2 MIMO",
+        "⚡ Hasta 450 Mbps",
+        "📡 Antena sectorial 120°",
+        "📡 Ganancia de 16 dBi"
+      ],
+      "fechaAgregado": "2026-09-07T16:08:23.585Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Ubiquiti Networks"
+        },
+        {
+          "k": "Modelo",
+          "v": "LiteAP ac",
+          "nota": "LAP-120"
+        },
+        {
+          "k": "Frecuencia Inalámbrica",
+          "v": "5 GHz",
+          "nota": "airMAX ac, 5150 – 5875 MHz"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "16 dBi integrada",
+          "nota": "Panel sectorial 2×2 MIMO"
+        },
+        {
+          "k": "Apertura de Haz (Cobertura)",
+          "v": "120°",
+          "nota": "Azimut"
+        },
+        {
+          "k": "Rendimiento / Velocidad",
+          "v": "Hasta 450+ Mbps de rendimiento real"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Radio de Gestión",
+          "v": "Wi-Fi integrada de 2.4 GHz dedicada para configuración móvil",
+          "nota": "App UISP"
+        },
+        {
+          "k": "Alimentación",
+          "v": "PoE Pasivo 24V, 0.5A",
+          "nota": "Adaptador Gigabit PoE incluido"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "airOS 8"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Antena sectorial integrada de 120°",
+          "d": "ofrece una cobertura amplia de 120 grados con 16 dBi de ganancia, optimizada para funcionar como estación base y atender múltiples clientes simultáneos."
+        },
+        {
+          "t": "Tecnología airMAX ac",
+          "d": "procesador optimizado con modulación avanzada 256-QAM que alcanza más de 450 Mbps de rendimiento real con latencia reducida y alta eficiencia espectral."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet",
+          "d": "elimina cuellos de botella de red por cable para aprovechar al máximo las transferencias de alta velocidad del estándar ac."
+        },
+        {
+          "t": "Radio Wi-Fi dedicada para gestión",
+          "d": "permite acceder, configurar y alinear el equipo desde un smartphone o tablet mediante la aplicación móvil UISP (UNMS) sin requerir cables ni adaptadores adicionales."
+        },
+        {
+          "t": "Montaje con rótula esférica de 3 ejes",
+          "d": "diseño de soporte articulado que proporciona total flexibilidad para ajustar y fijar con precisión la elevación, el azimut y la rotación en postes o mástiles."
+        },
+        {
+          "t": "airOS 8 con airView en tiempo real",
+          "d": "sistema operativo con analizador de espectro continuo e independiente que detecta interferencias de RF sin interrumpir el enlace de datos."
+        },
+        {
+          "t": "Estructura ligera y aerodinámica",
+          "d": "factor de forma estilizado que minimiza la carga de viento y facilita instalaciones limpias en torres y mástiles."
+        }
+      ],
+      "idealPara": [
+        "Estación base (Punto de Acceso / AP) en enlaces Punto a Multipunto (PtMP) para proveedores de Internet inalámbrico (WISP).",
+        "Conexión y distribución de red hacia múltiples clientes residenciales o comerciales (CPEs) ubicados dentro de un área de 120°.",
+        "Centralización de transmisiones para sistemas perimetrales de videovigilancia y cámaras de seguridad IP en predios extensos, fincas o almacenes.",
+        "Soluciones de conectividad exterior de alta capacidad con despliegue ágil y administración móvil."
+      ],
+      "incluye": [
+        "1× Punto de Acceso Sectorial Ubiquiti LiteAP ac (LAP-120)",
+        "1× Soporte de montaje con rótula articulada de 3 ejes",
+        "1× Abrazadera metálica para fijación en mástil",
+        "1× Inyector Gigabit PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "Ubiquiti Networks (LAP-120) en Cuba | TiendaMax",
+      "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
+      "rev": 1790345974779,
+      "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral."
+    },
+    {
+      "id": 1788797590930,
+      "nombre": "📡 MikroTik LHG 5AX",
+      "imagen": "https://tiendamax.org/imagenes/img_1788797588660.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788797588660.webp",
+        "https://tiendamax.org/imagenes/img_1788797589882.webp"
+      ],
+      "precioActual": 240,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 5,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Wi‑Fi 6 en 5 GHz",
+        "📡 Antena parabólica de 24",
+        "📡 5 dBi",
+        "🔌 1 puerto Gigabit Ethernet",
+        "📶 2x2 MIMO",
+        "🔌 PoE 802.3af/at"
+      ],
+      "fechaAgregado": "2026-09-07T16:13:10.930Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "LHG 5 ax",
+          "nota": "RBLHG-5axD"
+        },
+        {
+          "k": "Estándar Inalámbrico",
+          "v": "Wi-Fi 6",
+          "nota": "802.11a/n/ac/ax en 5 GHz, Dual Chain"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "24.5 dBi",
+          "nota": "Reflector de rejilla tipo panel de abeja"
+        },
+        {
+          "k": "Apertura de Haz",
+          "v": "7°"
+        },
+        {
+          "k": "Procesador",
+          "v": "CPU ARM Dual-Core de última generación",
+          "nota": "800 MHz"
+        },
+        {
+          "k": "Memoria RAM",
+          "v": "512 MB"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "128 MB NAND"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Alimentación y PoE",
+          "v": "PoE-In compatible con 802.3af/at y PoE Pasivo",
+          "nota": "12V – 57V"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "MikroTik RouterOS v7",
+          "nota": "Licencia Nivel 3"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología Wi-Fi 6 (802.11ax) en 5 GHz",
+          "d": "incorpora modulación avanzada 1024-QAM y mayor eficiencia de canal, logrando enlaces inalámbricos mucho más veloces, estables y con latencia ultrabaja frente a generaciones anteriores."
+        },
+        {
+          "d": "Diseño de integración directa (Light Head Grid): el radio transmisor está integrado físicamente en el cabezal alimentador de la antena, eliminando cables coaxiales y evitando cualquier tipo de pérdida por atenuación de RF."
+        },
+        {
+          "t": "Estructura de rejilla aerodinámica",
+          "d": "chasis de malla microperforada con patrón hexagonal que deja pasar el viento libremente, minimizando las vibraciones y desalineaciones en torres altas o zonas costeras con fuertes ráfagas."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet",
+          "d": "aprovecha plenamente el rendimiento de datos que entrega el protocolo 802.11ax sin generar cuellos de botella por cable."
+        },
+        {
+          "t": "Alimentación PoE versátil",
+          "d": "admite tanto PoE Pasivo como el estándar industrial 802.3af/at en un amplio rango de voltaje (12V a 57V), facilitando su conexión a switches PoE o inyectores tradicionales."
+        },
+        {
+          "t": "RouterOS v7 avanzado",
+          "d": "control profesional del ancho de banda, firewall robusto, herramientas de análisis espectral en vivo, diagnósticos de enlace milimétricos y protocolos propietarios de MikroTik."
+        }
+      ],
+      "idealPara": [
+        "Enlaces inalámbricos Punto a Punto (PtP) de media y larga distancia de alta velocidad para unir sucursales, fincas o almacenes.",
+        "Equipo cliente (CPE) de alto rendimiento en redes WISP de 5 GHz sobre entornos congestionados o distancias considerables.",
+        "Instalación en torres elevadas, azoteas y mástiles expuestos a vientos fuertes donde las antenas de plato sólido sufren descalibración.",
+        "Troncales de transporte de datos y transmisión masiva de video para sistemas de cámaras de seguridad IP."
+      ],
+      "incluye": [
+        "1× Radio / Alimentador central MikroTik LHG 5 ax",
+        "1× Reflector de rejilla metálica (Grid) con estructura de ensamblaje",
+        "1× Inyector Gigabit PoE",
+        "1× Adaptador de corriente (24V, 0.8A)",
+        "2× Abrazaderas metálicas de sujeción para mástil (K-LHG mount kit)",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "Mikrotik lhg 5ax en Cuba | TiendaMax",
+      "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
+      "rev": 1790345974779,
+      "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
