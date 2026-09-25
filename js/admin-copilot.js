@@ -195,11 +195,98 @@ function pubResolver(pid, destino, tipo){
   const o = pubResueltos();
   const p = products().find(x => String(x.id) === String(pid));
   o[String(pid) + '|' + destino] = { tipo, ts: Date.now(), precio: p ? num(p.precioActual) : 0 };
-  // Lo viejo se poda: pasada la ventana ya no hay publicación viva que resolver.
-  const lim = Date.now() - PUB_VIVA_DIAS * 86400000;
-  Object.keys(o).forEach(k => { if (!(o[k] && o[k].ts >= lim)) delete o[k]; });
-  try { localStorage.setItem(PUB_RESUELTOS_KEY, JSON.stringify(o)); } catch(e) {}
+  try { localStorage.setItem(PUB_RESUELTOS_KEY, JSON.stringify(pubResueltosFusionar(o, {}))); } catch(e) {}
+  pubResueltosSubirLuego();
 }
+
+/* ── Lo resuelto también vive en el repositorio ──────────────────────────
+   Sin esto, «Ya lo quité» solo valía en el teléfono donde se tocó: en el
+   otro, el Copiloto volvía a mandar a borrar lo que ya estaba borrado, y un
+   aviso que se repite después de hecho es un aviso que se deja de mirar.
+
+   pub-resueltos.json, mismo camino que publicaciones.json y los grupos:
+     · Local en el acto; el repositorio 4 s después, releyéndolo justo antes
+       de escribir para no pisar lo que marcó el otro teléfono.
+     · Se fusiona POR ENTRADA (producto|sitio) y gana el `ts` más nuevo. No
+       hacen falta lápidas: nada se «desmarca»; lo viejo sale solo por la
+       ventana de PUB_VIVA_DIAS, en los dos lados a la vez.
+     · Al cargar, lo que este teléfono tiene y el repositorio no, se sube: un
+       guardado que falló se arregla solo.
+   La lectura va por la API con el token cuando lo hay (Pages tarda un minuto
+   en enterarse de lo recién subido) y con tope de tiempo: buildTasks la
+   espera, y un Copiloto colgado de la red es un Copiloto que no avisa. */
+const PUB_RESUELTOS_ARCHIVO = 'pub-resueltos.json';
+let _resTimer = null, _resSubiendo = false, _resSincronizado = false;
+let TM_RES_ESTADO = 'local';   // local | pendiente | guardando | guardado | error | sin-token
+function pubResueltosFusionar(a, b){
+  const lim = Date.now() - PUB_VIVA_DIAS * 86400000;
+  const out = {};
+  [a, b].forEach(o => Object.keys(o || {}).forEach(k => {
+    const r = o[k];
+    if (!r || !r.tipo || !(Number(r.ts) >= lim) || k.indexOf('|') < 1) return;
+    if (!out[k] || Number(r.ts) > out[k].ts) out[k] = { tipo: String(r.tipo), ts: Number(r.ts), precio: num(r.precio) };
+  }));
+  return out;
+}
+function pubResueltosAviso(){
+  try { if (typeof window.tmPubResueltosAlCambiar === 'function') window.tmPubResueltosAlCambiar(); } catch(e) {}
+}
+function pubResueltosEstadoTexto(){
+  return ({ pendiente: '☁️ Sin guardar todavía…', guardando: '☁️ Guardando…',
+            guardado: '☁️ Guardado: lo que marcas aquí te sigue en cualquier teléfono',
+            error: '⚠️ No pude guardarlo en el repositorio. Lo reintento al próximo cambio.',
+            'sin-token': '⚠️ Solo en este teléfono: configura GitHub en ⚙️ para que te siga.' })[TM_RES_ESTADO] || '';
+}
+function pubResueltosCredenciales(){
+  const user = localStorage.getItem('githubUser'), repo = localStorage.getItem('githubRepo'), token = localStorage.getItem('githubToken');
+  return (user && repo && token) ? { user, repo, token } : null;
+}
+async function pubResueltosLeerRepo(){
+  const c = pubResueltosCredenciales();
+  try {
+    const d = (c && typeof window._tmLeerJsonRepoFresco === 'function')
+      ? await window._tmLeerJsonRepoFresco(c.user, c.repo, c.token, PUB_RESUELTOS_ARCHIVO)
+      : await fetch(PUB_RESUELTOS_ARCHIVO + '?_=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null);
+    return (d && d.resueltos && typeof d.resueltos === 'object') ? d.resueltos : {};
+  } catch(e) { return {}; }
+}
+function pubResueltosSubirLuego(){
+  TM_RES_ESTADO = 'pendiente'; pubResueltosAviso();
+  clearTimeout(_resTimer);
+  _resTimer = setTimeout(() => { pubResueltosSubir(); }, 4000);
+}
+async function pubResueltosSubir(){
+  const c = pubResueltosCredenciales();
+  if (!c || typeof window.subirArchivoAGitHub !== 'function') { TM_RES_ESTADO = 'sin-token'; pubResueltosAviso(); return false; }
+  if (_resSubiendo) { pubResueltosSubirLuego(); return false; }
+  _resSubiendo = true; TM_RES_ESTADO = 'guardando'; pubResueltosAviso();
+  try {
+    const f = pubResueltosFusionar(await pubResueltosLeerRepo(), pubResueltos());
+    try { localStorage.setItem(PUB_RESUELTOS_KEY, JSON.stringify(f)); } catch(e) {}
+    await window.subirArchivoAGitHub(c.user, c.repo, c.token, PUB_RESUELTOS_ARCHIVO,
+      { actualizado: new Date().toISOString(), resueltos: f });
+    TM_RES_ESTADO = 'guardado';
+    return true;
+  } catch(e) {
+    TM_RES_ESTADO = 'error';
+    return false;
+  } finally {
+    _resSubiendo = false; pubResueltosAviso();
+  }
+}
+// Una vez por carga del panel: trae lo marcado en otros teléfonos y sube lo
+// que falte allí.
+async function pubResueltosSincronizar(){
+  if (_resSincronizado) return;
+  _resSincronizado = true;
+  const remoto = await pubResueltosLeerRepo();
+  const f = pubResueltosFusionar(remoto, pubResueltos());
+  try { localStorage.setItem(PUB_RESUELTOS_KEY, JSON.stringify(f)); } catch(e) {}
+  const falta = Object.keys(f).some(k => !remoto[k] || Number(remoto[k].ts) < f[k].ts);
+  if (falta) pubResueltosSubirLuego();
+  else if (Object.keys(f).length) { TM_RES_ESTADO = 'guardado'; pubResueltosAviso(); }
+}
+window.tmPubResueltosEstado = pubResueltosEstadoTexto;
 function pubVivas(){
   const byId = Object.fromEntries(products().map(p => [String(p.id), p]));
   const desde = Date.now() - PUB_VIVA_DIAS * 86400000;
@@ -588,7 +675,10 @@ async function buildTasks(){
   if (sinSeo.length>5) addTask(tasks,{kind:'seo',urgency:1,icon:'🔎',title:`${sinSeo.length} productos sin SEO`,detail:'Puedes usar IA masiva para mejorar títulos y descripciones.',action:'IA masiva',tab:'herramientas'});
 
   // Lo publicado que ya no es verdad: agotado o con otro precio. Es trabajo
-  // del gestor —el post lo puso él— así que va a la agenda de Inicio.
+  // del gestor —el post lo puso él— así que va a la agenda de Inicio. Antes
+  // se trae lo marcado como resuelto en otros teléfonos, con tope: esperar
+  // a la red sin límite es como se quedó colgado _firma una vez.
+  try { await Promise.race([pubResueltosSincronizar(), new Promise(r => setTimeout(r, 3000))]); } catch(e) {}
   const vivas = pubVivas();
   if (vivas.agotados.length) addTask(tasks,{kind:'pub-agotado',urgency:3,icon:'📵',
     title:`${vivas.agotados.length} agotado${vivas.agotados.length>1?'s':''} sigue${vivas.agotados.length>1?'n':''} publicado${vivas.agotados.length>1?'s':''}`,

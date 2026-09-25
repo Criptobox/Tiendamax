@@ -1698,6 +1698,15 @@ window.tmPubVivasAbrir = function(seccion) {
     document.getElementById('pvCerrar').addEventListener('click', () => { modal.remove(); _pvAvisarCopiloto(); });
     _pvPintar(seccion);
 };
+function _pvEstadoTexto() {
+    return typeof window.tmPubResueltosEstado === 'function' ? window.tmPubResueltosEstado() : '';
+}
+// El guardado cambia de estado DENTRO de los 4 s de espera: sin repintar la
+// línea, seguiría diciendo «sin guardar» cuando ya llegó.
+window.tmPubResueltosAlCambiar = function() {
+    const e = document.getElementById('pvEstado');
+    if (e) e.textContent = _pvEstadoTexto();
+};
 function _pvAvisarCopiloto() {
     try { if (typeof window.tmCopilotRefresh === 'function') window.tmCopilotRefresh(false); } catch (e) {}
 }
@@ -1726,8 +1735,10 @@ function _pvPintar(seccion) {
         'Renuévalos desde «Mis anuncios» en tu cuenta: sube el anuncio en la lista sin duplicarlo.')
         + renov.map(x => _pvFila(_escH(x.p.nombre), `publicado o renovado hace ${x.dias} días`,
             _pvAbrirDe('Revolico') + _pvBtn('✅ Lo renové', `data-pv-renovar="${_escH(String(x.p.id))}"`))).join('') + '</div>');
-    cuerpo.innerHTML = bloques.length ? bloques.join('')
-        : '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,.05);font-size:13px;">✅ Nada que corregir: lo que tienes publicado sigue siendo verdad.</div>';
+    cuerpo.innerHTML = (bloques.length ? bloques.join('')
+        : '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,.05);font-size:13px;">✅ Nada que corregir: lo que tienes publicado sigue siendo verdad.</div>')
+        // Lo que marcas aquí se guarda en el repositorio. Si no llegó, hay que poder verlo.
+        + `<p id="pvEstado" style="font-size:10.5px;opacity:.7;margin:0;text-align:center;">${_escH(_pvEstadoTexto())}</p>`;
     if (seccion) {
         const ancla = document.getElementById(seccion === 'rev-renovar' ? 'pv-renovar' : 'pv-agotados') || document.getElementById('pv-precios');
         if (ancla) try { ancla.scrollIntoView({ block: 'start' }); } catch (e) {}

@@ -69,6 +69,14 @@ class ContratosTest(unittest.TestCase):
                         "catálogo ligero, o los posts salen sin descripción.")
         self.assertNotIn("window.productos)) return window.productos", self.rev)
 
+    def test_lo_resuelto_se_sincroniza_con_tope(self):
+        """buildTasks espera a traer lo resuelto de otros teléfonos: sin tope,
+        una red lenta deja al Copiloto sin avisos (ya pasó con _firma)."""
+        self.assertRegex(self.cop, r"Promise\.race\(\[pubResueltosSincronizar\(\), new Promise\(r => setTimeout\(r, \d+\)\)\]\)")
+        cuerpo = _funcion(self.cop, "function pubResolver(")
+        self.assertIn("pubResueltosSubirLuego()", cuerpo,
+                      "marcar como resuelto tiene que programar la subida, o solo vale en este teléfono")
+
     def test_un_solo_analisis_de_lo_publicado(self):
         self.assertIn("window.tmPubVivas = pubVivas;", self.cop)
         self.assertIn("window.tmPubVivas()", self.rev)

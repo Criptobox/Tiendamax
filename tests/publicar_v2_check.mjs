@@ -71,6 +71,8 @@ const GRUPOS = [
 const REPO = {
     // Lo que guardó «el otro teléfono»: tiene que sobrevivir a este guardado.
     'grupos_facebook_config.json': { grupos: [{ nombre: 'Del otro teléfono', url: 'https://www.facebook.com/groups/otro/', ts: AHORA - 5000 }], borrados: {} },
+    // Y lo que el otro teléfono ya marcó como quitado: aquí no puede volver a avisar.
+    'pub-resueltos.json': { resueltos: { [String(AGOTADO.id) + '|Grupo Z']: { tipo: 'agotado', ts: AHORA - DIA, precio: 0 } } },
 };
 const SUBIDAS = [];
 const b64 = s => Buffer.from(s, 'utf8').toString('base64');
@@ -132,6 +134,8 @@ await pagina.addInitScript(({ GRUPOS, AHORA, DIA, AGOTADO, P2, P3 }) => {
     localStorage.setItem('tm_publog_v1', JSON.stringify([
         // Agotado y publicado hace 2 días en el Grupo A: tiene que avisar.
         { pid: String(AGOTADO.id), red: 'fb', destino: 'Grupo A', ts: AHORA - 2 * DIA, precio: 10, moneda: 'USD' },
+        // Ya quitado desde el otro teléfono (ver REPO['pub-resueltos.json']).
+        { pid: String(AGOTADO.id), red: 'fb', destino: 'Grupo Z', ts: AHORA - 3 * DIA },
         // Un Estado de WhatsApp no es un post que siga vivo.
         { pid: String(AGOTADO.id), red: 'wa', destino: 'Estado WhatsApp', ts: AHORA - DIA },
         // Publicado a otro precio: tiene que avisar de corregirlo.
@@ -227,6 +231,8 @@ const tareas = await pagina.evaluate(async () => {
 const tk = k => tareas.find(t => t.kind === k);
 ok(tk('pub-agotado') && /Grupo A/.test(tk('pub-agotado').detail), `falta el aviso de agotado publicado (y dónde): ${JSON.stringify(tareas.map(t => t.kind))}`);
 ok(tk('pub-agotado') && !/Estado/.test(tk('pub-agotado').detail), 'un Estado de WhatsApp caduca solo: no hay nada que ir a borrar');
+ok(tk('pub-agotado') && !/Grupo Z/.test(tk('pub-agotado').detail),
+   'lo que el otro teléfono ya marcó como quitado volvió a salir aquí: lo resuelto no viaja entre teléfonos');
 ok(tk('pub-precio') && /Grupo B/.test(tk('pub-precio').detail) && !/Grupo A/.test(tk('pub-precio').detail),
    'el precio viejo solo puede avisarse donde se guardó el precio: en el Grupo A no se sabe');
 ok(tk('rev-renovar') && /hace 9 días/.test(tk('rev-renovar').detail), 'falta el aviso de renovar en Revólico');
@@ -266,6 +272,17 @@ ok(pv.agot === 0 && pv.prec === 0 && pv.renov === 0, `resolver no quitó los avi
 ok(pv.renovado, '«Lo renové» no quedó apuntado en el registro');
 ok(/Nada que corregir/.test(pv.tras), `después de resolver todo tiene que decirlo: «${pv.tras.slice(0, 80)}»`);
 ok(pv.vuelve, 'un precio corregido que vuelve a cambiar tiene que volver a avisar');
+
+// Lo resuelto aquí sube al repositorio, fusionado con lo del otro teléfono.
+await pagina.waitForTimeout(5000);
+const subRes = SUBIDAS.filter(s => s.ruta === 'pub-resueltos.json').pop();
+const claves = subRes ? Object.keys(subRes.datos.resueltos || {}) : [];
+ok(claves.includes(String(AGOTADO.id) + '|Grupo A') && claves.includes(String(P2.id) + '|Grupo B'),
+   `lo marcado aquí no subió al repositorio: ${JSON.stringify(claves)}`);
+ok(claves.includes(String(AGOTADO.id) + '|Grupo Z'),
+   'al subir lo de aquí se perdió lo que había marcado el otro teléfono');
+const estadoRes = await pagina.evaluate(() => (window.tmPubResueltosEstado && window.tmPubResueltosEstado()) || '');
+ok(/Guardado/.test(estadoRes), `la línea de estado tiene que decir que llegó: «${estadoRes}»`);
 
 // ── 6) El plan del día ──────────────────────────────────────────────────
 const plan = await pagina.evaluate(async (ids) => {
