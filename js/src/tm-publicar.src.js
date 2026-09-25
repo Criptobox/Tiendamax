@@ -188,14 +188,36 @@ const TM_PUBLOG_MAX = 600;   // ~medio año publicando a diario
 /** `ts` solo lo usa la migración del historial viejo del panel: sin él, las
  *  publicaciones de hace semanas se apuntarían con la fecha de hoy y "hace X
  *  días" pasaría a decir "hoy" para todo el catálogo. */
-function tmRegistrarPublicacion(productoId, red, destino, ts) {
+/* Cada publicación guarda también el PRECIO que tenía el producto al salir:
+   el post se queda en el grupo con esa cifra, y sin ella no hay forma de
+   saber después que el precio cambió y hay que corregirlo allí. No se guarda
+   en las que se apuntan con fecha pasada (`ts`): el precio de hoy no es el
+   que tenían entonces, y un precio supuesto es peor que ninguno.
+   `extra.g` es la marca del grupo (tmGrupoCodigo), solo si el enlace la llevó. */
+function _tmProductoPorId(pid) {
+    const buscar = l => Array.isArray(l) ? l.find(p => p && String(p.id) === String(pid)) : null;
+    try { const p = buscar(window.PRODUCTOS); if (p) return p; } catch (e) {}
+    try { if (typeof productos !== 'undefined') return buscar(productos); } catch (e) {}
+    return null;
+}
+function tmRegistrarPublicacion(productoId, red, destino, ts, extra) {
     if (!productoId || !red) return;
     try {
         const log = tmPublicaciones().slice();
         const cuando = Number(ts);
-        log.push({ pid: String(productoId), red: String(red),
-                   destino: String(destino || ''),
-                   ts: (isFinite(cuando) && cuando > 0) ? cuando : Date.now() });
+        const pasada = isFinite(cuando) && cuando > 0;
+        const ev = { pid: String(productoId), red: String(red),
+                     destino: String(destino || ''),
+                     ts: pasada ? cuando : Date.now() };
+        const prod = pasada ? null : _tmProductoPorId(productoId);
+        const precio = prod ? Number(prod.precioActual) : NaN;
+        if (isFinite(precio) && precio > 0) {
+            ev.precio = precio;
+            ev.moneda = prod.moneda === 'MN' ? 'MN' : 'USD';
+        }
+        const g = String((extra && extra.g) || '');
+        if (/^[a-z0-9]{4,8}$/.test(g)) ev.g = g;
+        log.push(ev);
         localStorage.setItem(TM_PUBLOG_KEY, JSON.stringify(log.slice(-TM_PUBLOG_MAX)));
     } catch (e) {}
     // Local en el acto, repositorio con un respiro. Ver el bloque de abajo.

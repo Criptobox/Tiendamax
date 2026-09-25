@@ -2059,7 +2059,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=56057c04"></script>
+<script src="js/tm-bundle.js?v=662e05ac"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2109,7 +2109,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=4a4c7186"></script>
+<script src="js/revolico_integration.js?v=a2a76e42"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -2132,7 +2132,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=040a66c6"></script>
+<script src="js/admin-copilot.js?v=7aef8483"></script>
 
 <script>
 (function(){
@@ -3063,17 +3063,47 @@ const VENTA_ORIGEN_CHIPS = [
   ['instagram','📷 Instagram'], ['revolico','🟠 Revólico'], ['conocido','🤝 Conocido']
 ];
 let VENTA_ORIGEN = '';
+/* Y si vino de Facebook, de QUÉ grupo. Mismas reglas que el canal: opcional
+   y sin nada puesto de antemano. Se guarda el código del grupo
+   (tmGrupoCodigo), el mismo que cuenta sus visitas y toques en
+   /analytics/grupos: así la tarjeta del grupo pone al lado lo que vende, que
+   es lo que de verdad dice dónde vale la pena publicar. */
+let VENTA_GRUPO = '';
+function ventaGruposFB(){
+  if(typeof window.tmGrupoCodigo!=='function') return [];
+  try{
+    return (JSON.parse(localStorage.getItem('gruposFB')||'[]')||[])
+      .filter(g=>g&&g.url&&String(g.url).includes('facebook.com'))
+      .map(g=>({cod:window.tmGrupoCodigo(g), nombre:String(g.nombre||g.url)}))
+      .filter(g=>g.cod);
+  }catch(e){ return []; }
+}
 function ventaRenderOrigen(){
   const box=$('#venta-origen'); if(!box) return;
-  box.innerHTML = VENTA_ORIGEN_CHIPS.map(([k,txt])=>
+  let html = VENTA_ORIGEN_CHIPS.map(([k,txt])=>
     `<button type="button" class="vo-chip" aria-pressed="${VENTA_ORIGEN===k}" `
     + `onclick="ventaOrigenTocar('${escJsAttr(k)}')">${esc(txt)}</button>`).join('');
+  const gs = VENTA_ORIGEN==='facebook' ? ventaGruposFB() : [];
+  if(gs.length){
+    html += `<div class="vo-grupos" role="group" aria-label="Grupo de Facebook" style="flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">`
+      + `<span style="font-size:11.5px;color:var(--muted);align-self:center">¿De qué grupo?</span>`
+      + gs.map(g=>`<button type="button" class="vo-chip" aria-pressed="${VENTA_GRUPO===g.cod}" `
+        + `onclick="ventaGrupoTocar('${escJsAttr(g.cod)}')">${esc(g.nombre)}</button>`).join('')
+      + `</div>`;
+  }
+  box.innerHTML = html;
 }
 function ventaOrigenTocar(k){
   VENTA_ORIGEN = (VENTA_ORIGEN===k) ? '' : k;   // volver a tocarlo lo quita
+  if(VENTA_ORIGEN!=='facebook') VENTA_GRUPO='';
+  ventaRenderOrigen();
+}
+function ventaGrupoTocar(cod){
+  VENTA_GRUPO = (VENTA_GRUPO===cod) ? '' : cod;
   ventaRenderOrigen();
 }
 window.ventaOrigenTocar = ventaOrigenTocar;
+window.ventaGrupoTocar = ventaGrupoTocar;
 
 function ventaRegistrar(){
   if(!VENTA_CART.length)return;
@@ -3086,12 +3116,12 @@ function ventaRegistrar(){
     nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
     tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
   };
-  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN});
+  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN, grupo: VENTA_GRUPO});
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
   VENTA_CART=[]; ventaRenderCart(); ventaRenderPicker();
-  VENTA_ORIGEN=''; ventaRenderOrigen();
+  VENTA_ORIGEN=''; VENTA_GRUPO=''; ventaRenderOrigen();
   if($('#venta-cliente')) $('#venta-cliente').value='';
   if($('#venta-tel')) $('#venta-tel').value='';
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
@@ -6940,8 +6970,8 @@ function _pubMigrarHistViejo(){
 function pubCancelado(e){
   return !!e && (e.name === 'AbortError' || /abort|cancel/i.test(e.message || ''));
 }
-function pubMarcarPublicado(id, red, destino){
-  try{ tmRegistrarPublicacion(id, red||'otra', destino||''); }catch(e){}
+function pubMarcarPublicado(id, red, destino, extra){
+  try{ tmRegistrarPublicacion(id, red||'otra', destino||'', undefined, extra); }catch(e){}
 }
 function pubHaceTxt(ts){
   if(!ts) return null;
@@ -7138,8 +7168,21 @@ function pubHoyHTML(){
     <h3>🎯 Hoy toca publicar</h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Los más olvidados que tienen stock. ${nunca>0?`<b style="color:var(--gold,#f5a623)">${nunca}</b> de ${total} no se han publicado nunca.`:`De ${total} con stock.`}</p>
     <div style="display:flex;flex-direction:column;gap:10px">${filas}</div>
+    ${pubPlanBotonHTML(lista)}
     ${hayMas?`<button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="pubRenderHoy(true)">🔁 Dame otros</button>`:''}
   </div>`;
+}
+/* Estos mismos productos, repartidos por tus grupos en una sola cola
+   (tmColaPlan en revolico_integration.js): en vez de abrir la cola de cada
+   producto por separado, una tanda seguida con sus pausas y sus topes. */
+function pubPlanBotonHTML(lista){
+  if(typeof window.tmColaPlan!=='function' || !lista.length) return '';
+  let n=0;
+  try{ n=(JSON.parse(localStorage.getItem('gruposFB')||'[]')||[]).filter(g=>g&&g.url&&String(g.url).includes('facebook.com')).length; }catch(e){}
+  if(!n) return '';
+  const ids=lista.map(p=>String(p.id));
+  return `<button type="button" class="btn btn-primary" id="pub-plan-btn" style="width:100%;margin-top:10px;justify-content:center"
+    onclick='tmColaPlan(${esc(JSON.stringify(ids))})'>🗓️ Plan de hoy: estos ${lista.length} en tus ${n} grupos</button>`;
 }
 function pubRenderHoy(otros){
   if(otros) PUB_HOY_SALTO++;
@@ -7175,6 +7218,8 @@ function pubCompartirHTML(){
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
     <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px"></div>
     <button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="agregarGrupoFB()">+ Agregar grupo</button>
+    <!-- Los grupos se guardan solos en el repositorio. Si no llegaron, hay que poder verlo. -->
+    <p id="pub-grupos-estado" style="font-size:10.5px;color:var(--muted);margin:8px 0 0;text-align:center">${typeof tmGruposEstadoTexto==='function'?esc(tmGruposEstadoTexto()):''}</p>
   </div>
   <div class="section">
     <h3>📲 Compartir por producto</h3>

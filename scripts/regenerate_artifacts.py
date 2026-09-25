@@ -373,6 +373,9 @@ CSS_RESENAS = """
 #     trae a quien escribe. Solo cuenta con un canal válido y con 4–8 letras
 #     minúsculas o cifras — el mismo filtro que la regla de Firebase: la clave
 #     es una ruta, y sin él cualquier enlace inventado crearía nodos.
+#     El toque en WhatsApp se cuenta también por HORA (la del teléfono de
+#     quien toca, dos cifras): dice a qué hora responde cada grupo, que es
+#     cuándo conviene publicar ahí.
 MEDIR_JS = """
 <script>
 (function(){{
@@ -394,7 +397,7 @@ mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
 if(c){{mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}}if(G)mas('/analytics/grupos/'+G+'/visitas/count');}}
 var a=document.getElementById('tmWa');
 if(a){{if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
-a.addEventListener('click',function(){{if(frio('whatsapp_'+ID)){{mas('/analytics/whatsapp/'+ID+'/count');if(G)mas('/analytics/grupos/'+G+'/whatsapp/count');}}}});}}
+a.addEventListener('click',function(){{if(frio('whatsapp_'+ID)){{mas('/analytics/whatsapp/'+ID+'/count');if(G){{mas('/analytics/grupos/'+G+'/whatsapp/count');mas('/analytics/grupos/'+G+'/horas/'+('0'+new Date().getHours()).slice(-2)+'/count');}}}}}});}}
 }})();
 </script>
 """

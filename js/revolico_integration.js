@@ -10,6 +10,21 @@ function _escH(s) {
 }
 
 
+/* El catálogo con DESCRIPCIONES. En el panel hay dos: PRODUCTOS (admin.html),
+   que las trae —cargarDatos las rellena desde productos.json—, y el bareword
+   `productos` del motor, que es productos-lite.json SIN ellas. Aquí se leía el
+   segundo, así que todos los posts de Facebook y los anuncios de Revólico
+   salían sin descripción, con el texto ya escrito en el producto, y nada lo
+   delataba: el post se ve completo, solo que corto. */
+function _catalogo() {
+    try { if (Array.isArray(window.PRODUCTOS) && window.PRODUCTOS.length) return window.PRODUCTOS; } catch (e) {}
+    try { if (typeof productos !== 'undefined' && Array.isArray(productos) && productos.length) return productos; } catch (e) {}
+    try { const l = JSON.parse(localStorage.getItem('productos') || '[]'); return Array.isArray(l) ? l : []; } catch (e) { return []; }
+}
+function _productoPorId(id) {
+    return _catalogo().find(p => p && String(p.id) === String(id)) || null;
+}
+
 // _precioMN se quitó: estaba definida pero nunca se usaba, y el precio en CUP
 // no debe ir en publicaciones (el post queda meses y la tasa cambia cada semana).
 
@@ -617,16 +632,171 @@ function _primerasLineas(texto, n) {
 
 // Apunta lo publicado donde lo apunta el resto del panel, y repinta la lista
 // de Publicar para que el badge «hace X» y «Hoy toca» se enteren.
-function _marcarPublicado(pid, red, destino) {
+// `grupo`: el del post, para apuntar con él su marca (?g=) si el enlace la llevó.
+function _marcarPublicado(pid, red, destino, grupo) {
+    const extra = (grupo && _grupoEnlaces(grupo)) ? { g: tmGrupoCodigo(grupo) } : undefined;
     try {
-        if (typeof pubMarcarPublicado === 'function') pubMarcarPublicado(pid, red, destino);
-        else if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(pid, red, destino);
+        if (typeof pubMarcarPublicado === 'function') pubMarcarPublicado(pid, red, destino, extra);
+        else if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(pid, red, destino, undefined, extra);
     } catch (e) {}
     setTimeout(() => {
         try { if (typeof pubRenderShareList === 'function') pubRenderShareList(); } catch (e) {}
         try { if (typeof pubRenderHoy === 'function') pubRenderHoy(); } catch (e) {}
     }, 300);
 }
+
+/* ── Los grupos también viven en el repositorio, y se guardan solos ─────
+   Vivían en localStorage y solo subían con un «Guardar» que la pantalla de
+   Publicar no tiene. Peor: 4 s después de abrir el panel, tm-data copiaba
+   encima el grupos_facebook_config.json del repo —que estaba vacío—, así que
+   los grupos se BORRABAN en cada recarga, sin error ninguno. Y con ellos sus
+   reglas (máximo al día, enlaces).
+
+   Mismo camino que comparar-marcas.json:
+     · Se guarda en local en el acto y sube con un respiro de 4 s.
+     · Se FUSIONA por grupo, no fichero contra fichero: la clave es
+       tmGrupoCodigo (la URL normalizada) y gana el `ts` más nuevo. Así, con
+       dos teléfonos, el último en guardar no borra los grupos del otro.
+     · Borrar deja una lápida, no un hueco: un grupo que solo desaparece es un
+       grupo que el otro aparato todavía tiene y vuelve a subir.
+     · Al cargar, lo local que el repo no tiene se sube: un guardado que falló
+       o un cambio hecho sin conexión se arreglan solos.
+   Los grupos sin URL válida (a medio escribir) se quedan en local y no suben. */
+const GRUPOS_ARCHIVO = 'grupos_facebook_config.json';
+const GRUPOS_BORRADOS_KEY = 'gruposFB_borrados';
+const GRUPOS_LAPIDA_DIAS = 120;
+let _gruposTimer = null, _gruposSubiendo = false;
+let TM_GRUPOS_ESTADO = 'local';   // local | pendiente | guardando | guardado | error | sin-token
+
+function _gruposBorrados() {
+    try { const o = JSON.parse(localStorage.getItem(GRUPOS_BORRADOS_KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; }
+    catch (e) { return {}; }
+}
+function _gruposGuardarLocal(grupos, borrados) {
+    try { localStorage.setItem('gruposFB', JSON.stringify(grupos)); } catch (e) {}
+    if (borrados) try { localStorage.setItem(GRUPOS_BORRADOS_KEY, JSON.stringify(borrados)); } catch (e) {}
+}
+function tmGruposFusionar(remoto, local, borradosR, borradosL) {
+    const lim = Date.now() - GRUPOS_LAPIDA_DIAS * 86400000;
+    const borrados = {};
+    [borradosR, borradosL].forEach(b => Object.keys(b || {}).forEach(k => {
+        const t = Number(b[k]) || 0;
+        if (t >= lim && t > (borrados[k] || 0)) borrados[k] = t;
+    }));
+    const porCod = new Map(), sinCod = [], orden = [];
+    const meter = g => {
+        if (!g || typeof g !== 'object') return;
+        const cod = _grupoValido(g) ? tmGrupoCodigo(g) : '';
+        if (!cod) { sinCod.push(g); return; }
+        const ya = porCod.get(cod);
+        if (!ya) { porCod.set(cod, g); orden.push(cod); }
+        else if ((Number(g.ts) || 0) > (Number(ya.ts) || 0)) porCod.set(cod, g);
+    };
+    (local || []).forEach(meter);
+    (remoto || []).forEach(g => { if (g && _grupoValido(g)) meter(g); });
+    const grupos = orden.map(c => porCod.get(c))
+        .filter(g => !(borrados[tmGrupoCodigo(g)] >= (Number(g.ts) || 0)))
+        .concat(sinCod);
+    return { grupos, borrados };
+}
+function tmGruposEstadoTexto() {
+    return ({ local: '', pendiente: '☁️ Grupos sin guardar todavía…', guardando: '☁️ Guardando grupos…',
+              guardado: '☁️ Grupos guardados: te siguen en cualquier teléfono',
+              error: '⚠️ No pude guardar los grupos en el repositorio. Lo reintento al próximo cambio.',
+              'sin-token': '⚠️ Grupos solo en este teléfono: configura GitHub en ⚙️ para que no se pierdan.' })[TM_GRUPOS_ESTADO] || '';
+}
+function _gruposAviso() {
+    const e = document.getElementById('pub-grupos-estado');
+    if (e) e.textContent = tmGruposEstadoTexto();
+}
+function _gruposSubirLuego() {
+    TM_GRUPOS_ESTADO = 'pendiente'; _gruposAviso();
+    clearTimeout(_gruposTimer);
+    _gruposTimer = setTimeout(() => { _gruposSubir(); }, 4000);
+}
+async function _gruposSubir() {
+    const user = localStorage.getItem('githubUser'), repo = localStorage.getItem('githubRepo'), token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token || typeof subirArchivoAGitHub !== 'function') { TM_GRUPOS_ESTADO = 'sin-token'; _gruposAviso(); return false; }
+    if (_gruposSubiendo) { _gruposSubirLuego(); return false; }
+    _gruposSubiendo = true; TM_GRUPOS_ESTADO = 'guardando'; _gruposAviso();
+    try {
+        // Se relee justo antes de escribir: lo que otro teléfono guardó
+        // mientras tanto tiene que sobrevivir a este guardado.
+        const remoto = (typeof _tmLeerJsonRepoFresco === 'function')
+            ? await _tmLeerJsonRepoFresco(user, repo, token, GRUPOS_ARCHIVO) : null;
+        const f = tmGruposFusionar(remoto && remoto.grupos, _gruposFB(), remoto && remoto.borrados, _gruposBorrados());
+        _gruposGuardarLocal(f.grupos, f.borrados);
+        await subirArchivoAGitHub(user, repo, token, GRUPOS_ARCHIVO,
+            { grupos: f.grupos.filter(_grupoValido), borrados: f.borrados });
+        TM_GRUPOS_ESTADO = 'guardado';
+        return true;
+    } catch (e) {
+        TM_GRUPOS_ESTADO = 'error';
+        return false;
+    } finally {
+        _gruposSubiendo = false; _gruposAviso();
+    }
+}
+// Lo llama tm-data al leer el fichero del repo (en vez de pisar lo local).
+window.tmGruposDesdeRepo = function(datos) {
+    const local = _gruposFB(), borradosL = _gruposBorrados();
+    const f = tmGruposFusionar(datos && datos.grupos, local, datos && datos.borrados, borradosL);
+    _gruposGuardarLocal(f.grupos, f.borrados);
+    const remotos = new Set(((datos && datos.grupos) || []).filter(_grupoValido).map(g => tmGrupoCodigo(g) + '|' + (Number(g.ts) || 0)));
+    const faltan = f.grupos.filter(_grupoValido).some(g => !remotos.has(tmGrupoCodigo(g) + '|' + (Number(g.ts) || 0)))
+        || Object.keys(f.borrados).some(k => !(datos && datos.borrados && datos.borrados[k]));
+    if (faltan) _gruposSubirLuego();
+    else if (TM_GRUPOS_ESTADO === 'local') { TM_GRUPOS_ESTADO = f.grupos.length ? 'guardado' : 'local'; _gruposAviso(); }
+    // Solo se repinta si cambió algo: repintar reconstruye los campos y le
+    // quitaría el foco a quien esté escribiendo la URL de un grupo.
+    if (JSON.stringify(f.grupos) !== JSON.stringify(local)) {
+        try { if (typeof renderizarGruposFB === 'function' && document.getElementById('listaGruposFB')) renderizarGruposFB(f.grupos); } catch (e) {}
+    }
+};
+window.tmGruposFusionar = tmGruposFusionar;
+
+// Cada cambio en los grupos pone la hora al grupo tocado y programa la
+// subida. Se envuelven las funciones del bundle (tm-ui) en vez de tocarlas:
+// el bundle viaja a los teléfonos de los clientes y esto solo lo usa el panel.
+(function() {
+    const sellar = (i) => {
+        const gs = _gruposFB();
+        if (gs[i]) { gs[i].ts = Date.now(); _gruposGuardarLocal(gs); }
+    };
+    const envolver = (nombre, antes, despues) => {
+        const orig = window[nombre];
+        if (typeof orig !== 'function') return;
+        window[nombre] = function() {
+            const ctx = antes ? antes.apply(null, arguments) : null;
+            const r = orig.apply(this, arguments);
+            if (despues) despues.apply(null, [ctx].concat(Array.from(arguments)));
+            _gruposSubirLuego();
+            return r;
+        };
+    };
+    envolver('actualizarGrupoFB',
+        (i, campo) => campo === 'url' ? tmGrupoCodigo(_gruposFB()[i]) : null,
+        (codAntes, i, campo) => {
+            sellar(i);
+            // Cambiar la URL es cambiar de grupo: el código viejo se entierra,
+            // o volvería desde el repo como un grupo más.
+            if (campo === 'url' && codAntes && codAntes !== tmGrupoCodigo(_gruposFB()[i])) {
+                const b = _gruposBorrados(); b[codAntes] = Date.now(); _gruposGuardarLocal(_gruposFB(), b);
+            }
+        });
+    envolver('toggleProductoEnGrupo', null, (_, i) => sellar(i));
+    envolver('agregarGrupoFB', null, () => { const gs = _gruposFB(); sellar(gs.length - 1); });
+    envolver('eliminarGrupoFB',
+        (i) => { const g = _gruposFB()[i]; return g && _grupoValido(g) ? tmGrupoCodigo(g) : ''; },
+        (cod) => { if (cod) { const b = _gruposBorrados(); b[cod] = Date.now(); _gruposGuardarLocal(_gruposFB(), b); } });
+    // El «Guardar» viejo subía la lista tal cual y pisaba los grupos del otro
+    // teléfono: ahora es el mismo guardado fusionado, sin esperar.
+    window.guardarGruposFB = async function() {
+        clearTimeout(_gruposTimer);
+        const ok = await _gruposSubir();
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion(ok ? '✅ Grupos guardados' : tmGruposEstadoTexto(), ok ? 'success' : 'warning');
+    };
+})();
 
 // Lo que trae cada grupo: visitas a la ficha y toques en su WhatsApp con la
 // marca ?g= de ese grupo (MEDIR_JS en las fichas /p/). Una lectura, guardada
@@ -694,8 +864,10 @@ window.tmGrupoExtras = function(card, g, i) {
             const e = d[cod] || {};
             const vis = Number(e.visitas && e.visitas.count) || 0;
             const wa  = Number(e.whatsapp && e.whatsapp.count) || 0;
+            const hora = _grupoMejorHora(e.horas);
             stats.textContent = (vis || wa)
                 ? `📊 Desde este grupo: 👀 ${vis} visita${vis === 1 ? '' : 's'} · 💬 ${wa} toque${wa === 1 ? '' : 's'} en WhatsApp`
+                  + (hora ? ` · responden más entre las ${hora.desde} y las ${hora.hasta} h` : '')
                 : '📊 Todavía nada con la marca de este grupo (cuentan los enlaces publicados desde la cola o desde aquí).';
         }).catch(() => {
             // Un fallo de red NO es «no trae nada»: dicho así, el gestor deja
@@ -704,8 +876,41 @@ window.tmGrupoExtras = function(card, g, i) {
         });
     }
     pintarStats();
+    // Las ventas marcadas de este grupo (formulario de venta → Facebook → el
+    // grupo). Son datos del panel, no de Firebase: salen aunque no haya red.
+    const cod = tmGrupoCodigo(g);
+    const nVentas = _ventasDeGrupo(cod);
+    if (cod) {
+        const ven = document.createElement('div');
+        ven.style.opacity = '.85';
+        ven.textContent = nVentas
+            ? `💰 ${nVentas} venta${nVentas === 1 ? '' : 's'} marcada${nVentas === 1 ? '' : 's'} de este grupo`
+            : '💰 Ninguna venta marcada de este grupo todavía (al anotar una venta de Facebook, toca el grupo).';
+        caja.appendChild(ven);
+    }
     card.appendChild(caja);
 };
+function _ventasDeGrupo(cod) {
+    if (!cod) return 0;
+    let ventas = [];
+    try { if (typeof VENTAS !== 'undefined' && Array.isArray(VENTAS)) ventas = VENTAS; } catch (e) {}
+    if (!ventas.length) { try { ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]'); } catch (e) { ventas = []; } }
+    return (Array.isArray(ventas) ? ventas : []).filter(v => v && v.grupo === cod).length;
+}
+/* A qué hora responde un grupo: la franja de dos horas con más toques en
+   WhatsApp. Solo con GRUPO_MIN_HORAS toques o más: con tres toques, «a las
+   21 h» es casualidad dicha como si fuera un dato, y el gestor movería su
+   rutina por ella. */
+const GRUPO_MIN_HORAS = 10;
+function _grupoMejorHora(horas) {
+    if (!horas || typeof horas !== 'object') return null;
+    const n = h => Number(horas[String(h).padStart(2, '0')] && horas[String(h).padStart(2, '0')].count) || 0;
+    let total = 0; for (let h = 0; h < 24; h++) total += n(h);
+    if (total < GRUPO_MIN_HORAS) return null;
+    let mejor = 0, suma = -1;
+    for (let h = 0; h < 24; h++) { const t = n(h) + n((h + 1) % 24); if (t > suma) { suma = t; mejor = h; } }
+    return { desde: mejor, hasta: (mejor + 2) % 24, toques: suma, total };
+}
 
 function _cuandoTxt(ts) {
     const dias = Math.floor((Date.now() - ts) / 86400000);
@@ -821,23 +1026,21 @@ function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
 // Copia la versión que le toca a ESE grupo y lo abre. `iGrupo` es la posición
 // en la lista de grupos; sin ella, el post de siempre y sin marca de grupo.
 async function copiarYAbrirFacebook(productoId, grupoUrl, iGrupo) {
-    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
-    const producto = _allProds.find(p => String(p.id) === String(productoId));
+    const producto = _productoPorId(productoId);
     if (!producto) return false;
     const g = (iGrupo != null) ? _gruposFB()[iGrupo] : null;
     const texto = g
         ? _textoFacebook(producto, { variante: tmVarianteGrupo(g, iGrupo, producto.id), enlaces: _grupoEnlaces(g), grupo: g })
         : _textoFacebook(producto);
     await _copiar(texto);
-    _marcarPublicado(producto.id, 'fb', g ? _grupoDestino(g) : 'Facebook');
+    _marcarPublicado(producto.id, 'fb', g ? _grupoDestino(g) : 'Facebook', g);
     mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
     window.open(grupoUrl || 'https://www.facebook.com', '_blank', 'noopener,noreferrer');
     return true;
 }
 
 function previsualizarFacebook(productoId, grupoUrl) {
-    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
-    const producto = _allProds.find(p => String(p.id) === String(productoId));
+    const producto = _productoPorId(productoId);
     if (!producto) return;
 
     const _grupos = _gruposFB().filter(_grupoValido);
@@ -973,7 +1176,7 @@ function previsualizarFacebook(productoId, grupoUrl) {
         // Con el nombre del grupo cuando es uno de los tuyos, para que su
         // registro y su tope diario lo cuenten.
         const _g = grupoUrl ? _grupos.find(x => x.url === grupoUrl) : null;
-        _marcarPublicado(producto.id, 'fb', _g ? _grupoDestino(_g) : 'Facebook');
+        _marcarPublicado(producto.id, 'fb', _g ? _grupoDestino(_g) : 'Facebook', _g);
         if (w) {
             mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
         } else {
@@ -992,11 +1195,12 @@ function cerrarFbPreview() {
 
 
 function publicarEnGrupoFB(iGrupo) {
-    if (typeof productos === 'undefined' || !Array.isArray(productos) || productos.length === 0) return;
+    const catalogo = _catalogo();
+    if (!catalogo.length) return;
     const grupos = _gruposFB();
     const grupo = grupos[iGrupo];
     if (!grupo || !grupo.url) { mostrarNotificacion('❌ Agrega la URL del grupo primero', 'error'); return; }
-    const prods = productos.filter(p => (grupo.productos || []).includes(p.id))
+    const prods = catalogo.filter(p => (grupo.productos || []).includes(p.id))
         .sort((a, b) => (!a.stock || a.stock <= 0) - (!b.stock || b.stock <= 0));
     if (prods.length === 0) { mostrarNotificacion('❌ No hay productos seleccionados para este grupo', 'error'); return; }
 
@@ -1164,38 +1368,116 @@ function _colaPuedeSeguir(preguntar) {
     return true;
 }
 
-function _productoPorId(id) {
-    let lista = [];
-    try { if (typeof productos !== 'undefined' && Array.isArray(productos)) lista = productos; } catch (e) {}
-    if (!lista.length) { try { lista = JSON.parse(localStorage.getItem('productos') || '[]'); } catch (e) { lista = []; } }
-    return lista.find(p => String(p.id) === String(id)) || null;
-}
+
 
 // Por qué un grupo no entra en la cola de este producto ('' si entra).
-function _colaMotivo(g, pid) {
+// `planeados`: los que este mismo plan ya le mete hoy a ese grupo.
+function _colaMotivo(g, pid, planeados) {
     const ult = tmGrupoUltimaDe(g, pid);
     if (ult && Date.now() - ult < TM_COLA_REPETIR_DIAS * 86400000) return `ya salió aquí ${_cuandoTxt(ult)}`;
     const max = _grupoMaxDia(g);
     if (max) {
-        const n = tmGrupoHoy(g);
-        if (n >= max) return `hoy ya van ${n} aquí (tu máximo: ${max})`;
+        const n = tmGrupoHoy(g), m = n + (planeados || 0);
+        if (m >= max) return planeados
+            ? `llega a su máximo de hoy (${max}) con lo que ya va en este plan`
+            : `hoy ya van ${n} aquí (tu máximo: ${max})`;
     }
     return '';
 }
 
-function tmColaGrupos(productoId) {
+/* ── Qué trae cada grupo, para ordenar la cola ─────────────────────────
+   Con datos, primero los grupos que más toques en WhatsApp traen por
+   publicación. La regla es la de «Hoy toca»: SIN datos no se ordena por
+   ellos. Un grupo cuenta como «con datos» cuando lleva GRUPO_MIN_PUBS
+   publicaciones con su marca (el campo `g` del registro: las de antes de la
+   marca no pueden haber traído nada medible, y contarlas acusaría al grupo).
+   Un grupo que llega a ese mínimo con cero visitas va al final y lo dice;
+   uno sin datos se queda donde lo pusiste. Si la lectura falla, orden de
+   siempre y una línea que lo avisa: un fallo de red no es «este grupo no
+   trae nada». */
+const GRUPO_MIN_PUBS = 3;
+function _grupoRendimiento(g, stats) {
+    const cod = tmGrupoCodigo(g);
+    if (!stats || !cod || !_grupoEnlaces(g)) return null;
+    const pubs = _pubsGrupo(g).filter(e => e.g === cod).length;
+    if (pubs < GRUPO_MIN_PUBS) return null;
+    const e = stats[cod] || {};
+    const vis = Number(e.visitas && e.visitas.count) || 0;
+    const wa  = Number(e.whatsapp && e.whatsapp.count) || 0;
+    return { pubs, vis, wa, tasa: wa / pubs, tasaVis: vis / pubs };
+}
+function _ordenarGrupos(entradas, stats) {
+    const con = [], sin = [], nada = [];
+    entradas.forEach(x => {
+        const r = _grupoRendimiento(x.g, stats);
+        x.rend = r;
+        if (!r) sin.push(x);
+        else if (!r.vis && !r.wa) { x.nota = `${r.pubs} publicaciones con marca y ninguna visita`; nada.push(x); }
+        else { x.nota = `${r.wa} toque${r.wa === 1 ? '' : 's'} en WhatsApp en ${r.pubs} publicaciones`; con.push(x); }
+    });
+    con.sort((a, b) => (b.rend.tasa - a.rend.tasa) || (b.rend.tasaVis - a.rend.tasaVis));
+    return con.concat(sin, nada);
+}
+// La lectura de lo que trae cada grupo, con un tope: la cola no puede
+// quedarse esperando a Firebase. null = no se sabe (y entonces no se ordena).
+function _statsConTope(ms) {
+    return Promise.race([
+        _gruposStats().catch(() => null),
+        new Promise(r => setTimeout(() => r(null), ms)),
+    ]);
+}
+function _notaOrden(stats, entradas) {
+    if (!stats) return '⚠️ No pude leer lo que trae cada grupo: van en tu orden de siempre.';
+    return entradas.some(x => x.rend) ? '📊 Primero los grupos que más te traen.' : '';
+}
+
+async function tmColaGrupos(productoId) {
     const producto = _productoPorId(productoId);
     if (!producto) return;
-    const items = [];
-    _gruposFB().forEach((g, i) => {
-        if (!_grupoValido(g)) return;
-        const motivo = _colaMotivo(g, producto.id);
-        items.push({ i, g, estado: motivo ? 'apartado' : 'pendiente', motivo });
+    const validos = _gruposFB().map((g, i) => ({ g, i })).filter(x => _grupoValido(x.g));
+    if (!validos.length) { mostrarNotificacion('❌ No tienes grupos de Facebook guardados', 'error'); return; }
+    const stats = await _statsConTope(2500);
+    const orden = _ordenarGrupos(validos, stats);
+    const items = orden.map(x => {
+        const motivo = _colaMotivo(x.g, producto.id);
+        return { p: producto, i: x.i, g: x.g, nota: x.nota || '', estado: motivo ? 'apartado' : 'pendiente', motivo };
     });
-    if (!items.length) { mostrarNotificacion('❌ No tienes grupos de Facebook guardados', 'error'); return; }
-    _COLA = { producto, items, actual: -1, ultimo: -1 };
-    _colaAvanzar();
+    _colaMontar({ items, titulo: producto.nombre, plan: false, nota: _notaOrden(stats, orden) });
+}
 
+/* El plan del día: los productos de «Hoy toca» repartidos por tus grupos en
+   UNA sola cola, respetando lo mismo que la cola de un producto (7 días, el
+   máximo de cada grupo contando lo que el propio plan le mete, el tope por
+   hora y la pausa). El orden es en diagonal —en cada vuelta cada grupo recibe
+   un producto distinto—, así que dos pasos seguidos nunca repiten ni grupo ni
+   producto: publicar el mismo producto en cinco grupos seguidos es justo lo
+   que se ve como spam aunque cada texto sea distinto. */
+async function tmColaPlan(ids) {
+    const prods = (ids || []).map(_productoPorId).filter(p => p && Number(p.stock || 0) > 0);
+    if (!prods.length) { mostrarNotificacion('❌ No hay productos con stock para el plan', 'error'); return; }
+    const validos = _gruposFB().map((g, i) => ({ g, i })).filter(x => _grupoValido(x.g));
+    if (!validos.length) { mostrarNotificacion('❌ No tienes grupos de Facebook guardados', 'error'); return; }
+    const stats = await _statsConTope(2500);
+    const orden = _ordenarGrupos(validos, stats);
+    const planeados = new Map();
+    const items = [];
+    for (let r = 0; r < prods.length; r++) {
+        orden.forEach((x, j) => {
+            const p = prods[(r + j) % prods.length];
+            const ya = planeados.get(x.i) || 0;
+            const motivo = _colaMotivo(x.g, p.id, ya);
+            if (!motivo) planeados.set(x.i, ya + 1);
+            items.push({ p, i: x.i, g: x.g, nota: x.nota || '', estado: motivo ? 'apartado' : 'pendiente', motivo });
+        });
+    }
+    _colaMontar({ items, titulo: `Plan de hoy: ${prods.length} producto${prods.length === 1 ? '' : 's'} en ${orden.length} grupo${orden.length === 1 ? '' : 's'}`,
+                  plan: true, nota: _notaOrden(stats, orden) });
+}
+window.tmColaPlan = tmColaPlan;
+
+function _colaMontar(cola) {
+    _COLA = Object.assign({ actual: -1, ultimo: -1 }, cola);
+    _colaAvanzar();
     const prev = document.getElementById('fbColaModal');
     if (prev) prev.remove();
     const modal = document.createElement('div');
@@ -1209,7 +1491,8 @@ function tmColaGrupos(productoId) {
           <button class="close-btn" onclick="cerrarColaGrupos()" type="button">✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
-          <div style="font-size:13px;font-weight:700;">${_escH(producto.nombre)}</div>
+          <div style="font-size:13px;font-weight:700;">${_escH(cola.titulo)}</div>
+          ${cola.nota ? `<div id="colaNota" style="font-size:12px;opacity:.8;">${_escH(cola.nota)}</div>` : ''}
           <div id="colaPaso"></div>
           <div id="colaLista" style="display:flex;flex-direction:column;gap:6px;"></div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;opacity:.85;">
@@ -1241,7 +1524,7 @@ function _colaAvanzar() {
     const it = _COLA.items[_COLA.actual];
     // La versión se fija al mostrar el grupo: apuntar la publicación la hace
     // avanzar, y el texto y la imagen de ESTE grupo tienen que ser los mismos.
-    if (it) it.v = tmVarianteGrupo(it.g, it.i, _COLA.producto.id);
+    if (it) it.v = tmVarianteGrupo(it.g, it.i, it.p.id);
 }
 
 function _colaPintar() {
@@ -1249,7 +1532,7 @@ function _colaPintar() {
     const paso = document.getElementById('colaPaso');
     const lista = document.getElementById('colaLista');
     if (!paso || !lista) return;
-    const { producto, items } = _COLA;
+    const { items, plan } = _COLA;
     const it = items[_COLA.actual];
     const hechos = items.filter(x => x.estado === 'abierto').length;
     const ult = items[_COLA.ultimo];
@@ -1257,13 +1540,14 @@ function _colaPintar() {
     if (!it) {
         const apartados = items.filter(x => x.estado === 'apartado').length;
         paso.innerHTML = reabrir + `<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,.05);font-size:13px;line-height:1.5;">
-            ${hechos ? `✅ Listo: publicado en ${hechos} grupo${hechos === 1 ? '' : 's'}.` : 'No queda ningún grupo en la cola.'}
+            ${hechos ? `✅ Listo: ${plan ? hechos + ' publicaci' + (hechos === 1 ? 'ón' : 'ones') : 'publicado en ' + hechos + ' grupo' + (hechos === 1 ? '' : 's')}.` : 'No queda nada en la cola.'}
             ${apartados ? `<br>${apartados} apartado${apartados === 1 ? '' : 's'} — abajo dice por qué, y puedes incluirlo igual.` : ''}</div>`;
     } else {
         const pendientes = items.filter(x => x.estado === 'pendiente').length;
         const sinEnlaces = !_grupoEnlaces(it.g);
+        const producto = it.p;
         paso.innerHTML = reabrir + `
-          <div style="font-size:12px;opacity:.8;margin-bottom:6px;">Grupo ${hechos + 1} de ${hechos + pendientes} · <b>${_escH(_grupoDestino(it.g))}</b> · versión ${it.v + 1} de ${TM_VARIANTES}${sinEnlaces ? ' · <span style="color:#f5b041;">sin enlaces</span>' : ''}</div>
+          <div style="font-size:12px;opacity:.8;margin-bottom:6px;">${plan ? 'Paso' : 'Grupo'} ${hechos + 1} de ${hechos + pendientes} · ${plan ? `<b>${_escH(producto.nombre)}</b> → ` : ''}<b>${_escH(_grupoDestino(it.g))}</b> · versión ${it.v + 1} de ${TM_VARIANTES}${sinEnlaces ? ' · <span style="color:#f5b041;">sin enlaces</span>' : ''}</div>
           <canvas id="colaCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
           <div id="colaAvisoFoto" style="display:none;margin-top:6px;font-size:12px;color:#ff9a90;">⚠️ La foto no cargó — la imagen saldría con el icono de cámara.</div>
           <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">1️⃣ GUARDA LA IMAGEN</div>
@@ -1275,7 +1559,7 @@ function _colaPintar() {
           <textarea id="colaTexto" rows="10" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
           <div id="colaCuenta" style="font-size:12px;margin:6px 0;min-height:16px;"></div>
           <button id="colaAbrir" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">📋 Copiar texto y abrir el grupo →</button>
-          <button id="colaSaltar" type="button" class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;">⏭️ Saltar este grupo</button>`;
+          <button id="colaSaltar" type="button" class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;">⏭️ Saltar ${plan ? 'este paso' : 'este grupo'}</button>`;
         document.getElementById('colaTexto').value =
             _textoFacebook(producto, { variante: it.v, enlaces: !sinEnlaces, grupo: it.g });
         const cv = document.getElementById('colaCanvas');
@@ -1309,8 +1593,8 @@ function _colaPintar() {
     lista.innerHTML = items.map((x, k) => `
         <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,${k === _COLA.actual ? '.10' : '.04'});font-size:12px;">
           <div style="flex:1;min-width:0;">
-            <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${_escH(_grupoDestino(x.g))}</div>
-            <div style="opacity:.65;">${chip[x.estado]}${x.motivo ? ' · ' + _escH(x.motivo) : ''}</div>
+            <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${plan ? _escH(_nombreLimpio(x.p)) + ' → ' : ''}${_escH(_grupoDestino(x.g))}</div>
+            <div style="opacity:.65;">${chip[x.estado]}${x.motivo ? ' · ' + _escH(x.motivo) : ''}${x.nota ? ' · 📊 ' + _escH(x.nota) : ''}</div>
           </div>
           ${x.estado === 'apartado' || x.estado === 'saltado' ? `<button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 8px;" data-cola-incluir="${k}">Incluir igual</button>` : ''}
         </div>`).join('');
@@ -1358,13 +1642,106 @@ async function _colaAbrir() {
     await _copiar(ta ? ta.value : '');
     let w = null;
     try { w = window.open(it.g.url, '_blank', 'noopener,noreferrer'); } catch (e) {}
-    _marcarPublicado(_COLA.producto.id, 'fb', _grupoDestino(it.g));
+    _marcarPublicado(it.p.id, 'fb', _grupoDestino(it.g), it.g);
     it.estado = 'abierto'; it.motivo = '';
     _COLA.ultimo = _COLA.actual;
     _colaEmpezarPausa();
     mostrarNotificacion(w ? '✅ Texto copiado — pégalo en el grupo' : '⚠️ El navegador bloqueó la ventana. El texto ya está copiado: abre el grupo con «Abrirlo otra vez».', w ? 'success' : 'warning');
     _colaAvanzar();
     _colaPintar();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  LO QUE YA PUBLICASTE: CORREGIR Y RENOVAR
+// ══════════════════════════════════════════════════════════════
+/* La lista que abren las tareas del Copiloto «agotados que siguen publicados»,
+   «precio viejo en lo publicado» y «Revólico para renovar». El análisis NO
+   está aquí: es tmPubVivas / tmRevPorRenovar en admin-copilot.js, el mismo
+   que cuenta la tarea — con una copia en cada lado, el número de la tarea y la
+   lista que abre acabarían siendo dos conjuntos distintos. Aquí solo se pinta
+   y se apunta lo resuelto. */
+function _grupoPorDestino(destino) {
+    return _gruposFB().find(g => _grupoValido(g) && (_grupoDestino(g) === destino || String(g.url).trim() === destino)) || null;
+}
+function _pvFila(texto, sub, botones) {
+    // Se parte en dos renglones cuando no cabe: en un móvil, texto y botones
+    // en una sola fila dejaban el nombre en una columna de una palabra.
+    return `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.05);font-size:12px;">
+        <div style="flex:1 1 170px;min-width:0;"><div style="font-weight:600;">${texto}</div>${sub ? `<div style="opacity:.7;">${sub}</div>` : ''}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;">${botones}</div></div>`;
+}
+function _pvBtn(txt, attrs) {
+    return `<button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 8px;" ${attrs}>${txt}</button>`;
+}
+function _pvAbrirDe(destino) {
+    if (destino === 'Revolico') return _pvBtn('🟠 Abrir Revólico', `data-pv-url="https://www.revolico.com/"`);
+    const g = _grupoPorDestino(destino);
+    return g ? _pvBtn('Abrir grupo', `data-pv-url="${_escH(g.url)}"`) : '';
+}
+
+window.tmPubVivasAbrir = function(seccion) {
+    const prev = document.getElementById('pubVivasModal');
+    if (prev) prev.remove();
+    const modal = document.createElement('div');
+    modal.id = 'pubVivasModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:540px;max-height:92vh;display:flex;flex-direction:column;">
+        <div class="modal-header">
+          <h2>📌 Lo que ya publicaste</h2>
+          <button class="close-btn" type="button" id="pvCerrar">✕</button>
+        </div>
+        <div id="pvCuerpo" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;"></div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('pvCerrar').addEventListener('click', () => { modal.remove(); _pvAvisarCopiloto(); });
+    _pvPintar(seccion);
+};
+function _pvAvisarCopiloto() {
+    try { if (typeof window.tmCopilotRefresh === 'function') window.tmCopilotRefresh(false); } catch (e) {}
+}
+function _pvPintar(seccion) {
+    const cuerpo = document.getElementById('pvCuerpo');
+    if (!cuerpo) return;
+    if (typeof window.tmPubVivas !== 'function') {
+        cuerpo.innerHTML = '<p style="font-size:13px;">El Copiloto no está cargado: sin él no puedo cruzar lo publicado con el catálogo.</p>';
+        return;
+    }
+    const v = window.tmPubVivas();
+    const renov = typeof window.tmRevPorRenovar === 'function' ? window.tmRevPorRenovar() : [];
+    const bloques = [];
+    const cab = (id, t, d) => `<div id="${id}"><h3 style="margin:0 0 4px;font-size:15px;">${t}</h3><p style="font-size:12px;opacity:.7;margin:0 0 8px;">${d}</p>`;
+    if (v.agotados.length) bloques.push(cab('pv-agotados', '📵 Agotados que siguen publicados',
+        'Bórralos o márcalos como vendidos en cada sitio: la gente sigue escribiendo por ellos.')
+        + v.agotados.map(x => `<div style="font-size:13px;font-weight:700;margin:8px 0 4px;">${_escH(x.p.nombre)}</div>`
+            + x.donde.map(d => _pvFila(_escH(d.donde), 'publicado ' + _cuandoTxt(d.ts),
+                _pvAbrirDe(d.donde) + _pvBtn('✅ Ya lo quité', `data-pv-resolver="agotado" data-pid="${_escH(String(x.p.id))}" data-destino="${_escH(d.donde)}"`))).join('')).join('') + '</div>');
+    if (v.precios.length) bloques.push(cab('pv-precios', '💲 Con el precio viejo',
+        'El post sigue diciendo el precio de cuando salió. Edítalo en cada sitio.')
+        + v.precios.map(x => `<div style="font-size:13px;font-weight:700;margin:8px 0 4px;">${_escH(x.p.nombre)} · ahora ${_escH(_precioTxt(x.p, x.ahora))}</div>`
+            + x.donde.map(d => _pvFila(_escH(d.donde), `dice ${_escH('$' + d.precio + ' ' + (d.moneda || 'USD'))} · publicado ${_cuandoTxt(d.ts)}`,
+                _pvAbrirDe(d.donde) + _pvBtn('✅ Ya lo corregí', `data-pv-resolver="precio" data-pid="${_escH(String(x.p.id))}" data-destino="${_escH(d.donde)}"`))).join('')).join('') + '</div>');
+    if (renov.length) bloques.push(cab('pv-renovar', '🔁 Revólico para renovar',
+        'Renuévalos desde «Mis anuncios» en tu cuenta: sube el anuncio en la lista sin duplicarlo.')
+        + renov.map(x => _pvFila(_escH(x.p.nombre), `publicado o renovado hace ${x.dias} días`,
+            _pvAbrirDe('Revolico') + _pvBtn('✅ Lo renové', `data-pv-renovar="${_escH(String(x.p.id))}"`))).join('') + '</div>');
+    cuerpo.innerHTML = bloques.length ? bloques.join('')
+        : '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,.05);font-size:13px;">✅ Nada que corregir: lo que tienes publicado sigue siendo verdad.</div>';
+    if (seccion) {
+        const ancla = document.getElementById(seccion === 'rev-renovar' ? 'pv-renovar' : 'pv-agotados') || document.getElementById('pv-precios');
+        if (ancla) try { ancla.scrollIntoView({ block: 'start' }); } catch (e) {}
+    }
+    cuerpo.querySelectorAll('[data-pv-url]').forEach(b => b.addEventListener('click', () =>
+        window.open(b.dataset.pvUrl, '_blank', 'noopener,noreferrer')));
+    cuerpo.querySelectorAll('[data-pv-resolver]').forEach(b => b.addEventListener('click', () => {
+        if (typeof window.tmPubResolver === 'function') window.tmPubResolver(b.dataset.pid, b.dataset.destino, b.dataset.pvResolver);
+        _pvPintar();
+    }));
+    cuerpo.querySelectorAll('[data-pv-renovar]').forEach(b => b.addEventListener('click', () => {
+        _marcarPublicado(b.dataset.pvRenovar, 'revolico', 'Revolico (renovado)');
+        _pvPintar();
+    }));
 }
 
 function cerrarColaGrupos() {
@@ -1525,8 +1902,7 @@ function _vecesRevolico(pid) {
    versión que empezó a pegar, no la siguiente (apuntar la publicación hace
    avanzar la rotación). */
 function previsualizarRevolico(productoId, restaurar) {
-    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
-    const producto = _allProds.find(p => String(p.id) === String(productoId));
+    const producto = _productoPorId(productoId);
     if (!producto) return;
 
     const catInfo = _REVOLICO_CATS[producto.categoria] || _REVOLICO_DEFAULT;
@@ -1786,27 +2162,6 @@ function cerrarRevPreview() {
     // publicar a #listaRevolicoConfig. Ese contenedor no existe, y la función
     // tampoco desde este barrido — el envoltorio se quedaba reintentándose cada
     // 200 ms, para siempre, esperando algo que ya no iba a llegar.
-})();
-
-// ══════════════════════════════════════════════════════════════
-//  NUEVO TAB PUBLICAR — lista de productos con botones directos
-// ══════════════════════════════════════════════════════════════
-(function () {
-
-
-    // ── estado interno ────────────────────────────────────────
-    let _filtroCat = '', _filtroTxt = '';
-
-    function _prods() {
-        try { if (Array.isArray(window.productos)) return window.productos; } catch (e) { }
-        try { return JSON.parse(localStorage.getItem('productos') || '[]'); } catch (e) { return []; }
-    }
-
-
-    // Aquí se envolvía switchTab para pintar renderTabPublicar en #tmPublicarRoot.
-    // Ese contenedor no existe en admin.html: la pestaña Publicación la arma el
-    // asistente (wz*) del propio panel. Quitada la función, el envoltorio se
-    // quedaba reintentándose cada 300 ms para no llamar a nadie.
 })();
 
 // Restaurar vista previa de Revolico si el usuario vuelve después de ir a otra app

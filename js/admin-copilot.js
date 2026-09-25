@@ -159,6 +159,93 @@ function sinComision(p){
 }
 window.tmSinComision = sinComision;
 
+/* ── Lo que ya está publicado y dejó de ser verdad ──────────────────────
+   Un post de Facebook o un anuncio de Revólico se queda ahí con lo que decía
+   al salir. Si el producto se agota, sigue «vendiendo» lo que no hay y la
+   gente escribe para nada; si el precio cambia, anuncia la cifra vieja. El
+   registro de publicaciones sabe DÓNDE salió cada cosa (destino) y, desde que
+   lo guarda, a QUÉ precio: cruzarlo con el catálogo de ahora dice qué hay que
+   ir a corregir y dónde.
+
+   Solo cuenta lo que sigue vivo: Facebook, Revólico e Instagram, de los
+   últimos PUB_VIVA_DIAS (un Estado de WhatsApp caduca a las 24 h y un chat no
+   se «corrige»). Por destino vale la ÚLTIMA publicación. Lo que el gestor ya
+   arregló se apunta en tm_pub_resueltos: un agotado resuelto deja de salir
+   hasta que se vuelva a publicar ahí; un precio resuelto, hasta que el precio
+   vuelva a cambiar. El precio solo se compara con eventos que lo guardaron:
+   comparar con uno supuesto es inventar una diferencia. */
+const PUB_VIVA_DIAS = 30;
+const PUB_VIVA_REDES = new Set(['fb', 'facebook', 'revolico', 'ig', 'instagram']);
+const PUB_RESUELTOS_KEY = 'tm_pub_resueltos';
+const REV_RENOVAR_DIAS = 7, REV_OLVIDADO_DIAS = 60;
+function pubLog(){
+  try { if (typeof window.tmPublicaciones === 'function') return window.tmPublicaciones(); } catch(e) {}
+  try { const l = JSON.parse(localStorage.getItem('tm_publog_v1') || '[]'); return Array.isArray(l) ? l : []; } catch(e) { return []; }
+}
+// 'Revolico (renovado)' y 'Revolico' son el mismo anuncio.
+function pubDestino(e){
+  if (e.red === 'revolico') return 'Revolico';
+  return String(e.destino || '').trim() || (e.red === 'fb' ? 'Facebook' : String(e.red));
+}
+function pubResueltos(){
+  try { const o = JSON.parse(localStorage.getItem(PUB_RESUELTOS_KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; }
+  catch(e) { return {}; }
+}
+function pubResolver(pid, destino, tipo){
+  const o = pubResueltos();
+  const p = products().find(x => String(x.id) === String(pid));
+  o[String(pid) + '|' + destino] = { tipo, ts: Date.now(), precio: p ? num(p.precioActual) : 0 };
+  // Lo viejo se poda: pasada la ventana ya no hay publicación viva que resolver.
+  const lim = Date.now() - PUB_VIVA_DIAS * 86400000;
+  Object.keys(o).forEach(k => { if (!(o[k] && o[k].ts >= lim)) delete o[k]; });
+  try { localStorage.setItem(PUB_RESUELTOS_KEY, JSON.stringify(o)); } catch(e) {}
+}
+function pubVivas(){
+  const byId = Object.fromEntries(products().map(p => [String(p.id), p]));
+  const desde = Date.now() - PUB_VIVA_DIAS * 86400000;
+  const ult = {};
+  pubLog().forEach(e => {
+    if (!e || !PUB_VIVA_REDES.has(e.red) || !(Number(e.ts) >= desde)) return;
+    const d = pubDestino(e), k = String(e.pid) + '|' + d;
+    if (!ult[k] || e.ts > ult[k].ts) ult[k] = Object.assign({}, e, { donde: d });
+  });
+  const res = pubResueltos(), agot = {}, prec = {};
+  Object.values(ult).forEach(e => {
+    const p = byId[String(e.pid)]; if (!p || p.activo === false) return;
+    const r = res[String(e.pid) + '|' + e.donde];
+    if (num(p.stock) <= 0) {
+      if (r && r.tipo === 'agotado' && r.ts >= e.ts) return;
+      (agot[e.pid] = agot[e.pid] || { p, donde: [] }).donde.push(e);
+      return;
+    }
+    const ahora = num(p.precioActual), mon = p.moneda === 'MN' ? 'MN' : 'USD';
+    if (!(Number(e.precio) > 0) || !(ahora > 0)) return;
+    if ((e.moneda || 'USD') === mon && Math.abs(Number(e.precio) - ahora) < 0.01) return;
+    if (r && r.tipo === 'precio' && r.ts >= e.ts && Math.abs(num(r.precio) - ahora) < 0.01) return;
+    (prec[e.pid] = prec[e.pid] || { p, donde: [], ahora, moneda: mon }).donde.push(e);
+  });
+  return { agotados: Object.values(agot), precios: Object.values(prec) };
+}
+/* Revólico: lo que sigue a la venta y lleva REV_RENOVAR_DIAS o más sin
+   renovarse baja en la lista hasta que nadie lo ve. Pasados
+   REV_OLVIDADO_DIAS se deja de insistir: a esas alturas lo más probable es
+   que el anuncio ya no esté y toca publicarlo de nuevo, no renovarlo. */
+function revPorRenovar(){
+  const byId = Object.fromEntries(products().map(p => [String(p.id), p]));
+  const ult = {};
+  pubLog().forEach(e => { if (e && e.red === 'revolico' && (!ult[e.pid] || e.ts > ult[e.pid])) ult[e.pid] = Number(e.ts) || 0; });
+  const ahora = Date.now(), out = [];
+  Object.keys(ult).forEach(pid => {
+    const p = byId[String(pid)]; if (!p || p.activo === false || num(p.stock) <= 0) return;
+    const dias = (ahora - ult[pid]) / 86400000;
+    if (dias >= REV_RENOVAR_DIAS && dias < REV_OLVIDADO_DIAS) out.push({ p, ts: ult[pid], dias: Math.floor(dias) });
+  });
+  return out.sort((a, b) => a.ts - b.ts);
+}
+window.tmPubVivas = pubVivas;
+window.tmPubResolver = pubResolver;
+window.tmRevPorRenovar = revPorRenovar;
+
 function agentForKind(kind){
   if (['stockout','lowstock','avisos'].includes(kind)) return 'stock';
   if (['comision'].includes(kind)) return 'ventas';
@@ -499,6 +586,23 @@ async function buildTasks(){
 
   const sinSeo = ps.filter(p=>p.activo!==false && !p.seoTitle && !p.seoDescription);
   if (sinSeo.length>5) addTask(tasks,{kind:'seo',urgency:1,icon:'🔎',title:`${sinSeo.length} productos sin SEO`,detail:'Puedes usar IA masiva para mejorar títulos y descripciones.',action:'IA masiva',tab:'herramientas'});
+
+  // Lo publicado que ya no es verdad: agotado o con otro precio. Es trabajo
+  // del gestor —el post lo puso él— así que va a la agenda de Inicio.
+  const vivas = pubVivas();
+  if (vivas.agotados.length) addTask(tasks,{kind:'pub-agotado',urgency:3,icon:'📵',
+    title:`${vivas.agotados.length} agotado${vivas.agotados.length>1?'s':''} sigue${vivas.agotados.length>1?'n':''} publicado${vivas.agotados.length>1?'s':''}`,
+    detail:vivas.agotados.slice(0,3).map(x=>`${x.p.nombre} (${x.donde.map(d=>d.donde).join(', ')})`).join(' · ')+'. La gente escribe por algo que no hay.',
+    action:'Ver dónde',tab:'pub-vivas'});
+  if (vivas.precios.length) addTask(tasks,{kind:'pub-precio',urgency:2,icon:'💲',
+    title:`${vivas.precios.length} con el precio viejo en lo publicado`,
+    detail:vivas.precios.slice(0,3).map(x=>`${x.p.nombre} (${x.donde.map(d=>d.donde).join(', ')})`).join(' · '),
+    action:'Ver dónde',tab:'pub-vivas'});
+  const renov = revPorRenovar();
+  if (renov.length) addTask(tasks,{kind:'rev-renovar',urgency:2,icon:'🔁',
+    title:`${renov.length} anuncio${renov.length>1?'s':''} de Revólico para renovar`,
+    detail:renov.slice(0,3).map(x=>`${x.p.nombre} (hace ${x.dias} días)`).join(' · ')+'. Renovar lo sube en la lista; publicarlo otra vez lo duplica.',
+    action:'Ver cuáles',tab:'rev-renovar'});
 
   if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Claude, Gemini, OpenRouter o Groq para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
 
@@ -2030,6 +2134,15 @@ function abrirTarea(tab){
     closeSheet();
     if(typeof window.apFiltrarSinComision==='function'){ try{ window.apFiltrarSinComision(); return; }catch(e){} }
     switchTo('manage-products');
+    return;
+  }
+  // Tampoco son pestañas: la lista de lo publicado que hay que corregir o
+  // renovar, con un botón por sitio. La pinta revolico_integration.js, que es
+  // donde vive publicar; sin él, al menos se llega a Publicar.
+  if(tab==='pub-vivas' || tab==='rev-renovar'){
+    closeSheet();
+    if(typeof window.tmPubVivasAbrir==='function'){ try{ window.tmPubVivasAbrir(tab); return; }catch(e){} }
+    switchTo('publicacion');
     return;
   }
   // 'publicar-ahora' no es una pestaña: dispara la publicación real a la tienda.

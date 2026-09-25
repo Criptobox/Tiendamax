@@ -944,7 +944,13 @@ async function cargarDatosDesdeGitHub() {
                     fetchJSON('grupos_facebook_config.json').catch(() => null),
                     fetchJSON('revolico_config.json').catch(() => null),
                 ]);
-                if (dataG && dataG.grupos) localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
+                // Se FUSIONA con lo local (tmGruposDesdeRepo, en
+                // revolico_integration.js), nunca se pisa: copiar el fichero
+                // encima borraba los grupos del panel en cada recarga, porque
+                // el del repo estaba vacío. Sin la fusión cargada, no se toca.
+                if (dataG && Array.isArray(dataG.grupos) && typeof window.tmGruposDesdeRepo === 'function') {
+                    window.tmGruposDesdeRepo(dataG);
+                }
                 if (dataR && Object.keys(dataR).length > 0) localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
             } catch(e) {}
         }, 4000);

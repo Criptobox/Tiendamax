@@ -243,7 +243,7 @@ mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
 if(c){mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}if(G)mas('/analytics/grupos/'+G+'/visitas/count');}
 var a=document.getElementById('tmWa');
 if(a){if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
-a.addEventListener('click',function(){if(frio('whatsapp_'+ID)){mas('/analytics/whatsapp/'+ID+'/count');if(G)mas('/analytics/grupos/'+G+'/whatsapp/count');}});}
+a.addEventListener('click',function(){if(frio('whatsapp_'+ID)){mas('/analytics/whatsapp/'+ID+'/count');if(G){mas('/analytics/grupos/'+G+'/whatsapp/count');mas('/analytics/grupos/'+G+'/horas/'+('0'+new Date().getHours()).slice(-2)+'/count');}}});}
 })();
 </script>
 

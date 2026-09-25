@@ -414,6 +414,9 @@ function _ventaParaFirebase(venta) {
         gananciaMN: venta.gananciaMN
     };
     if (venta.origen) v.origen = venta.origen;
+    // Igual que el canal: es un dato de la tienda, y sin él las ventas por
+    // grupo solo contarían las anotadas en este teléfono.
+    if (venta.grupo) v.grupo = venta.grupo;
     return v;
 }
 
@@ -706,6 +709,11 @@ function registrarVentaPedido(items, cliente, opts) {
     // es de lectura pública y por dónde vende la tienda es cuenta suya.
     const org = String((opts && opts.origen) || '').trim().toLowerCase();
     if (VENTA_ORIGENES.indexOf(org) !== -1) venta.origen = org;
+    // El grupo de Facebook, solo con el canal Facebook y con el mismo filtro
+    // que la marca ?g= de los enlaces (tmGrupoCodigo): es su código, no su
+    // nombre, así que no dice nada del grupo a quien lo lea.
+    const grp = String((opts && opts.grupo) || '').trim();
+    if (venta.origen === 'facebook' && /^[a-z0-9]{4,8}$/.test(grp)) venta.grupo = grp;
 
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
     // v.telefono) y salía vacío porque nadie los escribía nunca.

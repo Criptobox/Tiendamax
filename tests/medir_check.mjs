@@ -167,6 +167,11 @@ for (const [q, por] of [['?utm_source=facebook&g=../../admin_uid', 'una ruta'],
     await pg2.waitForTimeout(300);
     const n = w.filter(u => u === '/analytics/grupos/k3x9ab/whatsapp/count.json').length;
     ok(n === 1, `el toque en WhatsApp desde un grupo contó ${n} veces en su grupo (debe ser 1): es la cifra que dice qué grupo trae a quien escribe`);
+    // Y a qué hora: dos cifras, la hora del teléfono que toca. Es lo único
+    // que acepta la regla de /analytics/grupos/<g>/horas/<hh>.
+    const hh = await pg2.evaluate(() => ('0' + new Date().getHours()).slice(-2));
+    const nh = w.filter(u => u === `/analytics/grupos/k3x9ab/horas/${hh}/count.json`).length;
+    ok(nh === 1, `el toque desde un grupo tiene que contarse una vez en su hora (${hh}); contó ${nh}: ` + w.join(', '));
     await c2.close();
 }
 

@@ -61,19 +61,25 @@ class MarcaDeGrupoTest(unittest.TestCase):
     def test_la_regla_de_firebase_filtra_igual(self):
         self.assertIsNotNone(self.grupos, "falta la regla de /analytics/grupos")
         nodo = self.grupos["$grupo"]
-        for hoja in ("visitas", "whatsapp"):
-            w = nodo[hoja]["count"][".write"]
+        hojas = [nodo["visitas"]["count"], nodo["whatsapp"]["count"], nodo["horas"]["$hora"]["count"]]
+        for h in hojas:
+            w = h[".write"]
             self.assertIn("$grupo.length >= 4 && $grupo.length <= 8", w)
             self.assertIn("$grupo.matches(/^[a-z0-9]+$/)", w)
             self.assertIn("newData.val() == data.val() + 1", w,
                           "es un contador: solo puede subir de uno en uno")
-        self.assertEqual({"visitas", "whatsapp"}, set(nodo),
-                         "bajo cada grupo solo hay dos contadores; cualquier "
+        self.assertEqual({"visitas", "whatsapp", "horas"}, set(nodo),
+                         "bajo cada grupo solo hay tres contadores; cualquier "
                          "otro hijo sería una ruta abierta a escribir")
+        hora = nodo["horas"]["$hora"]["count"][".write"]
+        self.assertIn("$hora.length == 2 && $hora.matches(/^[0-2][0-9]$/)", hora,
+                      "la hora es una ruta: sin filtro, cualquier texto crea un nodo")
 
     def test_la_ficha_solo_escribe_rutas_que_la_regla_conoce(self):
-        rutas = set(re.findall(r"'/analytics/grupos/'\+G\+'/(\w+)/count'", self.medir))
-        self.assertEqual({"visitas", "whatsapp"}, rutas)
+        rutas = set(re.findall(r"'/analytics/grupos/'\+G\+'/(\w+)/", self.medir))
+        self.assertEqual({"visitas", "whatsapp", "horas"}, rutas)
+        self.assertIn("('0'+new Date().getHours()).slice(-2)", self.medir,
+                      "la hora tiene que ir en dos cifras, que es lo único que acepta la regla")
 
 
 class ColaSinTodoALaVezTest(unittest.TestCase):
