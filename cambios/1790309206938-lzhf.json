@@ -1,0 +1,122 @@
+{
+  "v": 1,
+  "creado": "2026-09-25T04:06:46.938Z",
+  "productos": [
+    {
+      "id": 1790105284345,
+      "nombre": "📡MikroTik hEX PoE lite (RB750UPr2)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790105280764.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790105280764.webp",
+        "https://tiendamax.org/imagenes/img_1790105283182.webp"
+      ],
+      "precioActual": 110,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ACCESORIOS DE RED",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🔌 Consumo base 3W (máx. 50W con PoE)",
+        "⚡ 4 Puertos PoE-Out Pasivo (Puertos 2–5)",
+        "🌐 5× Puertos Fast Ethernet 10/100"
+      ],
+      "fechaAgregado": "2026-09-22T19:28:04.346Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "hEX PoE lite",
+          "nota": "RB750UPr2"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3W base | hasta 50W máximo entregando alimentación PoE"
+        },
+        {
+          "k": "Voltaje de Entrada DC",
+          "v": "10V – 28V",
+          "nota": "por Jack DC o PoE-In en Puerto 1"
+        },
+        {
+          "k": "Salida PoE (PoE-Out)",
+          "v": "Puertos 2 a 5",
+          "nota": "PoE Pasivo, máx. 1A por puerto / 2A combinados"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "5× Fast Ethernet 10/100 Mbps"
+        },
+        {
+          "k": "Puertos Adicionales",
+          "v": "1× puerto USB 2.0 Tipo A"
+        },
+        {
+          "k": "Procesador",
+          "v": "QCA9531 Mononúcleo a 650 MHz"
+        },
+        {
+          "k": "Memoria RAM",
+          "v": "64 MB"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "16 MB Flash"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "MikroTik RouterOS",
+          "nota": "Licencia Nivel 4"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "4 Puertos con Salida PoE",
+          "d": "simplifica el cableado alimentando directamente antenas cliente (CPE) o cámaras IP desde el propio router."
+        },
+        {
+          "t": "Consumo Mínimo de 3W",
+          "d": "máxima autonomía en bancos de baterías solares y sistemas de alimentación ininterrumpida."
+        },
+        {
+          "t": "Puerto USB para Módems 4G/LTE",
+          "d": "permite configurar un enlace secundario de datos para evitar cortes de servicio si falla el proveedor principal."
+        },
+        {
+          "t": "Gabinete Compacto",
+          "d": "cabe fácilmente en cajas estancas de exterior, cajas de distribución o espacios reducidos de oficina."
+        },
+        {
+          "t": "Control Total con RouterOS",
+          "d": "reglas de cortafuegos por hardware, priorización de tráfico (QoS), soporte VPN y segmentación por VLAN."
+        }
+      ],
+      "idealPara": [
+        "Nodos de conexión donde se requiera energizar varias antenas exteriores o cámaras de seguridad con una sola fuente.",
+        "Proyectos respaldados por sistemas solares o baterías de 12V/24V donde cada vatio ahorrado es vital.",
+        "Pequeñas oficinas o comercios que necesitan administración de red avanzada con bajo presupuesto.",
+        "Redes que requieran respaldo automático de datos mediante módem celular USB."
+      ],
+      "incluye": [
+        "1× Router alámbrico MikroTik hEX PoE lite (RB750UPr2)",
+        "1× Adaptador de corriente de 24V",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "MikroTik hEX PoE lite (RB750UPr2) en Cuba | TiendaMax",
+      "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
+      "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
+      "rev": 1790309206938
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
