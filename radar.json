@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-24T15:43:33.079844+00:00",
-  "fecha": "2026-09-24",
+  "actualizado": "2026-09-25T15:44:34.148454+00:00",
+  "fecha": "2026-09-25",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -18,7 +18,7 @@
       "nombre": "⚡ Inversor Tataliken 4000W",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 159.0,
+        "min": 160.0,
         "mediana": 178.0,
         "n": 13
       },
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-11",
-          "mediana": 180.0
-        },
         {
           "fecha": "2026-09-12",
           "mediana": 180.0
@@ -83,16 +79,13 @@
         {
           "fecha": "2026-09-24",
           "mediana": 178.0
+        },
+        {
+          "fecha": "2026-09-25",
+          "mediana": 178.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "159 USD Inversor de corriente tataliken 4000w",
-          "precio": 159.0,
-          "url": "https://www.revolico.com/item/inversor-de-corriente-tataliken-4000w-57155367",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "160 USD Inversor marca tataliken de 4000w , 12vol (110) onda sinosoidal pura Precio 160 us",
@@ -127,6 +120,13 @@
           "precio": 178.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-24v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-57123171",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "178 USD ⚡ Inversor Tataliken 12V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
+          "precio": 178.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
+          "dias": null
         }
       ]
     },
@@ -146,10 +146,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-11",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-09-12",
           "mediana": 25.0
         },
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-09-24",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-25",
           "mediana": 25.0
         }
       ],
@@ -217,9 +217,9 @@
       "nombre": "🔥 Antorcha de soldadura TIG (KIT Profesional)",
       "tuPrecio": 75.0,
       "mercado": {
-        "min": 70.0,
+        "min": 75.0,
         "mediana": 75.0,
-        "n": 8
+        "n": 1
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -227,10 +227,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-11",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-12",
           "mediana": 75.0
@@ -282,49 +278,18 @@
         {
           "fecha": "2026-09-24",
           "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-25",
+          "mediana": 75.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "70 USD Antorcha para soldadura TIG:  * Utilizada para trabajos de soldadura de alta precis",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-utilizada-para-trabajos-de-soldadura-de-alta-precision-en-metales-como-acero-inoxidable-55159571",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "70 USD Antorcha para soldadura TIG",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-54388265",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "75 USD Antorcha para soldadura TIG",
+          "titulo": "75 USD 🔥 Antorcha de soldadura TIG (KIT Profesional)",
           "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56827872",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "75 USD Antorcha para Soldadura TIG – Alta Precisión. Interesados al 53998989 o 54981957",
-          "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-alta-precision-interesados-al-53998989-o-54981957-56272365",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "75 USD Antorcha para soldadura",
-          "precio": 75.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-56866151",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD 🔥 ANTORCHA TIG PROFESIONAL – PRECISIÓN DE ALTA GAMA 🔥 AX | E01 | $90 USD",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-tig-profesional-precision-de-alta-gama-e01-90-usd-56444885",
+          "url": "https://www.revolico.com/item/antorcha-de-soldadura-tig-kit-profesional-57653965",
           "dias": null
         }
       ]
@@ -345,10 +310,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-11",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-12",
           "mediana": 170.0
         },
@@ -398,6 +359,10 @@
         },
         {
           "fecha": "2026-09-24",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-25",
           "mediana": 170.0
         }
       ],
@@ -439,9 +404,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170 ☆",
           "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57406984",
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57661035",
           "dias": null
         }
       ]
