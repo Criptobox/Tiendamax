@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-25T15:07:52Z",
+ "actualizado": "2026-09-25T15:13:50Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -19,7 +19,7 @@
    "nombre": "Adaptador poe UBIQUITI de 0.3A",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 22,
+   "stock": 12,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -739,7 +739,7 @@
    "nombre": "NanoStation 5AC Loco",
    "precio": 140.0,
    "precioMoneda": "USD",
-   "stock": 14,
+   "stock": 4,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
