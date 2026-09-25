@@ -329,7 +329,7 @@
   },
   {
     "id": 1778102582909,
-    "nombre": "🔥 Antorcha de soldadura TIG (KIT Profesional)",
+    "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
     "precioActual": 75,
     "imagen": "https://tiendamax.org/imagenes/img_1784007359011.webp",
     "categoria": "UTILES",
@@ -355,7 +355,6 @@
       "https://tiendamax.org/imagenes/img_1784007359011.webp",
       "https://tiendamax.org/imagenes/img_1778102582909.webp"
     ],
-    "descripcion": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura.",
     "ficha": [
       {
         "k": "Tecnología / Tipo",
@@ -394,7 +393,9 @@
     ],
     "idealPara": [
       "Soldadura de precisión en acero inoxidable, aluminio y otros metales."
-    ]
+    ],
+    "descripcion": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura.",
+    "rev": 1790359466039
   },
   {
     "id": 1778103783319,
@@ -7399,7 +7400,7 @@
   },
   {
     "id": 1786631549331,
-    "nombre": "🌐  MikroTik SXT SA5 ac",
+    "nombre": "🌐 MikroTik SXT SA5 AC",
     "imagen": "https://tiendamax.org/imagenes/img_1786631547518.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786631547518.webp"
@@ -7488,7 +7489,8 @@
       "1× Abrazadera metálica para mástil o torre",
       "1× Soporte de montaje y alineación básica"
     ],
-    "descripcion": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP). Cuenta con tecnología 802.11ac de alta velocidad y una antena sectorial integrada que ofrece una cobertura amplia en un ángulo de 90 grados."
+    "descripcion": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP). Cuenta con tecnología 802.11ac de alta velocidad y una antena sectorial integrada que ofrece una cobertura amplia en un ángulo de 90 grados.",
+    "rev": 1790359462054
   },
   {
     "id": 1786631968221,
@@ -8658,7 +8660,7 @@
   },
   {
     "id": 1787888877372,
-    "nombre": "🌐 MikroTik hEX S RB760iGS",
+    "nombre": "🌐 MikroTik hEX s RB760iGS",
     "imagen": "https://tiendamax.org/imagenes/img_1787888875463.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787888875463.webp"
@@ -8773,8 +8775,8 @@
     ],
     "seoTitle": "MikroTik hEX S RB760iGS en Cuba | TiendaMax",
     "seoDescription": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios…",
-    "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales.",
-    "rev": 1790343442681
+    "rev": 1790359462054,
+    "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales."
   },
   {
     "id": 1787933033934,
@@ -8900,8 +8902,7 @@
   },
   {
     "id": 1788368389009,
-    "nombre": "⚡Conectores MC4 10 pares",
-    "descripcion": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado por la radiación ultravioleta continua, la intemperie y temperaturas extremas (-40°C a +90°C), evitando deformaciones o quiebres con el paso de los años.",
+    "nombre": "⚡Conectores MC4 10 Pares",
     "imagen": "https://tiendamax.org/imagenes/img_1788368386636.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1788368386636.webp"
@@ -9011,7 +9012,9 @@
       "10× Pines terminales metálicos hembra (cobre estañado)"
     ],
     "seoTitle": "Conectores MC4 10 pares en Cuba | TiendaMax",
-    "seoDescription": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado…"
+    "seoDescription": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado…",
+    "descripcion": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado por la radiación ultravioleta continua, la intemperie y temperaturas extremas (-40°C a +90°C), evitando deformaciones o quiebres con el paso de los años.",
+    "rev": 1790359462054
   },
   {
     "id": 1788389384026,
