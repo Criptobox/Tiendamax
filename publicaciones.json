@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-25T14:30:02.173Z",
+  "actualizado": "2026-09-25T14:30:19.285Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -678,6 +678,24 @@
       "red": "wa",
       "destino": "Chat WhatsApp · AUDIO",
       "ts": 1790346597970
+    },
+    {
+      "pid": "1780017975657",
+      "red": "otra",
+      "destino": "Imagen descargada · AUDIO",
+      "ts": 1790346614948
+    },
+    {
+      "pid": "1782439428159",
+      "red": "otra",
+      "destino": "Imagen descargada · AUDIO",
+      "ts": 1790346614948
+    },
+    {
+      "pid": "1789065257613",
+      "red": "otra",
+      "destino": "Imagen descargada · AUDIO",
+      "ts": 1790346614948
     }
   ]
 }
