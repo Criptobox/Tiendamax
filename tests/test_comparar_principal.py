@@ -304,6 +304,59 @@ class ReservadoPorValesTest(unittest.TestCase):
         self.assertEqual(0, fila["stock"])
 
 
+class AgotarMiosTest(unittest.TestCase):
+    """agotar_mios: lo que la principal ya no puede servir se agota en mi web
+    sin esperar al panel. Caso real: la principal tenía sus 4 «Nanostation
+    m5» reservadas y mi «NanoStation M5 Internacional» seguía a la venta con 7."""
+
+    def test_enlazado_a_mano_y_sin_disponible_se_agota(self):
+        pri = [{"id": "p1", "nombre": "Nanostation m5", "stock": 0}]
+        mios = [{"id": 9, "nombre": "NanoStation M5 Internacional", "stock": 7}]
+        fuera = cp.agotar_mios(pri, mios, {"p1": "9"})
+        self.assertEqual([9], [p["id"] for p in fuera])
+
+    def test_si_la_principal_tiene_no_se_toca(self):
+        pri = [{"id": "p1", "nombre": "X", "stock": 3}]
+        mios = [{"id": 9, "nombre": "Mío", "stock": 7}]
+        self.assertEqual([], cp.agotar_mios(pri, mios, {"p1": "9"}))
+
+    def test_ya_agotado_no_se_vuelve_a_tocar(self):
+        pri = [{"id": "p1", "nombre": "X", "stock": 0}]
+        mios = [{"id": 9, "nombre": "Mío", "stock": 0}]
+        self.assertEqual([], cp.agotar_mios(pri, mios, {"p1": "9"}))
+
+    def test_si_una_de_sus_dos_parejas_tiene_no_se_agota(self):
+        # La principal repite productos («Sistema de Alarma» dos veces): si
+        # una de las dos filas tiene, el mío se puede vender.
+        pri = [{"id": "a", "nombre": "Alarma", "stock": 0},
+               {"id": "b", "nombre": "ALARMA", "stock": 2}]
+        mios = [{"id": 9, "nombre": "KIT alarma", "stock": 3}]
+        self.assertEqual([], cp.agotar_mios(pri, mios, {"a": "9", "b": "9"}))
+
+    def test_por_mismo_id_y_por_nombre_identico(self):
+        pri = [{"id": "5", "nombre": "Router", "stock": 0},
+               {"id": "p7", "nombre": "Switch de 5 Puertos", "stock": 0}]
+        mios = [{"id": 5, "nombre": "Otro nombre", "stock": 2},
+                {"id": 70, "nombre": "🌐 Switch de 5 puertos", "stock": 4}]
+        self.assertEqual({5, 70}, {p["id"] for p in cp.agotar_mios(pri, mios, {})})
+
+    def test_un_nombre_parecido_no_es_el_mismo_producto(self):
+        # m2 no es m5: sin enlace ni nombre idéntico, no se toca.
+        pri = [{"id": "p1", "nombre": "Nanostation m2", "stock": 0}]
+        mios = [{"id": 9, "nombre": "Nanostation m5", "stock": 7}]
+        self.assertEqual([], cp.agotar_mios(pri, mios, {}))
+
+    def test_las_lapidas_no_enlazan(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "m.json"
+            f.write_text(json.dumps({"marcas": {
+                "p1": {"ts": 1, "mio": "9"},
+                "p2": {"ts": 2, "borrado": True, "mio": "8"},
+                "p3": {"ts": 3, "oculto": True}}}), encoding="utf-8")
+            self.assertEqual({"p1": "9"}, cp.leer_enlaces(f))
+
+
 class ReposicionesTest(unittest.TestCase):
     def test_un_producto_nuevo_no_es_una_reposicion(self):
         # Si lo fuera, la primera corrida avisaría de 108 reposiciones y el

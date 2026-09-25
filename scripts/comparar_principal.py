@@ -84,6 +84,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SALIDA = ROOT / "principal-catalogo.json"
 FICHAS = ROOT / "principal-fichas.json"
 MIOS = ROOT / "productos.json"
+LITE = ROOT / "productos-lite.json"
+# Los emparejamientos hechos a mano en 🔀 Comparar ({id principal: {mio: id}}).
+MARCAS = ROOT / "comparar-marcas.json"
 
 # El repositorio que publica axontech92.github.io/AXONTECH. Se lee por
 # raw.githubusercontent y no por la web publicada porque el CSP de admin.html
@@ -385,6 +388,61 @@ def mios_agotados(catalogo_mio: list[dict], productos: list[dict]) -> list[dict]
     return fuera
 
 
+def leer_enlaces(path: Path = MARCAS) -> dict[str, str]:
+    """{id de la principal: id mío} de lo emparejado a mano en 🔀 Comparar.
+
+    Las lápidas (`borrado`) y los ocultos no enlazan nada: son marcas
+    deshechas o productos que el gestor dijo que no le interesan.
+    """
+    try:
+        datos = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    marcas = datos.get("marcas", datos) if isinstance(datos, dict) else {}
+    return {str(k): str(v["mio"]) for k, v in (marcas or {}).items()
+            if isinstance(v, dict) and v.get("mio") and not v.get("borrado")}
+
+
+def agotar_mios(productos: list[dict], catalogo_mio: list[dict],
+                enlaces: dict[str, str]) -> list[dict]:
+    """Mis productos a la venta cuya pareja en la principal está a 0 disponible.
+
+    Mismo emparejamiento que cmpEmparejar en el panel: el enlace hecho a mano
+    primero, luego el mismo id, luego el nombre normalizado idéntico —nunca
+    uno "parecido", que en este catálogo es otro producto (m2 no es m5)—.
+
+    Un producto mío puede tener DOS filas de la principal (la principal
+    repite productos: «Sistema de Alarma» está dos veces). Se agota solo si
+    ninguna de sus parejas tiene nada disponible: si una tiene, se puede
+    vender. `productos` ya trae el stock disponible (físico − reservado).
+    """
+    por_id = {str(p.get("id")): p for p in catalogo_mio}
+    por_nombre = {_norm_nombre(p.get("nombre")): p for p in catalogo_mio}
+    disponible: dict[str, int] = {}
+    for f in productos:
+        a_mano = enlaces.get(f["id"])
+        mio = por_id.get(a_mano) if a_mano else None
+        mio = mio or por_id.get(f["id"]) or por_nombre.get(_norm_nombre(f["nombre"]))
+        if mio is None:
+            continue
+        pid = str(mio.get("id"))
+        disponible[pid] = max(disponible.get(pid, 0), int(f.get("stock") or 0))
+    return [por_id[pid] for pid, n in disponible.items()
+            if n <= 0 and int(_num(por_id[pid].get("stock")) or 0) > 0]
+
+
+def escribir_catalogo_mio(catalogo_mio: list[dict]) -> None:
+    """productos.json y productos-lite.json, en el formato de siempre.
+
+    El mismo que usan aplicar_cambios.py (JSON.stringify(x, null, 2)) y
+    build-productos-lite.py (compacto, sin `descripcion`), para que el diff
+    enseñe solo el stock que cambió.
+    """
+    MIOS.write_text(json.dumps(catalogo_mio, indent=2, ensure_ascii=False), encoding="utf-8")
+    lite = [{k: v for k, v in p.items() if k != "descripcion"} for p in catalogo_mio]
+    LITE.write_text(json.dumps(lite, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
 def partir(productos: list[dict], catalogo_mio: list[dict]) -> tuple[list[dict], dict]:
     """El catálogo ligero y, aparte, las fichas largas de los que me faltan.
 
@@ -513,6 +571,23 @@ def main() -> int:
     if vueltos:
         print(f"🔄 Reposiciones en la principal: {len(vueltos)}"
               f" · de esas, agotadas en mi web: {len(relevantes)}")
+    # Lo que la principal ya no puede servir se agota también aquí, solo, sin
+    # esperar a que el gestor abra el panel y publique: su web seguía
+    # vendiendo 7 «NanoStation M5» con las 4 de la principal reservadas. Solo
+    # se toca `stock` —si la principal repone, la fila vuelve como "repuesto"
+    # en el panel y es el gestor quien decide cuántas pone—. Un cambio suyo
+    # aún sin aplicar (cambios/*.json) puede devolver el stock viejo; la
+    # siguiente corrida lo vuelve a agotar.
+    if isinstance(catalogo_mio, list) and catalogo_mio:
+        fuera = agotar_mios(productos, catalogo_mio, leer_enlaces())
+        if fuera:
+            for p in fuera:
+                p["stock"] = 0
+            escribir_catalogo_mio(catalogo_mio)
+            print(f"📦 Agotados en mi web (la principal no los tiene disponibles): {len(fuera)}")
+            for p in fuera:
+                print(f"   · {p.get('nombre')}")
+
     if relevantes:
         avisar(relevantes)
     return 0

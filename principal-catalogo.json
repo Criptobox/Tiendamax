@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-25T15:13:50Z",
+ "actualizado": "2026-09-25T15:17:12Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -120,7 +120,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 663,
+   "stock": 358,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -739,7 +739,7 @@
    "nombre": "NanoStation 5AC Loco",
    "precio": 140.0,
    "precioMoneda": "USD",
-   "stock": 4,
+   "stock": 3,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
