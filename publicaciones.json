@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-24T15:50:07.655Z",
+  "actualizado": "2026-09-25T14:30:02.173Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -660,6 +660,24 @@
       "red": "revolico",
       "destino": "Revolico",
       "ts": 1790265003056
+    },
+    {
+      "pid": "1780017975657",
+      "red": "wa",
+      "destino": "Chat WhatsApp · AUDIO",
+      "ts": 1790346597970
+    },
+    {
+      "pid": "1782439428159",
+      "red": "wa",
+      "destino": "Chat WhatsApp · AUDIO",
+      "ts": 1790346597970
+    },
+    {
+      "pid": "1789065257613",
+      "red": "wa",
+      "destino": "Chat WhatsApp · AUDIO",
+      "ts": 1790346597970
     }
   ]
 }
