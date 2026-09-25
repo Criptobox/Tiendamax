@@ -1,0 +1,81 @@
+{
+  "v": 1,
+  "creado": "2026-09-25T14:21:01.454Z",
+  "productos": [
+    {
+      "id": 1784405087402,
+      "nombre": "🔒 Cámara PTZ WiFi Exterior",
+      "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784405086297.webp"
+      ],
+      "precioActual": 25,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 12,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CÁMARAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚙ Tecnología / Tipo: Cámara IP PTZ inalámbrica",
+        "🎯 Uso: Interiores y exteriores protegidos"
+      ],
+      "fechaAgregado": "2026-07-18T20:04:47.403Z",
+      "seoTitle": "Cámara PTZ WiFi Exterior en Cuba | TiendaMax",
+      "seoDescription": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y…",
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Cámara IP PTZ inalámbrica"
+        },
+        {
+          "k": "Uso",
+          "v": "Interiores y exteriores protegidos",
+          "nota": "Hogares/Oficinas"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cámaras"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior."
+        },
+        {
+          "d": "Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad."
+        },
+        {
+          "d": "Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones."
+        },
+        {
+          "t": "Instalación",
+          "d": "Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva."
+        },
+        {
+          "t": "Características principales",
+          "d": "Rotación 360°, visión nocturna, monitoreo móvil."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
+      ],
+      "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.",
+      "rev": 1790346061454
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
