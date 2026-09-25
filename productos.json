@@ -627,7 +627,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
     "categoria": "WIFI",
     "subcategoria": "ANTENAS Y CPE",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -712,8 +712,8 @@
       "1× Abrazadera / kit de sujeción para montaje en mástil o poste",
       "1× Manual de usuario"
     ],
-    "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie.",
-    "rev": 1790343442681
+    "rev": 1790345974779,
+    "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie."
   },
   {
     "id": 1778104423316,
@@ -4481,7 +4481,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "REPETIDORES",
-    "stock": 0,
+    "stock": 9,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4563,7 +4563,8 @@
       "1× Extensor de Cobertura Wi-Fi TP-Link TL-WA855RE (N300)",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos."
+    "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos.",
+    "rev": 1790345974779
   },
   {
     "id": 1781711424820,
@@ -6335,7 +6336,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -6417,7 +6418,8 @@
       "1× Guía de inicio rápido",
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
-    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
+    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
+    "rev": 1790345974779
   },
   {
     "id": 1784405087402,
@@ -9504,7 +9506,7 @@
     "precioActual": 250,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9615,8 +9617,8 @@
     ],
     "seoTitle": "Ubiquiti Networks (LAP-120) en Cuba | TiendaMax",
     "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
-    "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral.",
-    "rev": 1790343442681
+    "rev": 1790345974779,
+    "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral."
   },
   {
     "id": 1788797590930,
@@ -9629,7 +9631,7 @@
     "precioActual": 240,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9741,8 +9743,8 @@
     ],
     "seoTitle": "Mikrotik lhg 5ax en Cuba | TiendaMax",
     "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
-    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE).",
-    "rev": 1790343442681
+    "rev": 1790345974779,
+    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
   },
   {
     "id": 1789065257613,
