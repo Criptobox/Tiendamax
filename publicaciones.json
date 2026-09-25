@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-25T14:31:04.277Z",
+  "actualizado": "2026-09-25T14:33:56.248Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -720,6 +720,78 @@
       "red": "otra",
       "destino": "Imagen descargada · SEGURIDAD",
       "ts": 1790346659840
+    },
+    {
+      "pid": "1777924118004",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1778103783319",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1778104924836",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1779208523952",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1779562612951",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1781365019871",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1782439688529",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1782791345628",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831241
+    },
+    {
+      "pid": "1783179800783",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831242
+    },
+    {
+      "pid": "1786633494382",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831242
+    },
+    {
+      "pid": "1787071784077",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831243
+    },
+    {
+      "pid": "1787079480177",
+      "red": "otra",
+      "destino": "Imagen descargada · ENERGIA",
+      "ts": 1790346831243
     }
   ]
 }
