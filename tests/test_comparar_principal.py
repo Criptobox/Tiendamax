@@ -126,15 +126,22 @@ class PrecioTest(unittest.TestCase):
 
 
 class NoSeLlevaNadaDeLosClientesTest(unittest.TestCase):
-    """De data.json solo salen productos y categorías. Nada más."""
+    """De data.json solo salen productos, categorías y — de `vales` — cuánto
+    hay comprometido por producto, como un entero suelto. Nada de nombre,
+    teléfono, carné, dirección ni ids de vale sale nunca."""
 
     PAYLOAD = {
         "productos": [{"id": 1, "nombre": "Router", "precioActual": 50, "stock": 2,
                        "catId": 10, "comision": "$5 USD", "comisionMoneda": "USD"}],
         "categorias": [{"id": 10, "name": "Wifi"}],
         "gestores": [{"id": 7, "name": "Alguien", "password": "loquesea"}],
-        "vales": [{"id": 1, "cliente": "Una persona", "telefono": "5350000000",
-                   "carnet": "00000000000", "direccion": "Una calle"}],
+        # Vale con reserva activa (pending + reservado) que se come las 2
+        # unidades del Router — y con los cinco campos de un cliente real,
+        # para probar que ninguno sobrevive al `stock` que se escribe.
+        "vales": [{"id": 999, "valeNum": "A-42", "status": "pending", "reservado": True,
+                   "cliente": "Una persona", "telefono": "5350000000",
+                   "carnet": "00000000000", "direccion": "Una calle",
+                   "valeProductos": [{"id": 1, "qty": 2, "name": "Router de alguien"}]}],
     }
 
     def _descargar(self):
@@ -156,25 +163,145 @@ class NoSeLlevaNadaDeLosClientesTest(unittest.TestCase):
         self.assertEqual(1, len(filas))
         texto = json.dumps(filas, ensure_ascii=False)
         for prohibido in ("password", "carnet", "direccion", "telefono",
-                          "loquesea", "Una persona", "5350000000"):
+                          "loquesea", "Una persona", "5350000000",
+                          "999", "A-42", "Router de alguien"):
             self.assertNotIn(prohibido, texto,
                              f"'{prohibido}' viene de gestores/vales y no puede salir de descargar()")
+
+    def test_lo_reservado_en_vales_se_resta_del_stock(self):
+        # El almacén dice 2, pero un vale pendiente ya se comprometió las 2:
+        # disponible de verdad es 0, no 2. Sin esto, "La principal repuso"
+        # ofrecía subir stock que ya tenía dueño.
+        fila = self._descargar()[0]
+        self.assertEqual(0, fila["stock"],
+                         "un vale con reserva activa debe restarse del stock físico")
 
     def test_traduce_el_catId_a_nombre_de_categoria(self):
         # Sin esto la categoría llega vacía en los 108 productos y el botón
         # "Rellenar" deja el formulario sin un campo que es obligatorio.
         self.assertEqual("Wifi", self._descargar()[0]["categoria"])
 
-    def test_el_script_no_nombra_gestores_ni_vales_para_nada(self):
+    def test_el_script_no_nombra_gestores_para_nada(self):
         fuente = (RAIZ / "scripts" / "comparar_principal.py").read_text(encoding="utf-8")
         codigo = "\n".join(l for l in fuente.splitlines()
                            if not l.lstrip().startswith("#"))
         # Se mira el código, no los comentarios: la explicación de por qué no
-        # se tocan tiene que poder escribirse.
+        # se toca tiene que poder escribirse.
         cuerpo = codigo.split('"""', 2)[-1]
-        for clave in ('"gestores"', "'gestores'", '"vales"', "'vales'"):
+        for clave in ('"gestores"', "'gestores'"):
             self.assertNotIn(clave, cuerpo,
                              f"el script no debe leer {clave} de data.json")
+
+    def test_solo_una_funcion_lee_la_clave_vales(self):
+        """`vales` sí se lee (para saber cuánto está comprometido), pero solo
+        `_reservado_por_producto` puede indexar esa clave — así, aunque
+        alguien añada código nuevo en otra función, no puede acceder a los
+        vales por accidente sin que este test se dé cuenta."""
+        import ast
+        fuente = (RAIZ / "scripts" / "comparar_principal.py").read_text(encoding="utf-8")
+        arbol = ast.parse(fuente)
+        padres = {}
+        for nodo in ast.walk(arbol):
+            for hijo in ast.iter_child_nodes(nodo):
+                padres[hijo] = nodo
+
+        def funcion_de(nodo):
+            while nodo in padres:
+                nodo = padres[nodo]
+                if isinstance(nodo, ast.FunctionDef):
+                    return nodo.name
+            return None
+
+        permitidas = {"_reservado_por_producto"}
+        usos = []
+        for nodo in ast.walk(arbol):
+            es_clave_vales = isinstance(nodo, ast.Constant) and nodo.value == "vales"
+            if not es_clave_vales:
+                continue
+            padre = padres.get(nodo)
+            es_indexado = (
+                (isinstance(padre, ast.Subscript))
+                or (isinstance(padre, ast.Call) and isinstance(padre.func, ast.Attribute)
+                    and padre.func.attr == "get" and padre.args and padre.args[0] is nodo)
+            )
+            if es_indexado:
+                usos.append(funcion_de(nodo))
+        self.assertTrue(usos, "se esperaba al menos un acceso a data['vales']/.get('vales')")
+        for f in usos:
+            self.assertIn(f, permitidas,
+                f"solo _reservado_por_producto debería leer la clave 'vales', también la lee {f}")
+
+
+class ReservadoPorValesTest(unittest.TestCase):
+    """_reservado_por_producto y normalizar(): la misma cuenta que hace la
+    propia app de la principal (_valeReservaActiva/_valeDescontoStock en su
+    app.js), replicada aquí para que "disponible" signifique lo mismo en las
+    dos tiendas."""
+
+    def test_vale_pendiente_y_marcado_reserva(self):
+        datos = {"vales": [{"status": "pending", "reservado": True,
+                             "valeProductos": [{"id": 5, "qty": 3}]}]}
+        self.assertEqual({"5": 3}, cp._reservado_por_producto(datos))
+
+    def test_vale_pendiente_sin_marcar_no_reserva(self):
+        # A diferencia de 'assigned', un 'pending' necesita reservado=True:
+        # todavía nadie prometió esa mercancía en concreto.
+        datos = {"vales": [{"status": "pending", "reservado": False,
+                             "valeProductos": [{"id": 5, "qty": 3}]}]}
+        self.assertEqual({}, cp._reservado_por_producto(datos))
+
+    def test_vale_asignado_reserva_aunque_nadie_marco_la_casilla(self):
+        # v104 de la principal: el vale salió con el mensajero, la mercancía
+        # ya no está en el almacén aunque el stock no se haya descontado.
+        datos = {"vales": [{"status": "assigned", "reservado": False,
+                             "valeProductos": [{"id": 5, "qty": 1}]}]}
+        self.assertEqual({"5": 1}, cp._reservado_por_producto(datos))
+
+    def test_vale_confirmado_no_reserva(self):
+        # Confirmado ya descontó el almacén de verdad: `stock` ya lo refleja,
+        # así que contarlo aquí también sería restarlo dos veces.
+        datos = {"vales": [{"status": "confirmed", "reservado": True,
+                             "valeProductos": [{"id": 5, "qty": 4}]}]}
+        self.assertEqual({}, cp._reservado_por_producto(datos))
+
+    def test_vale_confirmado_y_unido_a_otro_no_reserva(self):
+        # unidoA hace que _vale_descuenta_stock dé False (un vale unido nunca
+        # descuenta), pero eso solo importa para el primer camino de
+        # _vale_reserva_activa (el de 'assigned'); con status='confirmed' el
+        # vale sigue sin contar, como cualquier confirmado.
+        datos = {"vales": [{"status": "confirmed", "unidoA": 1, "reservado": True,
+                             "valeProductos": [{"id": 5, "qty": 1}]}]}
+        self.assertEqual({}, cp._reservado_por_producto(datos))
+
+    def test_vale_asignado_y_unido_a_otro_reserva_igual(self):
+        # Fiel a _valeReservaActiva tal cual: el camino de 'assigned' no mira
+        # unidoA, así que un vale unido que sigue "de camino" también aparta
+        # su mercancía — igual que en la app de la principal.
+        datos = {"vales": [{"status": "assigned", "unidoA": 1,
+                             "valeProductos": [{"id": 5, "qty": 1}]}]}
+        self.assertEqual({"5": 1}, cp._reservado_por_producto(datos))
+
+    def test_suma_varios_vales_del_mismo_producto(self):
+        datos = {"vales": [
+            {"status": "pending", "reservado": True, "valeProductos": [{"id": 5, "qty": 2}]},
+            {"status": "assigned", "reservado": False, "valeProductos": [{"id": 5, "qty": 1}]},
+        ]}
+        self.assertEqual({"5": 3}, cp._reservado_por_producto(datos))
+
+    def test_reservado_manual_del_producto_tambien_se_resta(self):
+        # `reserved` es el número suelto que el admin de la principal aparta
+        # a mano (🔐), sin vale detrás. Sin datos de nadie: se lee igual que
+        # el stock o el precio.
+        fila = cp.normalizar({"id": 1, "nombre": "X", "stock": 10, "reserved": 4}, {}, reservado=0)
+        self.assertEqual(6, fila["stock"])
+
+    def test_manual_y_por_vales_se_suman(self):
+        fila = cp.normalizar({"id": 1, "nombre": "X", "stock": 10, "reserved": 4}, {}, reservado=3)
+        self.assertEqual(3, fila["stock"])
+
+    def test_disponible_nunca_baja_de_cero(self):
+        fila = cp.normalizar({"id": 1, "nombre": "X", "stock": 2, "reserved": 5}, {}, reservado=10)
+        self.assertEqual(0, fila["stock"])
 
 
 class ReposicionesTest(unittest.TestCase):

@@ -9,13 +9,36 @@ dejaban 59 productos sin subir.
 
 ## Qué hace y qué NO
 
-Descarga `data.json` de la principal y se queda **solo con `productos`**. Ese
-fichero trae también `gestores` y `vales` —con nombre, teléfono, carné y
-dirección de los clientes de la tienda, y las claves de los gestores— y nada
-de eso tiene por qué pasar por aquí ni acabar en este repositorio. Se descarta
-antes de tocar nada más. Lo que se escribe son dos ficheros: el catálogo con
-los campos justos para comparar (23 KB, 4 KB comprimidos) y, aparte, las
-descripciones de los que aún no están en TiendaMax.
+Descarga `data.json` de la principal y se queda con `productos` y, para
+calcular cuánto hay REALMENTE disponible, un número sacado de `vales` (ver
+"Lo reservado" más abajo). `gestores` —las claves de los 50 gestores— no se
+lee para nada. Lo que se escribe son dos ficheros: el catálogo con los campos
+justos para comparar (23 KB, 4 KB comprimidos) y, aparte, las descripciones de
+los que aún no están en TiendaMax.
+
+## Lo reservado: por qué "stock" no es "disponible"
+
+Un producto con `stock: 15` en la principal puede tener las 15 unidades
+prometidas a clientes con vale pendiente o ya asignado a un mensajero —
+físicamente reservadas, aunque el almacén no las haya descontado todavía.
+`_reservado_por_producto()` replica la misma cuenta que hace la propia app de
+la principal (`_valeReservaActiva`/`_valeDescontoStock` en su app.js) para que
+el número que compara este script sea el mismo "disponible" que vería el
+gestor de axontech si abriera esa ficha, no el almacén físico. Sin esto, "La
+principal repuso y tú los tienes agotados" ofrecía subir 15 unidades de un
+producto donde las 15 ya tenían dueño: un tap en "Poner 15" era publicar una
+venta que no se podía entregar.
+
+Esa función es la ÚNICA que mira `vales`, y lo único que sale de ella es un
+entero por id de producto: cuántas unidades están comprometidas. Ni el id del
+vale, ni su fecha, ni el nombre, teléfono, carné o dirección del cliente
+tocan una sola variable fuera de esa función — se descartan en la misma
+línea en que se leen. `normalizar()` resta ese número (más el `reserved`
+manual que a veces pone el propio admin de la principal, un entero suelto sin
+datos de nadie) del `stock` físico, y lo que sale hacia `principal-catalogo.json`
+es ya la cifra disponible. `test_comparar_principal.py` prueba, con un vale de
+mentira que trae los cinco campos de un cliente real, que ninguno de esos
+campos sobrevive al `stock` que se escribe.
 
 ## Por qué un script y no el panel
 
@@ -177,8 +200,67 @@ def precio_de(producto: dict) -> dict:
     return {"valor": del_texto, "moneda": moneda, "otro": otro}
 
 
-def normalizar(producto: dict, categorias: dict[str, str] | None = None) -> dict | None:
-    """Un producto de la principal, con lo justo para compararlo."""
+# Estados de un vale que cuentan como reserva activa, replicados de la propia
+# app de la principal (_valeReservaActiva en su app.js) — no inventados aquí.
+_VALE_ESTADOS_RESERVA = ("pending", "assigned")
+
+
+def _vale_descuenta_stock(vale: dict) -> bool:
+    """Si el vale ya le bajó el almacén (misma regla que _valeDescontoStock)."""
+    if vale.get("unidoA") is not None:
+        return False
+    sd = vale.get("stockDecremented")
+    if sd is True:
+        return True
+    if sd is False:
+        return False
+    return vale.get("status") in ("confirmed", "pending_payment")
+
+
+def _vale_reserva_activa(vale: dict) -> bool:
+    """Si el vale aparta mercancía AHORA MISMO (misma regla que _valeReservaActiva).
+
+    Un vale 'assigned' —salió con el mensajero— reserva solo, sin que nadie
+    haya marcado la casilla 🔐: la mercancía ya no está en el almacén aunque
+    el stock no se descuente hasta que se confirme la entrega. Si no se
+    contara aquí, otro gestor la vería libre y la prometería dos veces.
+    """
+    if vale.get("status") == "assigned" and not _vale_descuenta_stock(vale):
+        return True
+    return bool(vale.get("reservado")) and vale.get("status") in _VALE_ESTADOS_RESERVA
+
+
+def _reservado_por_producto(datos: dict) -> dict[str, int]:
+    """Unidades comprometidas por producto — SOLO ese número, de nadie más.
+
+    La única función de este fichero que mira `vales`. De cada vale con
+    reserva activa se toma `valeProductos` (id + cantidad) y nada más: ni el
+    id del vale, ni su fecha, ni el nombre, teléfono, carné o dirección del
+    cliente llegan a tocar una variable que salga de aquí. Ver "Lo reservado"
+    en el docstring del módulo.
+    """
+    totales: dict[str, int] = {}
+    for vale in (datos.get("vales") or []):
+        if not isinstance(vale, dict) or not _vale_reserva_activa(vale):
+            continue
+        for item in (vale.get("valeProductos") or []):
+            if not isinstance(item, dict):
+                continue
+            pid = str(item.get("id") or "").strip()
+            if not pid:
+                continue
+            totales[pid] = totales.get(pid, 0) + int(_num(item.get("qty")) or 0)
+    return totales
+
+
+def normalizar(producto: dict, categorias: dict[str, str] | None = None,
+                reservado: int = 0) -> dict | None:
+    """Un producto de la principal, con lo justo para compararlo.
+
+    `reservado` (calculado en `_reservado_por_producto`, ver arriba) y el
+    `reserved` manual del propio producto se restan del `stock` físico:
+    lo que sale en la fila es lo DISPONIBLE, no lo que hay en el almacén.
+    """
     pid = producto.get("id")
     nombre = str(producto.get("nombre") or producto.get("name") or "").strip()
     if not pid or not nombre:
@@ -192,12 +274,14 @@ def normalizar(producto: dict, categorias: dict[str, str] | None = None) -> dict
     if not cat and producto.get("catId") is not None:
         cat = (categorias or {}).get(str(producto.get("catId")), "")
     pre = precio_de(producto)
+    stock_fisico = int(_num(producto.get("stock")) or 0)
+    reservado_manual = int(_num(producto.get("reserved")) or 0)
     fila = {
         "id": str(pid),
         "nombre": nombre,
         "precio": pre["valor"],
         "precioMoneda": pre["moneda"],
-        "stock": int(_num(producto.get("stock")) or 0),
+        "stock": max(0, stock_fisico - reservado_manual - int(reservado or 0)),
         "categoria": cat,
         "comision": com["valor"],
         "comisionMoneda": com["moneda"],
@@ -223,21 +307,26 @@ def normalizar(producto: dict, categorias: dict[str, str] | None = None) -> dict
 
 
 def descargar(url: str = PRINCIPAL_URL, timeout: int = 45) -> list[dict]:
-    """El catálogo de la principal, y NADA más de lo que trae ese fichero."""
+    """El catálogo de la principal — disponible, no el almacén físico.
+
+    `gestores` —las claves de los gestores— no se lee para nada. `vales` sí
+    se lee, pero solo pasa por `_reservado_por_producto()`, que lo reduce a
+    un entero por producto antes de que `normalizar()` lo use; ningún otro
+    campo de un vale llega más lejos que esa función. Ver "Lo reservado" en
+    el docstring del módulo.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": "tiendamax-comparador"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         datos = json.loads(r.read().decode("utf-8"))
     if isinstance(datos, list):
-        crudos, categorias = datos, {}
+        crudos, categorias, reservado = datos, {}, {}
     else:
-        # Solo estas dos claves. `gestores` y `vales` —que traen las claves de
-        # los gestores y el nombre, teléfono, carné y dirección de los
-        # clientes de la principal— no se leen, no se copian y no salen de
-        # esta función.
         crudos = datos.get("productos") or []
         categorias = {str(c.get("id")): str(c.get("name") or "").strip()
                       for c in (datos.get("categorias") or []) if c.get("id")}
-    filas = [f for f in (normalizar(p, categorias) for p in crudos) if f]
+        reservado = _reservado_por_producto(datos)
+    filas = [f for f in (normalizar(p, categorias, reservado.get(str(p.get("id")), 0))
+                         for p in crudos) if f]
     # Un id repetido se queda con la fila que declare stock: es la que vende.
     por_id: dict[str, dict] = {}
     for f in filas:
