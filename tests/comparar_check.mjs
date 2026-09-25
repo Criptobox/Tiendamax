@@ -36,7 +36,8 @@ try {
 }
 
 const fallos = [];
-const ok = (cond, msg) => { if (!cond) fallos.push(msg); };
+let comprobaciones = 0;
+const ok = (cond, msg) => { comprobaciones++; if (!cond) fallos.push(msg); };
 
 /* Catálogo de la principal de mentira, con un caso de cada cosa. Se sirve en
  * lugar del real para que el test diga siempre lo mismo: el de verdad cambia
@@ -555,6 +556,50 @@ const guardados = await pagina.evaluate(() =>
 ok(guardados === MIOS.length,
    `Rellenar no puede guardar nada: hay ${guardados} productos y había ${MIOS.length}`);
 
+// ── 11) 🔄 Actualizar pide datos NUEVOS, no relee los viejos ─────────
+// Releía principal-catalogo.json, que solo renueva un cron que GitHub
+// retrasa u omite: el panel enseñó datos de hace 9 h con siete reposiciones
+// sin ver, y el botón no cambiaba nada. Ahora lanza el workflow, espera a
+// que acabe y lee el fichero por la API. La copia de Pages (la ruta de
+// arriba, con el catálogo viejo) no puede pisar la fresca.
+const FRESCO = JSON.parse(JSON.stringify(PRINCIPAL));
+FRESCO.actualizado = new Date(Date.now() + 1000).toISOString();
+FRESCO.productos.push({ id: '120', nombre: 'Recién repuesta', precio: 33, stock: 9,
+                        categoria: 'Wifi', comision: 5, comisionMoneda: 'USD' });
+let pidioLectura = false;
+await pagina.route(u => u.hostname === 'api.github.com', r => {
+    const req = r.request(), url = req.url();
+    if (req.method() === 'POST' && url.includes('/actions/workflows/comparar-principal.yml/dispatches')) {
+        pidioLectura = true;
+        return r.fulfill({ status: 204, body: '' });
+    }
+    if (url.includes('/actions/workflows/comparar-principal.yml/runs'))
+        return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+            workflow_runs: pidioLectura
+                ? [{ created_at: new Date().toISOString(), status: 'completed', conclusion: 'success' }] : [] }) });
+    if (url.includes('/contents/principal-catalogo.json'))
+        return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+            encoding: 'base64', content: Buffer.from(JSON.stringify(FRESCO)).toString('base64') }) });
+    return r.fallback();
+});
+await pagina.evaluate(() => cmpRefrescar());
+await pagina.evaluate(() => {
+    const cab = [...document.querySelectorAll('.cmp-bloque')]
+        .find(b => b.querySelector('.cmp-tit').textContent.includes('Te faltan'));
+    if (cab && cab.querySelector('.cmp-cab').getAttribute('aria-expanded') !== 'true') cmpPlegar('fal');
+});
+await pagina.waitForTimeout(300);
+ok(pidioLectura, '🔄 Actualizar debería lanzar el workflow comparar-principal.yml');
+const tras = await pagina.evaluate(() => ({
+    faltan: (document.getElementById('cmp-cuerpo') || {}).textContent || '',
+    sub: (document.getElementById('cmp-sub') || {}).textContent || '',
+    boton: (document.getElementById('cmp-refrescar') || {}).disabled,
+}));
+ok(tras.faltan.includes('Recién repuesta'),
+   'tras 🔄 Actualizar, un producto nuevo de la principal debería salir en «Te faltan»');
+ok(/menos de 1 h/.test(tras.sub), `la línea de arriba debería decir «hace menos de 1 h», dice «${tras.sub}»`);
+ok(tras.boton === false, 'el botón 🔄 tiene que quedar usable al terminar');
+
 ok(erroresJs.length === 0, 'errores de JS: ' + erroresJs.join(' | '));
 
 await navegador.close();
@@ -565,4 +610,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Comparar con la principal: 61 comprobaciones OK');
+console.log('✅ Comparar con la principal: ' + comprobaciones + ' comprobaciones OK');

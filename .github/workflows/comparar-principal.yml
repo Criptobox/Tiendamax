@@ -2,11 +2,16 @@ name: Comparar con la tienda principal
 
 on:
   schedule:
-    # Cada 3 h dentro del horario en que se vende. La principal repone a
-    # cualquier hora, pero el aviso al móvil solo sale de día (lo decide
-    # es_hora_diurna en send_notifications.py), así que correr de madrugada
-    # solo serviría para gastar minutos y commits.
-    - cron: '0 11,14,17,20,23 * * *'
+    # Cada hora dentro del horario en que se vende (7:00–23:00 en Cuba =
+    # 11–03 UTC). Antes era cada 3 h a en punto, y GitHub retrasa u omite
+    # los crons cuando va cargado —sobre todo los de "minuto 0"—: el 24-sep
+    # corrió 2 de 5 veces y el panel llegó a enseñar datos de hace 9 h con
+    # siete reposiciones sin ver. Más huecos = más probabilidades de que
+    # alguno corra, y el minuto 17 esquiva la cola de las horas en punto.
+    # No cuesta commits: el script solo escribe si la principal cambió. De
+    # madrugada no corre: el aviso al móvil tampoco sale (es_hora_diurna).
+    # El botón 🔄 Actualizar del panel lo lanza a mano (workflow_dispatch).
+    - cron: '17 0-3,11-23 * * *'
   workflow_dispatch:
 
 permissions:

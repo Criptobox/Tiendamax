@@ -5014,11 +5014,16 @@ function cmpRender(){
   const total = g.repuestos.length + g.fantasma.length + g.faltan.length
               + g.precio.length + g.comision.length;
 
-  if(sub){
-    const cuando = CMP_DATOS.actualizado ? new Date(CMP_DATOS.actualizado) : null;
-    const hace = cuando ? Math.round((Date.now() - cuando.getTime()) / 3600000) : null;
+  if(sub && !CMP_REFRESCANDO){
+    // "Leído" es la última vez que se miró la principal: la del fichero, o la
+    // de un "🔄 Actualizar" que no encontró cambios (y por eso no lo reescribió).
+    const tFich = CMP_DATOS.actualizado ? new Date(CMP_DATOS.actualizado).getTime() : 0;
+    const t = Math.max(tFich || 0, CMP_COMPROBADO || 0);
+    const hace = t ? Math.round((Date.now() - t) / 3600000) : null;
     sub.textContent = CMP_DATOS.total + ' productos en la principal · leído '
-      + (hace === null ? '—' : hace < 1 ? 'hace menos de 1 h' : 'hace ' + hace + ' h');
+      + (hace === null ? '—' : hace < 1 ? 'hace menos de 1 h' : 'hace ' + hace + ' h')
+      // Viejo = puede estar escondiendo reposiciones y productos nuevos.
+      + (hace !== null && hace >= 4 ? ' · ⚠️ toca 🔄 Actualizar' : '');
   }
 
   if(!total && !g.dudosas.length){
@@ -5350,14 +5355,97 @@ async function cmpCargar(forzar){
     const r = await fetch(CMP_CAT + (forzar ? '?_=' + Date.now() : ''), forzar ? {cache:'no-store'} : {});
     if(r.ok){
       const d = await r.json();
-      if(d && Array.isArray(d.productos)) CMP_DATOS = d;
+      // Nunca se cambia uno más nuevo por uno más viejo: tras "🔄 Actualizar"
+      // CMP_DATOS viene de la API y la copia servida por Pages tarda un par de
+      // minutos más en ponerse al día.
+      const masViejo = CMP_DATOS && CMP_DATOS.actualizado && d && d.actualizado
+                       && d.actualizado < CMP_DATOS.actualizado;
+      if(d && Array.isArray(d.productos) && !masViejo) CMP_DATOS = d;
     }
   }catch(e){}
   cmpRender();
 }
-function cmpRefrescar(){
+/* "🔄 Actualizar" pide datos NUEVOS, no relee los viejos.
+   Antes solo volvía a leer principal-catalogo.json, y ese fichero lo renueva
+   un cron de GitHub que GitHub retrasa u omite cuando va cargado: el 24-sep
+   corrió 2 de las 5 veces programadas, y la pantalla enseñó datos de hace
+   9 h mientras la principal ya había repuesto siete productos. Tocar el botón
+   no cambiaba nada y parecía que la pantalla estaba rota.
+   Ahora le pide a GitHub que corra el script ya (workflow_dispatch, con el
+   mismo token con el que se publica), espera a que esa corrida termine y lee
+   el fichero por la API —sin la caché de 5 min de raw—. Si la corrida no
+   cambió nada, el fichero no se reescribe (el script solo escribe si cambió
+   algo), así que la hora de "comprobado" se guarda aparte: si no, la pantalla
+   seguiría diciendo "hace 9 h" justo después de comprobar. Sin token o sin
+   permiso de Actions, se relee como antes y se dice por qué. */
+const CMP_WORKFLOW = 'comparar-principal.yml';
+let CMP_REFRESCANDO = false, CMP_COMPROBADO = 0;
+async function cmpRefrescar(){
+  if(CMP_REFRESCANDO) return;
   CMP_FICHAS_CACHE = null;
-  cmpCargar(true);
+  const user = localStorage.getItem('githubUser'), repo = localStorage.getItem('githubRepo'),
+        token = localStorage.getItem('githubToken');
+  if(!(user && repo && token)){
+    await cmpCargar(true);
+    showToast('⚠️ Sin token de GitHub', 'Enseño lo último guardado. Configura el token para pedir datos nuevos.');
+    return;
+  }
+  const btn = $('#cmp-refrescar'), sub = $('#cmp-sub');
+  const txtBtn = btn ? btn.textContent : '';
+  const api = `https://api.github.com/repos/${user}/${repo}/actions/workflows/${CMP_WORKFLOW}`;
+  const cab = { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github+json' };
+  CMP_REFRESCANDO = true;
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Leyendo la principal…'; }
+  try{
+    const desde = Date.now() - 15000;   // margen por el reloj del teléfono
+    const r = await fetch(api + '/dispatches', { method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, cab),
+      body: JSON.stringify({ ref: 'main' }) });
+    if(r.status !== 204){
+      await cmpCargar(true);
+      showToast('⚠️ No pude pedir datos nuevos (' + r.status + ')',
+        r.status === 403 || r.status === 404
+          ? 'Tu token no tiene permiso de Actions. Enseño lo último guardado.'
+          : 'Enseño lo último guardado. Prueba otra vez en un rato.');
+      return;
+    }
+    if(sub) sub.textContent = 'Leyendo la principal ahora mismo… (1 minuto aprox.)';
+    // Se espera a la corrida que acabamos de pedir: la más reciente de tipo
+    // workflow_dispatch creada después de pulsar.
+    let corrida = null;
+    for(let i = 0; i < 24 && !(corrida && corrida.status === 'completed'); i++){
+      await new Promise(res => setTimeout(res, 7500));
+      try{
+        const q = await fetch(api + '/runs?event=workflow_dispatch&per_page=1&_=' + Date.now(),
+                              { headers: cab, cache: 'no-store' });
+        const j = q.ok ? await q.json() : null;
+        const u = j && j.workflow_runs && j.workflow_runs[0];
+        if(u && new Date(u.created_at).getTime() >= desde) corrida = u;
+      }catch(e){}
+    }
+    if(!corrida || corrida.status !== 'completed'){
+      await cmpCargar(true);
+      showToast('⏳ La lectura va lenta', 'Enseño lo último guardado. Toca 🔄 otra vez en un par de minutos.');
+      return;
+    }
+    if(corrida.conclusion !== 'success'){
+      await cmpCargar(true);
+      showToast('⚠️ La lectura de la principal falló', 'Enseño lo último guardado.');
+      return;
+    }
+    const d = typeof _tmLeerJsonRepoFresco === 'function'
+      ? await _tmLeerJsonRepoFresco(user, repo, token, CMP_CAT) : null;
+    if(d && Array.isArray(d.productos)) CMP_DATOS = d;
+    CMP_COMPROBADO = Date.now();
+    await cmpCargar(false);   // marcas + pintar; CMP_DATOS ya es el fresco
+    showToast('✅ Comparado con la principal ahora mismo');
+  }finally{
+    CMP_REFRESCANDO = false;
+    if(btn){ btn.disabled = false; btn.textContent = txtBtn || '🔄 Actualizar'; }
+    // Mientras se leía, cmpRender no tocaba la línea de arriba (decía
+    // "Leyendo…"); ahora que acabó —bien o mal— se repinta con la hora real.
+    try{ cmpRender(); }catch(e){}
+  }
 }
 window.cmpPlegar = cmpPlegar;
 window.cmpRefrescar = cmpRefrescar;
