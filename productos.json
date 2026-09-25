@@ -10621,7 +10621,6 @@
   {
     "id": 1790105284345,
     "nombre": "📡MikroTik hEX PoE lite (RB750UPr2)",
-    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
     "imagen": "https://tiendamax.org/imagenes/img_1790105280764.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790105280764.webp",
@@ -10630,7 +10629,7 @@
     "precioActual": 110,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -10729,6 +10728,8 @@
       "1× Guía de inicio rápido"
     ],
     "seoTitle": "MikroTik hEX PoE lite (RB750UPr2) en Cuba | TiendaMax",
-    "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…"
+    "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
+    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
+    "rev": 1790309206938
   }
 ]
