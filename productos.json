@@ -6431,7 +6431,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 12,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "SEGURIDAD",
@@ -6491,7 +6491,8 @@
     "incluye": [
       "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
     ],
-    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche."
+    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.",
+    "rev": 1790346061454
   },
   {
     "id": 1784569265085,
