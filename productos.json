@@ -10240,7 +10240,7 @@
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 10,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -10363,7 +10363,7 @@
     "seoTitle": "Mikrotik SXTsq 5 lite en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para…",
     "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética.",
-    "rev": 1790343442681
+    "rev": 1790346017372
   },
   {
     "id": 1790104688838,
