@@ -102,6 +102,10 @@ const PRINCIPAL = {
         // el tamaño, así que SÍ es comparable con los 1000 MN de la principal.
         { id: '107', nombre: 'Sin moneda', precio: 20, stock: 2, categoria: 'Hogar',
           comision: 1000, comisionMoneda: 'MN' },
+        // Fantasma: yo lo vendo, la principal lo tiene reservado/agotado (0).
+        // No se enseña para revisar uno por uno — se agota solo.
+        { id: '116', nombre: 'Reservada en axontech', precio: 40, stock: 0,
+          categoria: 'Wifi', comision: 5, comisionMoneda: 'USD' },
     ],
 };
 const MIOS = [
@@ -118,6 +122,9 @@ const MIOS = [
     { id: 112, nombre: 'KIT de alarma con panel', precioActual: 170, stock: 0, comision: 5, comisionMoneda: 'USD' },
     { id: 115, nombre: 'Dormido', precioActual: 100, stock: 0, comision: 5, comisionMoneda: 'USD' },
     { id: 900, nombre: 'Solo mío', precioActual: 10, stock: 3, comision: 2, comisionMoneda: 'USD' },
+    // La tengo con existencias; la principal la tiene en 0. Debe quedar en
+    // stock 0 sola, sin que el gestor tenga que tocar nada.
+    { id: 116, nombre: 'Reservada en axontech', precioActual: 40, stock: 6, comision: 5, comisionMoneda: 'USD' },
 ];
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
@@ -198,6 +205,11 @@ const bloque = async nombre => pagina.evaluate(t => {
     };
 }, nombre);
 
+const leer = id => pagina.evaluate(i => {
+    const p = (JSON.parse(localStorage.getItem('productos') || '[]')).find(x => String(x.id) === i);
+    return p ? { stock: p.stock, precio: p.precioActual, com: p.comision, mon: p.comisionMoneda } : null;
+}, id);
+
 // ── 1) La misma comisión en distinta moneda NO es una diferencia ──────
 const com = await bloque('Comisión distinta');
 ok(com && com.n === 2, `«Comisión distinta» debería tener 2 filas (Timbre y Sin moneda), tiene ${com ? com.n : 'el bloque no existe'}`);
@@ -232,11 +244,16 @@ ok(rep && /Poner 7/.test(rep.filas[0].boton || ''),
 const solo = await pagina.evaluate(() => document.getElementById('cmp-cuerpo').textContent.includes('Solo mío'));
 ok(!solo, 'un producto que solo tengo yo no es una diferencia con la principal');
 
+// Fantasma: la principal la tiene reservada/en 0 y yo la vendo con 6. No se
+// enseña para revisarla —se agota sola en cuanto se detecta— y queda en
+// stock 0 en PRODUCTOS + localStorage, por el mismo camino que un tap manual.
+const cero = await bloque('principal está en cero');
+ok(!cero, 'el bloque "Tú los vendes y la principal está en cero" no debe pintarse: se agota solo, sin revisión uno por uno');
+const reservada = await leer('116');
+ok(reservada && reservada.stock === 0,
+   `«Reservada en axontech» (yo 6, la principal 0) debía quedar en stock 0 sola, quedó en ${reservada && reservada.stock}`);
+
 // ── 5) Los botones tocan el catálogo de verdad ────────────────────────
-const leer = id => pagina.evaluate(i => {
-    const p = (JSON.parse(localStorage.getItem('productos') || '[]')).find(x => String(x.id) === i);
-    return p ? { stock: p.stock, precio: p.precioActual, com: p.comision, mon: p.comisionMoneda } : null;
-}, id);
 
 await pagina.evaluate(() => cmpPonerStock('104', 7));
 await pagina.waitForTimeout(250);

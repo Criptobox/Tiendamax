@@ -4877,6 +4877,37 @@ function cmpAnalizar(datos, mios){
   return g;
 }
 
+/* g.fantasma ("tú lo vendes y la principal está en cero") ya no se enseña:
+   la principal no tiene qué mandar —está reservado o agotado ahí— así que
+   para mí es lo mismo que agotado, y revisarlos uno por uno de nada sirve
+   cuando la respuesta es siempre la misma. Se marcan solos la primera vez
+   que se detectan, por el mismo camino que "Poner en 0" a mano (PRODUCTOS +
+   localStorage), y el grupo se vacía antes de pintar para que el bloque no
+   aparezca (cmpBloque esconde lo que llega sin filas).
+
+   Sigue siendo "apartado, no borrado": solo se toca el stock. Si la
+   principal repone, cmpAnalizar lo vuelve a encontrar —ahora con mi stock en
+   0— como "repuestos" y ahí sí hace falta un tap para ponerle cantidad; un
+   precio o comisión distintos mientras tanto quedan "dormidos" detrás de esa
+   misma fila, igual que cualquier otro producto en cero (ver `dormido` arriba). */
+function cmpAutoAgotarFantasmas(g){
+  if(!g.fantasma.length) return 0;
+  let n = 0;
+  g.fantasma.forEach(r => {
+    r.mio.stock = 0;
+    try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(r.mio.id); }catch(e){}
+    n++;
+  });
+  g.fantasma = [];
+  if(n){
+    apSaveProds();
+    try{ renderProductos(); }catch(e){}
+    showToast('📦 ' + n + ' marcado' + (n===1?'':'s') + ' agotado' + (n===1?'':'s')
+      + ' — la principal no ' + (n===1?'lo tiene':'los tiene'), 'Sincroniza para publicarlo');
+  }
+  return n;
+}
+
 function cmpDinero(v, moneda){
   const n = cmpNum(v);
   return moneda === 'MN'
@@ -4979,6 +5010,7 @@ function cmpRender(){
   }
   syncProductos();
   const g = cmpAnalizar(CMP_DATOS, PRODUCTOS);
+  cmpAutoAgotarFantasmas(g);
   const total = g.repuestos.length + g.fantasma.length + g.faltan.length
               + g.precio.length + g.comision.length;
 
@@ -5006,12 +5038,8 @@ function cmpRender(){
       `<button type="button" class="cmp-b cmp-b-ok" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',${r.pri.stock})">Poner ${r.pri.stock}</button>`,
       r.mio.imagen)), true));
 
-  bloques.push(cmpBloque('fan', '⚠️', 'Tú los vendes y la principal está en cero',
-    'Tu web los ofrece disponibles y la principal no los tiene: si alguien los pide, no hay qué entregar.',
-    g.fantasma.map(r => cmpFila('fan',
-      cmpNombreFila(r) + '<small>tú tienes ' + cmpNum(r.mio.stock) + ' · la principal, 0</small>',
-      `<button type="button" class="cmp-b" onclick="cmpPonerStock('${cmpIdAttr(r.mio)}',0)">Poner en 0</button>`,
-      r.mio.imagen)), true));
+  // Nada que pintar aquí: cmpAutoAgotarFantasmas ya vació g.fantasma arriba,
+  // marcando esos productos como agotados en cuanto se detectaron.
 
   bloques.push(cmpBloque('fal', '➕', 'Te faltan por subir',
     'Están en la principal con existencias y no aparecen en tu web. Si alguno ya lo tienes con otro nombre, '
