@@ -9875,8 +9875,7 @@
   },
   {
     "id": 1789066847523,
-    "nombre": "⛱️Toldo de malla 2 x 7",
-    "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento.",
+    "nombre": "⛱️Toldo de Malla 2 x 7",
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789066844710.webp"
@@ -9981,7 +9980,9 @@
       "1× Toldo / Malla Sombra Reforzada de 2 × 7 metros (Color marrón)"
     ],
     "seoTitle": "Toldo de malla 2 x 7 en Cuba | TiendaMax",
-    "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…"
+    "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…",
+    "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento.",
+    "rev": 1790359418633
   },
   {
     "id": 1789067953023,
@@ -10106,8 +10107,7 @@
   },
   {
     "id": 1789068808568,
-    "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de soldadura multiproceso 3 en 1",
-    "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
+    "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
     "imagen": "https://tiendamax.org/imagenes/img_1789068806131.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789068806131.webp"
@@ -10226,11 +10226,13 @@
       "1× Manual de usuario e instrucciones de operación"
     ],
     "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
-    "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…"
+    "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
+    "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
+    "rev": 1790359425821
   },
   {
     "id": 1789569593128,
-    "nombre": "📡MikroTik SXTsq 5 lite",
+    "nombre": "📡MikroTik SXTsq 5 Lite",
     "imagen": "https://tiendamax.org/imagenes/img_1789569588325.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789569588325.webp",
@@ -10363,8 +10365,8 @@
     ],
     "seoTitle": "Mikrotik SXTsq 5 lite en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para…",
-    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética.",
-    "rev": 1790346017372
+    "rev": 1790359425821,
+    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética."
   },
   {
     "id": 1790104688838,
