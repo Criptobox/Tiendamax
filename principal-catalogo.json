@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-25T15:06:01Z",
+ "actualizado": "2026-09-25T15:07:52Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -783,7 +783,7 @@
    "nombre": "Nanostation m5",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
