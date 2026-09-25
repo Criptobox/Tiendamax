@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-25T15:32:06Z",
+ "actualizado": "2026-09-25T15:55:23Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -19,7 +19,7 @@
    "nombre": "Adaptador poe UBIQUITI de 0.3A",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 7,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -761,7 +761,7 @@
    "nombre": "Nanostation m2",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 20,
+   "stock": 18,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -783,7 +783,7 @@
    "nombre": "Nanostation m5",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1093,9 +1093,8 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1106,9 +1105,8 @@
    "stock": 19,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 20.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
