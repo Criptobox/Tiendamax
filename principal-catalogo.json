@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-25T14:05:36Z",
+ "actualizado": "2026-09-25T14:20:45Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -1045,7 +1045,7 @@
    "nombre": "SWITCH DE 5 PUERTOS",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 5,
+   "stock": 2,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1125,7 +1125,7 @@
    "nombre": "Tplink Archer AX1450 Doble Banda",
    "precio": 80.0,
    "precioMoneda": "USD",
-   "stock": 15,
+   "stock": 5,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
