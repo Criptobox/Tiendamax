@@ -10492,8 +10492,7 @@
   },
   {
     "id": 1790104955752,
-    "nombre": "📶 MikroTik hAP ax³ (C53UiG+5HPaxD2HPaxD)",
-    "descripcion": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6 (802.11ax) y un robusto procesador Quad-Core ARM a 1.8 GHz. Diseñado para gestionar redes con alta demanda de tráfico, cuenta con una eficiencia energética destacada de apenas 15W en reposo/uso típico (hasta 38W al alimentar otros equipos por PoE), lo que lo convierte en una opción idónea para instalaciones respaldadas por sistemas solares o bancos de baterías con inversores.",
+    "nombre": "📶 MikroTik hAP Ax³ (C53UiG+5HPaxD2HPaxD)",
     "imagen": "https://tiendamax.org/imagenes/img_1790104953031.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790104953031.webp",
@@ -10631,11 +10630,13 @@
       "1× Guía de inicio rápido"
     ],
     "seoTitle": "MikroTik hAP ax³ (C53UiG+5HPaxD2HPaxD) en Cuba | TiendaMax",
-    "seoDescription": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6…"
+    "seoDescription": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6…",
+    "descripcion": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6 (802.11ax) y un robusto procesador Quad-Core ARM a 1.8 GHz. Diseñado para gestionar redes con alta demanda de tráfico, cuenta con una eficiencia energética destacada de apenas 15W en reposo/uso típico (hasta 38W al alimentar otros equipos por PoE), lo que lo convierte en una opción idónea para instalaciones respaldadas por sistemas solares o bancos de baterías con inversores.",
+    "rev": 1790359438006
   },
   {
     "id": 1790105284345,
-    "nombre": "📡MikroTik hEX PoE lite (RB750UPr2)",
+    "nombre": "📡MikroTik hEX PoE Lite (RB750UPr2)",
     "imagen": "https://tiendamax.org/imagenes/img_1790105280764.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790105280764.webp",
@@ -10744,7 +10745,7 @@
     ],
     "seoTitle": "MikroTik hEX PoE lite (RB750UPr2) en Cuba | TiendaMax",
     "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
-    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
-    "rev": 1790309206938
+    "rev": 1790359438006,
+    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética"
   }
 ]
