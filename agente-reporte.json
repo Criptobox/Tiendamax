@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-24T13:55:43.190706+00:00",
+  "generado": "2026-09-25T14:19:52.570721+00:00",
   "productos": 138,
   "urgentes": 8,
   "advertencias": 0,
-  "info": 9,
-  "resumen": "Anoche revisé tus 138 productos y encontré 8 urgente(s), 9 de info.",
+  "info": 7,
+  "resumen": "Anoche revisé tus 138 productos y encontré 8 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -50,16 +50,6 @@
       "tipo": "stock_bajo",
       "nombre": "⚡ Inversor Tataliken 4000W",
       "detalle": "quedan 2"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "📡 CPE Exterior Kuwfi 4G/WIFI",
-      "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "🔒 KIT de Cámaras Zosi Con DVR 8 Canales",
-      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
