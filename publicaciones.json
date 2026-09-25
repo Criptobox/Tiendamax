@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-25T14:30:19.285Z",
+  "actualizado": "2026-09-25T14:31:04.277Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -696,6 +696,30 @@
       "red": "otra",
       "destino": "Imagen descargada · AUDIO",
       "ts": 1790346614948
+    },
+    {
+      "pid": "1778384158283",
+      "red": "otra",
+      "destino": "Imagen descargada · SEGURIDAD",
+      "ts": 1790346659840
+    },
+    {
+      "pid": "1778384840618",
+      "red": "otra",
+      "destino": "Imagen descargada · SEGURIDAD",
+      "ts": 1790346659840
+    },
+    {
+      "pid": "1780344659047",
+      "red": "otra",
+      "destino": "Imagen descargada · SEGURIDAD",
+      "ts": 1790346659840
+    },
+    {
+      "pid": "1784405087402",
+      "red": "otra",
+      "destino": "Imagen descargada · SEGURIDAD",
+      "ts": 1790346659840
     }
   ]
 }
