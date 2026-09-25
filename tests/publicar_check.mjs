@@ -113,6 +113,8 @@ await pagina.addInitScript(() => {
     localStorage.setItem('githubUser', 'quien');
     localStorage.setItem('githubRepo', 'repo');
     localStorage.setItem('githubToken', 'ghp_de_mentira');
+    // Publicar abre Revólico o Facebook en otra pestaña; aquí no hace falta.
+    window.open = () => ({});
 });
 await pagina.goto(`http://localhost:${PUERTO}/admin.html`);
 await pagina.waitForTimeout(2500);
@@ -226,10 +228,14 @@ ok(mismos.an.startsWith(mismos.pu) || mismos.pu.startsWith(mismos.an) || mismos.
 
 // ── 3) El registro se guarda en el repositorio ───────────────────────
 const antesDeSubir = SUBIDAS.length;
+// Revólico abre antes su vista previa, y es al abrir Revólico desde ella
+// cuando queda apuntado (mirar la vista previa no es publicar).
 await pagina.evaluate(() => {
     const b = document.querySelector('.pub-hoy-btns .pub-act.ghost');
     if (b) b.click();
 });
+await pagina.waitForTimeout(300);
+await pagina.evaluate(() => { const a = document.getElementById('btnAbrirRev'); if (a) a.click(); });
 await pagina.waitForTimeout(700);
 const local = await pagina.evaluate(() => {
     try { return JSON.parse(localStorage.getItem('tm_publog_v1') || '[]').length; }
@@ -264,6 +270,8 @@ await pagina.evaluate(() => {
     const b = document.querySelectorAll('.pub-hoy-btns .pub-act.ghost')[1];
     if (b) b.click();
 });
+await pagina.waitForTimeout(300);
+await pagina.evaluate(() => { const a = document.getElementById('btnAbrirRev'); if (a) a.click(); });
 await pagina.waitForTimeout(5200);
 const ultimo = SUBIDAS[SUBIDAS.length - 1].datos.eventos;
 ok(ultimo.some(e => e.pid === 'producto-del-otro'),

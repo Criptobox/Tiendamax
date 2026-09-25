@@ -226,7 +226,8 @@ function p(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
 try{if(localStorage.getItem('githubToken')||localStorage.getItem('tm_auth_hash_v3')||localStorage.getItem('tm_es_admin'))return;}catch(e){}
 var F={whatsapp:'whatsapp',wa:'whatsapp','whatsapp-estado':'whatsapp-estado',story:'whatsapp-estado',estado:'whatsapp-estado',facebook:'facebook',fb:'facebook',instagram:'instagram',ig:'instagram',revolico:'revolico',rev:'revolico',copiado:'copiado',copy:'copiado','lote-categoria':'lote-categoria'};
 var q='';try{q=(new URLSearchParams(location.search).get('utm_source')||'').trim().toLowerCase();}catch(e){}
-var c=F[q]||'',h=new Date().toISOString().slice(0,10);
+var c=F[q]||'',h=new Date().toISOString().slice(0,10),G='';
+try{G=(new URLSearchParams(location.search).get('g')||'').toLowerCase();}catch(e){}if(!c||!/^[a-z0-9]{4,8}$/.test(G))G='';
 function mas(r){var u=B+r+'.json',o={method:'PUT',headers:{'Content-Type':'application/json'},keepalive:true};
 fetch(u,Object.assign({body:'{".sv":{"increment":1}}'},o)).then(function(x){if(x.ok)return;
 return fetch(u).then(function(y){return y.ok?y.json():0;}).then(function(v){return fetch(u,Object.assign({body:JSON.stringify((typeof v==='number'?v:0)+1)},o));});}).catch(function(){});}
@@ -234,10 +235,10 @@ function frio(k){var t=parseInt(g('tm_an_'+k)||'0',10)||0;if(t&&n-t<C)return fal
 if(frio('vistas_'+ID))mas('/analytics/vistas/'+ID+'/count');
 if(!g('tm_visita_contada')){p('tm_visita_contada','1');
 mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
-if(c){mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}}
+if(c){mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}if(G)mas('/analytics/grupos/'+G+'/visitas/count');}
 var a=document.getElementById('tmWa');
 if(a){if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
-a.addEventListener('click',function(){if(frio('whatsapp_'+ID))mas('/analytics/whatsapp/'+ID+'/count');});}
+a.addEventListener('click',function(){if(frio('whatsapp_'+ID)){mas('/analytics/whatsapp/'+ID+'/count');if(G)mas('/analytics/grupos/'+G+'/whatsapp/count');}});}
 })();
 </script>
 

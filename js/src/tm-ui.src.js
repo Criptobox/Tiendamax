@@ -908,6 +908,12 @@ function renderizarGruposFB(grupos) {
         }
         card.appendChild(listProds);
 
+        // Reglas del grupo (máximo al día, si admite enlaces) y lo que trae.
+        // Lo pinta revolico_integration.js, que solo carga en el panel.
+        if (typeof window.tmGrupoExtras === 'function') {
+            try { window.tmGrupoExtras(card, g, i); } catch (e) {}
+        }
+
         // Botón publicar en este grupo
         const btnPublicar = document.createElement('button');
         btnPublicar.type = 'button';

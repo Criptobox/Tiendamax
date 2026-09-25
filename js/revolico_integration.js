@@ -29,12 +29,18 @@ function _precioTxt(producto, valor) {
 }
 
 // Enlace del producto con utm, para ver en Analytics qué red trae las visitas.
-function _urlProducto(producto, src) {
+// `grupo` (opcional) le pega la marca del grupo, `&g=<código>`: la ficha /p/
+// la cuenta aparte en /analytics/grupos/<código>, y así se ve QUÉ grupo trae a
+// quien escribe y no solo "Facebook". Solo sale un código que pase el mismo
+// filtro que aplican la ficha y la regla de Firebase (ver tmGrupoCodigo).
+function _urlProducto(producto, src, grupo) {
     // El canal se normaliza: este fichero mandaba 'fb' y 'rev' donde el panel
     // manda 'facebook' y 'revolico', así que el mismo canal se contaba partido
     // en dos. tmCanalCanonico() vive en el bundle, que carga antes que esto.
     const canal = (typeof tmCanalCanonico === 'function' && tmCanalCanonico(src)) || src;
-    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${canal}&utm_medium=social&utm_campaign=producto`;
+    const g = grupo ? tmGrupoCodigo(grupo) : '';
+    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${canal}&utm_medium=social&utm_campaign=producto`
+         + (g ? `&g=${g}` : '');
 }
 // Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya redactado. Un
 // wa.me pelado abre un chat vacío y el cliente tiene que escribir él — ahí se
@@ -53,7 +59,7 @@ function _waPedido(producto, src) {
     return `https://wa.me/${String(num).replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
 }
 
-function _hashtagsCategoria(categoria) {
+function _hashtagsCategoria(categoria, soloCategoria) {
     const mapa = {
         'WiFi':        '#wifi #router #internet #repetidor',
         'Energía':     '#energia #solar #inversor #bateria',
@@ -74,6 +80,7 @@ function _hashtagsCategoria(categoria) {
         'Herramientas':'#herramientas #tools',
         'Electrónica': '#electronica #tecnologia',
     };
+    if (soloCategoria) return mapa[categoria] || '#tecnologia';
     const base = '#tiendamax #cuba #oferta #envio';
     return `${base} ${mapa[categoria] || '#tecnologia'}`;
 }
@@ -215,7 +222,23 @@ const _REV_LUM = (0.2126*0xc0 + 0.7152*0x39 + 0.0722*0x0a) / 255;
 // El vertical existe porque el Estado de WhatsApp ocupa la pantalla completa
 // del teléfono y recorta por arriba y por abajo lo que no sea 9:16 — un anuncio
 // cuadrado publicado ahí pierde el precio o la franja de marca sin avisar.
-const _ANUNCIO_FORMATOS = { cuadrado: {W:1080, H:1080}, vertical: {W:1080, H:1920} };
+// `retrato` (4:5) es el otro formato que Facebook enseña entero en el muro de
+// un grupo. Se reparte como el cuadrado —texto encima de la foto—, no como el
+// vertical: con 1350 de alto, poner el texto debajo dejaba la foto apaisada.
+const _ANUNCIO_FORMATOS = { cuadrado: {W:1080, H:1080}, retrato: {W:1080, H:1350}, vertical: {W:1080, H:1920} };
+
+// Lo que cambia entre versiones del mismo anuncio, para publicarlo en varios
+// grupos sin que se vea copiado y pegado. La 0 es la de siempre y tiene que
+// salir idéntica: es la que dibujan Revólico, el lote y el Estado.
+//   dir    — hacia dónde va el degradado del fondo
+//   ax, ay — qué parte de la foto se queda al recortarla para llenar la caja
+//   izq    — el nombre y el precio alineados a la izquierda en vez de al centro
+const _ANUNCIO_VARIANTES = [
+    { dir: [0, 0, 1, 1], ax: .5,  ay: .5,  izq: false },
+    { dir: [1, 0, 0, 1], ax: .5,  ay: .38, izq: false },
+    { dir: [0, 0, 0, 1], ax: .5,  ay: .62, izq: true  },
+    { dir: [0, 1, 1, 0], ax: .42, ay: .5,  izq: true  },
+];
 
 // Parte un texto en como mucho `maxLineas` renglones que quepan en `maxW`, y
 // corta con puntos suspensivos lo que sobre. Sin esto un nombre largo se
@@ -246,7 +269,11 @@ function _anuPartir(ctx, texto, maxW, maxLineas) {
    cargó (el lienzo sale con el marcador de cámara y quien publica tiene que
    enterarse ANTES de subirlo).
 
-   opciones = { formato: 'cuadrado' | 'vertical', texto: bool }
+   opciones = { formato: 'cuadrado' | 'retrato' | 'vertical', texto: bool,
+                variante: 0-3, foto: url }
+
+   `variante` y `foto` son para publicar el mismo producto en varios grupos:
+   ver _ANUNCIO_VARIANTES. Sin ellas sale exactamente el anuncio de siempre.
 
    `texto:false` es el anuncio de Revólico: solo foto y marca, porque Revólico
    ya pide el título, el precio y la descripción en sus propios campos y
@@ -257,7 +284,11 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
     const opt = opciones || {};
     const fmt = _ANUNCIO_FORMATOS[opt.formato] || _ANUNCIO_FORMATOS.cuadrado;
     const conTexto = !!opt.texto;
-    const vertical = fmt.H > fmt.W;
+    // Solo el 9:16 lleva el texto debajo de la foto; el 4:5 se reparte como
+    // el cuadrado (ver _ANUNCIO_FORMATOS).
+    const vertical = fmt.H / fmt.W > 1.5;
+    const nVar = Math.abs(parseInt(opt.variante, 10) || 0) % _ANUNCIO_VARIANTES.length;
+    const va = _ANUNCIO_VARIANTES[nVar];
     const W = fmt.W, H = fmt.H;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -267,7 +298,7 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
     // las categorías, que son los que hacen que el anuncio se reconozca como
     // tuyo entre los cientos que hay en Revólico.
     const tono = _revOscurecer(_revTonoCategoria(producto), _REV_LUM);
-    const bg = ctx.createLinearGradient(0, 0, W, H);
+    const bg = ctx.createLinearGradient(va.dir[0]*W, va.dir[1]*H, va.dir[2]*W, va.dir[3]*H);
     bg.addColorStop(0, '#0d0d0d');
     bg.addColorStop(.6, _revOscurecer(tono, _REV_LUM * 0.22));
     bg.addColorStop(1, tono);
@@ -319,7 +350,7 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
     // y apoyar el texto sobre su pie dejaba asomar las esquinas redondeadas
     // por los lados, que se lee como un fallo. Va a sangre hasta el borde y el
     // velo la oscurece: es la foto la que llega abajo, no un recuadro cortado.
-    const im = await _revLoadImg(producto.imagen || '');
+    const im = await _revLoadImg(opt.foto || producto.imagen || '');
     const px = 76, py = 76, pw = W-152;
     const ph = (conTexto && !vertical)
         ? H - 46 - py
@@ -328,7 +359,7 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
         ctx.save(); _revRoundRect(ctx, px, py, pw, ph, 32); ctx.clip();
         const rLlenar = Math.max(pw/im.width, ph/im.height);
         const rCaber  = Math.min(pw/im.width, ph/im.height);
-        const pinta = r => ctx.drawImage(im, px+(pw-im.width*r)/2, py+(ph-im.height*r)/2, im.width*r, im.height*r);
+        const pinta = r => ctx.drawImage(im, px+(pw-im.width*r)*va.ax, py+(ph-im.height*r)*va.ay, im.width*r, im.height*r);
         // Cuánta foto se pierde al recortarla para llenar la caja. Un recorte
         // pequeño no se nota; una foto apaisada dentro del formato vertical
         // perdía el 40% del ancho y el producto salía cortado por la mitad.
@@ -384,9 +415,12 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
         velo.addColorStop(1, 'rgba(8,6,4,.97)');
         ctx.fillStyle = velo; ctx.fillRect(0, veloY, W, H - veloY);
 
-        const cx = W/2;
+        // Alineado a la izquierda arranca donde arranca el ancho que midió
+        // _anuPartir (W-190 centrado): el mismo renglón cabe en los dos.
+        const izq = va.izq;
+        const cx = izq ? 95 : W/2;
         let y = veloY + Math.round(fN * 0.42);
-        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.textAlign = izq ? 'left' : 'center'; ctx.textBaseline = 'top';
         ctx.font = '800 ' + fN + 'px system-ui,Arial';
         ctx.fillStyle = '#fff';
         for (const l of lineasNombre) { ctx.fillText(l, cx, y); y += Math.round(fN * 1.16); }
@@ -402,7 +436,8 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
             const wA = ctx.measureText(txtA).width;
             ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(cx - wA/2 - 8, y + fA*0.58); ctx.lineTo(cx + wA/2 + 8, y + fA*0.58);
+            const xA = izq ? cx + wA/2 : cx;
+            ctx.moveTo(xA - wA/2 - 8, y + fA*0.58); ctx.lineTo(xA + wA/2 + 8, y + fA*0.58);
             ctx.stroke();
             y += Math.round(fA * 1.55);
         }
@@ -416,7 +451,7 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
         const wC = ctx.measureText(cifra).width;
         ctx.font = '700 ' + fU + 'px system-ui,Arial';
         const wM = ctx.measureText(moneda).width;
-        const x0 = cx - (wC + wM)/2;
+        const x0 = izq ? cx : cx - (wC + wM)/2;
         ctx.font = '900 ' + fP + 'px system-ui,Arial'; ctx.fillStyle = '#C9A96E';
         ctx.fillText(cifra, x0, y);
         ctx.font = '700 ' + fU + 'px system-ui,Arial'; ctx.fillStyle = 'rgba(201,169,110,.72)';
@@ -432,7 +467,7 @@ async function _dibujarImagenAnuncio(canvas, producto, opciones) {
         if (conTexto && canvas.dataset) canvas.dataset.tmAnuncio = JSON.stringify({
             W: W, H: H, barraTop: H - barraH, altoFoto: ph,
             lineasNombre: lineasNombre.length, yFinTexto: yFinTexto,
-            titulo: lineasNombre.join(' '), cuerpoTitulo: fN,
+            titulo: lineasNombre.join(' '), cuerpoTitulo: fN, variante: nVar,
         });
     } catch (e) { /* OffscreenCanvas u otro lienzo sin dataset */ }
 
@@ -482,12 +517,221 @@ async function _copiar(texto) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  VARIOS GRUPOS SIN QUE PAREZCA EL MISMO ANUNCIO
+// ══════════════════════════════════════════════════════════════
+/* Publicar el mismo producto en cinco grupos con el mismo texto, la misma foto
+   y el mismo recorte es justo lo que Facebook detecta como spam, y lo que los
+   administradores de grupo borran a mano. Aquí se decide, para cada grupo, qué
+   VERSIÓN le toca: el texto, la imagen y la foto de portada cambian; los datos
+   no. Todo sale del producto —nada inventado— y es determinista: la misma
+   pareja producto+grupo da la misma versión en el móvil y en la computadora.
+
+   La rotación usa el registro de publicaciones (tm_publog_v1, que ya guarda
+   `destino`): la versión de un grupo avanza una cada vez que ese producto sale
+   en ese grupo, así que el mismo grupo nunca recibe la misma dos veces
+   seguidas, y como arranca en la posición del grupo en la lista, dos grupos
+   seguidos de la cola tampoco coinciden. */
+const TM_VARIANTES = 4;
+// El código del grupo va en el enlace (?g=) y termina siendo una ruta de
+// Firebase. El filtro es el MISMO en los tres sitios —aquí, la ficha /p/
+// (MEDIR_JS) y la regla de /analytics/grupos—: si uno acepta algo que otro no,
+// la visita se pierde en silencio o crea nodos que nadie pidió.
+const _GRUPO_COD_RE = /^[a-z0-9]{4,8}$/;
+function _hash32(txt) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < txt.length; i++) { h ^= txt.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return h >>> 0;
+}
+// Sale de la URL del grupo, no de un contador ni del nombre: así no hace falta
+// guardarlo en ningún sitio, es igual en todos los teléfonos y renombrar el
+// grupo no parte sus visitas en dos. No dice nada del grupo a quien lo lea.
+function tmGrupoCodigo(g) {
+    const propio = String((g && g.codigo) || '').toLowerCase();
+    if (_GRUPO_COD_RE.test(propio)) return propio;
+    const url = String((g && g.url) || '').trim().toLowerCase()
+        .replace(/^https?:\/\//, '').replace(/^(www|m|web|mbasic)\./, '')
+        .split(/[?#]/)[0].replace(/\/+$/, '');
+    if (!url) return '';
+    return _hash32(url).toString(36).padStart(6, '0').slice(-6);
+}
+window.tmGrupoCodigo = tmGrupoCodigo;
+
+function _gruposFB() {
+    try {
+        const v = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+        return Array.isArray(v) ? v : [];
+    } catch (e) { return []; }
+}
+function _grupoValido(g) { return !!(g && g.url && String(g.url).includes('facebook.com')); }
+// Con qué nombre queda en el registro. Es lo que se lee en el Historial.
+function _grupoDestino(g) { return String((g && (g.nombre || g.url)) || '').trim(); }
+function _pubsGrupo(g) {
+    const dst = _grupoDestino(g), url = String((g && g.url) || '').trim();
+    if (!dst) return [];
+    const log = (typeof tmPublicaciones === 'function') ? tmPublicaciones() : [];
+    return log.filter(e => e && e.red === 'fb' && (e.destino === dst || (url && e.destino === url)));
+}
+function _inicioDeHoy() { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function tmGrupoHoy(g) { const t0 = _inicioDeHoy(); return _pubsGrupo(g).filter(e => e.ts >= t0).length; }
+function tmGrupoUltimaDe(g, pid) {
+    let ts = 0;
+    _pubsGrupo(g).forEach(e => { if (e.pid === String(pid) && e.ts > ts) ts = e.ts; });
+    return ts || null;
+}
+// 0 = sin límite. Lo pone el gestor en la tarjeta del grupo: cada grupo tolera
+// una cosa distinta y eso solo lo sabe quien está dentro.
+function _grupoMaxDia(g) { const n = parseInt(g && g.maxDia, 10); return n > 0 ? n : 0; }
+function _grupoEnlaces(g) { return !(g && g.enlaces === false); }
+
+function tmVarianteGrupo(g, pos, pid) {
+    const veces = _pubsGrupo(g).filter(e => e.pid === String(pid)).length;
+    return (Math.abs(pos | 0) + veces) % TM_VARIANTES;
+}
+
+// Las fotos distintas del producto, la principal primero.
+function _fotosDe(producto) {
+    const out = [];
+    [producto && producto.imagen].concat(Array.isArray(producto && producto.imagenes) ? producto.imagenes : [])
+        .forEach(u => { u = String(u || '').trim(); if (u && !out.includes(u)) out.push(u); });
+    return out;
+}
+// Formato 1:1 o 4:5, alineación, recorte y fondo salen de `v`; la foto de
+// portada rota aparte, sobre las que tenga el producto.
+function _opcionesImagenVariante(producto, v, k) {
+    const fotos = _fotosDe(producto);
+    return { formato: (v & 1) ? 'retrato' : 'cuadrado', texto: true, variante: v,
+             foto: fotos.length ? fotos[Math.abs(k | 0) % fotos.length] : '' };
+}
+
+// Para los grupos que no dejan poner enlaces: el número se escribe, no se enlaza.
+function _numWaLegible() {
+    const n = String(localStorage.getItem('whatsappNumero') || '5354320170').replace(/\D/g, '');
+    return /^53\d{8}$/.test(n) ? '+53 ' + n.slice(2, 6) + ' ' + n.slice(6) : '+' + n;
+}
+
+// Las primeras `n` líneas con texto. Una descripción de diez renglones pegada
+// igual en todas las versiones es lo que más delata el copia-pega.
+function _primerasLineas(texto, n) {
+    return String(texto || '').split('\n').map(l => l.trim()).filter(Boolean).slice(0, n).join('\n');
+}
+
+// Apunta lo publicado donde lo apunta el resto del panel, y repinta la lista
+// de Publicar para que el badge «hace X» y «Hoy toca» se enteren.
+function _marcarPublicado(pid, red, destino) {
+    try {
+        if (typeof pubMarcarPublicado === 'function') pubMarcarPublicado(pid, red, destino);
+        else if (typeof tmRegistrarPublicacion === 'function') tmRegistrarPublicacion(pid, red, destino);
+    } catch (e) {}
+    setTimeout(() => {
+        try { if (typeof pubRenderShareList === 'function') pubRenderShareList(); } catch (e) {}
+        try { if (typeof pubRenderHoy === 'function') pubRenderHoy(); } catch (e) {}
+    }, 300);
+}
+
+// Lo que trae cada grupo: visitas a la ficha y toques en su WhatsApp con la
+// marca ?g= de ese grupo (MEDIR_JS en las fichas /p/). Una lectura, guardada
+// 5 minutos: la tarjeta se repinta cada vez que se filtra la lista.
+let _gruposStatsCache = null;
+function _gruposStats() {
+    if (_gruposStatsCache && Date.now() - _gruposStatsCache.t < 300000) return _gruposStatsCache.p;
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : '';
+    const p = !base ? Promise.reject(new Error('sin firebase'))
+        : fetch(base + '/analytics/grupos.json?_=' + Date.now(), { cache: 'no-store' })
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(d => (d && typeof d === 'object') ? d : {});
+    _gruposStatsCache = { t: Date.now(), p };
+    p.catch(() => { _gruposStatsCache = null; });
+    return p;
+}
+
+// Los campos de reglas y lo que trae el grupo, dentro de su tarjeta. Lo llama
+// renderizarGruposFB (bundle): vive aquí porque el bundle también se sirve a la
+// tienda y esto solo lo usa el panel.
+window.tmGrupoExtras = function(card, g, i) {
+    const caja = document.createElement('div');
+    caja.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(127,127,127,.08);font-size:12px;';
+    const fila = document.createElement('div');
+    fila.style.cssText = 'display:flex;gap:14px;flex-wrap:wrap;align-items:center;';
+    const lMax = document.createElement('label');
+    lMax.style.cssText = 'display:flex;align-items:center;gap:6px;font-weight:600;';
+    lMax.textContent = 'Máx. al día aquí:';
+    const inMax = document.createElement('input');
+    inMax.type = 'number'; inMax.min = '0'; inMax.max = '20'; inMax.placeholder = 'sin límite';
+    inMax.value = _grupoMaxDia(g) || '';
+    inMax.style.cssText = 'width:84px;padding:5px 8px;border-radius:6px;border:1px solid var(--border-color);font-size:12px;';
+    inMax.addEventListener('input', () => {
+        const n = parseInt(inMax.value, 10);
+        actualizarGrupoFB(i, 'maxDia', n > 0 ? Math.min(n, 20) : '');
+    });
+    lMax.appendChild(inMax);
+    const lEnl = document.createElement('label');
+    lEnl.style.cssText = 'display:flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;';
+    const chk = document.createElement('input');
+    chk.type = 'checkbox'; chk.checked = _grupoEnlaces(g);
+    chk.addEventListener('change', () => { actualizarGrupoFB(i, 'enlaces', chk.checked); pintarStats(); });
+    lEnl.appendChild(chk);
+    lEnl.appendChild(document.createTextNode('Admite enlaces'));
+    fila.appendChild(lMax); fila.appendChild(lEnl);
+    caja.appendChild(fila);
+
+    const hoy = document.createElement('div');
+    hoy.style.opacity = '.75';
+    const n = tmGrupoHoy(g), max = _grupoMaxDia(g);
+    hoy.textContent = `Hoy aquí: ${n}${max ? ' de ' + max : ''}` +
+        (_grupoEnlaces(g) ? '' : ' · sin enlaces: el post lleva tu WhatsApp escrito');
+    caja.appendChild(hoy);
+
+    const stats = document.createElement('div');
+    stats.id = 'grupoFBStats_' + i;
+    stats.style.opacity = '.85';
+    caja.appendChild(stats);
+    function pintarStats() {
+        const cod = tmGrupoCodigo(g);
+        if (!cod) { stats.textContent = ''; return; }
+        if (!chk.checked) { stats.textContent = '📊 Sin enlaces no se puede medir qué trae este grupo.'; return; }
+        stats.textContent = '📊 ⏳ Mirando lo que trae…';
+        _gruposStats().then(d => {
+            const e = d[cod] || {};
+            const vis = Number(e.visitas && e.visitas.count) || 0;
+            const wa  = Number(e.whatsapp && e.whatsapp.count) || 0;
+            stats.textContent = (vis || wa)
+                ? `📊 Desde este grupo: 👀 ${vis} visita${vis === 1 ? '' : 's'} · 💬 ${wa} toque${wa === 1 ? '' : 's'} en WhatsApp`
+                : '📊 Todavía nada con la marca de este grupo (cuentan los enlaces publicados desde la cola o desde aquí).';
+        }).catch(() => {
+            // Un fallo de red NO es «no trae nada»: dicho así, el gestor deja
+            // de publicar justo donde le funciona.
+            stats.textContent = '📊 No pude leer lo que trae este grupo (¿sin conexión?).';
+        });
+    }
+    pintarStats();
+    card.appendChild(caja);
+};
+
+function _cuandoTxt(ts) {
+    const dias = Math.floor((Date.now() - ts) / 86400000);
+    if (dias <= 0) return 'hoy';
+    if (dias === 1) return 'ayer';
+    return 'hace ' + dias + ' días';
+}
+
+// ══════════════════════════════════════════════════════════════
 //  FACEBOOK
 // ══════════════════════════════════════════════════════════════
 
-function _textoFacebook(producto) {
-    const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
-    const url      = `https://tiendamax.org/p/producto-${producto.id}.html`;
+/* opciones = { variante: 0-3, enlaces: bool (por defecto sí), grupo }
+
+   La versión 0 es el post de siempre. Las otras tres cambian el arranque, el
+   orden de los bloques, los separadores, las palabras del pedido y los
+   hashtags — no los datos: el nombre, el precio, la rebaja, la garantía y la
+   escasez salen del producto en todas, y lo que el producto no declara no sale
+   en ninguna. `enlaces:false` es para los grupos que borran posts con enlaces:
+   el número de WhatsApp va escrito y no hay URL. */
+function _textoFacebook(producto, opciones) {
+    const o = opciones || {};
+    const v = Math.abs(parseInt(o.variante, 10) || 0) % TM_VARIANTES;
+    const conEnlaces = o.enlaces !== false;
+    if (v) return _textoFacebookOtra(producto, v, conEnlaces, o.grupo);
+
     const precio   = producto.precioActual;
     const hashtags = _hashtagsCategoria(producto.categoria);
 
@@ -516,20 +760,79 @@ function _textoFacebook(producto) {
     if (_st > 0 && _st <= 3) t += _st === 1 ? '⚡ ¡Queda 1 disponible!\n' : `⚡ ¡Últimas ${_st} unidades!\n`;
 
     t += '\n━━━━━━━━━━━━━━━━━━━━━\n';
-    t += `📲 Pídelo en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
-    t += `🔗 Fotos y detalles: ${_urlProducto(producto, 'facebook')}\n\n`;
+    if (conEnlaces) {
+        t += `📲 Pídelo en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
+        t += `🔗 Fotos y detalles: ${_urlProducto(producto, 'facebook', o.grupo)}\n\n`;
+    } else {
+        t += `💬 Escríbeme al WhatsApp: ${_numWaLegible()}\n\n`;
+    }
     t += hashtags;
 
     return t;
 }
 
-async function copiarYAbrirFacebook(productoId, grupoUrl) {
+function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
+    const precio = Number(producto.precioActual || 0);
+    const antes  = Number(producto.precioOriginal || 0);
+    const rebaja = antes > precio && precio > 0;
+    const linPrecio = rebaja
+        ? `Antes ${_precioTxt(producto, antes)} → ahora ${_precioTxt(producto, precio)} (ahorras ${_precioTxt(producto, (antes - precio).toFixed(0))})`
+        : _precioTxt(producto, precio);
+    const desc  = String(producto.descripcion || '').trim();
+    const ficha = _fichaCorta(producto, 4);
+    const L = [];
+    if (v === 1) {
+        // El precio arriba, antes que nada: quien baja por el grupo decide ahí.
+        L.push(`🔥 ${producto.nombre}`, `💰 ${linPrecio}`, '');
+        if (producto.usado) L.push('♻️ Usado / refurbished', '');
+        if (ficha.length) L.push(ficha.join('\n'), '');
+        else if (desc) L.push(_primerasLineas(desc, 3), '');
+    } else if (v === 2) {
+        L.push(`📦 ${producto.nombre}`, '');
+        if (producto.usado) L.push('♻️ Producto usado / refurbished', '');
+        if (desc) L.push(desc, '');
+        L.push('▫️▫️▫️', `Precio: ${linPrecio}`);
+    } else {
+        L.push(String(producto.nombre || ''), '');
+        if (producto.usado) L.push('♻️ Usado', '');
+        if (ficha.length) L.push(ficha.map(f => f.replace(/^•/, '✅')).join('\n'), '');
+        if (desc) L.push(_primerasLineas(desc, ficha.length ? 2 : 6), '');
+        L.push(`💵 ${linPrecio}`);
+    }
+    if (producto.garantia)   L.push(`🛡️ Garantía: ${producto.garantia}`);
+    if (producto.devolucion) L.push('✅ Devolución segura garantizada');
+    const st = Number(producto.stock || 0);
+    if (st > 0 && st <= 3) L.push(st === 1 ? '⚡ Queda 1' : `⚡ Quedan ${st}`);
+    L.push('');
+    const cta = [null, ['💬 Pedidos por WhatsApp:', '👀 Más fotos:'],
+                       ['👉 Para pedirlo, toca aquí:', '🌐 Ficha completa:'],
+                       ['📩 Escríbeme:', '📷 Ver fotos:']][v];
+    if (conEnlaces) {
+        L.push(cta[0], _waPedido(producto, 'facebook'),
+               `${cta[1]} ${_urlProducto(producto, 'facebook', grupo)}`);
+    } else {
+        L.push(`💬 Escríbeme al WhatsApp: ${_numWaLegible()}`);
+    }
+    const tags = v === 1 ? _hashtagsCategoria(producto.categoria, true) : v === 3 ? '#tiendamax #cuba' : '';
+    if (tags) L.push('', tags);
+    return L.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// Copia la versión que le toca a ESE grupo y lo abre. `iGrupo` es la posición
+// en la lista de grupos; sin ella, el post de siempre y sin marca de grupo.
+async function copiarYAbrirFacebook(productoId, grupoUrl, iGrupo) {
     const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
     const producto = _allProds.find(p => String(p.id) === String(productoId));
-    if (!producto) return;
-    await _copiar(_textoFacebook(producto));
+    if (!producto) return false;
+    const g = (iGrupo != null) ? _gruposFB()[iGrupo] : null;
+    const texto = g
+        ? _textoFacebook(producto, { variante: tmVarianteGrupo(g, iGrupo, producto.id), enlaces: _grupoEnlaces(g), grupo: g })
+        : _textoFacebook(producto);
+    await _copiar(texto);
+    _marcarPublicado(producto.id, 'fb', g ? _grupoDestino(g) : 'Facebook');
     mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
     window.open(grupoUrl || 'https://www.facebook.com', '_blank', 'noopener,noreferrer');
+    return true;
 }
 
 function previsualizarFacebook(productoId, grupoUrl) {
@@ -537,7 +840,7 @@ function previsualizarFacebook(productoId, grupoUrl) {
     const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
 
-    const _grupos = (() => { try { return JSON.parse(localStorage.getItem('gruposFB') || '[]').filter(g => g && g.url && g.url.includes('facebook.com')); } catch(e) { return []; } })();
+    const _grupos = _gruposFB().filter(_grupoValido);
 
     const existing = document.getElementById('fbPreviewModal');
     if (existing) document.body.removeChild(existing);
@@ -580,10 +883,11 @@ function previsualizarFacebook(productoId, grupoUrl) {
             <textarea id="fbPostTA" rows="13"
               style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box;"></textarea>
           </div>
-          ${_grupos.length ? `<button type="button" id="btnFbAllGroups"
+          ${_grupos.length ? `<button type="button" id="btnFbColaGrupos"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#FF6B35,#C9A96E);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
-            📢 Abrir en todos mis grupos (${_grupos.length})
-          </button>` : ''}
+            📢 Publicar en mis grupos, uno a uno (${_grupos.length})
+          </button>
+          <p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">Cada grupo recibe su propia versión del texto y de la imagen, con una pausa entre uno y otro.</p>` : ''}
           <button type="button" id="btnAbrirFb"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
             📘 Copiar y Abrir ${_grupos.length ? 'un grupo' : 'Facebook'} →
@@ -630,17 +934,13 @@ function previsualizarFacebook(productoId, grupoUrl) {
         a.click();
     });
 
-    // Abrir TODOS los grupos a la vez: abre las pestañas (síncrono, para que el
-    // navegador no bloquee los pop-ups) y luego copia el texto. Pegas en cada una.
-    document.getElementById('btnFbAllGroups')?.addEventListener('click', function() {
-        let abiertos = 0;
-        _grupos.forEach(g => { try { const w = window.open(g.url, '_blank', 'noopener,noreferrer'); if (w) abiertos++; } catch(e) {} });
-        _copiar(document.getElementById('fbPostTA').value);
-        if (abiertos >= _grupos.length) {
-            mostrarNotificacion(`✅ Texto copiado · abrí ${abiertos} grupo(s). Pega (Ctrl/Cmd+V) y publica en cada pestaña.`, 'success');
-        } else {
-            mostrarNotificacion(`⚠️ El navegador bloqueó algunas ventanas (abrí ${abiertos}/${_grupos.length}). Permite las ventanas emergentes para este sitio y vuelve a intentar.`, 'warning');
-        }
+    // Aquí había un «Abrir en todos mis grupos»: abría todas las pestañas a la
+    // vez con el MISMO texto y la misma imagen. Cinco posts idénticos en cinco
+    // grupos en un minuto es exactamente lo que Facebook marca como spam. Ahora
+    // es una cola: un grupo cada vez, su propia versión, y una pausa.
+    document.getElementById('btnFbColaGrupos')?.addEventListener('click', function() {
+        cerrarFbPreview();
+        tmColaGrupos(producto.id);
     });
 
     document.getElementById('btnFbAI')?.addEventListener('click', async function() {
@@ -668,6 +968,12 @@ function previsualizarFacebook(productoId, grupoUrl) {
         await _copiar(document.getElementById('fbPostTA').value);
         let w = null;
         try { w = window.open(fbUrl, '_blank', 'noopener,noreferrer'); } catch(e) {}
+        // Se apunta al abrir, no al dibujar la vista previa: abrir la vista y
+        // cerrarla no es publicar (la misma regla que el lote por categoría).
+        // Con el nombre del grupo cuando es uno de los tuyos, para que su
+        // registro y su tope diario lo cuenten.
+        const _g = grupoUrl ? _grupos.find(x => x.url === grupoUrl) : null;
+        _marcarPublicado(producto.id, 'fb', _g ? _grupoDestino(_g) : 'Facebook');
         if (w) {
             mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
         } else {
@@ -687,7 +993,7 @@ function cerrarFbPreview() {
 
 function publicarEnGrupoFB(iGrupo) {
     if (typeof productos === 'undefined' || !Array.isArray(productos) || productos.length === 0) return;
-    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    const grupos = _gruposFB();
     const grupo = grupos[iGrupo];
     if (!grupo || !grupo.url) { mostrarNotificacion('❌ Agrega la URL del grupo primero', 'error'); return; }
     const prods = productos.filter(p => (grupo.productos || []).includes(p.id))
@@ -706,10 +1012,22 @@ function publicarEnGrupoFB(iGrupo) {
           <h2>📢 Publicar en: ${_escH(grupo.nombre || grupo.url)}</h2>
           <button class="close-btn" onclick="cerrarGrupoPublicarModal()" type="button">✕</button>
         </div>
-        <p style="font-size:12px;opacity:.7;margin:8px 0 12px;">Haz clic en cada producto. El texto se copia y se abre el grupo — pega y publica, luego vuelve.</p>
+        <p style="font-size:12px;opacity:.7;margin:8px 0 4px;">Haz clic en cada producto. Se copia la versión que le toca a este grupo y se abre — pega y publica, luego vuelve.</p>
+        <p id="grupoPublicarHoy" style="font-size:12px;font-weight:700;margin:0 0 12px;"></p>
         <div id="grupoPublicarList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
       </div>`;
     document.body.appendChild(modal);
+
+    const max = _grupoMaxDia(grupo);
+    const hoyTxt = () => {
+        const n = tmGrupoHoy(grupo);
+        const el = document.getElementById('grupoPublicarHoy');
+        if (el) el.textContent = max
+            ? `Hoy aquí: ${n} de ${max}${n >= max ? ' — tope de hoy alcanzado' : ''}`
+            : `Hoy aquí: ${n}${_grupoEnlaces(grupo) ? '' : ' · este grupo no admite enlaces'}`;
+        return n;
+    };
+    hoyTxt();
 
     const list = document.getElementById('grupoPublicarList');
     prods.forEach((p, idx) => {
@@ -728,11 +1046,15 @@ function publicarEnGrupoFB(iGrupo) {
         nombre.textContent = p.nombre;
         const meta = document.createElement('div');
         meta.style.cssText = 'font-size:11px;opacity:.6;margin-top:2px;';
-        meta.textContent = `${_precioTxt(p)}${agotado ? ' · 🚫 Agotado' : ''}`;
+        // Dónde ya salió: repetir el mismo producto en el mismo grupo a los
+        // pocos días es lo que hace que el administrador lo borre.
+        const ult = tmGrupoUltimaDe(grupo, p.id);
+        meta.textContent = `${_precioTxt(p)}${agotado ? ' · 🚫 Agotado' : ''}${ult ? ' · ya salió aquí ' + _cuandoTxt(ult) : ''}`;
         info.appendChild(nombre);
         info.appendChild(meta);
         const btn = document.createElement('button');
         btn.type = 'button';
+        btn.className = 'tm-gp-btn';
         if (agotado) {
             btn.textContent = '🚫 Agotado';
             btn.disabled = true;
@@ -741,11 +1063,23 @@ function publicarEnGrupoFB(iGrupo) {
             btn.textContent = '📋 Copiar y Abrir';
             btn.style.cssText = 'background:#4267B2;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
             btn.addEventListener('click', async () => {
-                await copiarYAbrirFacebook(p.id, grupo.url);
+                if (max && tmGrupoHoy(grupo) >= max) {
+                    mostrarNotificacion(`⏸️ Hoy ya van ${max} en este grupo (tu máximo). Sigue mañana.`, 'warning');
+                    return;
+                }
+                if (!_colaPuedeSeguir(true)) return;
+                await copiarYAbrirFacebook(p.id, grupo.url, iGrupo);
+                _colaEmpezarPausa();
                 btn.textContent = '✅ Publicado';
                 btn.style.background = '#27AE60';
                 btn.disabled = true;
                 row.style.opacity = '.5';
+                if (max && hoyTxt() >= max) {
+                    list.querySelectorAll('.tm-gp-btn:not([disabled])').forEach(b => {
+                        b.disabled = true; b.textContent = '⏸️ Tope de hoy';
+                        b.style.background = '#555'; b.style.cursor = 'not-allowed';
+                    });
+                } else hoyTxt();
             });
         }
         row.appendChild(num); row.appendChild(info); row.appendChild(btn);
@@ -756,6 +1090,287 @@ function publicarEnGrupoFB(iGrupo) {
 function cerrarGrupoPublicarModal() {
     const m = document.getElementById('grupoPublicarModal');
     if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  COLA: UN PRODUCTO, TUS GRUPOS, UNO A UNO
+// ══════════════════════════════════════════════════════════════
+/* Sustituye al «Abrir en todos mis grupos». Tres reglas:
+
+   · Un grupo cada vez, con SU versión ya copiada (tmVarianteGrupo).
+   · Una pausa entre grupos (3–5 min, con cuenta atrás) y un tope por hora.
+     La pausa es una sugerencia y se puede saltar; el tope no — es lo que
+     separa publicar en varios grupos de que Facebook te limite la cuenta.
+   · Un grupo donde el producto salió hace menos de TM_COLA_REPETIR_DIAS, o
+     que ya llegó hoy a su máximo, queda apartado y dice por qué. Se puede
+     incluir igual con un toque: lo decide quien conoce el grupo.
+
+   Los relojes se guardan como una hora (localStorage), no como un contador:
+   irse a Facebook y volver no reinicia nada, y vale igual para la lista de
+   productos de un grupo (publicarEnGrupoFB), que respeta la misma pausa. */
+const TM_COLA_PAUSA_KEY = 'tm_fb_pausa_min';
+const TM_COLA_HORA_KEY  = 'tm_fb_max_hora';
+const TM_COLA_HASTA_KEY = 'tm_fb_pausa_hasta';
+const TM_COLA_REPETIR_DIAS = 7;
+let _COLA = null, _colaReloj = null;
+
+function _colaPausaMin() {
+    const n = parseInt(localStorage.getItem(TM_COLA_PAUSA_KEY), 10);
+    return n >= 3 && n <= 5 ? n : 4;
+}
+function _colaMaxHora() {
+    const n = parseInt(localStorage.getItem(TM_COLA_HORA_KEY), 10);
+    return n >= 1 && n <= 12 ? n : 4;
+}
+// Las publicaciones EN GRUPOS de la última hora (lo publicado en el muro
+// propio no cuenta para el tope), de la más vieja a la más nueva.
+function _colaPubsHora() {
+    const dsts = new Set();
+    _gruposFB().forEach(g => {
+        const d = _grupoDestino(g); if (d) dsts.add(d);
+        if (g && g.url) dsts.add(String(g.url).trim());
+    });
+    const desde = Date.now() - 3600000;
+    const log = (typeof tmPublicaciones === 'function') ? tmPublicaciones() : [];
+    return log.filter(e => e && e.red === 'fb' && e.ts >= desde && dsts.has(e.destino))
+              .map(e => e.ts).sort((a, b) => a - b);
+}
+function _colaEsperaHora() {
+    const ts = _colaPubsHora(), max = _colaMaxHora();
+    if (ts.length < max) return 0;
+    return Math.max(0, ts[ts.length - max] + 3600000 - Date.now());
+}
+function _colaEsperaPausa() {
+    const hasta = parseInt(localStorage.getItem(TM_COLA_HASTA_KEY) || '0', 10) || 0;
+    return Math.max(0, hasta - Date.now());
+}
+function _colaEmpezarPausa() {
+    try { localStorage.setItem(TM_COLA_HASTA_KEY, String(Date.now() + _colaPausaMin() * 60000)); } catch (e) {}
+}
+function _mmss(ms) {
+    const s = Math.ceil(ms / 1000);
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+// ¿Se puede publicar ya en un grupo? El tope por hora bloquea; la pausa, con
+// `preguntar`, deja seguir si quien publica lo confirma.
+function _colaPuedeSeguir(preguntar) {
+    const h = _colaEsperaHora();
+    if (h > 0) {
+        mostrarNotificacion(`⏸️ Ya van ${_colaMaxHora()} en grupos en la última hora (tu tope). El siguiente, en ${_mmss(h)}.`, 'warning');
+        return false;
+    }
+    const pz = _colaEsperaPausa();
+    if (pz > 0 && preguntar) return confirm(`Faltan ${_mmss(pz)} de la pausa sugerida entre grupos. ¿Publicar ya de todos modos?`);
+    return true;
+}
+
+function _productoPorId(id) {
+    let lista = [];
+    try { if (typeof productos !== 'undefined' && Array.isArray(productos)) lista = productos; } catch (e) {}
+    if (!lista.length) { try { lista = JSON.parse(localStorage.getItem('productos') || '[]'); } catch (e) { lista = []; } }
+    return lista.find(p => String(p.id) === String(id)) || null;
+}
+
+// Por qué un grupo no entra en la cola de este producto ('' si entra).
+function _colaMotivo(g, pid) {
+    const ult = tmGrupoUltimaDe(g, pid);
+    if (ult && Date.now() - ult < TM_COLA_REPETIR_DIAS * 86400000) return `ya salió aquí ${_cuandoTxt(ult)}`;
+    const max = _grupoMaxDia(g);
+    if (max) {
+        const n = tmGrupoHoy(g);
+        if (n >= max) return `hoy ya van ${n} aquí (tu máximo: ${max})`;
+    }
+    return '';
+}
+
+function tmColaGrupos(productoId) {
+    const producto = _productoPorId(productoId);
+    if (!producto) return;
+    const items = [];
+    _gruposFB().forEach((g, i) => {
+        if (!_grupoValido(g)) return;
+        const motivo = _colaMotivo(g, producto.id);
+        items.push({ i, g, estado: motivo ? 'apartado' : 'pendiente', motivo });
+    });
+    if (!items.length) { mostrarNotificacion('❌ No tienes grupos de Facebook guardados', 'error'); return; }
+    _COLA = { producto, items, actual: -1, ultimo: -1 };
+    _colaAvanzar();
+
+    const prev = document.getElementById('fbColaModal');
+    if (prev) prev.remove();
+    const modal = document.createElement('div');
+    modal.id = 'fbColaModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:540px;max-height:92vh;display:flex;flex-direction:column;">
+        <div class="modal-header">
+          <h2>📢 En tus grupos, uno a uno</h2>
+          <button class="close-btn" onclick="cerrarColaGrupos()" type="button">✕</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:13px;font-weight:700;">${_escH(producto.nombre)}</div>
+          <div id="colaPaso"></div>
+          <div id="colaLista" style="display:flex;flex-direction:column;gap:6px;"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;opacity:.85;">
+            <label>Pausa entre grupos
+              <select id="colaPausaSel" style="margin-left:4px;">${[3, 4, 5].map(n => `<option value="${n}" ${n === _colaPausaMin() ? 'selected' : ''}>${n} min</option>`).join('')}</select>
+            </label>
+            <label>Tope por hora
+              <select id="colaHoraSel" style="margin-left:4px;">${[2, 3, 4, 5, 6, 8].map(n => `<option value="${n}" ${n === _colaMaxHora() ? 'selected' : ''}>${n}</option>`).join('')}</select>
+            </label>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('colaPausaSel').addEventListener('change', function() {
+        try { localStorage.setItem(TM_COLA_PAUSA_KEY, this.value); } catch (e) {}
+    });
+    document.getElementById('colaHoraSel').addEventListener('change', function() {
+        try { localStorage.setItem(TM_COLA_HORA_KEY, this.value); } catch (e) {}
+        _colaTic();
+    });
+    _colaPintar();
+    clearInterval(_colaReloj);
+    _colaReloj = setInterval(_colaTic, 1000);
+}
+
+function _colaAvanzar() {
+    if (!_COLA) return;
+    _COLA.actual = _COLA.items.findIndex(it => it.estado === 'pendiente');
+    const it = _COLA.items[_COLA.actual];
+    // La versión se fija al mostrar el grupo: apuntar la publicación la hace
+    // avanzar, y el texto y la imagen de ESTE grupo tienen que ser los mismos.
+    if (it) it.v = tmVarianteGrupo(it.g, it.i, _COLA.producto.id);
+}
+
+function _colaPintar() {
+    if (!_COLA) return;
+    const paso = document.getElementById('colaPaso');
+    const lista = document.getElementById('colaLista');
+    if (!paso || !lista) return;
+    const { producto, items } = _COLA;
+    const it = items[_COLA.actual];
+    const hechos = items.filter(x => x.estado === 'abierto').length;
+    const ult = items[_COLA.ultimo];
+    const reabrir = ult ? `<div style="font-size:12px;padding:8px 10px;border-radius:8px;background:rgba(39,174,96,.12);">✅ Abierto: <b>${_escH(_grupoDestino(ult.g))}</b>. ¿No se abrió? <a href="#" id="colaReabrir">Abrirlo otra vez</a></div>` : '';
+    if (!it) {
+        const apartados = items.filter(x => x.estado === 'apartado').length;
+        paso.innerHTML = reabrir + `<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,.05);font-size:13px;line-height:1.5;">
+            ${hechos ? `✅ Listo: publicado en ${hechos} grupo${hechos === 1 ? '' : 's'}.` : 'No queda ningún grupo en la cola.'}
+            ${apartados ? `<br>${apartados} apartado${apartados === 1 ? '' : 's'} — abajo dice por qué, y puedes incluirlo igual.` : ''}</div>`;
+    } else {
+        const pendientes = items.filter(x => x.estado === 'pendiente').length;
+        const sinEnlaces = !_grupoEnlaces(it.g);
+        paso.innerHTML = reabrir + `
+          <div style="font-size:12px;opacity:.8;margin-bottom:6px;">Grupo ${hechos + 1} de ${hechos + pendientes} · <b>${_escH(_grupoDestino(it.g))}</b> · versión ${it.v + 1} de ${TM_VARIANTES}${sinEnlaces ? ' · <span style="color:#f5b041;">sin enlaces</span>' : ''}</div>
+          <canvas id="colaCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
+          <div id="colaAvisoFoto" style="display:none;margin-top:6px;font-size:12px;color:#ff9a90;">⚠️ La foto no cargó — la imagen saldría con el icono de cámara.</div>
+          <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">1️⃣ GUARDA LA IMAGEN</div>
+          <div style="display:flex;gap:8px;">
+            <button id="colaCopiarImg" type="button" class="btn btn-ghost" style="flex:1;">📋 Copiar imagen</button>
+            <button id="colaBajarImg" type="button" class="btn btn-ghost" style="flex:1;">⬇️ Descargar</button>
+          </div>
+          <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">2️⃣ COPIA EL TEXTO Y ABRE EL GRUPO</div>
+          <textarea id="colaTexto" rows="10" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
+          <div id="colaCuenta" style="font-size:12px;margin:6px 0;min-height:16px;"></div>
+          <button id="colaAbrir" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">📋 Copiar texto y abrir el grupo →</button>
+          <button id="colaSaltar" type="button" class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;">⏭️ Saltar este grupo</button>`;
+        document.getElementById('colaTexto').value =
+            _textoFacebook(producto, { variante: it.v, enlaces: !sinEnlaces, grupo: it.g });
+        const cv = document.getElementById('colaCanvas');
+        _dibujarImagenAnuncio(cv, producto, _opcionesImagenVariante(producto, it.v, it.v)).then(hay => {
+            const a = document.getElementById('colaAvisoFoto'); if (a) a.style.display = hay ? 'none' : 'block';
+        }).catch(() => { cv.style.display = 'none'; });
+        document.getElementById('colaCopiarImg').addEventListener('click', () => {
+            cv.toBlob(async blob => {
+                try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); mostrarNotificacion('✅ Imagen copiada', 'success'); }
+                catch (e) { mostrarNotificacion('❌ No se pudo copiar — usa ⬇️ Descargar', 'error'); }
+            }, 'image/png');
+        });
+        document.getElementById('colaBajarImg').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = `tiendamax-${producto.id}-v${it.v + 1}.jpg`;
+            a.href = cv.toDataURL('image/jpeg', 0.9);
+            a.click();
+        });
+        document.getElementById('colaAbrir').addEventListener('click', _colaAbrir);
+        document.getElementById('colaSaltar').addEventListener('click', () => {
+            it.estado = 'saltado'; it.motivo = 'lo saltaste';
+            _colaAvanzar(); _colaPintar();
+        });
+    }
+    document.getElementById('colaReabrir')?.addEventListener('click', e => {
+        e.preventDefault();
+        if (ult) window.open(ult.g.url, '_blank', 'noopener,noreferrer');
+    });
+
+    const chip = { pendiente: '⏳ en cola', abierto: '✅ publicado', saltado: '⏭️ saltado', apartado: '⏸️ apartado' };
+    lista.innerHTML = items.map((x, k) => `
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,${k === _COLA.actual ? '.10' : '.04'});font-size:12px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${_escH(_grupoDestino(x.g))}</div>
+            <div style="opacity:.65;">${chip[x.estado]}${x.motivo ? ' · ' + _escH(x.motivo) : ''}</div>
+          </div>
+          ${x.estado === 'apartado' || x.estado === 'saltado' ? `<button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 8px;" data-cola-incluir="${k}">Incluir igual</button>` : ''}
+        </div>`).join('');
+    lista.querySelectorAll('[data-cola-incluir]').forEach(b => b.addEventListener('click', () => {
+        const x = items[Number(b.dataset.colaIncluir)];
+        if (!x) return;
+        x.estado = 'pendiente'; x.motivo = '';
+        if (_COLA.actual < 0) _colaAvanzar();
+        _colaPintar();
+    }));
+    _colaTic();
+}
+
+// Cada segundo: la cuenta atrás y si el botón de abrir está disponible. Solo
+// toca esas dos cosas; repintar el lienzo cada segundo sería absurdo.
+function _colaTic() {
+    const modal = document.getElementById('fbColaModal');
+    if (!modal || modal.style.display === 'none') { clearInterval(_colaReloj); _colaReloj = null; return; }
+    const cuenta = document.getElementById('colaCuenta');
+    const btn = document.getElementById('colaAbrir');
+    if (!cuenta || !btn) return;
+    const h = _colaEsperaHora(), pz = _colaEsperaPausa();
+    if (h > 0) {
+        cuenta.innerHTML = `⏸️ Ya van ${_colaMaxHora()} en grupos en la última hora (tu tope). El siguiente, en <b>${_mmss(h)}</b>.`;
+        btn.disabled = true; btn.style.opacity = '.5';
+    } else if (pz > 0) {
+        cuenta.innerHTML = `⏳ Pausa sugerida: <b>${_mmss(pz)}</b> — así Facebook no lo ve como spam. <a href="#" id="colaSaltarPausa">Saltar la pausa</a>`;
+        btn.disabled = true; btn.style.opacity = '.5';
+        document.getElementById('colaSaltarPausa')?.addEventListener('click', e => {
+            e.preventDefault();
+            try { localStorage.removeItem(TM_COLA_HASTA_KEY); } catch (er) {}
+            _colaTic();
+        });
+    } else {
+        cuenta.textContent = '';
+        btn.disabled = false; btn.style.opacity = '1';
+    }
+}
+
+async function _colaAbrir() {
+    if (!_COLA) return;
+    const it = _COLA.items[_COLA.actual];
+    if (!it || !_colaPuedeSeguir(false) || _colaEsperaPausa() > 0) return;
+    const ta = document.getElementById('colaTexto');
+    await _copiar(ta ? ta.value : '');
+    let w = null;
+    try { w = window.open(it.g.url, '_blank', 'noopener,noreferrer'); } catch (e) {}
+    _marcarPublicado(_COLA.producto.id, 'fb', _grupoDestino(it.g));
+    it.estado = 'abierto'; it.motivo = '';
+    _COLA.ultimo = _COLA.actual;
+    _colaEmpezarPausa();
+    mostrarNotificacion(w ? '✅ Texto copiado — pégalo en el grupo' : '⚠️ El navegador bloqueó la ventana. El texto ya está copiado: abre el grupo con «Abrirlo otra vez».', w ? 'success' : 'warning');
+    _colaAvanzar();
+    _colaPintar();
+}
+
+function cerrarColaGrupos() {
+    const m = document.getElementById('fbColaModal');
+    if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
+    clearInterval(_colaReloj); _colaReloj = null;
 }
 
 
@@ -798,54 +1413,132 @@ function _fichaCorta(producto, maxFilas) {
         .map(f => `• ${String(f.k).trim()}: ${String(f.v).trim()}`);
 }
 
-function _textoRevolico(producto) {
+function _nombreLimpio(producto) {
+    const n = String((producto && producto.nombre) || '');
+    const t = (typeof tmPartirEmoji === 'function') ? (tmPartirEmoji(n).texto || n) : n;
+    return t.replace(/\s+/g, ' ').trim();
+}
+
+/* Acorta un título sin perder el modelo. Cortar por el final es lo que hacía
+   que «…soldadura multiproceso 3 en 1» saliera sin el «3 en 1», y en este
+   catálogo lo que va al final suele ser justo lo que distingue un producto de
+   su hermano (m2/m5, 8/5 puertos, 962g). Se quitan primero las palabras más
+   largas que NO llevan cifra —las descriptivas—, nunca la primera. */
+function _acortarTitulo(texto, max) {
+    const t = String(texto || '').replace(/\s+/g, ' ').trim();
+    if (t.length <= max) return t;
+    const ws = t.split(' ');
+    const orden = ws.map((w, k) => ({ w, k }))
+        .filter(x => x.k > 0 && !/\d/.test(x.w))
+        .sort((a, b) => b.w.length - a.w.length || b.k - a.k);
+    const fuera = new Set();
+    const unir = () => ws.filter((w, k) => !fuera.has(k)).join(' ');
+    for (const x of orden) { if (unir().length <= max) break; fuera.add(x.k); }
+    const r = unir();
+    return r.length <= max ? r : r.slice(0, max - 1) + '…';
+}
+
+/* Hasta cuatro títulos para el mismo producto. TODOS llevan el nombre entero
+   (o acortado con _acortarTitulo): lo que cambia es lo que se le añade, y solo
+   se añade lo que el producto declara —la marca si el nombre no la dice, un
+   dato corto de su ficha, la garantía, la rebaja—. Un título que no cabe en
+   70 con el nombre entero no se ofrece: acortar el nombre para meter un
+   adorno es cambiar el modelo por un adjetivo. */
+function _titulosRevolico(producto) {
+    const base = _nombreLimpio(producto);
+    const out = [_acortarTitulo(base, 70)];
+    const add = t => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t && t.length <= 70 && !out.includes(t)) out.push(t); };
+    const bajo = base.toLowerCase();
+    const ficha = Array.isArray(producto && producto.ficha) ? producto.ficha : [];
+    const marca = ficha.find(f => f && /^marca$/i.test(String(f.k || '').trim()));
+    if (marca && marca.v && !bajo.includes(String(marca.v).trim().toLowerCase())) add(`${String(marca.v).trim()} ${base}`);
+    ficha.filter(f => f && f.k && f.v && !/^(marca|modelo)$/i.test(String(f.k).trim())
+                      && String(f.v).trim().length >= 3 && String(f.v).trim().length <= 22
+                      && !bajo.includes(String(f.v).trim().toLowerCase()))
+         .slice(0, 2).forEach(f => add(`${base} · ${String(f.v).trim()}`));
+    if (producto && producto.garantia) add(`${base} con garantía`);
+    const precio = Number((producto && producto.precioActual) || 0), antes = Number((producto && producto.precioOriginal) || 0);
+    if (antes > precio && precio > 0) add(`${base} · rebajado`);
+    return out.slice(0, TM_VARIANTES);
+}
+
+// `variante` 0 es el anuncio de siempre; las otras cambian el título (ver
+// _titulosRevolico), el orden de los bloques y las palabras del pedido. Los
+// datos son los mismos en las cuatro.
+function _textoRevolico(producto, variante) {
+    const v = Math.abs(parseInt(variante, 10) || 0) % TM_VARIANTES;
+    const titulos = _titulosRevolico(producto);
     // Título: solo nombre, sin precio (Revolico tiene campo de precio separado)
-    let titulo = producto.nombre;
-    if (titulo.length > 70) titulo = titulo.substring(0, 67) + '...';
+    const titulo = titulos[v % titulos.length] || String(producto.nombre || '').slice(0, 70);
 
-    const bloques = [];
-    if (producto.usado)       bloques.push('PRODUCTO USADO / REFURBISHED');
-    if (producto.descripcion) bloques.push(String(producto.descripcion).trim());
-
-    const ficha = _fichaCorta(producto);
-    if (ficha.length) bloques.push(ficha.join('\n'));
+    const usado = producto.usado ? 'PRODUCTO USADO / REFURBISHED' : '';
+    const desc = producto.descripcion ? String(producto.descripcion).trim() : '';
+    const ficha = _fichaCorta(producto).join('\n');
 
     // Qué trae la caja, en una línea: es la duda que más se pregunta por
     // WhatsApp y responderla en el anuncio ahorra el mensaje.
     const incluye = (Array.isArray(producto.incluye) ? producto.incluye : [])
         .map(x => String(x).replace(/^\s*\d+\s*[x×]\s*/i, '').split(' (')[0].trim())
         .filter(Boolean).slice(0, 4);
-    if (incluye.length) bloques.push('Incluye: ' + incluye.join(', '));
+    const incl = incluye.length ? 'Incluye: ' + incluye.join(', ') : '';
 
     const confianza = [];
     if (producto.garantia)   confianza.push('Garantía: ' + producto.garantia);
     if (producto.devolucion) confianza.push('Devolución segura garantizada');
-    if (confianza.length) bloques.push(confianza.join('\n'));
+    const conf = confianza.join('\n');
 
     // El conteo de unidades no va: es un dato que envejece solo —el anuncio se
     // queda meses publicado y el stock cambia— y no ayuda a decidir. El aviso
     // de agotado sí, que ese evita que alguien escriba por algo que no hay.
-    if (producto.stock === 0) bloques.push('⚠️ AGOTADO — Consultar disponibilidad');
+    const agotado = producto.stock === 0 ? '⚠️ AGOTADO — Consultar disponibilidad' : '';
 
     // Revólico no es red social: los hashtags no hacen nada ahí (no hay búsqueda
     // por hashtag) y solo ensucian el anuncio. Se dejan fuera a propósito.
     // El enlace de WhatsApp se queda —un wa.me pelado abre un chat vacío y ahí
     // se pierden pedidos— pero adelgazado: ver _waPedido.
-    bloques.push('📲 Pedir por WhatsApp: ' + _waPedido(producto, 'revolico')
-               + '\n🔗 Fotos y ficha completa: ' + _urlProducto(producto, 'revolico'));
-
-    return { titulo, descripcion: bloques.join('\n\n') };
+    const wa = _waPedido(producto, 'revolico'), url = _urlProducto(producto, 'revolico');
+    const cta = [
+        '📲 Pedir por WhatsApp: ' + wa + '\n🔗 Fotos y ficha completa: ' + url,
+        '💬 Escríbeme por WhatsApp: ' + wa + '\n👀 Más fotos: ' + url,
+        '👉 Pedidos: ' + wa + '\n🌐 Ficha: ' + url,
+        '📩 WhatsApp: ' + wa + '\n📷 Fotos: ' + url,
+    ][v];
+    const orden = [
+        [usado, desc, ficha, incl, conf, agotado, cta],
+        [usado, ficha, _primerasLineas(desc, 4), incl, conf, agotado, cta],
+        [usado, desc, incl, ficha, conf, agotado, cta],
+        [usado, conf, ficha, desc, incl, agotado, cta],
+    ][v];
+    return { titulo, descripcion: orden.filter(Boolean).join('\n\n') };
 }
 
-function previsualizarRevolico(productoId) {
+// Cuántas veces salió ya en Revólico: de ahí la versión que toca y la foto
+// que va de portada. Así el siguiente anuncio del mismo producto no es el
+// mismo anuncio.
+function _vecesRevolico(pid) {
+    const log = (typeof tmPublicaciones === 'function') ? tmPublicaciones() : [];
+    return log.filter(e => e && e.red === 'revolico' && e.pid === String(pid)).length;
+}
+
+/* `restaurar` = { v } cuando lo reabre el restaurador de `pageshow`: el dueño
+   vuelve de Revólico a copiar el título y tiene que encontrar la MISMA
+   versión que empezó a pegar, no la siguiente (apuntar la publicación hace
+   avanzar la rotación). */
+function previsualizarRevolico(productoId, restaurar) {
     const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
     const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
 
     const catInfo = _REVOLICO_CATS[producto.categoria] || _REVOLICO_DEFAULT;
-    const { titulo, descripcion } = _textoRevolico(producto);
-    const imgSrc = producto.imagen || '';
+    const _vRest = restaurar ? parseInt(restaurar.v, 10) : NaN;
+    let revVar = isFinite(_vRest) ? _vRest : _vecesRevolico(producto.id) % TM_VARIANTES;
+    const { titulo, descripcion } = _textoRevolico(producto, revVar);
+    const revFotos = _fotosDe(producto);
     const revUrl = catInfo.url;
+    // Ya salió en Revólico: lo que toca casi siempre es RENOVAR ese anuncio,
+    // no poner otro igual al lado.
+    const revUlt = (!restaurar && typeof tmUltimaPublicacion === 'function') ? tmUltimaPublicacion(producto.id, 'revolico') : null;
+    let revMarcado = !!restaurar;
 
     const existing = document.getElementById('revPreviewModal');
     if (existing) existing.remove();
@@ -871,6 +1564,13 @@ function previsualizarRevolico(productoId) {
           <button class="close-btn" onclick="cerrarRevPreview()" type="button">✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;">
+          ${revUlt ? `<div id="revRenovar" style="padding:11px 12px;border-radius:10px;background:rgba(245,176,65,.13);border:1px solid rgba(245,176,65,.4);font-size:12.5px;line-height:1.5;">
+            🔁 <b>Ya lo publicaste en Revólico ${_cuandoTxt(revUlt)}.</b> Si ese anuncio sigue publicado, <b>renuévalo</b> desde «Mis anuncios» en tu cuenta de Revólico en vez de publicar otro: un anuncio repetido se ve como spam y lo pueden borrar.
+            <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+              <button id="btnRevRenovado" type="button" style="${sBtnBase}padding:7px 12px;background:rgba(245,176,65,.25);border:1px solid rgba(245,176,65,.5);color:#f5b041;">✅ Lo renové</button>
+              <span style="opacity:.7;align-self:center;">o sigue abajo para publicar uno nuevo (sale con otra versión).</span>
+            </div>
+          </div>` : ''}
 
           <!-- Imagen de anuncio con branding -->
           <div>
@@ -925,6 +1625,12 @@ function previsualizarRevolico(productoId) {
             <span style="font-weight:700;color:#FF6B35;">${catInfo.label}</span>
           </div>
 
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span id="revVersion" style="opacity:.7;flex:1;"></span>
+            <button id="btnRevOtra" type="button"
+              style="${sBtnBase}background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#ccc;">🔁 Otra versión</button>
+          </div>
+
           <button type="button" id="btnAbrirRev"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
             🟠 Copiar descripción y Abrir Revolico →
@@ -934,20 +1640,43 @@ function previsualizarRevolico(productoId) {
 
     document.body.appendChild(modal);
 
-    // Generar imagen de anuncio con branding
+    // Generar imagen de anuncio con branding. La foto de portada rota con la
+    // versión cuando el producto tiene varias: la misma primera foto en cada
+    // anuncio es lo primero que delata que es el mismo.
     const revCanvas = document.getElementById('revImgCanvas');
-    if (revCanvas) {
+    const pintarRev = () => {
+        if (!revCanvas) return;
         // Si la foto no entra, el lienzo dibuja un marcador de cámara y el
         // anuncio se puede publicar así sin que nadie lo note. Se avisa aquí
         // arriba, que es donde el dueño está mirando.
         const _aviso = document.getElementById('revImgAviso');
-        _dibujarImagenAnuncio(revCanvas, producto).then(hayFoto => {
+        const foto = revFotos.length ? revFotos[revVar % revFotos.length] : '';
+        _dibujarImagenAnuncio(revCanvas, producto, foto && revVar % revFotos.length ? { foto } : undefined).then(hayFoto => {
             if (_aviso) _aviso.style.display = hayFoto ? 'none' : 'block';
         }).catch(() => {
             revCanvas.style.display = 'none';
             if (_aviso) { _aviso.textContent = '⚠️ No se pudo generar la imagen del anuncio.'; _aviso.style.display = 'block'; }
         });
-    }
+        const ver = document.getElementById('revVersion');
+        if (ver) ver.textContent = `Versión ${revVar + 1} de ${TM_VARIANTES}` +
+            (revFotos.length > 1 ? ` · foto ${revVar % revFotos.length + 1} de ${revFotos.length} de portada` : '');
+    };
+    pintarRev();
+
+    document.getElementById('btnRevOtra')?.addEventListener('click', function() {
+        revVar = (revVar + 1) % TM_VARIANTES;
+        const r = _textoRevolico(producto, revVar);
+        const ta = document.getElementById('revTituloTA'); if (ta) ta.value = r.titulo;
+        const cnt = document.getElementById('revTituloCount'); if (cnt) cnt.textContent = `${r.titulo.length}/70`;
+        const da = document.getElementById('revDescTA'); if (da) da.value = r.descripcion;
+        pintarRev();
+    });
+
+    document.getElementById('btnRevRenovado')?.addEventListener('click', function() {
+        _marcarPublicado(producto.id, 'revolico', 'Revolico (renovado)');
+        mostrarNotificacion('✅ Apuntado como renovado', 'success');
+        cerrarRevPreview();
+    });
 
     document.getElementById('btnCopyRevImg')?.addEventListener('click', async function() {
         const cv = document.getElementById('revImgCanvas');
@@ -1015,6 +1744,10 @@ function previsualizarRevolico(productoId) {
         await _copiar(desc);
         mostrarNotificacion('✅ Descripción copiada — regresa aquí para copiar más campos', 'success');
         sessionStorage.setItem('_tmRevActive', String(productoId));
+        sessionStorage.setItem('_tmRevVar', String(revVar));
+        // Se apunta al abrir Revólico, y una sola vez por vista previa: volver
+        // a tocarlo para copiar otra cosa no es otro anuncio.
+        if (!revMarcado) { revMarcado = true; _marcarPublicado(producto.id, 'revolico', 'Revolico'); }
         window.open(revUrl, '_blank', 'noopener,noreferrer');
         // No cerrar el modal — el usuario regresa a esta pantalla para seguir copiando
     });
@@ -1038,6 +1771,7 @@ async function copiarRevDesc() {
 
 function cerrarRevPreview() {
     sessionStorage.removeItem('_tmRevActive');
+    sessionStorage.removeItem('_tmRevVar');
     const m = document.getElementById('revPreviewModal');
     if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
 }
@@ -1089,7 +1823,7 @@ window.addEventListener('pageshow', function() {
     const tryReopen = (attempts) => {
         const prods = (typeof productos !== 'undefined' && Array.isArray(productos) ? productos : null)
             || (() => { try { return JSON.parse(localStorage.getItem('productos') || '[]'); } catch(e) { return []; } })();
-        if (prods.length) { previsualizarRevolico(savedId); return; }
+        if (prods.length) { previsualizarRevolico(savedId, { v: sessionStorage.getItem('_tmRevVar') }); return; }
         if (attempts > 0) setTimeout(() => tryReopen(attempts - 1), 600);
     };
     setTimeout(() => tryReopen(5), 400);

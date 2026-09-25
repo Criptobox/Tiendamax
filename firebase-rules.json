@@ -59,6 +59,24 @@
             }
           }
         }
+      },
+      "grupos": {
+        "$grupo": {
+          "visitas": {
+            "count": {
+              ".read": true,
+              ".write": "$grupo.length >= 4 && $grupo.length <= 8 && $grupo.matches(/^[a-z0-9]+$/) && (!data.exists() || newData.val() == data.val() + 1)",
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+            }
+          },
+          "whatsapp": {
+            "count": {
+              ".read": true,
+              ".write": "$grupo.length >= 4 && $grupo.length <= 8 && $grupo.matches(/^[a-z0-9]+$/) && (!data.exists() || newData.val() == data.val() + 1)",
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+            }
+          }
+        }
       }
     },
     "almacenes": {

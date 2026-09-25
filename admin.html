@@ -2059,7 +2059,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=2445d25e"></script>
+<script src="js/tm-bundle.js?v=56057c04"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2109,7 +2109,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=6c62fea6"></script>
+<script src="js/revolico_integration.js?v=4a4c7186"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -7919,7 +7919,11 @@ async function pubShareAct(id,act){
   // Historial no servía para saber dónde ya habías puesto cada cosa.
   const _redDe={story:'wa', wa:'wa', fb:'fb', rev:'revolico', copy:'otra'};
   const _dstDe={story:'Estado WhatsApp', wa:'Chat WhatsApp', fb:'Grupos de Facebook', rev:'Revolico', copy:'Enlace copiado'};
-  pubMarcarPublicado(p.id, _redDe[act]||'otra', _dstDe[act]||'');
+  // Facebook y Revólico abren antes una vista previa, y son ELLAS las que lo
+  // apuntan, al abrir el grupo o Revólico y con el grupo concreto: apuntarlo
+  // aquí contaba como publicado lo que solo se miró, y además dos veces.
+  const _conVista=(act==='fb'&&typeof previsualizarFacebook==='function')||(act==='rev'&&typeof previsualizarRevolico==='function');
+  if(!_conVista) pubMarcarPublicado(p.id, _redDe[act]||'otra', _dstDe[act]||'');
   // También el panel de arriba: si acabas de publicar uno de los tres que
   // proponía, tiene que dejar de proponerlo.
   setTimeout(()=>{ try{ pubRenderShareList(); pubRenderHoy(); }catch(e){} }, 600);

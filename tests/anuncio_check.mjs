@@ -67,12 +67,17 @@ const hayApi = await pagina.evaluate(() => typeof window.tmAnuncioImagen === 'fu
 ok(hayApi, 'window.tmAnuncioImagen no existe: el Estado de WhatsApp y el lote por categoría lo llaman por ahí.');
 
 if (hayApi) {
-    for (const formato of ['cuadrado', 'vertical']) {
-        const medidas = await pagina.evaluate(async ({ productos, formato }) => {
+    // Las versiones de los grupos (variante 1–3, y el 4:5 «retrato») mueven el
+    // texto y el formato: tienen que cumplir lo mismo que el anuncio de siempre.
+    const combinaciones = [['cuadrado', 0], ['vertical', 0], ['retrato', 0],
+                           ['cuadrado', 1], ['retrato', 1], ['cuadrado', 2],
+                           ['retrato', 2], ['cuadrado', 3], ['retrato', 3]];
+    for (const [formato, variante] of combinaciones) {
+        const medidas = await pagina.evaluate(async ({ productos, formato, variante }) => {
             const salida = [];
             for (const p of productos) {
                 const cv = document.createElement('canvas');
-                await window.tmAnuncioImagen(cv, p, { formato, texto: true });
+                await window.tmAnuncioImagen(cv, p, { formato, texto: true, variante });
                 // El título se LEE del lienzo (d.titulo), no se recalcula
                 // aquí: recalculándolo, el test comprobaba su propia copia de
                 // la lógica y daba por bueno un corte que el dibujo sí hacía.
@@ -83,10 +88,13 @@ if (hayApi) {
                               texto: d.titulo || '', limpio, ...d });
             }
             return salida;
-        }, { productos: PRODUCTOS, formato });
+        }, { productos: PRODUCTOS, formato, variante });
 
         for (const m of medidas) {
-            const quien = `[${formato}] ${m.nombre}`;
+            const quien = `[${formato} v${variante}] ${m.nombre}`;
+            if (formato === 'retrato') ok(m.ancho === 1080 && m.alto === 1350,
+               `${quien}: el 4:5 tiene que ser 1080×1350, sale ${m.ancho}×${m.alto}`);
+            ok(m.variante === variante, `${quien}: pedida la versión ${variante}, el lienzo dice ${m.variante}`);
             ok(m.yFinTexto > 0 && m.yFinTexto <= m.barraTop,
                `${quien}: el texto acaba en y=${m.yFinTexto} y la franja de marca empieza en ${m.barraTop} — el precio se pinta encima del "TiendaMax".`);
             ok(m.altoFoto >= Math.round(m.alto * 0.35),
@@ -112,6 +120,21 @@ if (hayApi) {
        `el anuncio de Revólico dejó de ser 1080×1080 (${sinTexto.ancho}×${sinTexto.alto}).`);
     ok(sinTexto.datos === '',
        'el anuncio sin texto está reservando bloque de texto: Revólico lo lleva a propósito solo con foto y marca.');
+
+    // La versión 0 tiene que ser EXACTAMENTE el anuncio de siempre: la usan
+    // Revólico, el lote por categoría y el Estado. Pasarle variante:0 o no
+    // pasarle nada da los mismos píxeles.
+    const iguales = await pagina.evaluate(async (p) => {
+        const a = document.createElement('canvas'), b = document.createElement('canvas');
+        await window.tmAnuncioImagen(a, p, { formato: 'cuadrado', texto: true });
+        await window.tmAnuncioImagen(b, p, { formato: 'cuadrado', texto: true, variante: 0 });
+        const c = document.createElement('canvas'), d = document.createElement('canvas');
+        await window.tmAnuncioImagen(c, p, { formato: 'cuadrado', texto: true });
+        await window.tmAnuncioImagen(d, p, { formato: 'cuadrado', texto: true, variante: 2 });
+        return { cero: a.toDataURL() === b.toDataURL(), distinta: c.toDataURL() !== d.toDataURL() };
+    }, PRODUCTOS[0]);
+    ok(iguales.cero, 'variante:0 dibuja algo distinto del anuncio de siempre.');
+    ok(iguales.distinta, 'la versión 2 sale idéntica a la de siempre: en cinco grupos se vería el mismo anuncio.');
 }
 
 ok(erroresJs.length === 0, 'errores de JS al dibujar: ' + erroresJs.join(' | '));
@@ -123,4 +146,4 @@ if (fallos.length) {
     console.error('❌ ' + fallos.length + ' fallo(s) en la imagen de anuncio:\n' + fallos.map(f => '  · ' + f).join('\n'));
     process.exit(1);
 }
-console.log('✅ imagen de anuncio: ' + (PRODUCTOS.length * 2) + ' comprobaciones de reparto, corte de título y alto de foto.');
+console.log('✅ imagen de anuncio: ' + (PRODUCTOS.length * 9) + ' comprobaciones de reparto, corte de título y alto de foto.');

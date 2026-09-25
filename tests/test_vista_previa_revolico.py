@@ -229,7 +229,7 @@ class TextoDelAnuncioTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.src = MODULO.read_text(encoding="utf-8")
-        ini = cls.src.index("function _textoRevolico(producto) {")
+        ini = cls.src.index("function _textoRevolico(producto, variante) {")
         cls.texto = cls.src[ini:cls.src.index("\nfunction previsualizarRevolico(", ini)]
         ini2 = cls.src.index("function _waPedido(producto, src) {")
         cls.wa = cls.src[ini2:cls.src.index("\n}", ini2) + 2]

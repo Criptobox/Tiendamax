@@ -129,6 +129,47 @@ ok(fb.escrituras.some(u => u === `/analytics/vistas/${ID}/count.json`),
 ok(fb.escrituras.some(u => u === '/analytics/visitas/count.json'),
    'la visita general no se contó');
 
+// 8) La marca del grupo (?g=): cuenta la visita y el toque en WhatsApp de ESE
+//    grupo, y nada más. La clave es una ruta de Firebase: el filtro de la
+//    ficha tiene que ser el de la regla (4–8 minúsculas o cifras), y sin un
+//    canal válido no cuenta — un ?g= suelto no sale de nada que se publique.
+const conGrupo = await visita('?utm_source=facebook&utm_medium=social&g=k3x9ab');
+ok(conGrupo.escrituras.includes('/analytics/grupos/k3x9ab/visitas/count.json'),
+   'la visita con marca de grupo no se sumó en /analytics/grupos/<g>/visitas: '
+   + conGrupo.escrituras.join(', '));
+ok(conGrupo.escrituras.includes('/analytics/fuentes/facebook/count.json'),
+   'la marca de grupo no puede quitarle la visita al canal');
+for (const [q, por] of [['?utm_source=facebook&g=../../admin_uid', 'una ruta'],
+                        ['?utm_source=facebook&g=ab', 'demasiado corto'],
+                        ['?utm_source=facebook&g=abcdefghi', 'demasiado largo'],
+                        ['?utm_source=facebook&g=ab-12', 'con guion'],
+                        ['?g=k3x9ab', 'sin canal']]) {
+    const r = await visita(q);
+    ok(!r.escrituras.some(u => u.includes('/analytics/grupos/')),
+       `un g= inválido (${por}) escribió en /analytics/grupos: ` + r.escrituras.filter(u => u.includes('grupos')).join(', '));
+}
+{
+    const c2 = await navegador.newContext({ serviceWorkers: 'block' });
+    const w = [];
+    await c2.route('**/*.firebaseio.com/**', r => {
+        w.push(r.request().url().replace(/^https:\/\/[^/]+/, ''));
+        return r.fulfill({ status: 200, contentType: 'application/json', body: '1' });
+    });
+    const pg2 = await c2.newPage();
+    await pg2.goto('file://' + join(RAIZ, 'p', FICHA) + '?utm_source=fb&g=k3x9ab');
+    await pg2.waitForTimeout(300);
+    w.length = 0;
+    await pg2.evaluate(() => {
+        const a = document.getElementById('tmWa');
+        a.removeAttribute('target'); a.setAttribute('href', 'javascript:void 0');
+        a.click(); a.click();
+    });
+    await pg2.waitForTimeout(300);
+    const n = w.filter(u => u === '/analytics/grupos/k3x9ab/whatsapp/count.json').length;
+    ok(n === 1, `el toque en WhatsApp desde un grupo contó ${n} veces en su grupo (debe ser 1): es la cifra que dice qué grupo trae a quien escribe`);
+    await c2.close();
+}
+
 await navegador.close();
 
 if (fallos.length) {
@@ -136,4 +177,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ contador de las fichas /p/: 7 comprobaciones OK');
+console.log('✅ contador de las fichas /p/: 8 bloques de comprobaciones OK');
