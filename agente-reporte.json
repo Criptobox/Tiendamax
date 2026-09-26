@@ -1,51 +1,11 @@
 {
-  "generado": "2026-09-25T14:19:52.570721+00:00",
+  "generado": "2026-09-26T13:31:08.214220+00:00",
   "productos": 138,
-  "urgentes": 8,
+  "urgentes": 0,
   "advertencias": 0,
   "info": 7,
-  "resumen": "Anoche revisé tus 138 productos y encontré 8 urgente(s), 7 de info.",
+  "resumen": "Anoche revisé tus 138 productos y encontré 7 de info.",
   "detalle": [
-    {
-      "tipo": "nombre",
-      "nombre": "🔥 Antorcha de soldadura TIG (KIT Profesional)",
-      "detalle": "→ 🔥 Antorcha de Soldadura TIG (KIT Profesional)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🌐  MikroTik SXT SA5 ac",
-      "detalle": "→ 🌐 MikroTik SXT SA5 AC"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🌐 MikroTik hEX S RB760iGS",
-      "detalle": "→ 🌐 MikroTik hEX s RB760iGS"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "⚡Conectores MC4 10 pares",
-      "detalle": "→ ⚡Conectores MC4 10 Pares"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "⛱️Toldo de malla 2 x 7",
-      "detalle": "→ ⛱️Toldo de Malla 2 x 7"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "🛠️Bielmeier FLUXMAX140 110V 140A Máquina de soldadura multiproceso 3 en 1",
-      "detalle": "→ 🛠️Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "📡MikroTik SXTsq 5 lite",
-      "detalle": "→ 📡MikroTik SXTsq 5 Lite"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "📡MikroTik hEX PoE lite (RB750UPr2)",
-      "detalle": "→ 📡MikroTik hEX PoE Lite (RB750UPr2)"
-    },
     {
       "tipo": "stock_bajo",
       "nombre": "⚡ Inversor Tataliken 4000W",
@@ -78,8 +38,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "62 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 59 más"
+      "nombre": "61 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 58 más"
     }
   ]
 }
