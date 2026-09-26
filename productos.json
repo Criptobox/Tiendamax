@@ -13,7 +13,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "bateria-must-tipo-lifepo4",
+    "slug": "bateria-must-lifepo4",
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
@@ -171,7 +171,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "switch-8-puertos-ethernet-1gbps",
+    "slug": "switch-gigabit-8-puertos",
     "comision": 1500,
     "seoTitle": "SWITCH DE 8 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite.",
@@ -264,7 +264,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "pesa-bascula-inteligente-digital",
+    "slug": "bascula-digital-alta",
     "comision": 1500,
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
     "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
@@ -341,7 +341,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 17,
-    "slug": "antorcha-tig-para-soldadura",
+    "slug": "antorcha-soldadura-tig-kit",
     "comision": 5,
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
     "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
@@ -411,7 +411,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "las-nuevas-baterias-espanolas-lubrim",
+    "slug": "bateria-lubrim-75a",
     "comision": 5,
     "seoTitle": "LAS NUEVAS BATERÍAS ESPAÑOLAS LUBRIM en Cuba | TiendaMax",
     "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
@@ -503,7 +503,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "masajeador-fascia-gun",
+    "slug": "pistola-fascia-gun",
     "comision": 1500,
     "seoTitle": "Pistola Fascia Gun en Cuba | TiendaMax",
     "seoDescription": "Dispositivo de percusión de alta potencia diseñado para liberar la tensión muscular, mejorar la circulación y acelerar la recuperación después del…",
@@ -635,7 +635,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "el-enrutador-wifi-de-1-150mbps",
+    "slug": "cpe-exterior-kuwfi-4g-wifi",
     "comision": 10,
     "specs": [
       "📡 4G LTE",
@@ -887,7 +887,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-solar-hibrido-mppt-3-6kw",
+    "slug": "inversor-solar-mppt-3-6kw",
     "comision": 25,
     "specs": [
       "⚡ Potencia: 3.6kW",
@@ -969,7 +969,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-de-onda-sinusoidal-pura-fuera-de-la-red",
+    "slug": "inversor-solar-powmr-5000w",
     "comision": 35,
     "specs": [
       "⚡ Alta Capacidad: 5000W"
@@ -1104,7 +1104,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 5,
-    "slug": "estacion-de-carga-portatil",
+    "slug": "generador-solar-ac180",
     "comision": 15,
     "specs": [
       "⚡ 1800W de Potencia / 1152Wh Capacidad",
@@ -1338,7 +1338,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l",
+    "slug": "mannol-ag13-40-c-4014-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13+ ( - 40 °C) ADVANCED 4014. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1376,7 +1376,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag13-40-c-hightec-4013-5l",
+    "slug": "mannol-ag13-40-c-4013-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13 ( - 40 °C) HIGHTEC 4013. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG13 Hightec (código 4013), color verde, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1414,7 +1414,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l",
+    "slug": "mannol-ag11-40-c-4011-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG11 ( - 40 °C) LONGTERM 4011. 5L",
     "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1452,7 +1452,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "forros-de-asientos-de-lujo-para-autos",
+    "slug": "juego-fundas-edicion",
     "comision": 10,
     "seoTitle": "FORROS DE ASIENTOS DE LUJO PARA AUTOS en Cuba | TiendaMax",
     "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
@@ -1522,7 +1522,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-safari-20w-50-7404-5l",
+    "slug": "mannol-safari-20w50-7404-5l",
     "seoTitle": "MANNOL SAFARI 20W - 50 7404 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
     "comision": 0,
@@ -1573,7 +1573,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-special-plus-10w-30-7512-5l",
+    "slug": "mannol-plus-10w30-7512-5l",
     "seoTitle": "MANNOL SPECIAL PLUS 10W - 30 7512. 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y…",
     "descripcion": "Aceite de motor MANNOL SPECIAL PLUS 10W-30 (código 7512), sintético, API SN, ACEA A3/B4, con tecnología ESTER. Envase de 5 litros.",
@@ -1624,7 +1624,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "masajeador-triangular",
+    "slug": "pistola-triangular",
     "comision": 1500,
     "seoTitle": "Pistola Triangular en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje de percusión con diseño ergonómico avanzado. Ideal para atletas y personas que buscan una recuperación muscular completa, gracias a su…",
@@ -1693,7 +1693,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "switch-de-5-puertos",
+    "slug": "switch-gigabit-5-puertos",
     "comision": 1500,
     "seoTitle": "SWITCH DE 5 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
@@ -1882,7 +1882,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "toldo-para-sombra-beige-3x2",
+    "slug": "toldo-sombra-2x4",
     "comision": 3,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
     "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
@@ -1950,7 +1950,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "camaras-de-seguridad-v380-pro",
+    "slug": "camaras-seguridad-v380-pro",
     "comision": 1.8,
     "seoTitle": "CÁMARAS DE SEGURIDAD (V380 PRO ) en Cuba | TiendaMax",
     "seoDescription": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz…",
@@ -2030,7 +2030,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cerradura-inteligente",
+    "slug": "cerradura-huella-teclado",
     "comision": 5,
     "seoTitle": "CERRADURA INTELIGENTE en Cuba | TiendaMax",
     "seoDescription": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con…",
@@ -2103,7 +2103,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "kit-de-4-camaras-zosi-nuevo-en-caja",
+    "slug": "kit-zosi-dvr-8-canales",
     "comision": 20,
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI NUEVO EN CAJA en Cuba | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
@@ -2222,7 +2222,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "linterna-cabeza-30w-superbrillante",
+    "slug": "linterna-cabeza",
     "comision": 1500,
     "specs": [
       "⚡ 30w"
@@ -2271,7 +2271,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "adaptador-poe-ubiquiti",
+    "slug": "adaptador-poe-24v-0-3a",
     "comision": 1500,
     "specs": [
       "⚡ Ubiquiti Original"
@@ -2358,7 +2358,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "ventilador-para-carro",
+    "slug": "ventilador-carro",
     "comision": 1.8,
     "seoTitle": "VENTILADOR PARA CARRO en Cuba | TiendaMax",
     "seoDescription": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.",
@@ -2405,7 +2405,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "protege-tu-hogar-videoportero-wifi",
+    "slug": "timbre-camara-hd-wifi",
     "comision": 1000,
     "seoTitle": "PROTEGE TU HOGAR en Cuba | TiendaMax",
     "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
@@ -2473,7 +2473,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargador-portatil-solar-30000mah",
+    "slug": "cargador-portatil-solar",
     "comision": 1.8,
     "seoTitle": "CARGADOR PORTÁTIL SOLAR en Cuba | TiendaMax",
     "seoDescription": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y…",
@@ -2682,7 +2682,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ts-4shpd-15w-40-5l-aceite-diesel",
+    "slug": "mannol-ts-4-15w40-7104-5l",
     "seoTitle": "MANNOL TS - 4 SHPD 15W - 40 7104. 5L en Cuba | TiendaMax",
     "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…",
     "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros.",
@@ -2733,7 +2733,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-defender-10w-40-5l",
+    "slug": "mannol-10w40-7507-5l",
     "seoTitle": "MANNOL DEFENDER 10W - 40 7507. 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un…",
     "descripcion": "Aceite de motor MANNOL DEFENDER (código 7507), 10W-40, sintético, API SP, ACEA A3/B4. Envase de 5 litros.",
@@ -2784,7 +2784,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "20w50-s-4t-aceite-de-motor-mineral-ff6208-1l",
+    "slug": "20w50-s-4t-motor-ff6208-1l",
     "seoTitle": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L | TiendaMax",
     "seoDescription": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L disponible en TiendaMax · Motos. Compra en Cuba con pago contra entrega.",
     "descripcion": "Aceite de motor mineral FANFARO S-4T+ 20W-50 (código 6208), API SN+, JASO MA/MA2, mezcla sintética para motos y equipos de mototécnica. Envase de 1 litro.",
@@ -2867,7 +2867,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "capa-para-moto-xl",
+    "slug": "capa-moto",
     "comision": 2,
     "seoTitle": "CAPA PARA MOTO en Cuba | TiendaMax",
     "seoDescription": "Talla XL ideal para estos tiempos de lluvia 😏",
@@ -2906,7 +2906,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "kit-4-camaras-zosi-con-disco-duro",
+    "slug": "kit-4-zosi-disco-duro",
     "comision": 20,
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI ( CON SU DISCO DURO ) | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
@@ -2963,7 +2963,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "short-nylon-hombre-m-verano",
+    "slug": "shorts-secado-rapido",
     "comision": 5,
     "seoTitle": "SHORT DE NYLON en Cuba | TiendaMax",
     "seoDescription": "Short ideal para el verano Talla M Colores : negro , blanco ,gris y verde",
@@ -3033,7 +3033,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "casa-de-campana-ligera-portatil",
+    "slug": "tienda-campana-automatica",
     "comision": 5,
     "seoTitle": "CASA DE CAMPAÑA LIGERA en Cuba | TiendaMax",
     "seoDescription": "Casa de campaña ligera Portatil, impermeable con mosquiteros en las 2 puertas y las 2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2…",
@@ -3098,7 +3098,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "linterna-marca-registrada-hecloud",
+    "slug": "linterna-hecloud",
     "comision": 1.8,
     "seoTitle": "LINTERNA MARCA REGISTRADA \"HECLOUD\" en Cuba | TiendaMax",
     "seoDescription": "🛑Linterna marca registrada \"HeCloud\" de buceo, pesca submarina y exploración en aguas profundas. Ideal para uso nocturno gracias a su haz LED de alta…",
@@ -3182,7 +3182,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargador-de-bateria-de-litio-bien-72v-5a-salida-84v-conector-us-pin",
+    "slug": "cargador-bien-72v-5a-84v",
     "comision": 2.8,
     "seoTitle": "CARGADOR DE BATERÍA DE LITIO BIEN 72V 5A… | TiendaMax",
     "seoDescription": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo…",
@@ -3234,7 +3234,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "espejos-retrovisores-deportivos-shenao-stealth-winglet",
+    "slug": "espejos-shenao-winglet",
     "comision": 1.8,
     "seoTitle": "ESPEJOS RETROVISORES DEPORTIVOS SHENAO STEALTH WINGLET",
     "seoDescription": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los…",
@@ -3374,7 +3374,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "calentador-electrico-agua-caliente",
+    "slug": "calentador-electrico",
     "comision": 5,
     "seoTitle": "CALENTADOR ELÉCTRICO en Cuba | TiendaMax",
     "seoDescription": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️ Confort y seguridad para tu hogar con control digital de temperatura y flujo constante. Incluye…",
@@ -3440,7 +3440,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargadores-inteligentes-de-25a",
+    "slug": "cargadores-inteligentes-25a",
     "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
@@ -3500,7 +3500,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "controlador-solar-60a-mppt-ultra",
+    "slug": "controlador-60-amp-m60-ultra",
     "comision": 10,
     "specs": [
       "⚡ Voltaje: 12V / 24V / 36V / 48V"
@@ -3644,7 +3644,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 13,
-    "slug": "xiaomi-sound-outdoor-30w",
+    "slug": "xiaomi-sound-outdoor",
     "comision": 5,
     "specs": [
       "⚡ 30W"
@@ -3745,7 +3745,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "raqueta-electrica-mata-mosquitos",
+    "slug": "raqueta-electrica-recargable",
     "comision": 2,
     "seoTitle": "RAQUETA ELÉCTRICA MATA MOSQUITOS en Cuba | TiendaMax",
     "seoDescription": "¡Diles adiós a los molestos mosquitos y moscas de forma rápida y efectiva! El accesorio infaltable para mantener tu casa tranquila. 🔋 Lo mejor de esta…",
@@ -3949,7 +3949,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "tenda-rx2-pro-wi-fi-6",
+    "slug": "tenda-rx2-pro-wifi-6",
     "comision": 10,
     "seoTitle": "Tenda RX2 PRO (Wi-fi 6) en Cuba | TiendaMax",
     "seoDescription": "Router Tenda RX2 Pro, WiFi 6 de doble banda Gigabit, con 5 antenas de alta ganancia. Ideal para hogares con varios dispositivos conectados a la vez sin…",
@@ -4051,7 +4051,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "sistema-de-seguridad-zosi-para-el-hogar-8-canales",
+    "slug": "sistema-zosi-hogar-8-canales",
     "comision": 20,
     "specs": [
       "📹 Sistema de Videovigilancia de 8 Canales con Alta Definición",
@@ -4123,7 +4123,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "gorro-de-buceo",
+    "slug": "gorro-buceo-gianso-3mm",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "GORRO DE BUCEO en Cuba | TiendaMax",
@@ -4267,7 +4267,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 20,
-    "slug": "probador-tester-digital-de-baterias",
+    "slug": "probador-digital-baterias",
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
@@ -4371,7 +4371,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "ventilador-de-techo",
+    "slug": "ventilador-techo",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "VENTILADOR DE TECHO en Cuba | TiendaMax",
@@ -4426,7 +4426,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 17,
-    "slug": "creatina-monohidratada-luckycare-5000-mg",
+    "slug": "creatina-luckycare-5000-mg",
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
@@ -4494,7 +4494,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "repetidor-wifi-de-rango-extendido-tp-link",
+    "slug": "repetidor-tl-wa855re-n300",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
@@ -4592,7 +4592,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "tp-link-archer-c54",
+    "slug": "tplink-archer-c54",
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
@@ -4694,7 +4694,7 @@
     "garantia": "🔄 Garantía de Compra: Para tu total tranquilidad, ofrezco 15 días de garantía para que puedas instalarlo y verificar su correcto funcionamiento. (La garantía cubre defectos de fábrica del equipo, no aplica por mala instalación o errores en el cableado).",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-solar-hibrido-must-1500w-24v-a-120v",
+    "slug": "inversor-must-pv15-1524-lv",
     "comision": 10,
     "comisionMoneda": "USD",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -4969,7 +4969,8 @@
       "1× Guía de instalación rápida"
     ],
     "rev": 1790459156781,
-    "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo."
+    "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo.",
+    "slug": "tplink-archer-ax1450"
   },
   {
     "id": 1782439428159,
@@ -5069,7 +5070,8 @@
       "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
       "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
     ],
-    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego."
+    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.",
+    "slug": "audifonos-gaming-nubwo"
   },
   {
     "id": 1782439525089,
@@ -5127,7 +5129,8 @@
         "d": "Al ser artificial no necesita luz, riego ni poda."
       }
     ],
-    "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento."
+    "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento.",
+    "slug": "panel-decorativo-hojas"
   },
   {
     "id": 1782439688529,
@@ -5201,7 +5204,8 @@
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
     ],
-    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz."
+    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz.",
+    "slug": "transferencia-manual"
   },
   {
     "id": 1782535594832,
@@ -5246,7 +5250,8 @@
     ],
     "incluye": [
       "1x Batidora Milexus Cristal"
-    ]
+    ],
+    "slug": "batidora-milexus-cristal"
   },
   {
     "id": 1782535836192,
@@ -5292,7 +5297,8 @@
     ],
     "incluye": [
       "1x Smart TV Milexus 43\""
-    ]
+    ],
+    "slug": "smart-tv-milexus-43"
   },
   {
     "id": 1782536078989,
@@ -5340,7 +5346,8 @@
     ],
     "incluye": [
       "1x Lavadora Milexus de Doble Tina (9 kg)"
-    ]
+    ],
+    "slug": "lavadora-doble-tina-9-kg"
   },
   {
     "id": 1782536259878,
@@ -5385,7 +5392,8 @@
     ],
     "incluye": [
       "1x Split Milexus 1T"
-    ]
+    ],
+    "slug": "split-milexus-1t"
   },
   {
     "id": 1782536637390,
@@ -5430,7 +5438,8 @@
     ],
     "incluye": [
       "1x Exhibidor Vertical Milexus 13 Pies"
-    ]
+    ],
+    "slug": "exhibidor-milexus-13-pies"
   },
   {
     "id": 1782537024284,
@@ -5475,7 +5484,8 @@
     ],
     "incluye": [
       "1x Exhibidor Vertical de Doble Puerta Milexus 20 Pies"
-    ]
+    ],
+    "slug": "exhibidor-doble-20-pies"
   },
   {
     "id": 1782537341725,
@@ -5521,7 +5531,8 @@
     ],
     "incluye": [
       "1x Nevera Horizontal Milexus 7 Pies"
-    ]
+    ],
+    "slug": "nevera-milexus-7-pies"
   },
   {
     "id": 1782791345628,
@@ -5595,7 +5606,8 @@
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
     ],
-    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina."
+    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.",
+    "slug": "interruptor-geya-220v"
   },
   {
     "id": 1783179800783,
@@ -5674,7 +5686,8 @@
       "1x Inversor Tataliken 4000W 24V",
       "1x Par de pinzas caimán reforzadas",
       "1x Par de mosfet"
-    ]
+    ],
+    "slug": "inversor-tataliken-4000w-24v"
   },
   {
     "id": 1783221896639,
@@ -5745,7 +5758,8 @@
     ],
     "incluye": [
       "1x Changan CS75 PLUS 2024 (Suv Compacta)"
-    ]
+    ],
+    "slug": "changan-cs75-plus-2024-suv"
   },
   {
     "id": 1783453597496,
@@ -5845,7 +5859,8 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias a su capacidad Gigabit."
+    "descripcion": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias a su capacidad Gigabit.",
+    "slug": "tplink-archer-a6"
   },
   {
     "id": 1783453857635,
@@ -5945,7 +5960,8 @@
       "1× Cable Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una seguridad de red avanzada."
+    "descripcion": "Router Wi-Fi 6 de alta eficiencia, diseñado para ofrecer velocidades increíbles, mayor capacidad para conectar muchos dispositivos a la vez y una seguridad de red avanzada.",
+    "slug": "tplink-archer-ax21"
   },
   {
     "id": 1783473894756,
@@ -6009,7 +6025,8 @@
     ],
     "incluye": [
       "1x Cargador Inteligente Corebox 12V 15A"
-    ]
+    ],
+    "slug": "cargador-corebox-12v-15a"
   },
   {
     "id": 1783474199534,
@@ -6083,7 +6100,8 @@
     ],
     "incluye": [
       "1x Cargador Inteligente Ntrc 20A"
-    ]
+    ],
+    "slug": "cargador-ntrc-20a"
   },
   {
     "id": 1783474440848,
@@ -6157,7 +6175,8 @@
     ],
     "incluye": [
       "1x Cargador Inteligente Ntrc 35A"
-    ]
+    ],
+    "slug": "cargador-ntrc-35a"
   },
   {
     "id": 1783474747296,
@@ -6256,7 +6275,8 @@
       "1× Adaptador de corriente (24V)",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y configuración de red."
+    "descripcion": "Router cableado de alto rendimiento, ideal para redes pequeñas, oficinas o usuarios avanzados que necesitan un control total sobre su tráfico, seguridad y configuración de red.",
+    "slug": "mikrotik-hex-rb750gr3"
   },
   {
     "id": 1783543451116,
@@ -6354,7 +6374,8 @@
       "1× Cable Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia."
+    "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia.",
+    "slug": "tenda-ax12-pro"
   },
   {
     "id": 1784403677390,
@@ -6456,7 +6477,8 @@
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
     "rev": 1790460279269,
-    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
+    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
+    "slug": "nanostation-5-ac-loco"
   },
   {
     "id": 1784405087402,
@@ -6529,7 +6551,8 @@
       "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
     ],
     "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.",
-    "rev": 1790346061454
+    "rev": 1790346061454,
+    "slug": "camara-ptz-wifi-exterior"
   },
   {
     "id": 1784569265085,
@@ -6625,7 +6648,8 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran alcance en todo tu hogar u oficina. Sus múltiples antenas externas optimizan la distribución de la señal, garantizando una transmisión fluida para streaming, juegos y navegación en múltiples dispositivos."
+    "descripcion": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran alcance en todo tu hogar u oficina. Sus múltiples antenas externas optimizan la distribución de la señal, garantizando una transmisión fluida para streaming, juegos y navegación en múltiples dispositivos.",
+    "slug": "wavlink-ac1200"
   },
   {
     "id": 1784569498967,
@@ -6686,7 +6710,8 @@
     ],
     "incluye": [
       "1x Controlador de Carga Solar MPPT 100A"
-    ]
+    ],
+    "slug": "controlador-mppt-100a-usb"
   },
   {
     "id": 1784570100968,
@@ -6750,7 +6775,8 @@
     ],
     "incluye": [
       "1x Soldadora Inverter MMA-300"
-    ]
+    ],
+    "slug": "soldadora-inverter-mma-300"
   },
   {
     "id": 1784571782777,
@@ -6821,7 +6847,8 @@
     ],
     "incluye": [
       "1x Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB"
-    ]
+    ],
+    "slug": "sistema-zosi-8-dvr-5mp-1tb"
   },
   {
     "id": 1784732614444,
@@ -6919,7 +6946,8 @@
       "1× Cable Ethernet RJ45",
       "1× Guía de inicio rápido y garantía"
     ],
-    "descripcion": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos con alta demanda de dispositivos conectados. Incorpora cuatro antenas externas y puertos Gigabit para un rendimiento de red óptimo."
+    "descripcion": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos con alta demanda de dispositivos conectados. Incorpora cuatro antenas externas y puertos Gigabit para un rendimiento de red óptimo.",
+    "slug": "asus-rt-ax1800s"
   },
   {
     "id": 1784732715417,
@@ -7042,7 +7070,8 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en hogares u oficinas con múltiples dispositivos conectados simultáneamente. Cuenta con cuatro antenas externas de alta ganancia y puertos Gigabit para aprovechar al máximo el rendimiento de tu proveedor de internet."
+    "descripcion": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en hogares u oficinas con múltiples dispositivos conectados simultáneamente. Cuenta con cuatro antenas externas de alta ganancia y puertos Gigabit para aprovechar al máximo el rendimiento de tu proveedor de internet.",
+    "slug": "tplink-archer-ax55"
   },
   {
     "id": 1784823616101,
@@ -7107,7 +7136,8 @@
     ],
     "incluye": [
       "1x Controlador de Carga Solar MPPT 150A"
-    ]
+    ],
+    "slug": "controlador-mppt-150a"
   },
   {
     "id": 1784825579392,
@@ -7177,7 +7207,8 @@
     "incluye": [
       "1x Cámara de Seguridad Solar Doble Lente QW8-WIFI"
     ],
-    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas."
+    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.",
+    "slug": "camara-solar-qw8-wifi"
   },
   {
     "id": 1785285424837,
@@ -7276,7 +7307,8 @@
       "1× Abrazadera metálica para mástil o poste",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red."
+    "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red.",
+    "slug": "mikrotik-sxtsq-5-ax"
   },
   {
     "id": 1785286289086,
@@ -7378,7 +7410,8 @@
       "1× Guía de inicio rápido"
     ],
     "rev": 1790459156781,
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance."
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.",
+    "slug": "nanostation-m5-internacional"
   },
   {
     "id": 1785866159148,
@@ -7452,7 +7485,8 @@
     ],
     "incluye": [
       "1x Cargador de Batería de Litio BIEN 48V 5A"
-    ]
+    ],
+    "slug": "cargador-litio-bien-48v-5a"
   },
   {
     "id": 1786631549331,
@@ -7551,7 +7585,8 @@
       "1× Soporte de montaje y alineación básica"
     ],
     "descripcion": "Dispositivo inalámbrico para exteriores diseñado específicamente como estación base sectorial (Sector Access Point) para redes punto a multipunto (PtMP). Cuenta con tecnología 802.11ac de alta velocidad y una antena sectorial integrada que ofrece una cobertura amplia en un ángulo de 90 grados.",
-    "rev": 1790359462054
+    "rev": 1790359462054,
+    "slug": "mikrotik-sxt-sa5-ac"
   },
   {
     "id": 1786631968221,
@@ -7657,7 +7692,8 @@
       "1× Base / soporte de montaje (para posición vertical, horizontal o pared) con kit de tornillos",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio."
+    "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.",
+    "slug": "mikrotik-hap-ac3"
   },
   {
     "id": 1786632255672,
@@ -7760,7 +7796,8 @@
       "1× Brida / abrazadera para fijación en mástil o poste",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia."
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.",
+    "slug": "nanostation-m2-internacional"
   },
   {
     "id": 1786633494382,
@@ -7865,7 +7902,8 @@
     "incluye": [
       "1× Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60 (63A)",
       "1× Manual de usuario e instrucciones de configuración rápida"
-    ]
+    ],
+    "slug": "protector-tomzn-tovpd1-60"
   },
   {
     "id": 1786633899405,
@@ -7966,7 +8004,8 @@
     "incluye": [
       "1× Controlador de Carga Solar MPPT 120A Y&H (12V–96V / Max PV 230V)"
     ],
-    "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas."
+    "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.",
+    "slug": "controlador-mppt-120a-h"
   },
   {
     "id": 1786807706672,
@@ -8028,7 +8067,8 @@
     ],
     "incluye": [
       "1x Creatina Monohidrato Hearthy Foods 500g"
-    ]
+    ],
+    "slug": "creatina-hearthy-foods-500g"
   },
   {
     "id": 1786807859244,
@@ -8089,7 +8129,8 @@
     ],
     "incluye": [
       "1x Creatina Monohidrato Dorado Nutrition 300g"
-    ]
+    ],
+    "slug": "creatina-dorado-300g"
   },
   {
     "id": 1786808152310,
@@ -8155,7 +8196,8 @@
     ],
     "incluye": [
       "1x Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g"
-    ]
+    ],
+    "slug": "proteina-whey-1up-ice-962g"
   },
   {
     "id": 1787071784077,
@@ -8262,7 +8304,8 @@
       "1× Juego de pinzas tipo caimán de uso pesado integradas",
       "1× Cable de alimentación AC",
       "1× Manual de usuario e instrucciones de operación"
-    ]
+    ],
+    "slug": "cargador-baterias-vevor-35a"
   },
   {
     "id": 1787072040177,
@@ -8322,7 +8365,8 @@
     "incluye": [
       "1x Soldadora Inverter YESWELDER FLUX-140 FLEX"
     ],
-    "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre."
+    "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre.",
+    "slug": "soldadora-flux-140-flex"
   },
   {
     "id": 1787079480177,
@@ -8425,7 +8469,8 @@
       "1× Controlador de Carga Solar MPPT Boost 1200W",
       "1× Manual de usuario e instrucciones de configuración"
     ],
-    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal."
+    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
+    "slug": "controlador-mppt-boost-1200w"
   },
   {
     "id": 1787157254207,
@@ -8521,7 +8566,8 @@
     ],
     "descripcion": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente (CPE) en redes airMAX. Su diseño compacto y estilizado integra una antena direccional de polarización dual, ofreciendo excelente rendimiento y estabilidad frente a interferencias a media distancia.",
     "seoTitle": "NanoStation Loco M2 en Cuba | TiendaMax",
-    "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…"
+    "seoDescription": "Dispositivo CPE inalámbrico para exteriores diseñado para operar en la banda de 2.4 GHz, ideal para enlaces punto a punto (PtP) o como estación cliente…",
+    "slug": "nanostation-loco-m2"
   },
   {
     "id": 1787604262771,
@@ -8626,7 +8672,8 @@
     "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
     "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…",
     "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
-    "moneda": "MN"
+    "moneda": "MN",
+    "slug": "cable-red-patch-cord-cat6a"
   },
   {
     "id": 1787698473597,
@@ -8742,7 +8789,8 @@
     ],
     "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…",
-    "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT."
+    "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT.",
+    "slug": "mikrotik-sxtsq-lite2"
   },
   {
     "id": 1787888877372,
@@ -8867,7 +8915,8 @@
     "seoTitle": "MikroTik hEX S RB760iGS en Cuba | TiendaMax",
     "seoDescription": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios…",
     "rev": 1790359462054,
-    "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales."
+    "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales.",
+    "slug": "mikrotik-hex-s-rb760igs"
   },
   {
     "id": 1787933033934,
@@ -8994,7 +9043,8 @@
     ],
     "seoTitle": "Ubiquiti Litebeam M5 en Cuba | TiendaMax",
     "seoDescription": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes…",
-    "descripcion": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes y garantizando transferencias estables con latencia reducida incluso en zonas con alto ruido de radiofrecuencia. Su sistema operativo airOS ofrece herramientas profesionales de diagnóstico en tiempo real, destacando el analizador de espectro airView para ubicar y seleccionar siempre los canales más limpios y libres de interferencia."
+    "descripcion": "Impulsada por el protocolo propietario airMAX TDMA, la LiteBeam M5 asigna ventanas de tiempo dedicadas a cada transmisión, evitando colisiones de paquetes y garantizando transferencias estables con latencia reducida incluso en zonas con alto ruido de radiofrecuencia. Su sistema operativo airOS ofrece herramientas profesionales de diagnóstico en tiempo real, destacando el analizador de espectro airView para ubicar y seleccionar siempre los canales más limpios y libres de interferencia.",
+    "slug": "ubiquiti-litebeam-m5"
   },
   {
     "id": 1788368389009,
@@ -9110,7 +9160,8 @@
     "seoTitle": "Conectores MC4 10 pares en Cuba | TiendaMax",
     "seoDescription": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado…",
     "descripcion": "Fabricados con polímero de ingeniería PPO ignífugo de alta densidad, estos conectores ofrecen una resistencia sobresaliente frente al desgaste ocasionado por la radiación ultravioleta continua, la intemperie y temperaturas extremas (-40°C a +90°C), evitando deformaciones o quiebres con el paso de los años.",
-    "rev": 1790359462054
+    "rev": 1790359462054,
+    "slug": "conectores-mc4-10-pares"
   },
   {
     "id": 1788389384026,
@@ -9239,7 +9290,8 @@
     "seoTitle": "NanoStation M5 Loco en Cuba | TiendaMax",
     "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…",
     "rev": 1790441562699,
-    "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada."
+    "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada.",
+    "slug": "nanostation-m5-loco"
   },
   {
     "id": 1788625483027,
@@ -9362,7 +9414,8 @@
       "1× Guía de instalación rápida"
     ],
     "seoTitle": "TP-Link Archer BE230 en Cuba | TiendaMax",
-    "seoDescription": "es un router de última generación equipado con el estándar Wi-Fi 7 (BE3600) y puertos cableados de alta velocidad a 2.5 Gbps, concebido para exprimir…"
+    "seoDescription": "es un router de última generación equipado con el estándar Wi-Fi 7 (BE3600) y puertos cableados de alta velocidad a 2.5 Gbps, concebido para exprimir…",
+    "slug": "tplink-archer-be230"
   },
   {
     "id": 1788626436047,
@@ -9599,7 +9652,8 @@
       "1× Manual de usuario e instrucciones de funcionamiento"
     ],
     "seoTitle": "VEVOR Cargador de batería inteligente 30A | TiendaMax",
-    "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…"
+    "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…",
+    "slug": "vevor-cargador-bateria-30a"
   },
   {
     "id": 1788797303584,
@@ -9728,7 +9782,8 @@
     "seoTitle": "Ubiquiti Networks (LAP-120) en Cuba | TiendaMax",
     "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
     "rev": 1790345974779,
-    "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral."
+    "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral.",
+    "slug": "ubiquiti-networks-lap-120"
   },
   {
     "id": 1788797590930,
@@ -9859,7 +9914,8 @@
     "seoTitle": "Mikrotik lhg 5ax en Cuba | TiendaMax",
     "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
     "rev": 1790345974779,
-    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
+    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE).",
+    "slug": "mikrotik-lhg-5ax"
   },
   {
     "id": 1789065257613,
@@ -9985,7 +10041,8 @@
       "1× Guía de seguridad e inicio rápido"
     ],
     "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
-    "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…"
+    "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…",
+    "slug": "anker-soundcore-motion-300"
   },
   {
     "id": 1789066847523,
@@ -10096,7 +10153,8 @@
     "seoTitle": "Toldo de malla 2 x 7 en Cuba | TiendaMax",
     "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…",
     "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento.",
-    "rev": 1790359418633
+    "rev": 1790359418633,
+    "slug": "toldo-malla-2x7"
   },
   {
     "id": 1789067953023,
@@ -10217,7 +10275,8 @@
       "1× Funda textil de almacenamiento y transporte"
     ],
     "seoTitle": "Compresor de Aire en Cuba | TiendaMax",
-    "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…"
+    "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…",
+    "slug": "compresor-aire"
   },
   {
     "id": 1789068808568,
@@ -10342,7 +10401,8 @@
     "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
     "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
     "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
-    "rev": 1790359425821
+    "rev": 1790359425821,
+    "slug": "bielmeier-fluxmax140-110v"
   },
   {
     "id": 1789569593128,
@@ -10480,7 +10540,8 @@
     "seoTitle": "Mikrotik SXTsq 5 lite en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para…",
     "rev": 1790359425821,
-    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética."
+    "descripcion": "El MikroTik SXTsq Lite5 es un dispositivo inalámbrico para exteriores ultracompacto y ligero, diseñado como solución cliente (CPE) en redes WISP o para establecer enlaces Punto a Punto (PtP) de alta estabilidad en la banda de 5 GHz. Gracias a su consumo eléctrico optimizado de apenas 6W, resulta ideal para instalaciones conectadas a sistemas solares, bancos de baterías o respaldos UPS sin comprometer la autonomía energética.",
+    "slug": "mikrotik-sxtsq-5-lite"
   },
   {
     "id": 1790104688838,
@@ -10602,7 +10663,8 @@
     "seoTitle": "Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) | TiendaMax",
     "seoDescription": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a…",
     "descripcion": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a Punto (PtP) de largo alcance o como terminal cliente (CPE) de alto rendimiento en redes de proveedores WISP. Con un consumo eléctrico extremadamente reducido de apenas 7W, es una opción idónea para operar de forma continua conectado a sistemas de energía solar, bancos de acumuladores a 12V/24V o respaldos UPS sin sobrecargar la capacidad de reserva.",
-    "rev": 1790183175729
+    "rev": 1790183175729,
+    "slug": "ubiquiti-5ac-2-lbe-5ac-gen2"
   },
   {
     "id": 1790104955752,
@@ -10746,7 +10808,8 @@
     "seoTitle": "MikroTik hAP ax³ (C53UiG+5HPaxD2HPaxD) en Cuba | TiendaMax",
     "seoDescription": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6…",
     "descripcion": "El MikroTik hAP ax³ es el router doméstico y para pequeñas oficinas más potente de la serie hAP, equipado con la moderna tecnología inalámbrica Wi-Fi 6 (802.11ax) y un robusto procesador Quad-Core ARM a 1.8 GHz. Diseñado para gestionar redes con alta demanda de tráfico, cuenta con una eficiencia energética destacada de apenas 15W en reposo/uso típico (hasta 38W al alimentar otros equipos por PoE), lo que lo convierte en una opción idónea para instalaciones respaldadas por sistemas solares o bancos de baterías con inversores.",
-    "rev": 1790359438006
+    "rev": 1790359438006,
+    "slug": "mikrotik-hap-ax3"
   },
   {
     "id": 1790105284345,
@@ -10860,6 +10923,7 @@
     "seoTitle": "MikroTik hEX PoE lite (RB750UPr2) en Cuba | TiendaMax",
     "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
     "rev": 1790359438006,
-    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética"
+    "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
+    "slug": "mikrotik-hex-poe-rb750upr2"
   }
 ]
