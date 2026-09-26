@@ -16,6 +16,11 @@ try:
     _CARD_ENABLED = True
 except Exception:
     _CARD_ENABLED = False
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
+try:
+    from ficha_url import url_ficha as _url_ficha   # /p/<nombre-corto>
+except Exception:
+    _url_ficha = None
 
 BOT_TOKEN  = os.environ["BOT_TOKEN"]
 CHANNEL    = os.environ.get("TELEGRAM_CHANNEL", "@TiendaMaxWeb")
@@ -94,7 +99,7 @@ def main() -> int:
         nombre    = p.get("nombre", "Producto")
         categoria = p.get("categoria", "")
         img       = p.get("imagen") or p.get("foto") or ""
-        link      = f"{TIENDA_URL}/p/producto-{pid}.html"
+        link      = _url_ficha(p) if _url_ficha else f"{TIENDA_URL}/p/producto-{pid}.html"
 
         # HTML parse_mode — escape para evitar errores con caracteres especiales
         lines = [

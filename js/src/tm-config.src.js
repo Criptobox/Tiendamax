@@ -679,7 +679,7 @@ function _mensajeOrdenWA(items, opts) {
         // Un solo producto con id -> link al producto (WhatsApp genera miniatura con og:image)
         // Varios productos -> link generico a la tienda
         if (items.length === 1 && items[0].id) {
-            L.push(E.link + ' https://tiendamax.org/p/producto-' + items[0].id + '.html');
+            L.push(E.link + ' ' + (typeof tmUrlProducto === 'function' ? tmUrlProducto(items[0].id) : 'https://tiendamax.org/p/producto-' + items[0].id + '.html'));
         } else {
             L.push(E.link + ' https://tiendamax.org');
         }

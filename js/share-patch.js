@@ -23,6 +23,7 @@ var TM_SITE_URL = 'https://tiendamax.org';
  * lean los meta tags con la imagen del producto.
  */
 function tmShareURL(id) {
+  if (typeof tmUrlProducto === 'function') return tmUrlProducto(id);
   return TM_SITE_URL + '/p/producto-' + id + '.html';
 }
 

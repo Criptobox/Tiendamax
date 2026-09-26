@@ -36,14 +36,16 @@ const fallos = [];
 const ok = (cond, msg) => { if (!cond) fallos.push(msg); };
 
 // Una ficha con stock (lleva el botón de pedir) y su id.
-const fichas = (await readdir(join(RAIZ, 'p'))).filter(f => f.startsWith('producto-'));
-let FICHA = null;
+// La ficha vive en p/<nombre-corto>.html; producto-<id>.html es un salto.
+const fichas = (await readdir(join(RAIZ, 'p'))).filter(f => f.endsWith('.html'));
+let FICHA = null, ID = null;
 for (const f of fichas) {
     const html = await readFile(join(RAIZ, 'p', f), 'utf8');
-    if (html.includes('<div class="tm-stok-y">')) { FICHA = f; break; }
+    if (html.includes('http-equiv="refresh"')) continue;
+    const m = html.match(/,ID="([^"]+)"/);
+    if (m && html.includes('<div class="tm-stok-y">')) { FICHA = f; ID = m[1]; break; }
 }
 if (!FICHA) { console.log('no hay fichas con stock — se salta'); process.exit(0); }
-const ID = FICHA.replace('producto-', '').replace('.html', '');
 
 const navegador = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 
@@ -83,7 +85,7 @@ ok(!fb.escrituras.some(u => u.includes('/analytics/fuentes/fb/')),
    "'fb' se escribió tal cual en vez de normalizarse a facebook");
 
 // 3) El canal viaja hasta el mensaje de WhatsApp.
-ok(decodeURIComponent(fb.href || '').includes('?utm_source=facebook'),
+ok(decodeURIComponent(fb.href || '').includes('?c=facebook'),
    'el enlace de WhatsApp no lleva el canal: se sabe quién entra pero no quién escribe');
 
 // 4) El dueño no se cuenta.
@@ -134,6 +136,14 @@ ok(fb.escrituras.some(u => u === '/analytics/visitas/count.json'),
 //    ficha tiene que ser el de la regla (4–8 minúsculas o cifras), y sin un
 //    canal válido no cuenta — un ?g= suelto no sale de nada que se publique.
 const conGrupo = await visita('?utm_source=facebook&utm_medium=social&g=k3x9ab');
+// El enlace corto de un grupo es solo ?g=: la marca ya dice Facebook.
+const soloG = await visita('?g=k3x9ab');
+ok(soloG.escrituras.includes('/analytics/grupos/k3x9ab/visitas/count.json')
+   && soloG.escrituras.includes('/analytics/fuentes/facebook/count.json'),
+   '?g= a secas (el enlace corto de un grupo) no se contó como Facebook y su grupo: ' + soloG.escrituras.join(', '));
+// Y ?c=fb, el canal corto, cuenta igual que el utm_source de siempre.
+const corto = await visita('?c=fb');
+ok(corto.escrituras.includes('/analytics/fuentes/facebook/count.json'), '?c=fb no se contó como facebook');
 ok(conGrupo.escrituras.includes('/analytics/grupos/k3x9ab/visitas/count.json'),
    'la visita con marca de grupo no se sumó en /analytics/grupos/<g>/visitas: '
    + conGrupo.escrituras.join(', '));
@@ -143,7 +153,7 @@ for (const [q, por] of [['?utm_source=facebook&g=../../admin_uid', 'una ruta'],
                         ['?utm_source=facebook&g=ab', 'demasiado corto'],
                         ['?utm_source=facebook&g=abcdefghi', 'demasiado largo'],
                         ['?utm_source=facebook&g=ab-12', 'con guion'],
-                        ['?g=k3x9ab', 'sin canal']]) {
+                        ['?c=inventado&g=k3x9ab', 'con un canal inventado']]) {
     const r = await visita(q);
     ok(!r.escrituras.some(u => u.includes('/analytics/grupos/')),
        `un g= inválido (${por}) escribió en /analytics/grupos: ` + r.escrituras.filter(u => u.includes('grupos')).join(', '));

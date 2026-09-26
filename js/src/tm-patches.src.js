@@ -824,11 +824,11 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
             reg.showNotification(titulo, opciones);
         },
         nuevoProducto(nombre, precio, id, imagen) {
-            const url = id ? '/p/producto-' + id + '.html' : '/';
+            const url = id ? tmUrlProducto(id).replace('https://tiendamax.org', '') : '/';
             this.enviar('🆕 Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
         },
         rebaja(nombre, antes, ahora, id, imagen) {
-            const url = id ? '/p/producto-' + id + '.html' : '/';
+            const url = id ? tmUrlProducto(id).replace('https://tiendamax.org', '') : '/';
             const pct = antes > 0 ? Math.round((antes - ahora) / antes * 100) : 0;
             const titulo = pct > 0 ? '🏷️ ¡Rebaja -' + pct + '%!' : '🏷️ Bajada de precio';
             this.enviar(titulo, nombre + ': $' + antes + ' → $' + ahora + ' USD', url, imagen);
@@ -837,7 +837,7 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
             this.enviar('⚡ ¡Oferta relámpago ' + (min||60) + ' min!', nombre + ' — $' + precio + ' USD');
         },
         ofertaDia(nombre, precio, id, imagen) {
-            const url = id ? '/p/producto-' + id + '.html' : '/';
+            const url = id ? tmUrlProducto(id).replace('https://tiendamax.org', '') : '/';
             this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD', url, imagen);
         },
         // Métodos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
@@ -1481,11 +1481,39 @@ const _TM_FUENTES = {
 function tmCanalCanonico(src) {
     return _TM_FUENTES[String(src || '').trim().toLowerCase()] || '';
 }
+/* Y su forma corta, que es la que viaja en el enlace (?c=fb). En Facebook la
+   dirección se lee entera en el post, y "?utm_source=facebook&utm_medium=…"
+   eran 60 caracteres de ruido. Los enlaces viejos siguen contando: la ficha
+   y tmFuenteVisita leen las dos formas. */
+const _TM_CANAL_CORTO = { 'whatsapp': 'wa', 'whatsapp-estado': 'estado', 'facebook': 'fb',
+    'instagram': 'ig', 'revolico': 'rev', 'copiado': 'copy', 'lote-categoria': 'lote-categoria' };
+
+/* La dirección pública de una ficha: /p/<nombre-corto> cuando lo tiene
+   (regenerate_artifacts.py la publica ahí) y producto-<id>.html si no, que
+   existe siempre —como ficha o como salto a la nueva—. Acepta el producto o
+   su id. `g` es la marca del grupo de Facebook: solo la llevan los grupos,
+   así que con ella sobra decir el canal (?g=k3x9pa y ya). */
+function tmUrlProducto(p, src, g) {
+    if (p != null && typeof p !== 'object') {
+        const id = String(p);
+        let lista = [];
+        try { if (Array.isArray(window.PRODUCTOS) && window.PRODUCTOS.length) lista = window.PRODUCTOS; } catch (e) {}
+        try { if (!lista.length && typeof productos !== 'undefined' && Array.isArray(productos)) lista = productos; } catch (e) {}
+        p = lista.find(x => x && String(x.id) === id) || { id };
+    }
+    const s = p && p.slug;
+    const ok = typeof s === 'string' && s.length >= 3 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && !/^producto-/.test(s);
+    const url = 'https://tiendamax.org/p/' + (ok ? s : 'producto-' + (p && p.id) + '.html');
+    const canal = tmCanalCanonico(src);
+    const cod = (g && /^[a-z0-9]{4,8}$/.test(g)) ? g : '';
+    if (cod && (!canal || canal === 'facebook')) return url + '?g=' + cod;
+    return canal ? url + '?c=' + _TM_CANAL_CORTO[canal] + (cod ? '&g=' + cod : '') : url;
+}
 function tmFuenteVisita(busqueda) {
     let cruda = '';
     try {
         const qs = new URLSearchParams(busqueda != null ? busqueda : location.search);
-        cruda = String(qs.get('utm_source') || '').trim().toLowerCase();
+        cruda = String(qs.get('c') || qs.get('utm_source') || '').trim().toLowerCase();
     } catch (e) { return ''; }
     if (!cruda) return '';
     // Solo canales conocidos: la clave va a una ruta de Firebase, y aceptar

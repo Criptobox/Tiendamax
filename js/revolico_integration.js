@@ -52,10 +52,8 @@ function _urlProducto(producto, src, grupo) {
     // El canal se normaliza: este fichero mandaba 'fb' y 'rev' donde el panel
     // manda 'facebook' y 'revolico', así que el mismo canal se contaba partido
     // en dos. tmCanalCanonico() vive en el bundle, que carga antes que esto.
-    const canal = (typeof tmCanalCanonico === 'function' && tmCanalCanonico(src)) || src;
-    const g = grupo ? tmGrupoCodigo(grupo) : '';
-    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${canal}&utm_medium=social&utm_campaign=producto`
-         + (g ? `&g=${g}` : '');
+    // tmUrlProducto (bundle) arma /p/<nombre-corto>?c=fb, o solo ?g= en un grupo.
+    return tmUrlProducto(producto, src, grupo ? tmGrupoCodigo(grupo) : '');
 }
 // Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya redactado. Un
 // wa.me pelado abre un chat vacío y el cliente tiene que escribir él — ahí se
@@ -105,7 +103,7 @@ function _hashtagsCategoria(categoria, soloCategoria) {
 async function _generarTextoFacebookAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
     const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
-    const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const url = tmUrlProducto(producto);
     const info = [
         `Producto: ${producto.nombre}`,
         `Precio: ${_precioTxt(producto)}`,
@@ -119,7 +117,7 @@ async function _generarTextoFacebookAI(producto) {
 
 async function _generarTextoRevolicoAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
-    const url  = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const url  = tmUrlProducto(producto);
     const tags = _hashtagsCategoria(producto.categoria);
     const info = [
         `Nombre: ${producto.nombre}`,

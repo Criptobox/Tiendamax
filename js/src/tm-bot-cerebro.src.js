@@ -213,7 +213,7 @@
     if (typeof abrirDetalleProducto === 'function'){
       try { abrirDetalleProducto(id); return true; } catch(e){}
     }
-    window.open(SITE_URL + '/p/producto-' + id + '.html', '_blank', 'noopener,noreferrer');
+    window.open(typeof tmUrlProducto === 'function' ? tmUrlProducto(id) : SITE_URL + '/p/producto-' + id + '.html', '_blank', 'noopener,noreferrer');
     return true;
   }
 
@@ -1102,11 +1102,12 @@
     if(p.stock <= 3) return `<em style="color:#ffb347">Solo ${p.stock} u</em>`;
     return `<em>${p.stock} en stock</em>`;
   }
-  // URL robusta: usa slug si existe, si no, usa ID
+  // La ficha publicada: /p/<nombre-corto> (tmUrlProducto, en el bundle).
+  // Sin el bundle, producto-<id>.html, que existe siempre como salto.
   function productUrl(p){
-    // Las páginas estáticas se generan por ID (ver scripts/build_paginas*),
-    // no por slug: p/producto-<id>.html. Con slug daban 404.
     if(!p) return SITE_URL;
+    const o = p._orig || p;
+    if (typeof tmUrlProducto === 'function') return tmUrlProducto(o);
     return SITE_URL + '/p/producto-' + p.id + '.html';
   }
   // Imagen con fallback multinivel (principal → thumb → placeholder local)

@@ -109,7 +109,7 @@ t.vs.forEach((x, v) => {
     ok(x.includes(t.precio), `la versión ${v} no lleva el precio (${t.precio})`);
     ok(!/garant/i.test(x), `la versión ${v} promete garantía y el producto no la declara`);
     ok(!/antes|ahorras/i.test(x), `la versión ${v} anuncia una rebaja que no existe`);
-    ok(!/&g=/.test(x), `la versión ${v} lleva marca de grupo sin grupo`);
+    ok(!/[?&]g=/.test(x), `la versión ${v} lleva marca de grupo sin grupo`);
 });
 t.vsCon.forEach((x, v) => {
     ok(/garant/i.test(x), `con garantía declarada, la versión ${v} tiene que decirla`);
@@ -120,7 +120,9 @@ t.sinEnl.forEach((x, v) => {
     ok(x.includes('+53 5432 0170'), `la versión ${v} sin enlaces tiene que llevar el WhatsApp escrito`);
 });
 ok(/^[a-z0-9]{4,8}$/.test(t.cod), `el código del grupo «${t.cod}» no pasa el filtro de la ficha y de la regla`);
-t.conGrupo.forEach((x, v) => ok(x.includes('&g=' + t.cod), `la versión ${v} de un grupo no lleva su marca &g=`));
+// Con marca de grupo sobra el canal: /p/<nombre>?g=<cod> y nada más.
+t.conGrupo.forEach((x, v) => ok(x.includes('?g=' + t.cod), `la versión ${v} de un grupo no lleva su marca ?g=`));
+t.conGrupo.forEach((x, v) => ok(!/utm_|\?c=|producto-\d+\.html/.test(x), `la versión ${v} de un grupo sigue llevando el enlace largo`));
 
 // ── 2) La marca del grupo ────────────────────────────────────────────────
 const cods = await pagina.evaluate(() => [

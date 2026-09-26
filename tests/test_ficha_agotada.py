@@ -12,6 +12,9 @@ Lo que se vigila aquí es que esa escritura pueda ENTRAR —la regla de
 se queda sin apuntar— y que las fichas con stock no carguen el JavaScript, que
 es lo que las mantiene rápidas en 3G.
 """
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent))
 import json
 import re
 import shutil
@@ -36,8 +39,9 @@ def _stock(p):
 
 
 def _ficha(p):
-    f = P_DIR / f"producto-{p['id']}.html"
-    return f.read_text(encoding="utf-8") if f.exists() else None
+    from fichas_generadas import ficha_de
+    f = ficha_de(p)
+    return f.read_text(encoding="utf-8") if f else None
 
 
 def _una(agotado: bool):

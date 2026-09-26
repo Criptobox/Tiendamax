@@ -23,6 +23,9 @@ Reglas, las mismas que seguía el panel al subir el catálogo entero:
     oferta, `precioOriginal` tiene que desaparecer, no quedarse —, salvo
     `descripcion`: el panel trabaja con el catálogo lite, sin descripciones,
     y si no la trae se conserva la que había (_tmPreservarDescripciones).
+    Lo mismo con `slug`/`slugsAnteriores` (la dirección /p/<nombre-corto>):
+    un panel abierto desde antes de tenerlos subiría el producto sin ellos,
+    y la ficha volvería a producto-<id>.html dejando en 404 lo publicado.
   · Uno nuevo va detrás del que tenía delante en el panel (`posiciones`):
     "Duplicar" lo pone arriba y "Nuevo producto" al final.
   · Los ficheros se aplican por orden de nombre, que empieza por la hora.
@@ -52,6 +55,8 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 CATALOGO = "productos.json"
 CARPETA = "cambios"
+# Campos que el panel puede no traer y que no se pueden perder por eso.
+CONSERVAR = ("descripcion", "slug", "slugsAnteriores")
 
 
 class CambioInvalido(ValueError):
@@ -86,8 +91,9 @@ def aplicar(catalogo: list, cambios: list[tuple[str, dict]]) -> list:
             i = next((k for k, q in enumerate(out) if str(q.get("id")) == pid), None)
             if i is not None:
                 nuevo = dict(p)
-                if "descripcion" not in nuevo and "descripcion" in out[i]:
-                    nuevo["descripcion"] = out[i]["descripcion"]
+                for k in CONSERVAR:
+                    if k not in nuevo and k in out[i]:
+                        nuevo[k] = out[i][k]
                 out[i] = nuevo
                 continue
             if pid in pos and pos[pid] is None:

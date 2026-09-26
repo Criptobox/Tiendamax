@@ -499,6 +499,11 @@ async function agregarProductoForm(event) {
         // existe, que es como están los 128 productos de siempre — así no hace
         // falta migrar nada y el catálogo que baja el cliente no engorda.
         if ((document.getElementById('productMoneda') || {}).value === 'MN') producto.moneda = 'MN';
+        // Su enlace corto (/p/<slug>): lo propone el panel (admin.html), que
+        // es el que conoce los nombres ya ocupados. Se cambia al editarlo.
+        if (typeof window.tmSlugNuevo === 'function') {
+            try { producto.slug = window.tmSlugNuevo(producto.nombre, producto.id); } catch (e) {}
+        }
 
         const errores = validarProducto(producto);
         if (errores.length > 0) {

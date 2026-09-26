@@ -17,6 +17,9 @@ Los tres fallos que esto vigila no dan error en ninguna parte:
     perfecta; lo que se rompe es lo que el cliente viene a cobrar después.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent))
 import json
 import re
 import shutil
@@ -29,7 +32,11 @@ P_DIR = RAIZ / "p"
 
 
 def _fichas():
-    return sorted(P_DIR.glob("producto-*.html"))
+    from fichas_generadas import fichas
+    return fichas()
+
+
+from fichas_generadas import pid_de  # noqa: E402
 
 
 def _script_medir(html):
@@ -194,8 +201,9 @@ class GarantiaTest(unittest.TestCase):
     def test_solo_la_llevan_los_que_la_tienen_escrita(self):
         conteo = 0
         for p in self.productos:
-            f = P_DIR / f"producto-{p.get('id')}.html"
-            if not f.exists():
+            from fichas_generadas import ficha_de
+            f = ficha_de(p)
+            if not f:
                 continue
             html = f.read_text(encoding="utf-8")
             tiene = bool((p.get("garantia") or "").strip())
@@ -229,7 +237,7 @@ class ResenasTest(unittest.TestCase):
     def test_solo_las_que_existen_en_la_cache(self):
         for f in _fichas():
             html = f.read_text(encoding="utf-8")
-            pid = f.stem.replace("producto-", "")
+            pid = pid_de(f)
             reales = [r for r in (self.por.get(pid) or []) if r.get("texto")]
             self.assertEqual(bool(reales), 'class="tm-res"' in html,
                              f"{f.name}: bloque de reseñas sin reseñas reales (o al revés)")
@@ -242,7 +250,7 @@ class ResenasTest(unittest.TestCase):
             if "aggregateRating" not in html:
                 continue
             self.assertIn('"review"', html, f"{f.name}: aggregateRating sin reviews es lo que penaliza Google")
-            pid = f.stem.replace("producto-", "")
+            pid = pid_de(f)
             reales = [r for r in (self.por.get(pid) or []) if int(r.get("estrellas") or 0) > 0]
             self.assertTrue(reales, f"{f.name}: valoración agregada sin reseñas reales")
             m = re.search(r'"reviewCount": (\d+)', html)

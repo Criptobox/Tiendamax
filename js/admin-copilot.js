@@ -2300,7 +2300,7 @@ async function queuePushForProduct(pid, opts){
   const body = opts.body || String(p.nombre||'Oferta disponible').slice(0,120);
   // Sin `proof`: era el hash de la contraseña local, que ya no existe. Ahora
   // la solicitud va firmada con la cuenta del dueño.
-  const payload = { title: title.slice(0,100), body: body.slice(0,300), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
+  const payload = { title: title.slice(0,100), body: body.slice(0,300), url: tmUrlProducto(p).replace('https://tiendamax.org', ''), icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
     const _fx = (typeof TMAuth!=='undefined') ? ((await TMAuth.token()) ? '?auth='+encodeURIComponent(await TMAuth.token()) : '') : '';
     const r = await fetch(base + '/admin_push_requests/' + reqId + '.json' + _fx, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -2407,7 +2407,7 @@ function bindEvents(){
       try{ remember('post_ready',{productName:p&&p.nombre, pid}); }catch(_e){}
       if(typeof window.previsualizarFacebook==='function'){ closeSheet(); window.previsualizarFacebook(pid, null); }
       else if(typeof window.pubShareAct==='function'){ window.pubShareAct(pid,'fb'); }
-      else if(p){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org/p/producto-'+pid+'.html')+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
+      else if(p){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(tmUrlProducto(pid, 'fb'))+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
     }
     if(act==='postOtro'){ state.postForcePid=null; state.postIdx=(state.postIdx||0)+1; renderSheet(); }
     if(act==='postCopy'){ const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(p) copyText(postTexto(p),'Publicación'); }
@@ -2422,7 +2422,7 @@ function bindEvents(){
       closeSheet();
       if(typeof window.pubShareAct==='function'){ window.pubShareAct(pid, canal); }
       else if(p){
-        if(act==='postFace'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org/p/producto-'+pid+'.html')+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
+        if(act==='postFace'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(tmUrlProducto(pid, 'fb'))+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
         else { window.open('https://wa.me/?text='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
       }
       // avanza al siguiente candidato para la próxima vez que abras el panel

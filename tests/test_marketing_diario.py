@@ -91,7 +91,8 @@ class CaptionTest(unittest.TestCase):
         cap = md.armar_caption(p, tasa=0)
         self.assertIn("https://wa.me/", cap)
         self.assertIn("Hola%2C%20quiero", cap)   # mensaje prellenado (urlencoded)
-        self.assertIn("utm_source=pack-diario", cap)  # se puede medir el canal
+        # La ficha, en la dirección corta cuando el producto la tiene.
+        self.assertIn("https://tiendamax.org/p/nanostation-m5\n", md.armar_caption(dict(p, slug="nanostation-m5"), tasa=0))
 
     def test_caption_limpia_zero_width(self):
         p = _prod(1, nombre="​🔌 Cargador X")

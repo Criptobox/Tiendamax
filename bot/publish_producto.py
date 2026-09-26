@@ -26,6 +26,10 @@ try:
 except Exception:
     _apag = None
 try:
+    from ficha_url import url_ficha as _url_ficha
+except Exception:
+    _url_ficha = None
+try:
     from card_generator import generate_card
     _CARD_ENABLED = True
 except Exception:
@@ -171,6 +175,9 @@ def descuento_pct(pa, po) -> int:
 
 
 def link_producto(p: dict) -> str:
+    # /p/<nombre-corto> (ver scripts/ficha_url.py): en el canal el enlace se lee.
+    if _url_ficha is not None:
+        return _url_ficha(p)
     return f"{TIENDA_URL}/p/producto-{p.get('id','')}.html"
 
 

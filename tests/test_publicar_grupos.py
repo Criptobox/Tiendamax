@@ -54,9 +54,11 @@ class MarcaDeGrupoTest(unittest.TestCase):
     def test_la_ficha_filtra_con_el_mismo_patron_y_exige_canal(self):
         # En la plantilla de Python las llaves van dobladas.
         self.assertIn("/^[a-z0-9]{{4,8}}$/.test(G)", self.medir)
-        self.assertRegex(self.medir, r"if\(!c\|\|!/\^\[a-z0-9\]",
-                         "sin un canal válido la marca de grupo no puede contar: "
-                         "un ?g= suelto no sale de nada que se publique.")
+        # ?g= solo implica Facebook (solo los grupos llevan marca); con un
+        # canal inventado, en cambio, la marca no cuenta.
+        self.assertIn("else if(!q)q='facebook'", self.medir)
+        self.assertIn("if(!c)G=''", self.medir,
+                      "sin un canal válido la marca de grupo no puede contar")
 
     def test_la_regla_de_firebase_filtra_igual(self):
         self.assertIsNotNone(self.grupos, "falta la regla de /analytics/grupos")

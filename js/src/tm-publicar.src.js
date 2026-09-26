@@ -58,7 +58,7 @@ function _tmWaNumero() {
  *  desde aquí no aparecería atribuido a ninguna red en Analytics. */
 function _tmUrlProducto(p, red) {
     try { if (typeof pubUrl === 'function') return pubUrl(p, red || 'copy'); } catch (e) {}
-    return 'https://tiendamax.org/p/producto-' + p.id + '.html';
+    return tmUrlProducto(p);
 }
 
 /** Valores de las variables para un producto concreto. */

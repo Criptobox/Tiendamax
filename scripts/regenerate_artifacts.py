@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Regenera artefactos derivados de productos.json:
-  1) /p/producto-<id>.html  (páginas estáticas para previews ricas en WhatsApp/Facebook)
+  1) /p/<slug>.html  (fichas estáticas para previews ricas en WhatsApp/Facebook;
+     /p/producto-<id>.html queda como salto a la nueva dirección)
   2) /c/<slug>.html         (páginas estáticas por categoría, indexables por Google —
                              hoy las categorías solo existen como #hash en la SPA)
   3) sitemap.xml            (con todas las URLs actuales, incluidas las de /c/)
@@ -23,6 +24,7 @@ from html import escape
 from pathlib import Path
 
 import categorias_apagadas
+from ficha_url import slug_valido
 
 ROOT = Path(__file__).resolve().parents[1]
 PROD = ROOT / "productos.json"
@@ -38,6 +40,119 @@ SITEMAP = ROOT / "sitemap.xml"
 INDEX = ROOT / "index.html"
 
 SITE = "https://tiendamax.org"
+
+
+# ── Direcciones de las fichas: /p/<nombre-corto> ─────────────────────────────
+# En Facebook la dirección se lee entera en el texto del post, y
+# "producto-1784403677390.html" no dice nada. Cada producto lleva un `slug`
+# (máx. SLUG_MAX, lo propone el panel con marca y modelo) y su ficha se
+# publica en p/<slug>.html, que GitHub Pages sirve también sin el .html.
+#
+# Las direcciones viejas NO se rompen: p/producto-<id>.html y cada nombre
+# anterior (`slugsAnteriores`, al cambiarlo en el panel) quedan como una
+# página mínima con las mismas etiquetas de vista previa y un salto a la
+# nueva que conserva ?c=/&g=, o se perdería la medición de lo ya publicado.
+# Sin slug válido, la ficha sigue en producto-<id>.html como siempre.
+# slug_valido vive en ficha_url.py, compartido con el bot y el pack diario.
+_RUTAS: dict[str, str] = {}      # id → slug en uso
+
+
+def preparar_rutas(products: list[dict]) -> dict[str, list[str]]:
+    """Fija el slug de cada producto (el primero que lo reclama gana; uno
+    repetido o mal formado se queda en producto-<id>) y devuelve los nombres
+    anteriores que siguen libres, para redirigirlos."""
+    _RUTAS.clear()
+    usados: set[str] = set()
+    for p in products:
+        pid, s = str(p.get("id") or ""), p.get("slug")
+        if pid and slug_valido(s) and s not in usados:
+            _RUTAS[pid] = s
+            usados.add(s)
+    viejos: dict[str, list[str]] = {}
+    for p in products:
+        pid = str(p.get("id") or "")
+        for s in p.get("slugsAnteriores") or []:
+            if pid and slug_valido(s) and s not in usados:
+                viejos.setdefault(pid, []).append(s)
+                usados.add(s)
+    return viejos
+
+
+def url_producto(p: dict) -> str:
+    pid = str(p.get("id") or "")
+    s = _RUTAS.get(pid)
+    return f"{SITE}/p/{s}" if s else f"{SITE}/p/producto-{pid}.html"
+
+
+# Mismo criterio que EMOJI en build_og_images.py (no se importa: arrastraría
+# Pillow a un script que no lo necesita).
+_EMOJI = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D\u2B00-\u2BFF\u2190-\u21FF\u2900-\u297F]")
+
+
+def nombre_limpio(nombre: str) -> str:
+    return re.sub(r"\s+", " ", _EMOJI.sub(" ", nombre or "")).strip()
+
+
+def precio_texto(p: dict) -> str:
+    """"$140 USD" / "280 MN": la moneda va siempre, y un producto marcado
+    moneda:'MN' lleva su precio tal cual — leerlo como dólares es el error
+    de la Linterna."""
+    v = float(p.get("precioActual") or 0)
+    n = str(int(v)) if v == int(v) else f"{v:.2f}"
+    return f"{n} MN" if p.get("moneda") == "MN" else f"${n} USD"
+
+
+def titulo_vista_previa(p: dict) -> str:
+    """Lo que WhatsApp y Facebook ponen en negrita: qué es y cuánto cuesta.
+    El seoTitle ("… en Cuba | TiendaMax") se queda en <title>, para Google."""
+    return f"{nombre_limpio(p.get('nombre'))} — {precio_texto(p)}"
+
+
+def descripcion_vista_previa(p: dict, desc: str) -> str:
+    """Primero lo que hace comprar, y solo lo que es verdad para ESTE
+    producto: el stock real, el pago al recibir (la política de la tienda) y
+    la garantía solo si el gestor la escribió."""
+    partes = []
+    stock = int(p.get("stock") or 0)
+    if stock > 0:
+        partes.append(f"✅ {stock} disponible{'s' if stock != 1 else ''}")
+        partes.append("Pagas al recibirlo")
+        g = str(p.get("garantia") or "").strip()
+        if g:
+            partes.append(f"Garantía {g}" if len(g) <= 20 and not g.lower().startswith("garant") else "Con garantía")
+    else:
+        partes.append("⏳ Agotado ahora · Te avisamos cuando vuelva")
+    cabeza = " · ".join(partes)
+    return desc_short(f"{cabeza}. {desc}" if desc else cabeza, 200)
+
+
+REDIRECCION_TEMPLATE = """<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>{og_title}</title>
+<link rel="canonical" href="{url}">
+<meta name="robots" content="noindex, follow">
+<meta property="og:type" content="product">
+<meta property="og:title" content="{og_title}">
+<meta property="og:description" content="{og_desc}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:secure_url" content="{og_image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="{og_image_type}">
+<meta property="og:url" content="{url}">
+<meta property="og:site_name" content="TiendaMax">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{og_title}">
+<meta name="twitter:description" content="{og_desc}">
+<meta name="twitter:image" content="{og_image}">
+<script>location.replace({url_json}+location.search+location.hash)</script>
+<meta http-equiv="refresh" content="0; url={url}">
+</head>
+<body><a href="{url}">{og_title}</a></body>
+</html>
+"""
 
 # ── Página de categoría: lista real de productos para que Google indexe
 # búsquedas como "router wifi cuba" — hoy esas categorías solo existen como
@@ -134,7 +249,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
-<meta name="description" content="{og_desc}">
+<meta name="description" content="{meta_desc}">
 <meta name="keywords" content="{keywords}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{page_url}">
@@ -386,9 +501,9 @@ function g(k){{try{{return sessionStorage.getItem(k);}}catch(e){{return null;}}}
 function p(k,v){{try{{sessionStorage.setItem(k,v);}}catch(e){{}}}}
 try{{if(localStorage.getItem('githubToken')||localStorage.getItem('tm_auth_hash_v3')||localStorage.getItem('tm_es_admin'))return;}}catch(e){{}}
 var F={{whatsapp:'whatsapp',wa:'whatsapp','whatsapp-estado':'whatsapp-estado',story:'whatsapp-estado',estado:'whatsapp-estado',facebook:'facebook',fb:'facebook',instagram:'instagram',ig:'instagram',revolico:'revolico',rev:'revolico',copiado:'copiado',copy:'copiado','lote-categoria':'lote-categoria'}};
-var q='';try{{q=(new URLSearchParams(location.search).get('utm_source')||'').trim().toLowerCase();}}catch(e){{}}
-var c=F[q]||'',h=new Date().toISOString().slice(0,10),G='';
-try{{G=(new URLSearchParams(location.search).get('g')||'').toLowerCase();}}catch(e){{}}if(!c||!/^[a-z0-9]{{4,8}}$/.test(G))G='';
+var q='',G='';try{{var U=new URLSearchParams(location.search);q=(U.get('c')||U.get('utm_source')||'').trim().toLowerCase();G=(U.get('g')||'').toLowerCase();}}catch(e){{}}
+if(!/^[a-z0-9]{{4,8}}$/.test(G))G='';else if(!q)q='facebook';
+var c=F[q]||'',h=new Date().toISOString().slice(0,10);if(!c)G='';
 function mas(r){{var u=B+r+'.json',o={{method:'PUT',headers:{{'Content-Type':'application/json'}},keepalive:true}};
 fetch(u,Object.assign({{body:'{{".sv":{{"increment":1}}}}'}},o)).then(function(x){{if(x.ok)return;
 return fetch(u).then(function(y){{return y.ok?y.json():0;}}).then(function(v){{return fetch(u,Object.assign({{body:JSON.stringify((typeof v==='number'?v:0)+1)}},o));}});}}).catch(function(){{}});}}
@@ -398,7 +513,7 @@ if(!g('tm_visita_contada')){{p('tm_visita_contada','1');
 mas('/analytics/visitas/count');mas('/analytics/visitas/dias/'+h);
 if(c){{mas('/analytics/fuentes/'+c+'/count');mas('/analytics/fuentes/'+c+'/dias/'+h);}}if(G)mas('/analytics/grupos/'+G+'/visitas/count');}}
 var a=document.getElementById('tmWa');
-if(a){{if(c)a.href=a.href+encodeURIComponent('?utm_source='+c);
+if(a){{if(c)a.href=a.href+encodeURIComponent('?c='+c);
 a.addEventListener('click',function(){{if(frio('whatsapp_'+ID)){{mas('/analytics/whatsapp/'+ID+'/count');if(G){{mas('/analytics/grupos/'+G+'/whatsapp/count');mas('/analytics/grupos/'+G+'/horas/'+('0'+new Date().getHours()).slice(-2)+'/count');}}}}}});}}
 }})();
 </script>
@@ -587,7 +702,7 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
         precio = f"{float(p.get('precioActual') or 0):.2f}"
         img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
         tarjetas.append(
-            f'<a class="tm-rel-card" href="{SITE}/p/producto-{pid}.html">'
+            f'<a class="tm-rel-card" href="{url_producto(p)}">'
             f'<img src="{img}" alt="{escape(nombre)}" loading="lazy" decoding="async">'
             f'<div class="tm-rel-body">'
             f'<div class="tm-rel-name">{escape(nombre)}</div>'
@@ -720,6 +835,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         resenas = read_json(RESENAS, {})
     written = 0
     valid_files = set()
+    viejos = preparar_rutas(products)
 
     # Huella (sha256 recortado) de cada tarjeta OG, calculada por
     # build_og_images.py a partir de nombre/precio/stock/foto. Sin adjuntarla
@@ -782,8 +898,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
 
         # Sanitización: HTML escape para todo lo inyectado en HTML
         html_name = escape(name)
-        og_title  = escape(seo_title_raw)
-        og_desc   = escape(desc)
+        og_title  = escape(titulo_vista_previa(p))
+        og_desc   = escape(descripcion_vista_previa(p, desc))
+        meta_desc = escape(desc)
         image     = escape(img, quote=True)
         og_image  = escape(og_img, quote=True)
         keywords  = escape(keywords_raw, quote=True)
@@ -798,7 +915,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             else "https://schema.org/OutOfStock"
         )
 
-        page_url = f"{SITE}/p/producto-{pid}.html"
+        page_url = url_producto(p)
         app_url  = f"{SITE}/?producto={pid}#producto-{pid}"
         title    = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
 
@@ -894,6 +1011,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             html_name=html_name,
             og_title=og_title,
             og_desc=og_desc,
+            meta_desc=meta_desc,
             image=image,
             og_image=og_image,
             og_image_type=og_image_type,
@@ -925,15 +1043,28 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             related_html=related_html,
         )
 
-        fp = P_DIR / f"producto-{pid}.html"
+        slug = _RUTAS.get(str(pid))
+        fp = P_DIR / (f"{slug}.html" if slug else f"producto-{pid}.html")
         valid_files.add(fp.name)
         if write_text(fp, html):
             written += 1
 
-    # Borrar huérfanos
+        # Las direcciones viejas saltan a la nueva (ver preparar_rutas).
+        if slug:
+            stub = REDIRECCION_TEMPLATE.format(
+                og_title=og_title, og_desc=og_desc, og_image=og_image,
+                og_image_type=og_image_type, url=escape(page_url, quote=True),
+                url_json=json.dumps(page_url))
+            for nombre in [f"producto-{pid}"] + viejos.get(str(pid), []):
+                fv = P_DIR / f"{nombre}.html"
+                valid_files.add(fv.name)
+                if write_text(fv, stub):
+                    written += 1
+
+    # Borrar huérfanos: cualquier .html de p/ que ya no sea ficha ni salto.
     removed = []
     for fname in os.listdir(P_DIR):
-        if fname.startswith("producto-") and fname.endswith(".html") and fname not in valid_files:
+        if fname.endswith(".html") and fname not in valid_files:
             (P_DIR / fname).unlink(missing_ok=True)
             removed.append(fname)
             print(f"🗑️  Borrado huérfano: p/{fname}")
@@ -1021,7 +1152,7 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
             price = f"{float(p.get('precioActual') or 0):.2f}"
             img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
             stock = int(p.get("stock") or 0)
-            prod_url = f"{SITE}/p/producto-{pid}.html"
+            prod_url = url_producto(p)
             out_html = '<div class="tm-card-out">Agotado</div>' if stock <= 0 else ""
             cards.append(
                 f'<a class="tm-card" href="{prod_url}">'
@@ -1132,7 +1263,7 @@ def regenerate_sitemap(products: list[dict], category_slugs: list[str] | None = 
         if pid:
             stock = int(p.get("stock") or 0)
             prio = "0.8" if stock > 0 else "0.5"
-            urls.append((f"{SITE}/p/producto-{pid}.html", "weekly", prio))
+            urls.append((url_producto(p), "weekly", prio))
 
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

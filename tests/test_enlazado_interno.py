@@ -11,6 +11,9 @@ trata como páginas de segunda porque no apunta nadie a ellas.
 Es además el fallo que se repite solo: cada categoría nueva nace huérfana si
 nadie se acuerda de enlazarla.
 """
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent))
 import os
 import re
 import unittest
@@ -21,12 +24,19 @@ P_DIR = RAIZ / "p"
 C_DIR = RAIZ / "c"
 
 RE_C = re.compile(r'href="[^"]*?/c/([\w\-]+)\.html"')
-RE_P = re.compile(r'href="[^"]*?/p/(producto-\d+)\.html"')
+# La ficha vive en /p/<slug> (sin .html); /p/producto-<id>.html es un salto.
+RE_P = re.compile(r'href="[^"]*?/p/([a-z0-9-]+?)(?:\.html)?"')
+
+from fichas_generadas import es_salto, fichas  # noqa: E402
 
 
 def _paginas(d: Path) -> set[str]:
+    """Las páginas que alguien tiene que enlazar: en /p/, las fichas, no los
+    saltos de las direcciones viejas (a esos no apunta nada nuevo, a propósito)."""
     if not d.is_dir():
         return set()
+    if d == P_DIR:
+        return {f.stem for f in fichas()}
     return {f[:-5] for f in os.listdir(d) if f.endswith(".html")}
 
 
@@ -76,7 +86,7 @@ class EnlacesSalientesTest(unittest.TestCase):
 
     def test_las_fichas_salen_a_su_categoria_o_a_otras_fichas(self):
         sin_salida = []
-        for f in sorted(P_DIR.glob("producto-*.html")):
+        for f in fichas():
             txt = _leer(f)
             otras = {s for s in RE_P.findall(txt) if s != f.stem}
             if not RE_C.findall(txt) and not otras:
@@ -85,13 +95,13 @@ class EnlacesSalientesTest(unittest.TestCase):
                          "fichas que no enlazan ni a su categoría ni a otro producto")
 
     def test_las_fichas_llevan_migas_de_pan(self):
-        faltan = [f.name for f in sorted(P_DIR.glob("producto-*.html"))
+        faltan = [f.name for f in fichas()
                   if 'class="tm-migas"' not in _leer(f)]
         self.assertEqual([], faltan, "fichas sin migas de pan")
 
     def test_las_fichas_declaran_breadcrumblist(self):
         # Es lo que hace que Google enseñe la ruta en vez de la URL cruda.
-        faltan = [f.name for f in sorted(P_DIR.glob("producto-*.html"))
+        faltan = [f.name for f in fichas()
                   if "BreadcrumbList" not in _leer(f)]
         self.assertEqual([], faltan, "fichas sin BreadcrumbList en JSON-LD")
 

@@ -38,6 +38,8 @@ from zoneinfo import ZoneInfo
 
 import requests
 
+from ficha_url import url_ficha
+
 ROOT = Path(__file__).resolve().parents[1]
 TZ = ZoneInfo("America/Havana")
 SITE = "https://tiendamax.org"
@@ -143,8 +145,8 @@ def armar_caption(p: dict, tasa: int) -> str:
     # toca una vez y ya está escribiendo. Antes este bloque decía "Pídelo por
     # WhatsApp" pero el enlace llevaba a la web, así que el cliente caía en una
     # página y tenía que buscar el botón y redactar (se perdían pedidos ahí).
-    # El ?utm_source deja ver en Analytics qué red trajo la visita.
-    page = f"{SITE}/p/producto-{p.get('id')}.html?utm_source=pack-diario&utm_medium=social&utm_campaign=producto"
+    # La ficha en su dirección corta (/p/<nombre-corto>, ver ficha_url.py).
+    page = url_ficha(p)
     msg = urllib.parse.quote(f"Hola, quiero: {nombre} — ${precio:.2f} USD\n{page}")
     lineas += [
         "✅ Garantía · Pago contra entrega · Envíos",
