@@ -3200,6 +3200,11 @@
         "v": "5A"
       },
       {
+        "k": "Potencia",
+        "v": "420W máximo de salida (84V × 5A)",
+        "nota": "Calculado con la salida declarada del cargador: 84V y 5A"
+      },
+      {
         "k": "Conector",
         "v": "US Pin"
       }
@@ -4626,6 +4631,11 @@
         "k": "Modos de operación",
         "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Extensor de Rango",
         "nota": "Repetidor"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Hasta 7.7W (adaptador 9V ⎓ 0.85A)",
+        "nota": "Ficha técnica oficial de TP-Link: alimentación 9V ⎓ 0.85A. Es el máximo que puede entregar el adaptador; el router suele gastar menos."
       }
     ],
     "caracteristicas": [
@@ -5790,6 +5800,11 @@
       {
         "k": "Modos de operación",
         "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Hasta 12W (adaptador 12V ⎓ 1A)",
+        "nota": "Ficha técnica oficial de TP-Link: alimentación 12V ⎓ 1A. Es el máximo que puede entregar el adaptador; el router suele gastar menos."
       }
     ],
     "caracteristicas": [
@@ -5886,6 +5901,11 @@
       {
         "k": "Modos de operación",
         "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Hasta 18W (adaptador 12V ⎓ 1.5A)",
+        "nota": "Ficha técnica oficial de TP-Link: alimentación 12V ⎓ 1.5A. Es el máximo que puede entregar el adaptador; el router suele gastar menos."
       }
     ],
     "caracteristicas": [
@@ -6965,6 +6985,11 @@
         "k": "Seguridad y Gestión",
         "v": "WPA3, TP-Link HomeShield, Servidor/Cliente VPN",
         "nota": "OpenVPN, PPTP, WireGuard"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Hasta 18W (adaptador 12V ⎓ 1.5A)",
+        "nota": "Ficha técnica oficial de TP-Link: alimentación 12V ⎓ 1.5A. Es el máximo que puede entregar el adaptador; el router suele gastar menos."
       }
     ],
     "caracteristicas": [
@@ -7785,6 +7810,11 @@
       {
         "k": "Rango de Bajovoltaje (<V)",
         "v": "( (por * Rango 140V 210V Ajustable Sobrecorriente a de defecto ~170V)>A): Ajustable de 1A a 63A"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Menos de 2W (lo que gasta el propio protector)",
+        "nota": "Ficha técnica oficial de TOMZN (TOVPD1-60)"
       },
       {
         "k": "Tiempo de Reconexión / Retardo",
