@@ -66,12 +66,14 @@ a cambiar una comisión que estaba bien.
 
 from __future__ import annotations
 
+import html
 import json
 import os
 import re
 import sys
 import time
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -381,8 +383,8 @@ def reposiciones(antes: dict[str, dict], ahora: list[dict]) -> list[dict]:
 #     workflow lo manda después de que el commit llegue a main. Si el push se
 #     rechaza, el workflow rehace la corrida sobre origin/main y el mensaje se
 #     recalcula; enviándolo aquí llegaría dos veces.
-TELEGRAM_MAX = 3900          # Telegram corta en 4096
-LINEAS_POR_BLOQUE = 12
+TELEGRAM_MAX = 4000          # Telegram corta en 4096
+LINEAS_POR_BLOQUE = 10
 
 
 def _dinero(valor, moneda) -> str:
@@ -424,104 +426,184 @@ def cambios_principal(antes: dict[str, dict], ahora: list[dict]) -> dict[str, li
     return out
 
 
+PANEL_COMPARAR = "https://tiendamax.org/admin.html#comparar"
+_MESES = ("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
+
+
+def _h(texto) -> str:
+    """Escapa para el HTML de Telegram. Un «<» o un «&» en un nombre de
+    producto sin escapar hace que Telegram rechace el mensaje entero."""
+    return html.escape(str(texto if texto is not None else ""), quote=False)
+
+
+def _ahora_cuba() -> str:
+    try:
+        from zoneinfo import ZoneInfo
+        t = datetime.now(ZoneInfo("America/Havana"))
+    except Exception:
+        t = datetime.now(timezone.utc)
+    hora = t.strftime("%I:%M %p").lstrip("0")
+    return f"{t.day} {_MESES[t.month - 1]}, {hora}"
+
+
+def _ficha(nombre: str, detalles: list[str]) -> str:
+    """Un producto: el nombre en negrita y debajo sus datos colgando de él
+    (├ └), que se leen de un vistazo en el móvil sin tener que desenredar
+    una frase larga llena de «·»."""
+    lineas = [f"<b>{_h(nombre)}</b>"]
+    for i, d in enumerate(detalles):
+        lineas.append(("└ " if i == len(detalles) - 1 else "├ ") + d)
+    return "\n".join(lineas)
+
+
 def mensaje_cambios(cambios: dict[str, list], parejas: dict[str, dict],
                     agotados_mios: set[str]) -> str:
-    """El texto para Telegram, o "" si no cambió nada.
+    """El texto para Telegram (HTML), o "" si no cambió nada.
 
-    Cada línea dice lo de la principal y, al lado, lo TUYO cuando lo tienes:
-    que la principal suba un precio solo es trabajo si tú lo vendes, y a qué
-    precio lo tienes es lo que decide si hay que tocarlo.
+    Arriba, cuántos cambios y de qué tipo, para saber de un vistazo si hay
+    algo que hacer. Luego un bloque por tipo, de lo más urgente a lo menos:
+    lo que se agotó o volvió, precios y comisiones, altas y bajas; las
+    cantidades van al final y en una línea cada una, porque se mueven con
+    cada venta y rara vez piden hacer algo.
+
+    Cada producto lleva, debajo, lo TUYO cuando lo tienes: que la principal
+    suba un precio solo es trabajo si tú lo vendes, y a qué precio lo tienes
+    es lo que decide si hay que tocarlo.
     """
     def mio_de(f):
         return parejas.get((f or {}).get("id"))
 
+    def stock_mio(m):
+        return int(_num(m.get("stock")) or 0)
+
     def tuyo_stock(f):
         m = mio_de(f)
         if m is None:
-            return "no lo tienes en tu tienda"
-        st = int(_num(m.get("stock")) or 0)
-        return "lo tienes agotado" if st <= 0 else f"tú tienes {st}"
+            return "➖ No lo tienes en tu tienda"
+        return "🚫 Lo tienes agotado" if stock_mio(m) <= 0 else f"🏷️ Tú tienes {stock_mio(m)}"
 
-    bloques = []
-
-    def bloque(titulo, filas, pinta):
-        if not filas:
-            return
-        lineas = [f"{titulo} ({len(filas)})"]
-        for a, f in filas[:LINEAS_POR_BLOQUE]:
-            lineas.append("• " + pinta(a, f))
-        if len(filas) > LINEAS_POR_BLOQUE:
-            lineas.append(f"  …y {len(filas) - LINEAS_POR_BLOQUE} más")
-        bloques.append("\n".join(lineas))
+    def flecha(a, b, moneda_a, moneda_b):
+        """📉/📈 solo si es la misma moneda: 1500 MN → $2 no es una bajada."""
+        if moneda_a != moneda_b or a is None or b is None:
+            return ""
+        return " 📉" if b < a else (" 📈" if b > a else "")
 
     def agotado(a, f):
         m = mio_de(f)
-        extra = ("lo agoté en tu tienda" if m is not None and str(m.get("id")) in agotados_mios
-                 else ("no lo tienes en tu tienda" if m is None
-                       else ("ya lo tenías agotado" if int(_num(m.get("stock")) or 0) <= 0
-                             else f"OJO: tú aún tienes {int(_num(m.get('stock')))}")))
-        return f"{f['nombre']} — tenía {int(a.get('stock') or 0)} → 0 · {extra}"
+        if m is not None and str(m.get("id")) in agotados_mios:
+            tuyo = "✅ Lo agoté en tu tienda"
+        elif m is None:
+            tuyo = "➖ No lo tienes en tu tienda"
+        elif stock_mio(m) <= 0:
+            tuyo = "✅ Ya lo tenías agotado"
+        else:
+            tuyo = f"⚠️ <b>Tú aún tienes {stock_mio(m)}</b>: agótalo"
+        return _ficha(f["nombre"], [f"Tenía {int(a.get('stock') or 0)} ➜ <b>0</b>", tuyo])
 
     def repuesto(a, f):
         m = mio_de(f)
-        pista = " → ponle stock en 🔀 Comparar" if m is not None and int(_num(m.get("stock")) or 0) <= 0 else ""
-        return f"{f['nombre']} — 0 → {int(f.get('stock') or 0)} · {tuyo_stock(f)}{pista}"
+        det = [f"Ahora hay <b>{int(f.get('stock') or 0)}</b>"]
+        if m is not None and stock_mio(m) <= 0:
+            det.append("👉 <b>Lo tienes agotado: ponle stock</b>")
+        else:
+            det.append(tuyo_stock(f))
+        return _ficha(f["nombre"], det)
 
     def precio(a, f):
+        det = [f"{_h(_dinero(a.get('precio'), a.get('precioMoneda')))} ➜ "
+               f"<b>{_h(_dinero(f.get('precio'), f.get('precioMoneda')))}</b>"
+               + flecha(a.get("precio"), f.get("precio"), a.get("precioMoneda"), f.get("precioMoneda"))]
         m = mio_de(f)
-        tuyo = ""
         if m is not None:
             mon = "MN" if m.get("moneda") == "MN" else "USD"
-            tuyo = f" · el tuyo: {_dinero(_num(m.get('precioActual')), mon)}"
-        return (f"{f['nombre']} — {_dinero(a.get('precio'), a.get('precioMoneda'))} → "
-                f"{_dinero(f.get('precio'), f.get('precioMoneda'))}{tuyo}")
+            det.append(f"🏷️ El tuyo: {_h(_dinero(_num(m.get('precioActual')), mon))}")
+        return _ficha(f["nombre"], det)
 
     def comision(a, f):
+        det = [f"{_h(_dinero(a.get('comision'), a.get('comisionMoneda')))} ➜ "
+               f"<b>{_h(_dinero(f.get('comision'), f.get('comisionMoneda')))}</b>"
+               + flecha(a.get("comision"), f.get("comision"), a.get("comisionMoneda"), f.get("comisionMoneda"))]
+        if f.get("comisionDudosa"):
+            det.append(f"⚠️ <i>Dato dudoso: {_h(f['comisionDudosa'])}</i>")
         m = mio_de(f)
-        tuya = ""
         if m is not None and _num(m.get("comision")):
-            tuya = f" · la tuya: {_dinero(_num(m.get('comision')), m.get('comisionMoneda') or 'USD')}"
-        duda = f" (dudosa: {f['comisionDudosa']})" if f.get("comisionDudosa") else ""
-        return (f"{f['nombre']} — {_dinero(a.get('comision'), a.get('comisionMoneda'))} → "
-                f"{_dinero(f.get('comision'), f.get('comisionMoneda'))}{duda}{tuya}")
+            det.append(f"🏷️ La tuya: {_h(_dinero(_num(m.get('comision')), m.get('comisionMoneda') or 'USD'))}")
+        return _ficha(f["nombre"], det)
 
     def nuevo(a, f):
-        return (f"{f['nombre']} — {_dinero(f.get('precio'), f.get('precioMoneda'))} · "
-                f"{int(f.get('stock') or 0)} disponibles · {tuyo_stock(f)}")
+        return _ficha(f["nombre"], [
+            f"{_h(_dinero(f.get('precio'), f.get('precioMoneda')))} · {int(f.get('stock') or 0)} disponibles",
+            tuyo_stock(f)])
 
     def quitado(a, f):
-        return f"{a.get('nombre')} — ya no aparece en la principal"
+        return _ficha(a.get("nombre"), ["Ya no aparece en la principal"])
 
     def cantidad(a, f):
-        return f"{f['nombre']} — {int(a.get('stock') or 0)} → {int(f.get('stock') or 0)}"
+        s0, s1 = int(a.get("stock") or 0), int(f.get("stock") or 0)
+        return f"• {_h(f['nombre'])}  <code>{s0} ➜ {s1}</code>"
 
-    bloque("🔴 Agotados", cambios.get("agotados"), agotado)
-    bloque("🟢 Repuestos", cambios.get("repuestos"), repuesto)
-    bloque("💲 Precio", cambios.get("precio"), precio)
-    bloque("💰 Comisión", cambios.get("comision"), comision)
-    bloque("🆕 Nuevos", cambios.get("nuevos"), nuevo)
-    bloque("🗑️ Ya no están", cambios.get("quitados"), quitado)
-    bloque("📦 Cantidad disponible", cambios.get("cantidad"), cantidad)
-    if not bloques:
+    tipos = (
+        ("agotados", "🔴", "AGOTADOS", "agotado", "agotados", agotado),
+        ("repuestos", "🟢", "REPUESTOS", "repuesto", "repuestos", repuesto),
+        ("precio", "💲", "PRECIO", "precio", "precios", precio),
+        ("comision", "💰", "COMISIÓN", "comisión", "comisiones", comision),
+        ("nuevos", "🆕", "NUEVOS", "nuevo", "nuevos", nuevo),
+        ("quitados", "🗑️", "YA NO ESTÁN", "retirado", "retirados", quitado),
+        ("cantidad", "📦", "CANTIDAD DISPONIBLE", "cantidad", "cantidades", cantidad),
+    )
+    total = sum(len(cambios.get(k) or []) for k, *_ in tipos)
+    if not total:
         return ""
-    total = sum(len(v) for v in cambios.values())
-    texto = (f"🔀 Cambios en la tienda principal ({total})\n\n"
-             + "\n\n".join(bloques)
-             + "\n\nRevísalo en 🔀 Comparar: https://tiendamax.org/admin.html")
-    if len(texto) > TELEGRAM_MAX:
-        texto = texto[:TELEGRAM_MAX - 40].rsplit("\n", 1)[0] + "\n…(sigue en 🔀 Comparar)"
-    return texto
+    resumen = " · ".join(f"{emo} {len(cambios[k])} {uno if len(cambios[k]) == 1 else varios}"
+                         for k, emo, _t, uno, varios, _f in tipos if cambios.get(k))
+    partes = [f"🔀 <b>Tienda principal</b>\n"
+              f"<i>{total} cambio{'' if total == 1 else 's'} · {_ahora_cuba()}</i>\n\n"
+              f"{resumen}"]
+    largo = len(partes[0])
+    cortado = False
+    for k, emo, titulo, _u, _v, pinta in tipos:
+        filas = cambios.get(k) or []
+        if not filas:
+            continue
+        sep = "\n" if k == "cantidad" else "\n\n"
+        cab = f"\n\n┄┄┄┄┄┄┄┄┄┄┄┄\n{emo} <b>{titulo}</b>  ({len(filas)})\n"
+        cuerpo, puestas = [], 0
+        for a, f in filas[:LINEAS_POR_BLOQUE]:
+            trozo = pinta(a, f)
+            # Se corta por productos enteros, nunca a mitad: un <b> sin
+            # cerrar hace que Telegram rechace el mensaje entero.
+            if largo + len(cab) + len(sep.join(cuerpo + [trozo])) > TELEGRAM_MAX - 120:
+                cortado = True
+                break
+            cuerpo.append(trozo)
+            puestas += 1
+        if not cuerpo:
+            cortado = True
+            break
+        resto = len(filas) - puestas
+        bloque = cab + sep.join(cuerpo) + (f"\n<i>…y {resto} más</i>" if resto > 0 else "")
+        partes.append(bloque)
+        largo += len(bloque)
+        if cortado:
+            break
+    if cortado:
+        partes.append("\n\n<i>No cabe todo aquí: el resto, en 🔀 Comparar.</i>")
+    return "".join(partes)
 
 
 def enviar_telegram(texto: str) -> bool:
-    """Lo manda al chat del dueño. Sin parse_mode: un «_» o un «*» en el
-    nombre de un producto rompía el Markdown y Telegram rechazaba todo."""
+    """Lo manda al chat del dueño, en HTML (todo lo variable pasa por _h) y
+    con un botón que abre 🔀 Comparar directamente: una URL suelta al pie se
+    leía como parte del texto y había que atinarle con el dedo."""
     token, chat = os.environ.get("BOT_TOKEN", ""), os.environ.get("ADMIN_CHAT_ID", "")
     if not (token and chat and texto.strip()):
         print("ℹ️ Sin BOT_TOKEN/ADMIN_CHAT_ID o sin texto: no se manda nada a Telegram.")
         return False
-    cuerpo = json.dumps({"chat_id": chat, "text": texto[:4000],
-                         "disable_web_page_preview": True}).encode("utf-8")
+    cuerpo = json.dumps({
+        "chat_id": chat, "text": texto[:4096], "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "reply_markup": {"inline_keyboard": [[{"text": "🔀 Abrir Comparar", "url": PANEL_COMPARAR}]]},
+    }).encode("utf-8")
     req = urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
                                  data=cuerpo, headers={"Content-Type": "application/json"})
     try:

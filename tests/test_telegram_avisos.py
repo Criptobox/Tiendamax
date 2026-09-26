@@ -9,6 +9,7 @@ Nada de esto falla con un error: un aviso que deja de llegar no avisa de que
 dejó de llegar, y uno quitado que vuelve por un cron olvidado es ruido que
 hace ignorar los que importan.
 """
+import json
 import os
 import sys
 import unittest
@@ -73,32 +74,76 @@ class CambiosPrincipalTest(unittest.TestCase):
         self.assertEqual("", cp.mensaje_cambios(c, {}, set()))
 
     def test_la_moneda_viaja_con_la_cifra(self):
-        """1500 MN → $2 no es «bajó 1498»: se dice tal cual, con su moneda."""
+        """1500 MN → $2 no es «bajó 1498»: se dice tal cual, con su moneda,
+        y sin la flecha de bajada."""
         txt = cp.mensaje_cambios(self.c, {}, set())
-        self.assertIn("Linterna — 1500 MN → $2", txt)
+        linea = next(l for l in txt.splitlines() if "1500 MN" in l)
+        self.assertIn("1500 MN ➜ <b>$2</b>", linea)
+        self.assertNotIn("📉", linea)
+        self.assertIn("$50 ➜ <b>$45</b> 📉", txt, "misma moneda y bajó: se marca")
 
     def test_lo_tuyo_va_al_lado(self):
         mios = {"1": {"id": "m1", "nombre": "Mi Router A", "stock": 0},
                 "3": {"id": "m3", "nombre": "Mi Switch", "precioActual": 55, "stock": 2},
                 "2": {"id": "m2", "nombre": "Mi Router B", "stock": 0}}
         txt = cp.mensaje_cambios(self.c, mios, {"m1"})
-        self.assertIn("Router A — tenía 4 → 0 · lo agoté en tu tienda", txt)
-        self.assertIn("Switch 8 — $50 → $45 · el tuyo: $55", txt)
-        self.assertIn("ponle stock en 🔀 Comparar", txt,
+        self.assertIn("<b>Router A</b>\n├ Tenía 4 ➜ <b>0</b>\n└ ✅ Lo agoté en tu tienda", txt)
+        self.assertIn("<b>Switch 8</b>\n├ $50 ➜ <b>$45</b> 📉\n└ 🏷️ El tuyo: $55", txt)
+        self.assertIn("Lo tienes agotado: ponle stock", txt,
                       "un repuesto que tú tienes en 0 es una venta que puedes hacer hoy: hay que decirlo")
-        self.assertIn("Nuevo — $100 · 3 disponibles · no lo tienes en tu tienda", txt)
+        self.assertIn("<b>Nuevo</b>\n├ $100 · 3 disponibles\n└ ➖ No lo tienes en tu tienda", txt)
 
     def test_agotado_que_tu_sigues_vendiendo_lo_dice(self):
         mios = {"1": {"id": "m1", "nombre": "Mi Router A", "stock": 5}}
         txt = cp.mensaje_cambios(self.c, mios, set())
-        self.assertIn("OJO: tú aún tienes 5", txt)
+        self.assertIn("Tú aún tienes 5", txt)
 
-    def test_cabe_en_un_mensaje_de_telegram(self):
-        antes = {str(i): _fila(str(i), f"Producto largo número {i} " * 3, stock=5) for i in range(300)}
-        ahora = [_fila(str(i), f"Producto largo número {i} " * 3, stock=0) for i in range(300)]
+    def test_cabe_en_un_mensaje_de_telegram_y_no_corta_etiquetas(self):
+        """Telegram rechaza el mensaje ENTERO si pasa de 4096 o si queda un
+        <b> sin cerrar: el recorte tiene que ser por productos completos."""
+        antes = {str(i): _fila(str(i), f"Producto largo número {i} " * 3, stock=5, precio=10) for i in range(300)}
+        ahora = [_fila(str(i), f"Producto largo número {i} " * 3, stock=0, precio=12) for i in range(300)]
         txt = cp.mensaje_cambios(cp.cambios_principal(antes, ahora), {}, set())
         self.assertLessEqual(len(txt), 4096)
-        self.assertIn("…y", txt)
+        for tag in ("b", "i", "code"):
+            self.assertEqual(txt.count(f"<{tag}>"), txt.count(f"</{tag}>"), tag)
+        self.assertTrue("…y" in txt or "No cabe todo" in txt)
+
+    def test_un_nombre_con_simbolos_no_rompe_el_html(self):
+        antes = {"9": _fila("9", "Cable <RJ45> & más", stock=3)}
+        ahora = [_fila("9", "Cable <RJ45> & más", stock=0)]
+        txt = cp.mensaje_cambios(cp.cambios_principal(antes, ahora), {}, set())
+        self.assertIn("Cable &lt;RJ45&gt; &amp; más", txt)
+        self.assertNotIn("<RJ45>", txt)
+
+    def test_arriba_va_el_resumen(self):
+        txt = cp.mensaje_cambios(self.c, {}, set())
+        cabeza = txt.split("┄")[0]
+        self.assertIn("🔀 <b>Tienda principal</b>", cabeza)
+        self.assertIn("7 cambios", cabeza)
+        for trozo in ("🔴 1 agotado", "🟢 1 repuesto", "💲 1 precio", "💰 1 comisión",
+                      "🆕 1 nuevo", "🗑️ 1 retirado", "📦 1 cantidad"):
+            self.assertIn(trozo, cabeza)
+
+    def test_se_manda_en_html_con_boton_a_comparar(self):
+        visto = {}
+
+        class _R:
+            status = 200
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+
+        def abrir(req, timeout=0):
+            visto["cuerpo"] = json.loads(req.data.decode("utf-8"))
+            return _R()
+        with mock.patch.dict(os.environ, {"BOT_TOKEN": "t", "ADMIN_CHAT_ID": "1"}), \
+                mock.patch("urllib.request.urlopen", abrir):
+            self.assertTrue(cp.enviar_telegram("<b>hola</b>"))
+        c = visto["cuerpo"]
+        self.assertEqual("HTML", c["parse_mode"])
+        boton = c["reply_markup"]["inline_keyboard"][0][0]
+        self.assertTrue(boton["url"].endswith("/admin.html#comparar"),
+                        "el botón tiene que abrir 🔀 Comparar, no el panel en Inicio")
 
     def test_sin_token_no_intenta_enviar(self):
         with mock.patch.dict(os.environ, {"BOT_TOKEN": "", "ADMIN_CHAT_ID": ""}), \
