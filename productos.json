@@ -4527,6 +4527,11 @@
       {
         "k": "Modos de operación",
         "v": "Modo Extensor de Rango (Repetidor), Modo Punto de Acceso (AP)"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "3.6W",
+        "nota": "Ficha técnica oficial de TP-Link"
       }
     ],
     "caracteristicas": [
@@ -6185,6 +6190,11 @@
         "nota": "8V a 30V"
       },
       {
+        "k": "Consumo Eléctrico",
+        "v": "5W máximo (hasta 10W con accesorios conectados)",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+      },
+      {
         "k": "Sistema Operativo",
         "v": "RouterOS con licencia Nivel 4",
         "nota": "Level 4"
@@ -6383,6 +6393,11 @@
         "k": "Modos de operación",
         "v": "CPE / Estación (Cliente), Punto de Acceso (AP) para enlaces Punto a Punto (PtP) y Punto a Multipunto",
         "nota": "PtMP"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "7W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       }
     ],
     "caracteristicas": [
@@ -6405,7 +6420,7 @@
         "d": "Diseño ultra compacto, discreto y estilizado con protección para exteriores frente a rayos UV, lluvia y descargas electrostáticas (ESD)."
       },
       {
-        "d": "Alimentación mediante PoE Pasivo de 24V (consumo máx. ultra bajo de solo 8.5W)."
+        "d": "Alimentación mediante PoE Pasivo de 24V (consumo máx. ultra bajo de solo 7W)."
       }
     ],
     "idealPara": [
@@ -6839,6 +6854,11 @@
       {
         "k": "Modos de operación",
         "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Repetidor / Media Bridge, Nodo AiMesh"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "Hasta 18W (adaptador 12V ⎓ 1.5A)",
+        "nota": "Ficha técnica oficial de ASUS: alimentación 12V 1.5A; es el máximo que puede entregar el adaptador"
       }
     ],
     "caracteristicas": [
@@ -7188,6 +7208,11 @@
       {
         "k": "Modos de operación",
         "v": "CPE / Estación (Cliente), Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 3"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "6W máximo",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
       }
     ],
     "caracteristicas": [
@@ -7282,6 +7307,11 @@
         "k": "Modos de operación",
         "v": "CPE / Estación (Cliente), Punto de Acceso (AP), Repetidor, Enlaces Punto a Punto (PtP) y Punto a Multipunto",
         "nota": "PtMP"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "8W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       }
     ],
     "caracteristicas": [
@@ -7452,6 +7482,11 @@
       {
         "k": "Modos de operación",
         "v": "Punto de Acceso (AP / Estación Base PtMP), CPE / Cliente, Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 4"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "12W máximo",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
       }
     ],
     "caracteristicas": [
@@ -7549,6 +7584,11 @@
         "k": "Sistema Operativo",
         "v": "RouterOS con licencia Nivel 4",
         "nota": "Level 4"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "12W máximo (hasta 30W con equipos conectados por PoE o USB)",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
       }
     ],
     "caracteristicas": [
@@ -7650,6 +7690,11 @@
         "k": "Modos de operación",
         "v": "CPE / Estación (Cliente), Punto de Acceso (AP), Repetidor, Enlaces Punto a Punto (PtP) y Punto a Multipunto",
         "nota": "PtMP"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "8W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       }
     ],
     "caracteristicas": [
@@ -8404,6 +8449,11 @@
       {
         "k": "Modos de operación",
         "v": "CPE (Cliente), Punto de Acceso (AP), Repetidor y Estación Base en enlaces punto a multipunto (PtMP) o punto a punto (PtP)"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "5.5W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       }
     ],
     "caracteristicas": [
@@ -8611,6 +8661,11 @@
         "nota": "10V – 30V DC"
       },
       {
+        "k": "Consumo Eléctrico",
+        "v": "5W máximo",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+      },
+      {
         "k": "Protección",
         "v": "Carcasa para exteriores resistente a la intemperie",
         "nota": "rayos UV, lluvia y viento"
@@ -8722,6 +8777,11 @@
       {
         "k": "Alimentación y PoE",
         "v": "Entrada PoE 802.3af/at y PoE Pasivo (Puerto 1, 12V–57V) / Salida PoE Pasivo (Puerto 5, hasta 500 mA) / Jack DC"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "6W máximo (hasta 24W alimentando otro equipo por PoE)",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
       },
       {
         "k": "Aceleración por Hardware",
@@ -8842,6 +8902,11 @@
       {
         "k": "Alimentación",
         "v": "PoE Pasivo 24V, 0.2A"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "7W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       },
       {
         "k": "Alcance",
@@ -9082,6 +9147,11 @@
       {
         "k": "Alimentación",
         "v": "PoE Pasivo 24V, 0.5A"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "5.5W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
       },
       {
         "k": "Alcance",
@@ -9572,6 +9642,11 @@
         "nota": "Adaptador Gigabit PoE incluido"
       },
       {
+        "k": "Consumo Eléctrico",
+        "v": "8W máximo",
+        "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
+      },
+      {
         "k": "Sistema Operativo",
         "v": "airOS 8"
       }
@@ -9699,6 +9774,11 @@
         "k": "Alimentación y PoE",
         "v": "PoE-In compatible con 802.3af/at y PoE Pasivo",
         "nota": "12V – 57V"
+      },
+      {
+        "k": "Consumo Eléctrico",
+        "v": "5W máximo",
+        "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
       },
       {
         "k": "Sistema Operativo",
