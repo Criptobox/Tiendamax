@@ -258,7 +258,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 27,
+    "stock": 26,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -325,7 +325,8 @@
     "idealPara": [
       "Monitoreo de peso personal y control de salud."
     ],
-    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar."
+    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
+    "rev": 1790459156781
   },
   {
     "id": 1778102582909,
@@ -4883,7 +4884,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 19,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -4967,8 +4968,8 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo.",
-    "rev": 1790343442681
+    "rev": 1790459156781,
+    "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo."
   },
   {
     "id": 1782439428159,
@@ -7287,7 +7288,7 @@
     "precioActual": 230,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7376,8 +7377,8 @@
       "1× Brida / abrazadera para montaje en mástil o poste",
       "1× Guía de inicio rápido"
     ],
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.",
-    "rev": 1790343442681
+    "rev": 1790459156781,
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance."
   },
   {
     "id": 1785866159148,
