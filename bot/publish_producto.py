@@ -17,6 +17,14 @@ from zoneinfo import ZoneInfo
 import requests
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Lo apagado en el panel (categorias.json → apagadas) no se anuncia en el
+# canal. El bot se despliega también fuera del repo: sin el módulo, nada
+# cuenta como apagado, que es como funcionaba antes.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
+try:
+    import categorias_apagadas as _apag
+except Exception:
+    _apag = None
 try:
     from card_generator import generate_card
     _CARD_ENABLED = True
@@ -314,6 +322,13 @@ def main() -> int:
                 # re-agrega como nuevo producto se podrá publicar de nuevo
             else:
                 print(f"  ⚠️ No se pudo eliminar mensaje de: {nombre}")
+
+    # Desde aquí, lo apagado en el panel no existe para el canal: ni nuevo, ni
+    # rebaja, ni oferta. (Lo de arriba, borrar lo que se agotó, sí lo ve.)
+    if _apag is not None:
+        _fuera = _apag.leer("categorias.json")
+        if _fuera.hay:
+            curr_dict = {pid: p for pid, p in curr_dict.items() if not _fuera.producto(p)}
 
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
     # Doble guardia: no debe estar en el commit anterior NI haber sido

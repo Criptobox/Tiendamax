@@ -16,6 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import categorias_apagadas
 import tasa_aviso
 
 # ============================================================
@@ -287,6 +288,17 @@ def detectar_cambios_catalogo(anterior, productos) -> dict:
             res["restock"].append({"id": pid, "nombre": p.get("nombre"),
                                    "imagen": p.get("imagen")})
     return res
+
+
+def sin_apagados(cambios: dict, productos, apagadas) -> dict:
+    """Quita de lo detectado lo que está en una categoría o subcategoría
+    apagada en el panel. Por id: las rebajas y reposiciones no llevan la
+    categoría, solo el id."""
+    fuera = {str(p.get("id")) for p in (productos if isinstance(productos, list) else [])
+             if apagadas.producto(p)}
+    if not fuera:
+        return cambios
+    return {k: [x for x in v if str(x.get("id")) not in fuera] for k, v in cambios.items()}
 
 
 def decidir_aviso_tasa(cola: dict, config) -> None:
@@ -1024,6 +1036,12 @@ def main():
         print("ℹ️ Sin estado previo del catálogo: se apunta el actual y no se "
               "notifica nada en esta pasada.")
     cambios = detectar_cambios_catalogo(estado.get("catalogo"), p_act)
+    # Lo apagado en el panel no sale en la tienda: anunciarlo manda al cliente
+    # a un producto que no encuentra. El estado se sigue guardando con el
+    # catálogo ENTERO, o al encender la categoría todos sus productos
+    # parecerían nuevos y saldría un push anunciando lo que llevaba meses.
+    apagadas = categorias_apagadas.leer(ROOT / "categorias.json")
+    cambios = sin_apagados(cambios, p_act, apagadas)
     if cambios["nuevos"] or cambios["rebajas"] or cambios["restock"]:
         print(f"🔎 Cambios: {len(cambios['nuevos'])} nuevo(s), "
               f"{len(cambios['rebajas'])} rebaja(s), {len(cambios['restock'])} reposición(es)")
@@ -1078,7 +1096,7 @@ def main():
     # texto congelado que el teléfono deja en pantalla hasta que alguien lo
     # aparta. Un aviso que dice "4 productos rebajados" cuando uno ya se agotó
     # no se corrige solo: se queda mintiendo todo el día.
-    catalogo = p_act if isinstance(p_act, list) else []
+    catalogo = apagadas.visibles(p_act) if isinstance(p_act, list) else []
     # Qué sale de la cola en esta pasada, por lo que sea: enviado, caducado o ya
     # sin sentido. Todo tiene que anotarse, o _fusionar_cola lo devuelve a su
     # sitio al guardar (ver esa función).

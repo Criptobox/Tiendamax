@@ -154,8 +154,15 @@ function addTask(list,t){
    acaban siendo conjuntos distintos, y el que se equivoca es el que nadie
    vuelve a contar. Un `comision: "0"` escrito a mano cuenta como sin definir:
    es la misma ganancia cero, escrita de otra manera. */
+/* En la tienda: activo y fuera de toda categoría o subcategoría apagada en
+   el panel (window.tmProductoApagado, admin.html). Lo apagado no sale a la
+   venta, así que no es trabajo de hoy ni se propone publicarlo. */
+function enTienda(p){
+  return !!p && p.activo !== false
+    && !(typeof window.tmProductoApagado === 'function' && window.tmProductoApagado(p));
+}
 function sinComision(p){
-  return !!p && p.activo !== false && num(p.stock) > 0 && !num(p.comision);
+  return enTienda(p) && num(p.stock) > 0 && !num(p.comision);
 }
 window.tmSinComision = sinComision;
 
@@ -323,7 +330,7 @@ function revPorRenovar(){
   pubLog().forEach(e => { if (e && e.red === 'revolico' && (!ult[e.pid] || e.ts > ult[e.pid])) ult[e.pid] = Number(e.ts) || 0; });
   const ahora = Date.now(), out = [];
   Object.keys(ult).forEach(pid => {
-    const p = byId[String(pid)]; if (!p || p.activo === false || num(p.stock) <= 0) return;
+    const p = byId[String(pid)]; if (!enTienda(p) || num(p.stock) <= 0) return;
     const dias = (ahora - ult[pid]) / 86400000;
     if (dias >= REV_RENOVAR_DIAS && dias < REV_OLVIDADO_DIAS) out.push({ p, ts: ult[pid], dias: Math.floor(dias) });
   });
@@ -443,7 +450,7 @@ function ranking(){
   return {top, attention};
 }
 function suggestedBundles(){
-  const ps = products().filter(p=>p.activo!==false && num(p.stock)>0);
+  const ps = products().filter(p=>enTienda(p) && num(p.stock)>0);
   const cats = {};
   ps.forEach(p=>{ const c=(p.categoria||'General').toUpperCase(); (cats[c]=cats[c]||[]).push(p); });
   const out=[];
@@ -658,7 +665,7 @@ async function buildTasks(){
   // es escribirles u ofrecerles otra cosa, y eso está en Clientes → Avisos.
   if (facts.avisosTotal) addTask(tasks,{kind:'avisos',urgency:2,icon:'🔔',title:`${facts.avisosTotal} cliente${facts.avisosTotal!==1?'s':''} esperando un producto`,detail:`${Object.keys(facts.avisos).length} producto${Object.keys(facts.avisos).length!==1?'s':''} con gente apuntada. Escríbeles u ofréceles algo parecido.`,action:'Ver quiénes son',tab:'clientes-ia'});
 
-  const hot = ps.map(p=>{
+  const hot = ps.filter(enTienda).map(p=>{
     const id = String(p.id); const views = num(facts.vistas[id]); const wa = num(facts.whats[id]);
     return {p, score: views + wa*7 + Math.max(0, 4-num(p.stock))*3, views, wa};
   }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
@@ -1943,7 +1950,7 @@ function postTexto(p){
     `\n📲 Escríbenos por WhatsApp y te lo reservamos.\n🌐 tiendamax.org\n\n${postHashtags(p)}`;
 }
 function postCandidatos(){
-  const ps = products().filter(p=>num(p.stock)>0 && p.activo!==false);
+  const ps = products().filter(p=>num(p.stock)>0 && enTienda(p));
   if(!ps.length) return [];
   const log = postLog();
   const hotScore = {}; (state.hot||[]).forEach(x=>{ hotScore[String(x.p.id)] = x.score||0; });

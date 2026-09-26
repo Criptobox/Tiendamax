@@ -15,8 +15,60 @@
    dueño" para no contar su visita, y eso no necesita nada de esto. */
 
 
-let productos = tmParse(localStorage.getItem('productos'), null) || [];
-let categorias = tmParse(localStorage.getItem('categorias'), null) || ['General'];
+/* Categorías y subcategorías APAGADAS desde el panel (categorias.json →
+ * `apagadas`: { categorias: {CAT: {off, ts}}, subcategorias: {CAT: {SUB: {off, ts}}} }).
+ *
+ * Se filtra en los DATOS, no en cada pintor: la rejilla, la búsqueda, el
+ * inicio, las rebajas, los destacados, la lista de deseos y Max leen todos
+ * `productos` y `categorias`, y un filtro por pintor deja siempre uno que se
+ * olvida. Tres reglas:
+ *  · Solo en la tienda. En el panel `productos` es el catálogo que se publica:
+ *    filtrarlo ahí haría creer que esos productos se borraron.
+ *  · localStorage guarda SIEMPRE la lista entera (la comparte el panel, que
+ *    está en el mismo origen); lo filtrado vive solo en memoria.
+ *  · Se guarda una copia del estado para que la primera pintura, la que sale
+ *    de la caché antes de que llegue la red, ya no enseñe lo apagado. */
+let _tmApagadas = tmParseObject(localStorage.getItem('tm_cat_apagadas'));
+let _tmApIdx = null;
+function _tmNormCat(s) {
+    return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase();
+}
+function _tmApIndice() {
+    if (_tmApIdx) return _tmApIdx;
+    const a = _tmApagadas || {}, cats = new Set(), subs = new Set();
+    const ac = a.categorias || {}, as = a.subcategorias || {};
+    Object.keys(ac).forEach(k => { if (ac[k] && ac[k].off) cats.add(_tmNormCat(k)); });
+    Object.keys(as).forEach(c => {
+        const m = as[c] || {};
+        Object.keys(m).forEach(s => { if (m[s] && m[s].off) subs.add(_tmNormCat(c) + '|' + _tmNormCat(s)); });
+    });
+    return (_tmApIdx = { cats, subs, hay: cats.size + subs.size > 0 });
+}
+function tmCatApagada(cat, sub) {
+    const i = _tmApIndice(), c = _tmNormCat(cat);
+    if (!c || !i.hay) return false;
+    return i.cats.has(c) || (sub != null && i.subs.has(c + '|' + _tmNormCat(sub)));
+}
+function _tmEsPanel() { return !!document.getElementById('adminPanel'); }
+function tmSoloVisibles(arr) {
+    if (!Array.isArray(arr) || _tmEsPanel() || !_tmApIndice().hay) return arr;
+    return arr.filter(p => !p || !tmCatApagada(p.categoria, p.subcategoria));
+}
+function tmCatsVisibles(arr) {
+    if (!Array.isArray(arr) || _tmEsPanel() || !_tmApIndice().hay) return arr;
+    return arr.filter(c => !tmCatApagada(c));
+}
+/* Devuelve true si el estado cambió (hay que volver a filtrar lo que ya hay). */
+function tmAplicarApagadas(nuevo) {
+    const antes = JSON.stringify(_tmApagadas || {});
+    _tmApagadas = (nuevo && typeof nuevo === 'object' && !Array.isArray(nuevo)) ? nuevo : {};
+    _tmApIdx = null;
+    try { localStorage.setItem('tm_cat_apagadas', JSON.stringify(_tmApagadas)); } catch (e) {}
+    return antes !== JSON.stringify(_tmApagadas);
+}
+
+let productos = tmSoloVisibles(tmParse(localStorage.getItem('productos'), null) || []);
+let categorias = tmCatsVisibles(tmParse(localStorage.getItem('categorias'), null) || ['General']);
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
@@ -957,12 +1009,17 @@ async function cargarDatosDesdeGitHub() {
 
         // Aplicar categorías de inmediato para que el grid aparezca rápido
         if (dataCat) {
+            // Lo apagado viaja en este mismo fichero; sin la clave, no hay
+            // nada apagado (y se limpia la copia de una visita anterior).
+            if (tmAplicarApagadas(Array.isArray(dataCat) ? null : dataCat.apagadas)) {
+                productos = tmSoloVisibles(tmParse(localStorage.getItem('productos'), null) || []);
+            }
             if (Array.isArray(dataCat) && dataCat.length > 0) {
-                categorias = dataCat;
-                localStorage.setItem('categorias', JSON.stringify(categorias));
+                localStorage.setItem('categorias', JSON.stringify(dataCat));
+                categorias = tmCatsVisibles(dataCat);
             } else if (dataCat.nombres && dataCat.nombres.length > 0) {
-                categorias = dataCat.nombres;
-                localStorage.setItem('categorias', JSON.stringify(categorias));
+                localStorage.setItem('categorias', JSON.stringify(dataCat.nombres));
+                categorias = tmCatsVisibles(dataCat.nombres);
                 if (dataCat.iconos && Object.keys(dataCat.iconos).length > 0) {
                     Object.assign(iconosPersonalizados, dataCat.iconos);
                     localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
@@ -1013,10 +1070,12 @@ async function cargarDatosDesdeGitHub() {
                 const fbCat = await r.json();
                 if (!fbCat || !Array.isArray(fbCat.nombres) || fbCat.nombres.length === 0) return;
                 // Solo aplicar si Firebase tiene datos más recientes que categorias.json
-                const mismas = fbCat.nombres.length === categorias.length && fbCat.nombres.every(c => categorias.includes(c));
+                // (contra la lista entera: la de memoria no lleva las apagadas).
+                const todas = tmParseArray(localStorage.getItem('categorias'));
+                const mismas = fbCat.nombres.length === todas.length && fbCat.nombres.every(c => todas.includes(c));
                 if (!mismas) {
-                    categorias = fbCat.nombres;
-                    localStorage.setItem('categorias', JSON.stringify(categorias));
+                    localStorage.setItem('categorias', JSON.stringify(fbCat.nombres));
+                    categorias = tmCatsVisibles(fbCat.nombres);
                     if (fbCat.iconos) {
                         Object.assign(iconosPersonalizados, fbCat.iconos);
                         localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
@@ -1049,7 +1108,7 @@ async function cargarDatosDesdeGitHub() {
             const mapaLocal = {};
             productosLocales.forEach(p => { mapaLocal[p.id] = p; });
 
-            productos = dataProd.map(p => {
+            const _todos = dataProd.map(p => {
                 const fix = url => url && url.includes('raw.githubusercontent.com')
                     ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
                     : url;
@@ -1065,8 +1124,9 @@ async function cargarDatosDesdeGitHub() {
                 if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
-            _tmConservarStockLocal(productos);
-            localStorage.setItem('productos', JSON.stringify(productos));
+            _tmConservarStockLocal(_todos);
+            localStorage.setItem('productos', JSON.stringify(_todos));
+            productos = tmSoloVisibles(_todos);
             // Refrescar categorías con conteos reales ahora que productos está listo
             renderizarCategoriasHomeInstant();
         }
@@ -1156,14 +1216,14 @@ async function cargarDatosDesdeGitHub() {
 // Sincronizar entre pestañas
 window.addEventListener('storage', (event) => {
     if (event.key === 'productos') {
-        productos = tmParse(event.newValue, null) || [];
+        productos = tmSoloVisibles(tmParse(event.newValue, null) || []);
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarProductos();
         actualizarCountdownProductSelect();
     }
     if (event.key === 'categorias') {
-        categorias = tmParse(event.newValue, null) || ['General'];
+        categorias = tmCatsVisibles(tmParse(event.newValue, null) || ['General']);
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         renderizarCategoriasHome();

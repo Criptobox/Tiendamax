@@ -239,7 +239,7 @@ function mostrarVistaCategoria(categoria) {
         try {
             const cached = tmParseArray(localStorage.getItem('productos'));
             if (Array.isArray(cached) && cached.length > 0) {
-                productos = cached;
+                productos = tmSoloVisibles(cached);
                 
             }
         } catch(e) {}
@@ -290,10 +290,10 @@ function renderizarSubcategoriaTabs() {
         return;
     }
 
-    // Obtener subcategorías de la categoría actual
-    const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
-        ? subcategorias[categoriaSeleccionada] 
-        : [];
+    // Obtener subcategorías de la categoría actual (sin las apagadas en el panel)
+    const subcats = ((typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada])
+        ? subcategorias[categoriaSeleccionada]
+        : []).filter(s => _tmEsPanel() || !tmCatApagada(categoriaSeleccionada, s));
 
     if (subcats.length === 0) {
         tabsContainer.style.display = 'none';

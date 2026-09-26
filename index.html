@@ -261,7 +261,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=662e05ac" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=8f281982" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -311,9 +311,25 @@
         var ROTACION_MS = 5000;
         var _rot = null, _cdTimer = null, _idx = 0, _lista = [];
 
+        /* Con el bundle cargado, su `productos` (ya sin lo apagado en el
+           panel). Antes de que llegue —la primera pintura sale de aquí— la
+           copia del navegador, que es el catálogo ENTERO: se le quita lo
+           apagado con la copia de `tm_cat_apagadas` que dejó tm-data, o una
+           rebaja de una categoría apagada asoma unos segundos. */
         function _prods(){
-            try { if (Array.isArray(window.productos) && window.productos.length) return window.productos; } catch(e){}
-            try { var v = JSON.parse(localStorage.getItem('productos') || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
+            try { if (typeof tmSoloVisibles === 'function' && Array.isArray(productos) && productos.length) return productos; } catch(e){}
+            var v;
+            try { v = JSON.parse(localStorage.getItem('productos') || '[]'); } catch(e){ return []; }
+            if (!Array.isArray(v)) return [];
+            try {
+                var a = JSON.parse(localStorage.getItem('tm_cat_apagadas') || '{}') || {};
+                var n = function(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase(); };
+                var fuera = {};
+                Object.keys(a.categorias || {}).forEach(function(k){ if (a.categorias[k] && a.categorias[k].off) fuera[n(k)] = 1; });
+                Object.keys(a.subcategorias || {}).forEach(function(c){ var m = a.subcategorias[c] || {};
+                    Object.keys(m).forEach(function(s){ if (m[s] && m[s].off) fuera[n(c) + '|' + n(s)] = 1; }); });
+                return v.filter(function(p){ return !(p && (fuera[n(p.categoria)] || fuera[n(p.categoria) + '|' + n(p.subcategoria)])); });
+            } catch(e){ return v; }
         }
         function _num(x){ var n = Number(x); return isFinite(n) ? n : 0; }
         function _tasa(){
@@ -1673,7 +1689,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=662e05ac" defer></script>
+    <script src="js/tm-bundle.js?v=8f281982" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

@@ -157,7 +157,7 @@ const CATALOGO = [
 {
     ok(/function _tmConservarStockLocal\(remotos\)/.test(TM_DATA),
         'falta la protección del stock local sin publicar');
-    ok(/_tmConservarStockLocal\(productos\);\s*\n\s*localStorage\.setItem\('productos'/.test(TM_DATA),
+    ok(/_tmConservarStockLocal\((productos|_todos)\);\s*\n\s*localStorage\.setItem\('productos'/.test(TM_DATA),
         'hay que aplicarla ANTES de guardar el catálogo bajado de la red');
     ok(/productosModificados/.test(TM_DATA.slice(TM_DATA.indexOf('function _tmConservarStockLocal'),
                                                  TM_DATA.indexOf('function _tmConservarStockLocal') + 1400)),

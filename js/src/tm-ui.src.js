@@ -1296,7 +1296,7 @@ renderizarProductos = function() {
         try {
             const cached = tmParseArray(localStorage.getItem('productos'));
             if (Array.isArray(cached) && cached.length > 0) {
-                productos = cached;
+                productos = tmSoloVisibles(cached);
             }
         } catch(e) {}
     }

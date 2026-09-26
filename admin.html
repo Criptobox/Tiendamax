@@ -426,6 +426,13 @@ try{var _piel=localStorage.getItem('tm_piel');
   .pcard-acts { display:flex; gap:7px; flex-shrink:0; align-self:flex-start; }
   .pico { width:44px; height:44px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
   .pico:hover { transform:translateY(-1px); }
+  /* Interruptor de categoría/subcategoría: verde = se ve en la tienda. */
+  .cat-sw { position:relative; width:46px; height:26px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.10); cursor:pointer; flex-shrink:0; padding:0; transition:background .15s; }
+  .cat-sw::after { content:''; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#fff; transition:transform .15s; }
+  .cat-sw[aria-checked="true"] { background:#1faa59; border-color:#1faa59; }
+  .cat-sw[aria-checked="true"]::after { transform:translateX(20px); }
+  .cat-off { opacity:.55; }
+  .cat-off-tag { font-size:10px; padding:3px 7px; border-radius:8px; background:rgba(231,76,60,0.18); color:#ff8a80; font-weight:700; flex-shrink:0; }
   .pico.edit { background:rgba(52,100,160,0.35); border-color:rgba(52,152,219,0.35); }
   .pico.del { background:rgba(120,45,45,0.35); border-color:rgba(231,76,60,0.3); }
   .pico.star { background:rgba(70,60,35,0.45); border-color:rgba(241,196,15,0.25); filter:grayscale(1) opacity(0.55); }
@@ -2059,7 +2066,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=662e05ac"></script>
+<script src="js/tm-bundle.js?v=8f281982"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2132,7 +2139,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=dcf96cd5"></script>
-<script src="js/admin-copilot.js?v=4ae635cd"></script>
+<script src="js/admin-copilot.js?v=349f1753"></script>
 
 <script>
 (function(){
@@ -2479,6 +2486,7 @@ async function cargarDatos(recargar){
   syncProductos(); // unifica PRODUCTOS con el bareword del motor y window.productos
   _ofertasFinAutoRevertir(); // ofertas con fecha de fin ya vencidas: revertir de una vez
   CATEGORIAS = await jget('categorias.json') || [];
+  catApDesdeRepo(CATEGORIAS);
   SUBCATS = await jget('subcategorias.json') || [];
   RADAR = await jget('radar.json');
   VENTAS = lsVentas();
@@ -4302,17 +4310,19 @@ function renderCategorias(){
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div class="${catApagada(nm)?'cat-off':''}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">${catApSwitch(nm)}<div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div>${catApagada(nm)?'<span class="cat-off-tag">Apagada</span>':''}<span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
       if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
       if(!subs || !subs.length) return '';
       const ce=escJsAttr(nm);
-      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=escJsAttr(s);return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
+      const catOff=catApagada(nm);
+      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}${catOff?' <span class="cat-off-tag">Categoría apagada: no sale ninguna</span>':''}</div>${subs.map(s=>{const se=escJsAttr(s);const off=catApagada(nm,s);return `<div class="${off||catOff?'cat-off':''}" style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px">${catApSwitch(nm,s)}<div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div>${off?'<span class="cat-off-tag">Apagada</span>':''}<span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
-  $('#cat-list').innerHTML = pills + addForm + body;
+  $('#cat-list').innerHTML = pills + `<div id="cat-ap-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px"></div>` + addForm + body;
+  catApAviso();
 }
 function catAgregar(){
   if(typeof agregarCategoria!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
@@ -4350,6 +4360,7 @@ function catRenombrar(nm){
   const names=catNombres().map(c=>c===nm?nuevo:c);
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); if(ic[nm]){ ic[nuevo]=ic[nm]; delete ic[nm]; }
   _saveCats(names, ic);
+  catApRenombrar(nm, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)){ p.categoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
   renderCategorias(); renderProductos(); fillAgregarCategorias();
@@ -4382,6 +4393,7 @@ function subRenombrar(cat, s){
   let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
   if(map[cat]) map[cat]=map[cat].map(x=>x===s?nuevo:x);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
+  catApRenombrar(cat, null, s, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)){ p.subcategoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   renderCategorias();
   showToast('✏️ Subcategoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
@@ -4393,6 +4405,163 @@ function subBorrar(cat, s){
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
   renderCategorias();
   showToast('🗑️ Subcategoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
+/* ── Apagar / encender categorías y subcategorías ──
+   Apagada = no sale en la tienda: ni la tarjeta, ni la pestaña, ni sus
+   productos (rejilla, búsqueda, rebajas, destacados, Max), ni sus páginas
+   /p/ y /c/, ni el sitemap, ni los avisos push. No borra nada: al encenderla
+   vuelve tal cual estaba.
+
+   Va dentro de categorias.json (clave `apagadas`) porque la tienda ya baja
+   ese fichero ANTES que los productos: otro fichero sería otra ida y vuelta
+   en cada visita desde un 3G.
+
+   Mismo patrón que los grupos y las marcas de 🔀 Comparar: el toque se guarda
+   aquí al momento y en el repo 4 s después, releyéndolo justo antes de
+   escribir; se fusiona por entrada (gana la hora más reciente) y encender
+   deja constancia {off:false} en vez de borrar la entrada, o el otro
+   teléfono, que aún la tiene apagada, la volvería a apagar. No espera a
+   "Actualizar tienda": un interruptor que no hace nada hasta otro botón no
+   es un interruptor. */
+const CAT_AP_LS='tm_cat_apagadas_panel';
+const CAT_AP_LAPIDA_DIAS=60;
+let CAT_AP_ESTADO='', _catApTimer=null, _catApSubiendo=false, _catApMemo=null;
+function _catApVacio(){ return {categorias:{}, subcategorias:{}}; }
+function _catApLimpio(a){
+  const o=_catApVacio(); if(!a||typeof a!=='object'||Array.isArray(a)) return o;
+  const ok=e=>e&&typeof e==='object'&&typeof e.off==='boolean'&&Number(e.ts)>0;
+  const cs=a.categorias&&typeof a.categorias==='object'?a.categorias:{};
+  const ss=a.subcategorias&&typeof a.subcategorias==='object'?a.subcategorias:{};
+  Object.keys(cs).forEach(k=>{ const e=cs[k]; if(ok(e)) o.categorias[k]={off:e.off, ts:Number(e.ts)}; });
+  Object.keys(ss).forEach(c=>{ const m=ss[c]; if(!m||typeof m!=='object') return;
+    Object.keys(m).forEach(x=>{ const e=m[x]; if(ok(e)) (o.subcategorias[c]=o.subcategorias[c]||{})[x]={off:e.off, ts:Number(e.ts)}; }); });
+  return o;
+}
+function catApFusionar(a,b){
+  a=_catApLimpio(a); b=_catApLimpio(b);
+  const o=_catApVacio(), gana=(x,y)=>!x?y:!y?x:(y.ts>x.ts?y:x);
+  new Set([...Object.keys(a.categorias),...Object.keys(b.categorias)]).forEach(k=>{ o.categorias[k]=gana(a.categorias[k],b.categorias[k]); });
+  new Set([...Object.keys(a.subcategorias),...Object.keys(b.subcategorias)]).forEach(c=>{
+    const ma=a.subcategorias[c]||{}, mb=b.subcategorias[c]||{}, m={};
+    new Set([...Object.keys(ma),...Object.keys(mb)]).forEach(x=>{ m[x]=gana(ma[x],mb[x]); });
+    o.subcategorias[c]=m;
+  });
+  // Una "encendida" vieja ya no le gana a nadie: se poda.
+  const lim=Date.now()-CAT_AP_LAPIDA_DIAS*864e5;
+  Object.keys(o.categorias).forEach(k=>{ const e=o.categorias[k]; if(!e.off&&e.ts<lim) delete o.categorias[k]; });
+  Object.keys(o.subcategorias).forEach(c=>{ const m=o.subcategorias[c];
+    Object.keys(m).forEach(x=>{ if(!m[x].off&&m[x].ts<lim) delete m[x]; });
+    if(!Object.keys(m).length) delete o.subcategorias[c]; });
+  return o;
+}
+// Para comparar sin que el orden de las claves cuente como cambio.
+function _catApFirma(a){
+  const l=[]; a=_catApLimpio(a);
+  Object.keys(a.categorias).forEach(k=>l.push(k+'|'+a.categorias[k].off+'|'+a.categorias[k].ts));
+  Object.keys(a.subcategorias).forEach(c=>Object.keys(a.subcategorias[c]).forEach(x=>{ const e=a.subcategorias[c][x]; l.push(c+'>'+x+'|'+e.off+'|'+e.ts); }));
+  return l.sort().join('\n');
+}
+function _catApLocal(){ try{ return _catApLimpio(JSON.parse(localStorage.getItem(CAT_AP_LS)||'null')); }catch(e){ return _catApVacio(); } }
+function _catApRemoto(){ return _catApLimpio(CATEGORIAS&&!Array.isArray(CATEGORIAS)?CATEGORIAS.apagadas:null); }
+function _catApGuardar(a){ _catApMemo=null; tmGuardarLS(CAT_AP_LS, a); }
+function catApActual(){ return _catApMemo || (_catApMemo=catApFusionar(_catApRemoto(), _catApLocal())); }
+function _catApBuscar(obj, nombre){ const n=norm(nombre); return Object.keys(obj||{}).find(k=>norm(k)===n); }
+function catApagada(cat, sub){
+  const a=catApActual();
+  if(sub==null){ const k=_catApBuscar(a.categorias,cat); return !!(k&&a.categorias[k].off); }
+  const kc=_catApBuscar(a.subcategorias,cat); if(!kc) return false;
+  const ks=_catApBuscar(a.subcategorias[kc],sub); return !!(ks&&a.subcategorias[kc][ks].off);
+}
+// Un producto no sale si su categoría o su subcategoría están apagadas.
+function prodApagado(p){ return !!p && (catApagada(p.categoria) || (!!p.subcategoria && catApagada(p.categoria, p.subcategoria))); }
+window.tmProductoApagado = prodApagado;
+function catApSwitch(cat, sub){
+  const on=!catApagada(cat, sub), nombre=sub==null?cat:sub;
+  const args=sub==null?`'${escJsAttr(cat)}'`:`'${escJsAttr(cat)}','${escJsAttr(sub)}'`;
+  return `<button type="button" class="cat-sw" role="switch" aria-checked="${on}" aria-label="${esc((on?'Apagar ':'Encender ')+nombre)}" title="${on?'Se ve en la tienda · tocar para apagar':'Apagada · tocar para encender'}" onclick="catApToggle(${args})"></button>`;
+}
+function catApToggle(cat, sub){
+  const off=!catApagada(cat, sub), a=catApActual(), e={off, ts:Date.now()};
+  if(sub==null){ a.categorias[_catApBuscar(a.categorias,cat)||cat]=e; }
+  else {
+    const kc=_catApBuscar(a.subcategorias,cat)||cat, m=a.subcategorias[kc]=a.subcategorias[kc]||{};
+    m[_catApBuscar(m,sub)||sub]=e;
+  }
+  _catApGuardar(a);
+  renderCategorias();
+  catApSubirLuego();
+  const n=PRODUCTOS.filter(p=>norm(p.categoria)===norm(cat)&&(sub==null||norm(p.subcategoria)===norm(sub))).length;
+  showToast(off?'⏸️ '+(sub==null?cat:sub)+' apagada':'▶️ '+(sub==null?cat:sub)+' encendida',
+    (off?'Sus '+n+' producto(s) dejan de salir en la tienda':'Sus '+n+' producto(s) vuelven a salir en la tienda')+' en 1–2 min');
+}
+/* Renombrar: el nombre nuevo hereda lo apagado. El viejo se queda como
+   estaba —apagado— porque el renombre de los productos no llega a la tienda
+   hasta "Actualizar tienda", y encenderlo ya los enseñaría en ese hueco. */
+function catApRenombrar(cat, nuevo, sub, nuevoSub){
+  const a=catApActual(), ts=Date.now(); let cambio=false;
+  if(sub==null){
+    if(catApagada(cat)){ a.categorias[nuevo]={off:true,ts}; cambio=true; }
+    const kc=_catApBuscar(a.subcategorias,cat);
+    if(kc){ const m=a.subcategorias[kc]; Object.keys(m).forEach(x=>{ if(m[x].off){ (a.subcategorias[nuevo]=a.subcategorias[nuevo]||{})[x]={off:true,ts}; cambio=true; } }); }
+  } else if(catApagada(cat, sub)){
+    const kc=_catApBuscar(a.subcategorias,cat)||cat; (a.subcategorias[kc]=a.subcategorias[kc]||{})[nuevoSub]={off:true,ts}; cambio=true;
+  }
+  if(cambio){ _catApGuardar(a); catApSubirLuego(); }
+}
+function catApSubirLuego(){ CAT_AP_ESTADO='pendiente'; catApAviso(); clearTimeout(_catApTimer); _catApTimer=setTimeout(catApSubir,4000); }
+async function catApSubir(){
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  if(!user||!repo||!token||typeof subirArchivoAGitHub!=='function'||typeof _tmLeerJsonRepoFresco!=='function'){ CAT_AP_ESTADO='sin-token'; catApAviso(); return false; }
+  if(_catApSubiendo){ catApSubirLuego(); return false; }
+  _catApSubiendo=true; CAT_AP_ESTADO='guardando'; catApAviso();
+  try{
+    // Se relee justo antes de escribir, y sin haberlo leído NO se escribe:
+    // subir solo la clave `apagadas` dejaría la tienda sin categorías.
+    const remoto=await _tmLeerJsonRepoFresco(user, repo, token, 'categorias.json');
+    if(!remoto||typeof remoto!=='object'||!Array.isArray(remoto.nombres)) throw new Error('no pude leer categorias.json');
+    const f=catApFusionar(remoto.apagadas, _catApLocal());
+    _catApGuardar(f);
+    if(_catApFirma(remoto.apagadas)!==_catApFirma(f)){
+      await subirArchivoAGitHub(user, repo, token, 'categorias.json', Object.assign({}, remoto, {apagadas:f}));
+    }
+    if(CATEGORIAS&&!Array.isArray(CATEGORIAS)) CATEGORIAS.apagadas=f;
+    _catApMemo=null;
+    CAT_AP_ESTADO='guardado'; return true;
+  }catch(e){ CAT_AP_ESTADO='error'; return false; }
+  finally{ _catApSubiendo=false; catApAviso(); }
+}
+// Al cargar: lo tocado en este teléfono que el repo no tiene (una subida que
+// falló, un toque sin red) se sube solo.
+function catApDesdeRepo(cat){
+  const r=_catApLimpio(cat&&!Array.isArray(cat)?cat.apagadas:null), f=catApFusionar(r,_catApLocal());
+  _catApGuardar(f);
+  if(_catApFirma(f)!==_catApFirma(catApFusionar(r,null))) catApSubirLuego();
+}
+// "Actualizar tienda" reescribe categorias.json entero: lo apagado tiene que
+// viajar también, o esa publicación lo encendería todo.
+// Sin nada apagado nunca, la clave no se crea: un categorias.json igual al
+// del repo no se sube (ver la poda de "lo que ya está igual").
+window.tmApagadasParaSubir = remoto => {
+  const f=catApFusionar(remoto, _catApLocal());
+  return (remoto || Object.keys(f.categorias).length || Object.keys(f.subcategorias).length) ? f : undefined;
+};
+function catApAviso(){
+  const el=document.getElementById('cat-ap-estado'); if(!el) return;
+  const a=catApActual();
+  const nc=Object.keys(a.categorias).filter(k=>a.categorias[k].off).length;
+  let ns=0; Object.keys(a.subcategorias).forEach(c=>Object.keys(a.subcategorias[c]).forEach(x=>{ if(a.subcategorias[c][x].off) ns++; }));
+  const n=PRODUCTOS.filter(prodApagado).length;
+  const resumen=(nc||ns)
+    ? `⏸️ Apagadas: ${nc?nc+' categoría'+(nc>1?'s':''):''}${nc&&ns?' y ':''}${ns?ns+' subcategoría'+(ns>1?'s':''):''} · ${n} producto${n===1?'':'s'} no sale${n===1?'':'n'} en la tienda.`
+    : 'Verde = se ve en la tienda. Apagar oculta la categoría y sus productos; no borra nada.';
+  const est={
+    pendiente:'⏳ Se guarda en unos segundos…',
+    guardando:'⏳ Guardando…',
+    guardado:'✅ Guardado: la tienda lo refleja en 1–2 min.',
+    error:'⚠️ No se pudo guardar. <button class="btn btn-ghost" style="padding:2px 8px;font-size:11px" onclick="catApSubir()">Reintentar</button>',
+    'sin-token':'⚠️ Falta el token de GitHub en ⚙️ Configuración: por ahora solo está en este teléfono.',
+  }[CAT_AP_ESTADO]||'';
+  el.innerHTML=esc(resumen)+(est?'<br>'+est:'');
 }
 /* ── ALMACENES ──
    Solo para organización interna del dueño: NO se publica en productos.json
@@ -7068,10 +7237,13 @@ let PUB_HOY_SALTO = 0;
  *  WhatsApp pero nunca en Revólico sigue siendo trabajo pendiente, que es como
  *  se ve desde fuera. Primero los que no están en ningún lado, y a igualdad,
  *  el que lleva más tiempo sin moverse. */
+/* Lo que está en una categoría o subcategoría apagada no sale en la tienda:
+   su enlace no lleva a nada, así que tampoco se propone publicarlo. */
+function pubEnTienda(p){ return !!p && p.activo!==false && !prodApagado(p); }
 function pubHoyCandidatos(){
   const hr=pubHistRed();
   return PRODUCTOS
-    .filter(p=>p.activo!==false && Number(p.stock||0)>0)
+    .filter(p=>pubEnTienda(p) && Number(p.stock||0)>0)
     // Se ve y nadie lo pide: eso no se arregla publicándolo otra vez, así que
     // no ocupa un sitio en la cola. Sale aparte, debajo.
     .filter(p=>!pubSeVePeroNadieLoPide(p.id))
@@ -7099,7 +7271,7 @@ function pubHoyCandidatos(){
 function pubSeVenYNadieLosPide(){
   if(!PUB_STATS.listo) return [];
   return PRODUCTOS
-    .filter(p=>p.activo!==false && Number(p.stock||0)>0 && pubSeVePeroNadieLoPide(p.id))
+    .filter(p=>pubEnTienda(p) && Number(p.stock||0)>0 && pubSeVePeroNadieLoPide(p.id))
     .sort((a,b)=>pubVistasDe(b.id)-pubVistasDe(a.id));
 }
 function pubSeVenHTML(){
@@ -7139,7 +7311,7 @@ function pubHoyHTML(){
     </div>`;
   }
   const _hr=pubHistRed();
-  const conStock=PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0);
+  const conStock=PRODUCTOS.filter(p=>pubEnTienda(p)&&Number(p.stock||0)>0);
   const total=conStock.length;
   const nunca=conStock.filter(p=>!_hr[String(p.id)]).length;
   const hr=pubHistRed();
@@ -7275,8 +7447,8 @@ function pubRenderShareList(){
 }
 /* ── Publicar por categoría: texto + imagen con todos los productos de una categoría ── */
 const _pubCatBag=new Image(); try{ _pubCatBag.src='/iconos/bag.png'; }catch(e){}
-function pubCatCats(){ return [...new Set(PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort(); }
-function pubCatProds(cat){ return PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat); }
+function pubCatCats(){ return [...new Set(PRODUCTOS.filter(p=>pubEnTienda(p)&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+function pubCatProds(cat){ return PRODUCTOS.filter(p=>pubEnTienda(p)&&Number(p.stock||0)>0&&(p.categoria||'General')===cat); }
 function pubCatEmoji(nombre,cat){
   const norm2=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const n=norm2(nombre), c=norm2(cat);
@@ -8095,7 +8267,7 @@ window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subA
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
-window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
+window.catRenombrar=catRenombrar; window.catApToggle=catApToggle; window.catApSubir=catApSubir; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;

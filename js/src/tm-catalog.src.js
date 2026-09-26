@@ -138,7 +138,13 @@ function guardarCategorias() {
         const repo = localStorage.getItem('githubRepo');
         const token = localStorage.getItem('githubToken');
         if (!user || !repo || !token) return;
-        subirArchivoAGitHub(user, repo, token, 'categorias.json', { nombres: categorias, iconos: iconosPersonalizados }).catch(() => {});
+        // Se relee para no perder `apagadas`, que este guardado no gestiona.
+        _tmLeerJsonRepoFresco(user, repo, token, 'categorias.json').catch(() => null).then(r => {
+            const d = { nombres: categorias, iconos: iconosPersonalizados };
+            const ap = (typeof window.tmApagadasParaSubir === 'function') ? window.tmApagadasParaSubir(r && r.apagadas) : (r && r.apagadas);
+            if (ap) d.apagadas = ap;
+            return subirArchivoAGitHub(user, repo, token, 'categorias.json', d);
+        }).catch(() => {});
         subirArchivoAGitHub(user, repo, token, 'subcategorias.json', tmParseObject(localStorage.getItem('subcategorias'))).catch(() => {});
     }, 2000);
 }
@@ -489,13 +495,19 @@ async function _tmMergeCategoriasConRepo(user, repo, remotoYaLeido) {
     const _j = (remotoYaLeido !== undefined) ? remotoYaLeido
              : await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'categorias.json');
     if (_j && Array.isArray(_j.nombres)) remoto = _j;
-    if (!remoto) return local;
+    // Lo apagado desde el panel (ver catApSubir en admin.html) viaja en este
+    // mismo fichero: reescribirlo sin la clave lo encendería todo. Sin el
+    // panel cargado se conserva lo que ya hubiera en el repo.
+    const apR = remoto ? remoto.apagadas : undefined;
+    const apagadas = (typeof window.tmApagadasParaSubir === 'function') ? window.tmApagadasParaSubir(apR) : apR;
+    const conApagadas = o => (apagadas ? Object.assign(o, { apagadas }) : o);
+    if (!remoto) return conApagadas(local);
 
     const eliminadas = new Set(tmParseArray(localStorage.getItem('categoriasEliminadas')));
     const nombres = local.nombres.slice();
     remoto.nombres.forEach(n => { if (!nombres.includes(n) && !eliminadas.has(n)) nombres.push(n); });
     const iconos = Object.assign({}, remoto.iconos || {}, local.iconos);
-    return { nombres, iconos };
+    return conApagadas({ nombres, iconos });
 }
 
 // ── Anti-pisado: igual que la de categorías, pero para subcategorias.json

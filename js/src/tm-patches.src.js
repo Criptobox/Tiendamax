@@ -408,7 +408,7 @@ function _procesarDeepLink() {
             // no lo puede revivir una descarga de productos.json.
             if (typeof _tmConservarStockLocal === 'function') _tmConservarStockLocal(data);
             try { localStorage.setItem('productos', JSON.stringify(data)); } catch(e) {}
-            if (typeof productos !== 'undefined') { productos.length = 0; productos.push(...data); }
+            if (typeof productos !== 'undefined') { productos.length = 0; productos.push(...tmSoloVisibles(data)); }
             return abrir();
         } catch(e) { return false; }
     };

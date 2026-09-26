@@ -22,6 +22,8 @@ from datetime import date
 from html import escape
 from pathlib import Path
 
+import categorias_apagadas
+
 ROOT = Path(__file__).resolve().parents[1]
 PROD = ROOT / "productos.json"
 CONF = ROOT / "config.json"
@@ -1202,23 +1204,35 @@ def main() -> int:
         print("⚠️  Sin databaseURL en config.json: el 'avísame' de las fichas "
               "agotadas no podrá guardar nada.", file=sys.stderr)
 
-    n_written, removed = regenerate_pages(products, wa_num, rtdb)
+    # Lo apagado en el panel no sale en la tienda, y tampoco aquí: sin página
+    # /p/ ni /c/, sin enlace en el pie y fuera del sitemap. Una /p/ que
+    # siguiera viva sería una puerta a comprar lo que el dueño retiró. Al
+    # encender la categoría, la siguiente pasada las vuelve a crear.
+    # subcategorias.json y comisiones sí van con el catálogo entero: son
+    # datos, no páginas, y el panel los necesita todos.
+    apagadas = categorias_apagadas.leer(CATS)
+    visibles = apagadas.visibles(products)
+    if apagadas.hay:
+        print(f"⏸️  {len(products) - len(visibles)} producto(s) en categorías o "
+              f"subcategorías apagadas: fuera de /p/, /c/ y el sitemap")
+
+    n_written, removed = regenerate_pages(visibles, wa_num, rtdb)
     print(f"   Páginas /p/ actualizadas: {n_written}, borradas: {len(removed)}")
 
-    n_cat_written, cat_removed = regenerate_category_pages(products)
+    n_cat_written, cat_removed = regenerate_category_pages(visibles)
     print(f"   Páginas /c/ actualizadas: {n_cat_written}, borradas: {len(cat_removed)}")
-    category_slugs = sorted({slugify((p.get("categoria") or "").strip()) for p in products if p.get("categoria")})
+    category_slugs = sorted({slugify((p.get("categoria") or "").strip()) for p in visibles if p.get("categoria")})
 
     # Mismo orden que las páginas /c/: más productos primero.
     por_cat: dict[str, int] = {}
-    for p in products:
+    for p in visibles:
         c = (p.get("categoria") or "").strip()
         if c:
             por_cat[c] = por_cat.get(c, 0) + 1
     cats_ordenadas = sorted(por_cat, key=lambda c: -por_cat[c])
     regenerate_home_nav(cats_ordenadas, {c: slugify(c) for c in cats_ordenadas})
 
-    if regenerate_sitemap(products, category_slugs):
+    if regenerate_sitemap(visibles, category_slugs):
         print("   sitemap.xml actualizado")
 
     manual_subs = read_json(SUBS, {})
