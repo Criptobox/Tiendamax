@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-26T00:44:18Z",
+ "actualizado": "2026-09-26T07:47:45Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 111,
  "productos": [
@@ -715,7 +715,7 @@
    "nombre": "Mikrotik SXT sq lite 2",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 7,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -727,7 +727,7 @@
    "nombre": "Mikrotik SXTsq 5 lite",
    "precio": 130.0,
    "precioMoneda": "USD",
-   "stock": 36,
+   "stock": 33,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -750,7 +750,7 @@
    "nombre": "Nanostation loco m5",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 43,
+   "stock": 42,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -783,7 +783,7 @@
    "nombre": "Nanostation m5",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 1,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1093,8 +1093,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1105,8 +1106,9 @@
    "stock": 19,
    "categoria": "Utiles",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 20.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1778336859697-c6406584.webp"
   },
   {
@@ -1125,7 +1127,7 @@
    "nombre": "Tplink Archer AX1450 Doble Banda",
    "precio": 80.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
