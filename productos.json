@@ -264,7 +264,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "bascula-digital-alta",
+    "slug": "bascula-digital",
     "comision": 1500,
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
     "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
@@ -326,7 +326,10 @@
       "Monitoreo de peso personal y control de salud."
     ],
     "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
-    "rev": 1790459156781
+    "rev": 1790459156781,
+    "slugsAnteriores": [
+      "bascula-digital-alta"
+    ]
   },
   {
     "id": 1778102582909,
@@ -635,7 +638,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cpe-exterior-kuwfi-4g-wifi",
+    "slug": "cpe-kuwfi-4g",
     "comision": 10,
     "specs": [
       "📡 4G LTE",
@@ -715,7 +718,10 @@
       "1× Manual de usuario"
     ],
     "rev": 1790345974779,
-    "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie."
+    "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie.",
+    "slugsAnteriores": [
+      "cpe-exterior-kuwfi-4g-wifi"
+    ]
   },
   {
     "id": 1778104423316,
@@ -887,7 +893,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "inversor-solar-mppt-3-6kw",
+    "slug": "inversor-hibrido-3600w",
     "comision": 25,
     "specs": [
       "⚡ Potencia: 3.6kW",
@@ -954,6 +960,9 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778104599386.webp"
+    ],
+    "slugsAnteriores": [
+      "inversor-solar-mppt-3-6kw"
     ]
   },
   {
@@ -1104,7 +1113,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 5,
-    "slug": "generador-solar-ac180",
+    "slug": "bluetti-ac180",
     "comision": 15,
     "specs": [
       "⚡ 1800W de Potencia / 1152Wh Capacidad",
@@ -1194,7 +1203,10 @@
       "1× Tornillo de conexión a tierra",
       "1× Manual de usuario y tarjeta de garantía"
     ],
-    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto."
+    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
+    "slugsAnteriores": [
+      "generador-solar-ac180"
+    ]
   },
   {
     "id": 1778104985977,
@@ -1338,7 +1350,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ag13-40-c-4014-5l",
+    "slug": "mannol-ag13-plus-4014-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13+ ( - 40 °C) ADVANCED 4014. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1361,6 +1373,9 @@
     ],
     "incluye": [
       "1x Mannol Antifreeze AG13+ ( - 40 °c) Advanced 4014. 5L"
+    ],
+    "slugsAnteriores": [
+      "mannol-ag13-40-c-4014-5l"
     ]
   },
   {
@@ -1376,7 +1391,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ag13-40-c-4013-5l",
+    "slug": "mannol-ag13-4013-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13 ( - 40 °C) HIGHTEC 4013. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG13 Hightec (código 4013), color verde, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1399,6 +1414,9 @@
     ],
     "incluye": [
       "1x Mannol Antifreeze AG13 ( - 40 °c) Hightec 4013. 5L"
+    ],
+    "slugsAnteriores": [
+      "mannol-ag13-40-c-4013-5l"
     ]
   },
   {
@@ -1414,7 +1432,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ag11-40-c-4011-5l",
+    "slug": "mannol-ag11-4011-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG11 ( - 40 °C) LONGTERM 4011. 5L",
     "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
     "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
@@ -1437,6 +1455,9 @@
     ],
     "incluye": [
       "1x Mannol Antifreeze AG11 ( - 40 °c) Longterm 4011. 5L"
+    ],
+    "slugsAnteriores": [
+      "mannol-ag11-40-c-4011-5l"
     ]
   },
   {
@@ -1452,7 +1473,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "juego-fundas-edicion",
+    "slug": "fundas-asientos-elegance",
     "comision": 10,
     "seoTitle": "FORROS DE ASIENTOS DE LUJO PARA AUTOS en Cuba | TiendaMax",
     "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
@@ -1507,7 +1528,10 @@
     "incluye": [
       "Incluye fundas completas para asientos delanteros y traseros."
     ],
-    "descripcion": "Protección de alta gama y diseño ergonómico para interiores de vehículo impecables."
+    "descripcion": "Protección de alta gama y diseño ergonómico para interiores de vehículo impecables.",
+    "slugsAnteriores": [
+      "juego-fundas-edicion"
+    ]
   },
   {
     "id": 1778213940333,
@@ -1950,7 +1974,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "camaras-seguridad-v380-pro",
+    "slug": "camaras-v380-pro",
     "comision": 1.8,
     "seoTitle": "CÁMARAS DE SEGURIDAD (V380 PRO ) en Cuba | TiendaMax",
     "seoDescription": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz…",
@@ -2015,6 +2039,9 @@
     ],
     "incluye": [
       "1x Cámara Wi-Fi V380 PRO tipo bombillo"
+    ],
+    "slugsAnteriores": [
+      "camaras-seguridad-v380-pro"
     ]
   },
   {
@@ -2271,7 +2298,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "adaptador-poe-24v-0-3a",
+    "slug": "adaptador-poe-ubiquiti-24v",
     "comision": 1500,
     "specs": [
       "⚡ Ubiquiti Original"
@@ -2343,7 +2370,10 @@
       "1× Adaptador PoE Ubiquiti (24V - 0.3A)",
       "1× Cable de alimentación AC con conexión a tierra"
     ],
-    "descripcion": "Inyector PoE original de Ubiquiti, diseñado para alimentar de manera segura y eficiente puntos de acceso, radios y equipos de red que requieren una entrada de 24V y 0.3A. La fiabilidad que tus equipos de red necesitan."
+    "descripcion": "Inyector PoE original de Ubiquiti, diseñado para alimentar de manera segura y eficiente puntos de acceso, radios y equipos de red que requieren una entrada de 24V y 0.3A. La fiabilidad que tus equipos de red necesitan.",
+    "slugsAnteriores": [
+      "adaptador-poe-24v-0-3a"
+    ]
   },
   {
     "id": 1778384769262,
@@ -2682,7 +2712,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ts-4-15w40-7104-5l",
+    "slug": "mannol-ts4-15w40-7104-5l",
     "seoTitle": "MANNOL TS - 4 SHPD 15W - 40 7104. 5L en Cuba | TiendaMax",
     "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…",
     "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros.",
@@ -2718,6 +2748,9 @@
     ],
     "incluye": [
       "1x Mannol ts - 4 SHPD 15W - 40 7104. 5L"
+    ],
+    "slugsAnteriores": [
+      "mannol-ts-4-15w40-7104-5l"
     ]
   },
   {
@@ -2784,7 +2817,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "20w50-s-4t-motor-ff6208-1l",
+    "slug": "aceite-20w50-4t-ff6208-1l",
     "seoTitle": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L | TiendaMax",
     "seoDescription": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L disponible en TiendaMax · Motos. Compra en Cuba con pago contra entrega.",
     "descripcion": "Aceite de motor mineral FANFARO S-4T+ 20W-50 (código 6208), API SN+, JASO MA/MA2, mezcla sintética para motos y equipos de mototécnica. Envase de 1 litro.",
@@ -2814,6 +2847,9 @@
     ],
     "specs": [
       "⚙ Viscosidad (SAE): 20W-50"
+    ],
+    "slugsAnteriores": [
+      "20w50-s-4t-motor-ff6208-1l"
     ]
   },
   {
@@ -2906,7 +2942,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "kit-4-zosi-disco-duro",
+    "slug": "kit-4-camaras-zosi",
     "comision": 20,
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI ( CON SU DISCO DURO ) | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
@@ -2948,6 +2984,9 @@
     ],
     "incluye": [
       "1x KIT de 4 Cámaras Zosi ( Con su Disco Duro )"
+    ],
+    "slugsAnteriores": [
+      "kit-4-zosi-disco-duro"
     ]
   },
   {
@@ -3182,7 +3221,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargador-bien-72v-5a-84v",
+    "slug": "cargador-litio-bien-72v-5a",
     "comision": 2.8,
     "seoTitle": "CARGADOR DE BATERÍA DE LITIO BIEN 72V 5A… | TiendaMax",
     "seoDescription": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo…",
@@ -3219,6 +3258,9 @@
     "specs": [
       "⚡ Voltajes: 72V / 84V",
       "⚡ Capacidad / Corriente: 5A"
+    ],
+    "slugsAnteriores": [
+      "cargador-bien-72v-5a-84v"
     ]
   },
   {
@@ -3440,7 +3482,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "cargadores-inteligentes-25a",
+    "slug": "cargador-inteligente-25a",
     "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
@@ -3484,6 +3526,9 @@
     ],
     "incluye": [
       "1x Cargadores Inteligentes de 25A"
+    ],
+    "slugsAnteriores": [
+      "cargadores-inteligentes-25a"
     ]
   },
   {
@@ -3500,7 +3545,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "controlador-60-amp-m60-ultra",
+    "slug": "controlador-powmr-m60-ultra",
     "comision": 10,
     "specs": [
       "⚡ Voltaje: 12V / 24V / 36V / 48V"
@@ -3554,7 +3599,10 @@
       "https://tiendamax.org/imagenes/img_1788979605648.webp",
       "https://tiendamax.org/imagenes/img_1788979620287.webp"
     ],
-    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real."
+    "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
+    "slugsAnteriores": [
+      "controlador-60-amp-m60-ultra"
+    ]
   },
   {
     "id": 1779562612951,
@@ -3745,7 +3793,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "raqueta-electrica-recargable",
+    "slug": "raqueta-matamoscas",
     "comision": 2,
     "seoTitle": "RAQUETA ELÉCTRICA MATA MOSQUITOS en Cuba | TiendaMax",
     "seoDescription": "¡Diles adiós a los molestos mosquitos y moscas de forma rápida y efectiva! El accesorio infaltable para mantener tu casa tranquila. 🔋 Lo mejor de esta…",
@@ -3797,6 +3845,9 @@
     ],
     "idealPara": [
       "Doméstico y control de plagas voladoras."
+    ],
+    "slugsAnteriores": [
+      "raqueta-electrica-recargable"
     ]
   },
   {
@@ -3949,7 +4000,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "tenda-rx2-pro-wifi-6",
+    "slug": "tenda-rx2-pro",
     "comision": 10,
     "seoTitle": "Tenda RX2 PRO (Wi-fi 6) en Cuba | TiendaMax",
     "seoDescription": "Router Tenda RX2 Pro, WiFi 6 de doble banda Gigabit, con 5 antenas de alta ganancia. Ideal para hogares con varios dispositivos conectados a la vez sin…",
@@ -4035,6 +4086,9 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780510677267.webp"
+    ],
+    "slugsAnteriores": [
+      "tenda-rx2-pro-wifi-6"
     ]
   },
   {
@@ -4426,7 +4480,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 17,
-    "slug": "creatina-luckycare-5000-mg",
+    "slug": "creatina-luckycare-5000mg",
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
@@ -4478,6 +4532,9 @@
     ],
     "incluye": [
       "1x Envase de creatina monohidratada 500 g"
+    ],
+    "slugsAnteriores": [
+      "creatina-luckycare-5000-mg"
     ]
   },
   {
@@ -4494,7 +4551,7 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "repetidor-tl-wa855re-n300",
+    "slug": "tplink-tl-wa855re",
     "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
@@ -4576,7 +4633,10 @@
       "1× Guía de instalación rápida"
     ],
     "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos.",
-    "rev": 1790345974779
+    "rev": 1790345974779,
+    "slugsAnteriores": [
+      "repetidor-tl-wa855re-n300"
+    ]
   },
   {
     "id": 1781711424820,
@@ -5205,7 +5265,10 @@
       "1x Diagrama de conexión"
     ],
     "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz.",
-    "slug": "transferencia-manual"
+    "slug": "transferencia-automatica",
+    "slugsAnteriores": [
+      "transferencia-manual"
+    ]
   },
   {
     "id": 1782535594832,
@@ -5347,7 +5410,10 @@
     "incluye": [
       "1x Lavadora Milexus de Doble Tina (9 kg)"
     ],
-    "slug": "lavadora-doble-tina-9-kg"
+    "slug": "lavadora-milexus-9kg",
+    "slugsAnteriores": [
+      "lavadora-doble-tina-9-kg"
+    ]
   },
   {
     "id": 1782536259878,
@@ -5759,7 +5825,10 @@
     "incluye": [
       "1x Changan CS75 PLUS 2024 (Suv Compacta)"
     ],
-    "slug": "changan-cs75-plus-2024-suv"
+    "slug": "changan-cs75-plus-2024",
+    "slugsAnteriores": [
+      "changan-cs75-plus-2024-suv"
+    ]
   },
   {
     "id": 1783453597496,
@@ -6404,8 +6473,8 @@
       "🚀 Velocidad de 450+ Mbps"
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
-    "seoTitle": "Nanostation AC Loco en Cuba | TiendaMax",
-    "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…",
+    "seoTitle": "NanoStation 5AC Loco en Cuba | TiendaMax",
+    "seoDescription": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…",
     "ficha": [
       {
         "k": "Marca",
@@ -6477,7 +6546,7 @@
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
     "rev": 1790460279269,
-    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
+    "descripcion": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
     "slug": "nanostation-5-ac-loco"
   },
   {
@@ -6848,7 +6917,10 @@
     "incluye": [
       "1x Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB"
     ],
-    "slug": "sistema-zosi-8-dvr-5mp-1tb"
+    "slug": "sistema-zosi-5mp-1tb",
+    "slugsAnteriores": [
+      "sistema-zosi-8-dvr-5mp-1tb"
+    ]
   },
   {
     "id": 1784732614444,
@@ -8005,7 +8077,10 @@
       "1× Controlador de Carga Solar MPPT 120A Y&H (12V–96V / Max PV 230V)"
     ],
     "descripcion": "Controlador de carga solar MPPT de alto rendimiento (120A) de la marca Y&H, diseñado para sistemas fotovoltaicos exigentes. Destaca por su extrema versatilidad al soportar bancos de baterías desde 12V hasta 96V, permitiendo una configuración escalable. Además, admite una entrada de paneles solares (Voc) de hasta 230VDC, optimizando la eficiencia de la instalación al permitir series de paneles más largas.",
-    "slug": "controlador-mppt-120a-h"
+    "slug": "controlador-mppt-120a-yh",
+    "slugsAnteriores": [
+      "controlador-mppt-120a-h"
+    ]
   },
   {
     "id": 1786807706672,
@@ -8197,7 +8272,10 @@
     "incluye": [
       "1x Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g"
     ],
-    "slug": "proteina-whey-1up-ice-962g"
+    "slug": "proteina-whey-1up-962g",
+    "slugsAnteriores": [
+      "proteina-whey-1up-ice-962g"
+    ]
   },
   {
     "id": 1787071784077,
@@ -8305,7 +8383,10 @@
       "1× Cable de alimentación AC",
       "1× Manual de usuario e instrucciones de operación"
     ],
-    "slug": "cargador-baterias-vevor-35a"
+    "slug": "cargador-vevor-35a",
+    "slugsAnteriores": [
+      "cargador-baterias-vevor-35a"
+    ]
   },
   {
     "id": 1787072040177,
@@ -8366,7 +8447,10 @@
       "1x Soldadora Inverter YESWELDER FLUX-140 FLEX"
     ],
     "descripcion": "Máquina de soldar inverter compacta y versátil de la marca YESWELDER (modelo FLUX-140 FLEX), diseñada para múltiples procesos incluyendo soldadura por electrodo revestido (Stick), hilo tubular sin gas (Flux-cored) y TIG de levantamiento (Lift TIG). Incorpora una pantalla digital avanzada en su panel frontal para un control preciso de los parámetros de trabajo y viene acompañada de antorchas, pinzas y rollos de alambre.",
-    "slug": "soldadora-flux-140-flex"
+    "slug": "yeswelder-flux-140-flex",
+    "slugsAnteriores": [
+      "soldadora-flux-140-flex"
+    ]
   },
   {
     "id": 1787079480177,
@@ -8673,7 +8757,10 @@
     "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…",
     "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
     "moneda": "MN",
-    "slug": "cable-red-patch-cord-cat6a"
+    "slug": "cable-red-cat6a",
+    "slugsAnteriores": [
+      "cable-red-patch-cord-cat6a"
+    ]
   },
   {
     "id": 1787698473597,
@@ -9653,7 +9740,10 @@
     ],
     "seoTitle": "VEVOR Cargador de batería inteligente 30A | TiendaMax",
     "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…",
-    "slug": "vevor-cargador-bateria-30a"
+    "slug": "cargador-vevor-30a",
+    "slugsAnteriores": [
+      "vevor-cargador-bateria-30a"
+    ]
   },
   {
     "id": 1788797303584,
@@ -9783,7 +9873,10 @@
     "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
     "rev": 1790345974779,
     "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral.",
-    "slug": "ubiquiti-networks-lap-120"
+    "slug": "ubiquiti-lap-120",
+    "slugsAnteriores": [
+      "ubiquiti-networks-lap-120"
+    ]
   },
   {
     "id": 1788797590930,
@@ -10402,7 +10495,10 @@
     "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
     "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
     "rev": 1790359425821,
-    "slug": "bielmeier-fluxmax140-110v"
+    "slug": "bielmeier-fluxmax140",
+    "slugsAnteriores": [
+      "bielmeier-fluxmax140-110v"
+    ]
   },
   {
     "id": 1789569593128,
@@ -10664,7 +10760,10 @@
     "seoDescription": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a…",
     "descripcion": "El Ubiquiti LiteBeam 5AC Gen 2 (LBE-5AC-Gen2) es una antena y dispositivo inalámbrico para exteriores de alta ganancia, diseñado para enlaces Punto a Punto (PtP) de largo alcance o como terminal cliente (CPE) de alto rendimiento en redes de proveedores WISP. Con un consumo eléctrico extremadamente reducido de apenas 7W, es una opción idónea para operar de forma continua conectado a sistemas de energía solar, bancos de acumuladores a 12V/24V o respaldos UPS sin sobrecargar la capacidad de reserva.",
     "rev": 1790183175729,
-    "slug": "ubiquiti-5ac-2-lbe-5ac-gen2"
+    "slug": "ubiquiti-litebeam-5ac-gen2",
+    "slugsAnteriores": [
+      "ubiquiti-5ac-2-lbe-5ac-gen2"
+    ]
   },
   {
     "id": 1790104955752,
@@ -10924,6 +11023,9 @@
     "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
     "rev": 1790359438006,
     "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética",
-    "slug": "mikrotik-hex-poe-rb750upr2"
+    "slug": "mikrotik-hex-poe-lite",
+    "slugsAnteriores": [
+      "mikrotik-hex-poe-rb750upr2"
+    ]
   }
 ]
