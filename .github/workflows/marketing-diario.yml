@@ -1,9 +1,11 @@
 name: Agente de marketing diario (Telegram)
 
+# Ya no corre solo: el dueño pidió quitar de Telegram el pack del día y la
+# checklist de renovar en Revólico (26-sep-2026). Lo que llega a Telegram
+# ahora es lo que cambia en la tienda principal (comparar-principal.yml), los
+# suscriptores, los interesados/lista de espera y el radar busco/compro. Se
+# deja el lanzamiento a mano por si algún día se quiere el pack puntual.
 on:
-  schedule:
-    # 8:07 AM Cuba (12:07 UTC en horario de verano; en invierno llega 7:07 AM)
-    - cron: '7 12 * * *'
   workflow_dispatch:
 
 permissions:

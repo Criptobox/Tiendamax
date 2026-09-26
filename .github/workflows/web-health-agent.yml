@@ -25,8 +25,10 @@ jobs:
         run: pip install -r scripts/requirements.txt
       - name: Probar tienda publicada y avisar
         run: python scripts/web_health_agent.py
+        # Sin BOT_TOKEN/ADMIN_CHAT_ID: el dueño quitó este aviso de Telegram
+        # (26-sep-2026). Sigue revisando la tienda y guardando el resultado en
+        # admin_meta/web_health, que es lo que enseña el Copiloto del panel;
+        # send_telegram() no manda nada sin token.
         env:
           SITE_URL: https://tiendamax.org
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

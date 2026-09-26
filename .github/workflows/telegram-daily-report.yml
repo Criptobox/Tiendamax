@@ -1,8 +1,8 @@
 name: 📊 Reporte diario Telegram
 
+# Ya no corre solo: el dueño lo quitó de Telegram (26-sep-2026). Se deja el
+# lanzamiento a mano. Ver marketing-diario.yml para lo que sí llega.
 on:
-  schedule:
-    - cron: '30 20 * * *'  # Target 9 PM Cuba (UTC-4) — compensa ~4.5h delay de GitHub Actions
   workflow_dispatch:
 
 concurrency:

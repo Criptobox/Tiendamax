@@ -365,6 +365,175 @@ def reposiciones(antes: dict[str, dict], ahora: list[dict]) -> list[dict]:
     return vueltos
 
 
+# ── Todo lo que cambió en la principal, para Telegram ──────────────────────
+# La principal cambia precios, comisiones y stock sin avisar a nadie, y hasta
+# ahora la única forma de enterarse era abrir 🔀 Comparar (o que el push de
+# «repuso N» saltara, que solo cubre un caso). Esto compara la lectura de esta
+# corrida con la que dejó la anterior —el mismo fichero que ya servía para las
+# reposiciones— y arma UN mensaje con todo lo que se movió.
+#
+# Tres reglas:
+#   · La primera corrida (sin fichero anterior) no avisa de nada: serían 111
+#     «productos nuevos».
+#   · Solo se comparan cosas de la MISMA moneda como subida/bajada; si la
+#     moneda cambió, se dice tal cual («$10 USD → 1500 MN»), nunca «bajó».
+#   · El mensaje NO se envía desde aquí: se escribe en un fichero y el
+#     workflow lo manda después de que el commit llegue a main. Si el push se
+#     rechaza, el workflow rehace la corrida sobre origin/main y el mensaje se
+#     recalcula; enviándolo aquí llegaría dos veces.
+TELEGRAM_MAX = 3900          # Telegram corta en 4096
+LINEAS_POR_BLOQUE = 12
+
+
+def _dinero(valor, moneda) -> str:
+    if valor is None:
+        return "sin dato"
+    v = int(valor) if float(valor).is_integer() else round(float(valor), 2)
+    return f"${v}" if (moneda or "USD") == "USD" else f"{v} {moneda}"
+
+
+def cambios_principal(antes: dict[str, dict], ahora: list[dict]) -> dict[str, list]:
+    """{tipo: [(fila_antes, fila_ahora), ...]} de lo que cambió entre corridas."""
+    out = {k: [] for k in ("agotados", "repuestos", "precio", "comision",
+                           "nuevos", "quitados", "cantidad")}
+    if not antes:
+        return out
+    ids_ahora = set()
+    for f in ahora:
+        ids_ahora.add(f["id"])
+        a = antes.get(f["id"])
+        if a is None:
+            out["nuevos"].append((None, f))
+            continue
+        s0, s1 = int(a.get("stock") or 0), int(f.get("stock") or 0)
+        if s0 > 0 and s1 <= 0:
+            out["agotados"].append((a, f))
+        elif s0 <= 0 < s1:
+            out["repuestos"].append((a, f))
+        elif s0 != s1:
+            out["cantidad"].append((a, f))
+        if (a.get("precio"), a.get("precioMoneda")) != (f.get("precio"), f.get("precioMoneda")) \
+                and f.get("precio") is not None:
+            out["precio"].append((a, f))
+        if (a.get("comision"), a.get("comisionMoneda")) != (f.get("comision"), f.get("comisionMoneda")) \
+                and f.get("comision") is not None:
+            out["comision"].append((a, f))
+    for pid, a in antes.items():
+        if pid not in ids_ahora:
+            out["quitados"].append((a, None))
+    return out
+
+
+def mensaje_cambios(cambios: dict[str, list], parejas: dict[str, dict],
+                    agotados_mios: set[str]) -> str:
+    """El texto para Telegram, o "" si no cambió nada.
+
+    Cada línea dice lo de la principal y, al lado, lo TUYO cuando lo tienes:
+    que la principal suba un precio solo es trabajo si tú lo vendes, y a qué
+    precio lo tienes es lo que decide si hay que tocarlo.
+    """
+    def mio_de(f):
+        return parejas.get((f or {}).get("id"))
+
+    def tuyo_stock(f):
+        m = mio_de(f)
+        if m is None:
+            return "no lo tienes en tu tienda"
+        st = int(_num(m.get("stock")) or 0)
+        return "lo tienes agotado" if st <= 0 else f"tú tienes {st}"
+
+    bloques = []
+
+    def bloque(titulo, filas, pinta):
+        if not filas:
+            return
+        lineas = [f"{titulo} ({len(filas)})"]
+        for a, f in filas[:LINEAS_POR_BLOQUE]:
+            lineas.append("• " + pinta(a, f))
+        if len(filas) > LINEAS_POR_BLOQUE:
+            lineas.append(f"  …y {len(filas) - LINEAS_POR_BLOQUE} más")
+        bloques.append("\n".join(lineas))
+
+    def agotado(a, f):
+        m = mio_de(f)
+        extra = ("lo agoté en tu tienda" if m is not None and str(m.get("id")) in agotados_mios
+                 else ("no lo tienes en tu tienda" if m is None
+                       else ("ya lo tenías agotado" if int(_num(m.get("stock")) or 0) <= 0
+                             else f"OJO: tú aún tienes {int(_num(m.get('stock')))}")))
+        return f"{f['nombre']} — tenía {int(a.get('stock') or 0)} → 0 · {extra}"
+
+    def repuesto(a, f):
+        m = mio_de(f)
+        pista = " → ponle stock en 🔀 Comparar" if m is not None and int(_num(m.get("stock")) or 0) <= 0 else ""
+        return f"{f['nombre']} — 0 → {int(f.get('stock') or 0)} · {tuyo_stock(f)}{pista}"
+
+    def precio(a, f):
+        m = mio_de(f)
+        tuyo = ""
+        if m is not None:
+            mon = "MN" if m.get("moneda") == "MN" else "USD"
+            tuyo = f" · el tuyo: {_dinero(_num(m.get('precioActual')), mon)}"
+        return (f"{f['nombre']} — {_dinero(a.get('precio'), a.get('precioMoneda'))} → "
+                f"{_dinero(f.get('precio'), f.get('precioMoneda'))}{tuyo}")
+
+    def comision(a, f):
+        m = mio_de(f)
+        tuya = ""
+        if m is not None and _num(m.get("comision")):
+            tuya = f" · la tuya: {_dinero(_num(m.get('comision')), m.get('comisionMoneda') or 'USD')}"
+        duda = f" (dudosa: {f['comisionDudosa']})" if f.get("comisionDudosa") else ""
+        return (f"{f['nombre']} — {_dinero(a.get('comision'), a.get('comisionMoneda'))} → "
+                f"{_dinero(f.get('comision'), f.get('comisionMoneda'))}{duda}{tuya}")
+
+    def nuevo(a, f):
+        return (f"{f['nombre']} — {_dinero(f.get('precio'), f.get('precioMoneda'))} · "
+                f"{int(f.get('stock') or 0)} disponibles · {tuyo_stock(f)}")
+
+    def quitado(a, f):
+        return f"{a.get('nombre')} — ya no aparece en la principal"
+
+    def cantidad(a, f):
+        return f"{f['nombre']} — {int(a.get('stock') or 0)} → {int(f.get('stock') or 0)}"
+
+    bloque("🔴 Agotados", cambios.get("agotados"), agotado)
+    bloque("🟢 Repuestos", cambios.get("repuestos"), repuesto)
+    bloque("💲 Precio", cambios.get("precio"), precio)
+    bloque("💰 Comisión", cambios.get("comision"), comision)
+    bloque("🆕 Nuevos", cambios.get("nuevos"), nuevo)
+    bloque("🗑️ Ya no están", cambios.get("quitados"), quitado)
+    bloque("📦 Cantidad disponible", cambios.get("cantidad"), cantidad)
+    if not bloques:
+        return ""
+    total = sum(len(v) for v in cambios.values())
+    texto = (f"🔀 Cambios en la tienda principal ({total})\n\n"
+             + "\n\n".join(bloques)
+             + "\n\nRevísalo en 🔀 Comparar: https://tiendamax.org/admin.html")
+    if len(texto) > TELEGRAM_MAX:
+        texto = texto[:TELEGRAM_MAX - 40].rsplit("\n", 1)[0] + "\n…(sigue en 🔀 Comparar)"
+    return texto
+
+
+def enviar_telegram(texto: str) -> bool:
+    """Lo manda al chat del dueño. Sin parse_mode: un «_» o un «*» en el
+    nombre de un producto rompía el Markdown y Telegram rechazaba todo."""
+    token, chat = os.environ.get("BOT_TOKEN", ""), os.environ.get("ADMIN_CHAT_ID", "")
+    if not (token and chat and texto.strip()):
+        print("ℹ️ Sin BOT_TOKEN/ADMIN_CHAT_ID o sin texto: no se manda nada a Telegram.")
+        return False
+    cuerpo = json.dumps({"chat_id": chat, "text": texto[:4000],
+                         "disable_web_page_preview": True}).encode("utf-8")
+    req = urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
+                                 data=cuerpo, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ok = 200 <= r.status < 300
+    except Exception as e:
+        print(f"❌ Telegram: {e}", file=sys.stderr)
+        return False
+    print("✅ Aviso de cambios enviado a Telegram." if ok else "❌ Telegram no lo aceptó.")
+    return ok
+
+
 def _norm_nombre(s: str) -> str:
     import unicodedata
     s = unicodedata.normalize("NFD", str(s or "")).encode("ascii", "ignore").decode()
@@ -403,6 +572,28 @@ def leer_enlaces(path: Path = MARCAS) -> dict[str, str]:
             if isinstance(v, dict) and v.get("mio") and not v.get("borrado")}
 
 
+def emparejar(productos: list[dict], catalogo_mio: list[dict],
+              enlaces: dict[str, str]) -> dict[str, dict]:
+    """{id de la principal: mi producto}, como cmpEmparejar en el panel.
+
+    El enlace hecho a mano primero, luego el mismo id, luego el nombre
+    normalizado idéntico —nunca uno "parecido", que en este catálogo es otro
+    producto (m2 no es m5)—. Lo usan agotar_mios y el aviso de Telegram: con
+    dos emparejamientos, el aviso diría «lo agoté en tu tienda» de un
+    producto distinto del que se agotó.
+    """
+    por_id = {str(p.get("id")): p for p in catalogo_mio}
+    por_nombre = {_norm_nombre(p.get("nombre")): p for p in catalogo_mio}
+    out: dict[str, dict] = {}
+    for f in productos:
+        a_mano = enlaces.get(f["id"])
+        mio = por_id.get(a_mano) if a_mano else None
+        mio = mio or por_id.get(f["id"]) or por_nombre.get(_norm_nombre(f["nombre"]))
+        if mio is not None:
+            out[f["id"]] = mio
+    return out
+
+
 def agotar_mios(productos: list[dict], catalogo_mio: list[dict],
                 enlaces: dict[str, str]) -> list[dict]:
     """Mis productos a la venta cuya pareja en la principal está a 0 disponible.
@@ -417,12 +608,10 @@ def agotar_mios(productos: list[dict], catalogo_mio: list[dict],
     vender. `productos` ya trae el stock disponible (físico − reservado).
     """
     por_id = {str(p.get("id")): p for p in catalogo_mio}
-    por_nombre = {_norm_nombre(p.get("nombre")): p for p in catalogo_mio}
+    parejas = emparejar(productos, catalogo_mio, enlaces)
     disponible: dict[str, int] = {}
     for f in productos:
-        a_mano = enlaces.get(f["id"])
-        mio = por_id.get(a_mano) if a_mano else None
-        mio = mio or por_id.get(f["id"]) or por_nombre.get(_norm_nombre(f["nombre"]))
+        mio = parejas.get(f["id"])
         if mio is None:
             continue
         pid = str(mio.get("id"))
@@ -550,6 +739,7 @@ def main() -> int:
 
     antes = leer_anterior()
     vueltos = reposiciones(antes, productos)
+    cambios = cambios_principal(antes, productos)
     try:
         catalogo_mio = json.loads(MIOS.read_text(encoding="utf-8"))
     except (OSError, ValueError):
@@ -578,8 +768,10 @@ def main() -> int:
     # en el panel y es el gestor quien decide cuántas pone—. Un cambio suyo
     # aún sin aplicar (cambios/*.json) puede devolver el stock viejo; la
     # siguiente corrida lo vuelve a agotar.
+    enlaces = leer_enlaces()
+    fuera: list[dict] = []
     if isinstance(catalogo_mio, list) and catalogo_mio:
-        fuera = agotar_mios(productos, catalogo_mio, leer_enlaces())
+        fuera = agotar_mios(productos, catalogo_mio, enlaces)
         if fuera:
             for p in fuera:
                 p["stock"] = 0
@@ -588,10 +780,27 @@ def main() -> int:
             for p in fuera:
                 print(f"   · {p.get('nombre')}")
 
+    # El aviso de Telegram se deja escrito; lo manda el workflow cuando el
+    # commit ya está en main (ver el bloque «Todo lo que cambió»).
+    destino = os.environ.get("AVISO_TELEGRAM", "")
+    if destino:
+        texto = mensaje_cambios(cambios, emparejar(productos, catalogo_mio or [], enlaces),
+                                {str(p.get("id")) for p in fuera})
+        Path(destino).write_text(texto, encoding="utf-8")
+        print(f"📝 Aviso de Telegram preparado: {sum(len(v) for v in cambios.values())} cambio(s)."
+              if texto else "📝 Nada que avisar por Telegram.")
+
     if relevantes:
         avisar(relevantes)
     return 0
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "--enviar-telegram":
+        try:
+            _texto = Path(sys.argv[2]).read_text(encoding="utf-8")
+        except OSError:
+            _texto = ""
+        enviar_telegram(_texto)
+        raise SystemExit(0)
     raise SystemExit(main())

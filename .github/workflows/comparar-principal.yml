@@ -11,7 +11,10 @@ on:
     # No cuesta commits: el script solo escribe si la principal cambió. De
     # madrugada no corre: el aviso al móvil tampoco sale (es_hora_diurna).
     # El botón 🔄 Actualizar del panel lo lanza a mano (workflow_dispatch).
-    - cron: '17 0-3,11-23 * * *'
+    # Cada 20 min (antes cada hora): cada cambio de la principal llega ahora
+    # por Telegram, y la gracia es enterarse antes de que un cliente pregunte
+    # por algo que ya no hay. Minutos 7/27/47, lejos de las horas en punto.
+    - cron: '7,27,47 0-3,11-23 * * *'
   workflow_dispatch:
 
 permissions:
@@ -42,9 +45,14 @@ jobs:
       # El script detecta las reposiciones comparando con el fichero que dejó
       # la corrida anterior, así que necesita el checkout de siempre — no una
       # copia limpia — y por eso no se le pasa fetch-depth.
+      # AVISO_TELEGRAM: el script deja ahí el mensaje con todo lo que cambió
+      # en la principal. NO lo manda él: se manda abajo, cuando el commit ya
+      # está en main — si el push se rechaza y la corrida se rehace, el
+      # mensaje se recalcula y llega una sola vez.
       - name: Leer el catálogo de la principal
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          AVISO_TELEGRAM: ${{ runner.temp }}/aviso-principal.txt
         run: python scripts/comparar_principal.py
 
       - name: Commit y push
@@ -52,6 +60,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          AVISO_TELEGRAM: ${{ runner.temp }}/aviso-principal.txt
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -77,6 +86,7 @@ jobs:
             if git push origin HEAD:main; then
               echo "✅ Subido."
               echo "agoto=$AGOTO" >> "$GITHUB_OUTPUT"
+              echo "subido=1" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             # Nada de rebase: productos.json lo escriben también el panel y
@@ -96,6 +106,15 @@ jobs:
           echo "❌ No se pudo subir tras varios intentos." >&2
           exit 1
 
+      # Solo si ESTA corrida subió el cambio: si otra se adelantó («ya lo dejó
+      # al día»), esa ya mandó el mismo aviso.
+      - name: Avisar por Telegram de lo que cambió
+        if: success() && steps.commit.outputs.subido == '1'
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: python scripts/comparar_principal.py --enviar-telegram "${{ runner.temp }}/aviso-principal.txt"
+
       # Los commits hechos con GITHUB_TOKEN no disparan otros workflows. Si se
       # agotó algo, las fichas /p/ (que dicen "Disponible" o "Agotado") se
       # regeneran a mano; ese workflow publica Pages al terminar.
@@ -111,8 +130,10 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/actions/workflows/regenerate-artifacts.yml/dispatches" \
             -d '{"ref":"main"}'
 
+      # Solo si hubo commit: sin él no hay nada nuevo que publicar, y cada
+      # 20 min serían 50 despliegues al día para nada.
       - name: Publicar en GitHub Pages
-        if: success()
+        if: success() && steps.commit.outputs.subido == '1'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
