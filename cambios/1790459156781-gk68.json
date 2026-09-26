@@ -1,0 +1,284 @@
+{
+  "v": 1,
+  "creado": "2026-09-26T21:45:56.781Z",
+  "productos": [
+    {
+      "id": 1778102507659,
+      "nombre": "⚖️ Báscula Digital de Alta Definición",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
+      "categoria": "UTILES",
+      "subcategoria": "HOGAR",
+      "stock": 26,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "pesa-bascula-inteligente-digital",
+      "comision": 1500,
+      "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
+      "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
+      "radar": true,
+      "precioOriginal": 0,
+      "comisionMoneda": "MN",
+      "specs": [
+        "⚖ Capacidad Máxima: Soporta hasta 396.83 lb",
+        "📏 Dimensiones: Tamaño optimizado de 27x27 cm",
+        "⚙ Tecnología / Tipo: Báscula corporal digital"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784007772666.webp",
+        "https://tiendamax.org/imagenes/img_1778102507659_94aef1.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Capacidad Máxima",
+          "v": "Soporta hasta 396.83 lb",
+          "nota": "180 kg"
+        },
+        {
+          "k": "Dimensiones",
+          "v": "Tamaño optimizado de 27x27 cm",
+          "nota": "10.63x10.63 pulgadas"
+        },
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Báscula corporal digital"
+        },
+        {
+          "k": "Material",
+          "v": "Plataforma de vidrio templado de alta resistencia"
+        },
+        {
+          "k": "Unidades",
+          "v": "Medición soportada en libras (lb) y kilogramos (kg)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Soporta hasta 396.83 lb (180 kg)."
+        },
+        {
+          "d": "División (d) de 50g para un seguimiento exacto de tu peso."
+        },
+        {
+          "d": "Pantalla digital HD de alta visibilidad para lecturas rápidas."
+        },
+        {
+          "t": "Diseño",
+          "d": "Estética moderna en color negro con acabado de alta calidad."
+        }
+      ],
+      "incluye": [
+        "1x Báscula Digital de Alta Definición"
+      ],
+      "idealPara": [
+        "Monitoreo de peso personal y control de salud."
+      ],
+      "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
+      "rev": 1790459156781
+    },
+    {
+      "id": 1782438922547,
+      "nombre": "🛜 TP-Link Archer AX1450",
+      "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
+      ],
+      "precioActual": 80,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 19,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ROUTERS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Gigabit"
+      ],
+      "fechaAgregado": "2026-06-26T01:55:22.547Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "TP-Link Archer AX1450 en Cuba | TiendaMax",
+      "seoDescription": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "Archer AX1450"
+        },
+        {
+          "k": "Velocidad Wi-Fi",
+          "v": "AX1450 Doble Banda",
+          "nota": "Wi-Fi 6: hasta 1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto WAN Gigabit + 4× puertos LAN Gigabit",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Antenas",
+          "v": "4 antenas externas fijas de alta ganancia con tecnología Beamforming"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Hasta 1500 Mbps teóricos combinados (1201 Mbps en la banda de 5 GHz con tecnología Wi-Fi 6 + 300 Mbps en 2.4 GHz)."
+        },
+        {
+          "d": "Tecnología Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO que permite transmitir datos hacia múltiples dispositivos en simultáneo reduciendo la latencia y la congestión."
+        },
+        {
+          "d": "Procesador de triple núcleo (Triple-Core) a 1.5 GHz que gestiona de manera ágil el tráfico pesado y asegura respuestas instantáneas de red."
+        },
+        {
+          "d": "Puertos Ethernet Gigabit completos (1 WAN + 4 LAN) para conexiones por cable de máxima velocidad en computadoras, consolas de videojuegos y Smart TVs."
+        },
+        {
+          "d": "Cobertura extendida mediante 4 antenas y tecnología Beamforming, orientando la señal directamente hacia los dispositivos enlazados."
+        },
+        {
+          "d": "Seguridad inalámbrica avanzada con protocolo de encriptación WPA3 para mayor protección frente a ciberataques y accesos no autorizados."
+        },
+        {
+          "d": "Compatibilidad con EasyMesh / OneMesh para integrarse con extensores compatibles y crear una red mallada fluida en todo el hogar."
+        },
+        {
+          "d": "Eficiencia energética con Target Wake Time (TWT), disminuyendo el consumo de batería en móviles y dispositivos inteligentes conectados."
+        },
+        {
+          "d": "Configuración rápida e intuitiva desde la aplicación móvil TP-Link Tether (iOS/Android) o a través de la interfaz web."
+        }
+      ],
+      "idealPara": [
+        "Hogares medianos, departamentos y oficinas que buscan dar el salto a la tecnología Wi-Fi 6 a un costo accesible.",
+        "Streaming de video en calidad 4K/UHD, teletrabajo con videollamadas fluidas y gaming online con baja latencia.",
+        "Redes domésticas con múltiples dispositivos (móviles, laptops, consolas y domótica) conectados al mismo tiempo."
+      ],
+      "incluye": [
+        "1× Router Wi-Fi 6 TP-Link Archer AX1450",
+        "1× Adaptador de corriente (12V)",
+        "1× Cable de red Ethernet RJ45",
+        "1× Guía de instalación rápida"
+      ],
+      "rev": 1790459156781,
+      "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo."
+    },
+    {
+      "id": 1785286289086,
+      "nombre": "🌐 NanoStation M5 Internacional",
+      "imagen": "https://tiendamax.org/imagenes/img_1785286287536.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1785286287536.webp"
+      ],
+      "precioActual": 230,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 1,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ 5 GHz airMAX Alta Eficiencia",
+        "📶 Antena Direccional Integrada",
+        "🔌 Puertos Ethernet con PoE Pasivo"
+      ],
+      "fechaAgregado": "2026-07-29T00:51:29.086Z",
+      "seoTitle": "NanoStation M5 Internacional en Cuba | TiendaMax",
+      "seoDescription": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Ubiquiti Networks"
+        },
+        {
+          "k": "Modelo",
+          "v": "NanoStation M5 (NSM5) - Versión Internacional"
+        },
+        {
+          "k": "Frecuencia y Velocidad",
+          "v": "5 GHz (rango ampliado 4.9 – 5.9 GHz) hasta 150+ Mbps de rendimiento real",
+          "nota": "Wi-Fi 4 / 802.11a/n airMAX"
+        },
+        {
+          "k": "Puertos",
+          "v": "2× puertos Ethernet 10/100 Mbps",
+          "nota": "1× puerto principal PoE In + 1× puerto secundario con soporte PoE Passthrough"
+        },
+        {
+          "k": "Antenas",
+          "v": "Antena direccional integrada de panel con ganancia de 16 dBi",
+          "nota": "Doble polarización 2×2 MIMO"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "CPE / Estación (Cliente), Punto de Acceso (AP), Repetidor, Enlaces Punto a Punto (PtP) y Punto a Multipunto",
+          "nota": "PtMP"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "8W máximo",
+          "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Versión Internacional desbloqueada",
+          "d": "amplia compatibilidad de frecuencias y canales en la banda de 5 GHz sin restricciones de región."
+        },
+        {
+          "d": "Tecnología propietaria airMAX (TDMA) que maximiza el rendimiento, reduce la latencia y elimina colisiones en enlaces exteriores de larga distancia."
+        },
+        {
+          "t": "Doble puerto Ethernet con PoE Passthrough",
+          "d": "permite alimentar y conectar directamente un segundo equipo (como una cámara IP u otra antena) sin necesidad de tender cables eléctricos adicionales."
+        },
+        {
+          "d": "Antena directiva de panel de alta ganancia (16 dBi) optimizada para lograr enlaces estables a distancias de 10 a 15+ km con línea de vista directa."
+        },
+        {
+          "d": "Sistema operativo airOS con herramientas de diagnóstico avanzadas, control de ancho de banda y analizador de espectro en tiempo real (airView)."
+        },
+        {
+          "d": "Indicadores LED traseros con escala de intensidad de señal para una alineación rápida, intuitiva y precisa en torres o mástiles."
+        },
+        {
+          "d": "Carcasa compacta y resistente a la intemperie (rayos UV, lluvia, viento) con protección electrostática integrada (ESD)."
+        }
+      ],
+      "idealPara": [
+        "Proveedores de Internet inalámbrico (WISP) que conectan clientes en la banda limpia de 5 GHz para evitar las interferencias de la banda 2.4 GHz.",
+        "Enlaces de media y larga distancia Punto a Punto (PtP) entre sucursales, oficinas, fincas o naves industriales.",
+        "Redes de videovigilancia y cámaras de seguridad IP en exteriores alimentadas directamente desde la antena."
+      ],
+      "incluye": [
+        "1× Antena CPE Ubiquiti NanoStation M5 (Versión Internacional)",
+        "1× Inyector PoE Pasivo (24V, 0.5A)",
+        "1× Cable de alimentación AC",
+        "1× Brida / abrazadera para montaje en mástil o poste",
+        "1× Guía de inicio rápido"
+      ],
+      "rev": 1790459156781,
+      "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
