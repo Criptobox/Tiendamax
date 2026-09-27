@@ -10253,7 +10253,6 @@
   {
     "id": 1789067953023,
     "nombre": "Compresor de Aire",
-    "descripcion": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150 PSI (10.3 BAR). Incorpora una moderna pantalla digital LCD dual retroiluminada que muestra de manera simultánea la presión real del neumático y el valor objetivo deseado. Su tecnología de parada automática detiene el bombeo al alcanzar con exactitud la presión configurada, garantizando un inflado preciso y evitando el riesgo de sobrepresión o roturas accidentales.",
     "imagen": "https://tiendamax.org/imagenes/img_1789067950442.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1789067950442.webp"
@@ -10261,7 +10260,7 @@
     "precioActual": 28,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 15,
+    "stock": 14,
     "comision": 3,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10375,7 +10374,8 @@
     "seoTitle": "Compresor de Aire en Cuba | TiendaMax",
     "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…",
     "slug": "compresor-aire",
-    "rev": 1790513978305
+    "rev": 1790526003360,
+    "descripcion": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150 PSI (10.3 BAR). Incorpora una moderna pantalla digital LCD dual retroiluminada que muestra de manera simultánea la presión real del neumático y el valor objetivo deseado. Su tecnología de parada automática detiene el bombeo al alcanzar con exactitud la presión configurada, garantizando un inflado preciso y evitando el riesgo de sobrepresión o roturas accidentales."
   },
   {
     "id": 1789068808568,
