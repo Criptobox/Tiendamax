@@ -353,6 +353,17 @@ function tmEsEmojiCP(cp) {
            (cp >= 0x1F3FB && cp <= 0x1F3FF);
 }
 
+/* El nombre de un producto sin emoji, en cualquier posición, y sin espacios
+   de más. El emoji ya no forma parte del dato: se pone solo al compartir,
+   según la categoría (regenerate_artifacts.py, og:title). Lo usan el alta y
+   la edición del panel, para que no vuelva a guardarse. */
+function tmSinEmoji(texto) {
+    let out = '';
+    for (const ch of String(texto || '')) out += tmEsEmojiCP(ch.codePointAt(0)) ? ' ' : ch;
+    return out.replace(/[\u200b\u200c\u2060\ufeff]/g, '')
+        .replace(/\(\s+/g, '(').replace(/\s+\)/g, ')').replace(/\s+/g, ' ').trim();
+}
+
 // Devuelve los paths del emoji, o '' si no está en el mapa.
 function tmIconoPaths(emoji) {
     const e = tmNormalizarEmoji(emoji);

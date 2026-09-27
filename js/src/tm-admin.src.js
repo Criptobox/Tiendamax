@@ -464,7 +464,7 @@ async function agregarProductoForm(event) {
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
-            nombre: _sinInvisibles(document.getElementById('productName').value),
+            nombre: tmSinEmoji(_sinInvisibles(document.getElementById('productName').value)),
             descripcion: _sinInvisibles(document.getElementById('productDescription').value),
             imagen: imagenPrincipal,
             imagenes: imagenes,

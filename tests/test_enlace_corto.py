@@ -123,8 +123,12 @@ class PaginasTest(unittest.TestCase):
         p = d / "p"
         ficha = (p / "router-ax1800.html").read_text(encoding="utf-8")
         self.assertIn('<link rel="canonical" href="https://tiendamax.org/p/router-ax1800">', ficha)
-        self.assertIn('<meta property="og:title" content="Router AX1800 — $140 USD">', ficha,
-                      "la vista previa dice qué es y cuánto cuesta, sin emoji")
+        # Nota «Emojis solo al compartir»: el emoji de la categoría va SOLO en
+        # og:title; el nombre (h1, <title>, JSON-LD, alt, pedido) va limpio.
+        self.assertIn('<meta property="og:title" content="📶 Router AX1800 | TiendaMax">', ficha)
+        self.assertIn('og:image:alt" content="Router AX1800"', ficha)
+        self.assertIn('"name": "Router AX1800"', ficha, "el JSON-LD lleva el nombre sin emoji")
+        self.assertIn("me%20interesa%3A%20Router%20AX1800.", ficha, "el pedido lleva el nombre sin emoji")
         self.assertIn('content="✅ 3 disponibles · Pagas al recibirlo · Garantía 3 meses. Router rápido."', ficha)
         self.assertIn('<meta name="description" content="Router rápido.">', ficha,
                       "la descripción para Google no cambia")
@@ -132,13 +136,13 @@ class PaginasTest(unittest.TestCase):
             salto = (p / viejo).read_text(encoding="utf-8")
             self.assertIn('location.replace("https://tiendamax.org/p/router-ax1800"+location.search', salto,
                           f"{viejo}: el salto tiene que conservar ?c=/?g=, o lo publicado deja de medirse")
-            self.assertIn('og:title" content="Router AX1800 — $140 USD"', salto,
+            self.assertIn('og:title" content="📶 Router AX1800 | TiendaMax"', salto,
                           f"{viejo}: WhatsApp lee las etiquetas del salto, no las de la ficha")
             self.assertIn('noindex', salto)
         # El segundo que reclama el mismo nombre se queda en su dirección de siempre.
         cable = (p / "producto-2.html").read_text(encoding="utf-8")
         self.assertNotIn('http-equiv="refresh"', cable)
-        self.assertIn('og:title" content="Cable Cat6 — 280 MN"', cable, "280 MN no son $280")
+        self.assertIn('og:title" content="📶 Cable Cat6 | TiendaMax"', cable)
         # Y en la propia página, y para Google: el MN es CUP, no USD.
         self.assertIn('<span class="tm-price">280 MN</span>', cable)
         self.assertIn('<span class="tm-orig">320 MN</span>', cable)
@@ -180,6 +184,34 @@ class AplicarCambiosTest(unittest.TestCase):
         # Y si el panel sí lo trae, manda el del panel (el gestor lo cambió).
         sube2 = {"v": 1, "productos": [{"id": 1, "nombre": "Router", "slug": "router-nuevo", "slugsAnteriores": ["router", "router-ax"]}]}
         self.assertEqual("router-nuevo", ac.aplicar(antes, [("2-a.json", sube2)])[0]["slug"])
+
+
+class EmojiAlCompartirTest(unittest.TestCase):
+    """Nota «Emojis solo al compartir productos»."""
+
+    def test_ningun_nombre_lleva_emoji(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from fill_seo import nombre_titulo
+        con = [p["nombre"] for p in PRODUCTOS if nombre_titulo(p["nombre"]) != p["nombre"]]
+        self.assertEqual([], con, "el emoji no es parte del nombre: se pone solo al compartir")
+
+    def test_emoji_por_categoria_y_sin_emoji_si_no_hay(self):
+        import regenerate_artifacts as ra
+        iconos = {"MOTOS": "🛵"}
+        self.assertEqual("🛵 Moto X | TiendaMax",
+                         ra.titulo_vista_previa({"nombre": "Moto X", "categoria": "MOTOS"}, iconos),
+                         "manda el icono que el dueño pone en el panel")
+        self.assertEqual("🔊 Bocina | TiendaMax",
+                         ra.titulo_vista_previa({"nombre": "🎶 Bocina", "categoria": "AUDIO"}, {}))
+        self.assertEqual("Teléfono | TiendaMax",
+                         ra.titulo_vista_previa({"nombre": "Teléfono", "categoria": "NUEVA"}, {}),
+                         "categoría sin emoji: nombre limpio | TiendaMax")
+
+    def test_el_panel_no_deja_guardar_emoji(self):
+        admin = (ROOT / "admin.html").read_text(encoding="utf-8")
+        alta = (ROOT / "js" / "src" / "tm-admin.src.js").read_text(encoding="utf-8")
+        self.assertIn("_nomLimpio=tmSinEmoji(_nomEscrito)", admin)
+        self.assertIn("nombre: tmSinEmoji(", alta)
 
 
 class TitulosTest(unittest.TestCase):

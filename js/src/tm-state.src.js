@@ -331,10 +331,16 @@ function seleccionarSubcategoria(subcat) {
 function actualizarCategoriaStats() {
     const statsEl = document.getElementById('categoriaStats');
     if (!statsEl) return;
-    const total = categoriaSeleccionada === 'Todas' 
-        ? productos.length 
-        : productos.filter(p => p.categoria === categoriaSeleccionada).length;
-    statsEl.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
+    // Lo mismo que cuenta su tarjeta del inicio («5 disponibles») y, aparte,
+    // los agotados que también se ven. Decía «8 productos» junto a una
+    // tarjeta de «5 disponibles»: dos cifras que no cuadraban. Los agotados
+    // siguen en la rejilla a propósito (para el «avísame»), así que se
+    // cuentan, pero por separado.
+    const sub = (typeof subcategoriaSeleccionada !== 'undefined' && subcategoriaSeleccionada !== 'Todas') ? subcategoriaSeleccionada : null;
+    const lista = productos.filter(p => (categoriaSeleccionada === 'Todas' || p.categoria === categoriaSeleccionada)
+        && (!sub || p.subcategoria === sub));
+    const disp = lista.filter(p => Number(p.stock) > 0).length, agot = lista.length - disp;
+    statsEl.textContent = `${disp} disponible${disp !== 1 ? 's' : ''}` + (agot ? ` · ${agot} agotado${agot !== 1 ? 's' : ''}` : '');
 }
 
 function volverAlInicio() {

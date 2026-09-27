@@ -1069,6 +1069,29 @@ html body .footer-premium nav[aria-label="Categorías"]{
   display:flex !important;justify-content:center !important;flex-wrap:wrap !important;gap:8px 18px !important;
   max-width:800px;margin:0 auto !important;
 }
+/* Pie en bloques con su título: «Categorías» y «Ayuda». El nav de
+   categorías lo genera regenerate_artifacts.py; el de ayuda es fijo. */
+html body .footer-premium nav.footer-nav{
+  display:block !important;text-align:center !important;
+  max-width:800px;margin:0 auto 20px !important;padding:0 !important;border-top:0 !important;
+}
+html body .footer-premium .footer-nav-tit{
+  font-family:var(--font-sans-glass) !important;font-size:11px !important;font-weight:700 !important;
+  letter-spacing:.12em !important;text-transform:uppercase !important;
+  color:var(--op-ink-2) !important;opacity:.7;margin:0 0 8px !important;
+}
+html body .footer-premium .footer-nav-links{
+  display:flex !important;justify-content:center !important;flex-wrap:wrap !important;gap:4px 10px !important;
+}
+html body .footer-premium nav[aria-label="Ayuda"] a{
+  color:var(--op-ink-2) !important;font-size:14px !important;
+  padding:6px 12px !important;border-radius:8px !important;
+  font-family:var(--font-sans-glass) !important;
+  transition:all .2s var(--op-ease) !important;text-decoration:none !important;
+}
+html body .footer-premium nav[aria-label="Ayuda"] a:hover{
+  background:var(--glass) !important;color:var(--coral-2) !important;
+}
 html body .footer-premium .footer-bottom{
   text-align:center !important;border-top:1px solid var(--glass-border) !important;
   padding-top:24px !important;

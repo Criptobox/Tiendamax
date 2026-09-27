@@ -2003,7 +2003,7 @@ try{var _piel=localStorage.getItem('tm_piel');
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="margin:0">✏️ Editar producto</h3><button class="pico" onclick="apEditClose()">✕</button></div>
     <div id="pedit-preview" class="ppv-wrap"></div>
     <input type="hidden" id="pedit-id">
-    <div class="form-group"><label class="form-label" for="pedit-nombre">Nombre</label><input class="form-input" id="pedit-nombre"></div>
+    <div class="form-group"><label class="form-label" for="pedit-nombre">Nombre</label><input class="form-input" id="pedit-nombre" placeholder="Sin emoji: se añade solo al compartir"></div>
     <div class="form-group" style="margin-top:10px">
       <label class="form-label" for="pedit-slug">Enlace corto</label>
       <div style="display:flex;align-items:center;gap:6px">
@@ -2075,7 +2075,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=dcb45cab"></script>
+<script src="js/tm-bundle.js?v=9386b3f5"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -4314,7 +4314,10 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
     if(err){ showToast('❌ Enlace corto: '+err); $('#pedit-slug').focus(); return; }
     slugAplicar(p, sl);
   }
-  p.nombre=$('#pedit-nombre').value.trim()||p.nombre;
+  // Sin emoji: se pone solo al compartir, según la categoría.
+  const _nomEscrito=$('#pedit-nombre').value.trim(), _nomLimpio=tmSinEmoji(_nomEscrito);
+  if(_nomLimpio!==_nomEscrito && _nomLimpio) showToast('✂️ Quité el emoji del nombre','Se añade solo al compartir, según la categoría');
+  p.nombre=_nomLimpio||p.nombre;
   p.precioActual=nuevoPrecio;
   const orig=Number($('#pedit-original').value)||0; p.precioOriginal=orig>0?orig:0;
   // orig>0 evita división por cero (precio "antes" vacío = sin descuento)

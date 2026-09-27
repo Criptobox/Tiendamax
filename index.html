@@ -261,7 +261,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=dcb45cab" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=9386b3f5" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -272,7 +272,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=8bdc13f0">
+    <link rel="stylesheet" href="css/bundle.css?v=a27bac05">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -1132,7 +1132,9 @@
                  que para Google eran páginas de segunda. No edites entre las dos
                  marcas: se sobrescribe en cada regeneración. -->
             <!-- tm:cats-inicio -->
-            <nav aria-label="Categorías" style="text-align:center;padding:14px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:8px;">
+            <nav aria-label="Categorías" class="footer-nav" style="text-align:center;padding:14px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:8px;">
+                <h4 class="footer-nav-tit">Categorías</h4>
+                <div class="footer-nav-links">
                 <a href="/c/wifi.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">WiFi</a>
                 <a href="/c/energia.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Energía</a>
                 <a href="/c/utiles.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Útiles</a>
@@ -1146,9 +1148,21 @@
                 <a href="/c/juegos.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Juegos</a>
                 <a href="/c/ropa.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Ropa</a>
                 <a href="/c/pc-y-laptops.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">PC y Laptops</a>
-                <a href="/faq.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Preguntas frecuentes</a>
+                </div>
             </nav>
             <!-- tm:cats-fin -->
+            <!-- Ayuda: lo que no es una categoría. «Preguntas frecuentes» vivía
+                 dentro de la lista de categorías (la genera regenerate_artifacts.py)
+                 y se leía como una más. -->
+            <nav aria-label="Ayuda" class="footer-nav">
+                <h4 class="footer-nav-tit">Ayuda</h4>
+                <div class="footer-nav-links">
+                    <a href="/faq.html">Preguntas frecuentes</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega por mensajería.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">Cómo comprar</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Aceptamos <strong>pago contra entrega</strong> en efectivo, en USD o MN según la tasa del día.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devoluciones dentro de las <strong>24 horas</strong> siguientes a la entrega.</p><p>El producto debe llegar dañado o no corresponder a lo descrito. Contáctanos por WhatsApp con fotos del problema.</p>');">Devoluciones</a>
+                </div>
+            </nav>
             <div class="footer-bottom">
                 <p>© 2026 TiendaMax · Todos los derechos reservados</p>
                 <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org · Pago contra entrega · Hecho en Cuba 🇨🇺</p>
@@ -1685,11 +1699,11 @@
     </script>
     <!-- analytics: carga en reposo (no bloquea el primer pintado) — lo inyecta el cargador #tm-lazy-js -->
     <script type="lazyload" src="js/analytics.js?v=882559f2"></script>
-    <script src="js/seo-dynamico.js?v=b028959a" defer></script>
+    <script src="js/seo-dynamico.js?v=7fb6838e" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=dcb45cab" defer></script>
+    <script src="js/tm-bundle.js?v=9386b3f5" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

@@ -136,11 +136,34 @@ def moneda_iso(p: dict) -> str:
     return "CUP" if es_mn(p) else "USD"
 
 
-def titulo_vista_previa(p: dict) -> str:
-    """Lo que WhatsApp y Facebook ponen en negrita: qué es y cuánto cuesta.
-    El seoTitle ("… en Cuba | TiendaMax") se queda en <title>, para Google."""
-    return f"{nombre_limpio(p.get('nombre'))} — {precio_texto(p)}"
+# ── El emoji va al compartir, no en el nombre ───────────────────────────────
+# (nota «Emojis solo al compartir productos»). El nombre del catálogo es el
+# dato limpio —ficha, tarjetas, <title>, JSON-LD, alt y el mensaje del
+# pedido lo usan tal cual— y el emoji se añade SOLO al og:title, según la
+# categoría. Manda el icono que el dueño pone en el panel (😀 en Categorías,
+# `iconos` de categorias.json), así se cambia sin tocar productos; si una
+# categoría no tiene, esta propuesta inicial; si tampoco, va sin emoji.
+EMOJI_CATEGORIA_DEFECTO = {
+    "WIFI": "📶", "AUDIO": "🔊", "MOTOS": "🏍️", "ENERGIA": "⚡", "JUEGOS": "🎮", "CARROS": "🚗",
+}
 
+
+def emoji_categoria(cat, iconos: dict | None = None) -> str:
+    c = categorias_apagadas._norm(cat)
+    if not c:
+        return ""
+    for fuente in (iconos or {}, EMOJI_CATEGORIA_DEFECTO):
+        for k, v in fuente.items():
+            if categorias_apagadas._norm(k) == c and str(v or "").strip():
+                return str(v).strip()
+    return ""
+
+
+def titulo_vista_previa(p: dict, iconos: dict | None = None) -> str:
+    """og:title: «{emoji} {nombre} | TiendaMax». Sin emoji configurado para
+    su categoría, «{nombre} | TiendaMax»."""
+    e = emoji_categoria(p.get("categoria"), iconos)
+    return " ".join(x for x in (e, nombre_limpio(p.get("nombre"))) if x) + " | TiendaMax"
 
 def descripcion_vista_previa(p: dict, desc: str) -> str:
     """Primero lo que hace comprar, y solo lo que es verdad para ESTE
@@ -297,7 +320,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="{og_image_type}">
-<meta property="og:image:alt" content="{og_title}">
+<meta property="og:image:alt" content="{og_alt}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:site_name" content="TiendaMax">
 <meta property="product:price:amount" content="{price}">
@@ -309,7 +332,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:title" content="{og_title}">
 <meta name="twitter:description" content="{og_desc}">
 <meta name="twitter:image" content="{og_image}">
-<meta name="twitter:image:alt" content="{og_title}">
+<meta name="twitter:image:alt" content="{og_alt}">
 
 <!-- ═══ JSON-LD para Google ═══ -->
 <script type="application/ld+json">
@@ -732,7 +755,7 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
     tarjetas = []
     for p in elegidos:
         pid = p.get("id")
-        nombre = (p.get("nombre") or "").strip()
+        nombre = nombre_limpio(p.get("nombre") or "")
         precio = f"{float(p.get('precioActual') or 0):.2f}"
         img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
         tarjetas.append(
@@ -870,6 +893,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
     written = 0
     valid_files = set()
     viejos = preparar_rutas(products)
+    iconos = category_icons()
 
     # Huella (sha256 recortado) de cada tarjeta OG, calculada por
     # build_og_images.py a partir de nombre/precio/stock/foto. Sin adjuntarla
@@ -894,7 +918,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         pid = p.get("id")
         if not pid:
             continue
-        name  = (p.get("nombre") or "").strip()
+        name  = nombre_limpio(p.get("nombre") or "")
         desc  = desc_short(p.get("seoDescription") or p.get("descripcion") or "", 155 if p.get("seoDescription") else 200)
         price = f"{float(p.get('precioActual') or 0):.2f}"
         # OJO: son DOS imágenes distintas y hay que mantenerlas separadas.
@@ -932,7 +956,8 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
 
         # Sanitización: HTML escape para todo lo inyectado en HTML
         html_name = escape(name)
-        og_title  = escape(titulo_vista_previa(p))
+        og_title  = escape(titulo_vista_previa(p, iconos))
+        og_alt    = escape(nombre_limpio(name))
         og_desc   = escape(descripcion_vista_previa(p, desc))
         meta_desc = escape(desc)
         image     = escape(img, quote=True)
@@ -1045,6 +1070,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             html_name=html_name,
             og_title=og_title,
             og_desc=og_desc,
+            og_alt=og_alt,
             meta_desc=meta_desc,
             image=image,
             og_image=og_image,
@@ -1184,7 +1210,7 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
             pid = p.get("id")
             if not pid:
                 continue
-            name = (p.get("nombre") or "").strip()
+            name = nombre_limpio(p.get("nombre") or "")
             price = f"{float(p.get('precioActual') or 0):.2f}"
             img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
             stock = int(p.get("stock") or 0)
@@ -1273,13 +1299,17 @@ def regenerate_home_nav(cat_names: list[str], slugs: dict[str, str]) -> bool:
         f'<a href="/c/{slugs[c]}.html" style="{estilo}">{escape(category_display_name(c))}</a>'
         for c in cat_names
     ]
-    enlaces.append(f'<a href="/faq.html" style="{estilo}">Preguntas frecuentes</a>')
+    # Solo categorías. «Preguntas frecuentes» iba aquí y se leía como una
+    # categoría más; ahora vive en el bloque «Ayuda» de index.html, fuera de
+    # las marcas porque no depende del catálogo.
     nav = (
         CATS_INICIO + "\n"
-        '            <nav aria-label="Categorías" style="text-align:center;padding:14px 0;'
+        '            <nav aria-label="Categorías" class="footer-nav" style="text-align:center;padding:14px 0;'
         'border-top:1px solid rgba(255,255,255,.06);margin-top:8px;">\n                '
+        '<h4 class="footer-nav-tit">Categorías</h4>\n                '
+        '<div class="footer-nav-links">\n                '
         + "\n                ".join(enlaces)
-        + "\n            </nav>\n            " + CATS_FIN
+        + "\n                </div>\n            </nav>\n            " + CATS_FIN
     )
     nuevo = html[:i] + nav + html[j + len(CATS_FIN):]
     if nuevo == html:

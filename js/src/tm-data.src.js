@@ -492,11 +492,21 @@ async function busquedaConIA(q) {
             return { producto: p, score };
         })
         .filter(Boolean)
-        .sort((a, b) => b.score - a.score || a.producto.stock - b.producto.stock)
+        // Lo que se puede comprar va primero; dentro de cada grupo, lo más
+        // relevante. El desempate era stock ASCENDENTE, así que a igualdad de
+        // puntos ganaban los de stock 0: buscar «router» daba cinco AGOTADO.
+        .sort((a, b) => (Number(b.producto.stock) > 0) - (Number(a.producto.stock) > 0)
+            || b.score - a.score || Number(b.producto.stock) - Number(a.producto.stock))
         .slice(0, 5)
         .map(x => x.producto);
 
     return resultados.length ? resultados : null;
+}
+
+// Un producto con precio fijo en MN no cuesta "$280.00".
+function _tmPrecioSug(p) {
+    const v = Number(p.precioActual) || 0;
+    return p.moneda === 'MN' ? v.toLocaleString('es-ES') + ' MN' : '$' + v.toFixed(2);
 }
 
 function renderSugerencias(resultados, q) {
@@ -516,7 +526,7 @@ function renderSugerencias(resultados, q) {
             '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
             '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
             '<span class="hsb-sug-name">' + escapeHtml(p.nombre) + '</span>' +
-            '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
+            '<span class="hsb-sug-price">' + _tmPrecioSug(p) + '</span>' +
             '</div>'
         ).join('');
         sugBox.innerHTML =
@@ -532,7 +542,7 @@ function renderSugerencias(resultados, q) {
         return '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
             '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
             '<span class="hsb-sug-name">' + nombre + agotadoBadge + '</span>' +
-            '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
+            '<span class="hsb-sug-price">' + _tmPrecioSug(p) + '</span>' +
             '</div>';
     }).join('');
 }
