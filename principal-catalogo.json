@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-27T19:58:19Z",
+ "actualizado": "2026-09-27T22:22:30Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 112,
  "productos": [
@@ -739,7 +739,7 @@
    "nombre": "NanoStation 5AC Loco",
    "precio": 140.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 2,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
