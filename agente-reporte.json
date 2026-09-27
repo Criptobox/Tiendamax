@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-26T13:31:08.214220+00:00",
+  "generado": "2026-09-27T14:27:21.033949+00:00",
   "productos": 138,
   "urgentes": 0,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 138 productos y encontré 7 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 138 productos y encontré 8 de info.",
   "detalle": [
     {
       "tipo": "stock_bajo",
@@ -33,13 +33,18 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "🌐 NanoStation M5 Internacional",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "🛜 TP-Link Archer BE230",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
-      "nombre": "61 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 58 más"
+      "nombre": "58 agotados",
+      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 55 más"
     }
   ]
 }
