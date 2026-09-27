@@ -10286,6 +10286,10 @@
         "nota": "10.3 BAR"
       },
       {
+        "k": "Capacidad",
+        "v": "5000 mah"
+      },
+      {
         "k": "Unidades de Medida Soportadas",
         "v": "PSI, BAR, KPA, KG/CM²"
       },
@@ -10369,7 +10373,8 @@
     ],
     "seoTitle": "Compresor de Aire en Cuba | TiendaMax",
     "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…",
-    "slug": "compresor-aire"
+    "slug": "compresor-aire",
+    "rev": 1790513978305
   },
   {
     "id": 1789068808568,
