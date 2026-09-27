@@ -1,0 +1,135 @@
+{
+  "v": 1,
+  "creado": "2026-09-27T16:20:03.360Z",
+  "productos": [
+    {
+      "id": 1789067953023,
+      "nombre": "Compresor de Aire",
+      "imagen": "https://tiendamax.org/imagenes/img_1789067950442.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789067950442.webp"
+      ],
+      "precioActual": 28,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 14,
+      "comision": 3,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "OTROS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ 110/220 V",
+        "🫙 Tanque de 24 L",
+        "📊 Presión máxima 8 bar"
+      ],
+      "fechaAgregado": "2026-09-10T19:19:13.023Z",
+      "ficha": [
+        {
+          "k": "Tipo de Producto",
+          "v": "Compresor de Aire Portátil Inalámbrico / Inflador Digital Inteligente"
+        },
+        {
+          "k": "Presión Máxima",
+          "v": "Hasta 150 PSI",
+          "nota": "10.3 BAR"
+        },
+        {
+          "k": "Capacidad",
+          "v": "5000 mah"
+        },
+        {
+          "k": "Unidades de Medida Soportadas",
+          "v": "PSI, BAR, KPA, KG/CM²"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LCD dual retroiluminado",
+          "nota": "lectura simultánea de presión actual y presión objetivo"
+        },
+        {
+          "k": "Modos Preestablecidos",
+          "v": "5 modos inteligentes",
+          "nota": "Automóvil, Motocicleta, Bicicleta, Balones y Modo Personalizado"
+        },
+        {
+          "k": "Batería",
+          "v": "Batería interna recargable de iones de litio de alta capacidad"
+        },
+        {
+          "k": "Puerto de Carga",
+          "v": "USB Tipo C (Entrada) + Puerto USB Tipo A",
+          "nota": "Salida / función Power Bank"
+        },
+        {
+          "k": "Luz de Emergencia",
+          "v": "Linterna LED multi-modo",
+          "nota": "iluminación continua, estroboscópica y auxilio SOS"
+        },
+        {
+          "k": "Función de Parada Automática",
+          "v": "Apagado automático al alcanzar con precisión la presión configurada"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Doble pantalla digital de alta precisión",
+          "d": "visualiza en tiempo real tanto la presión exacta dentro del neumático como la presión deseada, garantizando un calibrado exacto sin necesidad de manómetros externos."
+        },
+        {
+          "t": "Corte automático inteligente",
+          "d": "el compresor detiene el inflado de forma automática en cuanto alcanza el valor fijado, previniendo sobrepresiones accidentales o estallidos."
+        },
+        {
+          "t": "Potencia de inflado de hasta 150 PSI",
+          "d": "motor cilíndrico de alta compresión capaz de inflar rápidamente desde balones deportivos y ruedas de bicicleta de ruta hasta neumáticos de motocicletas y automóviles."
+        },
+        {
+          "t": "Función de Banco de Energía (Power Bank)",
+          "d": "incorpora salida USB que permite recargar teléfonos celulares u otros dispositivos portátiles ante una emergencia en carretera."
+        },
+        {
+          "t": "Linterna LED multifunción",
+          "d": "luz blanca integrada que facilita la conexión de la manguera y el inflado en plena oscuridad nocturna, con modos de advertencia luminosa para averías en la vía."
+        },
+        {
+          "t": "5 Modos de trabajo con memoria",
+          "d": "selector rápido para auto, moto, bici, pelotas o ajuste libre con memoria del último valor calibrado."
+        },
+        {
+          "t": "Refrigeración por rejillas laterales",
+          "d": "chasis microperforado en ambos costados que disipa eficientemente el calor generado por el cilindro interno durante ciclos prolongados de uso."
+        },
+        {
+          "t": "Diseño compacto y portátil",
+          "d": "factor de forma de bolsillo y ergonómico que permite guardarlo fácilmente en la guantera del auto, baúl de la moto o dentro de una mochila."
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo y calibración regular de la presión de neumáticos en autos sedán, SUVs y camionetas ligeras.",
+        "Motocicletas, scooters eléctricos, bicicletas de montaña y bicicletas de ruta de alta presión.",
+        "Inflado rápido de pelotas deportivas (fútbol, baloncesto, vóley) y artículos inflables de piscina o camping.",
+        "Kit de auxilio y seguridad indispensable para llevar en viajes largos por carretera, paseos en moto o cicloturismo."
+      ],
+      "incluye": [
+        "1× Compresor de aire digital inalámbrico portátil",
+        "1× Manguera flexible de aire reforzada (con boquilla estándar para válvula Schrader/americana)",
+        "1× Adaptador de latón para válvula Presta (bicicletas de carrera)",
+        "1× Aguja metálica para balones y pelotas deportivas",
+        "2× Boquillas cónicas plásticas para salvavidas y colchones inflables",
+        "1× Cable de carga USB a USB Tipo C",
+        "1× Funda textil de almacenamiento y transporte"
+      ],
+      "seoTitle": "Compresor de Aire en Cuba | TiendaMax",
+      "seoDescription": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150…",
+      "slug": "compresor-aire",
+      "rev": 1790526003360,
+      "descripcion": "Equipado con un potente motor de compresión y una batería interna de litio de alta capacidad, este inflador entrega una presión de trabajo de hasta 150 PSI (10.3 BAR). Incorpora una moderna pantalla digital LCD dual retroiluminada que muestra de manera simultánea la presión real del neumático y el valor objetivo deseado. Su tecnología de parada automática detiene el bombeo al alcanzar con exactitud la presión configurada, garantizando un inflado preciso y evitando el riesgo de sobrepresión o roturas accidentales."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
