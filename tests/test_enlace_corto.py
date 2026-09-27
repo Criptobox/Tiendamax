@@ -115,7 +115,8 @@ class PaginasTest(unittest.TestCase):
              "categoria": "WIFI", "stock": 3, "precioActual": 140, "garantia": "3 meses",
              "seoDescription": "Router rápido."},
             {"id": 2, "nombre": "Cable Cat6", "slug": "router-ax1800", "categoria": "WIFI",
-             "stock": 0, "precioActual": 280, "moneda": "MN"},
+             "stock": 0, "precioActual": 280, "precioOriginal": 320, "moneda": "MN",
+             "seoTitle": "PROTEGE TU HOGAR en Cuba | TiendaMax"},
             {"id": 3, "nombre": "Antena", "categoria": "WIFI", "stock": 1, "precioActual": 60},
         ]
         d = self._generar(prods)
@@ -138,6 +139,16 @@ class PaginasTest(unittest.TestCase):
         cable = (p / "producto-2.html").read_text(encoding="utf-8")
         self.assertNotIn('http-equiv="refresh"', cable)
         self.assertIn('og:title" content="Cable Cat6 — 280 MN"', cable, "280 MN no son $280")
+        # Y en la propia página, y para Google: el MN es CUP, no USD.
+        self.assertIn('<span class="tm-price">280 MN</span>', cable)
+        self.assertIn('<span class="tm-orig">320 MN</span>', cable)
+        self.assertIn('"priceCurrency": "CUP"', cable)
+        self.assertIn('product:price:currency" content="CUP"', cable)
+        self.assertNotIn("$280", cable)
+        self.assertIn('"priceCurrency": "USD"', ficha)
+        # Un seoTitle que ya no habla de este producto se rehace desde el nombre.
+        self.assertIn("<title>Cable Cat6 en Cuba | TiendaMax</title>", cable)
+        self.assertNotIn("PROTEGE TU HOGAR", cable)
         self.assertIn("Agotado ahora", cable)
         self.assertNotIn("Garantía", cable.split("og:description")[1][:200], "sin garantía escrita, no se promete")
         self.assertTrue((p / "producto-3.html").exists(), "sin slug, la ficha sigue donde estaba")
@@ -169,6 +180,20 @@ class AplicarCambiosTest(unittest.TestCase):
         # Y si el panel sí lo trae, manda el del panel (el gestor lo cambió).
         sube2 = {"v": 1, "productos": [{"id": 1, "nombre": "Router", "slug": "router-nuevo", "slugsAnteriores": ["router", "router-ax"]}]}
         self.assertEqual("router-nuevo", ac.aplicar(antes, [("2-a.json", sube2)])[0]["slug"])
+
+
+class TitulosTest(unittest.TestCase):
+    """Los <title> que ve Google salen del nombre actual del producto."""
+
+    def test_ninguno_grita_ni_habla_de_otro_producto(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from fill_seo import nombre_titulo
+        for p in PRODUCTOS:
+            t = p.get("seoTitle") or ""
+            self.assertNotRegex(t, r"[A-ZÁÉÍÓÚÑ]{5,} [A-ZÁÉÍÓÚÑ]{3,} [A-ZÁÉÍÓÚÑ]{3,}",
+                                f"título en mayúsculas: «{t}»")
+            self.assertIn(nombre_titulo(p["nombre"])[:20].lower(), t.lower(),
+                          f"«{t}» no habla de «{p['nombre']}»")
 
 
 class ContadorTest(unittest.TestCase):

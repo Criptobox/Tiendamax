@@ -13,6 +13,9 @@ SIN `descripcion` (igual que el admin), conservando specs/radar/seo*.
 los <meta> de las páginas /p/.
 
 Uso: python3 scripts/fill_seo.py   (idempotente; respeta los que ya tienen seo)
+     python3 scripts/fill_seo.py --titulos   (rehace TODOS los seoTitle desde el
+         nombre actual: los viejos venían de nombres anteriores —«PROTEGE TU
+         HOGAR» para un timbre— y 48 estaban en mayúsculas)
 """
 import json, os, re
 
@@ -57,8 +60,23 @@ def _atomic_write(path, text):
     os.replace(tmp, path)
 
 
+# Cualquier emoji, no solo el del principio ("Beat Boom F10! 🎶🔥"): mismo
+# criterio que nombre_limpio() en regenerate_artifacts.py.
+EMOJI_RE = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D\u2B00-\u2BFF\u2190-\u21FF\u2900-\u297F]")
+
+
+def nombre_titulo(nombre):
+    """El nombre tal cual lo escribió el gestor, sin emoji ni espacios de
+    más ("( V380 PRO )" → "(V380 PRO)"). No cambia mayúsculas: una marca o un
+    modelo en mayúsculas (POWMR, AC1200) tiene que seguir así."""
+    t = EMOJI_RE.sub(' ', nombre or '')
+    t = re.sub(r'\(\s+', '(', t)
+    t = re.sub(r'\s+\)', ')', t)
+    return WS_RE.sub(' ', t).strip()
+
+
 def seo_title(p):
-    nombre = sin_emoji_inicial(p.get('nombre') or '')
+    nombre = nombre_titulo(p.get('nombre') or '')
     if not nombre:
         return 'TiendaMax'
     for cand in (f"{nombre} en Cuba | TiendaMax", f"{nombre} | TiendaMax", nombre):
@@ -83,13 +101,17 @@ def seo_desc(p):
     return recortar(base, DESC_MAX)
 
 
-def main():
+def main(argv=None):
+    import sys
+    rehacer = '--titulos' in (sys.argv[1:] if argv is None else argv)
     pj = os.path.join(ROOT, 'productos.json')
     data = json.load(open(pj, encoding='utf-8'))
     cambiados = 0
     for p in data:
         toco = False
-        if not (p.get('seoTitle') or '').strip():
+        if rehacer and p.get('nombre') and p.get('seoTitle') != seo_title(p):
+            p['seoTitle'] = seo_title(p); toco = True
+        elif not (p.get('seoTitle') or '').strip():
             p['seoTitle'] = seo_title(p); toco = True
         if not (p.get('seoDescription') or '').strip():
             p['seoDescription'] = seo_desc(p); toco = True

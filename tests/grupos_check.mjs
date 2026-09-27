@@ -166,7 +166,9 @@ const cola = await pagina.evaluate(async ({ pid, grupos, HOY, DIA }) => {
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
     localStorage.setItem('tm_publog_v1', JSON.stringify([
         { pid: String(pid), red: 'fb', destino: 'Grupo B', ts: HOY - 2 * DIA - 3600000 },
-        { pid: 'otro', red: 'fb', destino: 'Grupo C', ts: HOY - 2 * 3600000 },
+        // «Hoy» de verdad: hace 2 h, salvo que sea antes de medianoche (el test
+        // corrido a las 00:02 lo contaba como de ayer y fallaba sin motivo).
+        { pid: 'otro', red: 'fb', destino: 'Grupo C', ts: Math.max(HOY - 2 * 3600000, new Date(new Date(HOY).setHours(0, 0, 0, 0)).getTime()) },
     ]));
     localStorage.removeItem('tm_fb_pausa_hasta');
     localStorage.setItem('tm_fb_max_hora', '4');

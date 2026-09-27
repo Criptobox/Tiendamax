@@ -25,6 +25,7 @@ from pathlib import Path
 
 import categorias_apagadas
 from ficha_url import slug_valido
+from fill_seo import nombre_titulo, seo_title as _seo_title_de
 
 ROOT = Path(__file__).resolve().parents[1]
 PROD = ROOT / "productos.json"
@@ -100,6 +101,39 @@ def precio_texto(p: dict) -> str:
     v = float(p.get("precioActual") or 0)
     n = str(int(v)) if v == int(v) else f"{v:.2f}"
     return f"{n} MN" if p.get("moneda") == "MN" else f"${n} USD"
+
+
+def titulo_seo(p: dict) -> str:
+    """El seoTitle guardado, salvo que ya no hable de este producto.
+
+    Se quedaban viejos al renombrar: el timbre se titulaba «PROTEGE TU
+    HOGAR» y una CPE «EL ENRUTADOR WIFI DE 1.150MBPS», porque el panel no
+    toca seoTitle y al subir se recupera el del repo. Si no contiene el
+    comienzo del nombre actual, se rehace desde el nombre (fill_seo.py)."""
+    guardado = (p.get("seoTitle") or "").strip()
+    nombre = nombre_titulo(p.get("nombre") or "")
+    if guardado and nombre[:20].lower() in guardado.lower():
+        return guardado
+    return _seo_title_de(p) if nombre else guardado
+
+
+def es_mn(p: dict) -> bool:
+    return p.get("moneda") == "MN"
+
+
+def precio_pagina(v, p: dict) -> str:
+    """El precio tal como se pinta en las fichas y tarjetas: "$140.00 USD" o
+    "280 MN". Antes era siempre "$… USD", y el cable de 280 MN salía en su
+    página a $280 —y a Google con priceCurrency USD—."""
+    v = float(v or 0)
+    if es_mn(p):
+        return (f"{int(v):,}" if v == int(v) else f"{v:,.2f}").replace(",", ".") + " MN"
+    return f"${v:.2f} USD"
+
+
+def moneda_iso(p: dict) -> str:
+    # El peso cubano (MN) es CUP en schema.org / Open Graph.
+    return "CUP" if es_mn(p) else "USD"
 
 
 def titulo_vista_previa(p: dict) -> str:
@@ -267,7 +301,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:url" content="{page_url}">
 <meta property="og:site_name" content="TiendaMax">
 <meta property="product:price:amount" content="{price}">
-<meta property="product:price:currency" content="USD">
+<meta property="product:price:currency" content="{moneda_iso}">
 <meta property="og:locale" content="es_CU">
 
 <!-- ═══ Twitter Card ═══ -->
@@ -293,7 +327,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   "offers": {{
     "@type": "Offer",
     "price": "{price}",
-    "priceCurrency": "USD",
+    "priceCurrency": "{moneda_iso}",
     "availability": "{availability}",
     "itemCondition": "{condition}",
     "url": "{page_url}",
@@ -405,7 +439,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     {cat_html}
     <h1>{html_name}</h1>
     <div class="tm-prices">
-      <span class="tm-price">${price} USD</span>
+      <span class="tm-price">{precio_txt}</span>
       {precio_orig_html}
       {pct_desc_html}
     </div>
@@ -706,7 +740,7 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
             f'<img src="{img}" alt="{escape(nombre)}" loading="lazy" decoding="async">'
             f'<div class="tm-rel-body">'
             f'<div class="tm-rel-name">{escape(nombre)}</div>'
-            f'<div class="tm-rel-price">${precio} USD</div>'
+            f'<div class="tm-rel-price">{precio_pagina(p.get("precioActual"), p)}</div>'
             f'</div></a>'
         )
 
@@ -890,7 +924,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             "jpg": "image/jpeg", "jpeg": "image/jpeg",
         }.get(_ext, "image/jpeg")
         stock = int(p.get("stock") or 0)
-        seo_title_raw = (p.get("seoTitle") or f"{name} — ${price} USD").strip()
+        seo_title_raw = (titulo_seo(p) or f"{name} — {precio_texto(p)}").strip()
         seo_keywords = p.get("seoKeywords") or []
         if isinstance(seo_keywords, str):
             seo_keywords = [x.strip() for x in seo_keywords.split(",") if x.strip()]
@@ -917,7 +951,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
 
         page_url = url_producto(p)
         app_url  = f"{SITE}/?producto={pid}#producto-{pid}"
-        title    = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
+        title    = escape(titulo_seo(p) or f"{name} — {precio_texto(p)} | TiendaMax")
 
         # ── Variables nuevas para la página de producto real ────────────────
         cat = (p.get("categoria") or "").strip()
@@ -932,7 +966,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         precio_orig = float(p.get("precioOriginal") or 0)
         if precio_orig > precio_act > 0:
             pct = round((precio_orig - precio_act) / precio_orig * 100)
-            precio_orig_html = f'<span class="tm-orig">${precio_orig:.2f} USD</span>'
+            precio_orig_html = f'<span class="tm-orig">{precio_pagina(precio_orig, p)}</span>'
             pct_desc_html    = f'<span class="tm-badge">-{pct}%</span>'
         else:
             precio_orig_html = ""
@@ -1019,6 +1053,8 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             page_url=page_url,
             app_url=app_url,
             price=price,
+            precio_txt=precio_pagina(p.get("precioActual"), p),
+            moneda_iso=moneda_iso(p),
             json_name=json_name,
             json_desc=json_desc,
             json_img=json_img,
@@ -1159,7 +1195,7 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
                 f'<img src="{img}" alt="{escape(name)}" loading="lazy">'
                 f'<div class="tm-card-body">'
                 f'<div class="tm-card-name">{escape(name)}</div>'
-                f'<div class="tm-card-price">${price} USD</div>'
+                f'<div class="tm-card-price">{precio_pagina(p.get("precioActual"), p)}</div>'
                 f'{out_html}'
                 f'</div></a>'
             )
