@@ -4545,7 +4545,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "REPETIDORES",
-    "stock": 9,
+    "stock": 8,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4632,11 +4632,11 @@
       "1× Extensor de Cobertura Wi-Fi TP-Link TL-WA855RE (N300)",
       "1× Guía de instalación rápida"
     ],
-    "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos.",
-    "rev": 1790345974779,
+    "rev": 1790615366209,
     "slugsAnteriores": [
       "repetidor-tl-wa855re-n300"
-    ]
+    ],
+    "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos."
   },
   {
     "id": 1781711424820,
@@ -7299,7 +7299,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 3,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7386,8 +7386,9 @@
       "1× Abrazadera metálica para mástil o poste",
       "1× Guía de inicio rápido"
     ],
+    "slug": "mikrotik-sxtsq-5-ax",
     "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red.",
-    "slug": "mikrotik-sxtsq-5-ax"
+    "rev": 1790615366209
   },
   {
     "id": 1785286289086,
