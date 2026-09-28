@@ -6466,7 +6466,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 14,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -6553,9 +6553,9 @@
       "1× Guía de inicio rápido",
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
-    "rev": 1790460279269,
-    "descripcion": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.",
-    "slug": "nanostation-5-ac-loco"
+    "rev": 1790639692382,
+    "slug": "nanostation-5-ac-loco",
+    "descripcion": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
   },
   {
     "id": 1784405087402,
@@ -7401,7 +7401,7 @@
     "precioActual": 230,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7490,9 +7490,9 @@
       "1× Brida / abrazadera para montaje en mástil o poste",
       "1× Guía de inicio rápido"
     ],
-    "rev": 1790459156781,
-    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.",
-    "slug": "nanostation-m5-internacional"
+    "rev": 1790639692382,
+    "slug": "nanostation-m5-internacional",
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance."
   },
   {
     "id": 1785866159148,
