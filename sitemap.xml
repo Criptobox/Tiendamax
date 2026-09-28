@@ -502,7 +502,7 @@
     <loc>https://tiendamax.org/p/tplink-tl-wa855re</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/tplink-archer-c54</loc>
@@ -718,7 +718,7 @@
     <loc>https://tiendamax.org/p/mikrotik-sxtsq-5-ax</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/nanostation-m5-internacional</loc>
@@ -820,7 +820,7 @@
     <loc>https://tiendamax.org/p/mikrotik-hex-s-rb760igs</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/ubiquiti-litebeam-m5</loc>
