@@ -5277,9 +5277,9 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782535592928.webp"
     ],
-    "precioActual": 32,
-    "precioOriginal": 0,
-    "descuento": 0,
+    "precioActual": 28,
+    "precioOriginal": 32,
+    "descuento": 13,
     "stock": 10,
     "comision": 2,
     "comisionMoneda": "USD",
@@ -5293,7 +5293,6 @@
     "fechaAgregado": "2026-06-27T04:46:34.832Z",
     "seoTitle": "Batidora Milexus Cristal en Cuba | TiendaMax",
     "seoDescription": "Marca: Milexus original (Modelo ML-L602) Vaso: Cristal grueso de alta resistencia (fácil de lavar y no suelta residuos). Base: Elegante acabado negro…",
-    "descripcion": "Batidora Milexus, modelo ML-L602, jarra de cristal con base de acero inoxidable y motor negro. Ideal para batidos, jugos y triturar hielo.",
     "ficha": [
       {
         "k": "Marca",
@@ -5314,7 +5313,9 @@
     "incluye": [
       "1x Batidora Milexus Cristal"
     ],
-    "slug": "batidora-milexus-cristal"
+    "slug": "batidora-milexus-cristal",
+    "descripcion": "Batidora Milexus, modelo ML-L602, jarra de cristal con base de acero inoxidable y motor negro. Ideal para batidos, jugos y triturar hielo.",
+    "rev": 1790569510310
   },
   {
     "id": 1782535836192,
@@ -5324,9 +5325,9 @@
       "https://tiendamax.org/imagenes/img_1783838818101.webp",
       "https://tiendamax.org/imagenes/img_1782535834600.webp"
     ],
-    "precioActual": 250,
-    "precioOriginal": 0,
-    "descuento": 0,
+    "precioActual": 235,
+    "precioOriginal": 250,
+    "descuento": 6,
     "stock": 6,
     "comision": 5,
     "comisionMoneda": "USD",
@@ -5340,7 +5341,6 @@
     "fechaAgregado": "2026-06-27T04:50:36.193Z",
     "seoTitle": "Smart TV Milexus 43\" en Cuba | TiendaMax",
     "seoDescription": "Pantalla: 43 Pulgadas LED (Tamaño ideal para la sala o el cuarto). Sistema Operativo: Google TV oficial (Súper fluido, con acceso directo a Netflix…",
-    "descripcion": "Smart TV Milexus 43 pulgadas, HD, con Google TV/Android TV integrado. Wi-Fi, Bluetooth, HDMI, control por voz (Hey Google), acceso directo a Netflix, YouTube, Disney+ y otras apps.",
     "ficha": [
       {
         "k": "Marca",
@@ -5361,7 +5361,9 @@
     "incluye": [
       "1x Smart TV Milexus 43\""
     ],
-    "slug": "smart-tv-milexus-43"
+    "slug": "smart-tv-milexus-43",
+    "descripcion": "Smart TV Milexus 43 pulgadas, HD, con Google TV/Android TV integrado. Wi-Fi, Bluetooth, HDMI, control por voz (Hey Google), acceso directo a Netflix, YouTube, Disney+ y otras apps.",
+    "rev": 1790569510310
   },
   {
     "id": 1782536078989,
@@ -5373,9 +5375,9 @@
       "https://tiendamax.org/imagenes/img_1782536076725.webp",
       "https://tiendamax.org/imagenes/img_1782536077803.webp"
     ],
-    "precioActual": 210,
-    "precioOriginal": 0,
-    "descuento": 0,
+    "precioActual": 200,
+    "precioOriginal": 210,
+    "descuento": 5,
     "stock": 5,
     "comision": 5,
     "comisionMoneda": "USD",
@@ -5389,7 +5391,6 @@
     "fechaAgregado": "2026-06-27T04:54:38.989Z",
     "seoTitle": "Lavadora Milexus de Doble Tina (9 kg) en Cuba | TiendaMax",
     "seoDescription": "Marca: Milexus original (Modelo ML-WM-9KGS). Capacidad: 9 Kilogramos (Ideal para sábanas, colchas y cargas familiares grandes). Doble Tina: Sistema…",
-    "descripcion": "Lavadora Milexus de doble tina, capacidad de 9kg, con función Air-Dry (centrifugado/secado) en el lado derecho. Controles manuales por perillas — lava y centrifuga por separado.",
     "ficha": [
       {
         "k": "Marca",
@@ -5413,7 +5414,9 @@
     "slug": "lavadora-milexus-9kg",
     "slugsAnteriores": [
       "lavadora-doble-tina-9-kg"
-    ]
+    ],
+    "descripcion": "Lavadora Milexus de doble tina, capacidad de 9kg, con función Air-Dry (centrifugado/secado) en el lado derecho. Controles manuales por perillas — lava y centrifuga por separado.",
+    "rev": 1790569510310
   },
   {
     "id": 1782536259878,
@@ -5425,7 +5428,7 @@
     "precioActual": 270,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5438,7 +5441,6 @@
     "fechaAgregado": "2026-06-27T04:57:39.878Z",
     "seoTitle": "Split Milexus 1T en Cuba | TiendaMax",
     "seoDescription": "Marca: Milexus Tecnología Gold Fin: Recubrimiento anticorrosivo de última generación que protege el equipo contra la humedad y el salitre, asegurando…",
-    "descripcion": "Aire acondicionado tipo Split Milexus de 1 tonelada, con tecnología Gold Fin (evaporador anticorrosión), ecológico y eficiente. Incluye unidad interior y exterior para instalar en pared.",
     "ficha": [
       {
         "k": "Marca",
@@ -5459,7 +5461,9 @@
     "incluye": [
       "1x Split Milexus 1T"
     ],
-    "slug": "split-milexus-1t"
+    "slug": "split-milexus-1t",
+    "descripcion": "Aire acondicionado tipo Split Milexus de 1 tonelada, con tecnología Gold Fin (evaporador anticorrosión), ecológico y eficiente. Incluye unidad interior y exterior para instalar en pared.",
+    "rev": 1790569510310
   },
   {
     "id": 1782536637390,
@@ -5471,7 +5475,7 @@
     "precioActual": 600,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5484,7 +5488,6 @@
     "fechaAgregado": "2026-06-27T05:03:57.390Z",
     "seoTitle": "Exhibidor Vertical Milexus 13 Pies en Cuba | TiendaMax",
     "seoDescription": "Marca: Milexus Diseño: Puerta de cristal templado panorámica de alta resistencia (mantiene el frío a la perfección y no se empaña). Copete Iluminado…",
-    "descripcion": "Exhibidor vertical Milexus de 13 pies, una puerta de cristal, iluminación interior, varias parrillas ajustables. Ideal para negocios: refrescos, cervezas, lácteos.",
     "ficha": [
       {
         "k": "Marca",
@@ -5505,7 +5508,9 @@
     "incluye": [
       "1x Exhibidor Vertical Milexus 13 Pies"
     ],
-    "slug": "exhibidor-milexus-13-pies"
+    "slug": "exhibidor-milexus-13-pies",
+    "descripcion": "Exhibidor vertical Milexus de 13 pies, una puerta de cristal, iluminación interior, varias parrillas ajustables. Ideal para negocios: refrescos, cervezas, lácteos.",
+    "rev": 1790569510310
   },
   {
     "id": 1782537024284,
@@ -5517,7 +5522,7 @@
     "precioActual": 950,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5530,7 +5535,6 @@
     "fechaAgregado": "2026-06-27T05:10:24.286Z",
     "seoTitle": "Exhibidor Vertical de Doble Puerta Milexus 20 Pies",
     "seoDescription": "Capacidad masiva: Al ser de doble puerta, te permite almacenar el doble o triple de mercancía bien organizada en comparación con el de una sola puerta…",
-    "descripcion": "Exhibidor vertical Milexus de doble puerta, 20 pies, cristal templado, varias parrillas ajustables. Ideal para negocios con mayor volumen de productos refrigerados.",
     "ficha": [
       {
         "k": "Marca",
@@ -5551,7 +5555,9 @@
     "incluye": [
       "1x Exhibidor Vertical de Doble Puerta Milexus 20 Pies"
     ],
-    "slug": "exhibidor-doble-20-pies"
+    "slug": "exhibidor-doble-20-pies",
+    "descripcion": "Exhibidor vertical Milexus de doble puerta, 20 pies, cristal templado, varias parrillas ajustables. Ideal para negocios con mayor volumen de productos refrigerados.",
+    "rev": 1790569510310
   },
   {
     "id": 1782537341725,
@@ -5564,7 +5570,7 @@
     "precioActual": 250,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5577,7 +5583,6 @@
     "fechaAgregado": "2026-06-27T05:15:41.725Z",
     "seoTitle": "Nevera Horizontal Milexus 7 Pies en Cuba | TiendaMax",
     "seoDescription": "Marca: Milexus (Modelo ML-CF-200). Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar). Bajo…",
-    "descripcion": "Nevera horizontal (congeladora) Milexus de 7 pies, color gris oscuro, tapa superior con manija. Ideal para almacenar carnes, helados o mercancía congelada en el hogar o negocio.",
     "ficha": [
       {
         "k": "Marca",
@@ -5598,7 +5603,9 @@
     "incluye": [
       "1x Nevera Horizontal Milexus 7 Pies"
     ],
-    "slug": "nevera-milexus-7-pies"
+    "slug": "nevera-milexus-7-pies",
+    "descripcion": "Nevera horizontal (congeladora) Milexus de 7 pies, color gris oscuro, tapa superior con manija. Ideal para almacenar carnes, helados o mercancía congelada en el hogar o negocio.",
+    "rev": 1790569510310
   },
   {
     "id": 1782791345628,
