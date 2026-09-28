@@ -3686,7 +3686,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789065763743.webp",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
-    "stock": 3,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -3777,7 +3777,8 @@
       "Llevar de viaje, paseos en bicicleta o caminatas gracias a su formato compacto, ligero y cordón de transporte.",
       "Disfrutar de música, podcasts y películas desde el móvil, tablet o laptop con sonido claro y graves envolventes."
     ],
-    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes."
+    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes.",
+    "rev": 1790631237382
   },
   {
     "id": 1780079294429,
