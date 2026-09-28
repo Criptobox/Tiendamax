@@ -2,7 +2,8 @@
 
 El dueño decidió (26-sep-2026) qué quiere en su chat: TODO lo que cambie en la
 tienda principal, más suscriptores, interesados/lista de espera y el radar
-busco/compro. Fuera: el pack del día con la checklist de renovar en Revólico,
+busco/compro. El 28-sep añadió los seguimientos post-venta (a quién toca
+escribirle), que hasta entonces solo llegaban como push. Fuera: el pack del día con la checklist de renovar en Revólico,
 el reporte de las 9 PM, el aviso de web caída y el resumen del Copiloto.
 
 Nada de esto falla con un error: un aviso que deja de llegar no avisa de que
@@ -20,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import comparar_principal as cp  # noqa: E402
+import send_notifications as sn  # noqa: E402
 
 WF = ROOT / ".github" / "workflows"
 
@@ -228,6 +230,117 @@ class LoQuitadoNoVuelveTest(unittest.TestCase):
 
     def test_el_radar_busco_compro_sigue(self):
         self.assertIn("schedule:", _cabecera("demanda-radar.yml"))
+
+
+class _Ref:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def get(self):
+        return self.datos
+
+    def child(self, _k):
+        return self
+
+    def delete(self):
+        pass
+
+
+class _DB:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def reference(self, _ruta):
+        return _Ref(self.datos)
+
+
+class SeguimientosTelegramTest(unittest.TestCase):
+    """Los seguimientos post-venta llegan también a Telegram (28-sep-2026)."""
+
+    def setUp(self):
+        dia = 86400000
+        ahora = 1_800_000_000_000
+        self.ahora_s = ahora / 1000
+        self.registro = {
+            "v1": {"ts": ahora - 4 * dia},                               # inicial
+            "v2": {"ts": ahora - 31 * dia, "hecho": "inicial"},          # satisfacción
+            "v3": {"ts": ahora - 95 * dia, "hecho": "satisfaccion"},     # recompra
+        }
+
+    def _correr(self, ultimo_push, push_ok=True, env=None):
+        enviados = []
+
+        class _R:
+            status = 200
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+
+        def abrir(req, timeout=0):
+            enviados.append(json.loads(req.data.decode("utf-8")))
+            return _R()
+        env = {"BOT_TOKEN": "t", "ADMIN_CHAT_ID": "1"} if env is None else env
+        with mock.patch.dict(os.environ, env), \
+                mock.patch("urllib.request.urlopen", abrir), \
+                mock.patch.object(sn, "es_hora_diurna", return_value=True), \
+                mock.patch.object(sn, "enviar_push_admin", return_value=push_ok) as push, \
+                mock.patch.object(sn.time, "time", return_value=self.ahora_s):
+            sn.procesar_seguimientos(None, _DB(self.registro), ultimo_push)
+        return enviados, push
+
+    def test_llega_a_telegram_con_boton_a_seguimiento(self):
+        up = {}
+        enviados, push = self._correr(up)
+        self.assertEqual(1, len(enviados), "el seguimiento no llegó a Telegram")
+        c = enviados[0]
+        self.assertEqual("HTML", c["parse_mode"])
+        self.assertIn("3 clientes por contactar", c["text"])
+        for trozo in ("1 recién comprado(s)", "1 al mes", "1 para recompra"):
+            self.assertIn(trozo, c["text"])
+        self.assertTrue(c["reply_markup"]["inline_keyboard"][0][0]["url"].endswith("/admin.html#clientes"))
+        self.assertEqual(1, push.call_count, "el push al teléfono tiene que seguir saliendo")
+        self.assertIn("seguimientos", up)
+        self.assertIn("seguimientos_tg", up)
+
+    def test_una_vez_al_dia_por_canal(self):
+        up = {"seguimientos": self.ahora_s - 3600, "seguimientos_tg": self.ahora_s - 3600}
+        enviados, push = self._correr(up)
+        self.assertEqual([], enviados)
+        push.assert_not_called()
+
+    def test_si_falla_el_push_telegram_sale_igual(self):
+        """Con una sola marca, un push fallido dejaba sin aviso los dos canales,
+        y uno enviado bloqueaba el otro todo el día aunque hubiera fallado."""
+        up = {}
+        enviados, _ = self._correr(up, push_ok=False)
+        self.assertEqual(1, len(enviados))
+        self.assertNotIn("seguimientos", up, "el push falló: tiene que reintentarse en la siguiente pasada")
+        self.assertIn("seguimientos_tg", up)
+        up2 = {"seguimientos": self.ahora_s - 3600}
+        enviados2, push2 = self._correr(up2)
+        self.assertEqual(1, len(enviados2), "que el push ya saliera hoy no puede callar a Telegram")
+        push2.assert_not_called()
+
+    def test_sin_token_no_intenta_telegram(self):
+        up = {}
+        enviados, push = self._correr(up, env={"BOT_TOKEN": "", "ADMIN_CHAT_ID": ""})
+        self.assertEqual([], enviados)
+        self.assertEqual(1, push.call_count)
+        self.assertNotIn("seguimientos_tg", up)
+
+    def test_sin_datos_del_cliente(self):
+        """/seguimientos solo tiene fechas; el mensaje, solo cifras. Un nombre o
+        un teléfono aquí saldría del panel a los servidores de Telegram."""
+        self.registro["v1"]["nombre"] = "María Pérez"
+        self.registro["v1"]["telefono"] = "5355551234"
+        enviados, _ = self._correr({})
+        self.assertNotIn("María", enviados[0]["text"])
+        self.assertNotIn("5355551234", enviados[0]["text"])
+
+    def test_los_workflows_le_pasan_el_bot(self):
+        for f in ("flush-push-queue.yml", "send-push-notifications.yml"):
+            bloque = next(v for v in _pasos(f).values() if "send_notifications.py" in v)
+            self.assertIn("BOT_TOKEN: ${{ secrets.BOT_TOKEN }}", bloque, f)
+            self.assertIn("ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}", bloque, f)
 
 
 if __name__ == "__main__":

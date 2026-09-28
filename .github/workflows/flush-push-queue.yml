@@ -51,4 +51,7 @@ jobs:
       - name: Procesar cola y enviar
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          # Los seguimientos post-venta también llegan a Telegram (sin nombres).
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
         run: python scripts/send_notifications.py

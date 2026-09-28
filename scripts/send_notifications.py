@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import time
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -882,22 +883,95 @@ def _podar_seguimientos(ref, registro, ahora_ms):
                 pass
 
 
+PANEL_CLIENTES = "https://tiendamax.org/admin.html#clientes"
+
+
+def telegram_configurado() -> bool:
+    return bool(os.environ.get("BOT_TOKEN") and os.environ.get("ADMIN_CHAT_ID"))
+
+
+def enviar_telegram_admin(texto: str, boton: str, url: str) -> bool:
+    """Al chat del dueño, en HTML y con un botón que abre el panel donde se
+    hace el trabajo. Sin BOT_TOKEN/ADMIN_CHAT_ID no intenta nada: el push
+    sigue saliendo igual."""
+    token, chat = os.environ.get("BOT_TOKEN", ""), os.environ.get("ADMIN_CHAT_ID", "")
+    if not (token and chat and texto.strip()):
+        return False
+    cuerpo = json.dumps({
+        "chat_id": chat, "text": texto[:4096], "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "reply_markup": {"inline_keyboard": [[{"text": boton, "url": url}]]},
+    }).encode("utf-8")
+    req = urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
+                                 data=cuerpo, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ok = 200 <= r.status < 300
+    except Exception as e:
+        print(f"❌ Telegram: {e}", file=sys.stderr)
+        return False
+    print("📨 Aviso enviado a Telegram." if ok else "❌ Telegram no lo aceptó.")
+    return ok
+
+
+def _resumen_seguimientos(vencidos):
+    """(n, partes) — cuántos clientes y de qué hito. Lo comparten el push y
+    Telegram para que los dos digan lo mismo."""
+    detalle = {}
+    for v in vencidos:
+        detalle[v["hito"]] = detalle.get(v["hito"], 0) + 1
+    partes = []
+    if detalle.get("inicial"):
+        partes.append(f"{detalle['inicial']} recién comprado(s)")
+    if detalle.get("satisfaccion"):
+        partes.append(f"{detalle['satisfaccion']} al mes")
+    if detalle.get("recompra"):
+        partes.append(f"{detalle['recompra']} para recompra")
+    return len(vencidos), partes
+
+
+def mensaje_seguimientos_telegram(vencidos) -> str:
+    """Solo cifras, como el push: ni nombre ni teléfono. /seguimientos no los
+    tiene, y a quién escribirle lo resuelve el panel con el botón."""
+    n, partes = _resumen_seguimientos(vencidos)
+    if not n:
+        return ""
+    titulo = "1 cliente por contactar" if n == 1 else f"{n} clientes por contactar"
+    lineas = [f"📞 <b>{titulo}</b>", "Pregúntales cómo les ha ido con el equipo."]
+    for i, p in enumerate(partes):
+        lineas.append(("└ " if i == len(partes) - 1 else "├ ") + p)
+    lineas.append("")
+    lineas.append("En Clientes → 📞 Seguimiento el WhatsApp sale escrito.")
+    return "\n".join(lineas)
+
+
+def _ventana_libre(ultimo_push, clave, ahora) -> bool:
+    try:
+        previo = float(ultimo_push.get(clave, 0) or 0)
+    except (TypeError, ValueError):
+        previo = 0.0
+    return not previo or (ahora - previo) >= SEG_COOLDOWN_S
+
+
 def procesar_seguimientos(messaging_api, database, ultimo_push):
-    """Avisa al teléfono del dueño de a cuántos clientes toca escribirles.
+    """Avisa al dueño de a cuántos clientes toca escribirles: al teléfono
+    (push) y a Telegram.
 
     El seguimiento post-venta existía —tm-crm.src.js calcula los hitos y el tab
     Clientes los pinta con el WhatsApp ya escrito— pero no avisaba de nada: solo
     aparecía si al dueño se le ocurría abrir el panel y entrar en esa pestaña,
     que es justo lo que no pasa. Sin recordatorio, el seguimiento no existe.
+
+    Cada canal lleva su propia marca (`seguimientos`, `seguimientos_tg`): si
+    uno falla, el otro no se queda sin mandar, y el que falló vuelve a
+    intentarlo en la siguiente pasada en vez de esperar un día.
     """
     if not es_hora_diurna():
         return                                  # el móvil del dueño también duerme
     ahora = time.time()
-    try:
-        previo = float(ultimo_push.get("seguimientos", 0) or 0)
-    except (TypeError, ValueError):
-        previo = 0.0
-    if previo and (ahora - previo) < SEG_COOLDOWN_S:
+    toca_push = _ventana_libre(ultimo_push, "seguimientos", ahora)
+    toca_tg = telegram_configurado() and _ventana_libre(ultimo_push, "seguimientos_tg", ahora)
+    if not (toca_push or toca_tg):
         return
     ref = database.reference("seguimientos")
     try:
@@ -909,25 +983,20 @@ def procesar_seguimientos(messaging_api, database, ultimo_push):
     vencidos = seguimientos_vencidos(registro, ahora * 1000)
     if not vencidos:
         return
-    n = len(vencidos)
-    detalle = {}
-    for v in vencidos:
-        detalle[v["hito"]] = detalle.get(v["hito"], 0) + 1
-    partes = []
-    if detalle.get("inicial"):
-        partes.append(f"{detalle['inicial']} recién comprado(s)")
-    if detalle.get("satisfaccion"):
-        partes.append(f"{detalle['satisfaccion']} al mes")
-    if detalle.get("recompra"):
-        partes.append(f"{detalle['recompra']} para recompra")
-    cuerpo = ("Pregúntales cómo les ha ido con el equipo. "
-              + (", ".join(partes) + ". " if partes else "")
-              + "Abre Clientes → Seguimiento: el mensaje sale escrito.")
-    titulo = ("📞 1 cliente por contactar" if n == 1
-              else f"📞 {n} clientes por contactar")
-    if enviar_push_admin(messaging_api, database, titulo, cuerpo,
-                         link="/admin.html#clientes", tag="admin-seguimiento"):
-        ultimo_push["seguimientos"] = ahora
+    n, partes = _resumen_seguimientos(vencidos)
+    if toca_push:
+        cuerpo = ("Pregúntales cómo les ha ido con el equipo. "
+                  + (", ".join(partes) + ". " if partes else "")
+                  + "Abre Clientes → Seguimiento: el mensaje sale escrito.")
+        titulo = ("📞 1 cliente por contactar" if n == 1
+                  else f"📞 {n} clientes por contactar")
+        if enviar_push_admin(messaging_api, database, titulo, cuerpo,
+                             link="/admin.html#clientes", tag="admin-seguimiento"):
+            ultimo_push["seguimientos"] = ahora
+    if toca_tg:
+        if enviar_telegram_admin(mensaje_seguimientos_telegram(vencidos),
+                                 "📞 Abrir Seguimiento", PANEL_CLIENTES):
+            ultimo_push["seguimientos_tg"] = ahora
 
 
 def avisar_token_github(messaging_api, database, ultimo_push):

@@ -65,7 +65,30 @@ input[readonly]{color:var(--muted)}
 .total-box{background:linear-gradient(135deg,#1a2a1a,#152015);border:1px solid #2d5a2d;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
 .ubi-btn{width:100%;padding:11px;background:var(--bg3);border:1px dashed var(--border);border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Sans',sans-serif;margin-top:8px}
 .ubi-link{display:flex;align-items:center;gap:8px;background:#1a2a1a;border:1px solid #2d4a2d;border-radius:10px;padding:11px 14px;margin-top:8px;font-size:13px;color:var(--green-light);text-decoration:none;word-break:break-all}
-.atencion{background:#1a1410;border:1px solid var(--border-gold);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.9;margin-top:14px}
+.atencion{background:#17130d;border:1px solid var(--border-gold);border-radius:12px;padding:14px 16px;margin-top:14px}
+/* El texto iba en #888 sobre marrón casi negro (contraste 4:1 a 12px) y el
+   título, en negrita gris, se leía peor que las líneas. */
+.aten-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.aten-tit{font-size:14px;font-weight:700;color:var(--gold);letter-spacing:.02em}
+.aten-edit{background:transparent;border:1px solid var(--border-gold);border-radius:8px;color:var(--gold);font-size:12px;padding:5px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;flex:0 0 auto}
+.aten-lista{list-style:none;display:grid;gap:7px}
+.aten-lista li{font-size:13.5px;line-height:1.45;color:#e9dfcd;padding-left:16px;position:relative}
+.aten-lista li::before{content:'';position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.aten-form{display:grid;gap:8px}
+.aten-form .lbl{margin-bottom:0}
+.aten-form textarea{font-size:13px;line-height:1.55}
+.aten-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aten-btns button{margin-top:0}
+/* ── Recogida: de qué almacén sale ── */
+.alm-opt{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 13px;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;display:grid;gap:2px;margin-top:8px}
+.alm-opt b{font-size:14px}
+.alm-opt span{font-size:12px;color:var(--muted);line-height:1.4}
+.alm-opt .sug{color:var(--green-light);font-size:11px;font-weight:600}
+.alm-opt.sel{border-color:var(--orange);background:rgba(255,107,53,.1)}
+.alm-actual{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.alm-actual .dir{font-size:13px;color:#e9dfcd;line-height:1.45}
+.alm-actual .dir b{display:block;font-size:14px;color:var(--text)}
+.alm-actual .nada{font-size:13px;color:var(--muted)}
 hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid #2d5a2d;border-radius:30px;padding:11px 22px;font-size:13px;color:var(--green-light);opacity:0;transition:opacity .3s;white-space:nowrap;z-index:999;pointer-events:none}
 .toast.show{opacity:1}
@@ -208,6 +231,12 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
   </div><!-- /step-2 -->
 
   <div class="step-panel" id="step-3">
+  <!-- ══ RECOGIDA: el almacén que va en el vale ══ -->
+  <div class="sec" id="almSec">
+    <div class="sec-hdr"><div class="dot"></div>📍 DÓNDE RECOGE</div>
+    <div class="sec-body" id="almBody"></div>
+  </div>
+
   <!-- ══ VALE VISUAL ══ -->
   <div class="vale-img-sec">
     <div class="vale-img-hdr">
@@ -220,13 +249,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     </div>
   </div>
 
-  <div class="atencion">
-    <b>🚨 ATENCIÓN 🚨</b><br>
-    • Horarios de atención: 8:00am — 8:00pm<br>
-    • Solo aceptamos hasta cinco billetes de 1 USD por compra<br>
-    • Pagos en CUP con denominación de 50 en adelante<br>
-    • Solo billetes en buen estado (ni rotos ni manchados)
-  </div>
+  <div class="atencion" id="atencionBox"></div>
 
   <button class="btn-gold" onclick="copiarVale()">📋 Copiar Vale para WhatsApp</button>
   <button class="btn-gold" style="background:linear-gradient(135deg,#25D366,#1da851);color:#fff" onclick="enviarValeWA()">📱 Enviar Vale por WhatsApp</button>
@@ -247,6 +270,16 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
        todo. Ya no: se guarda en /privado/vales de Firebase, un vale por clave,
        y se sincroniza al abrir esta pestaña. Pedirle al dueño que se acuerde
        de bajar un archivo para algo que ya está guardado es trabajo inventado. -->
+</div>
+
+<!-- MODAL ALMACÉN: se abre al enviar si todavía no se eligió -->
+<div class="modal-bg" id="modalAlm" onclick="if(event.target===this)cerrarAlm()">
+  <div class="modal" style="max-height:88vh;overflow-y:auto">
+    <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px">📍 ¿Dónde recoge el cliente?</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:6px" id="almModalSub">La dirección va en el vale que le mandas.</p>
+    <div id="almLista"></div>
+    <button class="btn-ghost" onclick="cerrarAlm()">Cancelar</button>
+  </div>
 </div>
 
 <!-- MODAL CATÁLOGO -->
@@ -602,7 +635,7 @@ function construirTextoVale(){
 🔸 Nombre Cliente: ${g('vCliente')}
 🔸Teléfono Cliente: ${g('vTelefono')}
 🔸Dirección Cliente: ${g('vDireccion')}${ubiLinea}
-🔸Mensajería/ costo: ${g('vMensajeria')}
+🔸Mensajería/ costo: ${g('vMensajeria')}${lineaRecogida()}
 🔸 Artículo y cantidad: ${g('vArticulo').replace(/\n/g,'\n   ')}
 🔸Precio USD/ Zelle: ${g('vUSD')!=='—'?'$'+g('vUSD')+' USD':'—'}
 🔸Precio CUP: ${g('vCUP')!=='—'?parseInt(g('vCUP')).toLocaleString()+' CUP':'—'}
@@ -613,12 +646,7 @@ function construirTextoVale(){
 *Garantía: ${g('vGarantia')}
 *Fecha y hora de Venta: ${g('vFecha')}
 
-🚨ATENCIÓN🚨
-•   Horarios de atención al cliente:
-    8:00am - 8:00pm.
-* Solo aceptamos hasta cinco billetes de 1 USD por compra.
-* Los pagos en CUP deben ser con denominación de 50 en adelante.
-* Solo se aceptan billetes en buen estado (ni rotos ni manchados)`;
+${textoAtencion()}`;
 }
 
 // Valida los campos clave antes de generar el vale. Devuelve true si está completo.
@@ -641,13 +669,18 @@ function validarVale(){
 
 function copiarVale(){
   if(!validarVale()) return;
-  copiarTexto(construirTextoVale(),'✅ Vale copiado — pégalo en WhatsApp');
-  guardarHist();
-  reservarSiToca();
+  conAlmacen(()=>{
+    copiarTexto(construirTextoVale(),'✅ Vale copiado — pégalo en WhatsApp');
+    guardarHist();
+    reservarSiToca();
+  });
 }
 
 function enviarValeWA(){
   if(!validarVale()) return;
+  conAlmacen(_enviarValeWA);
+}
+function _enviarValeWA(){
   const waUrl='https://wa.me/?text='+encodeURIComponent(construirTextoVale());
   try{
     const a=document.createElement('a');
@@ -667,7 +700,7 @@ function leerHist(){
 }
 function guardarHist(){
   const hist=leerHist();
-  hist.unshift({cliente:g('vCliente'),telefono:g('vTelefono'),articulo:g('vArticulo').split('\n')[0],total:document.getElementById('vTotal').textContent,fecha:g('vFecha'),ts:Date.now()});
+  hist.unshift({cliente:g('vCliente'),telefono:g('vTelefono'),articulo:g('vArticulo').split('\n')[0],total:document.getElementById('vTotal').textContent,fecha:g('vFecha'),ts:Date.now(),almacen:_valeAlm?_valeAlm.nombre:''});
   // Sin este try, el navegador sin espacio tiraba una excepción y el vale
   // desaparecía en silencio: el toast de "copiado" ya había salido, así que
   // parecía que todo había ido bien. Si falla hay que decirlo, porque es un
@@ -786,7 +819,9 @@ function goStep(n){
     document.getElementById('step-'+i).classList.toggle('active', i===n);
     document.getElementById('stepBtn'+i).classList.toggle('active', i===n);
   });
-  if(n===3) scheduleDrawVale();
+  // Las condiciones de la nube se traen al llegar al paso donde se ven: en
+  // la carga obligaría a todo el que abre el vale a bajar el SDK de Firebase.
+  if(n===3){ scheduleDrawVale(); renderAlm(); if(_almacenes===null) cargarAlmacenesVale(); if(!_atenSinc){ _atenSinc=true; sincronizarAtencion(); } }
   try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
 }
 function resetForm(){
@@ -804,6 +839,7 @@ function resetForm(){
   document.getElementById('mapaBtns').style.display='none';
   document.getElementById('vFecha').value=fd();
   _ubi=null;
+  _valeAlm=undefined; renderAlm();
   _valeCodigo=_genCodigo();
   goStep(1);
   window.scrollTo({top:0,behavior:'smooth'});
@@ -864,8 +900,18 @@ function drawValeImg() {
   const dashedY = firstRow + (items.length-1)*rowH + 40;
   const totalY  = dashedY + 84;
   const mnExtra = totalMN ? 44 : 0;
-  const H = totalY + mnExtra + 44 + 96 + 54;
-  canvas.width=W; canvas.height=H;
+  // Recogida: se mide antes de fijar el alto, o el sello le cae encima.
+  canvas.width=W;
+  const alm = _valeAlm || null;
+  let almLineas = [], almUbi = '';
+  if(alm){
+    ctx.font='500 30px system-ui,Arial,sans-serif';
+    almLineas = _vWrap(ctx, alm.direccion || 'Dirección no guardada: pregúntala por WhatsApp', W-2*M-60, 4);
+    almUbi = alm.ubicacion ? 'Ubicación: '+alm.ubicacion : '';
+  }
+  const almH = alm ? (104 + almLineas.length*40 + (almUbi?40:0) + 26) : 0;
+  const H = totalY + mnExtra + 44 + almH + 96 + 54;
+  canvas.height=H;
 
   // Fondo a sangre (sin esquinas blancas)
   ctx.fillStyle='#141414'; ctx.fillRect(0,0,W,H);
@@ -923,14 +969,268 @@ function drawValeImg() {
   ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='800 64px system-ui,Arial,sans-serif'; ctx.fillText('$'+usd.toFixed(2), W-M, totalY+6);
   if(totalMN){ ctx.fillStyle='#8c8c8c'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.textAlign='right'; ctx.fillText('≈ '+totalMN+' MN', W-M, totalY+mnExtra); }
 
+  // ── Dónde recoger ──
+  if(alm){
+    const ay = totalY + mnExtra + 44;
+    _vRR(ctx,M,ay,W-2*M,almH-26,22); ctx.fillStyle='#1f1f1f'; ctx.fill();
+    ctx.strokeStyle='rgba(255,107,53,.35)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#8c8c8c'; ctx.font='700 24px system-ui,Arial,sans-serif'; ctx.fillText('RECOGER EN', M+30, ay+46);
+    ctx.fillStyle='#FF6B35'; ctx.font='800 36px system-ui,Arial,sans-serif';
+    ctx.fillText(_vWrap(ctx, String(alm.nombre||''), W-2*M-60, 1)[0]||'', M+30, ay+90);
+    ctx.fillStyle='#f3f0ec'; ctx.font='500 30px system-ui,Arial,sans-serif';
+    let ly = ay+90+40;
+    almLineas.forEach(l=>{ ctx.fillText(l, M+30, ly); ly+=40; });
+    if(almUbi){ ctx.fillStyle='#8c8c8c'; ctx.font='500 24px system-ui,Arial,sans-serif'; ctx.fillText(_vWrap(ctx, almUbi, W-2*M-60, 1)[0], M+30, ly); }
+  }
+
   // ── Sello dorado verificado ──
   const sy=H-150;
   _vRR(ctx,M,sy,W-2*M,96,18); ctx.fillStyle='rgba(201,169,110,.10)'; ctx.fill(); ctx.strokeStyle='rgba(201,169,110,.3)'; ctx.lineWidth=2; ctx.stroke();
   ctx.beginPath(); ctx.arc(M+46,sy+48,24,0,Math.PI*2); ctx.fillStyle='#C9A96E'; ctx.fill();
   ctx.fillStyle='#1a1006'; ctx.font='900 26px system-ui,Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('✓', M+46, sy+49);
   ctx.textBaseline='alphabetic'; ctx.textAlign='left'; ctx.fillStyle='#C9A96E'; ctx.font='800 26px system-ui,Arial,sans-serif'; ctx.fillText('Vale verificado · TiendaMax', M+88, sy+42);
-  ctx.fillStyle='#8c8c8c'; ctx.font='400 22px system-ui,Arial,sans-serif'; ctx.fillText('Pago contra entrega · muestra al llegar a la tienda', M+88, sy+72);
+  ctx.fillStyle='#8c8c8c'; ctx.font='400 22px system-ui,Arial,sans-serif'; ctx.fillText(alm ? 'Pago contra entrega · muestra este vale al recoger' : 'Pago contra entrega · muestra al llegar a la tienda', M+88, sy+72);
   ctx.textAlign='right'; ctx.fillStyle='#cdbfa6'; ctx.font='700 24px ui-monospace,Menlo,monospace'; ctx.fillText('#TM-'+_valeCodigo, W-M-20, sy+58);
+}
+
+// Parte un texto en líneas que caben en `maxW`. La última se corta con «…»
+// solo si no cabe en `maxLineas`: una dirección no se trunca mientras quepa.
+function _vWrap(ctx, texto, maxW, maxLineas){
+  const palabras=String(texto||'').split(/\s+/).filter(Boolean);
+  const lineas=[]; let cur='';
+  palabras.forEach(p=>{
+    const prueba=cur?cur+' '+p:p;
+    if(ctx.measureText(prueba).width<=maxW || !cur) cur=prueba;
+    else { lineas.push(cur); cur=p; }
+  });
+  if(cur) lineas.push(cur);
+  if(lineas.length>maxLineas){
+    const out=lineas.slice(0,maxLineas);
+    let u=out[maxLineas-1]+'…';
+    while(ctx.measureText(u).width>maxW && u.length>2) u=u.slice(0,-2)+'…';
+    out[maxLineas-1]=u; return out;
+  }
+  return lineas.map(l=>{ let u=l; while(ctx.measureText(u).width>maxW && u.length>2) u=u.slice(0,-2)+'…'; return u; });
+}
+
+/* ── Dónde recoge: los almacenes del panel ──────────────────────────────────
+   Son los mismos de admin.html → 🏭 Almacenes (/almacenes en Firebase, de
+   lectura pública). Antes de mandar el vale se elige uno, o «sin dirección»:
+   la dirección de recogida depende del producto y aquí nunca se inventa.
+   _valeAlm: undefined = aún sin elegir · null = sin dirección · {…} = elegido. */
+let _almacenes = null, _almError = '', _almCargando = false;
+let _valeAlm = undefined, _almPendiente = null;
+
+async function cargarAlmacenesVale(){
+  if(_almCargando) return;
+  _almCargando=true;
+  if(_almacenes===null){
+    try{ const c=JSON.parse(localStorage.getItem('tm_vale_almacenes')||'null'); if(c && typeof c==='object') _almacenes=c; }catch(e){}
+  }
+  try{
+    if(typeof TMAuth==='undefined') throw new Error('sin configuración de Firebase');
+    let base=TMAuth.rtdb();
+    // init() baja la configuración en un teléfono nuevo; con tope, porque
+    // también descarga el SDK y una red lenta no puede dejar esto colgado.
+    if(!base){ await Promise.race([TMAuth.init().catch(()=>{}), new Promise(r=>setTimeout(r,4000))]); base=TMAuth.rtdb(); }
+    if(!base) throw new Error('sin configuración de Firebase');
+    const ctrl=new AbortController(); const tm=setTimeout(()=>ctrl.abort(),6000);
+    const r=await fetch(base+'/almacenes.json?_='+Date.now(),{cache:'no-store',signal:ctrl.signal});
+    clearTimeout(tm);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    _almacenes=(d && typeof d==='object')?d:{};
+    _almError='';
+    try{ localStorage.setItem('tm_vale_almacenes', JSON.stringify(_almacenes)); }catch(e){}
+  }catch(e){
+    _almError=(e && e.name==='AbortError')?'la conexión tardó demasiado':((e && e.message)||'sin conexión');
+  }
+  _almCargando=false;
+  renderAlm();
+  if(document.getElementById('modalAlm').classList.contains('open')) renderAlmLista();
+}
+function listaAlmacenes(){
+  let borrados=[];
+  try{ borrados=JSON.parse(localStorage.getItem('tm_almacenes_borrados')||'[]')||[]; }catch(e){}
+  return Object.entries(_almacenes||{})
+    .filter(([id,a])=>a && a.nombre && borrados.indexOf(id)===-1)
+    .map(([id,a])=>({id, nombre:String(a.nombre), direccion:String(a.direccion||''), ubicacion:String(a.ubicacion||''), productos:a.productos||{}}))
+    .sort((x,y)=>x.nombre.localeCompare(y.nombre,'es'));
+}
+/* El almacén donde están TODOS los productos elegidos del catálogo. Si están
+   repartidos, o el vale se escribió a mano, no hay sugerencia. */
+function almacenSugerido(lista){
+  if(!_valeItems.length) return '';
+  let prods=[];
+  try{ prods=JSON.parse(localStorage.getItem('productos')||'[]')||[]; }catch(e){}
+  const de=id=>{
+    const p=prods.find(x=>String(x.id)===String(id));
+    if(p && p.almacenId) return p.almacenId;
+    const a=lista.find(a=>a.productos && a.productos[id]);
+    return a?a.id:'';
+  };
+  const ids=[...new Set(_valeItems.map(it=>de(it.id)))];
+  return (ids.length===1 && ids[0] && lista.some(a=>a.id===ids[0]))?ids[0]:'';
+}
+function _hayMensajeria(){
+  const m=(document.getElementById('vMensajeria').value||'').trim();
+  return !!m && !/recoge/i.test(m);
+}
+function lineaRecogida(){
+  if(!_valeAlm) return '';
+  return '\n📍 Recoger en: '+_valeAlm.nombre+(_valeAlm.direccion?' — '+_valeAlm.direccion:'')
+    +(_valeAlm.ubicacion?'\n🗺️ Ubicación del almacén: '+_valeAlm.ubicacion:'');
+}
+const _escA=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function renderAlm(){
+  const box=document.getElementById('almBody'); if(!box) return;
+  let h;
+  if(_valeAlm===undefined){
+    h='<div class="alm-actual"><div class="nada">Sin elegir. Te lo pregunto antes de enviar el vale.</div></div>';
+  } else if(_valeAlm===null){
+    h='<div class="alm-actual"><div class="nada">'+(_hayMensajeria()?'🛵 Va por mensajería: el vale no lleva dirección de almacén.':'El vale va sin dirección de recogida.')+'</div></div>';
+  } else {
+    h='<div class="alm-actual"><div class="dir"><b>'+_escA(_valeAlm.nombre)+'</b>'+(_valeAlm.direccion?_escA(_valeAlm.direccion):'<span style="color:var(--orange)">Sin dirección guardada en 🏭 Almacenes</span>')
+      +(_valeAlm.ubicacion?'<div style="font-size:11px;color:var(--muted);margin-top:3px;word-break:break-all">🗺️ '+_escA(_valeAlm.ubicacion)+'</div>':'')+'</div></div>';
+  }
+  box.innerHTML=h+'<button class="btn-act" onclick="abrirAlm()">'+(_valeAlm===undefined?'📍 Elegir almacén':'✏️ Cambiar')+'</button>';
+}
+function abrirAlm(){
+  document.getElementById('modalAlm').classList.add('open');
+  renderAlmLista();
+  if(!_almCargando) cargarAlmacenesVale();
+}
+function cerrarAlm(){
+  document.getElementById('modalAlm').classList.remove('open');
+  _almPendiente=null;
+}
+function renderAlmLista(){
+  const box=document.getElementById('almLista'); if(!box) return;
+  const lista=listaAlmacenes();
+  const sug=almacenSugerido(lista);
+  const orden=sug?[...lista.filter(a=>a.id===sug),...lista.filter(a=>a.id!==sug)]:lista;
+  const sub=document.getElementById('almModalSub');
+  if(sub) sub.textContent=_almPendiente?'La dirección va en el vale que le mandas. Elige y se envía.':'La dirección va en el vale que le mandas.';
+  let h='';
+  if(_almacenes===null && _almCargando) h+='<div class="hist-empty">Cargando almacenes…</div>';
+  else if(!lista.length && _almError) h+='<div class="hist-empty">No pude leer los almacenes ('+_escA(_almError)+').<br><button class="btn-act" onclick="cargarAlmacenesVale()">🔄 Reintentar</button></div>';
+  else if(!lista.length) h+='<div class="hist-empty">No tienes almacenes guardados. Agrégalos en el panel → 🏭 Almacenes, con su dirección.</div>';
+  else if(_almError) h+='<p style="font-size:11px;color:var(--orange);margin-top:4px">⚠️ Sin conexión: te enseño los que tenía guardados.</p>';
+  h+=orden.map(a=>{
+    const sel=_valeAlm && _valeAlm.id===a.id;
+    return '<button class="alm-opt'+(sel?' sel':'')+'" onclick="elegirAlm(\''+_escA(a.id)+'\')">'
+      +(a.id===sug?'<span class="sug">✓ Ahí están los productos de este vale</span>':'')
+      +'<b>'+_escA(a.nombre)+'</b>'
+      +'<span>'+(a.direccion?_escA(a.direccion):'Sin dirección guardada')+'</span>'
+      +(a.ubicacion?'<span style="word-break:break-all">🗺️ '+_escA(a.ubicacion)+'</span>':'')
+      +'</button>';
+  }).join('');
+  h+='<button class="alm-opt'+(_valeAlm===null?' sel':'')+'" onclick="elegirAlm(\'\')"><b>'
+    +(_hayMensajeria()?'🛵 Va por mensajería':'Sin dirección')+'</b><span>El vale no lleva dirección de almacén.</span></button>';
+  box.innerHTML=h;
+}
+function elegirAlm(id){
+  if(id){
+    const a=listaAlmacenes().find(x=>x.id===id); if(!a) return;
+    _valeAlm={id:a.id, nombre:a.nombre, direccion:a.direccion, ubicacion:a.ubicacion};
+  } else _valeAlm=null;
+  const pendiente=_almPendiente; _almPendiente=null;
+  document.getElementById('modalAlm').classList.remove('open');
+  renderAlm();
+  drawValeImg();
+  // Se ejecuta aquí, dentro del toque: compartir y abrir WhatsApp lo exigen.
+  if(pendiente) pendiente();
+}
+/* Todo lo que manda el vale pasa por aquí: si no se eligió dónde recoge,
+   primero se pregunta y el envío sigue al elegir. */
+function conAlmacen(fn){
+  if(_valeAlm!==undefined) return fn();
+  _almPendiente=fn;
+  document.getElementById('modalAlm').classList.add('open');
+  renderAlmLista();
+  if(!_almCargando) cargarAlmacenesVale();
+}
+
+/* ── ATENCIÓN: las condiciones que van al final del vale ────────────────────
+   Las escribe el dueño. Se guardan en este teléfono y, con la cuenta
+   iniciada, en /privado/vale_config/atencion, para no perderlas al cambiar de
+   móvil. Gana la versión más reciente (ts). */
+const ATEN_DEF={titulo:'🚨 ATENCIÓN 🚨', lineas:[
+  'Horarios de atención: 8:00am — 8:00pm',
+  'Solo aceptamos hasta cinco billetes de 1 USD por compra',
+  'Pagos en CUP con denominación de 50 en adelante',
+  'Solo billetes en buen estado (ni rotos ni manchados)'
+], ts:0};
+function leerAten(){
+  try{
+    const a=JSON.parse(localStorage.getItem('valeAtencion')||'null');
+    if(a && Array.isArray(a.lineas) && a.lineas.length) return {titulo:String(a.titulo||''), lineas:a.lineas.map(String), ts:Number(a.ts)||0};
+  }catch(e){}
+  return JSON.parse(JSON.stringify(ATEN_DEF));
+}
+function textoAtencion(){
+  const a=leerAten();
+  return (a.titulo?a.titulo+'\n':'')+a.lineas.map(l=>'• '+l).join('\n');
+}
+function renderAtencion(editando){
+  const box=document.getElementById('atencionBox'); if(!box) return;
+  const a=leerAten();
+  if(editando){
+    box.innerHTML='<div class="aten-form">'
+      +'<div class="lbl">Título</div><input type="text" id="atenTitulo" value="'+_escA(a.titulo)+'" placeholder="Ej: 🚨 ATENCIÓN 🚨">'
+      +'<div class="lbl">Una condición por línea</div><textarea id="atenLineas" rows="6">'+_escA(a.lineas.join('\n'))+'</textarea>'
+      +'<div class="aten-btns"><button class="btn-act" onclick="guardarAten()">✓ Guardar</button><button class="btn-ghost" onclick="renderAtencion(false)">Cancelar</button></div>'
+      +'<button class="btn-ghost" style="margin-top:0;font-size:12px" onclick="restablecerAten()">↺ Volver a las de siempre</button>'
+      +'</div>';
+    return;
+  }
+  box.innerHTML='<div class="aten-hdr"><div class="aten-tit">'+_escA(a.titulo||'Condiciones')+'</div><button class="aten-edit" onclick="renderAtencion(true)">✏️ Editar</button></div>'
+    +'<ul class="aten-lista">'+a.lineas.map(l=>'<li>'+_escA(l)+'</li>').join('')+'</ul>';
+}
+function _guardarAtenLocal(a){
+  try{ localStorage.setItem('valeAtencion', JSON.stringify(a)); return true; }
+  catch(e){ toast('❌ No pude guardar las condiciones (navegador sin espacio)'); return false; }
+}
+function _subirAten(a){
+  if(typeof TMAuth==='undefined') return;
+  TMAuth.fetchPrivado('/privado/vale_config/atencion.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)})
+    .then(r=>{ if(!r.ok && !r.sinSesion) toast('⚠️ Las condiciones se guardaron solo en este teléfono: '+(r.msg||'')); })
+    .catch(()=>{});
+}
+function guardarAten(){
+  const titulo=(document.getElementById('atenTitulo').value||'').trim();
+  // Se quitan las viñetas que se escriban a mano: el vale pone las suyas.
+  const lineas=(document.getElementById('atenLineas').value||'').split('\n')
+    .map(l=>l.replace(/^\s*[•*\-·]+\s*/,'').trim()).filter(Boolean);
+  if(!lineas.length){ toast('⚠️ Escribe al menos una condición'); return; }
+  const a={titulo, lineas, ts:Date.now()};
+  if(!_guardarAtenLocal(a)) return;
+  _subirAten(a);
+  renderAtencion(false);
+  toast('✅ Condiciones guardadas');
+}
+function restablecerAten(){
+  const a=Object.assign(JSON.parse(JSON.stringify(ATEN_DEF)),{ts:Date.now()});
+  if(!_guardarAtenLocal(a)) return;
+  _subirAten(a);
+  renderAtencion(false);
+  toast('↺ Condiciones de siempre');
+}
+let _atenSinc=false;
+async function sincronizarAtencion(){
+  if(typeof TMAuth==='undefined') return;
+  const r=await TMAuth.fetchPrivado('/privado/vale_config/atencion.json');
+  if(!r.ok) return;
+  const remoto=r.dato, local=leerAten();
+  const tsR=remoto && Number(remoto.ts)||0;
+  if(remoto && Array.isArray(remoto.lineas) && remoto.lineas.length && tsR>local.ts){
+    if(_guardarAtenLocal({titulo:String(remoto.titulo||''), lineas:remoto.lineas.map(String), ts:tsR})){
+      if(!document.getElementById('atenLineas')) renderAtencion(false);
+    }
+  } else if(local.ts>tsR){
+    _subirAten(local);   // se editó aquí sin conexión, o la subida falló
+  }
 }
 
 let _valeLogo = null;
@@ -942,18 +1242,21 @@ function _precargarLogoVale(){
 }
 
 // Enviar la imagen del vale directo por WhatsApp (el cliente la muestra al llegar).
-async function enviarValeImagenWA(){
+function enviarValeImagenWA(){ conAlmacen(_enviarValeImagenWA); }
+async function _enviarValeImagenWA(){
   const c=document.getElementById('valeImgCanvas');
   if(!c) return;
   drawValeImg(); // datos finales
   const cliente=(document.getElementById('vCliente')?.value||'').trim();
-  const texto='🧾 Vale TiendaMax'+(cliente?(' — '+cliente):'')+'\n📍 Muestra este vale al llegar a la tienda.';
+  const texto='🧾 Vale TiendaMax'+(cliente?(' — '+cliente):'')+'\n'+(_valeAlm
+    ? '📍 Recoge en '+_valeAlm.nombre+(_valeAlm.direccion?': '+_valeAlm.direccion:'')+(_valeAlm.ubicacion?'\n🗺️ '+_valeAlm.ubicacion:'')+'\nMuestra este vale al recoger.'
+    : '📍 Muestra este vale al llegar a la tienda.');
   const blob=await new Promise(res=>c.toBlob(res,'image/png',0.95));
   if(blob){
     const file=new File([blob],'vale-tiendamax-'+Date.now()+'.png',{type:'image/png'});
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
       try{ await navigator.share({files:[file], text:texto, title:'Vale TiendaMax'}); toast('📤 Vale listo para enviar'); return; }
-      catch(e){ if(/abort/i.test(e.message||'')) return; }
+      catch(e){ if(e && (e.name==='AbortError' || /abort|cancel/i.test(e.message||''))) return; }
     }
     // Respaldo: descargar la imagen y abrir WhatsApp con el texto para adjuntarla
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
@@ -1104,6 +1407,8 @@ function reservarSiToca(){
 // ═══════════════════════════════════════════════
 
 renderTasa();
+renderAtencion(false);
+renderAlm();
 document.getElementById('vWaTienda').value = localStorage.getItem('waTienda') || '';
 document.getElementById('vFecha').value=fd();
 
