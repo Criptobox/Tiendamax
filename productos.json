@@ -8086,7 +8086,6 @@
   {
     "id": 1786807706672,
     "nombre": "Creatina Hearthy Foods 500g",
-    "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.",
     "imagen": "https://tiendamax.org/imagenes/img_1786807705245.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786807705245.webp"
@@ -8094,7 +8093,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 11,
+    "stock": 0,
     "comision": 0,
     "comisionMoneda": "USD",
     "categoria": "GYM",
@@ -8144,12 +8143,13 @@
     "incluye": [
       "1x Creatina Monohidrato Hearthy Foods 500g"
     ],
-    "slug": "creatina-hearthy-foods-500g"
+    "slug": "creatina-hearthy-foods-500g",
+    "descripcion": "Suplemento dietético de creatina monohidratada micronizada de alta pureza, diseñado para apoyar el rendimiento físico, la recuperación muscular y el incremento de la fuerza durante el ejercicio. Viene en una presentación sin sabor, apta para veganos y libre de gluten.",
+    "rev": 1790566036599
   },
   {
     "id": 1786807859244,
     "nombre": "Creatina Dorado Nutrition 300g",
-    "descripcion": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva. Se presenta en un envase con 60 porciones, sin sabor y verificado mediante pruebas de terceros.",
     "imagen": "https://tiendamax.org/imagenes/img_1786807857921.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786807857921.webp"
@@ -8157,7 +8157,7 @@
     "precioActual": 23,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 13,
+    "stock": 0,
     "comision": 0,
     "comisionMoneda": "USD",
     "categoria": "GYM",
@@ -8206,12 +8206,13 @@
     "incluye": [
       "1x Creatina Monohidrato Dorado Nutrition 300g"
     ],
-    "slug": "creatina-dorado-300g"
+    "slug": "creatina-dorado-300g",
+    "descripcion": "Suplemento dietético en polvo de creatina monohidratada micronizada de Dorado Nutrition, diseñado para optimizar el rendimiento y la nutrición deportiva. Se presenta en un envase con 60 porciones, sin sabor y verificado mediante pruebas de terceros.",
+    "rev": 1790566036599
   },
   {
     "id": 1786808152310,
     "nombre": "Proteína Whey Protein 1UP Nutrition Coconut Ice Cream 962g",
-    "descripcion": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y recuperación muscular. Presenta un delicioso sabor a helado de coco (Coconut Ice Cream), sin colorantes artificiales y con un contenido neto de 962 gramos.",
     "imagen": "https://tiendamax.org/imagenes/img_1786808150368.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1786808150368.webp"
@@ -8219,7 +8220,7 @@
     "precioActual": 35,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 0,
     "comision": 0,
     "comisionMoneda": "USD",
     "categoria": "GYM",
@@ -8276,7 +8277,9 @@
     "slug": "proteina-whey-1up-962g",
     "slugsAnteriores": [
       "proteina-whey-1up-ice-962g"
-    ]
+    ],
+    "descripcion": "Suplemento dietético de proteína de suero de leche de alta calidad 1UP Nutrition, combinando concentrado y aislado para un óptimo rendimiento y recuperación muscular. Presenta un delicioso sabor a helado de coco (Coconut Ice Cream), sin colorantes artificiales y con un contenido neto de 962 gramos.",
+    "rev": 1790566036599
   },
   {
     "id": 1787071784077,
