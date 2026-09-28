@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-28T17:35:34Z",
+ "actualizado": "2026-09-28T23:30:52Z",
  "fichas": {
   "1790612424343": {
    "descripcion": "5 ac loco version US"
@@ -73,6 +73,9 @@
   },
   "1786509014605": {
    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa\npor horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico.\n--Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos.\n-Se puede alimentar\nde una bateria de *12V*.\n-Posee dos salidas universales que sirven para conectores de corriente plano (el que se usa mayoritariamente en Cuba), europeo o chino\n-Un display digital que muestra los voltajes de entrada (DC) y salida (AC) en tiempo real."
+  },
+  "1790637721439": {
+   "descripcion": "Lite ap GPS"
   },
   "1790083590722": {
    "descripcion": "Frecuencia de operación: Banda de 5 GHz (con un ancho de banda compatible de 5150 - 5875 MHz).  \n​Radio de gestión dedicado: Incorpora WiFi secundario de 2.4 GHz para la configuración rápida y gestión en sitio mediante la aplicación móvil UISP.  \n​Ganancia de la antena: Antena direccional de alta ganancia de 23 dBi (tecnología MIMO 2x2) para enlaces de largo alcance y alta inmunidad al ruido.  \n​Interfaz de red: (1) Puerto Ethernet Gigabit RJ-45 (10/100/1000 Mbps).\n​Rendimiento: Throughput real superior a 450 Mbps.  \n​Sistema operativo: airOS 8, que ofrece herramientas avanzadas de análisis de RF en tiempo real (airView) y compatibilidad con el protocolo airMAX ac.  \n​Protección mejorada: Mayor robustez frente a descargas electrostáticas (protección ESD/EMP de ± 24 kV).  \n​Montaje y diseño: Sistema de montaje robusto con ajustes independientes de acimut y elevación, además de nivel de burbuja integrado para facilitar la alineación física.  \n​Alimentación: Compatible con PoE pasivo (24V, 0.3A adaptador Gigabit PoE incluido en kits individuales; consumo máximo de 7W).  \n​\nNota logística: Ten en cuenta que este equipo viene de fábrica en presentaciones de cajas multipack de 5 unidades, por lo que al cliente se le entrega el producto suelto acondicionado de forma individual."
