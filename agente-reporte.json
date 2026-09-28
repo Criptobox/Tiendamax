@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-27T14:27:21.033949+00:00",
+  "generado": "2026-09-28T17:12:39.865596+00:00",
   "productos": 138,
   "urgentes": 0,
   "advertencias": 0,
@@ -8,12 +8,12 @@
   "detalle": [
     {
       "tipo": "stock_bajo",
-      "nombre": "⚡ Inversor Tataliken 4000W",
+      "nombre": "Inversor Tataliken 4000W",
       "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🔊 Xiaomi Sound Outdoor",
+      "nombre": "Xiaomi Sound Outdoor",
       "detalle": "quedan 3"
     },
     {
@@ -23,28 +23,28 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "precio",
-      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🌐 NanoStation M5 Internacional",
-      "detalle": "quedan 1"
+      "nombre": "MikroTik SXTsq 5 AX",
+      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "🛜 TP-Link Archer BE230",
+      "nombre": "TP-Link Archer BE230",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
-      "nombre": "58 agotados",
-      "detalle": "🔋Batería Must Tipo LiFePO4, 🌐 Switch Gigabit de 8 Puertos, ⚡ Pistola Fascia Gun y 55 más"
+      "nombre": "69 agotados",
+      "detalle": "Batería Must Tipo LiFePO4, Switch Gigabit de 8 Puertos, Pistola Fascia Gun y 66 más"
     }
   ]
 }
