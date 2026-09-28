@@ -1,0 +1,210 @@
+{
+  "v": 1,
+  "creado": "2026-09-28T17:09:26.209Z",
+  "productos": [
+    {
+      "id": 1781711154462,
+      "nombre": "Repetidor Wi-fi TP-Link TL-WA855RE (N300)",
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
+      "categoria": "WIFI",
+      "subcategoria": "REPETIDORES",
+      "stock": 8,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "tplink-tl-wa855re",
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "seoTitle": "Repetidor Wi-fi TP-Link TL-WA855RE (N300) | TiendaMax",
+      "seoDescription": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
+      "specs": [
+        "🔌 Puertos: 1× puerto Fast Ethernet RJ45",
+        "📶 Velocidad Wi-Fi: Hasta 300 Mbps en la banda de 2.4 GHz"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "TL-WA855RE",
+          "nota": "N300"
+        },
+        {
+          "k": "Velocidad Wi-Fi",
+          "v": "Hasta 300 Mbps en la banda de 2.4 GHz",
+          "nota": "Estándar 802.11n/g/b"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto Fast Ethernet RJ45",
+          "nota": "10/100 Mbps"
+        },
+        {
+          "k": "Antenas",
+          "v": "2 antenas externas ajustables de alta ganancia con tecnología MIMO"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "Modo Extensor de Rango (Repetidor), Modo Punto de Acceso (AP)"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3.6W",
+          "nota": "Ficha técnica oficial de TP-Link"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Amplifica la señal Wi-Fi del router principal eliminando zonas muertas en habitaciones, pasillos y áreas de difícil acceso."
+        },
+        {
+          "d": "2 antenas externas con tecnología MIMO que optimizan la recepción y estabilidad de la señal en toda la casa."
+        },
+        {
+          "d": "Indicador de señal LED inteligente que cambia de color para ayudarte a encontrar la ubicación óptima de instalación."
+        },
+        {
+          "d": "Botón WPS para conexión instantánea con el router principal en segundos sin configuraciones complejas."
+        },
+        {
+          "d": "Puerto Fast Ethernet integrado para conectar dispositivos por cable (Smart TV, PC, consola) o convertir una conexión de cable en Wi-Fi (Modo AP)."
+        },
+        {
+          "d": "Control de cobertura y programación de horarios de apagado/encendido para ahorro de energía desde la interfaz."
+        },
+        {
+          "d": "Compatible con cualquier módem, router o punto de acceso inalámbrico estándar."
+        },
+        {
+          "d": "Gestión sencilla desde el smartphone con la app móvil TP-Link Tether (Android / iOS) o navegador web."
+        }
+      ],
+      "idealPara": [
+        "Departamentos y casas donde la señal del módem principal no llega con suficiente fuerza a dormitorios, patios u oficinas de trabajo.",
+        "Conectar por cable equipos que no tienen Wi-Fi o requieren mayor estabilidad (computadoras de escritorio, impresoras de red o decodificadores).",
+        "Teletrabajo, clases virtuales, navegación web y reproducción fluida de contenido en HD."
+      ],
+      "incluye": [
+        "1× Extensor de Cobertura Wi-Fi TP-Link TL-WA855RE (N300)",
+        "1× Guía de instalación rápida"
+      ],
+      "rev": 1790615366209,
+      "slugsAnteriores": [
+        "repetidor-tl-wa855re-n300"
+      ],
+      "descripcion": "Extensor de rango inalámbrico diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos."
+    },
+    {
+      "id": 1785285424837,
+      "nombre": "MikroTik SXTsq 5 AX",
+      "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1785285422394.webp"
+      ],
+      "precioActual": 160,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 3,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Wi-Fi 6 (802.11ax) Alta Velocidad",
+        "📶 Antena Direccional de 16 dBi",
+        "🌐 Licencia RouterOS Level 4"
+      ],
+      "fechaAgregado": "2026-07-29T00:37:04.838Z",
+      "seoTitle": "MikroTik SXTsq 5 AX en Cuba | TiendaMax",
+      "seoDescription": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE)…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "SXTsq 5 ax",
+          "nota": "RBSXTsqG-5axD"
+        },
+        {
+          "k": "Frecuencia y Velocidad",
+          "v": "5 GHz hasta 1200 Mbps",
+          "nota": "Wi-Fi 6 / 802.11ax"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto LAN Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps con soporte PoE In"
+        },
+        {
+          "k": "Antenas",
+          "v": "Antena direccional de panel integrada de 16 dBi",
+          "nota": "Doble polarización 2×2 MIMO, apertura ~23°"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "CPE / Estación (Cliente), Enlace Punto a Punto (PtP) con licencia RouterOS Nivel 3"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "6W máximo",
+          "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tecnología inalámbrica de última generación Wi-Fi 6 (802.11ax) en 5 GHz con modulación 1024-QAM y OFDMA para un rendimiento ultrarrápido y menor latencia."
+        },
+        {
+          "d": "Potente procesador Dual-Core ARM de 64 bits a 800 MHz (IPQ-5010) y 256 MB de RAM para gestionar transferencias pesadas y encriptación sin saturarse."
+        },
+        {
+          "d": "Puerto Gigabit Ethernet que aprovecha al máximo el ancho de banda del enlace inalámbrico sin cuellos de botella."
+        },
+        {
+          "d": "Sistema operativo RouterOS v7 (Licencia Nivel 3), con soporte para cortafuegos avanzado, enrutamiento, túneles VPN, VLANs y monitoreo de tráfico en tiempo real."
+        },
+        {
+          "d": "Diseño ultra compacto y estilizado SXTsq, significativamente más delgado que los modelos SXT clásicos y resistente a condiciones climáticas extremas (-40 °C a +70 °C)."
+        },
+        {
+          "d": "Antena integrada de 16 dBi optimizada para enlaces estables y con excelente aislamiento frente a interferencias en entornos densos."
+        },
+        {
+          "d": "Alimentación eficiente mediante PoE Pasivo (12V a 28V) con bajo consumo energético."
+        }
+      ],
+      "idealPara": [
+        "Clientes de proveedores WISP (CPE) que requieren planes de Internet de alta velocidad en redes 5 GHz con tecnología Wi-Fi 6.",
+        "Enlaces inalámbricos Punto a Punto (PtP) de media y larga distancia (hasta 10-15 km con línea de vista despejada) para interconectar oficinas, almacenes o fincas.",
+        "Transmisión continua de video para sistemas de cámaras de seguridad IP en alta definición y tráfico masivo de datos locales."
+      ],
+      "incluye": [
+        "1× Antena CPE MikroTik SXTsq 5 ax",
+        "1× Adaptador de corriente (24V)",
+        "1× Inyector PoE Gigabit",
+        "1× Abrazadera metálica para mástil o poste",
+        "1× Guía de inicio rápido"
+      ],
+      "slug": "mikrotik-sxtsq-5-ax",
+      "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red.",
+      "rev": 1790615366209
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
