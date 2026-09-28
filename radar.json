@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-27T15:32:17.977907+00:00",
-  "fecha": "2026-09-27",
+  "actualizado": "2026-09-28T18:30:02.552030+00:00",
+  "fecha": "2026-09-28",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -15,12 +15,12 @@
   "productos": [
     {
       "id": 1777924118004,
-      "nombre": "⚡ Inversor Tataliken 4000W",
+      "nombre": "Inversor Tataliken 4000W",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 160.0,
-        "mediana": 179.0,
-        "n": 14
+        "min": 170.0,
+        "mediana": 180.0,
+        "n": 13
       },
       "deltaAyerMediana": 1.0,
       "estado": "competitivo",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-14",
-          "mediana": 178.0
-        },
         {
           "fecha": "2026-09-15",
           "mediana": 178.0
@@ -83,16 +79,13 @@
         {
           "fecha": "2026-09-27",
           "mediana": 179.0
+        },
+        {
+          "fecha": "2026-09-28",
+          "mediana": 180.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "160 USD Inversor marca tataliken de 4000w , 12vol (110) onda sinosoidal pura Precio 160 us",
-          "precio": 160.0,
-          "url": "https://www.revolico.com/item/inversor-marca-tataliken-de-4000w-12vol-110-onda-sinosoidal-pura-precio-160-usd-57317404",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "170 USD Inversor Tataliken 4000w 12v",
@@ -109,13 +102,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "175 USD Inversor Tataliken de 24V 4000W $175",
-          "precio": 175.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-24v-4000w-175-57562363",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "178 USD ⚡ Inversor Tataliken 24V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
           "precio": 178.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-24v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-57123171",
@@ -127,17 +113,31 @@
           "precio": 178.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-12v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776261",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "178 USD ⚡ Inversor Tataliken 24V 4000W – Onda Pura – 178 USD ¡Mejores precios y calidad co",
+          "precio": 178.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-24v-4000w-onda-pura-178-usd-mejores-precios-y-calidad-conmigo-56776248",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "180 USD Inversor Tataliken 4000W",
+          "precio": 180.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-57734219",
+          "dias": null
         }
       ]
     },
     {
       "id": 1778102507659,
-      "nombre": "⚖️ Báscula Digital de Alta Definición",
+      "nombre": "Báscula Digital de Alta Definición",
       "tuPrecio": 25.0,
       "mercado": {
         "min": 25.0,
         "mediana": 25.0,
-        "n": 1
+        "n": 2
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-14",
-          "mediana": 25.0
-        },
         {
           "fecha": "2026-09-15",
           "mediana": 25.0
@@ -200,9 +196,20 @@
         {
           "fecha": "2026-09-27",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-28",
+          "mediana": 25.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Báscula Digital de Alta Definición",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/bascula-digital-de-alta-definicion-57734018",
+          "dias": null
+        },
         {
           "fuente": "revolico",
           "titulo": "25 USD Báscula o pesa digital gramera de cocina nueva en su caja",
@@ -214,12 +221,12 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
+      "nombre": "Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 75.0,
       "mercado": {
         "min": 75.0,
         "mediana": 75.0,
-        "n": 1
+        "n": 2
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -227,10 +234,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-14",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-15",
           "mediana": 75.0
@@ -282,9 +285,20 @@
         {
           "fecha": "2026-09-27",
           "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-28",
+          "mediana": 75.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD Antorcha de Soldadura TIG (KIT Profesional)",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/antorcha-de-soldadura-tig-kit-profesional-57734025",
+          "dias": null
+        },
         {
           "fuente": "revolico",
           "titulo": "75 USD 🔥 Antorcha de soldadura TIG (KIT Profesional)",
@@ -296,7 +310,7 @@
     },
     {
       "id": 1788626436047,
-      "nombre": "⚡ Inversor Tataliken 3500W",
+      "nombre": "Inversor Tataliken 3500W",
       "tuPrecio": 170.0,
       "mercado": {
         "min": 90.0,
@@ -310,10 +324,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-14",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-15",
           "mediana": 170.0
         },
@@ -363,6 +373,10 @@
         },
         {
           "fecha": "2026-09-27",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-28",
           "mediana": 170.0
         }
       ],
@@ -379,6 +393,13 @@
           "titulo": "165 USD Inversor Tataliken de 12V 3500W $165",
           "precio": 165.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57214908",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-3500w-57734342",
           "dias": null
         },
         {
@@ -400,13 +421,6 @@
           "titulo": "170 USD Inversor Tataliken de 3500W",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-3500w-57078348",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170 ☆",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57661035",
           "dias": null
         }
       ]
