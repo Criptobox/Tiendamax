@@ -2873,12 +2873,18 @@ function renderReservas(){
   }
 
   const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  // El vale marcado como entregado va primero y destacado: se viene aquí a
+  // confirmarlo, y buscarlo entre otras reservas es donde se equivoca uno.
+  const delVale=_reservaDelVale(pend);
+  if(delVale){ pend.sort((a,b)=>(a.id===delVale?-1:0)-(b.id===delVale?-1:0)); }
   cont.innerHTML=pend.map(r=>{
     const d=TMReservas.dias(r);
     const viejo=d>=TMReservas.DIAS_AVISO;
+    const esVale=r.id===delVale;
     const items=(r.items||[]).map(i=>i.cantidad+'× '+esc(i.nombre)).join(' · ');
     const wa=String(r.telefono||'').replace(/\D/g,'');
-    return '<div style="padding:12px;border:1px solid '+(viejo?'rgba(231,76,60,.5)':'var(--border)')+';border-left:3px solid '+(viejo?'#e74c3c':'var(--gold)')+';border-radius:10px;margin-bottom:10px;background:var(--card2)">'
+    return '<div'+(esVale?' id="reservaDelVale"':'')+' style="padding:12px;border:1px solid '+(esVale?'var(--o)':(viejo?'rgba(231,76,60,.5)':'var(--border)'))+';border-left:3px solid '+(esVale?'var(--o)':(viejo?'#e74c3c':'var(--gold)'))+';border-radius:10px;margin-bottom:10px;background:var(--card2)'+(esVale?';box-shadow:0 0 0 3px rgba(var(--o-rgb),.18)':'')+'">'
+      + (esVale?'<div style="font-size:12.5px;color:var(--o);font-weight:700;margin-bottom:8px">🧾 El vale que marcaste como entregado. Si el cliente ya pagó, toca ✅ Ejecutar venta.</div>':'')
       + '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">'
       +   '<b style="font-size:14px">'+(esc(r.cliente)||'Sin nombre')+'</b>'
       +   '<span style="font-size:12px;color:'+(viejo?'#ff8f85':'var(--muted)')+'">'+(d===0?'hoy':(d===1?'ayer':'hace '+d+' días'))+'</span>'
@@ -2896,6 +2902,22 @@ function renderReservas(){
 
 function _reservaBuscar(id){ return TMReservas.lista().find(r=>r.id===id); }
 
+/* vale.html → «✅ Entregado → registrar venta» apunta aquí qué reserva es
+   (tm_vale_vender) y abre #reservas. Solo vale si esa reserva sigue
+   pendiente y el aviso es de hoy; si no, se olvida. */
+function _reservaDelVale(pend){
+  let v=null;
+  try{ v=JSON.parse(localStorage.getItem('tm_vale_vender')||'null'); }catch(e){}
+  if(!v || !v.id) return '';
+  const vigente=(Date.now()-(Number(v.ts)||0)) < 86400000 && (pend||[]).some(r=>r.id===v.id);
+  if(!vigente){ try{ localStorage.removeItem('tm_vale_vender'); }catch(e){} return ''; }
+  if(!window._tmValeScroll){
+    window._tmValeScroll=true;
+    setTimeout(()=>{ const el=document.getElementById('reservaDelVale'); if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth', block:'center'}); }, 150);
+  }
+  return v.id;
+}
+
 function reservaVender(id){
   const r=_reservaBuscar(id);
   if(!r) return;
@@ -2908,6 +2930,7 @@ function reservaVender(id){
   const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, moneda:i.moneda, comision:i.comision, comisionMoneda:i.comisionMoneda}));
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
   registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true});
+  try{ const v=JSON.parse(localStorage.getItem('tm_vale_vender')||'null'); if(v && v.id===id) localStorage.removeItem('tm_vale_vender'); }catch(e){}
   renderReservas();
 }
 

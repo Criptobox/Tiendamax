@@ -89,6 +89,20 @@ input[readonly]{color:var(--muted)}
 .alm-actual .dir{font-size:13px;color:#e9dfcd;line-height:1.45}
 .alm-actual .dir b{display:block;font-size:14px;color:var(--text)}
 .alm-actual .nada{font-size:13px;color:var(--muted)}
+/* ── Entregado → registrar venta ── */
+.venta-box{background:var(--bg2);border:1px solid #2d5a2d;border-radius:14px;padding:14px;margin-top:14px}
+.venta-box .t{font-size:11px;color:var(--green-light);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.venta-lin{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border)}
+.venta-lin .x{color:var(--muted)}
+.venta-tot{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;padding-top:8px}
+.venta-tot b{color:var(--green-light)}
+.venta-aviso{font-size:12px;color:#f5d38e;background:#2a2112;border:1px solid #f2b84b55;border-radius:10px;padding:8px 10px;margin-top:8px}
+.venta-ok{font-size:14px;color:var(--green-light);font-weight:600}
+.btn-venta{width:100%;padding:13px;margin-top:12px;border-radius:12px;border:1px solid #2d5a2d;background:linear-gradient(135deg,#1a2a1a,#152015);color:var(--green-light);font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.hist-est{font-size:10px;font-weight:700;border-radius:20px;padding:2px 8px;margin-left:6px;white-space:nowrap}
+.hist-est.res{background:rgba(255,107,53,.14);color:var(--orange)}
+.hist-est.ven{background:#1a2a1a;color:var(--green-light)}
+.hist-est.can{background:#2a1512;color:#f5b1a7}
 hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid #2d5a2d;border-radius:30px;padding:11px 22px;font-size:13px;color:var(--green-light);opacity:0;transition:opacity .3s;white-space:nowrap;z-index:999;pointer-events:none}
 .toast.show{opacity:1}
@@ -253,6 +267,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
   <button class="btn-gold" onclick="copiarVale()">📋 Copiar Vale para WhatsApp</button>
   <button class="btn-gold" style="background:linear-gradient(135deg,#25D366,#1da851);color:#fff" onclick="enviarValeWA()">📱 Enviar Vale por WhatsApp</button>
+  <div class="venta-box" id="ventaBox"></div>
   <button class="step-back" onclick="goStep(2)">◂ Volver al vale</button>
   <button class="btn-ghost" onclick="resetForm()">🔄 Nuevo cliente</button>
   </div><!-- /step-3 -->
@@ -671,8 +686,8 @@ function copiarVale(){
   if(!validarVale()) return;
   conAlmacen(()=>{
     copiarTexto(construirTextoVale(),'✅ Vale copiado — pégalo en WhatsApp');
-    guardarHist();
     reservarSiToca();
+    guardarHist();
   });
 }
 
@@ -687,8 +702,8 @@ function _enviarValeWA(){
     a.href=waUrl; a.target='_blank'; a.rel='noopener';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }catch(e){ location.href=waUrl; }
-  guardarHist();
   reservarSiToca();
+  guardarHist();
 }
 
 const HIST_MAX=200;
@@ -700,7 +715,8 @@ function leerHist(){
 }
 function guardarHist(){
   const hist=leerHist();
-  hist.unshift({cliente:g('vCliente'),telefono:g('vTelefono'),articulo:g('vArticulo').split('\n')[0],total:document.getElementById('vTotal').textContent,fecha:g('vFecha'),ts:Date.now(),almacen:_valeAlm?_valeAlm.nombre:''});
+  hist.unshift({cliente:g('vCliente'),telefono:g('vTelefono'),articulo:g('vArticulo').split('\n')[0],total:document.getElementById('vTotal').textContent,fecha:g('vFecha'),ts:Date.now(),almacen:_valeAlm?_valeAlm.nombre:'',reserva:_valeReservaHecha||''});
+  _valeHistGuardado=true;
   // Sin este try, el navegador sin espacio tiraba una excepción y el vale
   // desaparecía en silencio: el toast de "copiado" ya había salido, así que
   // parecía que todo había ido bien. Si falla hay que decirlo, porque es un
@@ -785,7 +801,7 @@ function renderHist(filtro){
     (v.articulo||'').toLowerCase().includes(q)
   ):hist;
   if(!lista.length){body.innerHTML='<div class="hist-empty">Sin resultados para "'+_e(q)+'"</div>';return;}
-  body.innerHTML=lista.map(v=>`<div class="hist-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:14px;font-weight:500">${_e(v.cliente)}</div><div style="font-size:11px;color:var(--dim)">${_e(v.fecha)}</div></div><div style="font-size:12px;color:var(--muted)">${v.telefono&&v.telefono!=='—'?'📞 '+_e(v.telefono)+' · ':''}${_e(v.articulo)} · <span style="color:var(--green-light)">${_e(v.total)}</span></div></div>`).join('');
+  body.innerHTML=lista.map(v=>`<div class="hist-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:14px;font-weight:500">${_e(v.cliente)}${estadoVale(v)}</div><div style="font-size:11px;color:var(--dim)">${_e(v.fecha)}</div></div><div style="font-size:12px;color:var(--muted)">${v.telefono&&v.telefono!=='—'?'📞 '+_e(v.telefono)+' · ':''}${_e(v.articulo)} · <span style="color:var(--green-light)">${_e(v.total)}</span></div></div>`).join('');
 }
 function filtrarHist(){
   renderHist(document.getElementById('histBuscar').value);
@@ -821,7 +837,7 @@ function goStep(n){
   });
   // Las condiciones de la nube se traen al llegar al paso donde se ven: en
   // la carga obligaría a todo el que abre el vale a bajar el SDK de Firebase.
-  if(n===3){ scheduleDrawVale(); renderAlm(); if(_almacenes===null) cargarAlmacenesVale(); if(!_atenSinc){ _atenSinc=true; sincronizarAtencion(); } }
+  if(n===3){ scheduleDrawVale(); renderAlm(); renderVentaVale(); if(_almacenes===null) cargarAlmacenesVale(); if(!_atenSinc){ _atenSinc=true; sincronizarAtencion(); } }
   try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
 }
 function resetForm(){
@@ -840,6 +856,11 @@ function resetForm(){
   document.getElementById('vFecha').value=fd();
   _ubi=null;
   _valeAlm=undefined; renderAlm();
+  _valeHistGuardado=false;
+  // Los productos del catálogo y la reserva son de ESTE cliente. Sin vaciarlos,
+  // el siguiente vale arrastraba los productos del anterior, no se reservaba
+  // (ya había una reserva) y «registrar venta» cerraba la del cliente anterior.
+  _valeItems=[]; _valeReservaHecha=null; renderReservaPanel(); renderVentaVale();
   _valeCodigo=_genCodigo();
   goStep(1);
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1378,6 +1399,7 @@ function quitarItemVale(id){
 }
 
 function renderReservaPanel(){
+  try{ renderVentaVale(); }catch(e){}
   const box=document.getElementById('reservaPanel');
   if(!box) return;
   if(!_valeItems.length){ box.innerHTML=''; box.style.display='none'; return; }
@@ -1403,6 +1425,84 @@ function reservarSiToca(){
   _valeReservaHecha=r.reserva.id;
   renderReservaPanel();
   toast('🔒 Reservado. Ciérralo en el admin cuando el cliente venga.');
+}
+
+/* ── Entregado → registrar venta ────────────────────────────────────────────
+   La venta NO se registra aquí: se hace en el panel, con el mismo
+   «✅ Ejecutar venta» de 🔒 Reservas (reservaVender → registrarVentaPedido),
+   que anota la comisión, el cliente y el seguimiento sin volver a descontar
+   el stock. Un segundo camino de venta en esta página acabaría contando
+   distinto. Aquí se reserva si hacía falta, se apunta cuál es y se abre el
+   panel con esa reserva arriba. */
+let _valeHistGuardado=false;
+function _reservaDelVale(){
+  if(!_valeReservaHecha || typeof TMReservas==='undefined') return null;
+  try{ return TMReservas.lista().find(r=>r.id===_valeReservaHecha)||null; }catch(e){ return null; }
+}
+function _comisionDe(items){
+  // USD y MN nunca se suman: son dos cifras.
+  let usd=0, mn=0; const sin=[];
+  (items||[]).forEach(it=>{
+    const c=Number(it.comision)||0, q=Number(it.cantidad)||1;
+    if(c<=0){ sin.push(it.nombre); return; }
+    if(String(it.comisionMoneda||'USD').toUpperCase()==='MN') mn+=c*q; else usd+=c*q;
+  });
+  return {usd, mn, sin};
+}
+function _itemsConComision(){
+  const r=_reservaDelVale();
+  if(r && Array.isArray(r.items)) return r.items;
+  let ps=[]; try{ ps=JSON.parse(localStorage.getItem('productos')||'[]')||[]; }catch(e){}
+  return _valeItems.map(it=>{
+    const p=ps.find(x=>String(x.id)===String(it.id))||{};
+    return {nombre:it.nombre, cantidad:it.cantidad, comision:p.comision, comisionMoneda:p.comisionMoneda};
+  });
+}
+function renderVentaVale(){
+  const box=document.getElementById('ventaBox'); if(!box) return;
+  const e=_escA;
+  if(!_valeItems.length){
+    box.innerHTML='<div class="t">✅ Registrar la venta</div><div style="font-size:12.5px;color:var(--muted);line-height:1.5">Para registrarla desde aquí, elige los productos con <b>🛍️ Elegir del catálogo</b> en el paso 2. Con el artículo escrito a mano no sé qué producto es.</div>';
+    return;
+  }
+  const r=_reservaDelVale();
+  if(r && r.estado==='vendida'){ box.innerHTML='<div class="venta-ok">✅ Venta registrada</div>'; return; }
+  if(r && r.estado==='cancelada'){ box.innerHTML='<div class="venta-ok" style="color:#f5b1a7">❌ La reserva se canceló en el panel: el producto volvió al stock.</div>'; return; }
+  const items=_itemsConComision(), c=_comisionDe(items);
+  const lin=items.map(it=>{
+    const n=Number(it.comision)||0, q=Number(it.cantidad)||1, mnC=String(it.comisionMoneda||'USD').toUpperCase()==='MN';
+    return '<div class="venta-lin"><span>'+q+'× '+e(it.nombre)+'</span><span class="'+(n?'':'x')+'">'
+      +(n?(mnC?(n*q).toLocaleString('es-CU')+' MN':'$'+(n*q).toLocaleString('es-CU')+' USD'):'sin comisión')+'</span></div>';
+  }).join('');
+  const tot=[c.usd?'$'+c.usd.toLocaleString('es-CU')+' USD':'', c.mn?c.mn.toLocaleString('es-CU')+' MN':''].filter(Boolean).join(' + ')||'$0';
+  box.innerHTML='<div class="t">✅ Cuando lo entregues</div>'+lin
+    +'<div class="venta-tot"><span>Tu comisión</span><b>'+tot+'</b></div>'
+    +(c.sin.length?'<div class="venta-aviso">'+e(c.sin.join(', '))+(c.sin.length>1?' no tienen':' no tiene')+' comisión: cuenta como $0 para ti. Ponla en Productos → ❓ Sin comisión.</div>':'')
+    +'<button class="btn-venta" onclick="valeEntregado()">✅ Entregado → registrar venta</button>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:6px;text-align:center">Se abre el panel en 🔒 Reservas con este vale arriba, para confirmarlo.</div>';
+}
+function valeEntregado(){
+  if(!_valeItems.length){ toast('⚠️ Elige los productos del catálogo en el paso 2'); return; }
+  if(!_valeReservaHecha){
+    if(!validarVale()) return;
+    reservarSiToca();
+    if(!_valeReservaHecha) return;          // reservarSiToca ya dijo por qué
+  }
+  if(!_valeHistGuardado) guardarHist();
+  try{ localStorage.setItem('tm_vale_vender', JSON.stringify({id:_valeReservaHecha, ts:Date.now()})); }
+  catch(e){ toast('⚠️ No pude apuntar la reserva: búscala en 🔒 Reservas'); }
+  location.href='admin.html#reservas';
+}
+// Al volver del panel (atrás), la reserva puede estar ya vendida.
+window.addEventListener('pageshow', function(){ try{ renderVentaVale(); renderHist(); }catch(e){} });
+
+function estadoVale(v){
+  if(!v || !v.reserva || typeof TMReservas==='undefined') return '';
+  let r=null; try{ r=TMReservas.lista().find(x=>x.id===v.reserva); }catch(e){}
+  if(!r) return '';
+  if(r.estado==='vendida') return '<span class="hist-est ven">✅ Vendido</span>';
+  if(r.estado==='cancelada') return '<span class="hist-est can">❌ Cancelado</span>';
+  return '<span class="hist-est res">🔒 Reservado</span>';
 }
 // ═══════════════════════════════════════════════
 
