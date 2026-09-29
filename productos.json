@@ -181,7 +181,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 26,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -249,7 +249,7 @@
       "Monitoreo de peso personal y control de salud."
     ],
     "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
-    "rev": 1790459156781,
+    "rev": 1790713098934,
     "slugsAnteriores": [
       "bascula-digital-alta"
     ]
