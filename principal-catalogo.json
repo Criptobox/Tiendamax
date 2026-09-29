@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-28T23:30:52Z",
+ "actualizado": "2026-09-29T02:44:28Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 114,
  "productos": [
@@ -901,7 +901,7 @@
    "nombre": "Repetidor Wi-Fi TP-Link RE205 AC750 Reacondicionado",
    "precio": 30.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 1,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -1108,7 +1108,7 @@
    "nombre": "Toldo malla para sombra",
    "precio": 38.0,
    "precioMoneda": "USD",
-   "stock": 8,
+   "stock": 7,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -1123,8 +1123,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
