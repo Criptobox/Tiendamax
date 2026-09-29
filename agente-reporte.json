@@ -1,20 +1,15 @@
 {
-  "generado": "2026-09-28T17:12:39.865596+00:00",
-  "productos": 138,
+  "generado": "2026-09-29T15:15:32.562954+00:00",
+  "productos": 137,
   "urgentes": 0,
   "advertencias": 0,
   "info": 8,
-  "resumen": "Anoche revisé tus 138 productos y encontré 8 de info.",
+  "resumen": "Anoche revisé tus 137 productos y encontré 8 de info.",
   "detalle": [
     {
       "tipo": "stock_bajo",
       "nombre": "Inversor Tataliken 4000W",
       "detalle": "quedan 2"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Xiaomi Sound Outdoor",
-      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
@@ -34,7 +29,12 @@
     {
       "tipo": "stock_bajo",
       "nombre": "MikroTik SXTsq 5 AX",
-      "detalle": "quedan 3"
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "NanoStation M5 Internacional",
+      "detalle": "quedan 1"
     },
     {
       "tipo": "stock_bajo",
@@ -43,8 +43,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "69 agotados",
-      "detalle": "Batería Must Tipo LiFePO4, Switch Gigabit de 8 Puertos, Pistola Fascia Gun y 66 más"
+      "nombre": "64 agotados",
+      "detalle": "Switch Gigabit de 8 Puertos, Pistola Fascia Gun, Cargador Inteligente 15A y 61 más"
     }
   ]
 }
