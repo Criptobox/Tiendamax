@@ -232,7 +232,7 @@
     <loc>https://tiendamax.org/p/switch-gigabit-5-puertos</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/tenda-ac6-ac1200</loc>
@@ -280,7 +280,7 @@
     <loc>https://tiendamax.org/p/adaptador-poe-ubiquiti-24v</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/ventilador-carro</loc>
@@ -502,7 +502,7 @@
     <loc>https://tiendamax.org/p/tplink-archer-c54</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/inversor-must-pv15-1524-lv</loc>
@@ -526,7 +526,7 @@
     <loc>https://tiendamax.org/p/tplink-archer-ax1450</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/audifonos-gaming-nubwo</loc>
@@ -652,7 +652,7 @@
     <loc>https://tiendamax.org/p/nanostation-5-ac-loco</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/camara-ptz-wifi-exterior</loc>
@@ -712,7 +712,7 @@
     <loc>https://tiendamax.org/p/mikrotik-sxtsq-5-ax</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/nanostation-m5-internacional</loc>
@@ -814,7 +814,7 @@
     <loc>https://tiendamax.org/p/mikrotik-hex-s-rb760igs</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/ubiquiti-litebeam-m5</loc>
