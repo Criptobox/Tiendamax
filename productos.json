@@ -8216,7 +8216,6 @@
   {
     "id": 1787071784077,
     "nombre": "Cargador y Mantenedor de Baterías VEVOR 35A",
-    "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
     "imagen": "https://tiendamax.org/imagenes/img_1787071781631.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1787071781631.webp",
@@ -8225,7 +8224,7 @@
     "precioActual": 125,
     "precioOriginal": 145,
     "descuento": 14,
-    "stock": 12,
+    "stock": 11,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8322,7 +8321,9 @@
     "slug": "cargador-vevor-35a",
     "slugsAnteriores": [
       "cargador-baterias-vevor-35a"
-    ]
+    ],
+    "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
+    "rev": 1790666939391
   },
   {
     "id": 1787072040177,
