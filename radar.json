@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-28T18:30:02.552030+00:00",
-  "fecha": "2026-09-28",
+  "actualizado": "2026-09-29T16:50:07.860606+00:00",
+  "fecha": "2026-09-29",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -22,16 +22,12 @@
         "mediana": 180.0,
         "n": 13
       },
-      "deltaAyerMediana": 1.0,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-15",
-          "mediana": 178.0
-        },
         {
           "fecha": "2026-09-16",
           "mediana": 179.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-09-28",
           "mediana": 180.0
+        },
+        {
+          "fecha": "2026-09-29",
+          "mediana": 180.0
         }
       ],
       "muestras": [
@@ -91,13 +91,6 @@
           "titulo": "170 USD Inversor Tataliken 4000w 12v",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-4000w-12v-57435840",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 24V 4000W y de 12v 3500w",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-24v-4000w-y-de-12v-3500w-57594488",
           "dias": null
         },
         {
@@ -127,6 +120,13 @@
           "precio": 180.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-4000w-57734219",
           "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "180 USD Inversor tataliken 4000w",
+          "precio": 180.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-57711657",
+          "dias": null
         }
       ]
     },
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-15",
-          "mediana": 25.0
-        },
         {
           "fecha": "2026-09-16",
           "mediana": 25.0
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-09-28",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-09-29",
           "mediana": 25.0
         }
       ],
@@ -226,7 +226,7 @@
       "mercado": {
         "min": 75.0,
         "mediana": 75.0,
-        "n": 2
+        "n": 3
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -234,10 +234,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-15",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-16",
           "mediana": 75.0
@@ -289,6 +285,10 @@
         {
           "fecha": "2026-09-28",
           "mediana": 75.0
+        },
+        {
+          "fecha": "2026-09-29",
+          "mediana": 75.0
         }
       ],
       "muestras": [
@@ -304,6 +304,13 @@
           "titulo": "75 USD 🔥 Antorcha de soldadura TIG (KIT Profesional)",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/antorcha-de-soldadura-tig-kit-profesional-57653965",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD Antorcha para soldadura TIG con kit de consumibles",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-con-kit-de-consumibles-57751751",
           "dias": null
         }
       ]
@@ -324,10 +331,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-15",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-16",
           "mediana": 170.0
         },
@@ -377,6 +380,10 @@
         },
         {
           "fecha": "2026-09-28",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-09-29",
           "mediana": 170.0
         }
       ],
