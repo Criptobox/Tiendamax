@@ -1634,7 +1634,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836818228.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 0,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1717,7 +1717,7 @@
       "1× Guía de uso rápido"
     ],
     "descripcion": "Switch de red de alta velocidad diseñado para ofrecer una conexión estable y rápida en oficinas o el hogar, soportando tráfico intenso de datos.",
-    "rev": 1790343442681
+    "rev": 1790693610684
   },
   {
     "id": 1778336789459,
@@ -2215,7 +2215,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS DE RED",
-    "stock": 0,
+    "stock": 15,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2296,7 +2296,8 @@
     "descripcion": "Inyector PoE original de Ubiquiti, diseñado para alimentar de manera segura y eficiente puntos de acceso, radios y equipos de red que requieren una entrada de 24V y 0.3A. La fiabilidad que tus equipos de red necesitan.",
     "slugsAnteriores": [
       "adaptador-poe-24v-0-3a"
-    ]
+    ],
+    "rev": 1790693610684
   },
   {
     "id": 1778384769262,
@@ -4570,7 +4571,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -4662,7 +4663,7 @@
       "1× Guía de instalación rápida"
     ],
     "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente.",
-    "rev": 1790344043272
+    "rev": 1790693610684
   },
   {
     "id": 1781899206341,
@@ -4868,7 +4869,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 10,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -4952,7 +4953,7 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1790459156781,
+    "rev": 1790693610684,
     "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo.",
     "slug": "tplink-archer-ax1450"
   },
@@ -6389,7 +6390,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 30,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -6476,7 +6477,7 @@
       "1× Guía de inicio rápido",
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
-    "rev": 1790650091990,
+    "rev": 1790693610684,
     "slug": "nanostation-5-ac-loco",
     "descripcion": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
   },
@@ -7223,7 +7224,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7312,7 +7313,7 @@
     ],
     "slug": "mikrotik-sxtsq-5-ax",
     "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red.",
-    "rev": 1790615366209
+    "rev": 1790693610684
   },
   {
     "id": 1785286289086,
@@ -8826,7 +8827,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 6,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8938,7 +8939,7 @@
     ],
     "seoTitle": "MikroTik hEX s RB760iGS en Cuba | TiendaMax",
     "seoDescription": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios…",
-    "rev": 1790359462054,
+    "rev": 1790693610684,
     "descripcion": "Destaca por incorporar 1 puerto SFP de 1.25 Gbps, permitiendo conectar directamente módulos de fibra óptica sin necesidad de conversores de medios externos. Además, cuenta con aceleración de cifrado IPsec por hardware (hasta ~470 Mbps) para túneles VPN ultrarrápidos y seguros, y un puerto PoE Out (salida de energía) en el puerto 5, ideal para alimentar antenas cliente (CPE), cámaras de seguridad o puntos de acceso Wi-Fi sin adaptadores adicionales.",
     "slug": "mikrotik-hex-s-rb760igs"
   },
