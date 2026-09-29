@@ -6389,7 +6389,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 14,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -6476,7 +6476,7 @@
       "1× Guía de inicio rápido",
       "(Nota: El inyector PoE pasivo de 24V Gigabit se vende por separado en la presentación estándar de fábrica)"
     ],
-    "rev": 1790639692382,
+    "rev": 1790650091990,
     "slug": "nanostation-5-ac-loco",
     "descripcion": "Radio Ubiquiti NanoStation 5AC Loco, ideal para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente."
   },
