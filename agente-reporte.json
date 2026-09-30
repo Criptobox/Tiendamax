@@ -1,10 +1,10 @@
 {
-  "generado": "2026-09-29T15:15:32.562954+00:00",
+  "generado": "2026-09-30T15:29:23.114117+00:00",
   "productos": 137,
   "urgentes": 0,
   "advertencias": 0,
-  "info": 8,
-  "resumen": "Anoche revisé tus 137 productos y encontré 8 de info.",
+  "info": 6,
+  "resumen": "Anoche revisé tus 137 productos y encontré 6 de info.",
   "detalle": [
     {
       "tipo": "stock_bajo",
@@ -28,23 +28,13 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "MikroTik SXTsq 5 AX",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "NanoStation M5 Internacional",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
       "nombre": "TP-Link Archer BE230",
       "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
-      "nombre": "64 agotados",
-      "detalle": "Switch Gigabit de 8 Puertos, Pistola Fascia Gun, Cargador Inteligente 15A y 61 más"
+      "nombre": "73 agotados",
+      "detalle": "Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición, Pistola Fascia Gun y 70 más"
     }
   ]
 }
