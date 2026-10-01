@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-30T16:42:15.299072+00:00",
-  "fecha": "2026-09-30",
+  "actualizado": "2026-10-01T17:16:57.713719+00:00",
+  "fecha": "2026-10-01",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-17",
-          "mediana": 179.0
-        },
         {
           "fecha": "2026-09-18",
           "mediana": 179.0
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-09-30",
+          "mediana": 180.0
+        },
+        {
+          "fecha": "2026-10-01",
           "mediana": 180.0
         }
       ],
@@ -123,9 +123,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "180 USD Inversor tataliken 4000w",
+          "titulo": "180 USD Inversor Tataliken 4000W (24V)",
           "precio": 180.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-57711657",
+          "url": "https://www.revolico.com/item/inversor-tataliken-4000w-24v-57733171",
           "dias": null
         }
       ]
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-17",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-18",
           "mediana": 75.0
@@ -199,6 +195,10 @@
         },
         {
           "fecha": "2026-09-30",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-10-01",
           "mediana": 75.0
         }
       ],
@@ -242,10 +242,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-17",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-18",
           "mediana": 170.0
         },
@@ -295,6 +291,10 @@
         },
         {
           "fecha": "2026-09-30",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-10-01",
           "mediana": 170.0
         }
       ],
