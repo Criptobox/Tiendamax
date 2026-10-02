@@ -7,7 +7,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 2,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -78,7 +78,8 @@
       "1x Par de pinzas caimán para batería",
       "1x Par de mosfet"
     ],
-    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar."
+    "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
+    "rev": 1790954416408
   },
   {
     "id": 1778102214012,
@@ -5618,7 +5619,7 @@
     "precioActual": 180,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5686,7 +5687,8 @@
       "1x Par de pinzas caimán reforzadas",
       "1x Par de mosfet"
     ],
-    "slug": "inversor-tataliken-4000w-24v"
+    "slug": "inversor-tataliken-4000w-24v",
+    "rev": 1790954416408
   },
   {
     "id": 1783221896639,
