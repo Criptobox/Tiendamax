@@ -1,0 +1,129 @@
+{
+  "v": 1,
+  "creado": "2026-10-02T17:53:29.160Z",
+  "productos": [
+    {
+      "id": 1790963608288,
+      "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
+      "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado.",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963603542.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963603542.webp"
+      ],
+      "precioActual": 55,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 10,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "DEPORTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🎥 Video 4K / Foto 36MP",
+        "🔌 Consumo 3W – 5W (Batería Litio USB-C)",
+        "🌙 Alcance Nocturno 300 m (IR 850nm)"
+      ],
+      "fechaAgregado": "2026-10-02T17:53:28.289Z",
+      "ficha": [
+        {
+          "k": "Resolución de Video",
+          "v": "4K / 2.7K / 1080P FHD"
+        },
+        {
+          "k": "Resolución de Foto",
+          "v": "36MP / 32MP / 24MP / 12MP"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3W – 5W",
+          "nota": "eficiente con banco de carga USB o panel solar"
+        },
+        {
+          "k": "Alimentación",
+          "v": "Batería recargable de iones de litio integrada",
+          "nota": "carga vía puerto USB-C"
+        },
+        {
+          "k": "Iluminador Infrarrojo",
+          "v": "Foco LED IR de 850 nm con 7 niveles de intensidad regulable"
+        },
+        {
+          "k": "Alcance de Visión Nocturna",
+          "v": "Hasta 250 – 300 metros en oscuridad total",
+          "nota": "ilimitado con luz diurna"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Pantalla digital LCD TFT de gran formato con marco protector antirreflejo"
+        },
+        {
+          "k": "Zoom",
+          "v": "Zoom digital continuo de hasta 8×"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "Ranura para tarjeta MicroSD / TF de hasta 128 GB",
+          "nota": "incluye tarjeta de 32 GB"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Foto, Video y Reproducción en pantalla"
+        },
+        {
+          "k": "Modo Día / Noche",
+          "v": "Imagen a todo color durante el día e imagen en blanco y negro de alta definición en modo nocturno"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Grabación Dual Día y Noche",
+          "d": "reproduce imágenes a todo color bajo el sol y conmuta automáticamente a blanco y negro con infrarrojos en la noche."
+        },
+        {
+          "t": "Infrarrojo Ajustable de 7 Niveles",
+          "d": "gradúa la potencia del haz IR para no sobreexponer objetos cercanos y ahorrar energía, o llevarlo al máximo para largo alcance."
+        },
+        {
+          "t": "Batería de Litio Recargable por USB-C",
+          "d": "olvídate de comprar pilas AA desechables; se recarga directamente en el auto, casa o con un power bank."
+        },
+        {
+          "t": "Visor Panorámico sin Fatiga Ocular",
+          "d": "pantalla amplia que elimina la incomodidad de cerrar un ojo como en los monoculares tradicionales."
+        },
+        {
+          "t": "Transferencia Rápida de Archivos",
+          "d": "conecta los binoculares a la computadora mediante su cable USB para descargar fotos y videos al instante."
+        },
+        {
+          "t": "Rosca para Trípode Estándar (1/4\")",
+          "d": "compatible con trípodes para monitoreo fijo y observación prolongada sin vibraciones."
+        }
+      ],
+      "idealPara": [
+        "Seguridad y patrullaje nocturno en fincas, granjas, almacenes, obras y perímetros residenciales.",
+        "Observación de fauna silvestre, aves nocturnas y expediciones de caza deportiva.",
+        "Acampadas, senderismo nocturno, navegación fluvial y búsqueda o rescate.",
+        "Detección de intrusos o vigilancia discreta sin fuentes de luz visibles."
+      ],
+      "incluye": [
+        "1× Binoculares de visión nocturna digital 4K / 36MP",
+        "1× Tarjeta de memoria MicroSD de 32 GB",
+        "1× Cable de carga y datos USB Tipo C",
+        "1× Cable / lector de transferencia de archivos",
+        "1× Correa de cuello ajustable reforzada con mosquetones metálicos",
+        "1× Manual de usuario e instrucciones de uso"
+      ],
+      "slug": "binoculares-vision-4k-36mp",
+      "rev": 1790963609160
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1790963608288": "1790963254986"
+  }
+}
