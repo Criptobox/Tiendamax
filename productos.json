@@ -4567,19 +4567,19 @@
   {
     "id": 1781711424820,
     "nombre": "TP-Link Archer C54",
-    "precioActual": 60,
+    "precioActual": 70,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": true,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "tplink-archer-c54",
-    "comision": 10,
+    "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
       "⚡ AC1200 Doble Banda",
@@ -4663,8 +4663,9 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1790696952353,
-    "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
+    "rev": 1790960265323,
+    "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente.",
+    "almacenId": "alm_1790824274659"
   },
   {
     "id": 1781899206341,
