@@ -1,7 +1,7 @@
 {
- "actualizado": "2026-10-02T17:10:22Z",
+ "actualizado": "2026-10-02T20:59:12Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
- "total": 116,
+ "total": 117,
  "productos": [
   {
    "id": "1790612424343",
@@ -77,7 +77,8 @@
    "stock": 40,
    "categoria": "Energia",
    "comision": 5.0,
-   "comisionMoneda": "USD"
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1790958942707-a5598934.webp"
   },
   {
    "id": "1778103783319",
@@ -114,6 +115,17 @@
    "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780887971522.webp"
   },
   {
+   "id": "1790963079882",
+   "nombre": "Binoculares Vision Nocturna",
+   "precio": 55.0,
+   "precioMoneda": "USD",
+   "stock": 10,
+   "categoria": "",
+   "comision": 5.0,
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1790963079882-0eb05a5d.webp"
+  },
+  {
    "id": "1778104985977",
    "nombre": "BLUETTI AC 180P",
    "precio": 695.0,
@@ -140,7 +152,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 1777,
+   "stock": 1167,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -173,7 +185,7 @@
    "nombre": "Camara de vigilancia IP inalambrica",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 19,
+   "stock": 18,
    "categoria": "Seguridad",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -305,7 +317,7 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 8,
+   "stock": 7,
    "categoria": "Carros",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -524,7 +536,7 @@
    "nombre": "Hex Poe Lite(RB750gr2)",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 6,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -679,7 +691,7 @@
    "nombre": "MikroTik hEX S (2025) – E60iUGS",
    "precio": 140.0,
    "precioMoneda": "USD",
-   "stock": 6,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -757,7 +769,7 @@
    "nombre": "Mikrotik SXTsq 5 lite",
    "precio": 130.0,
    "precioMoneda": "USD",
-   "stock": 9,
+   "stock": 8,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -813,7 +825,7 @@
    "nombre": "Nanostation m5",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -914,7 +926,8 @@
    "stock": 20,
    "categoria": "Wifi",
    "comision": 1500.0,
-   "comisionMoneda": "MN"
+   "comisionMoneda": "MN",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1790959980548-d7aa8712.webp"
   },
   {
    "id": "1784726857748",
@@ -1144,8 +1157,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
@@ -1278,7 +1292,7 @@
    "nombre": "📡 TP-Link Archer BE230",
    "precio": 200.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
