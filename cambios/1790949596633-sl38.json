@@ -1,0 +1,84 @@
+{
+  "v": 1,
+  "creado": "2026-10-02T13:59:56.633Z",
+  "productos": [
+    {
+      "id": 1782791345628,
+      "nombre": "Interruptor de Transferencia Automática Geya (220V)",
+      "imagen": "https://tiendamax.org/imagenes/img_1783838287182.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838287182.webp",
+        "https://tiendamax.org/imagenes/img_1782791342848.webp"
+      ],
+      "precioActual": 70,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Corriente nominal: 100A continuo",
+        "⚡ Voltaje nominal: 220V AC",
+        "🔧 Montaje: Riel DIN estándar de 35mm"
+      ],
+      "fechaAgregado": "2026-06-30T03:49:05.629Z",
+      "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
+      "seoDescription": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "GEYA"
+        },
+        {
+          "k": "Modelo",
+          "v": "W2R-100"
+        },
+        {
+          "k": "Tipo",
+          "v": "Interruptor de Transferencia Automática (ATS)"
+        },
+        {
+          "k": "Corriente nominal",
+          "v": "100A continuo"
+        },
+        {
+          "k": "Voltaje nominal",
+          "v": "220V AC"
+        },
+        {
+          "k": "Montaje",
+          "v": "Riel DIN estándar de 35mm"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Conmutación ultra rápida entre dos fuentes eléctricas sin apagar equipos."
+        },
+        {
+          "d": "Selector frontal para modo de operación 100% Automático o Manual."
+        },
+        {
+          "d": "Contactos de plata de alta durabilidad con capacidad de corte de 100A."
+        }
+      ],
+      "idealPara": [
+        "Cuadros eléctricos residenciales para automatizar el cambio entre red de la calle e inversor."
+      ],
+      "incluye": [
+        "1x Interruptor de Transferencia Automática 100A",
+        "1x Diagrama de conexión"
+      ],
+      "slug": "interruptor-geya-220v",
+      "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.",
+      "rev": 1790949596633
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
