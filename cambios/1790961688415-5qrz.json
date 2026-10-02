@@ -1,0 +1,100 @@
+{
+  "v": 1,
+  "creado": "2026-10-02T17:21:28.415Z",
+  "productos": [
+    {
+      "id": 1790961637329,
+      "nombre": "Base para paneles",
+      "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel.",
+      "imagen": "https://tiendamax.org/imagenes/img_1790961633359.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790961633359.webp"
+      ],
+      "precioActual": 65,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 15,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📐 Inclinación Ajustable (15° a 30°)",
+        "🔩 Aluminio Anodizado Anticorrosión"
+      ],
+      "fechaAgregado": "2026-10-02T17:20:37.330Z",
+      "ficha": [
+        {
+          "k": "Tipo de Producto",
+          "v": "Kit de montaje inclinable para módulo fotovoltaico"
+        },
+        {
+          "k": "Rango de Inclinación",
+          "v": "Ajustable entre 15° y 30°",
+          "nota": "según extensión del brazo telescópico y tamaño del panel"
+        },
+        {
+          "k": "Material del Perfil",
+          "v": "Aleación de aluminio de alta resistencia",
+          "nota": "tratamiento anodizado para exteriores"
+        },
+        {
+          "k": "Tornillería y Herrajes",
+          "v": "Acero inoxidable resistente a la intemperie"
+        },
+        {
+          "k": "Compatibilidad de Paneles",
+          "v": "Módulos solares de 50W, 100W, 150W, 200W hasta 300W+ con marco de aluminio estándar"
+        },
+        {
+          "k": "Superficies de Montaje",
+          "v": "Techos de teja, hormigón plano, lámina metálica, cubiertas de vehículos recreativos, embarcaciones o suelo firme"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Patas Telescópicas Extensibles",
+          "d": "permiten calibrar la inclinación estacional aflojando únicamente los tornillos de ajuste."
+        },
+        {
+          "t": "Construcción en Aluminio Anodizado",
+          "d": "previene la formación de óxido y corrosión salina, garantizando años de vida útil a la intemperie."
+        },
+        {
+          "t": "Bases Pivotantes Articuladas",
+          "d": "rótulas delantera y trasera que se adaptan a techos planos o con pendientes leves."
+        },
+        {
+          "t": "Almohadillas de Goma Protectoras",
+          "d": "protegen la superficie del techo, amortiguan vibraciones por viento y sellan los orificios para evitar filtraciones."
+        },
+        {
+          "t": "Tornillería Inoxidable Incluida",
+          "d": "ensamble firme con pernos allen y tornillos autorroscantes para fijación estructural segura."
+        }
+      ],
+      "idealPara": [
+        "Instalaciones solares en techos de casas, garajes, cobertizos y fincas fuera de la red (Off-Grid).",
+        "Casas rodantes, furgonetas camper, remolques y embarcaciones donde se requiere regular la inclinación según la ubicación del viaje.",
+        "Proyectos solares de respaldo de energía y baterías donde se busca exprimir al máximo el rendimiento de cada panel.",
+        "Montajes en suelo o terrazas planas para evitar la acumulación de polvo y agua sobre las celdas solares."
+      ],
+      "incluye": [
+        "2× Brazos telescópicos traseros ajustables con soporte de inclinación",
+        "2× Soportes articulados pivotantes delanteros",
+        "4× Almohadillas de goma aislantes / selladoras",
+        "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
+      ],
+      "slug": "base-paneles",
+      "rev": 1790961688415
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1790961637329": "1790105284345"
+  }
+}
