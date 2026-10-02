@@ -1,7 +1,7 @@
 {
- "actualizado": "2026-10-02T16:35:46Z",
+ "actualizado": "2026-10-02T17:10:22Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
- "total": 114,
+ "total": 116,
  "productos": [
   {
    "id": "1790612424343",
@@ -68,6 +68,16 @@
    "comision": 1500.0,
    "comisionMoneda": "MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/img_1780543090267.webp"
+  },
+  {
+   "id": "1790958942707",
+   "nombre": "Base para paneles",
+   "precio": 65.0,
+   "precioMoneda": "USD",
+   "stock": 40,
+   "categoria": "Energia",
+   "comision": 5.0,
+   "comisionMoneda": "USD"
   },
   {
    "id": "1778103783319",
@@ -141,7 +151,7 @@
    "nombre": "Calentador electrico de 220V",
    "precio": 125.0,
    "precioMoneda": "USD",
-   "stock": 5,
+   "stock": 4,
    "categoria": "Hogar",
    "comision": 5.0,
    "comisionMoneda": "USD",
@@ -897,6 +907,16 @@
    "comisionMoneda": null
   },
   {
+   "id": "1790959980548",
+   "nombre": "Repetidor TP-Link TL-WA801N / TL-WA801ND",
+   "precio": 45.0,
+   "precioMoneda": "USD",
+   "stock": 20,
+   "categoria": "Wifi",
+   "comision": 1500.0,
+   "comisionMoneda": "MN"
+  },
+  {
    "id": "1784726857748",
    "nombre": "Repetidor Wi-Fi TP-Link RE205 AC750 Reacondicionado",
    "precio": 30.0,
@@ -997,12 +1017,13 @@
   {
    "id": "1787114204179",
    "nombre": "Router TP-Link Archer C54 Reacondicionado",
-   "precio": 60.0,
+   "precio": 70.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 11,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
+   "precioOtro": 60.0,
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787114204179-dabd97ce.webp"
   },
   {
