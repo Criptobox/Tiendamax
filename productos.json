@@ -5543,7 +5543,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5604,8 +5604,9 @@
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
     ],
+    "slug": "interruptor-geya-220v",
     "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.",
-    "slug": "interruptor-geya-220v"
+    "rev": 1790949596633
   },
   {
     "id": 1783179800783,
