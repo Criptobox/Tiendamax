@@ -1,0 +1,357 @@
+{
+  "v": 1,
+  "creado": "2026-10-03T23:40:29.586Z",
+  "productos": [
+    {
+      "id": 1781711424820,
+      "nombre": "TP-Link Archer C54",
+      "precioActual": 70,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
+      "categoria": "WIFI",
+      "subcategoria": "ROUTERS",
+      "stock": 11,
+      "masVendido": false,
+      "usado": true,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "tplink-archer-c54",
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚡ AC1200 Doble Banda",
+        "📶 4 Antenas Externas",
+        "🌐 Puertos Fast Ethernet"
+      ],
+      "seoTitle": "TP-Link Archer C54 en Cuba | TiendaMax",
+      "seoDescription": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de…",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1781711422926.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "Archer C54"
+        },
+        {
+          "k": "Velocidad Wi-Fi",
+          "v": "AC1200 Doble Banda",
+          "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto WAN Fast Ethernet + 4× puertos LAN Fast Ethernet",
+          "nota": "10/100 Mbps"
+        },
+        {
+          "k": "Antenas",
+          "v": "4 antenas externas de alta ganancia con tecnología Beamforming"
+        },
+        {
+          "k": "Modos de operación",
+          "v": "Modo Router Wi-Fi, Modo Punto de Acceso (AP), Modo Extensor de Rango",
+          "nota": "Repetidor"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "Hasta 7.7W (adaptador 9V ⎓ 0.85A)",
+          "nota": "Ficha técnica oficial de TP-Link: alimentación 9V ⎓ 0.85A. Es el máximo que puede entregar el adaptador; el router suele gastar menos."
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Hasta 1167 Mbps teóricos combinados (867 Mbps en la banda de 5 GHz + 300 Mbps en la banda de 2.4 GHz)."
+        },
+        {
+          "t": "Funcionalidad versátil 3 en 1",
+          "d": "opera como Router principal, Punto de Acceso por cable o Repetidor de señal inalámbrica."
+        },
+        {
+          "d": "Tecnología MU-MIMO para atender a múltiples dispositivos de forma simultánea, evitando la saturación de la red."
+        },
+        {
+          "d": "4 antenas externas con tecnología Beamforming, que localizan la posición de los equipos para concentrar la señal inalámbrica directamente hacia ellos."
+        },
+        {
+          "d": "Soporte para funciones de IPTV (IGMP Proxy/Snooping, Modo Puente y Tag VLAN) para streaming de televisión digital sin interrupciones."
+        },
+        {
+          "d": "Diseño ultra compacto y estilizado, ideal para ahorrar espacio en escritorios o para montaje en pared."
+        },
+        {
+          "d": "Seguridad y control con red de invitados independiente, controles parentales para limitar accesos y cifrado moderno WPA/WPA2/WPA3."
+        },
+        {
+          "d": "Gestión y configuración intuitiva desde el teléfono con la app móvil TP-Link Tether (iOS/Android) o a través de navegador web."
+        }
+      ],
+      "idealPara": [
+        "Departamentos, casas pequeñas a medianas y oficinas con conexiones de Internet de hasta 100 Mbps que buscan una señal estable de doble banda.",
+        "Streaming de video en calidad Full HD/4K, teletrabajo, clases virtuales y videollamadas fluidas sin cortes.",
+        "Ampliar la cobertura de una red existente configurándolo de forma rápida como repetidor o punto de acceso secundario."
+      ],
+      "incluye": [
+        "1× Router Wi-Fi AC1200 TP-Link Archer C54",
+        "1× Adaptador de corriente",
+        "1× Cable de red Ethernet RJ45",
+        "1× Guía de instalación rápida"
+      ],
+      "rev": 1791070829586,
+      "almacenId": "alm_1790824274659",
+      "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
+    },
+    {
+      "id": 1790105284345,
+      "nombre": "MikroTik hEX PoE Lite (RB750UPr2)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790105280764.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790105280764.webp",
+        "https://tiendamax.org/imagenes/img_1790105283182.webp"
+      ],
+      "precioActual": 110,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ACCESORIOS DE RED",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🔌 Consumo base 3W (máx. 50W con PoE)",
+        "⚡ 4 Puertos PoE-Out Pasivo (Puertos 2–5)",
+        "🌐 5× Puertos Fast Ethernet 10/100"
+      ],
+      "fechaAgregado": "2026-09-22T19:28:04.346Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "hEX PoE lite",
+          "nota": "RB750UPr2"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3W base | hasta 50W máximo entregando alimentación PoE"
+        },
+        {
+          "k": "Voltaje de Entrada DC",
+          "v": "10V – 28V",
+          "nota": "por Jack DC o PoE-In en Puerto 1"
+        },
+        {
+          "k": "Salida PoE (PoE-Out)",
+          "v": "Puertos 2 a 5",
+          "nota": "PoE Pasivo, máx. 1A por puerto / 2A combinados"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "5× Fast Ethernet 10/100 Mbps"
+        },
+        {
+          "k": "Puertos Adicionales",
+          "v": "1× puerto USB 2.0 Tipo A"
+        },
+        {
+          "k": "Procesador",
+          "v": "QCA9531 Mononúcleo a 650 MHz"
+        },
+        {
+          "k": "Memoria RAM",
+          "v": "64 MB"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "16 MB Flash"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "MikroTik RouterOS",
+          "nota": "Licencia Nivel 4"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "4 Puertos con Salida PoE",
+          "d": "simplifica el cableado alimentando directamente antenas cliente (CPE) o cámaras IP desde el propio router."
+        },
+        {
+          "t": "Consumo Mínimo de 3W",
+          "d": "máxima autonomía en bancos de baterías solares y sistemas de alimentación ininterrumpida."
+        },
+        {
+          "t": "Puerto USB para Módems 4G/LTE",
+          "d": "permite configurar un enlace secundario de datos para evitar cortes de servicio si falla el proveedor principal."
+        },
+        {
+          "t": "Gabinete Compacto",
+          "d": "cabe fácilmente en cajas estancas de exterior, cajas de distribución o espacios reducidos de oficina."
+        },
+        {
+          "t": "Control Total con RouterOS",
+          "d": "reglas de cortafuegos por hardware, priorización de tráfico (QoS), soporte VPN y segmentación por VLAN."
+        }
+      ],
+      "idealPara": [
+        "Nodos de conexión donde se requiera energizar varias antenas exteriores o cámaras de seguridad con una sola fuente.",
+        "Proyectos respaldados por sistemas solares o baterías de 12V/24V donde cada vatio ahorrado es vital.",
+        "Pequeñas oficinas o comercios que necesitan administración de red avanzada con bajo presupuesto.",
+        "Redes que requieran respaldo automático de datos mediante módem celular USB."
+      ],
+      "incluye": [
+        "1× Router alámbrico MikroTik hEX PoE lite (RB750UPr2)",
+        "1× Adaptador de corriente de 24V",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "MikroTik hEX PoE Lite (RB750UPr2) en Cuba | TiendaMax",
+      "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
+      "rev": 1791070829586,
+      "slug": "mikrotik-hex-poe-lite",
+      "slugsAnteriores": [
+        "mikrotik-hex-poe-rb750upr2"
+      ],
+      "descripcion": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o empresariales donde se necesita alimentar equipos externos directamente por el cable de red. Gracias a su consumo eléctrico mínimo de apenas 3W en reposo (sin cargas PoE), es una solución idónea para operar de forma continua conectado a sistemas de energía solar, bancos de baterías o respaldos UPS durante cortes eléctricos sin agotar la reserva energética"
+    },
+    {
+      "id": 1790963254986,
+      "nombre": "TP-Link RE705X / RE605X (REPETIDOR)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963250854.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963250854.webp",
+        "https://tiendamax.org/imagenes/img_1790963253034.webp",
+        "https://tiendamax.org/imagenes/img_1790963254074.webp"
+      ],
+      "precioActual": 45,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 12,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "WIFI",
+      "subcategoria": "REPETIDORES",
+      "masVendido": false,
+      "usado": true,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Wi-Fi 6 AX (Doble Banda)",
+        "🔌 Consumo máx. 10W – 12.6W",
+        "🚀 1× Puerto Gigabit Ethernet (Modo Extensor / AP)"
+      ],
+      "fechaAgregado": "2026-10-02T17:47:34.987Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "Serie RE705X / RE605X",
+          "nota": "Formato de enchufe de pared"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "10W – 12.6W máximo",
+          "nota": "alta eficiencia para respaldos y UPS"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "100V – 240V AC",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Estándar Inalámbrico",
+          "v": "Wi-Fi 6",
+          "nota": "IEEE 802.11ax/ac/n/a en 5 GHz, IEEE 802.11ax/n/g/b en 2.4 GHz"
+        },
+        {
+          "k": "Velocidad Teórica",
+          "v": "Hasta 2402 Mbps / 1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Antenas",
+          "v": "2× antenas externas orientables de alta ganancia"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet RJ-45",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Modo Repetidor de Rango (Extensor) y Modo Punto de Acceso (AP)"
+        },
+        {
+          "k": "Compatibilidad de Red Mesh",
+          "v": "TP-Link OneMesh™ / EasyMesh"
+        },
+        {
+          "k": "Seguridad Inalámbrica",
+          "v": "WPA, WPA2, WPA3-Personal"
+        },
+        {
+          "k": "Gestión y Configuración",
+          "v": "Botón WPS físico, interfaz web y aplicación móvil TP-Link Tether"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Bajo Consumo Energético",
+          "d": "demanda eléctrica mínima de ~10W a 12W, ideal para mantener la red activa ante contingencias eléctricas."
+        },
+        {
+          "t": "Cobertura Wi-Fi 6 de Alto Rendimiento",
+          "d": "mayor penetración de señal a través de muros y mejor respuesta con múltiples clientes conectados."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet Lateral",
+          "d": "conecta directamente televisores Smart TV, consolas de videojuegos o computadoras de escritorio por cable."
+        },
+        {
+          "t": "Indicador de Señal Inteligente LED",
+          "d": "luces indicadoras frontales que ayudan a encontrar la ubicación óptima de instalación en el enchufe adecuado."
+        },
+        {
+          "t": "Tecnología OneMesh™",
+          "d": "navegación ininterrumpida que conecta automáticamente tu teléfono al nodo con mejor señal sin desconexiones."
+        },
+        {
+          "t": "Disipación Térmica Lateral",
+          "d": "chasis con ranuras de ventilación que evitan acumulaciones de calor en uso continuo 24/7."
+        },
+        {
+          "t": "Instalación en Minutos",
+          "d": "emparejamiento instantáneo mediante el botón WPS o desde la aplicación Tether en Android/iOS."
+        }
+      ],
+      "idealPara": [
+        "Eliminar puntos ciegos de señal en segundas plantas, terrazas, patios techados o habitaciones alejadas del router principal.",
+        "Usuarios que requieren conectar por cable Gigabit dispositivos como Smart TV, consolas o PC gamer sin necesidad de tender cables largos por la casa.",
+        "Hogares con múltiples dispositivos conectados que demandan streaming 4K, videollamadas fluidas o juegos en línea sin lag.",
+        "Instalaciones respaldadas por UPS o energía solar debido a su consumo eficiente."
+      ],
+      "incluye": [
+        "1× Repetidor / Extensor de rango Wi-Fi 6 TP-Link",
+        "1× Guía de instalación rápida y configuración"
+      ],
+      "slug": "tplink-re705x-re605x",
+      "rev": 1791070829586,
+      "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
+      "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
+      "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
