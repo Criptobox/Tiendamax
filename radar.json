@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-10-02T16:30:28.917606+00:00",
-  "fecha": "2026-10-02",
+  "actualizado": "2026-10-03T15:03:34.893079+00:00",
+  "fecha": "2026-10-03",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-19",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-20",
           "mediana": 75.0
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-10-02",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-10-03",
           "mediana": 75.0
         }
       ],
@@ -114,9 +114,9 @@
       "nombre": "Inversor Tataliken 3500W",
       "tuPrecio": 170.0,
       "mercado": {
-        "min": 90.0,
+        "min": 165.0,
         "mediana": 170.0,
-        "n": 12
+        "n": 11
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -124,10 +124,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-19",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-09-20",
           "mediana": 170.0
@@ -179,16 +175,13 @@
         {
           "fecha": "2026-10-02",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-10-03",
+          "mediana": 170.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD inversor TATALIKEN 1500W",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-1500w-56526177",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "165 USD Inversor Tataliken de 12V 3500W $165",
@@ -222,6 +215,13 @@
           "titulo": "170 USD Inversor Tataliken de 12V 3500W",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57748728",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170 ☆",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57661035",
           "dias": null
         }
       ]
