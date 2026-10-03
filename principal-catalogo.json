@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-03T18:44:03Z",
+ "actualizado": "2026-10-03T21:47:50Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -317,7 +317,7 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 2,
    "categoria": "Carros",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -680,7 +680,7 @@
    "nombre": "Mikrotik hap ax3",
    "precio": 260.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 2,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -923,7 +923,7 @@
    "nombre": "Repetidor TP-Link TL-WA801N / TL-WA801ND",
    "precio": 45.0,
    "precioMoneda": "USD",
-   "stock": 18,
+   "stock": 17,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
