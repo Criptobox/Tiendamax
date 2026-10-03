@@ -1,19 +1,24 @@
 {
-  "generado": "2026-10-02T15:13:20.664846+00:00",
-  "productos": 137,
-  "urgentes": 0,
+  "generado": "2026-10-03T14:05:06.823117+00:00",
+  "productos": 140,
+  "urgentes": 1,
   "advertencias": 0,
-  "info": 6,
-  "resumen": "Anoche revisé tus 137 productos y encontré 6 de info.",
+  "info": 7,
+  "resumen": "Anoche revisé tus 140 productos y encontré 1 urgente(s), 7 de info.",
   "detalle": [
     {
-      "tipo": "stock_bajo",
-      "nombre": "Inversor Tataliken 4000W",
-      "detalle": "quedan 2"
+      "tipo": "nombre",
+      "nombre": "Base para paneles",
+      "detalle": "→ Base Para Paneles"
     },
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "Inversor Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
     {
@@ -28,13 +33,18 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "TP-Link Archer BE230",
-      "detalle": "quedan 3"
+      "nombre": "NanoStation M2 Internacional",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "MikroTik hAP Ax³ (C53UiG+5HPaxD2HPaxD)",
+      "detalle": "quedan 1"
     },
     {
       "tipo": "agotados",
-      "nombre": "74 agotados",
-      "detalle": "Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición, Pistola Fascia Gun y 71 más"
+      "nombre": "75 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 72 más"
     }
   ]
 }
