@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-03T00:23:21Z",
+ "actualizado": "2026-10-03T15:07:27Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -825,7 +825,7 @@
    "nombre": "Nanostation m5",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -1032,7 +1032,7 @@
    "nombre": "Router TP-Link Archer C54 Reacondicionado",
    "precio": 70.0,
    "precioMoneda": "USD",
-   "stock": 11,
+   "stock": 10,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
