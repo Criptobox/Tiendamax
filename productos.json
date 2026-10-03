@@ -4579,7 +4579,7 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "tplink-archer-c54",
-    "comision": 5,
+    "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
       "⚡ AC1200 Doble Banda",
@@ -4663,7 +4663,7 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1790961427530,
+    "rev": 1791070829586,
     "almacenId": "alm_1790824274659",
     "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
   },
@@ -10869,7 +10869,7 @@
     "precioActual": 110,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -10969,7 +10969,7 @@
     ],
     "seoTitle": "MikroTik hEX PoE Lite (RB750UPr2) en Cuba | TiendaMax",
     "seoDescription": "El MikroTik hEX PoE lite (RB750UPr2) es un router alámbrico ultracompacto de 5 puertos Fast Ethernet diseñado para gestionar redes residenciales o…",
-    "rev": 1790970907963,
+    "rev": 1791070829586,
     "slug": "mikrotik-hex-poe-lite",
     "slugsAnteriores": [
       "mikrotik-hex-poe-rb750upr2"
@@ -11071,7 +11071,6 @@
   {
     "id": 1790963254986,
     "nombre": "TP-Link RE705X / RE605X (REPETIDOR)",
-    "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía.",
     "imagen": "https://tiendamax.org/imagenes/img_1790963250854.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790963250854.webp",
@@ -11081,7 +11080,7 @@
     "precioActual": 45,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 13,
+    "stock": 12,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -11192,9 +11191,10 @@
       "1× Guía de instalación rápida y configuración"
     ],
     "slug": "tplink-re705x-re605x",
-    "rev": 1790972258063,
+    "rev": 1791070829586,
     "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
-    "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…"
+    "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
+    "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
   },
   {
     "id": 1790963608288,
