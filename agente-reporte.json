@@ -1,10 +1,10 @@
 {
-  "generado": "2026-10-03T14:05:06.823117+00:00",
+  "generado": "2026-10-04T14:31:19.193908+00:00",
   "productos": 140,
   "urgentes": 1,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 140 productos y encontré 1 urgente(s), 7 de info.",
+  "info": 6,
+  "resumen": "Anoche revisé tus 140 productos y encontré 1 urgente(s), 6 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -37,14 +37,9 @@
       "detalle": "quedan 1"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "MikroTik hAP Ax³ (C53UiG+5HPaxD2HPaxD)",
-      "detalle": "quedan 1"
-    },
-    {
       "tipo": "agotados",
-      "nombre": "75 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 72 más"
+      "nombre": "77 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 74 más"
     }
   ]
 }
