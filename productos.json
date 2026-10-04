@@ -2048,7 +2048,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 0,
+    "stock": 3,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2115,8 +2115,8 @@
     "incluye": [
       "1x KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
     ],
-    "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores.",
-    "rev": 1790261557320
+    "rev": 1791144529005,
+    "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores."
   },
   {
     "id": 1778384428890,
@@ -7157,7 +7157,7 @@
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 2,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "SEGURIDAD",
@@ -7215,8 +7215,9 @@
     "incluye": [
       "1x Cámara de Seguridad Solar Doble Lente QW8-WIFI"
     ],
+    "slug": "camara-solar-qw8-wifi",
     "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.",
-    "slug": "camara-solar-qw8-wifi"
+    "rev": 1791144529005
   },
   {
     "id": 1785285424837,
@@ -11080,7 +11081,7 @@
     "precioActual": 45,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 11,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -11191,7 +11192,7 @@
       "1× Guía de instalación rápida y configuración"
     ],
     "slug": "tplink-re705x-re605x",
-    "rev": 1791070829586,
+    "rev": 1791144529005,
     "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
     "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
     "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
