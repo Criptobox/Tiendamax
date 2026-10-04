@@ -9203,7 +9203,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 11,
+    "stock": 9,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9319,7 +9319,7 @@
     ],
     "seoTitle": "NanoStation M5 Loco en Cuba | TiendaMax",
     "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…",
-    "rev": 1790960111477,
+    "rev": 1791154703979,
     "slug": "nanostation-m5-loco",
     "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada."
   },
