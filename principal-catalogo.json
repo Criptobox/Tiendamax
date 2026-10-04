@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-04T18:48:30Z",
+ "actualizado": "2026-10-04T22:17:56Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -174,7 +174,7 @@
    "nombre": "Camara de Panel",
    "precio": 100.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 2,
    "categoria": "Seguridad",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -317,7 +317,7 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 1,
+   "stock": 0,
    "categoria": "Carros",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -592,7 +592,7 @@
    "nombre": "KIT de 4 camaras Zosi (sin disco duro)",
    "precio": 230.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 3,
    "categoria": "Seguridad",
    "comision": 20.0,
    "comisionMoneda": "USD",
