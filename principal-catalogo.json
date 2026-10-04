@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-04T00:29:31Z",
+ "actualizado": "2026-10-04T15:45:08Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -317,7 +317,7 @@
    "nombre": "Compresor/Inflador de neumáticos",
    "precio": 28.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 1,
    "categoria": "Carros",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -1245,7 +1245,7 @@
    "nombre": "Ventilador de techo",
    "precio": 35.0,
    "precioMoneda": "USD",
-   "stock": 10,
+   "stock": 9,
    "categoria": "Hogar",
    "comision": 1500.0,
    "comisionMoneda": "MN",
