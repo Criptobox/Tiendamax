@@ -1,0 +1,398 @@
+{
+  "v": 1,
+  "creado": "2026-10-05T15:18:57.630Z",
+  "productos": [
+    {
+      "id": 1788389384026,
+      "nombre": "NanoStation M5 Loco",
+      "imagen": "https://tiendamax.org/imagenes/img_1788389380951.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788389380951.webp"
+      ],
+      "precioActual": 160,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📡 8 dBi antena integrada",
+        "🔌 10/100 Mbps Ethernet",
+        "🔌 24V PoE"
+      ],
+      "fechaAgregado": "2026-09-02T22:49:44.026Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Ubiquiti Networks"
+        },
+        {
+          "k": "Modelo",
+          "v": "NanoStation Loco M5",
+          "nota": "LocoM5"
+        },
+        {
+          "k": "Frecuencia Inalámbrica",
+          "v": "5 GHz",
+          "nota": "5170 – 5875 MHz"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "13 dBi integrada",
+          "nota": "Panel direccional 2×2 MIMO de doble polarización"
+        },
+        {
+          "k": "Apertura de Haz",
+          "v": "45° (horizontal) / 45°",
+          "nota": "vertical"
+        },
+        {
+          "k": "Rendimiento Máximo",
+          "v": "Hasta 150+ Mbps de rendimiento real",
+          "nota": "Tecnología airMAX TDMA"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto Fast Ethernet 10/100 Mbps"
+        },
+        {
+          "k": "Procesador y Memoria",
+          "v": "Atheros MIPS 24KC a 400 MHz / 32 MB SDRAM / 8 MB Flash"
+        },
+        {
+          "k": "Alimentación",
+          "v": "PoE Pasivo 24V, 0.5A"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "5.5W máximo",
+          "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
+        },
+        {
+          "k": "Alcance",
+          "v": "Hasta 5 a 10 km",
+          "nota": "con línea de vista directa despejada"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "airOS"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Antena integrada de panel de 13 dBi",
+          "d": "diseño de polarización dual (MIMO 2×2) que concentra el haz de señal para enlaces estables y de baja latencia en la banda de 5 GHz."
+        },
+        {
+          "t": "Tecnología airMAX (TDMA)",
+          "d": "protocolo propietario de Ubiquiti que asigna ventanas de tiempo inteligentes a cada dispositivo, eliminando colisiones de paquetes y optimizando la velocidad en entornos con ruido espectral."
+        },
+        {
+          "t": "Diseño compacto y discreto",
+          "d": "formato estilizado de perfil bajo que reduce el impacto visual en fachadas, balcones o mástiles exteriores."
+        },
+        {
+          "t": "Alimentación por PoE Pasivo",
+          "d": "transmite corriente eléctrica y datos a través de un único cable de red Ethernet hacia el exterior, simplificando la instalación en techos o torres."
+        },
+        {
+          "t": "Indicadores LED de alineación",
+          "d": "barra de luces LED traseras que reflejan la intensidad de la señal en tiempo real para calibrar y orientar la antena con precisión sin necesidad de mirar la computadora."
+        },
+        {
+          "t": "Gestión avanzada con airOS",
+          "d": "interfaz web completa que incorpora utilidades profesionales como analizador de espectro de radiofrecuencia (airView), prueba de velocidad integrada y monitoreo continuo del enlace."
+        },
+        {
+          "t": "Carcasa exterior con protección UV",
+          "d": "plástico industrial estabilizado para resistir la lluvia, humedad y radiación solar extrema durante años de operación continua."
+        }
+      ],
+      "idealPara": [
+        "Enlaces inalámbricos Punto a Punto (PtP) de corta y media distancia para compartir conexión a Internet entre viviendas, almacenes, fincas o sucursales.",
+        "Dispositivo cliente (CPE) en redes Punto a Multipunto (PtMP) para conectarse a estaciones base de proveedores WISP en 5 GHz.",
+        "Conexión y transporte de video de cámaras de seguridad IP remotas hacia un grabador central (NVR).",
+        "Interconexión de redes locales entre dos edificios sin necesidad de tender cableado físico exterior."
+      ],
+      "incluye": [
+        "1× Equipo inalámbrico exterior Ubiquiti NanoStation Loco M5",
+        "1× Inyector PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
+        "1× Brida de sujeción para montaje en mástil o tubo",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "NanoStation M5 Loco en Cuba | TiendaMax",
+      "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…",
+      "rev": 1791213537630,
+      "slug": "nanostation-m5-loco",
+      "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada."
+    },
+    {
+      "id": 1788797590930,
+      "nombre": "MikroTik LHG 5AX",
+      "imagen": "https://tiendamax.org/imagenes/img_1788797588660.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788797588660.webp",
+        "https://tiendamax.org/imagenes/img_1788797589882.webp"
+      ],
+      "precioActual": 240,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Wi‑Fi 6 en 5 GHz",
+        "📡 Antena parabólica de 24",
+        "📡 5 dBi",
+        "🔌 1 puerto Gigabit Ethernet",
+        "📶 2x2 MIMO",
+        "🔌 PoE 802.3af/at"
+      ],
+      "fechaAgregado": "2026-09-07T16:13:10.930Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "LHG 5 ax",
+          "nota": "RBLHG-5axD"
+        },
+        {
+          "k": "Estándar Inalámbrico",
+          "v": "Wi-Fi 6",
+          "nota": "802.11a/n/ac/ax en 5 GHz, Dual Chain"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "24.5 dBi",
+          "nota": "Reflector de rejilla tipo panel de abeja"
+        },
+        {
+          "k": "Apertura de Haz",
+          "v": "7°"
+        },
+        {
+          "k": "Procesador",
+          "v": "CPU ARM Dual-Core de última generación",
+          "nota": "800 MHz"
+        },
+        {
+          "k": "Memoria RAM",
+          "v": "512 MB"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "128 MB NAND"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Alimentación y PoE",
+          "v": "PoE-In compatible con 802.3af/at y PoE Pasivo",
+          "nota": "12V – 57V"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "5W máximo",
+          "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "MikroTik RouterOS v7",
+          "nota": "Licencia Nivel 3"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología Wi-Fi 6 (802.11ax) en 5 GHz",
+          "d": "incorpora modulación avanzada 1024-QAM y mayor eficiencia de canal, logrando enlaces inalámbricos mucho más veloces, estables y con latencia ultrabaja frente a generaciones anteriores."
+        },
+        {
+          "d": "Diseño de integración directa (Light Head Grid): el radio transmisor está integrado físicamente en el cabezal alimentador de la antena, eliminando cables coaxiales y evitando cualquier tipo de pérdida por atenuación de RF."
+        },
+        {
+          "t": "Estructura de rejilla aerodinámica",
+          "d": "chasis de malla microperforada con patrón hexagonal que deja pasar el viento libremente, minimizando las vibraciones y desalineaciones en torres altas o zonas costeras con fuertes ráfagas."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet",
+          "d": "aprovecha plenamente el rendimiento de datos que entrega el protocolo 802.11ax sin generar cuellos de botella por cable."
+        },
+        {
+          "t": "Alimentación PoE versátil",
+          "d": "admite tanto PoE Pasivo como el estándar industrial 802.3af/at en un amplio rango de voltaje (12V a 57V), facilitando su conexión a switches PoE o inyectores tradicionales."
+        },
+        {
+          "t": "RouterOS v7 avanzado",
+          "d": "control profesional del ancho de banda, firewall robusto, herramientas de análisis espectral en vivo, diagnósticos de enlace milimétricos y protocolos propietarios de MikroTik."
+        }
+      ],
+      "idealPara": [
+        "Enlaces inalámbricos Punto a Punto (PtP) de media y larga distancia de alta velocidad para unir sucursales, fincas o almacenes.",
+        "Equipo cliente (CPE) de alto rendimiento en redes WISP de 5 GHz sobre entornos congestionados o distancias considerables.",
+        "Instalación en torres elevadas, azoteas y mástiles expuestos a vientos fuertes donde las antenas de plato sólido sufren descalibración.",
+        "Troncales de transporte de datos y transmisión masiva de video para sistemas de cámaras de seguridad IP."
+      ],
+      "incluye": [
+        "1× Radio / Alimentador central MikroTik LHG 5 ax",
+        "1× Reflector de rejilla metálica (Grid) con estructura de ensamblaje",
+        "1× Inyector Gigabit PoE",
+        "1× Adaptador de corriente (24V, 0.8A)",
+        "2× Abrazaderas metálicas de sujeción para mástil (K-LHG mount kit)",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "MikroTik LHG 5AX en Cuba | TiendaMax",
+      "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
+      "rev": 1791213537630,
+      "slug": "mikrotik-lhg-5ax",
+      "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
+    },
+    {
+      "id": 1790963254986,
+      "nombre": "TP-Link RE705X / RE605X (REPETIDOR)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963250854.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963250854.webp",
+        "https://tiendamax.org/imagenes/img_1790963253034.webp",
+        "https://tiendamax.org/imagenes/img_1790963254074.webp"
+      ],
+      "precioActual": 45,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 10,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "WIFI",
+      "subcategoria": "REPETIDORES",
+      "masVendido": false,
+      "usado": true,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Wi-Fi 6 AX (Doble Banda)",
+        "🔌 Consumo máx. 10W – 12.6W",
+        "🚀 1× Puerto Gigabit Ethernet (Modo Extensor / AP)"
+      ],
+      "fechaAgregado": "2026-10-02T17:47:34.987Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "Serie RE705X / RE605X",
+          "nota": "Formato de enchufe de pared"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "10W – 12.6W máximo",
+          "nota": "alta eficiencia para respaldos y UPS"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "100V – 240V AC",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Estándar Inalámbrico",
+          "v": "Wi-Fi 6",
+          "nota": "IEEE 802.11ax/ac/n/a en 5 GHz, IEEE 802.11ax/n/g/b en 2.4 GHz"
+        },
+        {
+          "k": "Velocidad Teórica",
+          "v": "Hasta 2402 Mbps / 1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Antenas",
+          "v": "2× antenas externas orientables de alta ganancia"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet RJ-45",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Modo Repetidor de Rango (Extensor) y Modo Punto de Acceso (AP)"
+        },
+        {
+          "k": "Compatibilidad de Red Mesh",
+          "v": "TP-Link OneMesh™ / EasyMesh"
+        },
+        {
+          "k": "Seguridad Inalámbrica",
+          "v": "WPA, WPA2, WPA3-Personal"
+        },
+        {
+          "k": "Gestión y Configuración",
+          "v": "Botón WPS físico, interfaz web y aplicación móvil TP-Link Tether"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Bajo Consumo Energético",
+          "d": "demanda eléctrica mínima de ~10W a 12W, ideal para mantener la red activa ante contingencias eléctricas."
+        },
+        {
+          "t": "Cobertura Wi-Fi 6 de Alto Rendimiento",
+          "d": "mayor penetración de señal a través de muros y mejor respuesta con múltiples clientes conectados."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet Lateral",
+          "d": "conecta directamente televisores Smart TV, consolas de videojuegos o computadoras de escritorio por cable."
+        },
+        {
+          "t": "Indicador de Señal Inteligente LED",
+          "d": "luces indicadoras frontales que ayudan a encontrar la ubicación óptima de instalación en el enchufe adecuado."
+        },
+        {
+          "t": "Tecnología OneMesh™",
+          "d": "navegación ininterrumpida que conecta automáticamente tu teléfono al nodo con mejor señal sin desconexiones."
+        },
+        {
+          "t": "Disipación Térmica Lateral",
+          "d": "chasis con ranuras de ventilación que evitan acumulaciones de calor en uso continuo 24/7."
+        },
+        {
+          "t": "Instalación en Minutos",
+          "d": "emparejamiento instantáneo mediante el botón WPS o desde la aplicación Tether en Android/iOS."
+        }
+      ],
+      "idealPara": [
+        "Eliminar puntos ciegos de señal en segundas plantas, terrazas, patios techados o habitaciones alejadas del router principal.",
+        "Usuarios que requieren conectar por cable Gigabit dispositivos como Smart TV, consolas o PC gamer sin necesidad de tender cables largos por la casa.",
+        "Hogares con múltiples dispositivos conectados que demandan streaming 4K, videollamadas fluidas o juegos en línea sin lag.",
+        "Instalaciones respaldadas por UPS o energía solar debido a su consumo eficiente."
+      ],
+      "incluye": [
+        "1× Repetidor / Extensor de rango Wi-Fi 6 TP-Link",
+        "1× Guía de instalación rápida y configuración"
+      ],
+      "slug": "tplink-re705x-re605x",
+      "rev": 1791213537630,
+      "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
+      "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
+      "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
