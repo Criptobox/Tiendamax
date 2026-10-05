@@ -9203,7 +9203,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9319,7 +9319,7 @@
     ],
     "seoTitle": "NanoStation M5 Loco en Cuba | TiendaMax",
     "seoDescription": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a…",
-    "rev": 1791154703979,
+    "rev": 1791213537630,
     "slug": "nanostation-m5-loco",
     "descripcion": "dispositivo inalámbrico para exteriores de formato ultracompacto, diseñado para enlaces Punto a Punto (PtP) y conexiones cliente en redes Punto a Multipunto (PtMP) en la banda de 5 GHz. Incorpora una antena de panel directiva con tecnología MIMO 2×2 de 13 dBi de ganancia, ofreciendo una velocidad real de hasta 150+ Mbps y alcances de varios kilómetros con línea de vista despejada."
   },
@@ -9833,7 +9833,7 @@
     "precioActual": 240,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9950,9 +9950,9 @@
     ],
     "seoTitle": "MikroTik LHG 5AX en Cuba | TiendaMax",
     "seoDescription": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última…",
-    "rev": 1790345974779,
-    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE).",
-    "slug": "mikrotik-lhg-5ax"
+    "rev": 1791213537630,
+    "slug": "mikrotik-lhg-5ax",
+    "descripcion": "El MikroTik LHG 5 ax (RBLHG-5axD) es un dispositivo inalámbrico para exteriores de alta ganancia y largo alcance, equipado con la tecnología de última generación Wi-Fi 6 (802.11ax) en la banda de 5 GHz. Integra una antena parabólica de rejilla de 24.5 dBi con arquitectura Light Head Grid (radio integrado directamente en el alimentador) y un puerto Gigabit Ethernet, ofreciendo transferencias de alta velocidad, latencia mínima y excelente estabilidad mecánica para enlaces Punto a Punto (PtP) o como equipo cliente (CPE)."
   },
   {
     "id": 1789065257613,
@@ -11081,7 +11081,7 @@
     "precioActual": 45,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 11,
+    "stock": 10,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -11192,7 +11192,7 @@
       "1× Guía de instalación rápida y configuración"
     ],
     "slug": "tplink-re705x-re605x",
-    "rev": 1791144529005,
+    "rev": 1791213537630,
     "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
     "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
     "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
