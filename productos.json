@@ -4572,7 +4572,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 11,
+    "stock": 1,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -4663,7 +4663,7 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1791070829586,
+    "rev": 1791213557624,
     "almacenId": "alm_1790824274659",
     "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
   },
