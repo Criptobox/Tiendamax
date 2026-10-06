@@ -3195,7 +3195,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACCESORIOS",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3225,7 +3225,8 @@
     ],
     "incluye": [
       "1x Espejos Retrovisores Deportivos Shenao Stealth Winglet"
-    ]
+    ],
+    "rev": 1791302650085
   },
   {
     "id": 1778906905279,
@@ -3234,7 +3235,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACCESORIOS",
-    "stock": 6,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3274,7 +3275,8 @@
     "specs": [
       "✨ Diseño: Tipo Stealth (alerón)",
       "🔩 Instalación: Incluye tornillería"
-    ]
+    ],
+    "rev": 1791302650085
   },
   {
     "id": 1778907072353,
@@ -3283,7 +3285,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACCESORIOS",
-    "stock": 6,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3326,7 +3328,8 @@
     "specs": [
       "🕶️ Cristal: Con tinte",
       "🔩 Instalación: Incluye tornillería"
-    ]
+    ],
+    "rev": 1791302650085
   },
   {
     "id": 1778907260915,
