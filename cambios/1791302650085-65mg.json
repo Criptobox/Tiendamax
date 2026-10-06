@@ -1,0 +1,151 @@
+{
+  "v": 1,
+  "creado": "2026-10-06T16:04:10.085Z",
+  "productos": [
+    {
+      "id": 1778906733513,
+      "nombre": "Espejos Retrovisores Deportivos Shenao Stealth Winglet",
+      "precioActual": 20,
+      "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
+      "categoria": "MOTOS",
+      "subcategoria": "ACCESORIOS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "espejos-shenao-winglet",
+      "comision": 1.8,
+      "seoTitle": "Espejos Retrovisores Deportivos Shenao Stealth Winglet",
+      "seoDescription": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los…",
+      "descripcion": "Espejos retrovisores deportivos marca Shenao, estilo winglet/alerón, acabado negro mate. Incluye tornillería para instalación. Para carros deportivos o tuneados.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Shenao"
+        },
+        {
+          "k": "Categoría",
+          "v": "Accesorios"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Espejos Retrovisores Deportivos Shenao Stealth Winglet"
+      ],
+      "rev": 1791302650085
+    },
+    {
+      "id": 1778906905279,
+      "nombre": "Espejos Stealth Carbón",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
+      "categoria": "MOTOS",
+      "subcategoria": "ACCESORIOS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "espejos-stealth-carbon",
+      "comision": 1.8,
+      "seoTitle": "Espejos Stealth Carbón en Cuba | TiendaMax",
+      "seoDescription": "Espejos retrovisores deportivos tipo Stealth, acabado fibra de carbón premium. Incluye tornillería para instalación.",
+      "descripcion": "Espejos retrovisores deportivos tipo Stealth, acabado fibra de carbón premium. Incluye tornillería para instalación.",
+      "ficha": [
+        {
+          "k": "✨ Diseño",
+          "v": "Tipo Stealth (alerón)"
+        },
+        {
+          "k": "🎨 Acabado",
+          "v": "Fibra de carbón premium"
+        },
+        {
+          "k": "🔩 Instalación",
+          "v": "Incluye tornillería"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Par de espejos retrovisores Stealth",
+        "1x Juego de tornillería"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
+        }
+      ],
+      "specs": [
+        "✨ Diseño: Tipo Stealth (alerón)",
+        "🔩 Instalación: Incluye tornillería"
+      ],
+      "rev": 1791302650085
+    },
+    {
+      "id": 1778907072353,
+      "nombre": "Espejos Stealth Poligonal",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
+      "categoria": "MOTOS",
+      "subcategoria": "ACCESORIOS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "espejos-stealth-poligonal",
+      "comision": 1.8,
+      "seoTitle": "Espejos Stealth Poligonal en Cuba | TiendaMax",
+      "seoDescription": "Espejos retrovisores deportivos tipo Stealth, diseño poligonal aerodinámico premium, cristal con tinte. Incluye tornillería para instalación.",
+      "descripcion": "Espejos retrovisores deportivos tipo Stealth, diseño poligonal aerodinámico premium, cristal con tinte. Incluye tornillería para instalación.",
+      "ficha": [
+        {
+          "k": "✨ Diseño",
+          "v": "Poligonal aerodinámico (alerón Stealth)"
+        },
+        {
+          "k": "🕶️ Cristal",
+          "v": "Con tinte"
+        },
+        {
+          "k": "🔩 Instalación",
+          "v": "Incluye tornillería"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Par de espejos retrovisores poligonales",
+        "1x Juego de tornillería"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Cristal con tinte, que corta el reflejo de los faros de atrás por la noche."
+        },
+        {
+          "d": "Viene con la tornillería, así que no hay que conseguirla aparte para montarlos."
+        }
+      ],
+      "specs": [
+        "🕶️ Cristal: Con tinte",
+        "🔩 Instalación: Incluye tornillería"
+      ],
+      "rev": 1791302650085
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
