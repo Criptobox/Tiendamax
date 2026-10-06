@@ -26,5 +26,26 @@
     "ENERGIA": "⚡",
     "UTILES": "🛠️",
     "ROPA": "👗"
+  },
+  "apagadas": {
+    "categorias": {
+      "CELULARES": {
+        "off": true,
+        "ts": 1791302442683
+      },
+      "ROPA": {
+        "off": true,
+        "ts": 1791302445193
+      },
+      "JUEGOS": {
+        "off": true,
+        "ts": 1791302448106
+      },
+      "PC Y LAPTOPS": {
+        "off": true,
+        "ts": 1791302450828
+      }
+    },
+    "subcategorias": {}
   }
 }
