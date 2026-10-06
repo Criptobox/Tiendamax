@@ -9959,11 +9959,11 @@
   },
   {
     "id": 1789065257613,
-    "nombre": "Anker Soundcore Motion 300",
-    "descripcion": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente en cualquier lugar. Equipado con una configuración estéreo de 30W RMS (dos transductores de rango completo acompañados de radiadores pasivos duales), ofrece agudos cristalinos, voces definidas y graves profundos impulsados por la tecnología BassUp™.",
+    "nombre": "Anker Soundcore Select 3",
     "imagen": "https://tiendamax.org/imagenes/img_1789065256344.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1789065256344.webp"
+      "https://tiendamax.org/imagenes/img_1789065256344.webp",
+      "https://tiendamax.org/imagenes/img_1791320779912.webp"
     ],
     "precioActual": 75,
     "precioOriginal": 0,
@@ -9978,111 +9978,60 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🔋Hasta 13 horas de autonomía",
-      "💧 Resistencia al agua IPX7",
-      "📏Dimensiones: 200 × 53 × 93 mm",
-      "⚖️Peso: 780 g"
+      "​🔊 16W Sonido Estéreo",
+      "🔋 Batería hasta 20 Horas",
+      "💧 Protección IPX7 Impermeable"
     ],
     "fechaAgregado": "2026-09-10T18:34:17.613Z",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "Anker",
-        "nota": "Soundcore"
-      },
-      {
-        "k": "Modelo",
-        "v": "Motion 300"
-      },
-      {
-        "k": "Potencia de Salida",
-        "v": "30W RMS",
-        "nota": "Sonido Estéreo: 2× transductores de rango completo de 15W + radiadores pasivos duales"
-      },
-      {
-        "k": "Certificación de Audio",
-        "v": "Hi-Res Wireless Audio",
-        "nota": "Soporte nativo de códec LDAC de hasta 990 kbps / 24-bit/96 kHz"
-      },
-      {
-        "k": "Conectividad Inalámbrica",
-        "v": "Bluetooth 5.3",
-        "nota": "alcance de hasta 15-20 m"
-      },
-      {
-        "k": "Autonomía de Batería",
-        "v": "Hasta 13 horas de reproducción continua",
-        "nota": "volumen moderado"
-      },
-      {
-        "k": "Puerto de Carga",
-        "v": "USB Tipo C",
-        "nota": "5V / 2A"
-      },
-      {
-        "k": "Grado de Protección",
-        "v": "IPX7",
-        "nota": "totalmente impermeable y sumergible en agua dulce hasta 1 m durante 30 min"
-      },
-      {
-        "k": "Tecnologías de Sonido",
-        "v": "SmartTune™ (ecualización adaptativa por sensor de inclinación), BassUp™ (refuerzo de bajos), TWS",
-        "nota": "True Wireless Stereo"
-      },
-      {
-        "k": "Personalización",
-        "v": "Compatible con la App Soundcore",
-        "nota": "Ecualizador gráfico Pro de 9 bandas y ajustes preestablecidos"
-      }
-    ],
     "caracteristicas": [
       {
-        "t": "Sonido estéreo de 30W con graves profundos",
-        "d": "dos drivers de rango completo y radiadores pasivos enfrentados que entregan un sonido claro, potente y sin distorsión armónica incluso a volúmenes altos."
+        "t": "Sonido Estéreo Dinámico de 16W",
+        "d": "dos transductores dedicados que ofrecen balance acústico preciso y voces claras."
       },
       {
-        "d": "Audio inalámbrico de alta resolución (Hi-Res LDAC): transmite hasta 3 veces más datos que los códecs Bluetooth convencionales (SBC/AAC), preservando cada detalle y matiz acústico de las pistas."
+        "t": "Hasta 20 Horas de Batería",
+        "d": "autonomía extendida para acompañarte en viajes largos, trabajo o campamentos sin depender de un cargador."
       },
       {
-        "t": "Tecnología exclusiva SmartTune™",
-        "d": "incorpora un sensor de orientación que detecta automáticamente si la bocina está de pie, recostada boca arriba o colgada de su correa, ajustando la curva de ecualización en tiempo real para ofrecer siempre el mejor perfil sonoro."
+        "t": "Resistencia Total al Agua (IPX7)",
+        "d": "estructura sellada que tolera salpicaduras, lluvia fuerte y caídas al agua dulce sin sufrir averías."
       },
       {
-        "t": "Certificación impermeable IPX7",
-        "d": "chasis hermético resistente a la lluvia torrencial, salpicaduras en piscina, arena y caídas accidentales al agua."
+        "t": "Tecnología BassUp™",
+        "d": "procesamiento de señal digital que amplifica los bajos de forma contundente en pistas con alta presencia rítmica."
       },
       {
-        "t": "Batería de larga duración (hasta 13 horas)",
-        "d": "permite disfrutar de música continua durante todo el día en viajes, paseos o campamentos sin depender de un tomacorriente."
+        "t": "Ecualizador Pro de 9 Bandas",
+        "d": "ajuste milimétrico de frecuencias agudas, medias y graves directamente desde el teléfono."
       },
       {
-        "t": "Ecualizador Pro personalizable vía App",
-        "d": "acceso a múltiples perfiles de fábrica o ajuste manual banda por banda a través de la aplicación móvil Soundcore."
+        "t": "Sincronización PartyCast",
+        "d": "vinculación inalámbrica con más de 100 bocinas soundcore compatibles para una experiencia de sonido expansiva."
       },
       {
-        "t": "Modo TWS (True Wireless Stereo)",
-        "d": "permite enlazar inalámbricamente dos bocinas Motion 300 para duplicar la potencia y crear un canal izquierdo/derecho real."
-      },
-      {
-        "t": "Diseño ultraportátil con correa desmontable",
-        "d": "estructura compacta con recubrimiento de goma de tacto suave, rejilla metálica frontal y correa de transporte para llevarla fácilmente en la mano, mochila o manillar."
+        "t": "Diseño Portátil con Correa",
+        "d": "estructura ergonómica con bucle de transporte integrado para colgarla de la mochila o llevarla en la mano."
       }
     ],
     "idealPara": [
-      "Salidas al aire libre, días de piscina, playa, senderismo o campamentos gracias a su resistencia total al agua (IPX7) y cuerpo de goma anti-impactos.",
-      "Usuarios y audiófilos que buscan fidelidad de sonido Hi-Res y códec LDAC en un altavoz verdaderamente portátil de bolsillo o mochila.",
-      "Espacios interiores como salas de estudio, terrazas, balcones, dormitorios y oficinas para escuchar música, podcasts o videollamadas con sonido nítido.",
-      "Fiestas y reuniones pequeñas combinando dos unidades en modo estéreo TWS."
+      "Salidas a la playa, días de piscina, campamentos y senderismo gracias a su resistencia total al agua IPX7.",
+      "Uso continuo en el hogar, habitaciones u oficinas con batería para varios días de uso habitual.",
+      "Fiestas y reuniones en exteriores aprovechando la tecnología PartyCast y el refuerzo de graves.",
+      "Usuarios que buscan personalizar la firma acústica mediante una aplicación móvil dedicada."
     ],
     "incluye": [
-      "1× Bocina portátil Bluetooth Anker Soundcore Motion 300",
-      "1× Correa de transporte reforzada desmontable",
+      "1× Bocina portátil Bluetooth soundcore Select 3",
       "1× Cable de carga USB-C a USB-C",
-      "1× Guía de seguridad e inicio rápido"
+      "1× Guía de inicio rápido y manual de seguridad"
     ],
     "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
     "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…",
-    "slug": "anker-soundcore-motion-300"
+    "slug": "anker-soundcore-select-3",
+    "descripcion": "El Anker Soundcore Select 3 es un altavoz inalámbrico portátil concebido para ofrecer un sonido potente, nítido y duradero en cualquier aventura o entorno diario. Cuenta con una configuración acústica estéreo de 16W respaldada por dos transductores de rango completo y la tecnología propietaria BassUp™, la cual intensifica las frecuencias bajas en tiempo real para lograr graves con pegada sin distorsionar las frecuencias medias y agudas. Su batería de alta eficiencia entrega hasta 20 horas de reproducción continua, ofreciendo música ininterrumpida durante jornadas completas o escapadas de fin de semana sin requerir tomas de corriente frecuentes.  ",
+    "slugsAnteriores": [
+      "anker-soundcore-motion-300"
+    ],
+    "rev": 1791320796148
   },
   {
     "id": 1789066847523,
