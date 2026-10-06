@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-10-04T15:40:50.159868+00:00",
-  "fecha": "2026-10-04",
+  "actualizado": "2026-10-06T17:03:15.812780+00:00",
+  "fecha": "2026-10-06",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-21",
-          "mediana": 75.0
-        },
         {
           "fecha": "2026-09-22",
           "mediana": 75.0
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-10-04",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-10-06",
           "mediana": 75.0
         }
       ],
@@ -125,10 +125,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-21",
-          "mediana": 170.0
-        },
-        {
           "fecha": "2026-09-22",
           "mediana": 170.0
         },
@@ -179,6 +175,10 @@
         {
           "fecha": "2026-10-04",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-10-06",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -187,13 +187,6 @@
           "titulo": "165 USD Inversor Tataliken de 12V 3500W $165",
           "precio": 165.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57214908",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken 3500W",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-3500w-57734342",
           "dias": null
         },
         {
@@ -215,6 +208,13 @@
           "titulo": "170 USD Inversor Tataliken de 12V 3500W",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-57748728",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "170 USD Inversor de Corriente Tataliken 3500W",
+          "precio": 170.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-3500w-57734342",
           "dias": null
         },
         {
