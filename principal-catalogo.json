@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-05T19:45:11Z",
+ "actualizado": "2026-10-06T00:11:57Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -74,7 +74,7 @@
    "nombre": "Base para paneles",
    "precio": 65.0,
    "precioMoneda": "USD",
-   "stock": 40,
+   "stock": 39,
    "categoria": "Energia",
    "comision": 5.0,
    "comisionMoneda": "USD",
@@ -272,7 +272,7 @@
    "nombre": "Cargador VEVOR 6v, 12v y 24v,  30A",
    "precio": 115.0,
    "precioMoneda": "USD",
-   "stock": 17,
+   "stock": 16,
    "categoria": "Energia",
    "comision": 5.0,
    "comisionMoneda": "USD",
@@ -792,7 +792,7 @@
    "nombre": "Nanostation loco m5",
    "precio": 160.0,
    "precioMoneda": "USD",
-   "stock": 6,
+   "stock": 0,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
