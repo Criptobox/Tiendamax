@@ -1,0 +1,80 @@
+{
+  "v": 1,
+  "creado": "2026-10-07T14:33:42.632Z",
+  "productos": [
+    {
+      "id": 1784825579392,
+      "nombre": "Cámara Solar QW8-WIFI",
+      "imagen": "https://tiendamax.org/imagenes/img_1784825577280.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784825577280.webp"
+      ],
+      "precioActual": 100,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 2,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CÁMARAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🎯 Uso: Vigilancia exterior residencial o comercial"
+      ],
+      "fechaAgregado": "2026-07-23T16:52:59.395Z",
+      "seoTitle": "Cámara Solar QW8-WIFI en Cuba | TiendaMax",
+      "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…",
+      "ficha": [
+        {
+          "k": "Modelo",
+          "v": "QW8-WIFI"
+        },
+        {
+          "k": "Uso",
+          "v": "Vigilancia exterior residencial o comercial"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cámaras"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Dos lentes independientes integrados en el mismo cuerpo para monitorear dos áreas distintas de forma simultánea desde el celular."
+        },
+        {
+          "d": "Panel solar de alta eficiencia para la recarga autónoma del sistema, garantizando funcionamiento continuo en exteriores."
+        },
+        {
+          "d": "Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos."
+        },
+        {
+          "t": "Conectividad Inalámbrica",
+          "d": "Conexión a red Wi-Fi para visualización en tiempo real, control de funciones y recepción de alertas de movimiento."
+        },
+        {
+          "t": "Tipo",
+          "d": "Cámara de seguridad solar PTZ de doble lente."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Cámara de Seguridad Solar Doble Lente QW8-WIFI"
+      ],
+      "slug": "camara-solar-qw8-wifi",
+      "rev": 1791383622632,
+      "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
