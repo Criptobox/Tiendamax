@@ -4973,7 +4973,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -5060,8 +5060,9 @@
       "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
       "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
     ],
+    "slug": "audifonos-gaming-nubwo",
     "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.",
-    "slug": "audifonos-gaming-nubwo"
+    "rev": 1791405148601
   },
   {
     "id": 1782439525089,
