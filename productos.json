@@ -5210,7 +5210,7 @@
     "precioActual": 28,
     "precioOriginal": 32,
     "descuento": 13,
-    "stock": 10,
+    "stock": 0,
     "comision": 2,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5244,8 +5244,8 @@
       "1x Batidora Milexus Cristal"
     ],
     "slug": "batidora-milexus-cristal",
-    "descripcion": "Batidora Milexus, modelo ML-L602, jarra de cristal con base de acero inoxidable y motor negro. Ideal para batidos, jugos y triturar hielo.",
-    "rev": 1790569510310
+    "rev": 1791383538094,
+    "descripcion": "Batidora Milexus, modelo ML-L602, jarra de cristal con base de acero inoxidable y motor negro. Ideal para batidos, jugos y triturar hielo."
   },
   {
     "id": 1782535836192,
@@ -5258,7 +5258,7 @@
     "precioActual": 235,
     "precioOriginal": 250,
     "descuento": 6,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5292,8 +5292,8 @@
       "1x Smart TV Milexus 43\""
     ],
     "slug": "smart-tv-milexus-43",
-    "descripcion": "Smart TV Milexus 43 pulgadas, HD, con Google TV/Android TV integrado. Wi-Fi, Bluetooth, HDMI, control por voz (Hey Google), acceso directo a Netflix, YouTube, Disney+ y otras apps.",
-    "rev": 1790569510310
+    "rev": 1791383538094,
+    "descripcion": "Smart TV Milexus 43 pulgadas, HD, con Google TV/Android TV integrado. Wi-Fi, Bluetooth, HDMI, control por voz (Hey Google), acceso directo a Netflix, YouTube, Disney+ y otras apps."
   },
   {
     "id": 1782536078989,
@@ -5308,7 +5308,7 @@
     "precioActual": 200,
     "precioOriginal": 210,
     "descuento": 5,
-    "stock": 5,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5345,8 +5345,8 @@
     "slugsAnteriores": [
       "lavadora-doble-tina-9-kg"
     ],
-    "descripcion": "Lavadora Milexus de doble tina, capacidad de 9kg, con función Air-Dry (centrifugado/secado) en el lado derecho. Controles manuales por perillas — lava y centrifuga por separado.",
-    "rev": 1790569510310
+    "rev": 1791383538094,
+    "descripcion": "Lavadora Milexus de doble tina, capacidad de 9kg, con función Air-Dry (centrifugado/secado) en el lado derecho. Controles manuales por perillas — lava y centrifuga por separado."
   },
   {
     "id": 1782536259878,
@@ -6498,7 +6498,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 11,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "SEGURIDAD",
@@ -6558,9 +6558,9 @@
     "incluye": [
       "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
     ],
-    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.",
-    "rev": 1790346061454,
-    "slug": "camara-ptz-wifi-exterior"
+    "rev": 1791383538094,
+    "slug": "camara-ptz-wifi-exterior",
+    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche."
   },
   {
     "id": 1784569265085,
