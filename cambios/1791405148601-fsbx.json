@@ -1,0 +1,110 @@
+{
+  "v": 1,
+  "creado": "2026-10-07T20:32:28.601Z",
+  "productos": [
+    {
+      "id": 1782439428159,
+      "nombre": "Audífonos Diademas Gaming Inalámbricos Nubwo",
+      "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+        "https://tiendamax.org/imagenes/img_1784569823396.webp"
+      ],
+      "precioActual": 50,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "AUDIO",
+      "subcategoria": "AUDIO",
+      "masVendido": true,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Conectividad: Inalámbrica 2.4 GHz",
+        "🔊 Drivers / Altavoces: Neodimio de 50 mm",
+        "🔋 Autonomía: Hasta 30"
+      ],
+      "fechaAgregado": "2026-06-26T02:03:48.159Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "Audífonos Diademas Gaming Inalámbricos Nubwo | TiendaMax",
+      "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Nubwo"
+        },
+        {
+          "k": "Modelo",
+          "v": "G06 Wireless Gaming Headset"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Inalámbrica 2.4 GHz (Receptor USB) + Bluetooth + Cable auxiliar de 3.5 mm"
+        },
+        {
+          "k": "Drivers / Altavoces",
+          "v": "Neodimio de 50 mm"
+        },
+        {
+          "k": "Autonomía",
+          "v": "Hasta 30 – 40 horas de uso continuo",
+          "nota": "según volumen y modo"
+        },
+        {
+          "k": "Micrófono",
+          "v": "Micrófono flexible con cancelación de ruido"
+        },
+        {
+          "k": "Compatibilidad",
+          "v": "PC, PlayStation (PS4 / PS5), Nintendo Switch, Laptops, teléfonos móviles y Xbox",
+          "nota": "mediante cable de 3.5 mm al mando"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Conectividad 3 en 1",
+          "d": "enlace inalámbrico de 2.4 GHz de latencia ultrabaja (<30 ms) mediante receptor USB, modo Bluetooth para dispositivos móviles y conexión analógica por cable 3.5 mm."
+        },
+        {
+          "d": "Controladores de neodimio de 50 mm de alta precisión que entregan sonido envolvente estéreo nítido, agudos limpios y graves profundos para identificar pasos y disparos con exactitud."
+        },
+        {
+          "d": "Micrófono omnidireccional con supresión de ruido ambiental, flexible y posicionable para comunicaciones claras en partidas cooperativas o llamadas."
+        },
+        {
+          "d": "Batería recargable de gran capacidad para largas sesiones de juego continuas sin necesidad de recargas frecuentes."
+        },
+        {
+          "d": "Almohadillas ergonómicas de espuma con memoria viscoelástica y recubrimiento transpirable que aíslan el ruido exterior sin generar presión excesiva en las orejas."
+        },
+        {
+          "d": "Diadema ajustable con estructura reforzada y almohadilla superior acolchada para máxima comodidad durante horas de uso."
+        },
+        {
+          "t": "Controles integrados en el auricular",
+          "d": "selector de encendido, rueda de control de volumen y botón de silenciado rápido de micrófono (Mute)."
+        }
+      ],
+      "incluye": [
+        "1× Audífonos Diadema Gaming Inalámbricos Nubwo G06",
+        "1× Transmisor / Adaptador USB inalámbrico 2.4 GHz",
+        "1× Cable de carga USB",
+        "1× Cable de audio analógico jack 3.5 mm",
+        "1× Guía de usuario rápida"
+      ],
+      "idealPara": [
+        "Jugadores competitivos de PC, PS4 y PS5 que requieren audio inalámbrico en tiempo real sin desfase ni retraso en el juego.",
+        "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
+        "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
+      ],
+      "slug": "audifonos-gaming-nubwo",
+      "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.",
+      "rev": 1791405148601
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
