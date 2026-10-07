@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-06T21:44:44Z",
+ "actualizado": "2026-10-07T17:45:47Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -395,7 +395,7 @@
    "nombre": "Controlador solar mppt de 48/60/72 V y 1200 W",
    "precio": 90.0,
    "precioMoneda": "USD",
-   "stock": 29,
+   "stock": 28,
    "categoria": "Energia",
    "comision": 5.0,
    "comisionMoneda": "USD",
@@ -1142,7 +1142,7 @@
    "nombre": "Toldo malla para sombra",
    "precio": 38.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 1,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -1157,8 +1157,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
