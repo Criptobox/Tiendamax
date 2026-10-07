@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-10-06T17:03:15.812780+00:00",
-  "fecha": "2026-10-06",
+  "actualizado": "2026-10-07T17:40:56.859322+00:00",
+  "fecha": "2026-10-07",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -29,10 +29,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-09-22",
-          "mediana": 75.0
-        },
-        {
           "fecha": "2026-09-23",
           "mediana": 75.0
         },
@@ -82,6 +78,10 @@
         },
         {
           "fecha": "2026-10-06",
+          "mediana": 75.0
+        },
+        {
+          "fecha": "2026-10-07",
           "mediana": 75.0
         }
       ],
@@ -102,7 +102,7 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Antorcha para soldadura TIG con kit de consumibles",
+          "titulo": "75 USD Antorcha de Soldadura TIG con Kit de Consumibles",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-con-kit-de-consumibles-57751751",
           "dias": null
@@ -114,9 +114,9 @@
       "nombre": "Inversor Tataliken 3500W",
       "tuPrecio": 170.0,
       "mercado": {
-        "min": 165.0,
+        "min": 150.0,
         "mediana": 170.0,
-        "n": 11
+        "n": 12
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -124,10 +124,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-09-22",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-09-23",
           "mediana": 170.0
@@ -179,9 +175,20 @@
         {
           "fecha": "2026-10-06",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-10-07",
+          "mediana": 170.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "150 USD Inversor Tataliken 12V",
+          "precio": 150.0,
+          "url": "https://www.revolico.com/item/inversor-tataliken-12v-57939896",
+          "dias": null
+        },
         {
           "fuente": "revolico",
           "titulo": "165 USD Inversor Tataliken de 12V 3500W $165",
@@ -215,13 +222,6 @@
           "titulo": "170 USD Inversor de Corriente Tataliken 3500W",
           "precio": 170.0,
           "url": "https://www.revolico.com/item/inversor-tataliken-3500w-57734342",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "170 USD Inversor Tataliken de 12V 3500W $170 ☆",
-          "precio": 170.0,
-          "url": "https://www.revolico.com/item/inversor-tataliken-de-12v-3500w-170-57661035",
           "dias": null
         }
       ]
