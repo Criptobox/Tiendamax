@@ -6499,7 +6499,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 11,
+    "stock": 12,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "SEGURIDAD",
@@ -6559,7 +6559,7 @@
     "incluye": [
       "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
     ],
-    "rev": 1791383538094,
+    "rev": 1791405203773,
     "slug": "camara-ptz-wifi-exterior",
     "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche."
   },
@@ -9969,7 +9969,7 @@
     "precioActual": 75,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 8,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -10032,7 +10032,7 @@
     "slugsAnteriores": [
       "anker-soundcore-motion-300"
     ],
-    "rev": 1791320796148
+    "rev": 1791405203773
   },
   {
     "id": 1789066847523,
