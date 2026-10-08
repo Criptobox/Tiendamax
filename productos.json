@@ -11273,7 +11273,7 @@
   },
   {
     "id": 1791502917024,
-    "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh)",
+    "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
     "descripcion": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento, diseñado para sustituir ventajosamente a las tradicionales baterías de plomo-ácido, gel o AGM en sistemas solares fotovoltaicos, respaldos de emergencia e instalaciones aisladas. Gracias a su química LiFePO4, proporciona una estabilidad térmica y química superior, eliminando riesgos de fuga de gases o sobrecalentamiento crítico y ofreciendo una vida útil que supera holgadamente los 4000 a 6000 ciclos al 80% de profundidad de descarga (DoD).",
     "imagen": "https://tiendamax.org/imagenes/img_1791502915309.webp",
     "imagenes": [
@@ -11398,8 +11398,6 @@
       "Sustitución directa de baterías pesadas de ciclo profundo en instalaciones solares aisladas (Off-Grid)."
     ],
     "slug": "bateria-lifepo4-lp15-12100",
-    "rev": 1791502918831,
-    "seoTitle": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V… | TiendaMax",
-    "seoDescription": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento…"
+    "rev": 1791503013802
   }
 ]
