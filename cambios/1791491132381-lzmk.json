@@ -1,0 +1,136 @@
+{
+  "v": 1,
+  "creado": "2026-10-08T20:25:32.381Z",
+  "productos": [
+    {
+      "id": 1790963254986,
+      "nombre": "TP-Link RE705X / RE605X (REPETIDOR)",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963250854.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963250854.webp",
+        "https://tiendamax.org/imagenes/img_1790963253034.webp",
+        "https://tiendamax.org/imagenes/img_1790963254074.webp"
+      ],
+      "precioActual": 45,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 9,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "WIFI",
+      "subcategoria": "REPETIDORES",
+      "masVendido": false,
+      "usado": true,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Wi-Fi 6 AX (Doble Banda)",
+        "🔌 Consumo máx. 10W – 12.6W",
+        "🚀 1× Puerto Gigabit Ethernet (Modo Extensor / AP)"
+      ],
+      "fechaAgregado": "2026-10-02T17:47:34.987Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TP-Link"
+        },
+        {
+          "k": "Modelo",
+          "v": "Serie RE705X / RE605X",
+          "nota": "Formato de enchufe de pared"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "10W – 12.6W máximo",
+          "nota": "alta eficiencia para respaldos y UPS"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "100V – 240V AC",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Estándar Inalámbrico",
+          "v": "Wi-Fi 6",
+          "nota": "IEEE 802.11ax/ac/n/a en 5 GHz, IEEE 802.11ax/n/g/b en 2.4 GHz"
+        },
+        {
+          "k": "Velocidad Teórica",
+          "v": "Hasta 2402 Mbps / 1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Antenas",
+          "v": "2× antenas externas orientables de alta ganancia"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet RJ-45",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Modo Repetidor de Rango (Extensor) y Modo Punto de Acceso (AP)"
+        },
+        {
+          "k": "Compatibilidad de Red Mesh",
+          "v": "TP-Link OneMesh™ / EasyMesh"
+        },
+        {
+          "k": "Seguridad Inalámbrica",
+          "v": "WPA, WPA2, WPA3-Personal"
+        },
+        {
+          "k": "Gestión y Configuración",
+          "v": "Botón WPS físico, interfaz web y aplicación móvil TP-Link Tether"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Bajo Consumo Energético",
+          "d": "demanda eléctrica mínima de ~10W a 12W, ideal para mantener la red activa ante contingencias eléctricas."
+        },
+        {
+          "t": "Cobertura Wi-Fi 6 de Alto Rendimiento",
+          "d": "mayor penetración de señal a través de muros y mejor respuesta con múltiples clientes conectados."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet Lateral",
+          "d": "conecta directamente televisores Smart TV, consolas de videojuegos o computadoras de escritorio por cable."
+        },
+        {
+          "t": "Indicador de Señal Inteligente LED",
+          "d": "luces indicadoras frontales que ayudan a encontrar la ubicación óptima de instalación en el enchufe adecuado."
+        },
+        {
+          "t": "Tecnología OneMesh™",
+          "d": "navegación ininterrumpida que conecta automáticamente tu teléfono al nodo con mejor señal sin desconexiones."
+        },
+        {
+          "t": "Disipación Térmica Lateral",
+          "d": "chasis con ranuras de ventilación que evitan acumulaciones de calor en uso continuo 24/7."
+        },
+        {
+          "t": "Instalación en Minutos",
+          "d": "emparejamiento instantáneo mediante el botón WPS o desde la aplicación Tether en Android/iOS."
+        }
+      ],
+      "idealPara": [
+        "Eliminar puntos ciegos de señal en segundas plantas, terrazas, patios techados o habitaciones alejadas del router principal.",
+        "Usuarios que requieren conectar por cable Gigabit dispositivos como Smart TV, consolas o PC gamer sin necesidad de tender cables largos por la casa.",
+        "Hogares con múltiples dispositivos conectados que demandan streaming 4K, videollamadas fluidas o juegos en línea sin lag.",
+        "Instalaciones respaldadas por UPS o energía solar debido a su consumo eficiente."
+      ],
+      "incluye": [
+        "1× Repetidor / Extensor de rango Wi-Fi 6 TP-Link",
+        "1× Guía de instalación rápida y configuración"
+      ],
+      "slug": "tplink-re705x-re605x",
+      "rev": 1791491132381,
+      "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
+      "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
+      "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
