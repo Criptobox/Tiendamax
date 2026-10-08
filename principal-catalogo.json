@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-08T02:05:14Z",
+ "actualizado": "2026-10-08T17:49:57Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -152,7 +152,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 577,
+   "stock": 2633,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -185,7 +185,7 @@
    "nombre": "Camara de vigilancia IP inalambrica",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 12,
+   "stock": 11,
    "categoria": "Seguridad",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -757,7 +757,7 @@
    "nombre": "Mikrotik SXT sq lite 2",
    "precio": 110.0,
    "precioMoneda": "USD",
-   "stock": 6,
+   "stock": 5,
    "categoria": "Wifi",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -913,7 +913,7 @@
    "nombre": "Puntas de cable de red",
    "precio": 200.0,
    "precioMoneda": "MN",
-   "stock": 98,
+   "stock": 96,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null
@@ -1157,8 +1157,9 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "USD",
+   "comisionMoneda": "MN",
    "precioOtro": 40.0,
+   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
