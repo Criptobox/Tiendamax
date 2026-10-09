@@ -1,0 +1,118 @@
+{
+  "v": 1,
+  "creado": "2026-10-09T23:39:42.615Z",
+  "productos": [
+    {
+      "id": 1778104924836,
+      "nombre": "Generador Solar Portátil BLUETTI AC180",
+      "precioActual": 640,
+      "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 10,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 9,
+      "slug": "bluetti-ac180",
+      "comision": 15,
+      "specs": [
+        "⚡ 1800W de Potencia / 1152Wh Capacidad",
+        "🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
+        "🔋 Estación de Energía Portátil de Alta Capacidad"
+      ],
+      "seoTitle": "Generador Solar Portátil BLUETTI AC180 en Cuba | TiendaMax",
+      "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
+      "precioOriginal": 700,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778104924836.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "BLUETTI"
+        },
+        {
+          "k": "Modelo",
+          "v": "AC180"
+        },
+        {
+          "k": "Capacidad de Batería",
+          "v": "1152 Wh",
+          "nota": "Química LiFePO4: +3,500 ciclos de vida al 80%"
+        },
+        {
+          "k": "Potencia de Salida AC",
+          "v": "1800W continuos (Modo Power Lifting hasta 2700W para cargas resistivas) — Onda Senoidal Pura"
+        },
+        {
+          "k": "Puertos de Salida",
+          "v": "4× tomas AC 120V, 1× USB-C PD (100W), 4× USB-A (5V/3A), 1× salida 12V/10A DC tipo mechero, 1× base de carga inalámbrica superior (15W)"
+        },
+        {
+          "k": "Entrada de Carga",
+          "v": "Carga rápida de red AC (hasta 1440W), entrada solar MPPT (hasta 500W / 12V-60V), entrada para coche",
+          "nota": "12V/24V"
+        },
+        {
+          "k": "Función UPS",
+          "v": "Conmutación automática en menos de 20 ms"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Bluetooth",
+          "nota": "control y monitoreo desde la app móvil BLUETTI"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Batería ultra duradera de química LiFePO4 (litio-ferrofosfato), con más de 3,500 ciclos de vida útil garantizados y máxima seguridad contra sobrecalentamiento."
+        },
+        {
+          "d": "Inversor de 1800W continuos de onda senoidal pura con tecnología Power Lifting (hasta 2700W), que permite alimentar aparatos de alta demanda resistiva como calentadores, cafeteras y secadores."
+        },
+        {
+          "d": "Carga ultrarrápida por red eléctrica AC de hasta 1440W: recupera del 0% al 80% en solo 45 minutos y el 100% en aproximadamente 1.3 horas."
+        },
+        {
+          "d": "Controlador de carga solar MPPT integrado de hasta 500W para recarga ecológica y completa en 2.5 a 3.5 horas bajo sol óptimo."
+        },
+        {
+          "d": "Función de UPS (Sistema de Alimentación Ininterrumpida) con tiempo de transferencia ultrarrápido (<20 ms) para evitar que computadoras, servidores o routers se apaguen ante un corte de luz."
+        },
+        {
+          "d": "Base de carga inalámbrica rápida integrada en la parte superior (15W) para teléfonos móviles y audífonos compatibles."
+        },
+        {
+          "d": "Pantalla LCD frontal que detalla en tiempo real la potencia de entrada, salida, porcentaje de batería y tiempo estimado restante."
+        },
+        {
+          "d": "Monitoreo y personalización de modos de carga desde el smartphone mediante la app oficial BLUETTI."
+        }
+      ],
+      "idealPara": [
+        "Respaldo doméstico durante apagones prolongados: mantiene funcionando refrigeradores, ventiladores, routers Wi-Fi, laptops, iluminación y televisores.",
+        "Alimentación continua de equipos médicos sensibles como máquinas CPAP.",
+        "Campamentos, viajes en casas rodantes (RV), trabajo en exteriores y herramientas eléctricas en zonas sin red eléctrica."
+      ],
+      "incluye": [
+        "1× Generador Solar Portátil BLUETTI AC180 (1152 Wh / 1800W)",
+        "1× Cable de carga de pared (AC)",
+        "1× Cable de carga para automóvil (12V mechero a DC)",
+        "1× Cable de carga solar (MC4 a DC)",
+        "1× Tornillo de conexión a tierra",
+        "1× Manual de usuario y tarjeta de garantía"
+      ],
+      "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
+      "slugsAnteriores": [
+        "generador-solar-ac180"
+      ],
+      "almacenId": "alm_1790824274659",
+      "rev": 1791589182615
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
