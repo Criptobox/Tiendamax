@@ -2785,7 +2785,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778602312238.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 43,
+    "stock": 42,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2814,7 +2814,8 @@
     ],
     "incluye": [
       "1x Fanfaro 2T 1L"
-    ]
+    ],
+    "rev": 1791568583179
   },
   {
     "id": 1778634719053,
