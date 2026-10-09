@@ -1,15 +1,20 @@
 {
-  "generado": "2026-10-08T15:58:32.057835+00:00",
-  "productos": 140,
-  "urgentes": 1,
+  "generado": "2026-10-09T15:40:49.358894+00:00",
+  "productos": 141,
+  "urgentes": 2,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 140 productos y encontré 1 urgente(s), 7 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
       "nombre": "Base para paneles",
       "detalle": "→ Base Para Paneles"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
+      "detalle": "→ Batería de Litio LiFePO4 Must LP15-12100 (12.8V 100Ah / 1280Wh) 80 Ciclos de Carga"
     },
     {
       "tipo": "stock_bajo",
@@ -39,6 +44,11 @@
     {
       "tipo": "stock_bajo",
       "nombre": "Cámara Solar QW8-WIFI",
+      "detalle": "quedan 2"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
       "detalle": "quedan 2"
     },
     {
