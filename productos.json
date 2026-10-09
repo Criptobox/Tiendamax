@@ -1824,7 +1824,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 25,
+    "stock": 21,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1883,7 +1883,8 @@
       "https://tiendamax.org/imagenes/img_1789066844710.webp",
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ],
-    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
+    "rev": 1791520791314
   },
   {
     "id": 1778384078432,
