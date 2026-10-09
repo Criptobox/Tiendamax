@@ -8414,7 +8414,7 @@
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 3,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8501,8 +8501,9 @@
       "1× Controlador de Carga Solar MPPT Boost 1200W",
       "1× Manual de usuario e instrucciones de configuración"
     ],
+    "slug": "controlador-mppt-boost-1200w",
     "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
-    "slug": "controlador-mppt-boost-1200w"
+    "rev": 1791568498104
   },
   {
     "id": 1787157254207,
