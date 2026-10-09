@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-09T17:24:40Z",
+ "actualizado": "2026-10-09T21:48:01Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -881,7 +881,7 @@
    "nombre": "Planta de soldar Bielmeier FLUXMAX 140 (3 en 1)",
    "precio": 275.0,
    "precioMoneda": "USD",
-   "stock": 3,
+   "stock": 2,
    "categoria": "Utiles",
    "comision": 15.0,
    "comisionMoneda": "USD",
@@ -1158,9 +1158,8 @@
    "stock": 0,
    "categoria": "Hogar",
    "comision": 3.0,
-   "comisionMoneda": "MN",
+   "comisionMoneda": "USD",
    "precioOtro": 40.0,
-   "comisionDudosa": "la principal la escribe «$3 USD» pero su campo de moneda dice MN",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1787962342861-7ae820ed.webp"
   },
   {
