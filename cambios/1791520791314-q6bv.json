@@ -1,0 +1,77 @@
+{
+  "v": 1,
+  "creado": "2026-10-09T04:39:51.314Z",
+  "productos": [
+    {
+      "id": 1778336859697,
+      "nombre": "Toldo Para Sombra 2x4",
+      "precioActual": 23,
+      "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
+      "categoria": "UTILES",
+      "subcategoria": "HOGAR",
+      "stock": 21,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "toldo-sombra-2x4",
+      "comision": 3,
+      "seoTitle": "Toldo Para Sombra 2x4 en Cuba | TiendaMax",
+      "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
+      "ficha": [
+        {
+          "k": "📐 Medidas",
+          "v": "2m x 4m"
+        },
+        {
+          "k": "🎨 Color",
+          "v": "Beige"
+        },
+        {
+          "k": "🧵 Tela",
+          "v": "Transpirable"
+        },
+        {
+          "k": "☀️ Bloqueo UV",
+          "v": "90%"
+        },
+        {
+          "k": "🔷 Forma",
+          "v": "Rectangular"
+        }
+      ],
+      "idealPara": [
+        "Patios, piscinas y terrazas que necesitan sombra sin obra."
+      ],
+      "incluye": [
+        "1x Toldo de sombra 2m x 4m"
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tela transpirable",
+          "d": "deja pasar el aire en vez de acumular calor debajo."
+        },
+        {
+          "d": "Se instala amarrado a postes o paredes, sin estructura fija."
+        }
+      ],
+      "specs": [
+        "📐 Medidas: 2m x 4m",
+        "☀️ Bloqueo UV: 90%",
+        "🎨 Color: Beige",
+        "🧵 Tela: Transpirable"
+      ],
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789066844710.webp",
+        "https://tiendamax.org/imagenes/img_1778336859697.webp"
+      ],
+      "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
+      "rev": 1791520791314
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
