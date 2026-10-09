@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-08T23:15:52Z",
+ "actualizado": "2026-10-09T02:59:23Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -152,7 +152,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 2633,
+   "stock": 2593,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -913,7 +913,7 @@
    "nombre": "Puntas de cable de red",
    "precio": 200.0,
    "precioMoneda": "MN",
-   "stock": 96,
+   "stock": 92,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null
@@ -1166,7 +1166,7 @@
    "nombre": "Toldo para sombra",
    "precio": 23.0,
    "precioMoneda": "USD",
-   "stock": 16,
+   "stock": 12,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
