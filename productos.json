@@ -1027,7 +1027,7 @@
   {
     "id": 1778104924836,
     "nombre": "Generador Solar Portátil BLUETTI AC180",
-    "precioActual": 665,
+    "precioActual": 640,
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
@@ -1036,7 +1036,7 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 5,
+    "descuento": 9,
     "slug": "bluetti-ac180",
     "comision": 15,
     "specs": [
@@ -1130,7 +1130,9 @@
     "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
     "slugsAnteriores": [
       "generador-solar-ac180"
-    ]
+    ],
+    "almacenId": "alm_1790824274659",
+    "rev": 1791589182615
   },
   {
     "id": 1778104985977,
