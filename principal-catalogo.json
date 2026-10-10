@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-10T01:39:47Z",
+ "actualizado": "2026-10-10T16:11:28Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -141,7 +141,7 @@
    "nombre": "Breker digital ajustable",
    "precio": 20.0,
    "precioMoneda": "USD",
-   "stock": 15,
+   "stock": 14,
    "categoria": "Energia",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -185,7 +185,7 @@
    "nombre": "Camara de vigilancia IP inalambrica",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 8,
+   "stock": 6,
    "categoria": "Seguridad",
    "comision": 1500.0,
    "comisionMoneda": "MN",
@@ -924,7 +924,7 @@
    "nombre": "Repetidor TP-Link TL-WA801N / TL-WA801ND",
    "precio": 45.0,
    "precioMoneda": "USD",
-   "stock": 6,
+   "stock": 4,
    "categoria": "Wifi",
    "comision": 1500.0,
    "comisionMoneda": "MN",
