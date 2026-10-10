@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-09T21:48:01Z",
+ "actualizado": "2026-10-10T01:39:47Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -152,7 +152,7 @@
    "nombre": "Cable de red categoría 6",
    "precio": 280.0,
    "precioMoneda": "MN",
-   "stock": 2593,
+   "stock": 2563,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null,
@@ -460,7 +460,7 @@
    "nombre": "ESTACION DE CARGA PORTÁTIL",
    "precio": 640.0,
    "precioMoneda": "USD",
-   "stock": 14,
+   "stock": 13,
    "categoria": "Energia",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -914,7 +914,7 @@
    "nombre": "Puntas de cable de red",
    "precio": 200.0,
    "precioMoneda": "MN",
-   "stock": 92,
+   "stock": 90,
    "categoria": "Wifi",
    "comision": null,
    "comisionMoneda": null
