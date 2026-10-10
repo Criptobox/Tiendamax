@@ -1,10 +1,10 @@
 {
-  "generado": "2026-10-09T15:40:49.358894+00:00",
+  "generado": "2026-10-10T14:55:59.845387+00:00",
   "productos": 141,
   "urgentes": 2,
   "advertencias": 0,
-  "info": 8,
-  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 8 de info.",
+  "info": 9,
+  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -48,13 +48,18 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "Controlador MPPT Boost 1200W",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
       "detalle": "quedan 2"
     },
     {
       "tipo": "agotados",
-      "nombre": "89 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 86 más"
+      "nombre": "90 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 87 más"
     }
   ]
 }
