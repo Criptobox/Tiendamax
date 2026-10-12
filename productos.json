@@ -2787,7 +2787,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778602312238.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 42,
+    "stock": 41,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2796,7 +2796,6 @@
     "slug": "fanfaro-2t-1l",
     "seoTitle": "Fanfaro 2T 1L en Cuba | TiendaMax",
     "seoDescription": "ESPECIFICACIONES TÉCNICAS: -Categoría: Aceite para Motores de 2 Tiempos -Viscosidad: SAE 20W(SAE 2T) -Clasificación de Rendimiento: APITC…",
-    "descripcion": "Aceite FANFARO M-2T (código G2102) para motores de 2 tiempos, API TC, JASO FB. Envase de 1 litro.",
     "ficha": [
       {
         "k": "Marca",
@@ -2817,7 +2816,8 @@
     "incluye": [
       "1x Fanfaro 2T 1L"
     ],
-    "rev": 1791568583179
+    "rev": 1791788191128,
+    "descripcion": "Aceite FANFARO M-2T (código G2102) para motores de 2 tiempos, API TC, JASO FB. Envase de 1 litro."
   },
   {
     "id": 1778634719053,
@@ -4579,7 +4579,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 2,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -4670,7 +4670,7 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1791213557624,
+    "rev": 1791788191128,
     "almacenId": "alm_1790824274659",
     "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
   },
