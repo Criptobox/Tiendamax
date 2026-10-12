@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-09-26T22:03:28.328Z",
+  "actualizado": "2026-10-12T15:26:57.564Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -792,6 +792,14 @@
       "red": "otra",
       "destino": "Imagen descargada · ENERGIA",
       "ts": 1790346831243
+    },
+    {
+      "pid": "1791502917024",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1791818812323,
+      "precio": 200,
+      "moneda": "USD"
     }
   ]
 }
