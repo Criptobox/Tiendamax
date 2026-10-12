@@ -4579,7 +4579,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 2,
+    "stock": 1,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -4670,7 +4670,7 @@
       "1× Cable de red Ethernet RJ45",
       "1× Guía de instalación rápida"
     ],
-    "rev": 1791788191128,
+    "rev": 1791788254112,
     "almacenId": "alm_1790824274659",
     "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente."
   },
@@ -8724,7 +8724,7 @@
     "precioActual": 110,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 4,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8829,7 +8829,8 @@
     "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
     "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…",
     "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT.",
-    "slug": "mikrotik-sxtsq-lite2"
+    "slug": "mikrotik-sxtsq-lite2",
+    "rev": 1791788254112
   },
   {
     "id": 1787888877372,
