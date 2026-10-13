@@ -1,10 +1,10 @@
 {
-  "generado": "2026-10-12T18:24:42.116408+00:00",
+  "generado": "2026-10-13T16:37:04.311331+00:00",
   "productos": 141,
   "urgentes": 2,
   "advertencias": 0,
-  "info": 10,
-  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 10 de info.",
+  "info": 9,
+  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -24,11 +24,6 @@
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "TP-Link Archer C54",
       "detalle": "quedan 1"
     },
     {
@@ -63,8 +58,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "90 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 87 más"
+      "nombre": "91 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 88 más"
     }
   ]
 }
