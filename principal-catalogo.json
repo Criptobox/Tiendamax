@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-12T20:13:59Z",
+ "actualizado": "2026-10-13T22:39:39Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 117,
  "productos": [
@@ -174,7 +174,7 @@
    "nombre": "Camara de Panel",
    "precio": 100.0,
    "precioMoneda": "USD",
-   "stock": 2,
+   "stock": 0,
    "categoria": "Seguridad",
    "comision": 10.0,
    "comisionMoneda": "USD",
@@ -185,7 +185,7 @@
    "nombre": "Camara de vigilancia IP inalambrica",
    "precio": 25.0,
    "precioMoneda": "USD",
-   "stock": 4,
+   "stock": 6,
    "categoria": "Seguridad",
    "comision": 1500.0,
    "comisionMoneda": "MN",
