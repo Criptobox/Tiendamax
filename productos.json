@@ -7624,7 +7624,7 @@
     "precioActual": 260,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -7717,8 +7717,9 @@
       "1× Base / soporte de montaje (para posición vertical, horizontal o pared) con kit de tornillos",
       "1× Guía de inicio rápido"
     ],
+    "slug": "mikrotik-hap-ac3",
     "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.",
-    "slug": "mikrotik-hap-ac3"
+    "rev": 1791912126128
   },
   {
     "id": 1786632255672,
