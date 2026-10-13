@@ -1,0 +1,116 @@
+{
+  "v": 1,
+  "creado": "2026-10-13T17:22:06.128Z",
+  "productos": [
+    {
+      "id": 1786631968221,
+      "nombre": "MikroTik hAP ac3",
+      "imagen": "https://tiendamax.org/imagenes/img_1786631962109.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1786631962109.webp",
+        "https://tiendamax.org/imagenes/img_1786631964826.webp"
+      ],
+      "precioActual": 260,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ROUTERS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Wi-Fi 5 Doble Banda de Alto Rendimiento",
+        "📶 Dos Antenas Externas de Alta Ganancia",
+        "🌐 Puertos Gigabit Ethernet y RouterOS"
+      ],
+      "fechaAgregado": "2026-08-13T14:39:28.222Z",
+      "seoTitle": "MikroTik hAP ac3 en Cuba | TiendaMax",
+      "seoDescription": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "hAP ac³",
+          "nota": "RBD53iG-5HacD2HnD"
+        },
+        {
+          "k": "Velocidad Wi-Fi",
+          "v": "AC1200 Doble Banda",
+          "nota": "Wi-Fi 5: hasta 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz"
+        },
+        {
+          "k": "Puertos",
+          "v": "5× puertos Gigabit Ethernet (10/100/1000 Mbps) + 1× puerto USB 2.0 tipo A",
+          "nota": "con soporte PoE In en puerto 1 y PoE Out en puerto 5"
+        },
+        {
+          "k": "Antenas",
+          "v": "2× antenas externas desmontables de alta ganancia",
+          "nota": "conectores RP-SMA, doble polarización"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "RouterOS con licencia Nivel 4",
+          "nota": "Level 4"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "12W máximo (hasta 30W con equipos conectados por PoE o USB)",
+          "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Procesador Quad-Core a 716 MHz con 256 MB de RAM y 128 MB de almacenamiento interno para un manejo fluido de alto tráfico y múltiples conexiones simultáneas."
+        },
+        {
+          "d": "5 puertos Gigabit Ethernet completos que garantizan máxima velocidad de transferencia cableada sin cuellos de botella."
+        },
+        {
+          "t": "Soporte PoE In y PoE Out",
+          "d": "recibe energía por el puerto 1 vía PoE y puede alimentar directamente otro equipo (antena CPE exterior, cámara IP o punto de acceso) desde el puerto 5."
+        },
+        {
+          "d": "Antenas externas orientables de alto rendimiento que ofrecen una cobertura amplia, eliminando zonas muertas y mejorando la penetración a través de paredes."
+        },
+        {
+          "t": "Sistema operativo RouterOS Nivel 4",
+          "d": "permite balanceo de carga con múltiples proveedores de Internet (Multi-WAN / Failover), firewall robusto, túneles VPN (WireGuard, IPsec, OpenVPN), segmentación por VLANs y portal cautivo (Hotspot)."
+        },
+        {
+          "d": "Puerto USB 2.0 funcional para almacenamiento compartido en red o para conectar un módem 4G/LTE de respaldo."
+        },
+        {
+          "d": "Soporte para control y gestión centralizada de múltiples puntos de acceso mediante la controladora CAPsMAN."
+        },
+        {
+          "d": "Diseño modular con base multi-posición que permite colocar el equipo de forma horizontal, vertical tipo torre o anclado a la pared."
+        }
+      ],
+      "idealPara": [
+        "Hogares grandes, oficinas y negocios que buscan una red Wi-Fi y cableada potente con capacidades de administración avanzada de tráfico.",
+        "Escenarios que requieren balancear 2 o más líneas de Internet o configurar respaldo automático ante caídas del proveedor.",
+        "Instalaciones donde se necesite distribuir Wi-Fi interno y alimentar al mismo tiempo una antena de enlace exterior mediante PoE sin transformadores extras."
+      ],
+      "incluye": [
+        "1× Router MikroTik hAP ac³",
+        "2× Antenas externas desmontables",
+        "1× Adaptador de corriente (24V, 1.5A)",
+        "1× Base / soporte de montaje (para posición vertical, horizontal o pared) con kit de tornillos",
+        "1× Guía de inicio rápido"
+      ],
+      "slug": "mikrotik-hap-ac3",
+      "descripcion": "Router inalámbrico de doble banda para interiores diseñado para hogares y oficinas que requieren una red potente, segura y altamente personalizable. Cuenta con un diseño elegante de escritorio, puertos Gigabit Ethernet de alta velocidad y dos antenas externas orientables para maximizar la cobertura inalámbrica en todo el espacio.",
+      "rev": 1791912126128
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
