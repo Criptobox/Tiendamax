@@ -64,6 +64,10 @@
       "HOGAR": {
         "off": true,
         "ts": 1792172005887
+      },
+      "WIFI": {
+        "off": true,
+        "ts": 1792172012167
       }
     },
     "subcategorias": {}
