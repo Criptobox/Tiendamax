@@ -25,31 +25,13 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/c/hogar.html</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/c/motos.html</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/c/wifi.html</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/inversor-tataliken-4000w</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/switch-gigabit-8-puertos</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -62,12 +44,6 @@
   </url>
   <url>
     <loc>https://tiendamax.org/p/cargador-inteligente-15a</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/cpe-kuwfi-4g</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -157,24 +133,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/switch-gigabit-5-puertos</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tenda-ac6-ac1200</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/adaptador-poe-ubiquiti-24v</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/ventilador-carro</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -259,12 +217,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/calentador-electrico</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/cargador-inteligente-25a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -283,31 +235,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/tenda-rx2-pro</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/probador-digital-baterias</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/ventilador-techo</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-tl-wa855re</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-archer-c54</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -331,61 +259,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/tplink-archer-ax1450</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/panel-decorativo-hojas</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/transferencia-automatica</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/batidora-milexus-cristal</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/smart-tv-milexus-43</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/lavadora-milexus-9kg</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/split-milexus-1t</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/exhibidor-milexus-13-pies</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/exhibidor-doble-20-pies</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/nevera-milexus-7-pies</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -409,18 +283,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/tplink-archer-a6</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-archer-ax21</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/cargador-corebox-12v-15a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -439,43 +301,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/mikrotik-hex-rb750gr3</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tenda-ax12-pro</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/nanostation-5-ac-loco</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/wavlink-ac1200</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/controlador-mppt-100a-usb</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/asus-rt-ax1800s</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-archer-ax55</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -487,40 +313,10 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/mikrotik-sxtsq-5-ax</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/nanostation-m5-internacional</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/cargador-litio-bien-48v-5a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-sxt-sa5-ac</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-hap-ac3</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/nanostation-m2-internacional</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/protector-tomzn-tovpd1-60</loc>
@@ -547,49 +343,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/nanostation-loco-m2</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/cable-red-cat6a</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-sxtsq-lite2</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-hex-s-rb760igs</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/ubiquiti-litebeam-m5</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/conectores-mc4-10-pares</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/nanostation-m5-loco</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-archer-be230</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -607,49 +361,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://tiendamax.org/p/ubiquiti-lap-120</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-lhg-5ax</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-sxtsq-5-lite</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/ubiquiti-litebeam-5ac-gen2</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-hap-ax3</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/mikrotik-hex-poe-lite</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://tiendamax.org/p/base-paneles</loc>
-    <lastmod>2026-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tiendamax.org/p/tplink-re705x-re605x</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
