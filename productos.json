@@ -1518,7 +1518,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783918610323.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 33,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1560,7 +1560,8 @@
     ],
     "incluye": [
       "1x Mannol Special PLUS 10W - 30 7512. 5L"
-    ]
+    ],
+    "rev": 1792172333294
   },
   {
     "id": 1778336613589,
