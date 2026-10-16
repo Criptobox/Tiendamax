@@ -262,7 +262,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007359011.webp",
     "categoria": "UTILES",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 10,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -323,7 +323,7 @@
       "Soldadura de precisión en acero inoxidable, aluminio y otros metales."
     ],
     "descripcion": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura.",
-    "rev": 1790359466039
+    "rev": 1792172280646
   },
   {
     "id": 1778103783319,
@@ -1827,7 +1827,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 21,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1887,7 +1887,7 @@
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ],
     "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
-    "rev": 1791520791314
+    "rev": 1792172280646
   },
   {
     "id": 1778384078432,
@@ -1979,7 +1979,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784572438933.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CERRADURAS",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2043,7 +2043,8 @@
     ],
     "incluye": [
       "1x Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1778384314795,
@@ -2052,7 +2053,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 3,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2119,7 +2120,7 @@
     "incluye": [
       "1x KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
     ],
-    "rev": 1791144529005,
+    "rev": 1792172280646,
     "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores."
   },
   {
@@ -3353,7 +3354,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783838545299.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3409,7 +3410,8 @@
       "📟 Control: Panel digital",
       "🎨 Color: Negro con blanco",
       "🔧 Conexión: Directo a la tubería de agua"
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1779205929131,
@@ -3869,7 +3871,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 11,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3930,7 +3932,8 @@
     ],
     "incluye": [
       "1x Cámara de Seguridad Bullet Zosi"
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1780510681519,
@@ -4117,7 +4120,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4171,7 +4174,8 @@
     ],
     "incluye": [
       "1x Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1780887971522,
@@ -4366,7 +4370,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783838929527.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
-    "stock": 24,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4411,7 +4415,8 @@
       {
         "d": "Tamaño reducido: entra donde un ventilador de techo normal no cabe."
       }
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1781377297283,
@@ -5094,7 +5099,7 @@
     "precioActual": 4,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 60,
+    "stock": 0,
     "comision": 0.5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -5141,7 +5146,8 @@
       }
     ],
     "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento.",
-    "slug": "panel-decorativo-hojas"
+    "slug": "panel-decorativo-hojas",
+    "rev": 1792172280646
   },
   {
     "id": 1782439688529,
@@ -6520,7 +6526,7 @@
     "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 0,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "SEGURIDAD",
@@ -6580,7 +6586,7 @@
     "incluye": [
       "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
     ],
-    "rev": 1791405203773,
+    "rev": 1792172280646,
     "slug": "camara-ptz-wifi-exterior",
     "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche."
   },
@@ -8634,7 +8640,7 @@
     "precioActual": 280,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 300,
+    "stock": 0,
     "comision": 0,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8731,7 +8737,8 @@
     "slug": "cable-red-cat6a",
     "slugsAnteriores": [
       "cable-red-patch-cord-cat6a"
-    ]
+    ],
+    "rev": 1792172280646
   },
   {
     "id": 1787698473597,
@@ -8743,7 +8750,7 @@
     "precioActual": 110,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -8849,7 +8856,7 @@
     "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…",
     "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT.",
     "slug": "mikrotik-sxtsq-lite2",
-    "rev": 1791788254112
+    "rev": 1792172280646
   },
   {
     "id": 1787888877372,
@@ -9730,7 +9737,7 @@
     "precioActual": 250,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -9846,7 +9853,7 @@
     ],
     "seoTitle": "Ubiquiti Networks (LAP-120) en Cuba | TiendaMax",
     "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
-    "rev": 1790345974779,
+    "rev": 1792172280646,
     "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral.",
     "slug": "ubiquiti-lap-120",
     "slugsAnteriores": [
@@ -10310,7 +10317,7 @@
     "precioActual": 275,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10423,7 +10430,7 @@
     "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
     "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
     "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
-    "rev": 1790359425821,
+    "rev": 1792172280646,
     "slug": "bielmeier-fluxmax140",
     "slugsAnteriores": [
       "bielmeier-fluxmax140-110v"
@@ -11188,7 +11195,7 @@
     "precioActual": 55,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -11294,7 +11301,7 @@
       "1× Manual de usuario e instrucciones de uso"
     ],
     "slug": "binoculares-vision-4k-36mp",
-    "rev": 1790963609160,
+    "rev": 1792172280646,
     "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
     "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…"
   },
