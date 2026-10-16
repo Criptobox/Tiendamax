@@ -76,7 +76,7 @@
     <loc>https://tiendamax.org/p/bateria-lubrim-75a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/pistola-fascia-gun</loc>
@@ -130,7 +130,7 @@
     <loc>https://tiendamax.org/p/bluetti-ac180</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/bluetti-ac-180p</loc>
@@ -328,13 +328,13 @@
     <loc>https://tiendamax.org/p/controlador-powmr-m60-ultra</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/controlador-mppt-80a-powmr</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/raqueta-matamoscas</loc>
@@ -358,7 +358,7 @@
     <loc>https://tiendamax.org/p/probador-digital-baterias</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/ventilador-techo</loc>
@@ -412,7 +412,7 @@
     <loc>https://tiendamax.org/p/transferencia-automatica</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/batidora-milexus-cristal</loc>
@@ -466,7 +466,7 @@
     <loc>https://tiendamax.org/p/inversor-tataliken-4000w-24v</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/changan-cs75-plus-2024</loc>
@@ -598,7 +598,7 @@
     <loc>https://tiendamax.org/p/protector-tomzn-tovpd1-60</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/controlador-mppt-120a-yh</loc>
@@ -610,7 +610,7 @@
     <loc>https://tiendamax.org/p/cargador-vevor-35a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/yeswelder-flux-140-flex</loc>
@@ -622,7 +622,7 @@
     <loc>https://tiendamax.org/p/controlador-mppt-boost-1200w</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/nanostation-loco-m2</loc>
@@ -676,13 +676,13 @@
     <loc>https://tiendamax.org/p/inversor-tataliken-3500w</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/cargador-vevor-30a</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/ubiquiti-lap-120</loc>
@@ -742,7 +742,7 @@
     <loc>https://tiendamax.org/p/base-paneles</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/tplink-re705x-re605x</loc>
