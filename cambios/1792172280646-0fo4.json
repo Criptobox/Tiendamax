@@ -1,0 +1,1302 @@
+{
+  "v": 1,
+  "creado": "2026-10-16T17:38:00.646Z",
+  "productos": [
+    {
+      "id": 1778102582909,
+      "nombre": "Antorcha de Soldadura TIG (KIT Profesional)",
+      "precioActual": 75,
+      "imagen": "https://tiendamax.org/imagenes/img_1784007359011.webp",
+      "categoria": "UTILES",
+      "subcategoria": "HERRAMIENTAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 17,
+      "slug": "antorcha-soldadura-tig-kit",
+      "comision": 5,
+      "seoTitle": "Antorcha de Soldadura TIG (KIT Profesional) | TiendaMax",
+      "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
+      "radar": true,
+      "precioOriginal": 90,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Tecnología / Tipo: Antorcha TIG manual",
+        "🧰 Accesorios: Kit de consumibles incluido"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784007359011.webp",
+        "https://tiendamax.org/imagenes/img_1778102582909.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Antorcha TIG manual"
+        },
+        {
+          "k": "Accesorios",
+          "v": "Kit de consumibles incluido",
+          "nota": "copas, collets, electrodos"
+        },
+        {
+          "k": "Conexión",
+          "v": "Cableado reforzado para alimentación de gas y energía"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura."
+        },
+        {
+          "d": "Equipada con componentes intercambiables (boquillas, electrodos) para adaptarse a diferentes grosores y tipos de soldadura."
+        },
+        {
+          "d": "Mango ergonómico y manguera flexible de alta resistencia que facilitan el manejo durante trabajos largos."
+        },
+        {
+          "d": "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
+        },
+        {
+          "t": "Calidad",
+          "d": "Construida con materiales resistentes al calor para garantizar una larga vida útil y una conducción estable del gas y la corriente."
+        }
+      ],
+      "incluye": [
+        "Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap)."
+      ],
+      "idealPara": [
+        "Soldadura de precisión en acero inoxidable, aluminio y otros metales."
+      ],
+      "descripcion": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura.",
+      "rev": 1792172280646
+    },
+    {
+      "id": 1778336859697,
+      "nombre": "Toldo Para Sombra 2x4",
+      "precioActual": 23,
+      "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
+      "categoria": "UTILES",
+      "subcategoria": "HOGAR",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "toldo-sombra-2x4",
+      "comision": 3,
+      "seoTitle": "Toldo Para Sombra 2x4 en Cuba | TiendaMax",
+      "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
+      "ficha": [
+        {
+          "k": "📐 Medidas",
+          "v": "2m x 4m"
+        },
+        {
+          "k": "🎨 Color",
+          "v": "Beige"
+        },
+        {
+          "k": "🧵 Tela",
+          "v": "Transpirable"
+        },
+        {
+          "k": "☀️ Bloqueo UV",
+          "v": "90%"
+        },
+        {
+          "k": "🔷 Forma",
+          "v": "Rectangular"
+        }
+      ],
+      "idealPara": [
+        "Patios, piscinas y terrazas que necesitan sombra sin obra."
+      ],
+      "incluye": [
+        "1x Toldo de sombra 2m x 4m"
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tela transpirable",
+          "d": "deja pasar el aire en vez de acumular calor debajo."
+        },
+        {
+          "d": "Se instala amarrado a postes o paredes, sin estructura fija."
+        }
+      ],
+      "specs": [
+        "📐 Medidas: 2m x 4m",
+        "☀️ Bloqueo UV: 90%",
+        "🎨 Color: Beige",
+        "🧵 Tela: Transpirable"
+      ],
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789066844710.webp",
+        "https://tiendamax.org/imagenes/img_1778336859697.webp"
+      ],
+      "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
+      "rev": 1792172280646
+    },
+    {
+      "id": 1778384158283,
+      "nombre": "Cerradura Inteligente Biométrica Con Huella y Teclado",
+      "precioActual": 60,
+      "imagen": "https://tiendamax.org/imagenes/img_1784572438933.webp",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CERRADURAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "cerradura-huella-teclado",
+      "comision": 5,
+      "seoTitle": "Cerradura Inteligente Biométrica Con Huella y Teclado",
+      "seoDescription": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "specs": [
+        "🔑 Cerradura Inteligente Biométrica con Acceso por App",
+        "🛡️ Seguridad Moderna y Control de Acceso Avanzado",
+        "📱 Gestión de Usuarios y Apertura Remota desde el Móvil"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784572438933.webp",
+        "https://tiendamax.org/imagenes/img_1778384158283_ext.webp"
+      ],
+      "descripcion": "Cerradura de puerta inteligente y moderna diseñada para brindar máxima seguridad y comodidad en el acceso a hogares u oficinas. Integra múltiples métodos de desbloqueo, incluyendo un sensor biométrico de huellas dactilares de alta precisión, teclado táctil numérico y control total mediante aplicación móvil para la administración de accesos.",
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Cerradura de puerta inteligente / Biométrica"
+        },
+        {
+          "k": "Métodos De Acceso",
+          "v": "Huella dactilar, código numérico y aplicación móvil"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cerraduras"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Cerradura de puerta inteligente y moderna diseñada para brindar máxima seguridad y comodidad en el acceso a hogares u oficinas. Integra múltiples métodos de desbloqueo, incluyendo un sensor biométrico de huellas dactilares de alta precisión, teclado táctil numérico y control total mediante aplicación móvil para la administración de accesos."
+        },
+        {
+          "d": "Lector de huellas dactilares integrado en la manilla para un reconocimiento rápido, seguro y sin necesidad de llaves físicas."
+        },
+        {
+          "d": "Teclado táctil iluminado con números del 0 al 9 y símbolos de acceso para introducir códigos de seguridad o contraseñas temporales."
+        },
+        {
+          "d": "Conectividad con aplicación móvil para gestionar permisos, crear códigos temporales, ver registros de apertura y controlar el bloqueo a distancia."
+        },
+        {
+          "t": "Diseño",
+          "d": "Estructura ergonómica y minimalista con acabado negro mate, ideal para puertas de habitaciones, oficinas o entradas principales."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención.",
+        "Control de acceso residencial y comercial."
+      ],
+      "incluye": [
+        "1x Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1778384314795,
+      "nombre": "KIT de Cámaras Zosi Con DVR 8 Canales",
+      "precioActual": 230,
+      "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CÁMARAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "kit-zosi-dvr-8-canales",
+      "comision": 20,
+      "seoTitle": "KIT de Cámaras Zosi Con DVR 8 Canales en Cuba | TiendaMax",
+      "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "specs": [
+        "📹 Sistema de Videovigilancia de Alta Definición",
+        "🛡️ Monitoreo de Seguridad Integral 24/7",
+        "🌐 Confiabilidad y Cobertura Amplia"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778384314795_ext.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "ZOSI"
+        },
+        {
+          "k": "Canales",
+          "v": "DVR de 8 canales"
+        },
+        {
+          "k": "Compatibilidad",
+          "v": "Analógica, HD-TVI, CVI y AHD"
+        },
+        {
+          "k": "Uso",
+          "v": "Videovigilancia residencial y comercial"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "DVR 5MP Lite de 8 canales con soporte para cámaras analógicas, HD-TVI, CVI y AHD."
+        },
+        {
+          "d": "Almacenamiento y Compresión: Tecnología de compresión H.265+ con reciclado automático de grabación, grabación continua o configurable por detección de movimiento avanzada (sin disco duro incluido)."
+        },
+        {
+          "d": "Múltiples opciones de salida mediante puertos HDMI, VGA y CVBS."
+        },
+        {
+          "t": "Visualización",
+          "d": "Permite monitoreo local directo conectando un monitor por HDMI o VGA sin requerir red, o visualización remota mediante la app ZOSI Smart (iOS/Android) y el cliente AVSS PC conectando Internet al DVR."
+        },
+        {
+          "t": "Protección",
+          "d": "Cámaras con diseño resistente al agua, ideales para instalaciones en interior o exterior."
+        },
+        {
+          "t": "Estado",
+          "d": "Nuevo en caja (incluye todos los accesorios, sin disco duro)."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
+      ],
+      "rev": 1792172280646,
+      "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores."
+    },
+    {
+      "id": 1778907260915,
+      "nombre": "Calentador Eléctrico",
+      "precioActual": 125,
+      "imagen": "https://tiendamax.org/imagenes/img_1783838545299.webp",
+      "categoria": "HOGAR",
+      "subcategoria": "ELECTRODOMÉSTICOS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "calentador-electrico",
+      "comision": 5,
+      "seoTitle": "Calentador Eléctrico en Cuba | TiendaMax",
+      "seoDescription": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️ Confort y seguridad para tu hogar con control digital de temperatura y flujo constante. Incluye…",
+      "descripcion": "Calentador eléctrico instantáneo de agua (sin tanque), panel digital de control, negro con blanco. Incluye ducha de mano y manguera flexible. Se conecta directo a la tubería de agua para dar agua caliente al instante.",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838545299.webp",
+        "https://tiendamax.org/imagenes/img_1778907258376.webp"
+      ],
+      "ficha": [
+        {
+          "k": "🚿 Tipo",
+          "v": "Calentador instantáneo de agua",
+          "nota": "sin tanque de acumulación"
+        },
+        {
+          "k": "📟 Control",
+          "v": "Panel digital"
+        },
+        {
+          "k": "🎨 Color",
+          "v": "Negro con blanco"
+        },
+        {
+          "k": "🔧 Conexión",
+          "v": "Directo a la tubería de agua"
+        }
+      ],
+      "idealPara": [
+        "Baños sin calentador de tanque, donde no hay lugar para uno grande."
+      ],
+      "incluye": [
+        "1x Calentador eléctrico instantáneo",
+        "1x Ducha de mano",
+        "1x Manguera flexible"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Calienta al momento en vez de guardar agua caliente: no gasta mientras no se usa."
+        },
+        {
+          "d": "Panel digital para fijar la temperatura en vez de buscarla con la llave."
+        }
+      ],
+      "specs": [
+        "📟 Control: Panel digital",
+        "🎨 Color: Negro con blanco",
+        "🔧 Conexión: Directo a la tubería de agua"
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1780344659047,
+      "nombre": "Cámara Bullet Zosi",
+      "precioActual": 50,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CÁMARAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "camara-bullet-zosi",
+      "comision": 1500,
+      "seoTitle": "Cámara Bullet Zosi en Cuba | TiendaMax",
+      "seoDescription": "COLORES ⬛ ⬜ Cámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en…",
+      "comisionMoneda": "MN",
+      "specs": [
+        "🎯 Uso: Videovigilancia residencial y comercial"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
+      ],
+      "descripcion": "COLORES   ⬛  ⬜\n\nCámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en exteriores. Su estructura robusta y resistente a la intemperie incorpora LEDs infrarrojos para garantizar un rendimiento óptimo de vigilancia incluso en total oscuridad.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "ZOSI"
+        },
+        {
+          "k": "Uso",
+          "v": "Videovigilancia residencial y comercial",
+          "nota": "interior/exterior"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cámaras"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Captura de video de alta definición con lentes de precisión para obtener detalles claros y precisos."
+        },
+        {
+          "d": "Sistema de iluminación infrarroja integrado que asegura una visibilidad excelente durante la noche o en condiciones de baja iluminación."
+        },
+        {
+          "d": "Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes."
+        },
+        {
+          "t": "Conectividad",
+          "d": "Cableado integrado con conectores estándar para una fácil conexión a sistemas de grabación DVR compatibles."
+        },
+        {
+          "t": "Tipo",
+          "d": "Cámara de seguridad bullet"
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Cámara de Seguridad Bullet Zosi"
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1780887557334,
+      "nombre": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
+      "precioActual": 10,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
+      "categoria": "UTILES",
+      "subcategoria": "DEPORTES",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "gorro-buceo-gianso-3mm",
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "seoTitle": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM | TiendaMax",
+      "seoDescription": "Gorro de buseo de neopreno de 3mm. Diferentes tallas.",
+      "specs": [
+        "📏 Peso: 3 mm",
+        "⚙ Tecnología / Tipo: Gorro / Capucha de buceo"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp"
+      ],
+      "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "GIANSO"
+        },
+        {
+          "k": "Peso",
+          "v": "3 mm"
+        },
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Gorro / Capucha de buceo"
+        },
+        {
+          "k": "Uso",
+          "v": "Buceo, esnórquel y deportes acuáticos"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Fabricado en neopreno de alta densidad que proporciona un aislamiento térmico superior en aguas frías o templadas."
+        },
+        {
+          "d": "Estructura de cobertura total que se ajusta perfectamente al contorno del rostro, cuello y hombros para minimizar la filtración de agua."
+        },
+        {
+          "d": "Material flexible y suave al tacto que permite una total libertad de movimiento sin causar presión excesiva."
+        },
+        {
+          "t": "Durabilidad",
+          "d": "Costuras reforzadas diseñadas para soportar el uso frecuente en ambientes marinos exigentes."
+        }
+      ],
+      "incluye": [
+        "1x Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1781365135486,
+      "nombre": "Ventilador de Techo",
+      "precioActual": 35,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1783838929527.webp",
+      "categoria": "HOGAR",
+      "subcategoria": "ELECTRODOMÉSTICOS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "ventilador-techo",
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "seoTitle": "Ventilador de Techo en Cuba | TiendaMax",
+      "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838929527.webp",
+        "https://tiendamax.org/imagenes/img_1781365133963.webp"
+      ],
+      "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
+      "specs": [
+        "📐 Tamaño: Compacto (mini)",
+        "🎨 Aspas: Blancas",
+        "🔧 Montaje: De techo"
+      ],
+      "ficha": [
+        {
+          "k": "📐 Tamaño",
+          "v": "Compacto (mini)"
+        },
+        {
+          "k": "🎨 Aspas",
+          "v": "Blancas"
+        },
+        {
+          "k": "🔧 Montaje",
+          "v": "De techo"
+        }
+      ],
+      "idealPara": [
+        "Cuartos chicos, pasillos y espacios de techo bajo."
+      ],
+      "incluye": [
+        "1x Mini ventilador de techo"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tamaño reducido: entra donde un ventilador de techo normal no cabe."
+        }
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1782439525089,
+      "nombre": "Panel Decorativo de Hojas Artificiales",
+      "imagen": "https://tiendamax.org/imagenes/img_1782439522857.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1782439522857.webp"
+      ],
+      "precioActual": 4,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 0.5,
+      "comisionMoneda": "USD",
+      "categoria": "HOGAR",
+      "subcategoria": "DECORACION",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🧹 Mantenimiento: Ninguno",
+        "📐 Formato: Módulos cuadrados que se conectan entre sí"
+      ],
+      "fechaAgregado": "2026-06-26T02:05:25.090Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "Panel Decorativo de Hojas Artificiales en Cuba | TiendaMax",
+      "seoDescription": "🌿 Panel de Pared de Césped y Plantas Artificiales Renueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped…",
+      "ficha": [
+        {
+          "k": "🌿 Tipo",
+          "v": "Panel de hojas artificiales (pared verde)"
+        },
+        {
+          "k": "🔲 Formato",
+          "v": "Módulos cuadrados que se conectan entre sí"
+        },
+        {
+          "k": "🧹 Mantenimiento",
+          "v": "Ninguno",
+          "nota": "no se riega ni se poda"
+        }
+      ],
+      "idealPara": [
+        "Decorar paredes, balcones y negocios sin plantas que mantener."
+      ],
+      "incluye": [
+        "1x Panel decorativo de hojas artificiales"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Los módulos se enganchan entre sí, así que la pared se arma del tamaño que haga falta."
+        },
+        {
+          "d": "Al ser artificial no necesita luz, riego ni poda."
+        }
+      ],
+      "descripcion": "Panel decorativo de hojas artificiales, tipo pared verde, en formato de módulos cuadrados que se conectan entre sí. Ideal para decorar paredes, balcones o negocios sin necesidad de mantenimiento.",
+      "slug": "panel-decorativo-hojas",
+      "rev": 1792172280646
+    },
+    {
+      "id": 1784405087402,
+      "nombre": "Cámara PTZ WiFi Exterior",
+      "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784405086297.webp"
+      ],
+      "precioActual": 25,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "CÁMARAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚙ Tecnología / Tipo: Cámara IP PTZ inalámbrica",
+        "🎯 Uso: Interiores y exteriores protegidos"
+      ],
+      "fechaAgregado": "2026-07-18T20:04:47.403Z",
+      "seoTitle": "Cámara PTZ WiFi Exterior en Cuba | TiendaMax",
+      "seoDescription": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y…",
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Cámara IP PTZ inalámbrica"
+        },
+        {
+          "k": "Uso",
+          "v": "Interiores y exteriores protegidos",
+          "nota": "Hogares/Oficinas"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cámaras"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior."
+        },
+        {
+          "d": "Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad."
+        },
+        {
+          "d": "Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones."
+        },
+        {
+          "t": "Instalación",
+          "d": "Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva."
+        },
+        {
+          "t": "Características principales",
+          "d": "Rotación 360°, visión nocturna, monitoreo móvil."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
+      ],
+      "rev": 1792172280646,
+      "slug": "camara-ptz-wifi-exterior",
+      "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche."
+    },
+    {
+      "id": 1787604262771,
+      "nombre": "Cable de Red / Patch Cord Ethernet Cat6A",
+      "imagen": "https://tiendamax.org/imagenes/img_1787604261333.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1787604261333.webp"
+      ],
+      "precioActual": 280,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ACCESORIOS DE RED",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📏 Longitud: 10 metros",
+        "⚡ Velocidad de Transmisión: Hasta 10 Gbps",
+        "📶 Frecuencia de Operación: Hasta 500 MHz",
+        "⚙ Tipo de Blindaje: UTP"
+      ],
+      "fechaAgregado": "2026-08-24T20:44:22.771Z",
+      "ficha": [
+        {
+          "k": "Tipo de Cable",
+          "v": "Cable de Red / Patch Cord Ethernet Cat6A"
+        },
+        {
+          "k": "Categoría",
+          "v": "Cat 6A",
+          "nota": "Categoría 6 Aumentada"
+        },
+        {
+          "k": "Tipo de Blindaje",
+          "v": "UTP",
+          "nota": "Unshielded Twisted Pair / Par trenzado sin blindaje"
+        },
+        {
+          "k": "Longitud",
+          "v": "10 metros"
+        },
+        {
+          "k": "Color",
+          "v": "Blanco"
+        },
+        {
+          "k": "Conectores",
+          "v": "2× RJ45 macho con terminales chapados en oro y capuchones protectores"
+        },
+        {
+          "k": "Velocidad de Transmisión",
+          "v": "Hasta 10 Gbps",
+          "nota": "10GBASE-T"
+        },
+        {
+          "k": "Frecuencia de Operación",
+          "v": "Hasta 500 MHz"
+        },
+        {
+          "k": "Compatibilidad PoE",
+          "v": "Soporte para PoE / PoE+",
+          "nota": "IEEE 802.3af / 802.3at"
+        },
+        {
+          "k": "Cubierta Exterior",
+          "v": "PVC flexible para uso en interiores"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Rendimiento de alta velocidad de hasta 10 Gbps con un ancho de banda de 500 MHz, minimizando la latencia y el retardo en transferencias pesadas."
+        },
+        {
+          "d": "Compatibilidad total con tecnología PoE y PoE+, permitiendo suministrar energía eléctrica y datos simultáneamente a través del mismo cable."
+        },
+        {
+          "d": "Conectores RJ45 ensamblados y testeados de fábrica, con contactos chapados en oro para garantizar máxima conductividad y prevenir la corrosión."
+        },
+        {
+          "d": "Diseño con cubierta protectora anti-enganche (snagless), que resguarda la pestaña de fijación del conector durante el paso por canalizaciones o tuberías."
+        },
+        {
+          "d": "Revestimiento de PVC resistente y flexible en color blanco, ideal para tendidos discretos sobre zócalos, paredes, molduras o canaletas."
+        },
+        {
+          "d": "Retrocompatibilidad universal con estándares de red anteriores (Cat6, Cat5e y Cat5)."
+        }
+      ],
+      "idealPara": [
+        "Interconexión de routers, switches de alta velocidad, servidores NAS, consolas de videojuegos y PCs de escritorio.",
+        "Alimentación y transmisión de datos hacia cámaras de seguridad IP, puntos de acceso Wi-Fi (AP) y teléfonos VoIP compatibles con PoE.",
+        "Oficinas, estudios y hogares que requieren un tendido interior limpio, ordenado y preparado para conexiones de fibra óptica de alta velocidad."
+      ],
+      "incluye": [
+        "1× Cable de Red UTP Cat6A de 10m"
+      ],
+      "seoTitle": "Cable de Red / Patch Cord Ethernet Cat6A en Cuba | TiendaMax",
+      "seoDescription": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda…",
+      "descripcion": "Diseñado para aprovechar al 100% conexiones de fibra óptica de alta velocidad, este cable garantiza una transmisión fluida en actividades de alta demanda como streaming en resolución 4K/8K, teletrabajo con videollamadas sin cortes y sesiones de gaming competitivo con ping mínimo.",
+      "moneda": "MN",
+      "slug": "cable-red-cat6a",
+      "slugsAnteriores": [
+        "cable-red-patch-cord-cat6a"
+      ],
+      "rev": 1792172280646
+    },
+    {
+      "id": 1787698473597,
+      "nombre": "MikroTik SXTsq Lite2",
+      "imagen": "https://tiendamax.org/imagenes/img_1787698472400.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1787698472400.webp"
+      ],
+      "precioActual": 110,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ 2.4 GHz",
+        "📡 10 dBi integrada"
+      ],
+      "fechaAgregado": "2026-08-25T22:54:33.597Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MikroTik"
+        },
+        {
+          "k": "Modelo",
+          "v": "SXTsq Lite2",
+          "nota": "RBSXTsq2nD"
+        },
+        {
+          "k": "Frecuencia Inalámbrica",
+          "v": "2.4 GHz",
+          "nota": "Estándar 802.11b/g/n, Dual-Chain 2×2 MIMO"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "10 dBi integrada",
+          "nota": "apertura de haz de 60°"
+        },
+        {
+          "k": "Procesador y Memoria",
+          "v": "CPU QCA9533 a 650 MHz / 64 MB RAM / 16 MB Flash"
+        },
+        {
+          "k": "Puertos",
+          "v": "1× puerto Ethernet 10/100 Mbps",
+          "nota": "Fast Ethernet"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "MikroTik RouterOS",
+          "nota": "Licencia Nivel 3"
+        },
+        {
+          "k": "Alimentación",
+          "v": "PoE Pasivo",
+          "nota": "10V – 30V DC"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "5W máximo",
+          "nota": "Ficha técnica oficial de MikroTik (mikrotik.com)"
+        },
+        {
+          "k": "Protección",
+          "v": "Carcasa para exteriores resistente a la intemperie",
+          "nota": "rayos UV, lluvia y viento"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Antena integrada de 10 dBi",
+          "d": "diseño optimizado de doble polarización (Dual-Chain 2×2 MIMO) en la banda de 2.4 GHz para enlaces inalámbricos directos y estables."
+        },
+        {
+          "t": "Factor de forma ultracompacto",
+          "d": "estructura dos veces más delgada que los modelos SXT clásicos, lo que reduce la resistencia al viento y minimiza el impacto visual."
+        },
+        {
+          "t": "Potencia y gestión con RouterOS",
+          "d": "integra el potente sistema operativo de MikroTik (Nivel 3), permitiendo control granular de tráfico, firewall, protocolos de enrutamiento y herramientas de alineación de señal."
+        },
+        {
+          "t": "Alimentación PoE Pasivo",
+          "d": "simplifica la instalación exterior al transmitir energía y datos a través de un único cable de red Ethernet."
+        },
+        {
+          "t": "Montaje versátil",
+          "d": "ranuras posteriores diseñadas para sujetar la unidad en postes o mástiles tanto en orientación horizontal como vertical mediante abrazadera metálica."
+        },
+        {
+          "t": "Protección integrada",
+          "d": "terminal de conexión a tierra accesible para resguardar el hardware contra descargas electrostáticas (ESD) y sobretensiones atmosféricas."
+        }
+      ],
+      "idealPara": [
+        "Enlaces inalámbricos Punto a Punto (PtP) de corta y media distancia en la frecuencia de 2.4 GHz.",
+        "Dispositivo cliente (CPE) para conexión de abonados a torres de proveedores de Internet inalámbrico (WISP).",
+        "Interconexión de redes entre edificios, oficinas, almacenes o talleres sin necesidad de tendidos de cable subterráneo o aéreo.",
+        "Captación de redes Wi-Fi públicas o comunitarias en 2.4 GHz para retransmitir la señal al interior del hogar mediante un router."
+      ],
+      "incluye": [
+        "1× Dispositivo inalámbrico exterior MikroTik SXTsq Lite2",
+        "1× Adaptador de corriente (fuente de alimentación 24V)",
+        "1× Inyector PoE pasivo",
+        "1× Abrazadera metálica de montaje para mástil / tubo"
+      ],
+      "seoTitle": "MikroTik SXTsq Lite2 en Cuba | TiendaMax",
+      "seoDescription": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media…",
+      "descripcion": "El MikroTik SXTsq Lite2 es un dispositivo inalámbrico compacto y robusto para exteriores, diseñado para enlaces Punto a Punto (PtP) de corta y media distancia o como equipo cliente (CPE) en la banda de 2.4 GHz. Incorpora una antena direccional de doble polarización con 10 dBi de ganancia, optimizada para ofrecer enlaces estables y de baja latencia en un chasis dos veces más delgado que las generaciones anteriores de la serie SXT.",
+      "slug": "mikrotik-sxtsq-lite2",
+      "rev": 1792172280646
+    },
+    {
+      "id": 1788797303584,
+      "nombre": "Ubiquiti Networks (LAP-120)",
+      "imagen": "https://tiendamax.org/imagenes/img_1788797299062.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788797299062.webp"
+      ],
+      "precioActual": 250,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "WIFI",
+      "subcategoria": "ANTENAS Y CPE",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 5 GHz (5150–5875 MHz)",
+        "📶 2x2 MIMO",
+        "⚡ Hasta 450 Mbps",
+        "📡 Antena sectorial 120°",
+        "📡 Ganancia de 16 dBi"
+      ],
+      "fechaAgregado": "2026-09-07T16:08:23.585Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Ubiquiti Networks"
+        },
+        {
+          "k": "Modelo",
+          "v": "LiteAP ac",
+          "nota": "LAP-120"
+        },
+        {
+          "k": "Frecuencia Inalámbrica",
+          "v": "5 GHz",
+          "nota": "airMAX ac, 5150 – 5875 MHz"
+        },
+        {
+          "k": "Ganancia de Antena",
+          "v": "16 dBi integrada",
+          "nota": "Panel sectorial 2×2 MIMO"
+        },
+        {
+          "k": "Apertura de Haz (Cobertura)",
+          "v": "120°",
+          "nota": "Azimut"
+        },
+        {
+          "k": "Rendimiento / Velocidad",
+          "v": "Hasta 450+ Mbps de rendimiento real"
+        },
+        {
+          "k": "Puertos de Red",
+          "v": "1× puerto Gigabit Ethernet",
+          "nota": "10/100/1000 Mbps"
+        },
+        {
+          "k": "Radio de Gestión",
+          "v": "Wi-Fi integrada de 2.4 GHz dedicada para configuración móvil",
+          "nota": "App UISP"
+        },
+        {
+          "k": "Alimentación",
+          "v": "PoE Pasivo 24V, 0.5A",
+          "nota": "Adaptador Gigabit PoE incluido"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "8W máximo",
+          "nota": "Ficha técnica oficial de Ubiquiti (techspecs.ui.com)"
+        },
+        {
+          "k": "Sistema Operativo",
+          "v": "airOS 8"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Antena sectorial integrada de 120°",
+          "d": "ofrece una cobertura amplia de 120 grados con 16 dBi de ganancia, optimizada para funcionar como estación base y atender múltiples clientes simultáneos."
+        },
+        {
+          "t": "Tecnología airMAX ac",
+          "d": "procesador optimizado con modulación avanzada 256-QAM que alcanza más de 450 Mbps de rendimiento real con latencia reducida y alta eficiencia espectral."
+        },
+        {
+          "t": "Puerto Gigabit Ethernet",
+          "d": "elimina cuellos de botella de red por cable para aprovechar al máximo las transferencias de alta velocidad del estándar ac."
+        },
+        {
+          "t": "Radio Wi-Fi dedicada para gestión",
+          "d": "permite acceder, configurar y alinear el equipo desde un smartphone o tablet mediante la aplicación móvil UISP (UNMS) sin requerir cables ni adaptadores adicionales."
+        },
+        {
+          "t": "Montaje con rótula esférica de 3 ejes",
+          "d": "diseño de soporte articulado que proporciona total flexibilidad para ajustar y fijar con precisión la elevación, el azimut y la rotación en postes o mástiles."
+        },
+        {
+          "t": "airOS 8 con airView en tiempo real",
+          "d": "sistema operativo con analizador de espectro continuo e independiente que detecta interferencias de RF sin interrumpir el enlace de datos."
+        },
+        {
+          "t": "Estructura ligera y aerodinámica",
+          "d": "factor de forma estilizado que minimiza la carga de viento y facilita instalaciones limpias en torres y mástiles."
+        }
+      ],
+      "idealPara": [
+        "Estación base (Punto de Acceso / AP) en enlaces Punto a Multipunto (PtMP) para proveedores de Internet inalámbrico (WISP).",
+        "Conexión y distribución de red hacia múltiples clientes residenciales o comerciales (CPEs) ubicados dentro de un área de 120°.",
+        "Centralización de transmisiones para sistemas perimetrales de videovigilancia y cámaras de seguridad IP en predios extensos, fincas o almacenes.",
+        "Soluciones de conectividad exterior de alta capacidad con despliegue ágil y administración móvil."
+      ],
+      "incluye": [
+        "1× Punto de Acceso Sectorial Ubiquiti LiteAP ac (LAP-120)",
+        "1× Soporte de montaje con rótula articulada de 3 ejes",
+        "1× Abrazadera metálica para fijación en mástil",
+        "1× Inyector Gigabit PoE Pasivo (24V, 0.5A) con cable de alimentación AC",
+        "1× Guía de inicio rápido"
+      ],
+      "seoTitle": "Ubiquiti Networks (LAP-120) en Cuba | TiendaMax",
+      "seoDescription": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a…",
+      "rev": 1792172280646,
+      "descripcion": "El Ubiquiti LiteAP ac (LAP-120) es una estación base inalámbrica y punto de acceso (AP) sectorial para exteriores, diseñado para enlaces Punto a Multipunto (PtMP) de alto rendimiento en la banda de 5 GHz. Integra una antena sectorial de 16 dBi con una amplia cobertura angular de 120° y tecnología airMAX ac, entregando velocidades reales de transferencia superiores a los 450+ Mbps con excelente estabilidad y eficiencia espectral.",
+      "slug": "ubiquiti-lap-120",
+      "slugsAnteriores": [
+        "ubiquiti-networks-lap-120"
+      ]
+    },
+    {
+      "id": 1789068808568,
+      "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
+      "imagen": "https://tiendamax.org/imagenes/img_1789068806131.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789068806131.webp"
+      ],
+      "precioActual": 275,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 15,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "HERRAMIENTAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡110V",
+        "⭐Tecnología Inverter IGBT",
+        "💡 Control sinérgico inteligente",
+        "📟 Pantalla digital LED"
+      ],
+      "fechaAgregado": "2026-09-10T19:33:28.568Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Bielmeier"
+        },
+        {
+          "k": "Modelo",
+          "v": "FLUXMAX 140",
+          "nota": "FLUXMAX140"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "110V / 120V AC",
+          "nota": "Monofásico, 50/60 Hz"
+        },
+        {
+          "k": "Rango de Amperaje de Salida",
+          "v": "20A – 140A"
+        },
+        {
+          "k": "Tecnología del Inversor",
+          "v": "Inverter IGBT con sistema de control sinérgico inteligente",
+          "nota": "Synergy System"
+        },
+        {
+          "k": "Ciclo de Trabajo Nominal",
+          "v": "60% a 140A"
+        },
+        {
+          "k": "Diámetros de Alambre Compatibles",
+          "v": "0.8 mm (.030\") y 0.9 mm (.035\") en bobinas de 1 kg",
+          "nota": "2 lbs / D100"
+        },
+        {
+          "k": "Diámetros de Electrodo Soportados",
+          "v": "1.6 mm a 3.2 mm",
+          "nota": "E6013, E7018, etc."
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LED para ajuste de corriente, voltaje y visualización de modos"
+        },
+        {
+          "k": "Sistema de Seguridad",
+          "v": "SmartUP Advanced",
+          "nota": "protección contra sobrecalentamiento, sobrecorriente y sobretensión"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Sistema sinérgico inteligente (Synergy System)",
+          "d": "ajusta automáticamente el voltaje y la velocidad de avance del alambre en función del amperaje seleccionado, permitiendo soldaduras limpias y estables tanto a principiantes como a usuarios experimentados."
+        },
+        {
+          "d": "Soldadura sin gas con alambre tubular (Flux Core): no requiere cilindros de gas comprimido externos ni reguladores, facilitando el trabajo al aire libre incluso con viento sin porosidades en el cordón."
+        },
+        {
+          "t": "Tecnología Inverter IGBT",
+          "d": "proporciona un arco suave, encendido rápido (Hot Start), antiadherencia de electrodo (Anti-Stick) y un consumo energético eficiente con conexión a cualquier toma doméstica convencional de 110V."
+        },
+        {
+          "t": "Panel frontal digital interactivo",
+          "d": "pantalla LED clara que indica el modo activo (FCAW, MMA, TIG), el diámetro de alambre seleccionado y el amperaje en tiempo real."
+        },
+        {
+          "t": "Mecanismo de arrastre interno estable",
+          "d": "compartimento integrado para bobinas de 1 kg con rodillo de tracción de alimentación fluida que previene atascos de alambre."
+        },
+        {
+          "t": "Refrigeración por aire forzado",
+          "d": "ventilador interno de alto caudal con conductos de ventilación frontal y lateral que evitan el recalentamiento en jornadas prolongadas."
+        },
+        {
+          "t": "Diseño compacto y ultra portátil",
+          "d": "estructura ligera con asa superior ergonómica que facilita su traslado directo a obras, garajes o trabajos en alturas."
+        }
+      ],
+      "idealPara": [
+        "Proyectos de herrería ligera, carpintería metálica, balcones, rejas y cerrajería residencial.",
+        "Mantenimiento general, reparaciones mecánicas rápidas en autos, motos, remolques y herramientas agrícolas.",
+        "Aficionados al bricolaje (DIY) y usuarios que dan sus primeros pasos en la soldadura gracias a la calibración sinérgica automática.",
+        "Reparaciones y montajes al aire libre donde el viento impide el uso de gas de protección."
+      ],
+      "incluye": [
+        "1× Soldadora Inverter Multiproceso Bielmeier FLUXMAX 140",
+        "1× Antorcha integrada para soldadura Flux Core (MIG sin gas)",
+        "1× Pinza portaelectrodo con cable para soldadura MMA",
+        "1× Pinza de masa (tierra) con cable reforzado",
+        "2× Boquillas protectoras para antorcha",
+        "5× Puntas de contacto de repuesto",
+        "1× Martillo picador de escoria con cepillo de alambre de acero integrado",
+        "1× Careta / máscara básica de mano para soldar",
+        "1× Manual de usuario e instrucciones de operación"
+      ],
+      "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
+      "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
+      "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
+      "rev": 1792172280646,
+      "slug": "bielmeier-fluxmax140",
+      "slugsAnteriores": [
+        "bielmeier-fluxmax140-110v"
+      ]
+    },
+    {
+      "id": 1790963608288,
+      "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
+      "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado.",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963603542.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963603542.webp"
+      ],
+      "precioActual": 55,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "DEPORTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🎥 Video 4K / Foto 36MP",
+        "🔌 Consumo 3W – 5W (Batería Litio USB-C)",
+        "🌙 Alcance Nocturno 300 m (IR 850nm)"
+      ],
+      "fechaAgregado": "2026-10-02T17:53:28.289Z",
+      "ficha": [
+        {
+          "k": "Resolución de Video",
+          "v": "4K / 2.7K / 1080P FHD"
+        },
+        {
+          "k": "Resolución de Foto",
+          "v": "36MP / 32MP / 24MP / 12MP"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3W – 5W",
+          "nota": "eficiente con banco de carga USB o panel solar"
+        },
+        {
+          "k": "Alimentación",
+          "v": "Batería recargable de iones de litio integrada",
+          "nota": "carga vía puerto USB-C"
+        },
+        {
+          "k": "Iluminador Infrarrojo",
+          "v": "Foco LED IR de 850 nm con 7 niveles de intensidad regulable"
+        },
+        {
+          "k": "Alcance de Visión Nocturna",
+          "v": "Hasta 250 – 300 metros en oscuridad total",
+          "nota": "ilimitado con luz diurna"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Pantalla digital LCD TFT de gran formato con marco protector antirreflejo"
+        },
+        {
+          "k": "Zoom",
+          "v": "Zoom digital continuo de hasta 8×"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "Ranura para tarjeta MicroSD / TF de hasta 128 GB",
+          "nota": "incluye tarjeta de 32 GB"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Foto, Video y Reproducción en pantalla"
+        },
+        {
+          "k": "Modo Día / Noche",
+          "v": "Imagen a todo color durante el día e imagen en blanco y negro de alta definición en modo nocturno"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Grabación Dual Día y Noche",
+          "d": "reproduce imágenes a todo color bajo el sol y conmuta automáticamente a blanco y negro con infrarrojos en la noche."
+        },
+        {
+          "t": "Infrarrojo Ajustable de 7 Niveles",
+          "d": "gradúa la potencia del haz IR para no sobreexponer objetos cercanos y ahorrar energía, o llevarlo al máximo para largo alcance."
+        },
+        {
+          "t": "Batería de Litio Recargable por USB-C",
+          "d": "olvídate de comprar pilas AA desechables; se recarga directamente en el auto, casa o con un power bank."
+        },
+        {
+          "t": "Visor Panorámico sin Fatiga Ocular",
+          "d": "pantalla amplia que elimina la incomodidad de cerrar un ojo como en los monoculares tradicionales."
+        },
+        {
+          "t": "Transferencia Rápida de Archivos",
+          "d": "conecta los binoculares a la computadora mediante su cable USB para descargar fotos y videos al instante."
+        },
+        {
+          "t": "Rosca para Trípode Estándar (1/4\")",
+          "d": "compatible con trípodes para monitoreo fijo y observación prolongada sin vibraciones."
+        }
+      ],
+      "idealPara": [
+        "Seguridad y patrullaje nocturno en fincas, granjas, almacenes, obras y perímetros residenciales.",
+        "Observación de fauna silvestre, aves nocturnas y expediciones de caza deportiva.",
+        "Acampadas, senderismo nocturno, navegación fluvial y búsqueda o rescate.",
+        "Detección de intrusos o vigilancia discreta sin fuentes de luz visibles."
+      ],
+      "incluye": [
+        "1× Binoculares de visión nocturna digital 4K / 36MP",
+        "1× Tarjeta de memoria MicroSD de 32 GB",
+        "1× Cable de carga y datos USB Tipo C",
+        "1× Cable / lector de transferencia de archivos",
+        "1× Correa de cuello ajustable reforzada con mosquetones metálicos",
+        "1× Manual de usuario e instrucciones de uso"
+      ],
+      "slug": "binoculares-vision-4k-36mp",
+      "rev": 1792172280646,
+      "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
+      "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…"
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
