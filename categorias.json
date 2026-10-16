@@ -56,6 +56,10 @@
       "GYM": {
         "off": true,
         "ts": 1792171909718
+      },
+      "UTILES": {
+        "off": true,
+        "ts": 1792171989828
       }
     },
     "subcategorias": {}
