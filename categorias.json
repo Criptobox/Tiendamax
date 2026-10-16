@@ -60,6 +60,10 @@
       "UTILES": {
         "off": true,
         "ts": 1792171989828
+      },
+      "HOGAR": {
+        "off": true,
+        "ts": 1792172005887
       }
     },
     "subcategorias": {}
