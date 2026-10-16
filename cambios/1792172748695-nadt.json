@@ -1,0 +1,135 @@
+{
+  "v": 1,
+  "creado": "2026-10-16T17:45:48.695Z",
+  "productos": [
+    {
+      "id": 1792172735426,
+      "nombre": "Interruptor de Transferencia Automática (ATS) LSP M2R63-110/3 | Transfer de 3 Polos 63A (Control 110V)",
+      "descripcion": "El LSP M2R63-110/3 es un interruptor de transferencia automática (ATS) de 3 polos y 63 amperios de clase PC, diseñado para alternar de forma continua, segura y confiable entre dos fuentes de alimentación eléctrica independientes: una fuente primaria (Main Power A) y una fuente de respaldo (Standby Power B). Es el componente clave para garantizar la continuidad del servicio eléctrico en instalaciones que combinan la red pública con inversores solares híbridos, plantas eléctricas generadoras o bancos de respaldo.",
+      "imagen": "https://tiendamax.org/imagenes/img_1792172731312.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1792172731312.webp"
+      ],
+      "precioActual": 65,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 10,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Capacidad Nominal: 63A (3 Polos)",
+        "⏱️ Conmutación Rápida ≤ 100 ms",
+        "🔌 Voltaje Operativo 220V / Control 110V"
+      ],
+      "fechaAgregado": "2026-10-16T17:45:35.426Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "LSP"
+        },
+        {
+          "k": "Modelo",
+          "v": "M2R63-110/3"
+        },
+        {
+          "k": "Número de Polos",
+          "v": "3 Polos",
+          "nota": "Entradas A/B: R, S, T / Salida: Load"
+        },
+        {
+          "k": "Corriente Nominal Operativa (Ie)",
+          "v": "63 A"
+        },
+        {
+          "k": "Voltaje Nominal Operativo (Ue)",
+          "v": "AC 220 V",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Voltaje de Control / Maniobra",
+          "v": "AC 110 V"
+        },
+        {
+          "k": "Tiempo de Transferencia Automática",
+          "v": "≤ 100 ms"
+        },
+        {
+          "k": "Clase de Equipo (TSE Class)",
+          "v": "PC",
+          "nota": "mantiene y conduce corriente sin disparo térmico interno"
+        },
+        {
+          "k": "Categoría de Utilización",
+          "v": "AC-31B"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Automático y Manual",
+          "nota": "seleccionable por interruptor frontal"
+        },
+        {
+          "k": "Indicadores Luminosos",
+          "v": "Indicadores LED de presencia de voltaje para Fuente A y Fuente B"
+        },
+        {
+          "k": "Contactos Auxiliares",
+          "v": "Regletas de conexión rápida desmontables con bornes NA / COM / NC y sensado de línea"
+        },
+        {
+          "k": "Tipo de Montaje",
+          "v": "Fijación directa en panel o montaje sobre Riel DIN estándar de 35 mm en gabinete eléctrico"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Transferencia Automática Rápida (≤ 100 ms)",
+          "d": "conmuta hacia la fuente de respaldo casi instantáneamente al detectar la caída de la fuente primaria."
+        },
+        {
+          "t": "Capacidad de 63A en 3 Polos",
+          "d": "soporta cargas eléctricas residenciales completas, talleres o sistemas de bombeo y climatización."
+        },
+        {
+          "t": "Control a 110V AC",
+          "d": "diseñado para conectarse a redes monofásicas/bifásicas comunes con neutro a 110V sin necesidad de transformadores reductores."
+        },
+        {
+          "t": "Manejo Manual Seguro",
+          "d": "perilla giratoria frontal con indicación de posición (A / B) para maniobras directas en modo \"Manual\"."
+        },
+        {
+          "t": "Señalización y Contactos Auxiliares",
+          "d": "borneras verdes para activar alarmas, luces testigo o mandar la señal de arranque remoto a un generador."
+        },
+        {
+          "t": "Cubiertas Transparentes de Seguridad",
+          "d": "protegen los bornes de potencia contra contactos accidentales y facilitan la inspección visual del apriete de los cables."
+        }
+      ],
+      "idealPara": [
+        "Conmutación automática entre la red eléctrica pública y sistemas solares fotovoltaicos con inversor.",
+        "Transferencia automática a generadores de respaldo a gasolina o diésel en casas, negocios y fincas.",
+        "Tableros de distribución eléctrica que abastecen cargas críticas, servidores, sistemas de refrigeración o bombeo.",
+        "Instalaciones residenciales o comerciales donde se requiera alternar entre dos acometidas o contadores diferentes."
+      ],
+      "incluye": [
+        "1× Interruptor de Transferencia Automática LSP M2R63-110/3 (3P 63A)",
+        "2× Regletas terminales verdes para conexiones auxiliares y de sensado (preinstaladas)",
+        "1× Cubierta protectora de acrílico transparente para bornes de potencia",
+        "1× Guía básica con diagrama de cableado y especificaciones técnicas"
+      ],
+      "slug": "interruptor-m2r63-110-3-3",
+      "rev": 1792172748695
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1792172735426": "1791502917024"
+  }
+}
