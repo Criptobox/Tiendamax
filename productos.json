@@ -332,7 +332,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 20,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -415,7 +415,8 @@
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
       "2× Tapas protectoras de bornes (integradas)"
     ],
-    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
+    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.",
+    "rev": 1792171935663
   },
   {
     "id": 1778103856933,
@@ -1031,7 +1032,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 10,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1132,7 +1133,7 @@
       "generador-solar-ac180"
     ],
     "almacenId": "alm_1790824274659",
-    "rev": 1791589182615
+    "rev": 1792171935663
   },
   {
     "id": 1778104985977,
@@ -2357,7 +2358,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
-    "stock": 16,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2416,7 +2417,8 @@
     "incluye": [
       "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
     ],
-    "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz."
+    "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.",
+    "rev": 1792171935663
   },
   {
     "id": 1778384976624,
@@ -3480,7 +3482,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1788979605648.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 10,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3543,7 +3545,8 @@
     "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
     "slugsAnteriores": [
       "controlador-60-amp-m60-ultra"
-    ]
+    ],
+    "rev": 1792171935663
   },
   {
     "id": 1779562612951,
@@ -3553,7 +3556,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 7,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3617,7 +3620,8 @@
       "1x Controlador Solar PowMr 80A MPPT",
       "1x Manual de conexión"
     ],
-    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real."
+    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.",
+    "rev": 1792171935663
   },
   {
     "id": 1780017975657,
@@ -4257,7 +4261,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 9,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4351,7 +4355,8 @@
     "incluye": [
       "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
       "1× Manual de usuario e instrucciones de operación"
-    ]
+    ],
+    "rev": 1792171935663
   },
   {
     "id": 1781365135486,
@@ -4416,7 +4421,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
     "subcategoria": "",
-    "stock": 7,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4477,7 +4482,8 @@
     ],
     "slugsAnteriores": [
       "creatina-luckycare-5000-mg"
-    ]
+    ],
+    "rev": 1792171935663
   },
   {
     "id": 1781711154462,
@@ -5148,7 +5154,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 12,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5213,7 +5219,8 @@
     "slug": "transferencia-automatica",
     "slugsAnteriores": [
       "transferencia-manual"
-    ]
+    ],
+    "rev": 1792171935663
   },
   {
     "id": 1782535594832,
@@ -5638,7 +5645,7 @@
     "precioActual": 180,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -5707,7 +5714,7 @@
       "1x Par de mosfet"
     ],
     "slug": "inversor-tataliken-4000w-24v",
-    "rev": 1790954416408
+    "rev": 1792171935663
   },
   {
     "id": 1783221896639,
@@ -7840,7 +7847,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "ENERGIA",
@@ -7933,7 +7940,8 @@
       "1× Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60 (63A)",
       "1× Manual de usuario e instrucciones de configuración rápida"
     ],
-    "slug": "protector-tomzn-tovpd1-60"
+    "slug": "protector-tomzn-tovpd1-60",
+    "rev": 1792171935663
   },
   {
     "id": 1786633899405,
@@ -8249,7 +8257,7 @@
     "precioActual": 125,
     "precioOriginal": 145,
     "descuento": 14,
-    "stock": 11,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8348,7 +8356,7 @@
       "cargador-baterias-vevor-35a"
     ],
     "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
-    "rev": 1790666939391
+    "rev": 1792171935663
   },
   {
     "id": 1787072040177,
@@ -8428,7 +8436,7 @@
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 3,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8517,7 +8525,7 @@
     ],
     "slug": "controlador-mppt-boost-1200w",
     "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
-    "rev": 1791568498104
+    "rev": 1792171935663
   },
   {
     "id": 1787157254207,
@@ -9477,7 +9485,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -9596,7 +9604,8 @@
       "2× Pinzas tipo caimán para conexión rápida a batería",
       "1× Manual de usuario e instrucciones de funcionamiento"
     ],
-    "fechaAgregado": "2026-09-05T16:40:36.047Z"
+    "fechaAgregado": "2026-09-05T16:40:36.047Z",
+    "rev": 1792171935663
   },
   {
     "id": 1788627372873,
@@ -9610,7 +9619,7 @@
     "precioActual": 115,
     "precioOriginal": 125,
     "descuento": 8,
-    "stock": 6,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -9708,7 +9717,8 @@
     "slug": "cargador-vevor-30a",
     "slugsAnteriores": [
       "vevor-cargador-bateria-30a"
-    ]
+    ],
+    "rev": 1792171935663
   },
   {
     "id": 1788797303584,
@@ -9986,7 +9996,7 @@
     "precioActual": 75,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 8,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -10049,7 +10059,7 @@
     "slugsAnteriores": [
       "anker-soundcore-motion-300"
     ],
-    "rev": 1791405203773
+    "rev": 1792171935663
   },
   {
     "id": 1789066847523,
@@ -10958,7 +10968,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 15,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11035,7 +11045,7 @@
       "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
     ],
     "slug": "base-paneles",
-    "rev": 1790962047934,
+    "rev": 1792171935663,
     "seoTitle": "Base para paneles en Cuba | TiendaMax",
     "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…"
   },
