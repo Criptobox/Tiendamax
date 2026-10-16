@@ -1,0 +1,1501 @@
+{
+  "v": 1,
+  "creado": "2026-10-16T17:32:15.663Z",
+  "productos": [
+    {
+      "id": 1778103783319,
+      "nombre": "Batería Automotriz Lubrim (75A)",
+      "precioActual": 85,
+      "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "bateria-lubrim-75a",
+      "comision": 5,
+      "seoTitle": "Batería Automotriz Lubrim (75A) en Cuba | TiendaMax",
+      "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+        "https://tiendamax.org/imagenes/img_1778103783319.webp"
+      ],
+      "specs": [
+        "⚡ Voltaje Nominal: 12V DC",
+        "🔋 Capacidad: 75 Ah",
+        "🔋 Calcio-Calcio"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Lubrim"
+        },
+        {
+          "k": "Modelo",
+          "v": "Batería Automotriz 75A (12V)"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12V DC"
+        },
+        {
+          "k": "Capacidad",
+          "v": "75 Ah",
+          "nota": "Amperios-hora"
+        },
+        {
+          "k": "Tecnología",
+          "v": "Calcio-Calcio (Ca/Ca) / Plomo-Ácido sellada"
+        },
+        {
+          "k": "Tipo de Mantenimiento",
+          "v": "Libre de mantenimiento",
+          "nota": "Maintenance-Free"
+        },
+        {
+          "k": "Terminales",
+          "v": "Bornes estándar superiores con tapas aislantes"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tecnología de aleación Calcio-Calcio (Ca/Ca) que minimiza la pérdida de agua, reduce notablemente la tasa de autodescarga y prolonga la vida útil de la batería."
+        },
+        {
+          "t": "Diseño 100% sellado y libre de mantenimiento",
+          "d": "no requiere recarga periódica de agua destilada ni manipulación de ácido."
+        },
+        {
+          "d": "Excelente potencia de arranque en frío (CCA) para un encendido rápido, consistente y seguro en motores a gasolina o diésel."
+        },
+        {
+          "d": "Carcasa de polipropileno reforzado de alta durabilidad, diseñada para absorber impactos mecánicos y resistir las vibraciones del camino y el calor del compartimiento del motor."
+        },
+        {
+          "d": "Protectores plásticos integrados en los bornes para evitar cortocircuitos accidentales durante el almacenamiento o transporte."
+        },
+        {
+          "d": "Asa de sujeción ergonómica y abatible en la parte superior para facilitar su traslado e instalación en el compartimento del vehículo."
+        }
+      ],
+      "idealPara": [
+        "Autos de uso diario, camionetas, SUVs y vehículos de transporte ligero que requieren un arranque confiable y soporte para accesorios eléctricos (aire acondicionado, sonido, luces auxiliares).",
+        "Reemplazo directo en vehículos medianos con especificación de batería de 70 Ah a 75 Ah.",
+        "Sistemas básicos de respaldo eléctrico e inversores de corriente de 12V para emergencias o energía solar simple."
+      ],
+      "incluye": [
+        "1× Batería Automotriz Lubrim (12V - 75Ah)",
+        "2× Tapas protectoras de bornes (integradas)"
+      ],
+      "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1778104924836,
+      "nombre": "Generador Solar Portátil BLUETTI AC180",
+      "precioActual": 640,
+      "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 9,
+      "slug": "bluetti-ac180",
+      "comision": 15,
+      "specs": [
+        "⚡ 1800W de Potencia / 1152Wh Capacidad",
+        "🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
+        "🔋 Estación de Energía Portátil de Alta Capacidad"
+      ],
+      "seoTitle": "Generador Solar Portátil BLUETTI AC180 en Cuba | TiendaMax",
+      "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
+      "precioOriginal": 700,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778104924836.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "BLUETTI"
+        },
+        {
+          "k": "Modelo",
+          "v": "AC180"
+        },
+        {
+          "k": "Capacidad de Batería",
+          "v": "1152 Wh",
+          "nota": "Química LiFePO4: +3,500 ciclos de vida al 80%"
+        },
+        {
+          "k": "Potencia de Salida AC",
+          "v": "1800W continuos (Modo Power Lifting hasta 2700W para cargas resistivas) — Onda Senoidal Pura"
+        },
+        {
+          "k": "Puertos de Salida",
+          "v": "4× tomas AC 120V, 1× USB-C PD (100W), 4× USB-A (5V/3A), 1× salida 12V/10A DC tipo mechero, 1× base de carga inalámbrica superior (15W)"
+        },
+        {
+          "k": "Entrada de Carga",
+          "v": "Carga rápida de red AC (hasta 1440W), entrada solar MPPT (hasta 500W / 12V-60V), entrada para coche",
+          "nota": "12V/24V"
+        },
+        {
+          "k": "Función UPS",
+          "v": "Conmutación automática en menos de 20 ms"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Bluetooth",
+          "nota": "control y monitoreo desde la app móvil BLUETTI"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Batería ultra duradera de química LiFePO4 (litio-ferrofosfato), con más de 3,500 ciclos de vida útil garantizados y máxima seguridad contra sobrecalentamiento."
+        },
+        {
+          "d": "Inversor de 1800W continuos de onda senoidal pura con tecnología Power Lifting (hasta 2700W), que permite alimentar aparatos de alta demanda resistiva como calentadores, cafeteras y secadores."
+        },
+        {
+          "d": "Carga ultrarrápida por red eléctrica AC de hasta 1440W: recupera del 0% al 80% en solo 45 minutos y el 100% en aproximadamente 1.3 horas."
+        },
+        {
+          "d": "Controlador de carga solar MPPT integrado de hasta 500W para recarga ecológica y completa en 2.5 a 3.5 horas bajo sol óptimo."
+        },
+        {
+          "d": "Función de UPS (Sistema de Alimentación Ininterrumpida) con tiempo de transferencia ultrarrápido (<20 ms) para evitar que computadoras, servidores o routers se apaguen ante un corte de luz."
+        },
+        {
+          "d": "Base de carga inalámbrica rápida integrada en la parte superior (15W) para teléfonos móviles y audífonos compatibles."
+        },
+        {
+          "d": "Pantalla LCD frontal que detalla en tiempo real la potencia de entrada, salida, porcentaje de batería y tiempo estimado restante."
+        },
+        {
+          "d": "Monitoreo y personalización de modos de carga desde el smartphone mediante la app oficial BLUETTI."
+        }
+      ],
+      "idealPara": [
+        "Respaldo doméstico durante apagones prolongados: mantiene funcionando refrigeradores, ventiladores, routers Wi-Fi, laptops, iluminación y televisores.",
+        "Alimentación continua de equipos médicos sensibles como máquinas CPAP.",
+        "Campamentos, viajes en casas rodantes (RV), trabajo en exteriores y herramientas eléctricas en zonas sin red eléctrica."
+      ],
+      "incluye": [
+        "1× Generador Solar Portátil BLUETTI AC180 (1152 Wh / 1800W)",
+        "1× Cable de carga de pared (AC)",
+        "1× Cable de carga para automóvil (12V mechero a DC)",
+        "1× Cable de carga solar (MC4 a DC)",
+        "1× Tornillo de conexión a tierra",
+        "1× Manual de usuario y tarjeta de garantía"
+      ],
+      "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
+      "slugsAnteriores": [
+        "generador-solar-ac180"
+      ],
+      "almacenId": "alm_1790824274659",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1778384840618,
+      "nombre": "Timbre Inteligente Con Cámara HD y WiFi",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "ALARMAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "timbre-camara-hd-wifi",
+      "comision": 1000,
+      "seoTitle": "Timbre Inteligente Con Cámara HD y WiFi en Cuba | TiendaMax",
+      "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
+      "precioOriginal": 0,
+      "comisionMoneda": "MN",
+      "specs": [
+        "🔔 Timbre Inteligente con Videovigilancia y WiFi",
+        "🛡️ Comunicación Bidireccional y Control Remoto",
+        "🌐 Conexión Inalámbrica de Gran Alcance con Alarma Chime"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784572695580.webp",
+        "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Timbre de puerta inteligente / Videoportero WiFi"
+        },
+        {
+          "k": "Categoría",
+          "v": "Alarmas"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz."
+        },
+        {
+          "d": "Intercomunicador bidireccional, captura de imágenes, visión nocturna, alertas instantáneas y almacenamiento en la nube."
+        },
+        {
+          "d": "Transmisión inalámbrica de fuerte penetración capaz de atravesar puertas y paredes (hasta 50 metros de alcance efectivo sin pérdida de señal)."
+        },
+        {
+          "d": "Audio bidireccional con función de cambio de voz (incluye modulador de voz, por ejemplo, de voz femenina a voz de hombre/tío) para mayor privacidad y seguridad al responder."
+        },
+        {
+          "t": "Accesorios",
+          "d": "Incluye la unidad principal del timbre con cámara y un altavoz chime receptor para colocar en el interior del hogar u oficina."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
+      ],
+      "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1779208523952,
+      "nombre": "Controlador Solar de 60 Amp POWMR M60 ULTRA",
+      "precioActual": 180,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1788979605648.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "controlador-powmr-m60-ultra",
+      "comision": 10,
+      "specs": [
+        "⚡ Voltaje: 12V / 24V / 36V / 48V"
+      ],
+      "seoTitle": "Controlador Solar de 60 Amp POWMR M60 ULTRA | TiendaMax",
+      "seoDescription": "♻️CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA♻️ 🔴PARA BATERIAS DE 12V,24V,36V,48V🔴 ♻️Características Principales y Técnicas♻️ 1. ♻️Tecnología MPPT…",
+      "comisionMoneda": "USD",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "PowMr"
+        },
+        {
+          "k": "Modelo",
+          "v": "M60 ULTRA"
+        },
+        {
+          "k": "Tecnología",
+          "v": "MPPT de alta eficiencia"
+        },
+        {
+          "k": "Corriente de carga",
+          "v": "60A continuo"
+        },
+        {
+          "k": "Voltaje de batería",
+          "v": "12V / 24V / 36V / 48V",
+          "nota": "Autodetección"
+        },
+        {
+          "k": "Pantalla",
+          "v": "LCD digital con parámetros en tiempo real"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Ajuste automático de parámetros de carga según la química de batería seleccionada."
+        },
+        {
+          "d": "Protección total contra corriente inversa nocturna, sobretensión y polaridad inversa."
+        }
+      ],
+      "idealPara": [
+        "Instalaciones solares con 2 a 4 paneles solares para viviendas."
+      ],
+      "incluye": [
+        "1x Controlador MPPT PowMr 60A",
+        "1x Manual de usuario"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788979605648.webp",
+        "https://tiendamax.org/imagenes/img_1788979620287.webp"
+      ],
+      "descripcion": "Controlador de carga solar MPPT PowMr M60 Ultra, de 60A. Compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones de configuración y monitoreo en tiempo real.",
+      "slugsAnteriores": [
+        "controlador-60-amp-m60-ultra"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1779562612951,
+      "nombre": "Controlador MPPT 80A POWMR",
+      "precioActual": 220,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1785284197964.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "controlador-mppt-80a-powmr",
+      "comision": 10,
+      "specs": [
+        "⚡ 80A MPPT",
+        "🔋 12V / 24V / 36V / 48V Auto",
+        "📟 Pantalla LCD y Botones de Control"
+      ],
+      "seoTitle": "Controlador MPPT 80A POWMR en Cuba | TiendaMax",
+      "seoDescription": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las…",
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1785284197964.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "PowMr"
+        },
+        {
+          "k": "Modelo",
+          "v": "M80 PRO"
+        },
+        {
+          "k": "Tecnología",
+          "v": "MPPT de alta eficiencia"
+        },
+        {
+          "k": "Corriente de carga",
+          "v": "80A continuo"
+        },
+        {
+          "k": "Voltaje de batería",
+          "v": "12V / 24V / 36V / 48V",
+          "nota": "Auto"
+        },
+        {
+          "k": "Voltaje solar máx. (Voc)",
+          "v": "100V DC"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Seguimiento ultra rápido del punto de máxima potencia en días soleados o nublados."
+        },
+        {
+          "d": "Pantalla LCD gráfica con lectura de parámetros de paneles y estado de batería en vivo."
+        },
+        {
+          "d": "Bornes de conexión protegidos para cableado solar de alto calibre."
+        }
+      ],
+      "idealPara": [
+        "Kits solares residenciales para recargar baterías de 100Ah a 400Ah con paneles solares."
+      ],
+      "incluye": [
+        "1x Controlador Solar PowMr 80A MPPT",
+        "1x Manual de conexión"
+      ],
+      "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1781365019871,
+      "nombre": "Probador Digital de Baterías Automotrices",
+      "precioActual": 20,
+      "precioOriginal": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "HERRAMIENTAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 20,
+      "slug": "probador-digital-baterias",
+      "comision": 1000,
+      "comisionMoneda": "MN",
+      "seoTitle": "Probador Digital de Baterías Automotrices | TiendaMax",
+      "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
+      "specs": [
+        "⚡ Voltaje de Operación: 12V DC",
+        "🔋 Rango de Medición (CCA): 100 a 2000 CCA"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
+        "https://tiendamax.org/imagenes/img_1781365018400.webp"
+      ],
+      "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Genérico / OEM"
+        },
+        {
+          "k": "Modelo",
+          "v": "Analizador y Probador Digital de Baterías Automotrices"
+        },
+        {
+          "k": "Voltaje de Operación",
+          "v": "12V DC",
+          "nota": "alimentación directa desde la batería bajo prueba"
+        },
+        {
+          "k": "Rango de Medición (CCA)",
+          "v": "100 a 2000 CCA",
+          "nota": "compatible con estándares CCA, JIS, DIN, IEC, EN, SAE, BCI, CA, MCA"
+        },
+        {
+          "k": "Compatibilidad de Baterías",
+          "v": "Plomo-Ácido estándar (Flooded/STD), AGM Plana, AGM Espiral, GEL y EFB"
+        },
+        {
+          "k": "Pantalla",
+          "v": "LCD digital a color de alta resolución con menú gráfico"
+        },
+        {
+          "k": "Pruebas Principales",
+          "v": "Salud de la batería (SOH), Estado de carga (SOC), Resistencia interna (mΩ), Prueba de arranque (Cranking Test) y Prueba del alternador / sistema de carga",
+          "nota": "Charging Test"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Diagnóstico rápido y preciso",
+          "d": "evalúa en pocos segundos el estado general de la batería, mostrando el porcentaje de vida útil (SOH), porcentaje de carga (SOC), voltaje real y resistencia interna en miliohmios (mΩ)."
+        },
+        {
+          "t": "Prueba de arranque (Cranking Test)",
+          "d": "analiza el comportamiento de la batería y la caída de voltaje durante el encendido del motor para verificar el rendimiento del motor de arranque."
+        },
+        {
+          "t": "Prueba del sistema de carga (Alternador)",
+          "d": "mide el voltaje con y sin carga de accesorios y el rizado (Ripple Test) para comprobar si el alternador está recargando la batería de forma correcta."
+        },
+        {
+          "t": "Prueba dentro o fuera del vehículo",
+          "d": "permite analizar baterías instaladas en el auto o desmontadas en banco de trabajo sin alterar los resultados."
+        },
+        {
+          "t": "Pantalla LCD a color con interfaz intuitiva",
+          "d": "menú de 6 iconos y teclas de acceso directo (V para voltaje instantáneo, F1 y flechas direccionales) para una navegación ágil."
+        },
+        {
+          "t": "Seguridad integral",
+          "d": "protección contra inversión de polaridad que previene chispazos o daños al equipo y al vehículo ante una conexión accidental errónea."
+        },
+        {
+          "t": "Sin baterías internas",
+          "d": "se alimenta automáticamente con solo conectar las pinzas a los bornes de la batería a diagnosticar."
+        },
+        {
+          "d": "Pinzas tipo caimán de cobre reforzadas de alta conductividad con aislamiento engomado para una sujeción firme y mediciones exactas."
+        }
+      ],
+      "idealPara": [
+        "Talleres mecánicos, electricistas automotrices, centros de diagnóstico y flotas de transporte que requieren diagnósticos rápidos y confiables.",
+        "Usuarios particulares que buscan verificar el estado real de la batería de su vehículo antes de viajes largos o detectar problemas de arranque.",
+        "Comprobación del estado de baterías de ciclo profundo, AGM y GEL en sistemas de respaldo o bancos solares de 12V."
+      ],
+      "incluye": [
+        "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
+        "1× Manual de usuario e instrucciones de operación"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1781377297283,
+      "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
+      "precioActual": 25,
+      "precioOriginal": 30,
+      "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
+      "categoria": "GYM",
+      "subcategoria": "",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 17,
+      "slug": "creatina-luckycare-5000mg",
+      "comision": 1000,
+      "comisionMoneda": "MN",
+      "seoTitle": "Creatina Monohidratada Luckycare® (5000 mg) | TiendaMax",
+      "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838354343.webp",
+        "https://tiendamax.org/imagenes/img_1781377297283.webp"
+      ],
+      "specs": [
+        "⚖️ Por porción: 5000 mg",
+        "📦 Contenido: 500 g",
+        "🥄 Porciones: 100"
+      ],
+      "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
+      "ficha": [
+        {
+          "k": "🏷️ Marca",
+          "v": "Luckycare"
+        },
+        {
+          "k": "🧪 Tipo",
+          "v": "Creatina monohidratada micronizada"
+        },
+        {
+          "k": "⚖️ Por porción",
+          "v": "5000 mg",
+          "nota": "5 g"
+        },
+        {
+          "k": "📦 Contenido",
+          "v": "500 g"
+        },
+        {
+          "k": "🔢 Porciones",
+          "v": "100",
+          "nota": "500 g a 5 g por porción"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Micronizada: se disuelve sin grumos y no queda arenosa en el vaso."
+        },
+        {
+          "d": "5 g por porción, que es la dosis de mantenimiento habitual."
+        }
+      ],
+      "idealPara": [
+        "Entrenamiento de fuerza y recuperación muscular."
+      ],
+      "incluye": [
+        "1x Envase de creatina monohidratada 500 g"
+      ],
+      "slugsAnteriores": [
+        "creatina-luckycare-5000-mg"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1782439688529,
+      "nombre": "Transferencia Automática o Manual",
+      "imagen": "https://tiendamax.org/imagenes/img_1783838238277.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838238277.webp",
+        "https://tiendamax.org/imagenes/img_1782439684820.webp"
+      ],
+      "precioActual": 65,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "masVendido": true,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Voltaje: 110V",
+        "⚡ Corriente: 100A"
+      ],
+      "fechaAgregado": "2026-06-26T02:08:08.529Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "Transferencia Automática o Manual en Cuba | TiendaMax",
+      "seoDescription": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "SMOQ"
+        },
+        {
+          "k": "Modelo",
+          "v": "SMOQ3-100/2P"
+        },
+        {
+          "k": "Tipo",
+          "v": "Interruptor de Transferencia Automática (ATS)"
+        },
+        {
+          "k": "Corriente nominal",
+          "v": "100A continuo"
+        },
+        {
+          "k": "Voltaje nominal",
+          "v": "110V / 220V AC"
+        },
+        {
+          "k": "Montaje",
+          "v": "Riel DIN estándar de 35mm"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Conmutación ultra rápida entre dos fuentes eléctricas sin apagar equipos."
+        },
+        {
+          "d": "Selector frontal para modo de operación 100% Automático o Manual."
+        },
+        {
+          "d": "Contactos de plata de alta durabilidad con capacidad de corte de 100A."
+        }
+      ],
+      "idealPara": [
+        "Cuadros eléctricos residenciales para automatizar el cambio entre red de la calle e inversor."
+      ],
+      "incluye": [
+        "1x Interruptor de Transferencia Automática 100A",
+        "1x Diagrama de conexión"
+      ],
+      "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz.",
+      "slug": "transferencia-automatica",
+      "slugsAnteriores": [
+        "transferencia-manual"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1783179800783,
+      "nombre": "Inversor Tataliken 4000W (24V)",
+      "imagen": "https://tiendamax.org/imagenes/img_1785946325577.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1785946325577.webp"
+      ],
+      "precioActual": 180,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "INVERSORES",
+      "masVendido": true,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Potencia: 2000W continuos / 4000W pico",
+        "🔋 Conversión 24V DC a AC",
+        "🔌 Salida: 110V / 120V AC",
+        "〰️ Tipo de onda: Sinusoidal modificada"
+      ],
+      "fechaAgregado": "2026-07-04T15:43:20.783Z",
+      "seoTitle": "Inversor Tataliken 4000W (24V) en Cuba | TiendaMax",
+      "seoDescription": "Inversor Tataliken de 24V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada para bancos de baterías de 24V, con menos corriente en el cableado que un equivalente de 12V.",
+      "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Tataliken"
+        },
+        {
+          "k": "Potencia continua",
+          "v": "2000W nominal"
+        },
+        {
+          "k": "Potencia pico",
+          "v": "4000W arranque"
+        },
+        {
+          "k": "Voltaje de entrada",
+          "v": "24V DC",
+          "nota": "Baterías en serie o banco 24V"
+        },
+        {
+          "k": "Voltaje de salida",
+          "v": "110V / 220V AC a 60Hz"
+        },
+        {
+          "k": "Tipo de onda",
+          "v": "Onda Sinusoidal Modificada"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Menor grosor de cable requerido y menor caída de tensión ante consumos altos."
+        },
+        {
+          "d": "Doble ventilador de enfriamiento automático por sensor térmico para trabajo pesado."
+        },
+        {
+          "d": "Consumo en vacío ultra bajo (< 0.6A) para ahorrar batería en horas nocturnas."
+        },
+        {
+          "d": "Display digital frontal para monitoreo en tiempo real del voltaje de entrada."
+        }
+      ],
+      "idealPara": [
+        "Sistemas solares o bancos con 2 baterías en serie de 24V que buscan máxima eficiencia energética."
+      ],
+      "incluye": [
+        "1x Inversor Tataliken 4000W 24V",
+        "1x Par de pinzas caimán reforzadas",
+        "1x Par de mosfet"
+      ],
+      "slug": "inversor-tataliken-4000w-24v",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1786633494382,
+      "nombre": "Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
+      "descripcion": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo real. Corta el suministro eléctrico ante fluctuaciones peligrosas o sobrecargas, protegiendo los electrodomésticos y equipos conectados.",
+      "imagen": "https://tiendamax.org/imagenes/img_1786633493204.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1786633493204.webp"
+      ],
+      "precioActual": 20,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Protección de Voltaje y Corriente 63A",
+        "📟 Pantalla LED Dual y Botones de Control",
+        "🔌 Montaje en Riel DIN"
+      ],
+      "fechaAgregado": "2026-08-13T15:04:54.383Z",
+      "seoTitle": "Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60",
+      "seoDescription": "Dispositivo de protección eléctrica automático diseñado para instalarse en riel DIN, encargado de supervisar los valores de voltaje y corriente en tiempo…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TOMZN"
+        },
+        {
+          "k": "Modelo",
+          "v": "TOVPD1-60 (63A)"
+        },
+        {
+          "k": "Voltaje de Operación",
+          "v": "AC 220V / 230V (50/60 Hz) — Rango operativo: 140V a 300V AC"
+        },
+        {
+          "k": "Rango de Sobrevoltaje (>V)",
+          "v": "Ajustable de 230V a 300V",
+          "nota": "por defecto ~270V"
+        },
+        {
+          "k": "Rango de Bajovoltaje (<V)",
+          "v": "( (por * Rango 140V 210V Ajustable Sobrecorriente a de defecto ~170V)>A): Ajustable de 1A a 63A"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "Menos de 2W (lo que gasta el propio protector)",
+          "nota": "Ficha técnica oficial de TOMZN (TOVPD1-60)"
+        },
+        {
+          "k": "Tiempo de Reconexión / Retardo",
+          "v": "Ajustable de 1 a 500 segundos",
+          "nota": "por defecto ~30s"
+        },
+        {
+          "k": "Tipo de Montaje",
+          "v": "Riel DIN estándar de 35 mm",
+          "nota": "2 módulos / 36 mm de ancho"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Protección integral 3 en 1",
+          "d": "protege automáticamente los circuitos contra sobretensión (alto voltaje), subtensión (bajo voltaje) y sobrecarga de corriente (amperaje excesivo)."
+        },
+        {
+          "t": "Doble pantalla digital LED",
+          "d": "visualización precisa y continua en tiempo real del voltaje (V) y del consumo instantáneo de corriente (A)."
+        },
+        {
+          "t": "Parámetros 100% configurables",
+          "d": "permite ajustar con precisión los umbrales de corte por voltaje alto/bajo, el límite de corriente máxima y el tiempo de espera tras una anomalía."
+        },
+        {
+          "t": "Reconexión automática inteligente",
+          "d": "una vez que los valores de la red eléctrica se normalizan, el dispositivo restablece el suministro eléctrico de forma segura tras cumplirse el retardo programado."
+        },
+        {
+          "t": "Indicadores LED de diagnóstico",
+          "d": "luces piloto frontales que señalan de forma inmediata el motivo del disparo o corte (>V, <V,>A) y el estado de la alimentación (POWER)."
+        },
+        {
+          "t": "Botón de control manual",
+          "d": "permite encender o cortar el paso de corriente manualmente desde el panel sin necesidad de desconectar cables."
+        },
+        {
+          "d": "Formato estándar para riel DIN que permite una instalación limpia, ordenada y modular dentro de cualquier tablero o caja de distribución eléctrica."
+        }
+      ],
+      "idealPara": [
+        "Protección general de tableros eléctricos principales en hogares, oficinas, talleres y pequeños comercios expuestos a inestabilidad eléctrica.",
+        "Cuidado de equipos de alto consumo y componentes sensibles: aires acondicionados, refrigeradores, lavadoras, bombas de agua, inversores solares y servidores.",
+        "Monitoreo en tiempo real del voltaje de entrada y la carga total de corriente para evitar sobrecargas en las líneas de distribución."
+      ],
+      "incluye": [
+        "1× Protector de Voltaje y Sobrecorriente TOMZN TOVPD1-60 (63A)",
+        "1× Manual de usuario e instrucciones de configuración rápida"
+      ],
+      "slug": "protector-tomzn-tovpd1-60",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1787071784077,
+      "nombre": "Cargador y Mantenedor de Baterías VEVOR 35A",
+      "imagen": "https://tiendamax.org/imagenes/img_1787071781631.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1787071781631.webp",
+        "https://tiendamax.org/imagenes/img_1787071783066.webp"
+      ],
+      "precioActual": 125,
+      "precioOriginal": 145,
+      "descuento": 14,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CARGADORES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Cargador Inteligente de Alta Corriente (35A)",
+        "🔋 Pantalla Digital a Color con Modos de Carga Múltiples",
+        "🔌 Compatibilidad con AGM",
+        "🔋 LiFePO4 y Litio"
+      ],
+      "fechaAgregado": "2026-08-18T16:49:44.078Z",
+      "seoTitle": "Cargador y Mantenedor de Baterías VEVOR 35A | TiendaMax",
+      "seoDescription": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "VEVOR"
+        },
+        {
+          "k": "Modelo",
+          "v": "Cargador y Mantenedor Inteligente de Baterías 35A",
+          "nota": "12V / 24V"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "100V – 240V AC",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Voltaje y Corriente de Salida",
+          "v": "12V (hasta 35A) / 24V (hasta 18A) con selección manual o automática de amperaje"
+        },
+        {
+          "k": "Compatibilidad de Baterías",
+          "v": "Plomo-Ácido (STD, AGM, GEL, Ciclo Profundo, EFB, Calcio) y Litio",
+          "nota": "LiFePO4"
+        },
+        {
+          "k": "Pantalla",
+          "v": "LCD digital a color con monitoreo en tiempo real de voltaje (V), corriente (A), porcentaje y estado"
+        },
+        {
+          "k": "Modos Especiales",
+          "v": "Carga Rápida, Mantenedor (Flotación), Desulfatación / Reparación por pulsos y Modo Forzado",
+          "nota": "Force Mode"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Carga ultrarrápida de alta potencia con hasta 35A en 12V, reduciendo drásticamente el tiempo de recarga en baterías medianas y grandes."
+        },
+        {
+          "d": "Microprocesador inteligente con gestión de carga multietapa, que detecta el estado de la batería y regula automáticamente el flujo para maximizar su vida útil."
+        },
+        {
+          "t": "Pantalla LCD digital a color",
+          "d": "muestra de forma intuitiva el voltaje actual, los amperios entregados, el nivel de carga gráfica y el modo seleccionado."
+        },
+        {
+          "t": "Función de Desulfatación / Reparación",
+          "d": "aplica pulsos de frecuencia controlada para disolver la sulfatación interna en placas de plomo, restaurando baterías degradadas o descargadas por inactividad."
+        },
+        {
+          "t": "Modo Forzado (Force Mode)",
+          "d": "permite iniciar la carga en baterías profundamente descargadas (con voltajes cercanos a 0V) que los cargadores convencionales no detectan."
+        },
+        {
+          "t": "Mantenedor Automático (Trickle Charge)",
+          "d": "entra en modo de flotación una vez completado el 100% de la carga, permitiendo dejarlo conectado de forma continua y segura durante temporadas sin uso."
+        },
+        {
+          "t": "Sistema integral de seguridad electrónica",
+          "d": "protección contra polaridad invertida, cortocircuitos, sobretensión, sobrecorriente, sobrecalentamiento y sobrecarga."
+        },
+        {
+          "d": "Carcasa de alta resistencia con ventilador interno de refrigeración activa inteligente y pinzas tipo caimán de uso pesado completamente aisladas."
+        }
+      ],
+      "idealPara": [
+        "Automóviles, camionetas, SUVs, camiones, botes, maquinaria agrícola y plantas eléctricas.",
+        "Mantenimiento y carga de bancos de baterías para sistemas solares e inversores (baterías AGM, GEL o LiFePO4 de 12V y 24V).",
+        "Talleres automotrices, garajes y usuarios particulares que requieren tanto cargas rápidas de emergencia como mantenimiento a largo plazo."
+      ],
+      "incluye": [
+        "1× Cargador y Mantenedor de Baterías VEVOR 35A",
+        "1× Juego de pinzas tipo caimán de uso pesado integradas",
+        "1× Cable de alimentación AC",
+        "1× Manual de usuario e instrucciones de operación"
+      ],
+      "slug": "cargador-vevor-35a",
+      "slugsAnteriores": [
+        "cargador-baterias-vevor-35a"
+      ],
+      "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1787079480177,
+      "nombre": "Controlador MPPT Boost 1200W",
+      "imagen": "https://tiendamax.org/imagenes/img_1787079474093.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1787079474093.webp",
+        "https://tiendamax.org/imagenes/img_1787079475572.webp",
+        "https://tiendamax.org/imagenes/img_1787079476581.webp",
+        "https://tiendamax.org/imagenes/img_1787079477837.webp",
+        "https://tiendamax.org/imagenes/img_1787079479174.webp"
+      ],
+      "precioActual": 90,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🔋 Entrada de 12-60V / Carga para 48V",
+        "⚡ 60V y 72V",
+        "📟 Pantalla Digital a Color y Botón Set Frontal"
+      ],
+      "fechaAgregado": "2026-08-18T18:58:00.178Z",
+      "seoTitle": "Controlador MPPT Boost 1200W en Cuba | TiendaMax",
+      "seoDescription": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Boost"
+        },
+        {
+          "k": "Modelo",
+          "v": "Solar Boost Controller 1200W",
+          "nota": "MPPT Step-Up"
+        },
+        {
+          "k": "Potencia Máxima",
+          "v": "1200W"
+        },
+        {
+          "k": "Voltaje de Entrada Solar (PV)",
+          "v": "12V a 60V DC"
+        },
+        {
+          "k": "Voltaje de Salida / Batería",
+          "v": "48V / 60V / 72V DC",
+          "nota": "configurable según el banco de baterías"
+        },
+        {
+          "k": "Tipos de Batería Soportados",
+          "v": "Litio (LiFePO4, Ternaria de Litio / Li-ion) y Plomo-Ácido",
+          "nota": "SLA, GEL, AGM"
+        },
+        {
+          "k": "Pantalla",
+          "v": "LCD digital a color con monitoreo en tiempo real"
+        },
+        {
+          "k": "Tecnología de Carga",
+          "v": "MPPT Boost",
+          "nota": "Seguimiento del Punto de Máxima Potencia elevador"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología MPPT Boost (Step-Up)",
+          "d": "eleva de forma eficiente el voltaje de entrada de paneles solares estándar (12V, 18V, 24V o 36V) para cargar directamente bancos de baterías de alto voltaje (48V, 60V o 72V)."
+        },
+        {
+          "t": "Pantalla LCD digital a color",
+          "d": "muestra simultáneamente el voltaje del panel solar (PV), la corriente de carga (A), el voltaje de la batería (V), la potencia generada en tiempo real (W), el porcentaje de carga y la temperatura."
+        },
+        {
+          "d": "Algoritmo de seguimiento MPPT avanzado con alta eficiencia de conversión (>98%) para extraer la máxima potencia posible del panel solar bajo cualquier condición climática."
+        },
+        {
+          "d": "Ajuste rápido y sencillo mediante botón frontal (Set) para seleccionar el voltaje del banco de baterías y el tipo de química (Litio o Plomo-ácido)."
+        },
+        {
+          "d": "Carcasa compacta fabricada en aleación de aluminio extrusionado en color rojo, que actúa como disipador térmico pasivo para garantizar un funcionamiento fresco y silencioso."
+        },
+        {
+          "t": "Sistema integral de protecciones",
+          "d": "protección contra sobrevoltaje, cortocircuito en terminales, sobrecorriente, sobrecalentamiento y conexión inversa."
+        }
+      ],
+      "idealPara": [
+        "Recarga solar directa de motos eléctricas, triciclos eléctricos (moto-taxis), scooters y carritos de golf de 48V, 60V o 72V usando pocos paneles solares.",
+        "Sistemas solares aislados (Off-Grid) con bancos de baterías a 48V/60V/72V donde el espacio para instalar paneles en serie es limitado.",
+        "Estaciones de carga portátiles o proyectos DIY que requieran elevar el voltaje fotovoltaico hacia acumuladores de alta tensión."
+      ],
+      "incluye": [
+        "1× Controlador de Carga Solar MPPT Boost 1200W",
+        "1× Manual de usuario e instrucciones de configuración"
+      ],
+      "slug": "controlador-mppt-boost-1200w",
+      "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1788626436047,
+      "nombre": "Inversor Tataliken 3500W",
+      "precioActual": 170,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "INVERSORES",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "inversor-tataliken-3500w",
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1777924118004.webp"
+      ],
+      "specs": [
+        "⚡ 3500W potencia continua",
+        "⚡ 12V DC entrada",
+        "⚡ 120V AC salida",
+        "🛡 Protección por sobrecarga"
+      ],
+      "recomendados": [],
+      "seoTitle": "Inversor Tataliken 3500W en Cuba | TiendaMax",
+      "seoDescription": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales…",
+      "radar": true,
+      "descripcion": "Inversor de alta capacidad diseñado para convertir energía de baterías de 12V en corriente alterna (AC), ideal para mantener tus equipos esenciales funcionando durante cortes de energía o en sistemas de energía solar.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "TATALIKEN"
+        },
+        {
+          "k": "Tipo de Onda",
+          "v": "Onda Senoidal Pura",
+          "nota": "Pure Sine Wave"
+        },
+        {
+          "k": "Potencia Pico (Arranque)",
+          "v": "3500W"
+        },
+        {
+          "k": "Potencia Continua (Nominal)",
+          "v": "1500W – 1750W"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "12V DC",
+          "nota": "Rango de operación: 10.5V – 15.5V DC"
+        },
+        {
+          "k": "Voltaje de Salida",
+          "v": "110V / 120V AC",
+          "nota": "Frecuencia: 60 Hz / 50 Hz ± 2 Hz"
+        },
+        {
+          "k": "Eficiencia de Conversión",
+          "v": "≥ 90%"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LED para monitoreo de voltaje en tiempo real"
+        },
+        {
+          "k": "Refrigeración",
+          "v": "Ventilador de enfriamiento inteligente controlado por temperatura y carga"
+        },
+        {
+          "k": "Chasis",
+          "v": "Aleación de aluminio y magnesio con disipación térmica pasiva y activa"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Onda Senoidal Pura",
+          "d": "suministra corriente alterna de alta calidad idéntica a la red eléctrica convencional, protegiendo equipos electrónicos sensibles, eliminando zumbidos en motores y evitando sobrecalentamientos."
+        },
+        {
+          "t": "Capacidad de arranque de 3500W",
+          "d": "soporta los picos de corriente inicial que demandan herramientas eléctricas, motores pequeños y compresores (refrigeradores, bombas de agua o ventiladores)."
+        },
+        {
+          "t": "Pantalla digital LED integrada",
+          "d": "permite verificar al instante el nivel de voltaje de entrada para supervisar el estado de carga de la batería y prevenir descargas profundas accidentales."
+        },
+        {
+          "t": "Ventilador inteligente termorregulado",
+          "d": "funciona de manera silenciosa y se activa automáticamente solo cuando la temperatura interna o la demanda de potencia lo requieren, optimizando el consumo en reposo."
+        },
+        {
+          "t": "Carcasa de aleación de aluminio anodizado",
+          "d": "estructura de alta rigidez mecánica con aletas de disipación que aceleran la disipación del calor durante el uso prolongado."
+        },
+        {
+          "d": "Circuito de protección multinivel:"
+        },
+        {
+          "d": "Alarma sonora y corte automático por bajo voltaje de batería (evita daño a las celdas)."
+        },
+        {
+          "d": "Protección contra sobretensión en la entrada DC."
+        },
+        {
+          "d": "Protección contra sobrecarga de potencia."
+        },
+        {
+          "d": "Protección contra cortocircuito en la salida AC."
+        },
+        {
+          "d": "Apagado térmico por sobrecalentamiento interno."
+        }
+      ],
+      "idealPara": [
+        "Sistemas de respaldo eléctrico de emergencia (Back-up) en el hogar durante cortes de luz o apagones para alimentar iluminación, ventiladores, televisores, módems de Internet, computadoras y pequeños electrodomésticos.",
+        "Instalaciones solares aisladas (Off-Grid) a 12V en casas de campo, fincas o casetas de herramientas.",
+        "Vehículos camper, furgonetas de viaje, autocaravanas y embarcaciones para conectar herramientas, cargadores de laptops y electrónica de consumo desde la batería del vehículo."
+      ],
+      "incluye": [
+        "1× Inversor de Corriente Onda Senoidal Pura TATALIKEN 3500W (12V a 110V/120V)",
+        "2× Cables de conexión de alto calibre para bornes de batería con terminales",
+        "2× Pinzas tipo caimán para conexión rápida a batería",
+        "1× Manual de usuario e instrucciones de funcionamiento"
+      ],
+      "fechaAgregado": "2026-09-05T16:40:36.047Z",
+      "rev": 1792171935663
+    },
+    {
+      "id": 1788627372873,
+      "nombre": "VEVOR Cargador de Batería Inteligente 30A",
+      "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente.",
+      "imagen": "https://tiendamax.org/imagenes/img_1788627369327.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788627369327.webp",
+        "https://tiendamax.org/imagenes/img_1788627371422.webp"
+      ],
+      "precioActual": 115,
+      "precioOriginal": 125,
+      "descuento": 8,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CARGADORES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🔌 Corriente de carga: 30A",
+        "⚡ Voltaje: 12V/24V"
+      ],
+      "fechaAgregado": "2026-09-05T16:56:12.874Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "VEVOR"
+        },
+        {
+          "k": "Modelo",
+          "v": "Cargador y Mantenedor Inteligente de Baterías 30A"
+        },
+        {
+          "k": "Voltajes de Operación",
+          "v": "6V / 12V / 24V DC",
+          "nota": "Selección manual y detección automática"
+        },
+        {
+          "k": "Corriente Nominal de Carga",
+          "v": "Hasta 30A",
+          "nota": "ajuste inteligente de amperaje según voltaje y estado de la batería"
+        },
+        {
+          "k": "Voltaje de Entrada AC",
+          "v": "100V – 240V AC, 50/60 Hz"
+        },
+        {
+          "k": "Compatibilidad de Baterías",
+          "v": "Plomo-Ácido (AGM, GEL, SLA, Inundada/WET, Calcio, EFB, Ciclo Profundo) y Litio",
+          "nota": "LiFePO4"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LCD retroiluminado con indicadores de estado y diagnóstico"
+        },
+        {
+          "k": "Modos de Trabajo",
+          "v": "Carga rápida, mantenedor (carga lenta / flotación), modo reparación por pulsos (desulfatador) y compensación de temperatura"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Carga de alta velocidad de hasta 30A",
+          "d": "optimiza los tiempos de recarga tanto en baterías de uso rudo como en bancos de ciclo profundo, ajustando la potencia entregada según la necesidad química del acumulador."
+        },
+        {
+          "t": "Versatilidad multivoltaje (6V / 12V / 24V)",
+          "d": "equipo multifunción capaz de gestionar desde pequeñas baterías de 6V hasta sistemas pesados de 24V en camiones o maquinaria."
+        },
+        {
+          "t": "Microprocesador de etapas múltiples",
+          "d": "gestiona automáticamente ciclos completos de precarga, corriente constante, voltaje constante, absorción y modo flotación para evitar el estrés térmico."
+        },
+        {
+          "d": "Función de reparación por pulsos de alta/baja frecuencia: disuelve la sulfatación interna en placas de plomo y revive baterías profundamente descargadas o fatigadas, extendiendo su vida útil."
+        },
+        {
+          "t": "Compensación térmica inteligente",
+          "d": "ajusta el voltaje de entrega automáticamente según la temperatura exterior, previniendo sobrecargas en climas cálidos o cargas deficientes en frío extremo."
+        },
+        {
+          "t": "Pantalla LCD digital intuitiva",
+          "d": "muestra en tiempo real el voltaje actual, la corriente de carga (amperios), porcentaje de energía cargada y códigos de advertencia ante fallas."
+        },
+        {
+          "t": "Sistema de protección integral",
+          "d": "circuito con corte automático contra inversión de polaridad, chispas accidentales, cortocircuitos, sobretensión, sobrecorriente y sobrecalentamiento."
+        },
+        {
+          "d": "Pinzas de cocodrilo de cobre reforzado de uso pesado con aislamiento completo y disipador interno asistido por ventilador para jornadas prolongadas."
+        }
+      ],
+      "idealPara": [
+        "Talleres automotrices, flotas de transporte, camiones diésel y maquinaria agrícola o pesada con sistemas de 24V.",
+        "Mantenimiento y recarga rápida de baterías de autos, camionetas, lanchas y vehículos recreativos a 12V.",
+        "Cuidado y recuperación de baterías de 6V en motos clásicas, juguetes eléctricos y equipos antiguos.",
+        "Carga de respaldo conectada a la red comercial o planta eléctrica para bancos de baterías solares (GEL, AGM o LiFePO4)."
+      ],
+      "incluye": [
+        "1× Cargador Inteligente Multivoltaje VEVOR 30A (6V/12V/24V) con pinzas caimán de uso rudo",
+        "1× Manual de usuario e instrucciones de funcionamiento"
+      ],
+      "seoTitle": "VEVOR Cargador de Batería Inteligente 30A | TiendaMax",
+      "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…",
+      "slug": "cargador-vevor-30a",
+      "slugsAnteriores": [
+        "vevor-cargador-bateria-30a"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1789065257613,
+      "nombre": "Anker Soundcore Select 3",
+      "imagen": "https://tiendamax.org/imagenes/img_1789065256344.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789065256344.webp",
+        "https://tiendamax.org/imagenes/img_1791320779912.webp"
+      ],
+      "precioActual": 75,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "AUDIO",
+      "subcategoria": "AUDIO",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "​🔊 16W Sonido Estéreo",
+        "🔋 Batería hasta 20 Horas",
+        "💧 Protección IPX7 Impermeable"
+      ],
+      "fechaAgregado": "2026-09-10T18:34:17.613Z",
+      "caracteristicas": [
+        {
+          "t": "Sonido Estéreo Dinámico de 16W",
+          "d": "dos transductores dedicados que ofrecen balance acústico preciso y voces claras."
+        },
+        {
+          "t": "Hasta 20 Horas de Batería",
+          "d": "autonomía extendida para acompañarte en viajes largos, trabajo o campamentos sin depender de un cargador."
+        },
+        {
+          "t": "Resistencia Total al Agua (IPX7)",
+          "d": "estructura sellada que tolera salpicaduras, lluvia fuerte y caídas al agua dulce sin sufrir averías."
+        },
+        {
+          "t": "Tecnología BassUp™",
+          "d": "procesamiento de señal digital que amplifica los bajos de forma contundente en pistas con alta presencia rítmica."
+        },
+        {
+          "t": "Ecualizador Pro de 9 Bandas",
+          "d": "ajuste milimétrico de frecuencias agudas, medias y graves directamente desde el teléfono."
+        },
+        {
+          "t": "Sincronización PartyCast",
+          "d": "vinculación inalámbrica con más de 100 bocinas soundcore compatibles para una experiencia de sonido expansiva."
+        },
+        {
+          "t": "Diseño Portátil con Correa",
+          "d": "estructura ergonómica con bucle de transporte integrado para colgarla de la mochila o llevarla en la mano."
+        }
+      ],
+      "idealPara": [
+        "Salidas a la playa, días de piscina, campamentos y senderismo gracias a su resistencia total al agua IPX7.",
+        "Uso continuo en el hogar, habitaciones u oficinas con batería para varios días de uso habitual.",
+        "Fiestas y reuniones en exteriores aprovechando la tecnología PartyCast y el refuerzo de graves.",
+        "Usuarios que buscan personalizar la firma acústica mediante una aplicación móvil dedicada."
+      ],
+      "incluye": [
+        "1× Bocina portátil Bluetooth soundcore Select 3",
+        "1× Cable de carga USB-C a USB-C",
+        "1× Guía de inicio rápido y manual de seguridad"
+      ],
+      "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
+      "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…",
+      "slug": "anker-soundcore-select-3",
+      "descripcion": "El Anker Soundcore Select 3 es un altavoz inalámbrico portátil concebido para ofrecer un sonido potente, nítido y duradero en cualquier aventura o entorno diario. Cuenta con una configuración acústica estéreo de 16W respaldada por dos transductores de rango completo y la tecnología propietaria BassUp™, la cual intensifica las frecuencias bajas en tiempo real para lograr graves con pegada sin distorsionar las frecuencias medias y agudas. Su batería de alta eficiencia entrega hasta 20 horas de reproducción continua, ofreciendo música ininterrumpida durante jornadas completas o escapadas de fin de semana sin requerir tomas de corriente frecuentes.  ",
+      "slugsAnteriores": [
+        "anker-soundcore-motion-300"
+      ],
+      "rev": 1792171935663
+    },
+    {
+      "id": 1790961637329,
+      "nombre": "Base para paneles",
+      "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel.",
+      "imagen": "https://tiendamax.org/imagenes/img_1790961633359.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790961633359.webp"
+      ],
+      "precioActual": 65,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📐 Inclinación Ajustable (15° a 30°)",
+        "🔩 Aluminio Anodizado Anticorrosión"
+      ],
+      "fechaAgregado": "2026-10-02T17:20:37.330Z",
+      "ficha": [
+        {
+          "k": "Tipo de Producto",
+          "v": "Kit de montaje inclinable para módulo fotovoltaico"
+        },
+        {
+          "k": "Rango de Inclinación",
+          "v": "Ajustable entre 15° y 30°",
+          "nota": "según extensión del brazo telescópico y tamaño del panel"
+        },
+        {
+          "k": "Material del Perfil",
+          "v": "Aleación de aluminio de alta resistencia",
+          "nota": "tratamiento anodizado para exteriores"
+        },
+        {
+          "k": "Tornillería y Herrajes",
+          "v": "Acero inoxidable resistente a la intemperie"
+        },
+        {
+          "k": "Compatibilidad de Paneles",
+          "v": "Módulos solares de 50W, 100W, 150W, 200W hasta 300W+ con marco de aluminio estándar"
+        },
+        {
+          "k": "Superficies de Montaje",
+          "v": "Techos de teja, hormigón plano, lámina metálica, cubiertas de vehículos recreativos, embarcaciones o suelo firme"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Patas Telescópicas Extensibles",
+          "d": "permiten calibrar la inclinación estacional aflojando únicamente los tornillos de ajuste."
+        },
+        {
+          "t": "Construcción en Aluminio Anodizado",
+          "d": "previene la formación de óxido y corrosión salina, garantizando años de vida útil a la intemperie."
+        },
+        {
+          "t": "Bases Pivotantes Articuladas",
+          "d": "rótulas delantera y trasera que se adaptan a techos planos o con pendientes leves."
+        },
+        {
+          "t": "Almohadillas de Goma Protectoras",
+          "d": "protegen la superficie del techo, amortiguan vibraciones por viento y sellan los orificios para evitar filtraciones."
+        },
+        {
+          "t": "Tornillería Inoxidable Incluida",
+          "d": "ensamble firme con pernos allen y tornillos autorroscantes para fijación estructural segura."
+        }
+      ],
+      "idealPara": [
+        "Instalaciones solares en techos de casas, garajes, cobertizos y fincas fuera de la red (Off-Grid).",
+        "Casas rodantes, furgonetas camper, remolques y embarcaciones donde se requiere regular la inclinación según la ubicación del viaje.",
+        "Proyectos solares de respaldo de energía y baterías donde se busca exprimir al máximo el rendimiento de cada panel.",
+        "Montajes en suelo o terrazas planas para evitar la acumulación de polvo y agua sobre las celdas solares."
+      ],
+      "incluye": [
+        "2× Brazos telescópicos traseros ajustables con soporte de inclinación",
+        "2× Soportes articulados pivotantes delanteros",
+        "4× Almohadillas de goma aislantes / selladoras",
+        "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
+      ],
+      "slug": "base-paneles",
+      "rev": 1792171935663,
+      "seoTitle": "Base para paneles en Cuba | TiendaMax",
+      "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…"
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
