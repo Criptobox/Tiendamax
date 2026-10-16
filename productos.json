@@ -2481,7 +2481,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778546645170_ext.webp",
     "categoria": "CARROS",
     "subcategoria": "LLANTAS",
-    "stock": 20,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2491,7 +2491,6 @@
     "comision": 10,
     "seoTitle": "Juego Llantas R14 Rojo en Cuba | TiendaMax",
     "seoDescription": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja.",
-    "descripcion": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja.",
     "ficha": [
       {
         "k": "🛞 Rodado",
@@ -2525,7 +2524,9 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778546645170_ext.webp"
-    ]
+    ],
+    "descripcion": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja.",
+    "rev": 1792111101578
   },
   {
     "id": 1778546857180,
@@ -2534,7 +2535,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778546857180_ext.webp",
     "categoria": "CARROS",
     "subcategoria": "LLANTAS",
-    "stock": 12,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -2544,7 +2545,6 @@
     "comision": 10,
     "seoTitle": "Juego Llantas R15 Pulido en Cuba | TiendaMax",
     "seoDescription": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
-    "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
     "ficha": [
       {
         "k": "🏷️ Marca",
@@ -2582,7 +2582,9 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778546857180_ext.webp"
-    ]
+    ],
+    "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
+    "rev": 1792111101578
   },
   {
     "id": 1778547214210,
@@ -4770,7 +4772,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778546731028_ext.webp",
     "categoria": "CARROS",
     "subcategoria": "LLANTAS",
-    "stock": 8,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4780,7 +4782,6 @@
     "comision": 10,
     "seoTitle": "Juego Llantas R14 Cromado en Cuba | TiendaMax",
     "seoDescription": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja.",
-    "descripcion": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja.",
     "ficha": [
       {
         "k": "🏷️ Marca",
@@ -4815,7 +4816,9 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778546731028_ext.webp"
-    ]
+    ],
+    "descripcion": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja.",
+    "rev": 1792111101578
   },
   {
     "id": 1778546922840,
