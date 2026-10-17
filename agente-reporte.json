@@ -1,10 +1,10 @@
 {
-  "generado": "2026-10-16T13:39:01.313909+00:00",
-  "productos": 141,
-  "urgentes": 2,
+  "generado": "2026-10-17T12:36:19.808802+00:00",
+  "productos": 145,
+  "urgentes": 3,
   "advertencias": 0,
-  "info": 8,
-  "resumen": "Anoche revisé tus 141 productos y encontré 2 urgente(s), 8 de info.",
+  "info": 5,
+  "resumen": "Anoche revisé tus 145 productos y encontré 3 urgente(s), 5 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -17,18 +17,13 @@
       "detalle": "→ Batería de Litio LiFePO4 Must LP15-12100 (12.8V 100Ah / 1280Wh) 80 Ciclos de Carga"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "KIT de Cámaras Zosi Con DVR 8 Canales",
-      "detalle": "quedan 3"
+      "tipo": "nombre",
+      "nombre": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar para Sistemas Solares Fotovoltaicos y Baterías",
+      "detalle": "→ Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar Para Sistemas Solares Fotovoltaicos y Baterías"
     },
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Inversor Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
     {
@@ -43,18 +38,13 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Controlador MPPT Boost 1200W",
-      "detalle": "quedan 3"
-    },
-    {
-      "tipo": "stock_bajo",
       "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
       "detalle": "quedan 2"
     },
     {
       "tipo": "agotados",
-      "nombre": "96 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 93 más"
+      "nombre": "128 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 125 más"
     }
   ]
 }
