@@ -182,7 +182,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 7,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -249,11 +249,11 @@
     "idealPara": [
       "Monitoreo de peso personal y control de salud."
     ],
-    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.",
-    "rev": 1790713098934,
+    "rev": 1792773854029,
     "slugsAnteriores": [
       "bascula-digital-alta"
-    ]
+    ],
+    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar."
   },
   {
     "id": 1778102582909,
@@ -332,7 +332,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 0,
+    "stock": 7,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -415,8 +415,8 @@
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
       "2× Tapas protectoras de bornes (integradas)"
     ],
-    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.",
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
   },
   {
     "id": 1778103856933,
@@ -1032,7 +1032,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 0,
+    "stock": 8,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1128,12 +1128,12 @@
       "1× Tornillo de conexión a tierra",
       "1× Manual de usuario y tarjeta de garantía"
     ],
-    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto.",
     "slugsAnteriores": [
       "generador-solar-ac180"
     ],
     "almacenId": "alm_1790824274659",
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto."
   },
   {
     "id": 1778104985977,
@@ -1828,7 +1828,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1887,8 +1887,8 @@
       "https://tiendamax.org/imagenes/img_1789066844710.webp",
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ],
-    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes.",
-    "rev": 1792172280646
+    "rev": 1792773854029,
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
     "id": 1778384078432,
@@ -4121,7 +4121,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
-    "stock": 0,
+    "stock": 2,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4139,7 +4139,6 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp"
     ],
-    "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua.",
     "ficha": [
       {
         "k": "Marca",
@@ -4176,7 +4175,8 @@
     "incluye": [
       "1x Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
     ],
-    "rev": 1792172280646
+    "rev": 1792773854029,
+    "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua."
   },
   {
     "id": 1780887971522,
@@ -4266,7 +4266,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4285,7 +4285,6 @@
       "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
       "https://tiendamax.org/imagenes/img_1781365018400.webp"
     ],
-    "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.",
     "ficha": [
       {
         "k": "Marca",
@@ -4361,7 +4360,8 @@
       "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
       "1× Manual de usuario e instrucciones de operación"
     ],
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura."
   },
   {
     "id": 1781365135486,
@@ -8264,7 +8264,7 @@
     "precioActual": 125,
     "precioOriginal": 145,
     "descuento": 14,
-    "stock": 0,
+    "stock": 7,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8362,8 +8362,8 @@
     "slugsAnteriores": [
       "cargador-baterias-vevor-35a"
     ],
-    "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado.",
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado."
   },
   {
     "id": 1787072040177,
@@ -8443,7 +8443,7 @@
     "precioActual": 90,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 3,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -8531,8 +8531,8 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "controlador-mppt-boost-1200w",
-    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal.",
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal."
   },
   {
     "id": 1787157254207,
@@ -9618,7 +9618,6 @@
   {
     "id": 1788627372873,
     "nombre": "VEVOR Cargador de Batería Inteligente 30A",
-    "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente.",
     "imagen": "https://tiendamax.org/imagenes/img_1788627369327.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1788627369327.webp",
@@ -9627,7 +9626,7 @@
     "precioActual": 115,
     "precioOriginal": 125,
     "descuento": 8,
-    "stock": 0,
+    "stock": 6,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -9726,7 +9725,8 @@
     "slugsAnteriores": [
       "vevor-cargador-bateria-30a"
     ],
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente."
   },
   {
     "id": 1788797303584,
@@ -10004,7 +10004,7 @@
     "precioActual": 75,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 6,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
@@ -10063,11 +10063,11 @@
     "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
     "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…",
     "slug": "anker-soundcore-select-3",
-    "descripcion": "El Anker Soundcore Select 3 es un altavoz inalámbrico portátil concebido para ofrecer un sonido potente, nítido y duradero en cualquier aventura o entorno diario. Cuenta con una configuración acústica estéreo de 16W respaldada por dos transductores de rango completo y la tecnología propietaria BassUp™, la cual intensifica las frecuencias bajas en tiempo real para lograr graves con pegada sin distorsionar las frecuencias medias y agudas. Su batería de alta eficiencia entrega hasta 20 horas de reproducción continua, ofreciendo música ininterrumpida durante jornadas completas o escapadas de fin de semana sin requerir tomas de corriente frecuentes.  ",
     "slugsAnteriores": [
       "anker-soundcore-motion-300"
     ],
-    "rev": 1792171935663
+    "rev": 1792773854029,
+    "descripcion": "El Anker Soundcore Select 3 es un altavoz inalámbrico portátil concebido para ofrecer un sonido potente, nítido y duradero en cualquier aventura o entorno diario. Cuenta con una configuración acústica estéreo de 16W respaldada por dos transductores de rango completo y la tecnología propietaria BassUp™, la cual intensifica las frecuencias bajas en tiempo real para lograr graves con pegada sin distorsionar las frecuencias medias y agudas. Su batería de alta eficiencia entrega hasta 20 horas de reproducción continua, ofreciendo música ininterrumpida durante jornadas completas o escapadas de fin de semana sin requerir tomas de corriente frecuentes.  "
   },
   {
     "id": 1789066847523,
@@ -10079,7 +10079,7 @@
     "precioActual": 38,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 3,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10177,9 +10177,9 @@
     ],
     "seoTitle": "Toldo de Malla 2 x 7 en Cuba | TiendaMax",
     "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…",
-    "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento.",
-    "rev": 1790359418633,
-    "slug": "toldo-malla-2x7"
+    "rev": 1792773854029,
+    "slug": "toldo-malla-2x7",
+    "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento."
   },
   {
     "id": 1789067953023,
@@ -10318,7 +10318,7 @@
     "precioActual": 275,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 3,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10430,12 +10430,12 @@
     ],
     "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
     "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
-    "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada.",
-    "rev": 1792172280646,
+    "rev": 1792773854029,
     "slug": "bielmeier-fluxmax140",
     "slugsAnteriores": [
       "bielmeier-fluxmax140-110v"
-    ]
+    ],
+    "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada."
   },
   {
     "id": 1789569593128,
@@ -10968,7 +10968,6 @@
   {
     "id": 1790961637329,
     "nombre": "Base para paneles",
-    "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel.",
     "imagen": "https://tiendamax.org/imagenes/img_1790961633359.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790961633359.webp"
@@ -10976,7 +10975,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 9,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11053,9 +11052,10 @@
       "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
     ],
     "slug": "base-paneles",
-    "rev": 1792171935663,
+    "rev": 1792773854029,
     "seoTitle": "Base para paneles en Cuba | TiendaMax",
-    "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…"
+    "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…",
+    "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel."
   },
   {
     "id": 1790963254986,
@@ -11188,7 +11188,6 @@
   {
     "id": 1790963608288,
     "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
-    "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado.",
     "imagen": "https://tiendamax.org/imagenes/img_1790963603542.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790963603542.webp"
@@ -11196,7 +11195,7 @@
     "precioActual": 55,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 5,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -11302,9 +11301,10 @@
       "1× Manual de usuario e instrucciones de uso"
     ],
     "slug": "binoculares-vision-4k-36mp",
-    "rev": 1792172280646,
+    "rev": 1792773854029,
     "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
-    "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…"
+    "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…",
+    "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado."
   },
   {
     "id": 1791502917024,
@@ -11689,7 +11689,6 @@
   {
     "id": 1792173470469,
     "nombre": "Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 40A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
-    "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS.",
     "imagen": "https://tiendamax.org/imagenes/img_1792173467326.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1792173467326.webp"
@@ -11697,7 +11696,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 8,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11808,9 +11807,10 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "cargador-bc-400-lifepo4-ag-2",
-    "rev": 1792174009598,
+    "rev": 1792773854029,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
-    "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…"
+    "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…",
+    "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS."
   },
   {
     "id": 1792173999747,
