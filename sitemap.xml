@@ -31,7 +31,31 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/c/ropa.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/c/utiles.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/inversor-tataliken-4000w</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/bascula-digital</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/antorcha-soldadura-tig-kit</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -41,6 +65,12 @@
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/pistola-fascia-gun</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/cargador-inteligente-15a</loc>
@@ -133,6 +163,24 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/p/pistola-triangular</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/toldo-sombra-2x4</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/linterna-cabeza</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/ventilador-carro</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -187,6 +235,24 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/p/shorts-secado-rapido</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/tienda-campana-automatica</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/linterna-hecloud</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/cargador-inteligente-84v-10a</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -233,6 +299,18 @@
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/raqueta-matamoscas</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/gorro-buceo-gianso-3mm</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/probador-digital-baterias</loc>
@@ -307,6 +385,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/p/soldadora-inverter-mma-300</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/controlador-mppt-150a</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -337,6 +421,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/p/yeswelder-flux-140-flex</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/controlador-mppt-boost-1200w</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -361,7 +451,31 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tiendamax.org/p/toldo-malla-2x7</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/compresor-aire</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/bielmeier-fluxmax140</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://tiendamax.org/p/base-paneles</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/binoculares-vision-4k-36mp</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
