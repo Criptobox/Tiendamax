@@ -1828,7 +1828,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1887,7 +1887,7 @@
       "https://tiendamax.org/imagenes/img_1789066844710.webp",
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ],
-    "rev": 1792794042126,
+    "rev": 1792859073410,
     "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
@@ -10079,7 +10079,7 @@
     "precioActual": 38,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 3,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10177,7 +10177,7 @@
     ],
     "seoTitle": "Toldo de Malla 2 x 7 en Cuba | TiendaMax",
     "seoDescription": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie…",
-    "rev": 1792773854029,
+    "rev": 1792859073410,
     "slug": "toldo-malla-2x7",
     "descripcion": "Fabricado en polietileno de alta densidad (HDPE) de grado industrial con tratamiento contra rayos UV, este toldo está preparado para soportar intemperie severa, sol continuo y humedad sin cuartearse, desteñirse ni acumular moho. Su trama de tejido microperforado permite una circulación constante de brisa que ayuda a disipar el calor sofocante y facilita el drenaje suave del agua de lluvia, evitando que se formen bolsas pesadas de agua o el peligroso \"efecto vela\" que suele doblar estructuras bajo ráfagas de viento."
   },
