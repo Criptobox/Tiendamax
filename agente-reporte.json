@@ -1,10 +1,10 @@
 {
-  "generado": "2026-10-23T13:58:16.487650+00:00",
+  "generado": "2026-10-24T13:00:53.932132+00:00",
   "productos": 145,
   "urgentes": 3,
   "advertencias": 0,
-  "info": 5,
-  "resumen": "Anoche revisé tus 145 productos y encontré 3 urgente(s), 5 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 145 productos y encontré 3 urgente(s), 8 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -28,6 +28,11 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
+      "detalle": "quedan 2"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "quedan 1"
     },
@@ -38,13 +43,23 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "Controlador MPPT Boost 1200W",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
       "detalle": "quedan 2"
     },
     {
       "tipo": "agotados",
-      "nombre": "128 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 125 más"
+      "nombre": "117 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 114 más"
     }
   ]
 }
