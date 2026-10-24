@@ -2360,7 +2360,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2420,7 +2420,7 @@
       "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
     ],
     "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.",
-    "rev": 1792171935663
+    "rev": 1792850535871
   },
   {
     "id": 1778384976624,
