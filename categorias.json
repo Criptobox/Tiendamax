@@ -50,12 +50,12 @@
         "ts": 1792850262973
       },
       "AUDIO": {
-        "off": true,
-        "ts": 1792171908992
+        "off": false,
+        "ts": 1792850307972
       },
       "GYM": {
-        "off": true,
-        "ts": 1792171909718
+        "off": false,
+        "ts": 1792850305122
       },
       "UTILES": {
         "off": false,
