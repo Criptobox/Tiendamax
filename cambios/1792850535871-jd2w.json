@@ -1,0 +1,77 @@
+{
+  "v": 1,
+  "creado": "2026-10-24T14:02:15.871Z",
+  "productos": [
+    {
+      "id": 1778384840618,
+      "nombre": "Timbre Inteligente Con Cámara HD y WiFi",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
+      "categoria": "SEGURIDAD",
+      "subcategoria": "ALARMAS",
+      "stock": 5,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "timbre-camara-hd-wifi",
+      "comision": 1000,
+      "seoTitle": "Timbre Inteligente Con Cámara HD y WiFi en Cuba | TiendaMax",
+      "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
+      "precioOriginal": 0,
+      "comisionMoneda": "MN",
+      "specs": [
+        "🔔 Timbre Inteligente con Videovigilancia y WiFi",
+        "🛡️ Comunicación Bidireccional y Control Remoto",
+        "🌐 Conexión Inalámbrica de Gran Alcance con Alarma Chime"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1784572695580.webp",
+        "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Tecnología / Tipo",
+          "v": "Timbre de puerta inteligente / Videoportero WiFi"
+        },
+        {
+          "k": "Categoría",
+          "v": "Alarmas"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz."
+        },
+        {
+          "d": "Intercomunicador bidireccional, captura de imágenes, visión nocturna, alertas instantáneas y almacenamiento en la nube."
+        },
+        {
+          "d": "Transmisión inalámbrica de fuerte penetración capaz de atravesar puertas y paredes (hasta 50 metros de alcance efectivo sin pérdida de señal)."
+        },
+        {
+          "d": "Audio bidireccional con función de cambio de voz (incluye modulador de voz, por ejemplo, de voz femenina a voz de hombre/tío) para mayor privacidad y seguridad al responder."
+        },
+        {
+          "t": "Accesorios",
+          "d": "Incluye la unidad principal del timbre con cámara y un altavoz chime receptor para colocar en el interior del hogar u oficina."
+        }
+      ],
+      "idealPara": [
+        "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      ],
+      "incluye": [
+        "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
+      ],
+      "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.",
+      "rev": 1792850535871
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
