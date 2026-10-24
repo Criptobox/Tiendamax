@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-24T05:44:51Z",
+ "actualizado": "2026-10-24T17:31:13Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 119,
  "productos": [
@@ -88,7 +88,8 @@
    "stock": 8,
    "categoria": "Energia",
    "comision": 5.0,
-   "comisionMoneda": "USD"
+   "comisionMoneda": "USD",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1792810400472-8d7e2ef6.webp"
   },
   {
    "id": "1778103783319",
@@ -453,7 +454,8 @@
    "categoria": "Carros",
    "comision": 1500.0,
    "comisionMoneda": "USD",
-   "comisionDudosa": "«$1500 USD» en USD sobre un producto de $30"
+   "comisionDudosa": "«$1500 USD» en USD sobre un producto de $30",
+   "foto": "https://axontech92.github.io/AXONTECH/photos/p-1792811595295-add27c26.webp"
   },
   {
    "id": "1778384078432",
@@ -1164,7 +1166,7 @@
    "nombre": "Toldo malla para sombra",
    "precio": 38.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 1,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
@@ -1188,7 +1190,7 @@
    "nombre": "Toldo para sombra",
    "precio": 23.0,
    "precioMoneda": "USD",
-   "stock": 0,
+   "stock": 5,
    "categoria": "Hogar",
    "comision": 3.0,
    "comisionMoneda": "USD",
