@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-24T13:00:53.932132+00:00",
+  "generado": "2026-10-25T13:27:56.865116+00:00",
   "productos": 145,
   "urgentes": 3,
   "advertencias": 0,
@@ -48,18 +48,18 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "Toldo de Malla 2 x 7",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
       "detalle": "quedan 3"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
-      "detalle": "quedan 2"
-    },
-    {
       "tipo": "agotados",
-      "nombre": "117 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 114 más"
+      "nombre": "115 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 112 más"
     }
   ]
 }
