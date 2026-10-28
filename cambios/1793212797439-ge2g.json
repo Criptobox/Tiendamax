@@ -1,0 +1,121 @@
+{
+  "v": 1,
+  "creado": "2026-10-28T18:39:57.439Z",
+  "productos": [
+    {
+      "id": 1788627372873,
+      "nombre": "VEVOR Cargador de Batería Inteligente 30A",
+      "imagen": "https://tiendamax.org/imagenes/img_1788627369327.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1788627369327.webp",
+        "https://tiendamax.org/imagenes/img_1788627371422.webp"
+      ],
+      "precioActual": 115,
+      "precioOriginal": 125,
+      "descuento": 8,
+      "stock": 5,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CARGADORES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🔌 Corriente de carga: 30A",
+        "⚡ Voltaje: 12V/24V"
+      ],
+      "fechaAgregado": "2026-09-05T16:56:12.874Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "VEVOR"
+        },
+        {
+          "k": "Modelo",
+          "v": "Cargador y Mantenedor Inteligente de Baterías 30A"
+        },
+        {
+          "k": "Voltajes de Operación",
+          "v": "6V / 12V / 24V DC",
+          "nota": "Selección manual y detección automática"
+        },
+        {
+          "k": "Corriente Nominal de Carga",
+          "v": "Hasta 30A",
+          "nota": "ajuste inteligente de amperaje según voltaje y estado de la batería"
+        },
+        {
+          "k": "Voltaje de Entrada AC",
+          "v": "100V – 240V AC, 50/60 Hz"
+        },
+        {
+          "k": "Compatibilidad de Baterías",
+          "v": "Plomo-Ácido (AGM, GEL, SLA, Inundada/WET, Calcio, EFB, Ciclo Profundo) y Litio",
+          "nota": "LiFePO4"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LCD retroiluminado con indicadores de estado y diagnóstico"
+        },
+        {
+          "k": "Modos de Trabajo",
+          "v": "Carga rápida, mantenedor (carga lenta / flotación), modo reparación por pulsos (desulfatador) y compensación de temperatura"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Carga de alta velocidad de hasta 30A",
+          "d": "optimiza los tiempos de recarga tanto en baterías de uso rudo como en bancos de ciclo profundo, ajustando la potencia entregada según la necesidad química del acumulador."
+        },
+        {
+          "t": "Versatilidad multivoltaje (6V / 12V / 24V)",
+          "d": "equipo multifunción capaz de gestionar desde pequeñas baterías de 6V hasta sistemas pesados de 24V en camiones o maquinaria."
+        },
+        {
+          "t": "Microprocesador de etapas múltiples",
+          "d": "gestiona automáticamente ciclos completos de precarga, corriente constante, voltaje constante, absorción y modo flotación para evitar el estrés térmico."
+        },
+        {
+          "d": "Función de reparación por pulsos de alta/baja frecuencia: disuelve la sulfatación interna en placas de plomo y revive baterías profundamente descargadas o fatigadas, extendiendo su vida útil."
+        },
+        {
+          "t": "Compensación térmica inteligente",
+          "d": "ajusta el voltaje de entrega automáticamente según la temperatura exterior, previniendo sobrecargas en climas cálidos o cargas deficientes en frío extremo."
+        },
+        {
+          "t": "Pantalla LCD digital intuitiva",
+          "d": "muestra en tiempo real el voltaje actual, la corriente de carga (amperios), porcentaje de energía cargada y códigos de advertencia ante fallas."
+        },
+        {
+          "t": "Sistema de protección integral",
+          "d": "circuito con corte automático contra inversión de polaridad, chispas accidentales, cortocircuitos, sobretensión, sobrecorriente y sobrecalentamiento."
+        },
+        {
+          "d": "Pinzas de cocodrilo de cobre reforzado de uso pesado con aislamiento completo y disipador interno asistido por ventilador para jornadas prolongadas."
+        }
+      ],
+      "idealPara": [
+        "Talleres automotrices, flotas de transporte, camiones diésel y maquinaria agrícola o pesada con sistemas de 24V.",
+        "Mantenimiento y recarga rápida de baterías de autos, camionetas, lanchas y vehículos recreativos a 12V.",
+        "Cuidado y recuperación de baterías de 6V en motos clásicas, juguetes eléctricos y equipos antiguos.",
+        "Carga de respaldo conectada a la red comercial o planta eléctrica para bancos de baterías solares (GEL, AGM o LiFePO4)."
+      ],
+      "incluye": [
+        "1× Cargador Inteligente Multivoltaje VEVOR 30A (6V/12V/24V) con pinzas caimán de uso rudo",
+        "1× Manual de usuario e instrucciones de funcionamiento"
+      ],
+      "seoTitle": "VEVOR Cargador de Batería Inteligente 30A | TiendaMax",
+      "seoDescription": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su…",
+      "slug": "cargador-vevor-30a",
+      "slugsAnteriores": [
+        "vevor-cargador-bateria-30a"
+      ],
+      "rev": 1793212797439,
+      "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
