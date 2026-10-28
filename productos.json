@@ -9626,7 +9626,7 @@
     "precioActual": 115,
     "precioOriginal": 125,
     "descuento": 8,
-    "stock": 6,
+    "stock": 5,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -9725,7 +9725,7 @@
     "slugsAnteriores": [
       "vevor-cargador-bateria-30a"
     ],
-    "rev": 1792773854029,
+    "rev": 1793212797439,
     "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente."
   },
   {
