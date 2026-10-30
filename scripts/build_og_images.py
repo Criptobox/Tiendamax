@@ -115,6 +115,11 @@ def huella(producto: dict, foto: Path | None) -> str:
         # v2: la foto va sola con las esquinas redondeadas, sin panel detrás.
         "version": 2,
     }
+    if producto.get("digital"):
+        # Un digital enseña su «desde» en USDT, que sale de los importes. Solo
+        # en ellos: una clave nueva en todos regeneraría las 145 tarjetas.
+        datos["importes"] = [(x.get("v"), x.get("usdt")) for x in (producto.get("importes") or [])
+                             if isinstance(x, dict) and x.get("on") is not False]
     h = hashlib.sha256(json.dumps(datos, sort_keys=True, ensure_ascii=False).encode())
     if foto and foto.exists():
         h.update(foto.read_bytes())
@@ -240,13 +245,27 @@ def dibujar_tarjeta(producto: dict, foto: Path | None) -> Image.Image:
     # acababan pisándose: tamaños distintos, alturas distintas.
     base = y + 62
     f_precio = _fuente(True, 78)
-    txt_precio = f"${actual:,.0f}".replace(",", " ")
-    d.text((x, base), txt_precio, font=f_precio, fill=CORAL, anchor="ls")
-    cursor = x + d.textlength(txt_precio, font=f_precio) + 12
-
     f_usd = _fuente(True, 27)
-    d.text((cursor, base), "USD", font=f_usd, fill=CORAL_HONDO, anchor="ls")
-    cursor += d.textlength("USD", font=f_usd) + 26
+    # Tarjeta regalo o recarga: se cobra en USDT, y su precio es «desde» el
+    # importe más barato (ver scripts/precios_digitales.py). Nunca en USD a
+    # secas ni en MN, que no es como se cobra.
+    usdts = [_num(i.get("usdt")) for i in (producto.get("importes") or [])
+             if isinstance(i, dict) and i.get("on") is not False and _num(i.get("usdt")) > 0]
+    if producto.get("digital") and usdts:
+        hay_descuento = False
+        d.text((x, base), "desde", font=f_usd, fill=CORAL_HONDO, anchor="ls")
+        x0 = x + d.textlength("desde", font=f_usd) + 12
+        txt_precio = f"{min(usdts):,.0f}".replace(",", " ")
+        d.text((x0, base), txt_precio, font=f_precio, fill=CORAL, anchor="ls")
+        cursor = x0 + d.textlength(txt_precio, font=f_precio) + 12
+        d.text((cursor, base), "USDT", font=f_usd, fill=CORAL_HONDO, anchor="ls")
+        cursor += d.textlength("USDT", font=f_usd) + 26
+    else:
+        txt_precio = f"${actual:,.0f}".replace(",", " ")
+        d.text((x, base), txt_precio, font=f_precio, fill=CORAL, anchor="ls")
+        cursor = x + d.textlength(txt_precio, font=f_precio) + 12
+        d.text((cursor, base), "USD", font=f_usd, fill=CORAL_HONDO, anchor="ls")
+        cursor += d.textlength("USD", font=f_usd) + 26
 
     if hay_descuento:
         f_antes = _fuente(False, 27)

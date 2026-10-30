@@ -12,7 +12,8 @@
     "MOTOS",
     "PC Y LAPTOPS",
     "GYM",
-    "AUDIO"
+    "AUDIO",
+    "TARJETAS"
   ],
   "iconos": {
     "SEGURIDAD": "🔒",
@@ -25,7 +26,8 @@
     "LENCERIA": "👙",
     "ENERGIA": "⚡",
     "UTILES": "🛠️",
-    "ROPA": "👗"
+    "ROPA": "👗",
+    "TARJETAS": "💳"
   },
   "apagadas": {
     "categorias": {
@@ -68,6 +70,10 @@
       "WIFI": {
         "off": true,
         "ts": 1792172012167
+      },
+      "TARJETAS": {
+        "off": true,
+        "ts": 1793342720568
       }
     },
     "subcategorias": {}

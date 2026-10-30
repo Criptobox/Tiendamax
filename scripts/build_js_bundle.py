@@ -49,6 +49,10 @@ ORDEN = [
     "tm-toast.js",
     "tm-iife.js",
     "tm-patches.js",
+    # Productos digitales (tarjetas regalo, recargas). El último a propósito:
+    # envuelve abrirDetalleProducto y tmComprar, y su comprobación tiene que
+    # ir delante de las demás envolturas.
+    "tm-digital.js",
 ]
 
 # Módulos que se minifican como el resto (js/src/) pero NO van en el bundle:

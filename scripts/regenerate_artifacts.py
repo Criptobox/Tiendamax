@@ -121,10 +121,30 @@ def es_mn(p: dict) -> bool:
     return p.get("moneda") == "MN"
 
 
+def es_digital(p: dict) -> bool:
+    """Tarjeta regalo o recarga (categoría TARJETAS, ver tm-digital.src.js):
+    tiene importes, se cobra en USDT o USD —nunca en MN— y se paga antes."""
+    return bool(p.get("digital")) and isinstance(p.get("importes"), list) and bool(p["importes"])
+
+
+def importes_digital(p: dict) -> list[dict]:
+    return [x for x in (p.get("importes") or [])
+            if isinstance(x, dict) and x.get("on") is not False and float(x.get("usdt") or 0) > 0]
+
+
+def _valor_digital(p: dict, v) -> str:
+    return f"{int(v):,} {p['unidad']}".replace(",", ".") if p.get("unidad") else f"${v}"
+
+
 def precio_pagina(v, p: dict) -> str:
     """El precio tal como se pinta en las fichas y tarjetas: "$140.00 USD" o
     "280 MN". Antes era siempre "$… USD", y el cable de 280 MN salía en su
-    página a $280 —y a Google con priceCurrency USD—."""
+    página a $280 —y a Google con priceCurrency USD—. Un digital dice su
+    precio más bajo en USDT, que es como se cobra."""
+    if es_digital(p):
+        imps = importes_digital(p)
+        if imps:
+            return f"desde {min(int(x['usdt']) for x in imps)} USDT"
     v = float(v or 0)
     if es_mn(p):
         return (f"{int(v):,}" if v == int(v) else f"{v:,.2f}").replace(",", ".") + " MN"
@@ -171,7 +191,10 @@ def descripcion_vista_previa(p: dict, desc: str) -> str:
     la garantía solo si el gestor la escribió."""
     partes = []
     stock = int(p.get("stock") or 0)
-    if stock > 0:
+    if es_digital(p):
+        # Ni stock (se compra al pedirlo) ni «pagas al recibirlo» (se paga antes).
+        partes = ["⚡ Código por WhatsApp", "Pago en USDT o USD", precio_pagina(0, p)]
+    elif stock > 0:
         partes.append(f"✅ {stock} disponible{'s' if stock != 1 else ''}")
         partes.append("Pagas al recibirlo")
         g = str(p.get("garantia") or "").strip()
@@ -997,7 +1020,13 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             precio_orig_html = ""
             pct_desc_html    = ""
 
-        if stock > 0:
+        if es_digital(p):
+            imps = " · ".join(f"{_valor_digital(p, x['v'])}: {int(x['usdt'])} USDT"
+                              for x in importes_digital(p))
+            stock_html = (f'<div class="tm-stok-y">⚡ Código por WhatsApp en 5–30 min · '
+                          f'pago antes, en USDT (BEP20) o USD</div>\n'
+                          f'      <div class="tm-stok-y">{escape(imps)}</div>')
+        elif stock > 0:
             stock_html = f'<div class="tm-stok-y">En stock ({stock} disponible{"s" if stock != 1 else ""})</div>'
         else:
             stock_html = '<div class="tm-stok-n">Agotado</div>'
@@ -1008,7 +1037,16 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         # que no lo tienes— y un WhatsApp escrito como "me interesa", o sea
         # pedir algo que no se puede vender. El dueño recibía la pregunta de
         # cuándo vuelve, que tampoco sabe contestar.
-        if stock > 0:
+        if es_digital(p):
+            # Hay que elegir importe, y eso lo hace la ficha de la tienda.
+            wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. ¿De qué importe? {page_url}")
+            wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
+            acciones_html = (
+                f'<a href="{app_url}" class="tm-btn tm-btn-w">⚡ Elegir importe y pedir</a>\n'
+                f'      <a href="{wa_link}" class="tm-btn tm-btn-s" id="tmWa" target="_blank" '
+                f'rel="noopener noreferrer">💬 Preguntar por WhatsApp</a>'
+            )
+        elif stock > 0:
             wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
             wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
             # WhatsApp va primero y es el botón principal: aquí no hay carrito
@@ -1048,7 +1086,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
 
         # El formulario de aviso solo viaja en las fichas agotadas: es lo único
         # que necesitan y no tiene sentido en las que sí se pueden vender.
-        aviso_js = "" if stock > 0 else AVISO_JS.format(
+        aviso_js = "" if stock > 0 or es_digital(p) else AVISO_JS.format(
             rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid)))
         # El contador, en cambio, va en todas: medir solo las agotadas sería
         # medir justo las que no venden.

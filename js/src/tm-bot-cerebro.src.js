@@ -1098,6 +1098,8 @@
     return c ? c.icono : '📦';
   }
   function stockText(p){
+    // Un producto digital no tiene almacén: el código se compra al pedirlo.
+    if(p._orig && p._orig.digital) return '<em>Código por WhatsApp</em>';
     if(p.stock === 0) return '<em style="color:#ff8888">Agotado</em>';
     if(p.stock <= 3) return `<em style="color:#ffb347">Solo ${p.stock} u</em>`;
     return `<em>${p.stock} en stock</em>`;
@@ -1811,6 +1813,9 @@
     // de las cosas que NO se venden y tienen su respuesta, y "necesito una
     // tarjeta sim" contestaba con los métodos de pago.
     if(/\btarjeta\w*\s+(sim|de memoria|micro ?sd|sd)\b|\bsim card\b|\bmicro ?sd\b/.test(m)) return 'noVendemos';
+    // "tarjeta de PlayStation", "tarjeta visa": es algo que se vende (la
+    // categoría TARJETAS), no una pregunta por cómo se paga.
+    if(/\b(tarjeta\w*|gift ?card|recarga\w*|saldo)\b/.test(m) && _nombraDigital(m)) return 'busqueda';
     if(/\b(pago|pagar|pago|tarjeta|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
@@ -3797,7 +3802,36 @@ ${notasHTML}
     return buildDetalle(p, text);
   };
 
+  /* Tarjeta regalo o recarga (categoría TARJETAS, ver tm-digital.src.js):
+     se cobra en USDT o USD, nunca en MN, se paga antes y tiene importes. La
+     ficha normal diría «≈ X MN» y «N en stock», que aquí son falsos. */
+  // ¿El mensaje nombra la marca de algún producto digital del catálogo?
+  function _nombraDigital(m){
+    return PRODUCTOS.some(p => {
+      const o = p._orig;
+      if(!o || !o.digital) return false;
+      const marca = normalize(String((o.arte && o.arte.marca) || p.nombre)).trim();
+      return marca && new RegExp('\\b' + marca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(m);
+    });
+  }
+
+  function buildDetalleDigital(p){
+    const o = p._orig;
+    const imps = (o.importes || []).filter(x => x && x.on !== false);
+    let body = `📦 <strong>${escapeHtml(p.nombre)}</strong>\n\n💰 <strong>Importes:</strong>\n`;
+    imps.forEach(x => {
+      const v = o.unidad ? Number(x.v).toLocaleString('es-ES') + ' ' + o.unidad : '$' + x.v;
+      body += `• ${escapeHtml(v)} — <strong>${x.usdt} USDT</strong> (≈ $${x.usd} USD)\n`;
+    });
+    body += `\n💵 Se paga antes, en USDT (red BEP20) o en USD, y te mandamos el código por WhatsApp en 5–30 min.\n`;
+    if(o.unidad) body += `🎮 Va directo a tu cuenta con tu ID de jugador.\n`;
+    else if(String(o.region || '') === 'EE. UU.') body += `⚠️ Solo funciona en cuentas de EE. UU.\n`;
+    body += `\nToca la tarjeta para elegir el importe y pedirla.`;
+    return { response: body, products: [p], quickReplies: ['💬 WhatsApp','📦 Categorías'] };
+  }
+
   function buildDetalle(p, originalQuery){
+    if(p && p._orig && p._orig.digital && Array.isArray(p._orig.importes)) return buildDetalleDigital(p);
     _context.lastProduct = p;
     const agotado = p.stock === 0;
     const enOferta = p.precioOriginal > 0 && p.precioOriginal > p.precio;
