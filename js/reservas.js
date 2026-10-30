@@ -24,8 +24,12 @@
  * instante. El admin mantiene el catálogo en memoria y lo vuelca entero al
  * guardar: si esto guardara una copia leída hace un minuto, el admin la
  * pisaría y el descuento del vale desaparecería sin que nadie se entere. Por
- * eso existe además tmReservasRefrescarAdmin(), que el admin llama al volver
- * al primer plano.
+ * eso cada movimiento queda además apuntado en `tm_reservas_mov` (id, stock
+ * resultante, momento), y el admin aplica a su memoria los que aún no tiene
+ * (TMReservas.movimientosDesde) al volver a primer plano, al recibir el evento
+ * `storage` y al restaurarse desde la caché de atrás/adelante. Solo esos: el
+ * `productos` del localStorage lo escribe también la tienda pública con lo que
+ * bajó de la red, y copiar de ahí todo el stock puede traer cifras viejas.
  *
  * Los datos del cliente (nombre y teléfono) se quedan aquí, en localStorage, y
  * no salen a Firebase: /pedidos es `.read: true` y en este proyecto no hay
@@ -37,6 +41,8 @@
   var LS_RESERVAS = 'tm_reservas';
   var LS_PRODUCTOS = 'productos';
   var LS_MODIFICADOS = 'productosModificados';
+  var LS_MOV = 'tm_reservas_mov';
+  var MAX_MOV = 100;
   var MAX = 300;
   var DIAS_AVISO = 3;
 
@@ -81,6 +87,14 @@
     try {
       localStorage.setItem(LS_PRODUCTOS, JSON.stringify(ps));
     } catch (e) { return null; }
+    // El rastro para el admin (ver arriba). `n` desempata dos movimientos en el
+    // mismo milisegundo.
+    try {
+      var mov = _leer(LS_MOV, []);
+      var ahora = Date.now();
+      tocados.forEach(function (t, i) { mov.push({ ts: ahora, n: i, id: t.id, stock: t.despues }); });
+      localStorage.setItem(LS_MOV, JSON.stringify(mov.slice(-MAX_MOV)));
+    } catch (e) {}
     // Marcar para que la próxima sincronización lo suba a GitHub; si no, la
     // tienda pública seguiría enseñando el stock viejo.
     try {
@@ -265,7 +279,13 @@
     return { ok: true, nuevas: nuevas, cerradas: cerradas };
   }
 
+  /* Los movimientos de stock posteriores a `ts`, del más viejo al más nuevo. */
+  function movimientosDesde(ts) {
+    return _leer(LS_MOV, []).filter(function (m) { return m && (m.ts || 0) > (ts || 0); });
+  }
+
   window.TMReservas = {
+    movimientosDesde: movimientosDesde,
     lista: reservas,
     pendientes: pendientes,
     pendientesViejas: pendientesViejas,

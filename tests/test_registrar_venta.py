@@ -23,7 +23,10 @@ Dos cosas que se rompen en silencio si alguien toca esta pantalla:
    cursor y el punto de los decimales, así que escribir "7.5" dejaba 75 —diez
    veces la comisión, y sin ningún error a la vista—.
 """
+import json
 import re
+import shutil
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -70,6 +73,40 @@ class SelectorDeProductoTest(unittest.TestCase):
                       "el filtro dejó de mirar la categoría del producto.")
         self.assertIn("vp-cat", self.picker,
                       "las categorías ya no se pintan como chips.")
+
+    def _orden_pintado(self, cat):
+        """Ejecuta ventaRenderPicker de verdad y devuelve los nombres en el
+        orden en que salen las tarjetas."""
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        prods = [
+            {"id": 1, "nombre": "Antena A", "categoria": "WIFI", "stock": 0},
+            {"id": 2, "nombre": "Antena B", "categoria": "WIFI", "stock": 4},
+            {"id": 3, "nombre": "Aceite A", "categoria": "CARROS", "stock": 0},
+            {"id": 4, "nombre": "Aceite B", "categoria": "CARROS", "stock": 9},
+            {"id": 5, "nombre": "Router C", "categoria": "WIFI", "stock": 2},
+        ]
+        js = (
+            "const els={'#venta-cats':{innerHTML:''},'#venta-lista':{innerHTML:''}};"
+            "const $=s=>els[s];const esc=x=>String(x);const escJsAttr=esc;"
+            "const moneyP=()=>'$1';const emojiCat=()=>'';let VENTA_CART=[];"
+            f"let VENTA_CAT={json.dumps(cat)};const PRODUCTOS={json.dumps(prods)};"
+            + self.picker +
+            ";ventaRenderPicker();"
+            "console.log(JSON.stringify([...els['#venta-lista'].innerHTML"
+            ".matchAll(/class=\"vp-nm\">([^<]*)</g)].map(m=>m[1])));"
+        )
+        r = subprocess.run([node, "-e", js], capture_output=True, text=True, timeout=30)
+        self.assertEqual(0, r.returncode, r.stderr)
+        return json.loads(r.stdout)
+
+    def test_los_agotados_van_al_final(self):
+        # En «Todas» cada categoría traía sus agotados en medio: había que
+        # pasar por encima de ellos para llegar al siguiente con stock.
+        self.assertEqual(["Aceite B", "Antena B", "Router C", "Aceite A", "Antena A"],
+                         self._orden_pintado(""))
+        self.assertEqual(["Antena B", "Router C", "Antena A"], self._orden_pintado("WIFI"))
 
     def test_la_tarjeta_dice_precio_y_stock(self):
         for dato, porque in (

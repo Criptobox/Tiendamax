@@ -169,6 +169,59 @@ const nuevo = await panel.evaluate(([con]) => {
 }, [CON]);
 ok(nuevo.items === 0 && nuevo.reserva === null, `«Nuevo cliente» arrastra los productos o la reserva del anterior: ${JSON.stringify(nuevo)}`);
 ok(/Elegir del catálogo/.test(nuevo.caja), 'tras «Nuevo cliente», el vale sigue ofreciendo registrar la venta del anterior');
+// 5) El panel abierto en otra pestaña no puede pisar lo que reserva el vale.
+/* El fallo era silencioso: el vale descuenta el stock en localStorage, el
+   panel —abierto aparte— tenía el catálogo en memoria con la cifra de antes,
+   y su siguiente guardado (cualquier edición) volcaba esa memoria entera: lo
+   reservado volvía a estar a la venta y «Actualizar tienda» lo publicaba.
+   Las esperas van con función y no con texto: el CSP del panel no permite
+   eval, y una espera con texto falla callada al agotar el tiempo. */
+const ID = String(CON.id);
+const stockDe = (pg, dondeMemoria) => pg.evaluate(([id, mem]) => {
+    const lista = mem ? window.PRODUCTOS : (JSON.parse(localStorage.getItem('productos')) || []);
+    const p = (lista || []).find(x => String(x.id) === id);
+    return p ? Number(p.stock) : null;
+}, [ID, dondeMemoria]);
+const panel2 = await ctx.newPage();
+panel2.on('pageerror', e => errores.push('panel2: ' + String(e).slice(0, 200)));
+await panel2.goto(`http://localhost:${PUERTO}/admin.html`);
+await panel2.waitForFunction(() => typeof window.renderReservas === 'function'
+    && Array.isArray(window.PRODUCTOS) && window.PRODUCTOS.length > 0, null, { timeout: 20000 }).catch(() => {});
+const enPanel = await stockDe(panel2, true);
+ok(enPanel === await stockDe(panel2, false), 'el panel recién abierto no tiene el stock del localStorage');
+const vale2 = await ctx.newPage();
+await vale2.goto(`http://localhost:${PUERTO}/vale.html`);
+await esperar(vale2, 'typeof reservarSiToca === "function"');
+const hecha = await vale2.evaluate(([con]) => {
+    resetForm();
+    document.getElementById('vCliente').value = 'Cliente Otra Pestaña';
+    document.getElementById('vTelefono').value = '53 5555 9999';
+    agregarProductoVale(con.nombre, Number(con.precioActual) || 0, String(con.id));
+    reservarSiToca();
+    return _valeReservaHecha;
+}, [CON]);
+ok(!!hecha, 'el vale de la otra pestaña no llegó a reservar');
+ok(await stockDe(vale2, false) === enPanel - 1, 'la reserva del vale no descontó el stock');
+await panel2.bringToFront();
+await panel2.waitForFunction(([id, n]) => {
+    const p = window.PRODUCTOS.find(x => String(x.id) === id); return p && Number(p.stock) === n;
+}, [ID, enPanel - 1], { timeout: 5000 }).catch(() => {});
+await panel2.evaluate(() => {
+    // Lo que hace cualquier edición del panel (apSaveProds, dentro de su IIFE):
+    // volcar la memoria entera al localStorage.
+    localStorage.setItem('productos', JSON.stringify(window.PRODUCTOS));
+});
+const memoria = await stockDe(panel2, true), disco = await stockDe(panel2, false);
+ok(memoria === enPanel - 1 && disco === enPanel - 1,
+   `el panel abierto aparte pisó la reserva del vale: tenía ${enPanel}, el vale reservó 1, y quedó memoria=${memoria} disco=${disco}`);
+// Y el lateral abre el vale en esta misma ventana, no en otra pestaña.
+const lateral = await panel2.evaluate(() => {
+    const b = [...document.querySelectorAll('.side-btn')].find(x => /Vale/.test(x.title || ''));
+    return b ? b.getAttribute('onclick') : '';
+});
+ok(/location\.href='vale\.html'/.test(lateral) && !/window\.open/.test(lateral),
+   `el botón 🧾 del panel abre el vale en otra pestaña: ${lateral}`);
+
 ok(!errores.length, 'errores de JavaScript: ' + errores.join(' | '));
 
 await navegador.close();
