@@ -1,26 +1,11 @@
 {
-  "generado": "2026-10-29T15:44:36.261022+00:00",
-  "productos": 145,
-  "urgentes": 3,
+  "generado": "2026-10-30T15:26:56.172922+00:00",
+  "productos": 158,
+  "urgentes": 0,
   "advertencias": 0,
   "info": 7,
-  "resumen": "Anoche revisé tus 145 productos y encontré 3 urgente(s), 7 de info.",
+  "resumen": "Anoche revisé tus 158 productos y encontré 7 de info.",
   "detalle": [
-    {
-      "tipo": "nombre",
-      "nombre": "Base para paneles",
-      "detalle": "→ Base Para Paneles"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
-      "detalle": "→ Batería de Litio LiFePO4 Must LP15-12100 (12.8V 100Ah / 1280Wh) 80 Ciclos de Carga"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar para Sistemas Solares Fotovoltaicos y Baterías",
-      "detalle": "→ Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar Para Sistemas Solares Fotovoltaicos y Baterías"
-    },
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
