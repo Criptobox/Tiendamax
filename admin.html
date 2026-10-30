@@ -5364,7 +5364,10 @@ function cmpRender(){
     sub.textContent = CMP_DATOS.total + ' productos en la principal · leído '
       + (hace === null ? '—' : hace < 1 ? 'hace menos de 1 h' : 'hace ' + hace + ' h')
       // Viejo = puede estar escondiendo reposiciones y productos nuevos.
-      + (hace !== null && hace >= 4 ? ' · ⚠️ toca 🔄 Actualizar' : '');
+      + (hace !== null && hace >= 4 ? ' · ⚠️ toca 🔄 Actualizar' : '')
+      // La principal no publicó sus vales: su stock incluye lo que ya tiene
+      // dueño, y un «repuso» puede ser mercancía prometida a otro cliente.
+      + (CMP_DATOS.reservasDesconocidas ? ' · ⚠️ sin sus reservas: el stock es el del almacén' : '');
   }
 
   if(!total && !g.dudosas.length){

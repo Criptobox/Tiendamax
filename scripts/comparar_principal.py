@@ -311,7 +311,8 @@ def normalizar(producto: dict, categorias: dict[str, str] | None = None,
     return fila
 
 
-def descargar(url: str = PRINCIPAL_URL, timeout: int = 45) -> list[dict]:
+def descargar(url: str = PRINCIPAL_URL, timeout: int = 45,
+              info: dict | None = None) -> list[dict]:
     """El catálogo de la principal — disponible, no el almacén físico.
 
     `gestores` —las claves de los gestores— no se lee para nada. `vales` sí
@@ -319,6 +320,11 @@ def descargar(url: str = PRINCIPAL_URL, timeout: int = 45) -> list[dict]:
     un entero por producto antes de que `normalizar()` lo use; ningún otro
     campo de un vale llega más lejos que esa función. Ver "Lo reservado" en
     el docstring del módulo.
+
+    `info`, si se pasa, recibe `reservas`: si el fichero traía `vales`. La
+    principal dejó de publicarlos y la resta de lo reservado se quedó en 0
+    sin que nada lo dijera — el stock volvió a ser el del almacén, justo lo
+    que esa resta existe para evitar. Quien llama decide cómo avisarlo.
     """
     req = urllib.request.Request(url, headers={"User-Agent": "tiendamax-comparador"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -330,6 +336,9 @@ def descargar(url: str = PRINCIPAL_URL, timeout: int = 45) -> list[dict]:
         categorias = {str(c.get("id")): str(c.get("name") or "").strip()
                       for c in (datos.get("categorias") or []) if c.get("id")}
         reservado = _reservado_por_producto(datos)
+    if info is not None:
+        # Solo si la clave está: leerla es cosa de _reservado_por_producto.
+        info["reservas"] = "vales" in datos
     filas = [f for f in (normalizar(p, categorias, reservado.get(str(p.get("id")), 0))
                          for p in crudos) if f]
     # Un id repetido se queda con la fila que declare stock: es la que vende.
@@ -339,6 +348,14 @@ def descargar(url: str = PRINCIPAL_URL, timeout: int = 45) -> list[dict]:
         if previa is None or (f["stock"] > 0 and previa["stock"] <= 0):
             por_id[f["id"]] = f
     return sorted(por_id.values(), key=lambda f: f["nombre"].lower())
+
+
+def reservas_desconocidas_antes(path: Path = SALIDA) -> bool:
+    """Si la corrida anterior ya avisó de que faltaban los vales."""
+    try:
+        return bool(json.loads(path.read_text(encoding="utf-8")).get("reservasDesconocidas"))
+    except (OSError, ValueError, AttributeError):
+        return False
 
 
 def leer_anterior(path: Path = SALIDA) -> dict[str, dict]:
@@ -741,11 +758,15 @@ def escribir(path: Path, contenido: dict, clave: str) -> bool:
     daría un commit cada dos horas para decir que el reloj avanzó. Se compara
     únicamente el contenido que importa.
     """
+    # Todo menos el reloj: una marca como `reservasDesconocidas` que aparece
+    # o se va con los mismos productos también es un cambio que guardar.
+    def _sin_reloj(d):
+        return {k: v for k, v in (d or {}).items() if k not in ("actualizado", "total")}
     try:
-        previo = json.loads(path.read_text(encoding="utf-8")).get(clave)
+        previo = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         previo = None
-    if previo == contenido.get(clave):
+    if isinstance(previo, dict) and _sin_reloj(previo) == _sin_reloj(contenido):
         print(f"✅ {path.name}: sin cambios.")
         return False
     path.write_text(json.dumps(contenido, ensure_ascii=False, indent=1) + "\n",
@@ -807,8 +828,9 @@ def avisar(vueltos: list[dict]) -> bool:
 
 
 def main() -> int:
+    info: dict = {}
     try:
-        productos = descargar()
+        productos = descargar(info=info)
     except Exception as e:
         # Que la principal esté caída no puede tumbar el cron ni, sobre todo,
         # borrar el fichero anterior: un catálogo de hace tres horas sirve,
@@ -819,7 +841,12 @@ def main() -> int:
         print("⚠️ La principal devolvió 0 productos; no se toca el fichero.", file=sys.stderr)
         return 0
 
-    antes = leer_anterior()
+    antes = leer_anterior(SALIDA)
+    sin_reservas = info.get("reservas") is False
+    avisado_antes = reservas_desconocidas_antes(SALIDA)   # antes de reescribir SALIDA
+    if sin_reservas:
+        print("⚠️ La principal no publica `vales`: el stock es el del almacén, "
+              "sin restar lo reservado.", file=sys.stderr)
     vueltos = reposiciones(antes, productos)
     cambios = cambios_principal(antes, productos)
     try:
@@ -834,6 +861,9 @@ def main() -> int:
         "origen": PRINCIPAL_WEB,
         "total": len(ligero),
         "productos": ligero,
+        # El panel lo enseña en 🔀 Comparar; sin la marca, un stock que
+        # puede estar prometido en vales se lee como disponible.
+        **({"reservasDesconocidas": True} if sin_reservas else {}),
     }, "productos")
     escribir(FICHAS, {
         "actualizado": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -868,6 +898,15 @@ def main() -> int:
     if destino:
         texto = mensaje_cambios(cambios, emparejar(productos, catalogo_mio or [], enlaces),
                                 {str(p.get("id")) for p in fuera})
+        # Solo al cambiar de estado: cada 20 minutos, la misma alarma
+        # enseña a no leerla.
+        if sin_reservas != avisado_antes:
+            linea = ("⚠️ <b>La principal dejó de publicar sus vales.</b>\n"
+                     "El stock que comparo es el del almacén: lo reservado a clientes "
+                     "ya no se resta, y puede salir disponible algo que está prometido."
+                     if sin_reservas else
+                     "✅ La principal vuelve a publicar sus vales: el stock ya descuenta lo reservado.")
+            texto = linea + ("\n\n" + texto if texto else "")
         Path(destino).write_text(texto, encoding="utf-8")
         print(f"📝 Aviso de Telegram preparado: {sum(len(v) for v in cambios.values())} cambio(s)."
               if texto else "📝 Nada que avisar por Telegram.")
