@@ -388,7 +388,7 @@
     <loc>https://tiendamax.org/p/creatina-luckycare-5000mg</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tiendamax.org/p/inversor-must-pv15-1524-lv</loc>
@@ -626,6 +626,18 @@
   </url>
   <url>
     <loc>https://tiendamax.org/p/disyuntor-dc-mcb2p-63</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/camara-reversa</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tiendamax.org/p/hamaca-camping-2en1</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
