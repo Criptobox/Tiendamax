@@ -41,6 +41,10 @@ CONOCIDAS = {
     "renderizarProductos", "agregarAlCarrito", "mostrarVistaCategoria",
     "renderizarMasVendidos", "guardarProductos", "abrirDetalleProducto",
     "actualizarBotonesCategorias",
+    # tm-digital la envuelve a propósito (llama a la anterior para todo lo que
+    # no es un producto digital): «Pedir» de una tarjeta regalo tiene que
+    # abrir la ficha para elegir importe, no ir directo a WhatsApp.
+    "tmComprar",
 }
 
 

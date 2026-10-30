@@ -31,6 +31,7 @@ ORDEN = [
     "ficha-producto.css",  # bloques ampliados del modal (ficha/características/ideal/incluye) — clases tmf-*, no pisa nada
     "oferta-banner.css",   # tarjeta del banner de oferta del inicio — clases propias, no pisa nada
     "portada.css",         # orden y tamaño de los bloques del inicio — acotado a #vistaInicio
+    "digital.css",         # tarjetas regalo/recargas: precio en USDT y su ficha — clases tm-dig-*, no pisa nada
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 

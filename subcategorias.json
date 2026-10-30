@@ -70,5 +70,11 @@
   ],
   "LENCERIA": [],
   "General": [],
-  "COMBOS": []
+  "COMBOS": [],
+  "TARJETAS": [
+    "VISA Y MASTERCARD",
+    "JUEGOS",
+    "STREAMING",
+    "APPS Y COMPRAS"
+  ]
 }

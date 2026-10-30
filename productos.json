@@ -11931,5 +11931,758 @@
     "rev": 1792174009598,
     "seoTitle": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63… | TiendaMax",
     "seoDescription": "El disyuntor termomagnético de corriente continua TEDDYELE MCB2P-63 (C40) es un interruptor bipolar especializado de 40 Amperios y 440V DC, diseñado…"
+  },
+  {
+    "id": 1793400000001,
+    "nombre": "Diamantes Free Fire",
+    "precioActual": 2.5,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000001.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "diamantes-free-fire",
+    "comision": 0.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000001.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🎮 Directo a tu cuenta con tu ID de jugador",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Va directo a tu cuenta con tu ID de jugador. Mándanos una captura de tu perfil donde se vea el ID: a un ID equivocado no se le pueden quitar.",
+    "digital": true,
+    "region": "Cualquier país",
+    "unidad": "💎",
+    "importes": [
+      {
+        "v": 100,
+        "usdt": 2,
+        "usd": 2.5
+      },
+      {
+        "v": 310,
+        "usdt": 4,
+        "usd": 4.5
+      },
+      {
+        "v": 520,
+        "usdt": 6,
+        "usd": 6.5
+      },
+      {
+        "v": 1060,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 2180,
+        "usdt": 24,
+        "usd": 25.5
+      },
+      {
+        "v": 5600,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "Free Fire",
+      "tipo": "Diamantes",
+      "colores": [
+        "#3a0f00",
+        "#c2410c",
+        "#fbbf24"
+      ]
+    },
+    "seoTitle": "Diamantes Free Fire en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000002,
+    "nombre": "UC PUBG Mobile",
+    "precioActual": 2.5,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000002.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "uc-pubg-mobile",
+    "comision": 0.91,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000002.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🎮 Directo a tu cuenta con tu ID de jugador",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Va directo a tu cuenta con tu ID de jugador. Mándanos una captura de tu perfil donde se vea el ID: a un ID equivocado no se le pueden quitar.",
+    "digital": true,
+    "region": "Cualquier país",
+    "unidad": "UC",
+    "importes": [
+      {
+        "v": 60,
+        "usdt": 2,
+        "usd": 2.5
+      },
+      {
+        "v": 325,
+        "usdt": 6,
+        "usd": 6.5
+      },
+      {
+        "v": 660,
+        "usdt": 12,
+        "usd": 13.0
+      }
+    ],
+    "arte": {
+      "marca": "PUBG Mobile",
+      "tipo": "UC",
+      "colores": [
+        "#2b2006",
+        "#8a6a12",
+        "#e1b84a"
+      ]
+    },
+    "seoTitle": "UC PUBG Mobile en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000003,
+    "nombre": "Tarjeta PlayStation Store",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000003.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "tarjeta-playstation",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000003.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En la consola: PlayStation Store › Canjear códigos, y escribe los 12 caracteres.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "PlayStation",
+      "tipo": "Saldo",
+      "colores": [
+        "#00205b",
+        "#0050b5",
+        "#2f7be0"
+      ]
+    },
+    "seoTitle": "Tarjeta PlayStation Store en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000004,
+    "nombre": "Tarjeta Xbox",
+    "precioActual": 19.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000004.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "tarjeta-xbox",
+    "comision": 2.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000004.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En la consola: Tienda › Canjear, y escribe los 25 caracteres.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 15,
+        "usdt": 18,
+        "usd": 19.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "Xbox",
+      "tipo": "Saldo",
+      "colores": [
+        "#0b3d0b",
+        "#107c10",
+        "#3fa53f"
+      ]
+    },
+    "seoTitle": "Tarjeta Xbox en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000005,
+    "nombre": "Saldo Steam",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000005.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "saldo-steam",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000005.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En Steam: tu perfil › Cartera › Canjear código.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 20,
+        "usdt": 24,
+        "usd": 25.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "Steam",
+      "tipo": "Saldo",
+      "colores": [
+        "#0e1a2b",
+        "#1b2f4c",
+        "#3a6a9a"
+      ]
+    },
+    "seoTitle": "Saldo Steam en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000006,
+    "nombre": "Tarjeta Roblox",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000006.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "JUEGOS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "tarjeta-roblox",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000006.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: cualquier país",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Entra en roblox.com/redeem y escribe el PIN: se convierte en Robux.",
+    "digital": true,
+    "region": "Cualquier país",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      }
+    ],
+    "arte": {
+      "marca": "Roblox",
+      "tipo": "Saldo",
+      "colores": [
+        "#1c1c1c",
+        "#3a3a3a",
+        "#6b6b6b"
+      ]
+    },
+    "seoTitle": "Tarjeta Roblox en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000007,
+    "nombre": "Mastercard Prepago Virtual",
+    "precioActual": 25.5,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000007.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "VISA Y MASTERCARD",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "mastercard-prepago",
+    "comision": 3.4,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000007.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. Recibes número, fecha y CVV, y pagas con ella en la tienda en línea. Si te piden dirección, usa una de EE. UU. Algunas tiendas no aceptan tarjetas prepago.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 20,
+        "usdt": 24,
+        "usd": 25.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      },
+      {
+        "v": 100,
+        "usdt": 120,
+        "usd": 126.0
+      }
+    ],
+    "arte": {
+      "marca": "Mastercard",
+      "tipo": "",
+      "colores": [
+        "#2a1208",
+        "#8a3a12",
+        "#d97a2b"
+      ],
+      "chip": true
+    },
+    "seoTitle": "Mastercard Prepago Virtual en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000008,
+    "nombre": "Visa Prepago Virtual",
+    "precioActual": 25.5,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000008.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "VISA Y MASTERCARD",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "visa-prepago",
+    "comision": 3.4,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000008.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. Recibes número, fecha y CVV, y pagas con ella en la tienda en línea. Si te piden dirección, usa una de EE. UU. Algunas tiendas no aceptan tarjetas prepago.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 20,
+        "usdt": 24,
+        "usd": 25.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      },
+      {
+        "v": 100,
+        "usdt": 120,
+        "usd": 126.0
+      }
+    ],
+    "arte": {
+      "marca": "Visa",
+      "tipo": "",
+      "colores": [
+        "#1a2a6c",
+        "#2b4bb8",
+        "#5876e0"
+      ],
+      "chip": true
+    },
+    "seoTitle": "Visa Prepago Virtual en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000009,
+    "nombre": "Tarjeta Netflix",
+    "precioActual": 19.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000009.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "STREAMING",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "tarjeta-netflix",
+    "comision": 2.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000009.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. Entra en netflix.com/redeem y escribe el código: el saldo queda en tu cuenta y Netflix cobra de ahí cada mes. Sirve para cuentas que pagan en dólares.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 15,
+        "usdt": 18,
+        "usd": 19.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      }
+    ],
+    "arte": {
+      "marca": "Netflix",
+      "tipo": "Saldo",
+      "colores": [
+        "#1a0000",
+        "#7a0a0a",
+        "#e50914"
+      ]
+    },
+    "seoTitle": "Tarjeta Netflix en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000010,
+    "nombre": "Spotify Premium",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000010.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "STREAMING",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "spotify-premium",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000010.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. Entra en spotify.com/redeem y escribe el código: el saldo paga tus meses de Premium.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 30,
+        "usdt": 36,
+        "usd": 38.0
+      }
+    ],
+    "arte": {
+      "marca": "Spotify",
+      "tipo": "Saldo",
+      "colores": [
+        "#04210f",
+        "#0f6b33",
+        "#1ed760"
+      ]
+    },
+    "seoTitle": "Spotify Premium en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000011,
+    "nombre": "Tarjeta Amazon",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000011.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "APPS Y COMPRAS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "tarjeta-amazon",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000011.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En amazon.com: Cuenta › Tarjetas regalo › Canjear. El saldo se usa en tus compras de amazon.com.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "Amazon",
+      "tipo": "Saldo",
+      "colores": [
+        "#131a22",
+        "#232f3e",
+        "#ff9900"
+      ]
+    },
+    "seoTitle": "Tarjeta Amazon en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000012,
+    "nombre": "Saldo Google Play",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000012.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "APPS Y COMPRAS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "saldo-google-play",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000012.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En Play Store: tu perfil › Pagos › Canjear código.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      }
+    ],
+    "arte": {
+      "marca": "Google Play",
+      "tipo": "Saldo",
+      "colores": [
+        "#0b2a4a",
+        "#1565c0",
+        "#34a853"
+      ]
+    },
+    "seoTitle": "Saldo Google Play en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
+  },
+  {
+    "id": 1793400000013,
+    "nombre": "Apple Gift Card",
+    "precioActual": 13.0,
+    "precioOriginal": 0,
+    "imagen": "https://tiendamax.org/imagenes/img_1793400000013.webp",
+    "categoria": "TARJETAS",
+    "subcategoria": "APPS Y COMPRAS",
+    "stock": 99,
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "descuento": 0,
+    "slug": "apple-gift-card",
+    "comision": 1.9,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793400000013.webp"
+    ],
+    "specs": [
+      "⚡ Código por WhatsApp en 5–30 min",
+      "🌍 Región: EE. UU.",
+      "💵 Pago en USDT (BEP20) o USD"
+    ],
+    "recomendados": [],
+    "descripcion": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede devolver. Este código solo funciona en cuentas de Estados Unidos: dinos de qué país es tu cuenta antes de pagar. En el iPhone: App Store › tu perfil › Canjear tarjeta.",
+    "digital": true,
+    "region": "EE. UU.",
+    "importes": [
+      {
+        "v": 10,
+        "usdt": 12,
+        "usd": 13.0
+      },
+      {
+        "v": 25,
+        "usdt": 30,
+        "usd": 31.5
+      },
+      {
+        "v": 50,
+        "usdt": 60,
+        "usd": 63.0
+      }
+    ],
+    "arte": {
+      "marca": "Apple",
+      "tipo": "Saldo",
+      "colores": [
+        "#202024",
+        "#4a4a52",
+        "#9a9aa6"
+      ]
+    },
+    "seoTitle": "Apple Gift Card en Cuba | TiendaMax",
+    "seoDescription": "Pagas primero (USDT por la red BEP20, o USD) y te mandamos el código por WhatsApp en 5–30 minutos, de 9:00 a 21:00. Un código enviado no se puede…"
   }
 ]

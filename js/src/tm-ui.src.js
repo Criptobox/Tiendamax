@@ -1440,8 +1440,14 @@ renderizarProductos = function() {
                     : (_stk > 0 && _stk <= 3 ? '<span class="pv2-tag last">' + tmIcoUI('⚡') + ' Últimas ' + _stk + '</span>'
                         : (_vendidos >= 3 ? '<span class="pv2-tag hot">' + tmIcoUI('🔥') + ' ' + _vendidos + ' vendidos</span>'
                             : (producto.masVendido ? '<span class="pv2-tag hot">' + tmIcoUI('🔥') + ' Destacado</span>' : '')))));
+        // Producto digital (tarjeta regalo, recarga): precio en USDT, sin pago
+        // al recibir, y «Pedir» abre la ficha para elegir importe — ver
+        // tm-digital.src.js.
+        const _dig = typeof tmEsDigital === 'function' && tmEsDigital(producto);
         // Botón Pedir / Avísame (ancho completo). Agotado: texto corto + color distinto.
-        const _btn = esAgotado
+        const _btn = _dig
+            ? '<button class="btn-pedir-card pv2-pedir" type="button" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">' + tmIcoUI('⚡') + ' Pedir</button>'
+            : esAgotado
             ? '<button class="btn-pedir-card pv2-aviso" type="button" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">' + tmIcoUI('🔔') + ' Avísame</button>'
             : '<button class="btn-pedir-card pv2-pedir" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>';
         // Lazy loading: first N products above fold get eager+fetchpriority=high for LCP;
@@ -1465,7 +1471,9 @@ renderizarProductos = function() {
                 '<div class="pv2-meta">' + (typeof _tmMetaCard === 'function' ? _tmMetaCard(_id) : '') + '</div>' +
                 (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                 '<div class="pv2-foot">' +
-                    '<div class="pv2-price">' +
+                    (_dig ? '<div class="pv2-price">' + tmDigitalPrecioCardHTML(producto) + '</div>' +
+                            '<div class="tm-dig-trust">' + tmIcoUI('⚡') + ' Código por WhatsApp</div>' : '') +
+                    (_dig ? '' : '<div class="pv2-price">' +
                         // El porcentaje ya sale en la esquina de la foto (.pv2-tag);
                         // repetirlo aquí hacía que "-13%" apareciera dos veces en la
                         // misma tarjeta. Se queda solo el precio anterior tachado, que
@@ -1482,8 +1490,8 @@ renderizarProductos = function() {
                         (typeof tmEsMN === 'function' && tmEsMN(producto)
                             ? '<span class="precio-actual" data-mn="1">' + tmPrecioTexto(producto) + '</span>'
                             : '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>') +
-                    '</div>' +
-                    (esAgotado ? '' : '<div class="pv2-trust">' + tmIcoUI('🔒') + ' Pago al recibir' + (_tieneGarantia ? ' · ' + tmIcoUI('🛡') + ' Garantía' : '') + '</div>') +
+                    '</div>') +
+                    (esAgotado || _dig ? '' : '<div class="pv2-trust">' + tmIcoUI('🔒') + ' Pago al recibir' + (_tieneGarantia ? ' · ' + tmIcoUI('🛡') + ' Garantía' : '') + '</div>') +
                     _btn +
                 '</div>' +
                 '<span class="stock-count">' + (esAgotado ? 0 : _stk) + '</span>' +

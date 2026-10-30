@@ -337,6 +337,11 @@ def main() -> int:
         if _fuera.hay:
             curr_dict = {pid: p for pid, p in curr_dict.items() if not _fuera.producto(p)}
 
+    # Los digitales (tarjetas regalo, recargas) tampoco: son códigos que se
+    # compran al pedirlos, y al darlos de alta saldría un mensaje por cada uno.
+    # El dueño los anuncia una vez, a mano.
+    curr_dict = {pid: p for pid, p in curr_dict.items() if not p.get("digital")}
+
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
     # Doble guardia: no debe estar en el commit anterior NI haber sido
     # publicado antes (_ever_pub). Así, si git show falla y prev_dict queda

@@ -302,6 +302,21 @@ def sin_apagados(cambios: dict, productos, apagadas) -> dict:
     return {k: [x for x in v if str(x.get("id")) not in fuera] for k, v in cambios.items()}
 
 
+def sin_digitales(cambios: dict, productos) -> dict:
+    """Quita de lo detectado los productos digitales (categoría TARJETAS).
+
+    Son códigos que se compran al pedirlos: «nuevo», «rebajado» o «repuesto»
+    no significan nada para ellos, y al darlos de alta de golpe saldría un
+    push por cada uno. El dueño los anuncia una vez, a mano. Por id, como
+    sin_apagados: las rebajas y reposiciones no llevan el producto entero.
+    """
+    fuera = {str(p.get("id")) for p in (productos if isinstance(productos, list) else [])
+             if isinstance(p, dict) and p.get("digital")}
+    if not fuera:
+        return cambios
+    return {k: [x for x in v if str(x.get("id")) not in fuera] for k, v in cambios.items()}
+
+
 def decidir_aviso_tasa(cola: dict, config) -> None:
     """Deja en cola["tasa_pendiente"] el aviso de tasa que toca, o None.
 
@@ -1111,6 +1126,7 @@ def main():
     # parecerían nuevos y saldría un push anunciando lo que llevaba meses.
     apagadas = categorias_apagadas.leer(ROOT / "categorias.json")
     cambios = sin_apagados(cambios, p_act, apagadas)
+    cambios = sin_digitales(cambios, p_act)
     if cambios["nuevos"] or cambios["rebajas"] or cambios["restock"]:
         print(f"🔎 Cambios: {len(cambios['nuevos'])} nuevo(s), "
               f"{len(cambios['rebajas'])} rebaja(s), {len(cambios['restock'])} reposición(es)")
