@@ -28,6 +28,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -230,6 +231,77 @@ class NoSeLlevaNadaDeLosClientesTest(unittest.TestCase):
         for f in usos:
             self.assertIn(f, permitidas,
                 f"solo _reservado_por_producto debería leer la clave 'vales', también la lee {f}")
+
+
+class SinValesSeAvisaTest(unittest.TestCase):
+    """La principal dejó de publicar `vales` y la resta de lo reservado se
+    quedó en 0 en silencio: el stock volvió a ser el del almacén. Ahora se
+    sabe, se marca en el fichero y se avisa una vez, no cada 20 minutos."""
+
+    def _descargar(self, payload):
+        crudo = json.dumps(payload).encode()
+
+        class Resp:
+            def read(self_inner):
+                return crudo
+            def __enter__(self_inner):
+                return self_inner
+            def __exit__(self_inner, *a):
+                return False
+
+        info = {}
+        with mock.patch.object(cp.urllib.request, "urlopen", return_value=Resp()):
+            filas = cp.descargar("https://ejemplo.invalid/data.json", info=info)
+        return filas, info
+
+    def test_con_vales_hay_reservas(self):
+        _, info = self._descargar(NoSeLlevaNadaDeLosClientesTest.PAYLOAD)
+        self.assertIs(True, info["reservas"])
+
+    def test_sin_vales_no_se_sabe_lo_reservado(self):
+        payload = {k: v for k, v in NoSeLlevaNadaDeLosClientesTest.PAYLOAD.items() if k != "vales"}
+        filas, info = self._descargar(payload)
+        self.assertIs(False, info["reservas"])
+        self.assertEqual(2, filas[0]["stock"], "sin vales, el stock es el del almacén")
+
+    def test_la_marca_sola_tambien_se_escribe(self):
+        # Mismos productos, pero ahora sin reservas: si escribir() solo
+        # mirara la lista, la marca no llegaría nunca al panel.
+        with tempfile.TemporaryDirectory() as tmp:
+            ruta = Path(tmp) / "x.json"
+            base = {"actualizado": "a", "total": 1, "productos": [{"id": "1"}]}
+            self.assertTrue(cp.escribir(ruta, base, "productos"))
+            self.assertFalse(cp.escribir(ruta, {**base, "actualizado": "b"}, "productos"),
+                             "que el reloj avance no es un cambio")
+            self.assertTrue(cp.escribir(ruta, {**base, "reservasDesconocidas": True}, "productos"))
+            self.assertTrue(cp.reservas_desconocidas_antes(ruta))
+
+    def test_el_aviso_va_solo_al_cambiar_de_estado(self):
+        payload = {k: v for k, v in NoSeLlevaNadaDeLosClientesTest.PAYLOAD.items() if k != "vales"}
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            aviso = tmp / "aviso.txt"
+            parches = [mock.patch.object(cp, "SALIDA", tmp / "cat.json"),
+                       mock.patch.object(cp, "FICHAS", tmp / "fichas.json"),
+                       mock.patch.object(cp, "MIOS", tmp / "no-existe.json"),
+                       mock.patch.object(cp, "avisar", return_value=False),
+                       mock.patch.dict(cp.os.environ, {"AVISO_TELEGRAM": str(aviso)})]
+            for p in parches:
+                p.start()
+            try:
+                def correr():
+                    filas, info = self._descargar(payload)
+                    with mock.patch.object(cp, "descargar",
+                                           side_effect=lambda **kw: (kw["info"].update(info), filas)[1]):
+                        cp.main()
+                    return aviso.read_text(encoding="utf-8")
+                self.assertIn("dejó de publicar sus vales", correr())
+                self.assertNotIn("vales", correr(), "la segunda vez ya está dicho")
+                payload = NoSeLlevaNadaDeLosClientesTest.PAYLOAD
+                self.assertIn("vuelve a publicar sus vales", correr())
+            finally:
+                for p in parches:
+                    p.stop()
 
 
 class ReservadoPorValesTest(unittest.TestCase):

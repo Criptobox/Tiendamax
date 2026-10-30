@@ -25,6 +25,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
+import { catalogoEstable } from './catalogo_estable.mjs';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const noop = () => {};
@@ -38,7 +39,8 @@ const el = () => ({
     querySelector: () => el(), querySelectorAll: () => [],
 });
 const FUENTE = readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8');
-const CATALOGO = JSON.parse(readFileSync(join(RAIZ, 'productos.json'), 'utf8'));
+// Stock fijo: ver tests/catalogo_estable.mjs.
+const CATALOGO = catalogoEstable();
 
 // Cada escenario arranca con un bot nuevo: el hilo ES estado, y un test que
 // heredara el contexto del anterior pasaría o fallaría según el orden.

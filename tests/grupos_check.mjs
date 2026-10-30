@@ -107,7 +107,10 @@ ok(t.vs[0] === t.clasico, 'la versión 0 dejó de ser el post de siempre');
 t.vs.forEach((x, v) => {
     ok(x.includes(SIN.nombre), `la versión ${v} no lleva el nombre del producto`);
     ok(x.includes(t.precio), `la versión ${v} no lleva el precio (${t.precio})`);
-    ok(!/garant/i.test(x), `la versión ${v} promete garantía y el producto no la declara`);
+    // «garantía», no «garant»: desde que el post lleva la descripción, un
+    // «su construcción robusta garantiza…» del fabricante hacía saltar esto
+    // sin que ninguna versión prometiera nada.
+    ok(!/garant[ií]a/i.test(x), `la versión ${v} promete garantía y el producto no la declara`);
     ok(!/antes|ahorras/i.test(x), `la versión ${v} anuncia una rebaja que no existe`);
     ok(!/[?&]g=/.test(x), `la versión ${v} lleva marca de grupo sin grupo`);
 });

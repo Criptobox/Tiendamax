@@ -10060,7 +10060,7 @@
       "1× Cable de carga USB-C a USB-C",
       "1× Guía de inicio rápido y manual de seguridad"
     ],
-    "seoTitle": "Anker Soundcore Motion 300 en Cuba | TiendaMax",
+    "seoTitle": "Anker Soundcore Select 3 en Cuba | TiendaMax",
     "seoDescription": "El Anker Soundcore Motion 300 es un altavoz Bluetooth portátil de alta fidelidad diseñado para brindar una experiencia acústica rica, potente y envolvente…",
     "slug": "anker-soundcore-select-3",
     "slugsAnteriores": [
@@ -10967,7 +10967,7 @@
   },
   {
     "id": 1790961637329,
-    "nombre": "Base para paneles",
+    "nombre": "Base Para Paneles",
     "imagen": "https://tiendamax.org/imagenes/img_1790961633359.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790961633359.webp"
@@ -11053,13 +11053,13 @@
     ],
     "slug": "base-paneles",
     "rev": 1792773854029,
-    "seoTitle": "Base para paneles en Cuba | TiendaMax",
+    "seoTitle": "Base Para Paneles en Cuba | TiendaMax",
     "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…",
     "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel."
   },
   {
     "id": 1790963254986,
-    "nombre": "TP-Link RE705X / RE605X (REPETIDOR)",
+    "nombre": "TP-Link RE705X / RE605X (Repetidor)",
     "imagen": "https://tiendamax.org/imagenes/img_1790963250854.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790963250854.webp",
@@ -11181,7 +11181,7 @@
     ],
     "slug": "tplink-re705x-re605x",
     "rev": 1791575416579,
-    "seoTitle": "TP-Link RE705X / RE605X (REPETIDOR) en Cuba | TiendaMax",
+    "seoTitle": "TP-Link RE705X / RE605X (Repetidor) en Cuba | TiendaMax",
     "seoDescription": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura…",
     "descripcion": "El extensor de rango Wi-Fi 6 de TP-Link (serie RE705X / RE605X) es un dispositivo de pared diseñado para eliminar zonas muertas y expandir la cobertura inalámbrica de alta velocidad en hogares y oficinas. Su consumo eléctrico sumamente eficiente de solo 10W a 12.6W máximo en uso intensivo lo convierte en una solución perfecta para operar de forma continua conectado a sistemas de respaldo por baterías, inversores solares o respaldos UPS sin sobrecargar la reserva de energía."
   },
@@ -11308,7 +11308,7 @@
   },
   {
     "id": 1791502917024,
-    "nombre": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V 100Ah / 1280Wh) 80 ciclos de carga",
+    "nombre": "Batería de Litio LiFePO4 Must LP15-12100 (12.8V 100Ah / 1280Wh) 80 Ciclos de Carga",
     "imagen": "https://tiendamax.org/imagenes/img_1791502915309.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1791502915309.webp"
@@ -11433,7 +11433,7 @@
     ],
     "slug": "bateria-lifepo4-lp15-12100",
     "rev": 1792849855397,
-    "seoTitle": "Batería de Litio LiFePO4 MUST LP15-12100 (12.8V… | TiendaMax",
+    "seoTitle": "Batería de Litio LiFePO4 Must LP15-12100 (12.8V… | TiendaMax",
     "seoDescription": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento…",
     "descripcion": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento, diseñado para sustituir ventajosamente a las tradicionales baterías de plomo-ácido, gel o AGM en sistemas solares fotovoltaicos, respaldos de emergencia e instalaciones aisladas. Gracias a su química LiFePO4, proporciona una estabilidad térmica y química superior, eliminando riesgos de fuga de gases o sobrecalentamiento crítico y ofreciendo una vida útil que supera holgadamente los 4000 a 6000 ciclos al 80% de profundidad de descarga (DoD)."
   },
@@ -11587,10 +11587,7 @@
     "specs": [
       "⚡ Voltaje: 12V / 24V (Detección Automática)",
       "🔌 Corriente Regulable: Hasta 30A",
-      "🔄 Compatibilidad: LiFePO4",
-      "GEL",
-      "AGM",
-      "EFB y Plomo"
+      "🔄 Compatibilidad: LiFePO4, GEL, AGM, EFB y Plomo"
     ],
     "fechaAgregado": "2026-10-16T17:53:36.707Z",
     "ficha": [
@@ -11689,9 +11686,9 @@
   {
     "id": 1792173470469,
     "nombre": "Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 40A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
-    "imagen": "https://tiendamax.org/imagenes/img_1792173467326.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1792173213173.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1792173467326.webp"
+      "https://tiendamax.org/imagenes/img_1792173213173.webp"
     ],
     "precioActual": 140,
     "precioOriginal": 0,
@@ -11708,10 +11705,7 @@
     "specs": [
       "⚡ Voltaje: 12V / 24V (Detección Automática)",
       "🔌 Carga Rápida: Hasta 40A (12V) / 20A (24V)",
-      "🔄 Compatibilidad: LiFePO4",
-      "GEL",
-      "AGM",
-      "EFB y Plomo"
+      "🔄 Compatibilidad: LiFePO4, GEL, AGM, EFB y Plomo"
     ],
     "fechaAgregado": "2026-10-16T17:57:50.470Z",
     "ficha": [
@@ -11814,7 +11808,7 @@
   },
   {
     "id": 1792173999747,
-    "nombre": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar para Sistemas Solares Fotovoltaicos y Baterías",
+    "nombre": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar Para Sistemas Solares Fotovoltaicos y Baterías",
     "descripcion": "El disyuntor termomagnético de corriente continua TEDDYELE MCB2P-63 (C40) es un interruptor bipolar especializado de 40 Amperios y 440V DC, diseñado específicamente para brindar protección integral contra sobrecargas y cortocircuitos en instalaciones solares fotovoltaicas, bancos de acumuladores y circuitos de energía continua. A diferencia de los breakers comunes para corriente alterna (AC), este dispositivo incorpora una cámara interna de extinción magnética de arco eléctrico calibrada para sofocar de forma inmediata el arco continuo que genera la corriente directa al abrirse bajo carga, evitando el desgaste prematuro de los contactos y previniendo riesgos de incendio en el tablero eléctrico.",
     "imagen": "https://tiendamax.org/imagenes/img_1792173996442.webp",
     "imagenes": [

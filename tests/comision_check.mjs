@@ -38,7 +38,15 @@ const MIME = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.cs
 const servidor = createServer(async (q, r) => {
     const ruta = normalize(join(RAIZ, decodeURIComponent(q.url.split('?')[0])));
     try {
-        const cuerpo = await readFile(ruta);
+        let cuerpo = await readFile(ruta);
+        // Las categorías se sirven sin `apagadas`: lo que se prueba aquí es
+        // qué cuenta como «sin comisión», no qué categoría tiene apagada hoy
+        // el dueño. Con el archivo real, el día que apagó WIFI dos de los tres
+        // productos de prueba desaparecieron (bien hecho por el panel) y el
+        // test se puso rojo sin que nada se hubiera roto.
+        if (ruta.endsWith('categorias.json')) {
+            const c = JSON.parse(cuerpo); delete c.apagadas; cuerpo = JSON.stringify(c);
+        }
         r.writeHead(200, { 'Content-Type': MIME[extname(ruta)] || 'application/octet-stream' });
         r.end(cuerpo);
     } catch (e) { r.writeHead(404); r.end(); }

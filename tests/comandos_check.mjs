@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
+import { catalogoEstable } from './catalogo_estable.mjs';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const noop = () => {};
@@ -27,7 +28,8 @@ const win = {
     addEventListener: noop, setTimeout, clearTimeout, open: () => null,
     matchMedia: () => ({ matches: false, addEventListener: noop }),
 };
-const catalogo = JSON.parse(readFileSync(join(RAIZ, 'productos.json'), 'utf8'));
+// Stock fijo: ver tests/catalogo_estable.mjs.
+const catalogo = catalogoEstable();
 const sb = {
     window: win, location: win.location,
     document: { createElement: el, querySelector: () => el(), querySelectorAll: () => [],
@@ -125,7 +127,11 @@ for (const q of ['que es un inversor', 'que es mppt', 'que significa mppt',
 // Y la explicación va PRIMERO: quien pregunta qué es algo no preguntó por el
 // inventario, y se le contestaba con "no encontré productos" antes que nada.
 const def = B.responder('que es onda pura').response.replace(/<[^>]+>/g, '');
-ok(def.indexOf('onda pura') < def.indexOf('no tengo productos'),
+// Si hay productos con onda pura no hay aviso que buscar (indexOf -1), y
+// eso no puede contar como fallo: basta con que la explicación esté y vaya
+// delante del aviso cuando lo hay.
+const _iAviso = def.indexOf('no tengo productos'), _iDef = def.toLowerCase().indexOf('onda pura');
+ok(_iDef >= 0 && (_iAviso < 0 || _iDef < _iAviso),
     'en una definición, la explicación va antes que el aviso de inventario');
 
 // Los filtros técnicos siguen funcionando: son otra pregunta.
