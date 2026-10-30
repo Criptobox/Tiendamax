@@ -123,7 +123,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="hdr">
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="admin.html" title="Volver al admin" style="color:var(--gold);text-decoration:none;font-size:22px;line-height:1;padding:4px 8px;margin-right:2px;border:1px solid var(--border-gold);border-radius:9px">←</a>
+    <a href="admin.html" onclick="return valeVolverAdmin()" title="Volver al admin" style="color:var(--gold);text-decoration:none;font-size:22px;line-height:1;padding:4px 8px;margin-right:2px;border:1px solid var(--border-gold);border-radius:9px">←</a>
     <img class="logo" src="/iconos/icon-192.png" alt="TiendaMax" style="object-fit:cover">
     <div>
       <div style="font-family:'Playfair Display',serif;font-size:16px">Tienda Max</div>
@@ -317,7 +317,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 <script src="/js/auth.js?v=4c7b6472"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
-<script src="/js/reservas.js?v=dcf96cd5"></script>
+<script src="/js/reservas.js?v=e6a536a1"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
 // Margen sobre la tasa elToque (igual que la tienda: getTasaMN = tasaMN + margenMN).
@@ -1480,6 +1480,19 @@ function renderVentaVale(){
     +(c.sin.length?'<div class="venta-aviso">'+e(c.sin.join(', '))+(c.sin.length>1?' no tienen':' no tiene')+' comisión: cuenta como $0 para ti. Ponla en Productos → ❓ Sin comisión.</div>':'')
     +'<button class="btn-venta" onclick="valeEntregado()">✅ Entregado → registrar venta</button>'
     +'<div style="font-size:11px;color:var(--dim);margin-top:6px;text-align:center">Se abre el panel en 🔒 Reservas con este vale arriba, para confirmarlo.</div>';
+}
+/* «←»: si se llegó desde el panel, se vuelve atrás en vez de abrirlo de
+   nuevo. El panel sale de la caché del navegador al instante —sin volver a
+   bajar catálogo y categorías por 3G— y trae el stock de las reservas hechas
+   aquí (reservasTraerStock, en pageshow). Sin panel detrás, el enlace normal. */
+function valeVolverAdmin(){
+  try{
+    const ref = document.referrer ? new URL(document.referrer) : null;
+    if(ref && ref.origin === location.origin && /\/admin(\.html)?$/.test(ref.pathname) && history.length > 1){
+      history.back(); return false;
+    }
+  }catch(e){}
+  return true;
 }
 function valeEntregado(){
   if(!_valeItems.length){ toast('⚠️ Elige los productos del catálogo en el paso 2'); return; }

@@ -1405,7 +1405,11 @@ try{var _piel=localStorage.getItem('tm_piel');
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
-      <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
+      <!-- El vale se abre en esta misma ventana, como el acceso directo #vale:
+           en otra pestaña quedaban dos paneles abiertos (el vale vuelve a
+           admin.html al registrar la venta), y en la app instalada salía
+           fuera de la ventana de la app. «←» en el vale vuelve aquí. -->
+      <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="location.href='vale.html'">🧾</button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="reposicion" title="Reposición · qué volver a comprar">📥<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="qr" title="Código QR para imprimir">🔳<span class="new-tag">N</span></button>
@@ -2147,7 +2151,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js?v=dcf96cd5"></script>
+<script src="js/reservas.js?v=e6a536a1"></script>
 <script src="js/admin-copilot.js?v=2650e5f3"></script>
 
 <script>
@@ -2940,32 +2944,49 @@ function reservaCancelar(id){
   if(!confirm('¿Cancelar la reserva de '+(r.cliente||'este cliente')+'?\n\nEl producto vuelve al stock y se podrá vender a otro.')) return;
   const c=TMReservas.cancelar(id);
   if(!c.ok){ mostrarNotificacion('❌ '+c.msg,'error'); return; }
+  // TMReservas devolvió el stock en localStorage; a la memoria del panel hay
+  // que traerlo antes de sincronizar, o se sube la cifra de antes.
+  reservasTraerStock();
   if(typeof sincronizarConGitHub==='function'){ try{ sincronizarConGitHub(); }catch(e){} }
   mostrarNotificacion('↩️ Reserva cancelada. El stock volvió.');
   renderReservas();
 }
 
-/* El vale corre en otra página y descuenta el stock escribiendo en
-   localStorage. El admin lo tiene en memoria y lo vuelca entero al guardar:
-   sin releerlo al volver, el primer guardado del admin pisaría el descuento y
-   el producto reservado volvería a aparecer disponible. */
-window.addEventListener('focus', function(){
+/* El vale descuenta el stock escribiendo en localStorage, y el admin tiene el
+   catálogo en memoria y lo vuelca entero al guardar: sin traer ese descuento,
+   el primer guardado del admin lo pisaba y lo reservado volvía a salir a la
+   venta. Se aplican SOLO los movimientos de reservas (TMReservas lleva el
+   registro): antes se copiaba todo el stock del localStorage, que la tienda
+   pública también escribe con lo que bajó de la red. Y no solo en `focus`,
+   que en el móvil no salta al volver de otra pestaña: también al hacerse
+   visible, con el evento `storage` (el vale en otra pestaña) y al volver con
+   «atrás» desde la caché del navegador. */
+let _resMovVisto = Date.now();
+function reservasTraerStock(){
   try{
-    if(typeof productos==='undefined'||!Array.isArray(productos)) return;
-    const disco=JSON.parse(localStorage.getItem('productos')||'null');
-    if(!Array.isArray(disco)||!disco.length) return;
+    if(typeof TMReservas==='undefined' || !TMReservas.movimientosDesde) return 0;
+    const movs=TMReservas.movimientosDesde(_resMovVisto);
+    if(!movs.length) return 0;
     let cambios=0;
-    disco.forEach(function(d){
-      const p=productos.find(x=>String(x.id)===String(d.id));
-      if(p && Number(p.stock)!==Number(d.stock)){ p.stock=Number(d.stock); cambios++; }
+    movs.forEach(m=>{
+      _resMovVisto=Math.max(_resMovVisto, m.ts||0);
+      const p=PRODUCTOS.find(x=>String(x.id)===String(m.id));
+      if(p && Number(p.stock)!==Number(m.stock)){ p.stock=Number(m.stock); cambios++; }
     });
     if(cambios){
       if(typeof actualizarCountdownProductSelect==='function') actualizarCountdownProductSelect();
       const v=document.querySelector('.view.active');
-      if(v&&v.id==='view-reservas') renderReservas();
+      if(v && v.id==='view-reservas') renderReservas();
+      if(v && v.id==='view-ventas') ventaRenderPicker();
+      if(v && v.id==='view-productos' && typeof renderProductos==='function') renderProductos();
     }
-  }catch(e){}
-});
+    return cambios;
+  }catch(e){ return 0; }
+}
+window.addEventListener('focus', reservasTraerStock);
+window.addEventListener('pageshow', reservasTraerStock);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') reservasTraerStock(); });
+window.addEventListener('storage', e=>{ if(e.key==='tm_reservas_mov') reservasTraerStock(); });
 
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
@@ -2999,7 +3020,12 @@ function ventaRenderPicker(){
   cats.innerHTML = chip('','Todas',PRODUCTOS.length)
     + nombres.map(c=>chip(c,c,porCat[c].length)).join('');
 
-  const visibles = VENTA_CAT ? porCat[VENTA_CAT] : nombres.reduce((a,c)=>a.concat(porCat[c]),[]);
+  // Lo que se puede vender primero; los agotados al final, también en
+  // «Todas» (antes cada categoría traía los suyos mezclados en medio y había
+  // que pasar por encima de ellos para llegar al siguiente con stock).
+  const _orden = VENTA_CAT ? porCat[VENTA_CAT] : nombres.reduce((a,c)=>a.concat(porCat[c]),[]);
+  const visibles = _orden.filter(p=>(Number(p.stock)||0)>0)
+    .concat(_orden.filter(p=>!((Number(p.stock)||0)>0)));
   lista.innerHTML = visibles.length ? visibles.map(p=>{
     const st=Number(p.stock)||0;
     // Los agotados se dejan a la vista y se pueden vender: a veces la venta es
