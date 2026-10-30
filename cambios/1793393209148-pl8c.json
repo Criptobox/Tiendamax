@@ -1,0 +1,118 @@
+{
+  "v": 1,
+  "creado": "2026-10-30T20:46:49.148Z",
+  "productos": [
+    {
+      "id": 1793391707181,
+      "nombre": "Cámara de reversa",
+      "descripcion": "Camara de reversa con luces led  para automóvil;  con \nPantalla LCD de 4.3 pulgadas y  guia de estacionamiento para facilitar la maniobra al parquear o retroceder.\nLa pantalla posee soporte ajustable para colocarla en el tablero del vehículo.\nConexión de video RCA para transmitir la imagen de la cámara a la pantalla.\nCableado de conexión incluido para facilitar la instalación.\nAlimentación mediante toma de 12 V.\nDiseño compacto y práctico que ocupa poco espacio en el tablero.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793391690324.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793391690324.webp"
+      ],
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 2,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "CARROS",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📺 Monitor LCD TFT de 4.3\"",
+        "🔌 Consumo máx. 3W (Alimentación 12V DC)",
+        "💡 Cámara Impermeable IP68 con 8 LEDs"
+      ],
+      "fechaAgregado": "2026-10-30T20:21:47.185Z",
+      "ficha": [
+        {
+          "k": "Pantalla del Monitor",
+          "v": "LCD TFT de 4.3 pulgadas con formato 16:9 y visor antirreflejo superior"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "≤ 3W",
+          "nota": "ultraeficiente para sistemas de 12V automotrices"
+        },
+        {
+          "k": "Voltaje de Operación",
+          "v": "12V DC",
+          "nota": "conecta a la luz de reversa o fusible de accesorios"
+        },
+        {
+          "k": "Iluminación de Cámara",
+          "v": "8 LEDs infrarrojos / de luz blanca para visión nocturna automática"
+        },
+        {
+          "k": "Grado de Protección de Cámara",
+          "v": "IP68",
+          "nota": "totalmente impermeable, sellada contra agua y polvo"
+        },
+        {
+          "k": "Entradas de Video",
+          "v": "2× Entradas RCA",
+          "nota": "V1 estándar / V2 con prioridad automática para señal de reversa"
+        },
+        {
+          "k": "Líneas de Asistencia",
+          "v": "Guías de parqueo coloreadas impresas en pantalla",
+          "nota": "Verde / Amarillo / Rojo"
+        },
+        {
+          "k": "Ángulo de Visión",
+          "v": "Gran angular de 140° – 170° de cobertura panorámica"
+        },
+        {
+          "k": "Soporte del Monitor",
+          "v": "Base basculante con cinta adhesiva de doble cara para tablero o parabrisas"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "8 LEDs de Visión Nocturna Integrados",
+          "d": "iluminación auxiliar automática que enciende al engranar la marcha atrás para una imagen clara en la noche."
+        },
+        {
+          "t": "Entrada RCA con Prioridad de Reversa (Video 2)",
+          "d": "el monitor se enciende automáticamente al detectar señal de la luz de reversa y se apaga al quitar la marcha."
+        },
+        {
+          "t": "Lente Impermeable IP68",
+          "d": "cámara sellada que soporta lluvias fuertes, lavados de autos y salpicaduras de barro sin empañarse por dentro."
+        },
+        {
+          "t": "Líneas Guía de Parqueo en Pantalla",
+          "d": "referencias de color que facilitan el cálculo de distancia exacta hacia obstáculos o paredes."
+        },
+        {
+          "t": "Parasol Antirreflejo en Monitor",
+          "d": "visibilidad clara del panel LCD incluso bajo luz solar directa reflejada en el parabrisas."
+        },
+        {
+          "t": "Instalación Versátil",
+          "d": "cámara orientable con soporte metálico perforado para fijar en el marco de la matrícula o sobre la puerta trasera."
+        }
+      ],
+      "idealPara": [
+        "Instalación en autos, camionetas, vans, pickups, SUVs, taxis y microbuses para facilitar el parqueo en espacios reducidos.",
+        "Eliminar puntos ciegos traseros y prevenir accidentes con peatones, mascotas u objetos bajos al dar marcha atrás.",
+        "Conductores que buscan una solución de parqueo clara, de bajo costo y fácil de instalar mediante cableado RCA estándar."
+      ],
+      "incluye": [
+        "1× Monitor LCD de 4.3\" con soporte adhesivo y visor superior antirreflejo",
+        "1× Cámara de reversa impermeable IP68 con 8 LEDs integrados",
+        "1× Cable de video RCA con hilo de activación/trigger (~6 metros)",
+        "2× Cables de alimentación DC para monitor y cámara",
+        "1× Manual de usuario e instrucciones de cableado"
+      ],
+      "slug": "camara-reversa",
+      "rev": 1793393209148
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
