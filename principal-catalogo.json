@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-29T17:23:13Z",
+ "actualizado": "2026-10-30T08:29:57Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 119,
  "productos": [
@@ -1321,5 +1321,6 @@
    "comisionMoneda": "USD",
    "foto": "https://axontech92.github.io/AXONTECH/photos/p-1788560867958-06577344.webp"
   }
- ]
+ ],
+ "reservasDesconocidas": true
 }
