@@ -3858,11 +3858,15 @@ ${notasHTML}
       // están agotados, y esa prueba social es justo lo que convence de
       // esperar a que vuelva en vez de irse.
       body += bloqueResenas(p);
-      body += `\n⚠️ <em>Este producto está agotado ahora mismo.</em> Pero tengo alternativas similares disponibles:`;
+      // Sin alternativas no se promete una lista que no llega, y la tarjeta
+      // que se enseña es la SUYA (marcada agotada): preguntó por este.
       const alt = findAlternativas(p, 3);
+      body += alt.length
+        ? `\n⚠️ <em>Este producto está agotado ahora mismo.</em> Pero tengo alternativas similares disponibles:`
+        : `\n⚠️ <em>Este producto está agotado ahora mismo</em> y no tengo nada parecido disponible. Escríbeme por WhatsApp y te aviso en cuanto entre.`;
       return {
         response: body,
-        products: alt,
+        products: alt.length ? alt : [p],
         quickReplies: alt.length > 0 ? ['🆚 Comparar dos de estos','❤️ Añadir a deseos','💬 WhatsApp'] : ['❤️ Añadir a deseos','💬 WhatsApp','📦 Ver categorías']
       };
     }
@@ -4380,6 +4384,15 @@ ${notasHTML}
       // de inventario. Empezar por "no encontré productos" contestaba a otra
       // pregunta antes que a la suya.
       const esDefinicion = /\b(qu[eé] es|qu[eé] son|qu[eé] significa|qu[eé] quiere decir|para qu[eé] sirve|expl[ií]ca(me)?|def[ií]ne(me)?|en qu[eé] consiste)\b/.test(String(text || '').toLowerCase());
+      /* «Quiero la Cerradura Inteligente Biométrica…» no pregunta por la
+         biometría: nombra un producto, y si está agotado es SU ficha la que
+         toca, no «no tengo nada con esa característica» más un glosario. */
+      if(!esDefinicion){
+        const _qn = _expandirConsulta(cleanForMatch(text));
+        const nombrado = findProducts(text, 3, {includeAgotados:true})
+          .find(p => !(p.stock > 0) && _matchFuerte(p, _qn));
+        if(nombrado) return buildDetalle(nombrado, text);
+      }
       const sinStock = `🔍 Ahora mismo no tengo productos disponibles con esa característica${_context.presupuesto ? ` y presupuesto de $${_context.presupuesto}` : ''}.`;
       let body = esDefinicion
         ? (explicas.join('\n\n') + (explicas.length ? '\n\n' : '') + sinStock)
@@ -4574,6 +4587,24 @@ ${notasHTML}
       // Si el presupuesto deja el tipo pedido sin nada, se dice — no se cae a
       // la búsqueda difusa, que contestaba "qué inversor me recomiendas" con
       // una raqueta matamoscas porque era lo único bajo ese precio.
+      /* El tipo existe pero no queda ninguno. Antes se caía a la búsqueda
+         difusa: «tienen cámaras», con las 8 cámaras agotadas, contestaba con
+         la ficha de un timbre porque su nombre dice «con cámara», y
+         «routers» contestaba que un MikroTik concreto estaba agotado, como
+         si se hubiera preguntado por ese. Se dice lo que pasa con el tipo,
+         y si algo disponible lo nombra de verdad, se enseña como lo que es. */
+      if(!_todos.length){
+        const n = PRODUCTOS.filter(p => p.subcategoria === sub).length;
+        const _qs = _expandirConsulta(cleanForMatch(text));
+        const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qs));
+        let body = `📂 <strong>${escapeHtml(sub)}</strong>: ahora mismo ${n > 1 ? `los ${n} modelos están` : 'está'} <em style="color:#ff8888">agotado${n > 1 ? 's' : ''}</em>.\n\nEscríbeme por WhatsApp y te aviso en cuanto entren.`;
+        if(otros.length) body += `\n\nLo que sí tengo disponible relacionado:`;
+        return {
+          response: body,
+          products: otros,
+          quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+        };
+      }
       if(!lista.length && _todos.length){
         return {
           response: `📂 No tengo nada en <strong>${escapeHtml(sub)}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtUSD(_todos[0].precio)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
@@ -4621,22 +4652,7 @@ ${notasHTML}
       // está agotado", y el vendedor quedaba desmentido por WhatsApp.
       const _qa = _expandirConsulta(cleanForMatch(text));
       const agotadoReal = agotados.find(p => _matchFuerte(p, _qa));
-      if(agotadoReal){
-        const alt = findAlternativas(agotadoReal, 3);
-        // Y no se promete una lista que luego no llega: sin alternativas, se
-        // ofrece avisar cuando vuelva, que es lo único útil que queda.
-        if(!alt.length){
-          return {
-            response: `🔍 <strong>${escapeHtml(agotadoReal.nombre)}</strong> está <em style="color:#ff8888">agotado</em> ahora mismo y no tengo nada parecido disponible.\n\nEscríbeme por WhatsApp y te aviso en cuanto entre.`,
-            quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
-          };
-        }
-        return {
-          response: `🔍 <strong>${escapeHtml(agotadoReal.nombre)}</strong> está <em style="color:#ff8888">agotado</em> ahora mismo. Te muestro <strong>alternativas disponibles</strong>:`,
-          products: alt,
-          quickReplies: ['💬 WhatsApp','📦 Categorías']
-        };
-      }
+      if(agotadoReal) return buildDetalle(agotadoReal, text);
       return R.fallback(text);
     }
     // Si NINGUNO casa por nombre, subcategoría o ficha, esto no es "lo que
@@ -4646,6 +4662,15 @@ ${notasHTML}
     // Smart TV con "televisores" y luego dice "eso exacto no lo tengo".
     const _q = _expandirConsulta(cleanForMatch(text));
     const _fuerte = prods.some(p => _matchFuerte(p, _q));
+    /* Nada disponible casa de verdad, pero un agotado sí: preguntaron por
+       ESE. «¿Tienen compresor?» con el compresor a 0 enseñaba un Changan
+       CS75 como «lo más parecido», solo porque había algo con stock que
+       puntuaba algo. */
+    if(!_fuerte){
+      const agotadoReal = findProducts(text, 3, {includeAgotados:true})
+        .find(p => !(p.stock > 0) && _matchFuerte(p, _q));
+      if(agotadoReal) return buildDetalle(agotadoReal, text);
+    }
     /* Uno solo, y casa por nombre: eso es una ficha, no una lista de uno.
        «¿Tienes el hap ac3?» devolvía «esto es lo que tengo relacionado con
        tu búsqueda» con una sola tarjeta debajo — el mismo encabezado que
@@ -4808,6 +4833,23 @@ ${notasHTML}
   // dentro. Además, marcarlo aquí acierta también cuando otro manejador se
   // rinde por dentro (`return R.fallback(text)`), que antes quedaba anotado
   // como si hubiera contestado bien.
+  /* Lo que hay a la venta, sacado del catálogo y no escrito a mano. La
+     lista fija decía «wifi y redes» también el día que WIFI estaba apagada
+     y entera agotada: «¿tienen routers?» → «eso no lo manejo… lo que sí
+     tengo es wifi y redes», que se desmiente en la misma frase. */
+  const _CAT_ETIQUETA = {
+    'WIFI':'wifi y redes', 'ENERGIA':'energía y solar', 'CARROS':'carros', 'UTILES':'herramientas y útiles',
+    'SEGURIDAD':'seguridad', 'HOGAR':'hogar', 'MOTOS':'motos', 'CELULARES':'celulares', 'AUDIO':'audio',
+    'JUEGOS':'juegos', 'ROPA':'ropa', 'PC Y LAPTOPS':'PC y laptops', 'GYM':'gimnasio',
+  };
+  function _loQueSiTengo(){
+    const cats = [...new Set(PRODUCTOS.filter(p => p.stock > 0 && p.categoria).map(p => p.categoria))]
+      .map(c => _CAT_ETIQUETA[String(c).toUpperCase()] || String(c).toLowerCase());
+    if(!cats.length) return '';
+    const txt = cats.length > 1 ? cats.slice(0, -1).join(', ') + ' y ' + cats[cats.length - 1] : cats[0];
+    return `Lo que sí tengo ahora es <em>${escapeHtml(txt)}</em>.\n\n`;
+  }
+
   R.fallback = (text) => {
     const prods = findProducts(text, 3);
     if(prods.length > 0){
@@ -4826,7 +4868,7 @@ ${notasHTML}
        comprobación que mantiene honesta a NO_VENDEMOS. */
     if(/\b(vende[ns]?|venden|tiene[ns]?|tienen|hay|manejan|maneja|trabajan con|consiguen|consigues|te queda[n]?)\b/.test(normalize(text))){
       return {
-        response: `🙅 <strong>Eso no lo manejo</strong> — no está en el catálogo y prefiero decírtelo claro antes que enseñarte otra cosa parecida.\n\nLo que sí tengo es equipamiento de <em>wifi y redes, energía y solar, seguridad, carros, motos, hogar y herramientas</em>.\n\nSi lo necesitas igual, escríbeme por WhatsApp y te digo si puedo conseguírtelo.`,
+        response: `🙅 <strong>Eso no lo manejo ahora mismo</strong> — no está en el catálogo y prefiero decírtelo claro antes que enseñarte otra cosa parecida.\n\n${_loQueSiTengo()}Si lo necesitas igual, escríbeme por WhatsApp y te digo si puedo conseguírtelo.`,
         sinRespuesta: true,
         quickReplies: ['📦 Categorías','💬 WhatsApp','🔥 Ofertas']
       };
