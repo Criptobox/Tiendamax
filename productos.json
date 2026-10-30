@@ -12771,7 +12771,7 @@
     "descuento": 0,
     "stock": 2,
     "comision": 1500,
-    "comisionMoneda": "USD",
+    "comisionMoneda": "MN",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
     "masVendido": false,
@@ -12866,9 +12866,7 @@
       "1× Manual de usuario e instrucciones de cableado"
     ],
     "slug": "camara-reversa",
-    "rev": 1793393116521,
-    "seoTitle": "Cámara de reversa en Cuba | TiendaMax",
-    "seoDescription": "Camara de reversa con luces led para automóvil; con Pantalla LCD de 4.3 pulgadas y guia de estacionamiento para facilitar la maniobra al parquear o…"
+    "rev": 1793393209148
   },
   {
     "id": 1793392327732,
