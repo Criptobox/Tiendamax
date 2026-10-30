@@ -6,15 +6,12 @@ if (window.__tmAdminCopilotLoaded) return;
 window.__tmAdminCopilotLoaded = true;
 
 const LS = {
-  opened: 'tm_copilot_opened_day',
-  snooze: 'tm_copilot_snooze_until',
   notify: 'tm_copilot_last_notify',
   dismissed: 'tm_copilot_dismissed_tasks',
   memory: 'tm_copilot_memory_v1',
   view: 'tm_copilot_view',
   pregVistas: 'tm_copilot_preguntas_vistas'
 };
-const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false, iaPreviewPid: null, iaPreviewData: null, iaPreviewCargando: false };
 let refreshTimer = null;
 const PROMO_BADGE_PRESETS = [
@@ -570,7 +567,7 @@ function toast(t){
   el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),2800);
 }
-function openSheet(){ ensureUI(); renderSheet(); $('#tmCopilotSheet').classList.add('show'); localStorage.setItem(LS.opened, DAY); }
+function openSheet(){ ensureUI(); renderSheet(); $('#tmCopilotSheet').classList.add('show'); }
 function closeSheet(){ const s=$('#tmCopilotSheet'); if(s) s.classList.remove('show'); }
 
 async function collectFirebaseFacts(ps){
@@ -2154,7 +2151,6 @@ function renderSheet(){
       <button type="button" class="tm-copilot-btn primary" data-cop="launchAgents">🚀 Lanzar agentes</button>
       <button type="button" class="tm-copilot-btn green" data-cop="enableAlerts">🔔 Alertas admin</button>
       <button type="button" class="tm-copilot-btn blue" data-cop="openInicio">🏠 Ir a Inicio</button>
-      <button type="button" class="tm-copilot-btn gold" data-cop="snooze">😴 Ocultar 2h</button>
     </div>
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
@@ -2378,7 +2374,6 @@ function bindEvents(){
     if(act==='saveStrategy') saveCampaignDraft();
     if(act==='enableAlerts') enableAlerts();
     if(act==='openInicio') switchTo('inicio');
-    if(act==='snooze'){ localStorage.setItem(LS.snooze, String(Date.now()+2*60*60*1000)); closeSheet(); toast('Copiloto oculto por 2 horas'); }
     if(act==='task') abrirTarea(el.dataset.tab);
     if(act==='dismiss') descartarTarea(el.dataset.id);
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
@@ -2463,11 +2458,11 @@ function bindEvents(){
   });
 }
 function isAdminVisible(){ const p=$('#adminPanel'); return !!(p && !p.classList.contains('hidden')); }
-function shouldAutoOpen(){
-  if (localStorage.getItem(LS.opened) === DAY) return false;
-  if (Number(localStorage.getItem(LS.snooze)||0) > Date.now()) return false;
-  return state.tasks.some(t=>t.urgency>=3);
-}
+/* La hoja ya no se abre sola. Lo hacía una vez al día en cuanto había una
+   tarea urgente, y caía encima de lo que el gestor había venido a hacer —
+   tapaba hasta los interruptores de Categorías—, para enseñar las mismas
+   tareas que Inicio ya pone en su agenda (renderAgendaInicio lee esta misma
+   lista). La burbuja sigue ahí, con su número, a un toque. */
 async function boot(){
   if(state.booted) return; state.booted = true;
   ensureUI(); bindEvents();
@@ -2475,7 +2470,6 @@ async function boot(){
     if(!isAdminVisible()){ const tt=$('#tmCopilotToast'); if(tt) tt.classList.remove('show'); setTimeout(wait,700); return; }
     document.body.classList.add('admin-mode');
     await refresh(false);
-    if(shouldAutoOpen()) setTimeout(openSheet,650);
     clearInterval(refreshTimer);
     refreshTimer = setInterval(()=>{ if(isAdminVisible()) refresh(false); }, 90000);
   };
@@ -2487,7 +2481,7 @@ function hookOpenAdmin(){
   if (typeof window.abrirAdminPanel !== 'function' || window.__tmCopilotOpenHook) return;
   window.__tmCopilotOpenHook = true;
   const prev = window.abrirAdminPanel;
-  window.abrirAdminPanel = function(){ const r = prev.apply(this, arguments); setTimeout(()=>refresh(false).then(()=>{ if(shouldAutoOpen()) openSheet(); }),900); return r; };
+  window.abrirAdminPanel = function(){ const r = prev.apply(this, arguments); setTimeout(()=>refresh(false),900); return r; };
 }
 
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
