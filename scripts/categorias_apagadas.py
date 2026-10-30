@@ -52,6 +52,8 @@ class Apagadas:
     def producto(self, p) -> bool:
         if not isinstance(p, dict):
             return False
+        if digital_oculto(p):
+            return True
         c = _norm(p.get("categoria"))
         if not c:
             return False
@@ -62,6 +64,19 @@ class Apagadas:
 
     def visibles(self, productos) -> list:
         return [p for p in (productos or []) if not self.producto(p)]
+
+
+def digital_oculto(p: dict) -> bool:
+    """Un producto digital (tarjeta regalo, recarga) apagado desde el panel
+    —💳 Tarjetas— o sin ningún importe a la venta. Va aquí y no en un sitio
+    aparte porque todo lo que respeta una categoría apagada (páginas /p/, el
+    sitemap, los avisos, el canal) tiene que respetar esto igual."""
+    if not isinstance(p, dict) or not p.get("digital"):
+        return False
+    if p.get("activo") is False:
+        return True
+    return not any(isinstance(x, dict) and x.get("on") is not False and float(x.get("usdt") or 0) > 0
+                   for x in (p.get("importes") or []))
 
 
 def leer(path) -> Apagadas:

@@ -90,7 +90,7 @@ const CATALOGO = [
     // Y quien registra la venta tiene que saltarse el descuento.
     ok(/function registrarVentaPedido\(items, cliente, opts\)/.test(TM_UI),
         'registrarVentaPedido debe aceptar opciones');
-    ok(/if \(!\(opts && opts\.stockYaDescontado\)\) detalle\.forEach\(d => ajustarStock/.test(TM_UI),
+    ok(/if \(!\(opts && opts\.stockYaDescontado\)\) detalle\.forEach\(d => \{?[^]{0,200}?ajustarStock\(/.test(TM_UI),
         'con stockYaDescontado no se puede volver a descontar');
     ok(/registrarVentaPedido\(items, \{nombre:r\.cliente, tel:r\.telefono\}, \{stockYaDescontado:true\}\)/.test(ADMIN),
         'el admin debe pasar stockYaDescontado al ejecutar una reserva');

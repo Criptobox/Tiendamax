@@ -18,9 +18,10 @@
 //  - «Pedir» abre la ficha (hay que elegir importe) en vez de ir directo a
 //    WhatsApp, y el mensaje ya lleva importe, región y la red de pago.
 //
-//  Los precios salen de la regla de scripts/precios_digitales.py: valor +
-//  20 %, mínimo coste + 1 USDT, pedido mínimo 2 USDT; en USD, × 1,05. La
-//  tienda solo lee los precios ya guardados en cada importe.
+//  Los precios salen de la regla de scripts/precios_digitales.py (y de
+//  tmDigitalPrecioUSDT, abajo, que usa el panel): valor + 20 %, mínimo coste +
+//  1 USDT, pedido mínimo 2 USDT; en USD, × 1,05. La tienda solo lee los
+//  precios ya guardados en cada importe.
 // ═══════════════════════════════════════════════════════════════════════
 
 const TM_DIG_RED = 'BEP20';
@@ -39,8 +40,14 @@ function tmDigitalValor(p, v) {
     return p && p.unidad ? Number(v).toLocaleString('es-ES') + ' ' + p.unidad : '$' + v;
 }
 
-// USDT → USD, la misma cuenta que precio_usd en scripts/precios_digitales.py
-// (tests/test_digital.py las compara). Solo para importes guardados sin `usd`.
+// La regla de precio, la misma que scripts/precios_digitales.py
+// (tests/test_digital.py compara las dos). La usa el panel (💳 Tarjetas) al
+// cambiar un coste; la tienda solo lee los precios ya guardados.
+function tmDigitalPrecioUSDT(valor, coste, recarga) {
+    const base = recarga ? coste : valor;
+    const x = Math.max(base * 1.20, coste + 1);
+    return Math.max(2, Math.ceil(x - 1e-9));
+}
 function tmDigitalPrecioUSD(usdt) {
     return Math.ceil(Number(usdt) * 1.05 * 2 - 1e-9) / 2;
 }

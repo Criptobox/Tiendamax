@@ -126,9 +126,11 @@ class SelectorDeProductoTest(unittest.TestCase):
     def test_la_tarjeta_marca_lo_que_ya_va_en_la_venta(self):
         """Tocar dos veces el mismo producto suma una unidad. Sin marca en la
         tarjeta no hay forma de saber si el primer toque entró."""
-        self.assertIn("VENTA_CART.find", self.picker,
-                      "la tarjeta no mira el carrito, así que no puede decir "
-                      "cuántas unidades van.")
+        # filter y no find: un digital va en varias líneas (una por importe)
+        # y la marca tiene que sumarlas todas.
+        self.assertRegex(self.picker, r"VENTA_CART\.(find|filter)",
+                         "la tarjeta no mira el carrito, así que no puede decir "
+                         "cuántas unidades van.")
         cuerpo = self.html[self.html.index("function ventaAdd("):]
         cuerpo = cuerpo[:cuerpo.index("\nfunction ")]
         self.assertIn("ventaRenderPicker()", cuerpo,

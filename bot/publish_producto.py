@@ -334,8 +334,9 @@ def main() -> int:
     # rebaja, ni oferta. (Lo de arriba, borrar lo que se agotó, sí lo ve.)
     if _apag is not None:
         _fuera = _apag.leer("categorias.json")
-        if _fuera.hay:
-            curr_dict = {pid: p for pid, p in curr_dict.items() if not _fuera.producto(p)}
+        # Sin mirar _fuera.hay: un producto digital apagado en 💳 Tarjetas
+        # cuenta como apagado aunque no haya ninguna categoría apagada.
+        curr_dict = {pid: p for pid, p in curr_dict.items() if not _fuera.producto(p)}
 
     # Los digitales (tarjetas regalo, recargas) tampoco: son códigos que se
     # compran al pedirlos, y al darlos de alta saldría un mensaje por cada uno.
