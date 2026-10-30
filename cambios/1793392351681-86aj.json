@@ -1,0 +1,593 @@
+{
+  "v": 1,
+  "creado": "2026-10-30T20:32:31.681Z",
+  "productos": [
+    {
+      "id": 1778104924836,
+      "nombre": "Generador Solar Portátil BLUETTI AC180",
+      "precioActual": 640,
+      "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 8,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 9,
+      "slug": "bluetti-ac180",
+      "comision": 10,
+      "specs": [
+        "⚡ 1800W de Potencia / 1152Wh Capacidad",
+        "🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
+        "🔋 Estación de Energía Portátil de Alta Capacidad"
+      ],
+      "seoTitle": "Generador Solar Portátil BLUETTI AC180 en Cuba | TiendaMax",
+      "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
+      "precioOriginal": 700,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778104924836.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "BLUETTI"
+        },
+        {
+          "k": "Modelo",
+          "v": "AC180"
+        },
+        {
+          "k": "Capacidad de Batería",
+          "v": "1152 Wh",
+          "nota": "Química LiFePO4: +3,500 ciclos de vida al 80%"
+        },
+        {
+          "k": "Potencia de Salida AC",
+          "v": "1800W continuos (Modo Power Lifting hasta 2700W para cargas resistivas) — Onda Senoidal Pura"
+        },
+        {
+          "k": "Puertos de Salida",
+          "v": "4× tomas AC 120V, 1× USB-C PD (100W), 4× USB-A (5V/3A), 1× salida 12V/10A DC tipo mechero, 1× base de carga inalámbrica superior (15W)"
+        },
+        {
+          "k": "Entrada de Carga",
+          "v": "Carga rápida de red AC (hasta 1440W), entrada solar MPPT (hasta 500W / 12V-60V), entrada para coche",
+          "nota": "12V/24V"
+        },
+        {
+          "k": "Función UPS",
+          "v": "Conmutación automática en menos de 20 ms"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Bluetooth",
+          "nota": "control y monitoreo desde la app móvil BLUETTI"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Batería ultra duradera de química LiFePO4 (litio-ferrofosfato), con más de 3,500 ciclos de vida útil garantizados y máxima seguridad contra sobrecalentamiento."
+        },
+        {
+          "d": "Inversor de 1800W continuos de onda senoidal pura con tecnología Power Lifting (hasta 2700W), que permite alimentar aparatos de alta demanda resistiva como calentadores, cafeteras y secadores."
+        },
+        {
+          "d": "Carga ultrarrápida por red eléctrica AC de hasta 1440W: recupera del 0% al 80% en solo 45 minutos y el 100% en aproximadamente 1.3 horas."
+        },
+        {
+          "d": "Controlador de carga solar MPPT integrado de hasta 500W para recarga ecológica y completa en 2.5 a 3.5 horas bajo sol óptimo."
+        },
+        {
+          "d": "Función de UPS (Sistema de Alimentación Ininterrumpida) con tiempo de transferencia ultrarrápido (<20 ms) para evitar que computadoras, servidores o routers se apaguen ante un corte de luz."
+        },
+        {
+          "d": "Base de carga inalámbrica rápida integrada en la parte superior (15W) para teléfonos móviles y audífonos compatibles."
+        },
+        {
+          "d": "Pantalla LCD frontal que detalla en tiempo real la potencia de entrada, salida, porcentaje de batería y tiempo estimado restante."
+        },
+        {
+          "d": "Monitoreo y personalización de modos de carga desde el smartphone mediante la app oficial BLUETTI."
+        }
+      ],
+      "idealPara": [
+        "Respaldo doméstico durante apagones prolongados: mantiene funcionando refrigeradores, ventiladores, routers Wi-Fi, laptops, iluminación y televisores.",
+        "Alimentación continua de equipos médicos sensibles como máquinas CPAP.",
+        "Campamentos, viajes en casas rodantes (RV), trabajo en exteriores y herramientas eléctricas en zonas sin red eléctrica."
+      ],
+      "incluye": [
+        "1× Generador Solar Portátil BLUETTI AC180 (1152 Wh / 1800W)",
+        "1× Cable de carga de pared (AC)",
+        "1× Cable de carga para automóvil (12V mechero a DC)",
+        "1× Cable de carga solar (MC4 a DC)",
+        "1× Tornillo de conexión a tierra",
+        "1× Manual de usuario y tarjeta de garantía"
+      ],
+      "slugsAnteriores": [
+        "generador-solar-ac180"
+      ],
+      "almacenId": "alm_1790824274659",
+      "rev": 1793392351681,
+      "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto."
+    },
+    {
+      "id": 1781365135486,
+      "nombre": "Ventilador de Techo",
+      "precioActual": 35,
+      "precioOriginal": 0,
+      "imagen": "https://tiendamax.org/imagenes/img_1783838929527.webp",
+      "categoria": "HOGAR",
+      "subcategoria": "ELECTRODOMÉSTICOS",
+      "stock": 5,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "ventilador-techo",
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "seoTitle": "Ventilador de Techo en Cuba | TiendaMax",
+      "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838929527.webp",
+        "https://tiendamax.org/imagenes/img_1781365133963.webp"
+      ],
+      "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
+      "specs": [
+        "📐 Tamaño: Compacto (mini)",
+        "🎨 Aspas: Blancas",
+        "🔧 Montaje: De techo"
+      ],
+      "ficha": [
+        {
+          "k": "📐 Tamaño",
+          "v": "Compacto (mini)"
+        },
+        {
+          "k": "🎨 Aspas",
+          "v": "Blancas"
+        },
+        {
+          "k": "🔧 Montaje",
+          "v": "De techo"
+        }
+      ],
+      "idealPara": [
+        "Cuartos chicos, pasillos y espacios de techo bajo."
+      ],
+      "incluye": [
+        "1x Mini ventilador de techo"
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tamaño reducido: entra donde un ventilador de techo normal no cabe."
+        }
+      ],
+      "rev": 1793392351681
+    },
+    {
+      "id": 1781377297283,
+      "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
+      "precioActual": 25,
+      "precioOriginal": 30,
+      "imagen": "https://tiendamax.org/imagenes/img_1783838354343.webp",
+      "categoria": "GYM",
+      "subcategoria": "",
+      "stock": 5,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 17,
+      "slug": "creatina-luckycare-5000mg",
+      "comision": 1000,
+      "comisionMoneda": "MN",
+      "seoTitle": "Creatina Monohidratada Luckycare® (5000 mg) | TiendaMax",
+      "seoDescription": "🌟 Beneficios Clave (Respaldados en el empaque): Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. Mejora del…",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838354343.webp",
+        "https://tiendamax.org/imagenes/img_1781377297283.webp"
+      ],
+      "specs": [
+        "⚖️ Por porción: 5000 mg",
+        "📦 Contenido: 500 g",
+        "🥄 Porciones: 100"
+      ],
+      "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
+      "ficha": [
+        {
+          "k": "🏷️ Marca",
+          "v": "Luckycare"
+        },
+        {
+          "k": "🧪 Tipo",
+          "v": "Creatina monohidratada micronizada"
+        },
+        {
+          "k": "⚖️ Por porción",
+          "v": "5000 mg",
+          "nota": "5 g"
+        },
+        {
+          "k": "📦 Contenido",
+          "v": "500 g"
+        },
+        {
+          "k": "🔢 Porciones",
+          "v": "100",
+          "nota": "500 g a 5 g por porción"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Micronizada: se disuelve sin grumos y no queda arenosa en el vaso."
+        },
+        {
+          "d": "5 g por porción, que es la dosis de mantenimiento habitual."
+        }
+      ],
+      "idealPara": [
+        "Entrenamiento de fuerza y recuperación muscular."
+      ],
+      "incluye": [
+        "1x Envase de creatina monohidratada 500 g"
+      ],
+      "slugsAnteriores": [
+        "creatina-luckycare-5000-mg"
+      ],
+      "rev": 1793392351681
+    },
+    {
+      "id": 1789068808568,
+      "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
+      "imagen": "https://tiendamax.org/imagenes/img_1789068806131.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789068806131.webp"
+      ],
+      "precioActual": 275,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 2,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "HERRAMIENTAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡110V",
+        "⭐Tecnología Inverter IGBT",
+        "💡 Control sinérgico inteligente",
+        "📟 Pantalla digital LED"
+      ],
+      "fechaAgregado": "2026-09-10T19:33:28.568Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Bielmeier"
+        },
+        {
+          "k": "Modelo",
+          "v": "FLUXMAX 140",
+          "nota": "FLUXMAX140"
+        },
+        {
+          "k": "Voltaje de Entrada",
+          "v": "110V / 120V AC",
+          "nota": "Monofásico, 50/60 Hz"
+        },
+        {
+          "k": "Rango de Amperaje de Salida",
+          "v": "20A – 140A"
+        },
+        {
+          "k": "Tecnología del Inversor",
+          "v": "Inverter IGBT con sistema de control sinérgico inteligente",
+          "nota": "Synergy System"
+        },
+        {
+          "k": "Ciclo de Trabajo Nominal",
+          "v": "60% a 140A"
+        },
+        {
+          "k": "Diámetros de Alambre Compatibles",
+          "v": "0.8 mm (.030\") y 0.9 mm (.035\") en bobinas de 1 kg",
+          "nota": "2 lbs / D100"
+        },
+        {
+          "k": "Diámetros de Electrodo Soportados",
+          "v": "1.6 mm a 3.2 mm",
+          "nota": "E6013, E7018, etc."
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LED para ajuste de corriente, voltaje y visualización de modos"
+        },
+        {
+          "k": "Sistema de Seguridad",
+          "v": "SmartUP Advanced",
+          "nota": "protección contra sobrecalentamiento, sobrecorriente y sobretensión"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Sistema sinérgico inteligente (Synergy System)",
+          "d": "ajusta automáticamente el voltaje y la velocidad de avance del alambre en función del amperaje seleccionado, permitiendo soldaduras limpias y estables tanto a principiantes como a usuarios experimentados."
+        },
+        {
+          "d": "Soldadura sin gas con alambre tubular (Flux Core): no requiere cilindros de gas comprimido externos ni reguladores, facilitando el trabajo al aire libre incluso con viento sin porosidades en el cordón."
+        },
+        {
+          "t": "Tecnología Inverter IGBT",
+          "d": "proporciona un arco suave, encendido rápido (Hot Start), antiadherencia de electrodo (Anti-Stick) y un consumo energético eficiente con conexión a cualquier toma doméstica convencional de 110V."
+        },
+        {
+          "t": "Panel frontal digital interactivo",
+          "d": "pantalla LED clara que indica el modo activo (FCAW, MMA, TIG), el diámetro de alambre seleccionado y el amperaje en tiempo real."
+        },
+        {
+          "t": "Mecanismo de arrastre interno estable",
+          "d": "compartimento integrado para bobinas de 1 kg con rodillo de tracción de alimentación fluida que previene atascos de alambre."
+        },
+        {
+          "t": "Refrigeración por aire forzado",
+          "d": "ventilador interno de alto caudal con conductos de ventilación frontal y lateral que evitan el recalentamiento en jornadas prolongadas."
+        },
+        {
+          "t": "Diseño compacto y ultra portátil",
+          "d": "estructura ligera con asa superior ergonómica que facilita su traslado directo a obras, garajes o trabajos en alturas."
+        }
+      ],
+      "idealPara": [
+        "Proyectos de herrería ligera, carpintería metálica, balcones, rejas y cerrajería residencial.",
+        "Mantenimiento general, reparaciones mecánicas rápidas en autos, motos, remolques y herramientas agrícolas.",
+        "Aficionados al bricolaje (DIY) y usuarios que dan sus primeros pasos en la soldadura gracias a la calibración sinérgica automática.",
+        "Reparaciones y montajes al aire libre donde el viento impide el uso de gas de protección."
+      ],
+      "incluye": [
+        "1× Soldadora Inverter Multiproceso Bielmeier FLUXMAX 140",
+        "1× Antorcha integrada para soldadura Flux Core (MIG sin gas)",
+        "1× Pinza portaelectrodo con cable para soldadura MMA",
+        "1× Pinza de masa (tierra) con cable reforzado",
+        "2× Boquillas protectoras para antorcha",
+        "5× Puntas de contacto de repuesto",
+        "1× Martillo picador de escoria con cepillo de alambre de acero integrado",
+        "1× Careta / máscara básica de mano para soldar",
+        "1× Manual de usuario e instrucciones de operación"
+      ],
+      "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
+      "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
+      "rev": 1793392351681,
+      "slug": "bielmeier-fluxmax140",
+      "slugsAnteriores": [
+        "bielmeier-fluxmax140-110v"
+      ],
+      "descripcion": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo considerablemente el consumo eléctrico frente a los transformadores convencionales. Su principal atractivo reside en el sistema de control sinérgico inteligente (Synergy System): al seleccionar el amperaje y el diámetro del alambre en su pantalla digital LED, el equipo calibra automáticamente la velocidad de avance y el voltaje óptimo, permitiendo que tanto usuarios principiantes como profesionales consigan cordones firmes, uniformes y limpios desde la primera pasada."
+    },
+    {
+      "id": 1793391707181,
+      "nombre": "Cámara de reversa",
+      "descripcion": "Camara de reversa con luces led  para automóvil;  con \nPantalla LCD de 4.3 pulgadas y  guia de estacionamiento para facilitar la maniobra al parquear o retroceder.\nLa pantalla posee soporte ajustable para colocarla en el tablero del vehículo.\nConexión de video RCA para transmitir la imagen de la cámara a la pantalla.\nCableado de conexión incluido para facilitar la instalación.\nAlimentación mediante toma de 12 V.\nDiseño compacto y práctico que ocupa poco espacio en el tablero.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793391690324.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793391690324.webp"
+      ],
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 2,
+      "comision": 1500,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📺 Monitor LCD TFT de 4.3\"",
+        "🔌 Consumo máx. 3W (Alimentación 12V DC)",
+        "💡 Cámara Impermeable IP68 con 8 LEDs"
+      ],
+      "fechaAgregado": "2026-10-30T20:21:47.185Z",
+      "ficha": [
+        {
+          "k": "Pantalla del Monitor",
+          "v": "LCD TFT de 4.3 pulgadas con formato 16:9 y visor antirreflejo superior"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "≤ 3W",
+          "nota": "ultraeficiente para sistemas de 12V automotrices"
+        },
+        {
+          "k": "Voltaje de Operación",
+          "v": "12V DC",
+          "nota": "conecta a la luz de reversa o fusible de accesorios"
+        },
+        {
+          "k": "Iluminación de Cámara",
+          "v": "8 LEDs infrarrojos / de luz blanca para visión nocturna automática"
+        },
+        {
+          "k": "Grado de Protección de Cámara",
+          "v": "IP68",
+          "nota": "totalmente impermeable, sellada contra agua y polvo"
+        },
+        {
+          "k": "Entradas de Video",
+          "v": "2× Entradas RCA",
+          "nota": "V1 estándar / V2 con prioridad automática para señal de reversa"
+        },
+        {
+          "k": "Líneas de Asistencia",
+          "v": "Guías de parqueo coloreadas impresas en pantalla",
+          "nota": "Verde / Amarillo / Rojo"
+        },
+        {
+          "k": "Ángulo de Visión",
+          "v": "Gran angular de 140° – 170° de cobertura panorámica"
+        },
+        {
+          "k": "Soporte del Monitor",
+          "v": "Base basculante con cinta adhesiva de doble cara para tablero o parabrisas"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "8 LEDs de Visión Nocturna Integrados",
+          "d": "iluminación auxiliar automática que enciende al engranar la marcha atrás para una imagen clara en la noche."
+        },
+        {
+          "t": "Entrada RCA con Prioridad de Reversa (Video 2)",
+          "d": "el monitor se enciende automáticamente al detectar señal de la luz de reversa y se apaga al quitar la marcha."
+        },
+        {
+          "t": "Lente Impermeable IP68",
+          "d": "cámara sellada que soporta lluvias fuertes, lavados de autos y salpicaduras de barro sin empañarse por dentro."
+        },
+        {
+          "t": "Líneas Guía de Parqueo en Pantalla",
+          "d": "referencias de color que facilitan el cálculo de distancia exacta hacia obstáculos o paredes."
+        },
+        {
+          "t": "Parasol Antirreflejo en Monitor",
+          "d": "visibilidad clara del panel LCD incluso bajo luz solar directa reflejada en el parabrisas."
+        },
+        {
+          "t": "Instalación Versátil",
+          "d": "cámara orientable con soporte metálico perforado para fijar en el marco de la matrícula o sobre la puerta trasera."
+        }
+      ],
+      "idealPara": [
+        "Instalación en autos, camionetas, vans, pickups, SUVs, taxis y microbuses para facilitar el parqueo en espacios reducidos.",
+        "Eliminar puntos ciegos traseros y prevenir accidentes con peatones, mascotas u objetos bajos al dar marcha atrás.",
+        "Conductores que buscan una solución de parqueo clara, de bajo costo y fácil de instalar mediante cableado RCA estándar."
+      ],
+      "incluye": [
+        "1× Monitor LCD de 4.3\" con soporte adhesivo y visor superior antirreflejo",
+        "1× Cámara de reversa impermeable IP68 con 8 LEDs integrados",
+        "1× Cable de video RCA con hilo de activación/trigger (~6 metros)",
+        "2× Cables de alimentación DC para monitor y cámara",
+        "1× Manual de usuario e instrucciones de cableado"
+      ],
+      "slug": "camara-reversa",
+      "rev": 1793392351681
+    },
+    {
+      "id": 1793392327732,
+      "nombre": "Hamaca de Camping 2 en 1 con Mosquitero",
+      "descripcion": "Ideal para los apagones , terrazas, excursiones y campismos..ligera, resistente y en los 3 colores de las fotos. Viene con su soga de nylon tipo linga y 2 mosquetones metálicos para facilitar su fácil colocación y viene con bolsillo también para las pertenencias y el celular.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793392322767.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793392322767.webp"
+      ],
+      "precioActual": 20,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 16,
+      "comision": 1500,
+      "comisionMoneda": "MN",
+      "categoria": "UTILES",
+      "subcategoria": "SALUD Y BIENESTAR",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🪰 Mosquitero Integrado Antimosquitos",
+        "🧵 Nylon de Paracaídas 210T (Capacidad 200–300 kg)",
+        "🎒 Diseño Ultra Portátil con Kit Completo"
+      ],
+      "fechaAgregado": "2026-10-30T20:32:07.733Z",
+      "ficha": [
+        {
+          "k": "Tipo de Producto",
+          "v": "Hamaca táctica/de camping multifuncional 2 en 1"
+        },
+        {
+          "k": "Material Principal",
+          "v": "Nylon de paracaídas 210T de alta densidad",
+          "nota": "transpirable y resistente a rasgaduras"
+        },
+        {
+          "k": "Red de Protección",
+          "v": "Malla fina de poliéster B3 antimosquitos e insectos con cierre de cremallera doble"
+        },
+        {
+          "k": "Capacidad de Carga Máxima",
+          "v": "200 kg – 300 kg",
+          "nota": "~440 – 660 lbs"
+        },
+        {
+          "k": "Modos de Uso",
+          "v": "Modo Protección (con mosquitero desplegado) y Modo Tradicional",
+          "nota": "girada sin mosquitero"
+        },
+        {
+          "k": "Accesorios de Fijación",
+          "v": "Correas planas para árboles de alta resistencia y mosquetones de acero"
+        },
+        {
+          "k": "Bolsa de Transporte",
+          "v": "Funda compacta integrada",
+          "nota": "almacena la hamaca y sus accesorios en un solo bulto"
+        },
+        {
+          "k": "Peso Total del Kit",
+          "v": "Léger",
+          "nota": "~700g – 900g, ideal para mochileros"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Diseño 2 en 1 Reversible",
+          "d": "pasa de un refugio totalmente sellado contra insectos a una hamaca abierta simplemente volteándola."
+        },
+        {
+          "t": "Malla Mosquitera de Alta Densidad",
+          "d": "red fina integrada con cremallera lateral para entrar y salir cómodamente evitando la entrada de insectos."
+        },
+        {
+          "t": "Nylon 210T Transpirable y Robusto",
+          "d": "tejido suave al tacto, fresco en climas cálidos y de secado rápido si se expone a la humedad."
+        },
+        {
+          "t": "Correas Amplias para Árboles",
+          "d": "sistema de amarre seguro que no daña la corteza de los árboles y facilita un montaje en minutos."
+        },
+        {
+          "t": "Bolsa de Guardado Cosida (Storage Bag)",
+          "d": "sirve como bolsillo lateral para guardar el teléfono o linterna mientras descansas y como funda de transporte al empacar."
+        },
+        {
+          "t": "Mosquetones de Acero Reforzados",
+          "d": "herrajes metálicos de gran resistencia para una fijación estable y segura."
+        }
+      ],
+      "idealPara": [
+        "Acampadas, senderismo, viajes de mochilero (backpacking) y expediciones en zonas boscosas o húmedas con presencia de mosquitos.",
+        "Salidas a la playa, días de campo, parques o descanso en el patio/jardín de la casa.",
+        "Refugio de descanso ligero en kits de emergencia, supervivencia o expediciones de fin de semana."
+      ],
+      "incluye": [
+        "1× Hamaca de camping 2 en 1 con mosquitero e integrada con su bolsa de guardado",
+        "2× Correas reforzadas de sujeción para árboles",
+        "2× Mosquetones metálicos de alta resistencia",
+        "1× Cuerda/soporte para la estructura del mosquitero (según modelo)"
+      ],
+      "slug": "hamaca-camping-2en1",
+      "rev": 1793392351681
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1793391707181": "1793400000013",
+    "1793392327732": "1793391707181"
+  }
+}
