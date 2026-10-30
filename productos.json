@@ -182,7 +182,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 0,
+    "stock": 1,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -249,7 +249,7 @@
     "idealPara": [
       "Monitoreo de peso personal y control de salud."
     ],
-    "rev": 1792773854029,
+    "rev": 1793391299219,
     "slugsAnteriores": [
       "bascula-digital-alta"
     ],
@@ -3008,7 +3008,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784008196606.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
-    "stock": 0,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -3064,7 +3064,8 @@
     "incluye": [
       "Estacas de fijación, cuerdas de sujeción y bolsa de transporte."
     ],
-    "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas."
+    "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas.",
+    "rev": 1793391299219
   },
   {
     "id": 1778820983383,
@@ -10318,7 +10319,7 @@
     "precioActual": 275,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 3,
+    "stock": 2,
     "comision": 15,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -10430,7 +10431,7 @@
     ],
     "seoTitle": "Bielmeier FLUXMAX140 110V 140A Máquina de… | TiendaMax",
     "seoDescription": "Impulsada por tecnología Inverter IGBT de alta eficiencia, la FLUXMAX 140 ofrece un encendido de arco suave, estable y con mínima salpicadura, reduciendo…",
-    "rev": 1792773854029,
+    "rev": 1793391299219,
     "slug": "bielmeier-fluxmax140",
     "slugsAnteriores": [
       "bielmeier-fluxmax140-110v"
