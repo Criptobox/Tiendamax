@@ -50,9 +50,17 @@ function tmCatApagada(cat, sub) {
     return i.cats.has(c) || (sub != null && i.subs.has(c + '|' + _tmNormCat(sub)));
 }
 function _tmEsPanel() { return !!document.getElementById('adminPanel'); }
+// Un producto digital apagado en el panel (💳 Tarjetas) o sin ningún importe a
+// la venta: misma regla que digital_oculto en scripts/categorias_apagadas.py.
+function tmDigitalOculto(p) {
+    if (!p || !p.digital) return false;
+    if (p.activo === false) return true;
+    return !(Array.isArray(p.importes) && p.importes.some(x => x && x.on !== false && Number(x.usdt) > 0));
+}
 function tmSoloVisibles(arr) {
-    if (!Array.isArray(arr) || _tmEsPanel() || !_tmApIndice().hay) return arr;
-    return arr.filter(p => !p || !tmCatApagada(p.categoria, p.subcategoria));
+    if (!Array.isArray(arr) || _tmEsPanel()) return arr;
+    const ap = _tmApIndice().hay;
+    return arr.filter(p => !p || (!(ap && tmCatApagada(p.categoria, p.subcategoria)) && !tmDigitalOculto(p)));
 }
 function tmCatsVisibles(arr) {
     if (!Array.isArray(arr) || _tmEsPanel() || !_tmApIndice().hay) return arr;

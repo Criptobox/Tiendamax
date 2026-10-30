@@ -729,7 +729,13 @@ function registrarVentaPedido(items, cliente, opts) {
         if (tel.length >= 6) venta.telefono = tel;
     }
     guardarVenta(venta);
-    if (!(opts && opts.stockYaDescontado)) detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
+    // Un producto digital no tiene almacén: el código se compra al venderlo.
+    // Descontarle stock lo acabaría marcando «agotado» a las 99 ventas.
+    if (!(opts && opts.stockYaDescontado)) detalle.forEach(d => {
+        const pd = productos.find(x => x.id === d.productoId);
+        if (pd && pd.digital) return;
+        ajustarStock(d.productoId, -(d.cantidad), true);
+    });
     mostrarNotificacion(`✅ Venta registrada: ${detalle.length} producto${detalle.length > 1 ? 's' : ''}`);
 
     // Guardar también como pedido en Firebase para seguimiento del cliente (multi-item).

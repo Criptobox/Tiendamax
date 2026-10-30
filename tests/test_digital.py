@@ -46,6 +46,34 @@ class EnNavegadorTest(unittest.TestCase):
                            cwd=str(RAIZ), capture_output=True, text=True, timeout=300)
         self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
 
+    def test_el_panel_se_comporta(self):
+        # 💳 Tarjetas: coste → precio y ganancia, interruptores, vender un importe.
+        if not _node():
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([_node(), str(RAIZ / "tests" / "tarjetas_panel_check.mjs")],
+                           cwd=str(RAIZ), capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
+
+
+class ApagadoDesdeElPanelTest(unittest.TestCase):
+    """Un digital apagado en 💳 Tarjetas, o con todos sus importes apagados,
+    no puede seguir con su página /p/, en el sitemap ni en los avisos."""
+
+    def test_digital_oculto(self):
+        import categorias_apagadas as ca
+        imp = [{"v": 10, "usdt": 12, "usd": 12.5}]
+        self.assertFalse(ca.digital_oculto({"digital": True, "importes": imp}))
+        self.assertTrue(ca.digital_oculto({"digital": True, "activo": False, "importes": imp}))
+        self.assertTrue(ca.digital_oculto({"digital": True, "importes": [dict(imp[0], on=False)]}))
+        self.assertTrue(ca.digital_oculto({"digital": True, "importes": []}))
+        self.assertFalse(ca.digital_oculto({"activo": False}), "a un producto físico no le toca esta regla")
+
+    def test_el_filtro_comun_lo_aplica(self):
+        import categorias_apagadas as ca
+        ap = ca.Apagadas({})
+        self.assertTrue(ap.producto({"digital": True, "activo": False, "categoria": "TARJETAS",
+                                     "importes": [{"v": 10, "usdt": 12}]}))
+
 
 class LaReglaDePrecioTest(unittest.TestCase):
     def test_ejemplos_acordados(self):
@@ -56,6 +84,20 @@ class LaReglaDePrecioTest(unittest.TestCase):
         self.assertEqual(2, pd.precio_usdt(100, 1, recarga=True))   # 100 diamantes: el mínimo
         self.assertEqual(6, pd.precio_usdt(520, 5, recarga=True))
         self.assertEqual(25.5, pd.precio_usd(24))
+
+    def test_python_y_javascript_calculan_lo_mismo(self):
+        if not _node():
+            self.skipTest("node no está disponible en este entorno")
+        casos = [(10, 10, False), (20, 20.5, False), (50, 51.26, False), (100, 102.5, False),
+                 (15, 15, False), (100, 1, True), (310, 3, True), (60, 0.99, True),
+                 (660, 9.99, True), (5600, 50, True), (25, 30, False)]
+        cuerpo = FUENTE_JS[FUENTE_JS.index("function tmDigitalPrecioUSDT"):FUENTE_JS.index("function _tmDigUsd")]
+        js = cuerpo + ";console.log(JSON.stringify(" + json.dumps(casos) + \
+            ".map(([v,c,r])=>{const u=tmDigitalPrecioUSDT(v,c,r);return [u,tmDigitalPrecioUSD(u)];})))"
+        r = subprocess.run([_node(), "-e", js], capture_output=True, text=True, timeout=30)
+        self.assertEqual(0, r.returncode, r.stderr)
+        en_py = [[pd.precio_usdt(v, c, rr), pd.precio_usd(pd.precio_usdt(v, c, rr))] for v, c, rr in casos]
+        self.assertEqual(en_py, json.loads(r.stdout), "la regla de precio de Python y la de tm-digital.src.js se separaron")
 
     def test_python_y_javascript_pasan_igual_a_usd(self):
         if not _node():

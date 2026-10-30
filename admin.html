@@ -1404,6 +1404,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <button class="side-btn" data-view="comparar" title="Comparar con la tienda principal">🔀<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
+      <button class="side-btn" data-view="tarjetas" title="Tarjetas digitales · coste, precio y lo que ganas">💳</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
       <!-- El vale se abre en esta misma ventana, como el acceso directo #vale:
            en otra pestaña quedaban dos paneles abiertos (el vale vuelve a
@@ -1573,6 +1574,9 @@ try{var _piel=localStorage.getItem('tm_piel');
             <label class="form-label">Producto</label>
             <div class="vp-cats" id="venta-cats"></div>
             <div class="vp-lista" id="venta-lista"></div>
+            <!-- Un producto digital (💳) se vende por importe: al tocarlo sale
+                 esto para elegir cuál, con lo que se gana en cada uno. -->
+            <div class="tar-imps-venta" id="venta-imps" hidden></div>
           </div>
           <div id="venta-cart" style="margin-top:12px"></div>
           <div id="venta-total" style="margin-top:8px"></div>
@@ -1613,6 +1617,45 @@ try{var _piel=localStorage.getItem('tm_piel');
           <div id="ventas-periodo-tot" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>
           <div id="ventas-lista"></div>
         </div>
+      </div>
+
+      <!-- TARJETAS DIGITALES: coste privado → precio y ganancia (ver tarRender) -->
+      <div id="view-tarjetas" class="view">
+        <div class="ph"><div><h2>💳 Tarjetas digitales</h2><p id="tar-sub">Coste, precio y lo que ganas</p></div></div>
+        <style>
+          .tar-nota{font-size:13px;color:var(--muted);margin:0 0 6px;line-height:1.5}
+          .tar-nota b{color:#fff}
+          .tar-sync{font-size:12px;color:var(--gray)}
+          .tar-prod.off{opacity:.55}
+          .tar-head{display:flex;align-items:center;gap:10px}
+          .tar-head img{width:46px;height:46px;border-radius:10px;object-fit:cover;background:#f5f3ef;flex:0 0 auto}
+          .tar-head .tar-nom{flex:1;min-width:0}
+          .tar-head .tar-nom b{display:block;font-size:14px}
+          .tar-head .tar-nom small{color:var(--gray);font-size:12px}
+          .tar-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:10px 0;font-size:12px;color:var(--gray)}
+          .tar-meta select{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;padding:4px 8px;font-size:12px}
+          .tar-tabla{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+          .tar-tabla th{text-align:left;color:var(--gray);font-weight:600;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.08)}
+          .tar-tabla td{padding:6px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+          .tar-tabla tr.off td{opacity:.45}
+          .tar-tabla input{width:74px;padding:4px 6px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:#fff;font-weight:700;font-size:12.5px}
+          .tar-tabla .est{color:var(--gold,#c9a96e);font-size:11px}
+          .tar-gana{color:#7bd88f;font-weight:700}
+          .tar-gana.mal{color:#ff8a80}
+          .tar-add{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--gray)}
+          .tar-add input{width:80px;padding:5px 7px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:#fff}
+          .tar-imps-venta{margin-top:10px;padding:10px;border:1px solid rgba(var(--o-rgb),.35);border-radius:10px;background:rgba(var(--o-rgb),.06)}
+          .tar-imps-venta b{display:block;font-size:12.5px;margin-bottom:8px}
+          .tar-imps-venta .btns{display:flex;flex-wrap:wrap;gap:6px}
+          .tar-imps-venta button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:7px 11px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+          .tar-imps-venta button small{font-weight:600;font-size:11px;color:var(--gray)}
+        </style>
+        <div class="section">
+          <p class="tar-nota">Escribe lo que te cuesta cada importe, en USDT. El precio sale solo: <b>el valor + 20 %</b> (nunca menos de coste + 1 USDT ni de 2 USDT), y en dólares × 1,05. Lo que ganas se apunta como tu comisión al registrar la venta.</p>
+          <p class="tar-nota">El coste y dónde lo compras <b>solo los ves tú</b>: no van a la web. Los precios nuevos se publican con <b>🔄 Actualizar tienda</b>, como siempre.</p>
+          <div id="tar-sync" class="tar-sync"></div>
+        </div>
+        <div id="tar-lista"></div>
       </div>
 
       <!-- COMBOS (creador) -->
@@ -2079,7 +2122,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3d014fa3"></script>
+<script src="js/tm-bundle.js?v=0ffaaf0d"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2327,6 +2370,7 @@ function go(view, btn){
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
   if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
   if(view==='comparar' && typeof cmpCargar==='function'){ try{ cmpCargar(); }catch(e){} }
+  if(view==='tarjetas'){ try{ tarRender(); tarSincronizar(); }catch(e){} }
   if(view==='reservas'){ try{ renderReservas(); }catch(e){}
     // Traerse lo cerrado desde otro dispositivo antes de enseñar la lista.
     try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
@@ -2575,6 +2619,9 @@ function renderTodo(){
   renderRadar(); renderVentas(); renderReposicion(); renderQR();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
+  // Entrando por #tarjetas la vista se pinta antes de que lleguen los productos.
+  const _vt=document.getElementById('view-tarjetas');
+  if(_vt && _vt.classList.contains('active')) tarRender();
 }
 function fillOfertaDia(){
   const sel=$('#ofertaDiaSelect2'); if(!sel) return;
@@ -2988,6 +3035,205 @@ window.addEventListener('pageshow', reservasTraerStock);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') reservasTraerStock(); });
 window.addEventListener('storage', e=>{ if(e.key==='tm_reservas_mov') reservasTraerStock(); });
 
+/* ═══ 💳 Tarjetas digitales ═══════════════════════════════════════════════
+   El coste de cada importe y dónde se compra son del dueño: viven en este
+   navegador (tm_costes_digitales) y en /privado/costes_digitales, nunca en
+   productos.json, que es público. Con el coste se calcula el precio (la
+   regla de tmDigitalPrecioUSDT, la misma que scripts/precios_digitales.py) y
+   la ganancia, que se guarda como `comision` del producto: es lo que Inicio,
+   Ventas y el resto del panel ya cuentan como lo que gana el vendedor.
+   Hasta que el dueño escribe un coste, se usa el estimado con que se dieron
+   de alta, y la pantalla lo marca como tal. */
+const TAR_LS = 'tm_costes_digitales';
+const TAR_RED = 0.10;   // enviar USDT por BEP20
+const TAR_PROVS = ['Bitrefill', 'Cryptorefills', 'Otro'];
+const TAR_ESTIMADO = {
+  'diamantes-free-fire': {p:'Cryptorefills', c:{100:1, 310:3, 520:5, 1060:10, 2180:20, 5600:50}},
+  'uc-pubg-mobile':      {p:'Cryptorefills', c:{60:0.99, 325:4.99, 660:9.99}},
+  'mastercard-prepago':  {p:'Bitrefill', c:{20:20.5, 50:51.26, 100:102.5}},
+  'visa-prepago':        {p:'Bitrefill', c:{20:20.5, 50:51.26, 100:102.5}},
+};
+function tarLeer(){ try{ const o=JSON.parse(localStorage.getItem(TAR_LS)||'{}'); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }catch(e){ return {}; } }
+let _tarSubir=null;
+function tarGuardar(o){
+  try{ localStorage.setItem(TAR_LS, JSON.stringify(o)); }catch(e){}
+  // Varias teclas seguidas son un solo envío.
+  clearTimeout(_tarSubir);
+  _tarSubir=setTimeout(()=>{
+    if(typeof TMAuth==='undefined') return;
+    TMAuth.fetchPrivado('/privado/costes_digitales.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(tarLeer())})
+      .then(r=>{ tarEstadoSync(r && r.ok ? '☁️ Costes guardados en tu cuenta' : (r && r.sinSesion ? '📱 Costes guardados solo en este teléfono (entra con tu cuenta para no perderlos)' : '⚠️ No pude guardar los costes en tu cuenta: siguen en este teléfono')); })
+      .catch(()=>tarEstadoSync('⚠️ No pude guardar los costes en tu cuenta: siguen en este teléfono'));
+  }, 1500);
+}
+function tarEstadoSync(t){ const e=$('#tar-sync'); if(e) e.textContent=t; }
+// Por importe gana el más nuevo: con dos teléfonos, cada uno conserva lo que escribió el otro.
+function tarFusionar(a, b){
+  const out=JSON.parse(JSON.stringify(a||{}));
+  Object.keys(b||{}).forEach(pid=>{
+    const x=b[pid]||{}, y=out[pid]=out[pid]||{};
+    if((x.provTs||0)>(y.provTs||0)){ y.prov=x.prov; y.provTs=x.provTs; }
+    y.imps=y.imps||{};
+    Object.keys(x.imps||{}).forEach(v=>{ const n=x.imps[v]; if(n && (!y.imps[v] || (n.ts||0)>(y.imps[v].ts||0))) y.imps[v]=n; });
+  });
+  return out;
+}
+async function tarSincronizar(){
+  if(typeof TMAuth==='undefined'){ tarEstadoSync('📱 Costes guardados en este teléfono'); return; }
+  try{
+    const r=await TMAuth.fetchPrivado('/privado/costes_digitales.json');
+    if(!r || !r.ok){ tarEstadoSync(r && r.sinSesion ? '📱 Costes guardados solo en este teléfono (entra con tu cuenta para tenerlos en todos)' : '⚠️ No pude leer los costes de tu cuenta: uso los de este teléfono'); return; }
+    const local=tarLeer(), junto=tarFusionar(local, r.dato||{});
+    const cambioLocal = JSON.stringify(junto)!==JSON.stringify(local);
+    if(cambioLocal){ try{ localStorage.setItem(TAR_LS, JSON.stringify(junto)); }catch(e){} }
+    if(JSON.stringify(junto)!==JSON.stringify(r.dato||{})) tarGuardar(junto); else tarEstadoSync('☁️ Costes al día con tu cuenta');
+    if(cambioLocal){ PRODUCTOS.filter(x=>tmEsDigital(x)).forEach(x=>tarAplicar(x, true)); tarRender(); }
+  }catch(e){ tarEstadoSync('⚠️ No pude leer los costes de tu cuenta: uso los de este teléfono'); }
+}
+// {c, est} — el coste escrito por el dueño, o el estimado del alta.
+function tarCoste(p, v){
+  const n=(tarLeer()[String(p.id)]||{}).imps||{};
+  if(n[v] && Number(n[v].c)>0) return {c:Number(n[v].c), est:false, ts:n[v].ts||0};
+  const e=TAR_ESTIMADO[p.slug];
+  const c = e && e.c[v]!=null ? Number(e.c[v]) : (p.unidad ? NaN : Number(v));
+  return {c, est:true, ts:0};
+}
+function tarProveedor(p){
+  const n=tarLeer()[String(p.id)]||{};
+  return n.prov || (TAR_ESTIMADO[p.slug]||{}).p || 'Cryptorefills';
+}
+function tarGanancia(usdt, c){ return Math.round((usdt - c - TAR_RED)*100)/100; }
+// Recalcula precios y ganancia del producto desde sus costes. Sin `silencio`,
+// lo marca para publicar.
+function tarAplicar(p, silencio){
+  (p.importes||[]).forEach(x=>{
+    const k=tarCoste(p, x.v);
+    if(!(k.c>0)) return;
+    x.usdt = tmDigitalPrecioUSDT(Number(x.v), k.c, !!p.unidad);
+    x.usd  = tmDigitalPrecioUSD(x.usdt);
+  });
+  const on=(p.importes||[]).filter(x=>x.on!==false && Number(x.usdt)>0);
+  if(on.length){
+    const barato=on.reduce((m,x)=>(!m||x.usdt<m.usdt)?x:m,null);
+    p.precioActual = barato.usd;
+    const k=tarCoste(p, barato.v);
+    if(k.c>0){ p.comision = Math.max(0, tarGanancia(barato.usdt, k.c)); p.comisionMoneda='USD'; }
+  }
+  if(!silencio){ if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id); apSaveProds(); }
+}
+function tarRender(){
+  const box=$('#tar-lista'); if(!box) return;
+  const prods=PRODUCTOS.filter(x=>typeof tmEsDigital==='function' && x && x.digital && Array.isArray(x.importes));
+  const sub=$('#tar-sub');
+  if(sub) sub.textContent = prods.filter(x=>x.activo!==false).length+' de '+prods.length+' a la venta · coste, precio y lo que ganas';
+  if(!prods.length){ box.innerHTML='<div class="section"><div class="empty"><div class="ico">💳</div>No hay tarjetas digitales en el catálogo.</div></div>'; return; }
+  const costes=tarLeer();
+  box.innerHTML = prods.map(p=>{
+    const on=p.activo!==false, pid=String(p.id);
+    const nodo=costes[pid]||{}, tsMax=Math.max(0, ...Object.values(nodo.imps||{}).map(x=>x.ts||0));
+    const est=(p.importes||[]).some(x=>tarCoste(p,x.v).est);
+    const revisado = tsMax ? 'coste revisado '+(function(d){ return d<1?'hoy':(d<2?'ayer':'hace '+d+' días'); })(Math.floor((Date.now()-tsMax)/86400000)) : 'coste sin revisar';
+    const filas=(p.importes||[]).map(x=>{
+      const k=tarCoste(p,x.v), imOn=x.on!==false, gan=k.c>0?tarGanancia(Number(x.usdt),k.c):null;
+      const val=tmDigitalValor(p, x.v);
+      return `<tr class="${imOn?'':'off'}">
+        <td><b>${esc(val)}</b></td>
+        <td><input type="number" min="0" step="0.01" inputmode="decimal" data-act="coste" data-pid="${esc(pid)}" data-v="${esc(String(x.v))}" value="${k.c>0?k.c:''}" aria-label="Coste de ${esc(val)} en USDT">${k.est?' <span class="est">estimado</span>':''}</td>
+        <td>${Number(x.usdt)||'—'} USDT<br><small style="color:var(--gray)">$${Number(x.usd)||'—'}</small></td>
+        <td class="tar-gana${gan!=null&&gan<0.5?' mal':''}">${gan==null?'—':gan.toFixed(2)}</td>
+        <td><button type="button" class="cat-sw" role="switch" aria-checked="${imOn}" aria-label="${imOn?'Quitar':'Poner a la venta'} ${esc(val)}" data-act="imp" data-pid="${esc(pid)}" data-v="${esc(String(x.v))}"></button></td>
+        <td><button type="button" class="btn btn-ghost" style="padding:2px 8px" data-act="borrar" data-pid="${esc(pid)}" data-v="${esc(String(x.v))}" aria-label="Borrar ${esc(val)}">✕</button></td>
+      </tr>`;
+    }).join('');
+    return `<div class="section tar-prod${on?'':' off'}">
+      <div class="tar-head">
+        <img src="${esc(p.imagen||'')}" alt="" loading="lazy">
+        <div class="tar-nom"><b>${esc(p.nombre)}</b><small>${esc(p.subcategoria||'')} · ${esc(p.unidad?'recarga por ID':(p.region||''))}</small></div>
+        <button type="button" class="cat-sw" role="switch" aria-checked="${on}" aria-label="${on?'Quitar de la tienda':'Poner en la tienda'} ${esc(p.nombre)}" data-act="prod" data-pid="${esc(pid)}"></button>
+      </div>
+      <div class="tar-meta">
+        <label>Lo compro en <select data-act="prov" data-pid="${esc(pid)}">${TAR_PROVS.map(x=>`<option${x===tarProveedor(p)?' selected':''}>${x}</option>`).join('')}</select></label>
+        <span>${revisado}${est?' · ⚠️ hay costes estimados':''}</span>
+      </div>
+      <div style="overflow-x:auto"><table class="tar-tabla">
+        <thead><tr><th>Importe</th><th>Te cuesta (USDT)</th><th>Precio</th><th>Ganas</th><th>A la venta</th><th></th></tr></thead>
+        <tbody>${filas}</tbody>
+      </table></div>
+      <div class="tar-add">+ Importe:
+        <input type="number" min="0" step="1" inputmode="numeric" placeholder="${p.unidad?'cantidad':'valor $'}" data-nuevo="v" data-pid="${esc(pid)}" aria-label="Valor del importe nuevo">
+        <input type="number" min="0" step="0.01" inputmode="decimal" placeholder="coste USDT" data-nuevo="c" data-pid="${esc(pid)}" aria-label="Coste del importe nuevo">
+        <button type="button" class="btn btn-ghost" style="padding:4px 10px" data-act="anadir" data-pid="${esc(pid)}">Añadir</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function _tarProd(pid){ return PRODUCTOS.find(x=>String(x.id)===String(pid)); }
+function tarCambiarCoste(pid, v, valor){
+  const p=_tarProd(pid); if(!p) return;
+  const n=Number(String(valor).replace(',','.'));
+  if(!(n>0)){ showToast('⚠️ Coste no válido','Escribe lo que pagas en USDT, por ejemplo 20.5'); tarRender(); return; }
+  const o=tarLeer(), nodo=o[String(pid)]=o[String(pid)]||{}; nodo.imps=nodo.imps||{};
+  nodo.imps[String(v)]={c:n, ts:Date.now()};
+  tarGuardar(o); tarAplicar(p); tarRender();
+}
+(function(){
+  const box=document.getElementById('tar-lista'); if(!box) return;
+  box.addEventListener('change', e=>{
+    const t=e.target;
+    if(t.dataset.act==='coste') tarCambiarCoste(t.dataset.pid, t.dataset.v, t.value);
+    if(t.dataset.act==='prov'){ const o=tarLeer(), n=o[t.dataset.pid]=o[t.dataset.pid]||{}; n.prov=t.value; n.provTs=Date.now(); tarGuardar(o); }
+  });
+  box.addEventListener('click', e=>{
+    const b=e.target.closest('button[data-act]'); if(!b) return;
+    const p=_tarProd(b.dataset.pid); if(!p) return;
+    const act=b.dataset.act;
+    if(act==='prod'){ p.activo = (p.activo===false); tarAplicar(p); tarRender(); showToast(p.activo===false?'⏸️ Quitada de la tienda':'▶️ De vuelta en la tienda', p.nombre+' · publícalo con 🔄 Actualizar tienda'); }
+    if(act==='imp'){ const x=(p.importes||[]).find(i=>String(i.v)===b.dataset.v); if(x){ x.on = (x.on===false); tarAplicar(p); tarRender(); } }
+    if(act==='borrar'){
+      if((p.importes||[]).length<=1){ showToast('⚠️ Es el único importe','Para quitarla de la tienda usa su interruptor'); return; }
+      if(!confirm('¿Borrar el importe '+tmDigitalValor(p,b.dataset.v)+' de '+p.nombre+'?')) return;
+      p.importes=p.importes.filter(i=>String(i.v)!==b.dataset.v); tarAplicar(p); tarRender();
+    }
+    if(act==='anadir'){
+      const fila=b.closest('.tar-add'), v=Number(fila.querySelector('[data-nuevo="v"]').value), c=Number(String(fila.querySelector('[data-nuevo="c"]').value).replace(',','.'));
+      if(!(v>0) || !(c>0)){ showToast('⚠️ Faltan datos','Escribe el valor del importe y lo que te cuesta en USDT'); return; }
+      if((p.importes||[]).some(i=>Number(i.v)===v)){ showToast('⚠️ Ese importe ya existe','Cambia su coste en la tabla'); return; }
+      const o=tarLeer(), n=o[String(p.id)]=o[String(p.id)]||{}; n.imps=n.imps||{}; n.imps[String(v)]={c, ts:Date.now()}; tarGuardar(o);
+      p.importes=(p.importes||[]).concat([{v, usdt:0, usd:0}]).sort((a,b)=>a.v-b.v);
+      tarAplicar(p); tarRender();
+    }
+  });
+})();
+// Vender un digital: se elige el importe, y la línea lleva su precio en USD y
+// lo que se gana con él como comisión. No descuenta stock (registrarVentaPedido).
+function ventaElegirImporte(p){
+  const box=$('#venta-imps'); if(!box) return;
+  const imps=tmDigitalImportes(p);
+  box.innerHTML = `<b>${esc(p.nombre)} · ¿qué importe?</b><div class="btns">`+imps.map(x=>{
+    const k=tarCoste(p,x.v), g=k.c>0?tarGanancia(Number(x.usdt),k.c):0;
+    return `<button type="button" data-pid="${esc(String(p.id))}" data-v="${esc(String(x.v))}">${esc(tmDigitalValor(p,x.v))}<small>${x.usdt} USDT · $${x.usd} · ganas ${g.toFixed(2)}</small></button>`;
+  }).join('')+`<button type="button" data-cerrar="1">Cancelar</button></div>`;
+  box.hidden=false;
+  box.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+(function(){
+  const box=document.getElementById('venta-imps'); if(!box) return;
+  box.addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    box.hidden=true;
+    if(b.dataset.cerrar) return;
+    const p=_tarProd(b.dataset.pid); if(!p) return;
+    const x=(p.importes||[]).find(i=>String(i.v)===b.dataset.v); if(!x) return;
+    const k=tarCoste(p,x.v), g=k.c>0?Math.max(0,tarGanancia(Number(x.usdt),k.c)):0;
+    const key=String(p.id)+'~'+x.v;
+    const ex=VENTA_CART.find(it=>ventaClave(it)===key);
+    if(ex) ex.cantidad++;
+    else VENTA_CART.push({id:p.id, key, nombre:p.nombre+' '+tmDigitalValor(p,x.v), precio:Number(x.usd)||0, moneda:'USD',
+                          comision:g, comisionOriginal:g, comisionMoneda:'USD', cantidad:1});
+    ventaRenderCart(); ventaRenderPicker();
+  });
+})();
+
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
   const cats=catNombres();
@@ -3033,7 +3279,9 @@ function ventaRenderPicker(){
     // para que no pase inadvertido.
     const clase = st<=0 ? 'cero' : (st<=3 ? 'bajo' : '');
     const stockTxt = st<=0 ? 'Sin stock' : st+' u.';
-    const enCart = VENTA_CART.find(x=>String(x.id)===String(p.id));
+    // Un digital puede ir en varias líneas (una por importe): se suman.
+    const _enCant = VENTA_CART.filter(x=>String(x.id)===String(p.id)).reduce((s,x)=>s+(Number(x.cantidad)||0),0);
+    const enCart = _enCant ? {cantidad:_enCant} : null;
     const img = p.imagen
       ? `<img class="vp-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
       : `<div class="vp-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px">${esc(emojiCat(p.categoria))}</div>`;
@@ -3048,9 +3296,13 @@ function ventaRenderPicker(){
   }).join('') : '<div class="vp-vacio">No hay productos en esta categoría.</div>';
 }
 function ventaCat(c){ VENTA_CAT=c||''; ventaRenderPicker(); const l=$('#venta-lista'); if(l) l.scrollTop=0; }
+// Clave de una línea del carrito: el id del producto, o id~importe en los
+// digitales, donde la misma tarjeta de $10 y de $25 son dos líneas.
+const ventaClave = it => it.key || String(it.id);
 function ventaAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p)return;
-  const ex=VENTA_CART.find(x=>String(x.id)===String(id));
+  if(typeof tmEsDigital==='function' && tmEsDigital(p)){ ventaElegirImporte(p); return; }
+  const ex=VENTA_CART.find(x=>ventaClave(x)===String(id));
   if(ex){ex.cantidad++;}
   else {
     const com=Number(p.comision)||0;
@@ -3060,13 +3312,13 @@ function ventaAdd(id){
   ventaRenderCart();
   ventaRenderPicker();   // la tarjeta pasa a marcar cuántas unidades van
 }
-function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==String(id)); ventaRenderCart(); ventaRenderPicker(); }
-function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); ventaRenderPicker(); }
+function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>ventaClave(x)!==String(id)); ventaRenderCart(); ventaRenderPicker(); }
+function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>ventaClave(x)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); ventaRenderPicker(); }
 // Rebajar la comisión: al cliente se le hace un descuento y ese dinero sale de
 // lo que gana el vendedor, no del precio del catálogo. Por eso se toca aquí, por
 // línea y solo en esta venta, sin alterar la comisión del producto.
 function ventaCartComision(id, valor){
-  const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(!it) return;
+  const it=VENTA_CART.find(x=>ventaClave(x)===String(id)); if(!it) return;
   const n=Number(String(valor).replace(',','.'));
   it.comision = (isFinite(n) && n>0) ? n : 0;
   // A propósito NO se repinta la lista: hacerlo en cada tecla movía el cursor y
@@ -3097,19 +3349,19 @@ function ventaRenderCart(){
     return `<div style="padding:8px 10px;background:rgba(var(--o-rgb),0.08);border:1px solid rgba(var(--o-rgb),0.3);border-radius:8px;margin-bottom:5px">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${moneyP(it, it.precio)} c/u</span></div>
-        <button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${escJsAttr(String(it.id))}',-1)">−</button>
+        <button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${escJsAttr(ventaClave(it))}',-1)">−</button>
         <span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span>
-        <button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${escJsAttr(String(it.id))}',1)">+</button>
-        <button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${escJsAttr(String(it.id))}')">✕</button>
+        <button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${escJsAttr(ventaClave(it))}',1)">+</button>
+        <button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${escJsAttr(ventaClave(it))}')">✕</button>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:var(--gray)">
-        <label for="com-${esc(String(it.id))}">Comisión c/u</label>
-        <input id="com-${esc(String(it.id))}" type="number" min="0" step="0.01" inputmode="decimal"
+        <label for="com-${esc(ventaClave(it))}">Comisión c/u</label>
+        <input id="com-${esc(ventaClave(it))}" type="number" min="0" step="0.01" inputmode="decimal"
                value="${Number(it.comision)||0}"
-               oninput="ventaCartComision('${escJsAttr(String(it.id))}', this.value)"
+               oninput="ventaCartComision('${escJsAttr(ventaClave(it))}', this.value)"
                style="width:78px;padding:3px 6px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:#fff;font-size:12px;font-weight:700">
         <span>${sufijo}</span>
-        <span id="comav-${esc(String(it.id))}" style="color:var(--gold,#c9a96e)">${rebajada?'rebajada desde '+(Number(it.comisionOriginal)||0):''}</span>
+        <span id="comav-${esc(ventaClave(it))}" style="color:var(--gold,#c9a96e)">${rebajada?'rebajada desde '+(Number(it.comisionOriginal)||0):''}</span>
       </div>
     </div>`;
   }).join('');
@@ -4641,7 +4893,8 @@ function catApagada(cat, sub){
   const ks=_catApBuscar(a.subcategorias[kc],sub); return !!(ks&&a.subcategorias[kc][ks].off);
 }
 // Un producto no sale si su categoría o su subcategoría están apagadas.
-function prodApagado(p){ return !!p && (catApagada(p.categoria) || (!!p.subcategoria && catApagada(p.categoria, p.subcategoria))); }
+function prodApagado(p){ return !!p && (catApagada(p.categoria) || (!!p.subcategoria && catApagada(p.categoria, p.subcategoria))
+  || (typeof tmDigitalOculto === 'function' && tmDigitalOculto(p))); }
 window.tmProductoApagado = prodApagado;
 function catApSwitch(cat, sub){
   const on=!catApagada(cat, sub), nombre=sub==null?cat:sub;
