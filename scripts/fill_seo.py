@@ -125,10 +125,12 @@ def main(argv=None):
 
     out = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
     _atomic_write(pj, out)
-    # lite = completo SIN descripcion (igual que el admin)
+    # lite = completo SIN descripcion (igual que el admin), compacto como lo
+    # escribe build-productos-lite.py: con indent=2 cada pasada de este script
+    # convertía el diff de una línea en 11 000 y el archivo pesaba el doble.
     lite = [{k: v for k, v in p.items() if k != 'descripcion'} for p in data]
     _atomic_write(os.path.join(ROOT, 'productos-lite.json'),
-                  json.dumps(lite, ensure_ascii=False, indent=2) + '\n')
+                  json.dumps(lite, ensure_ascii=False, separators=(',', ':')))
 
     ct = sum(1 for p in data if (p.get('seoTitle') or '').strip())
     cd = sum(1 for p in data if (p.get('seoDescription') or '').strip())

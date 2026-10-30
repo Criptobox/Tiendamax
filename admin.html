@@ -4193,6 +4193,19 @@ function apSlugProponer(){
 // Lo usa agregarProductoForm (bundle) al crear un producto.
 window.tmSlugNuevo=(nombre, id)=>slugProponer(nombre, slugsOcupados(id));
 window.apSlugInput=apSlugInput; window.apSlugProponer=apSlugProponer;
+/* Los specs se editan en una sola línea separados por comas, pero un spec
+   puede llevar comas dentro («🔄 Compatibilidad: LiFePO4, GEL, AGM y Plomo»).
+   Partir a ciegas convertía «GEL» y «AGM» en specs sueltos, sin emoji, que la
+   ficha pinta con la viñeta neutra. Si la línea usa emojis, un trozo sin emoji
+   es la continuación del anterior; si no usa ninguno, cada coma es un spec. */
+function apSpecsDeTexto(raw){
+  const trozos=String(raw||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const conEmoji=t=>typeof tmPartirEmoji==='function' && !!tmPartirEmoji(t).emoji;
+  if(!trozos.some(conEmoji)) return trozos.slice(0,6);
+  const out=[];
+  for(const t of trozos){ if(out.length && !conEmoji(t)) out[out.length-1]+=', '+t; else out.push(t); }
+  return out.slice(0,6);
+}
 function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; if($('#pedit-slug')){ $('#pedit-slug').value=slugValido(p.slug)?p.slug:slugProponer(p.nombre, slugsOcupados(id)); apSlugInput(); } $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); }
   apEditFillSubcats(p.subcategoria); const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
@@ -4356,7 +4369,7 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   // engorda el catálogo que baja el cliente.
   if(($('#pedit-moneda')&&$('#pedit-moneda').value)==='MN') p.moneda='MN'; else delete p.moneda;
   p.masVendido=$('#pedit-fav').checked;
-  p.specs=(()=>{ const raw=($('#pedit-specs').value||'').trim(); if(!raw) return []; return raw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6); })();
+  p.specs=apSpecsDeTexto($('#pedit-specs').value);
   p.garantia=($('#pedit-garantia').value||'').trim();
   // Ficha ampliada. Solo se re-parsea si el texto cambió: el texto y los campos
   // guardados no son equivalentes exactos (una característica escrita
