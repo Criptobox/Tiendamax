@@ -1248,6 +1248,19 @@ try{var _piel=localStorage.getItem('tm_piel');
     color:var(--text) !important; text-transform:none !important; letter-spacing:0 !important; }
   .tit-ico { width:18px; height:18px; flex:none; color:var(--muted); vertical-align:-3px; margin-right:7px; }
   .tit { display:inline-flex; align-items:center; min-width:0; }
+  [data-ico]::before { content:''; display:inline-block; width:16px; height:16px; flex:none;
+    vertical-align:-3px; margin-right:5px; background:currentColor;
+    -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    -webkit-mask-position:center; mask-position:center; }
+  [data-ico].ico-solo::before { margin-right:0; }
+  .tm-tool-card .ico[data-ico]::before { width:22px; height:22px; margin:0; color:var(--text); }
+  .can-ico { width:16px; height:16px; flex:none; vertical-align:-3px; margin-right:5px; }
+  .pub-act .can-ico, .pub-act-wide .can-ico { margin-right:2px; }
+  /* En chips y etiquetas el icono lleva el tono del canal; en los botones
+     de color lleno, el del texto del botón. */
+  .vo-chip .can-ico, .canal .can-ico, .ph .can-ico, .section h3 .can-ico { color:rgb(var(--c)); }
+  .vo-chip { display:inline-flex; align-items:center; }
+  .section h3 .tit .can-ico { width:18px; height:18px; margin-right:7px; }
   .section h3::before { display:none !important; }
   .agenda-t .ic { border-left:none !important; border-radius:12px !important; width:34px !important; height:34px !important; }
   .agenda-t.u1 .ic, .agenda-t .ic { background:rgba(96,165,250,.15) !important; }
@@ -2376,7 +2389,25 @@ try{var _piel=localStorage.getItem('tm_piel');
   // vista → su fila de GRUPOS (icono y color), para las cabeceras.
   var POR_VISTA = {};
   GRUPOS.forEach(function(g){ g.items.forEach(function(it){ POR_VISTA[it[0]] = it; }); });
+  /* Canales (dónde se vende y se publica): un icono de línea y un tono por
+     canal, el mismo en el formulario de venta, la tabla de canales, los
+     botones de publicar y los títulos. Los botones de color lleno (Facebook
+     azul, WhatsApp verde) lo pintan con su propio color de texto. */
+  var CANAL = {
+    '💬':['whatsapp','<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>'],
+    '🟢':['whatsapp','<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>'],
+    '🖼️':['estado','<path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7M21.82 10.1a9.93 9.93 0 0 1 0 3.8M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69M13.9 21.82a9.94 9.94 0 0 1-3.8 0M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7M2.18 13.9a9.93 9.93 0 0 1 0-3.8M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69"/><circle cx="12" cy="12" r="4"/>'],
+    '📘':['facebook','<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'],
+    '📷':['instagram','<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01"/>'],
+    '🟠':['revolico','<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/>'],
+    '🤝':['conocido','<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/>'],
+    '🔗':['copiado','<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'],
+    '🗂️':['lote','<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>']
+  };
+  var TONO_CANAL = { whatsapp:C.verde, estado:C.turquesa, facebook:C.azul, instagram:C.rosa,
+    revolico:C.naranja, conocido:C.ambar, copiado:C.gris, lote:C.gris };
   function icono(emo){
+    if (CANAL[emo]) return '<svg class="can-ico" style="--c:' + TONO_CANAL[CANAL[emo][0]] + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + CANAL[emo][1] + '</svg>';
     if (EXTRA[emo]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXTRA[emo] + '</svg>';
     try { if (typeof tmIconoSVG === 'function') { var s = tmIconoSVG(emo, '', true); if (s) return s; } } catch(e){}
     return emo;
@@ -2470,10 +2501,72 @@ try{var _piel=localStorage.getItem('tm_piel');
       tit.className = 'tit';
       var tmp = document.createElement('span'); tmp.innerHTML = icono(e.emo);
       var svg = tmp.firstChild;
-      if (svg && svg.nodeType === 1) { svg.setAttribute('class', 'tit-ico'); tit.appendChild(svg); }
+      if (svg && svg.nodeType === 1) { svg.classList.add('tit-ico'); tit.appendChild(svg); }
       t.insertBefore(tit, e.nodo);
       e.nodo.nodeValue = e.resto.replace(/^\s+/, '');
       tit.appendChild(e.nodo);
+    });
+  }
+  // Botones y etiquetas de canal: cada emoji de canal del texto (no solo el
+  // primero: «📘 Facebook + 📷») pasa a su icono. Los nodos de texto se
+  // parten alrededor del emoji, así el resto del botón no se toca.
+  var RE_CANAL = /(💬|🟢|🖼️?|📘|📷|🟠|🤝|🔗|🗂️?)\s*/;
+  function lineaCanales(){
+    document.querySelectorAll('.vo-chip, .pub-act, .pub-act-wide, .canal').forEach(function(el){
+      if (el.dataset.lineaCanal) return;
+      el.dataset.lineaCanal = '1';
+      var textos = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) textos.push(w.currentNode);
+      textos.forEach(function(n){
+        var m;
+        while ((m = RE_CANAL.exec(n.nodeValue))) {
+          var emo = m[1].replace(/\uFE0F$/, '');
+          emo = CANAL[emo] ? emo : m[1];
+          if (!CANAL[emo]) emo = emo + '\uFE0F';
+          if (!CANAL[emo]) break;
+          var despues = n.splitText(m.index);
+          despues.nodeValue = despues.nodeValue.slice(m[0].length);
+          var tmp = document.createElement('span'); tmp.innerHTML = icono(emo);
+          n.parentNode.insertBefore(tmp.firstChild, despues);
+          n = despues;
+        }
+      });
+    });
+  }
+  // Botones y pastillas de cada pantalla (✏️ ⭐ 🗑️, pestañas internas,
+  // tarjetas de Herramientas…): el emoji del principio pasa a icono de línea
+  // del color del botón; si tm-iconos no lo sabe dibujar, se queda.
+  // El icono NO es un nodo: es un ::before con máscara (una regla CSS por
+  // emoji). Con un <svg> por botón eran 565 nodos más, y la captura de la
+  // tarjeta de categoría (html2canvas copia la página entera) pasó a tardar
+  // más de lo que aguanta. Sin flag de «hecho»: si el panel vuelve a poner
+  // un emoji en el mismo botón, se convierte otra vez.
+  var RE_EMO_INI = /^(\s*)((?:[←-⇿⌀-⏿☀-➿⬀-⯿]|[\uD83C-\uD83E][\uDC00-\uDFFF])️?)\s*/;
+  var ICO_ID = {}, icoN = 0, icoHoja = null;
+  function reglaIcono(emo){
+    if (emo in ICO_ID) return ICO_ID[emo];
+    var paths = ''; try { paths = tmIconoPaths(emo) || ''; } catch(e){}
+    if (!paths) return (ICO_ID[emo] = '');
+    var id = 'i' + (++icoN);
+    var svgTxt = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+    var url = 'url("data:image/svg+xml,' + encodeURIComponent(svgTxt).replace(/'/g, '%27') + '")';
+    if (!icoHoja) { icoHoja = document.createElement('style'); document.head.appendChild(icoHoja); }
+    icoHoja.appendChild(document.createTextNode('[data-ico="' + id + '"]::before{-webkit-mask-image:' + url + ';mask-image:' + url + '}\n'));
+    return (ICO_ID[emo] = id);
+  }
+  function lineaBotones(){
+    document.querySelectorAll('.view button, .view .tm-tool-card .ico').forEach(function(el){
+      if (el.closest('.mnu-t, .side-btn')) return;
+      var n = el.firstChild;
+      while (n && n.nodeType === 3 && !n.nodeValue.trim()) n = n.nextSibling;
+      if (!n || n.nodeType !== 3) return;
+      var m = RE_EMO_INI.exec(n.nodeValue);
+      if (!m) return;
+      var id = reglaIcono(m[2]);
+      if (!id) return;
+      n.nodeValue = n.nodeValue.slice(m[0].length);
+      el.dataset.ico = id;
+      el.classList.toggle('ico-solo', !el.textContent.trim());
     });
   }
   function accesos(){
@@ -2509,12 +2602,15 @@ try{var _piel=localStorage.getItem('tm_piel');
     // Herramientas llega después (ensureTab) y la burbuja la crea el Copiloto.
     var main = document.querySelector('main.content');
     lineaTitulos();
+    lineaCanales();
+    if (typeof tmIconoSVG === 'function') lineaBotones();
     // Las pantallas repintan sus bloques a menudo: se repasa en el siguiente
     // cuadro, una vez por tanda de cambios. Lo ya hecho lleva data-linea.
     var pend = false;
     if (main) new MutationObserver(function(){
       if (pend) return; pend = true;
-      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); });
+      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); lineaCanales();
+        if (typeof tmIconoSVG === 'function') lineaBotones(); });
     }).observe(main, { childList:true, subtree:true });
     if (!lineaBoton(document.getElementById('tmCopilotBubble'))) {
       var ob = new MutationObserver(function(){
@@ -6661,7 +6757,7 @@ function anFuentesHTML(filas, compacto){
       : (n>=AN_FUENTE_MIN ? '<span style="color:var(--muted)">sin ventas todavía</span>' : '');
     return `<div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700;color:#fff;margin-bottom:4px">
-        <span>${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o);white-space:nowrap">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
+        <span class="canal">${esc(AN_FUENTE_ETIQUETA[k]||k)}</span><span style="color:var(--o);white-space:nowrap">${n.toLocaleString('es-US')} <span style="color:var(--muted);font-weight:600">· ${pct}%</span></span>
       </div>
       <div style="height:7px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden">
         <div style="height:100%;width:${pct}%;background:var(--o);border-radius:4px"></div>
