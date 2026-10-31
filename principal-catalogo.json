@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-30T20:32:56Z",
+ "actualizado": "2026-10-31T23:17:23Z",
  "origen": "https://axontech92.github.io/AXONTECH/",
  "total": 119,
  "productos": [
@@ -74,7 +74,7 @@
    "nombre": "Base para paneles",
    "precio": 65.0,
    "precioMoneda": "USD",
-   "stock": 23,
+   "stock": 24,
    "categoria": "Energia",
    "comision": 5.0,
    "comisionMoneda": "USD",
