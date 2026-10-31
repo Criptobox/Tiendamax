@@ -1212,6 +1212,86 @@ try{var _piel=localStorage.getItem('tm_piel');
   @media (max-width:359px) { .mnu-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   @media (min-width:900px) { .mnu-bg { align-items:center; } .mnu { border-radius:28px; border-bottom:1px solid rgba(255,255,255,.09); } }
   @media (prefers-reduced-motion:reduce) { .mnu { animation:none; } }
+
+  /* ── LÍNEA ÚNICA ─────────────────────────────────────────────────
+     El panel acumuló capas de estilo de épocas distintas: barras de color
+     con brillo en los KPI, auras en las esquinas, raya dorada animada en el
+     hero, degradados de cristal en las secciones, emoji en 3D al lado de
+     iconos de línea. Esta capa va la última y deja UN lenguaje, el del menú
+     «Todo el panel»: superficie lisa (--card), borde fino, radio 20, sombra
+     suave, etiquetas en versalitas espaciadas e iconos de línea en un cuadro
+     teñido. El color queda para el dato (estado, USD/MN), no para adornar.
+     Solo estética: ninguna regla de aquí cambia qué se muestra. */
+  body::before { display:none; }
+  .hero-inv, .section, .kpi, .agenda, .stock-card, .rev-card, .pcard, .prod-card,
+  .pub-share-card, .ppv-card, .banner-info, .ai-banner {
+    background:var(--card) !important; border:1px solid rgba(255,255,255,.07) !important;
+    border-radius:20px !important; box-shadow:0 10px 24px -18px rgba(0,0,0,.9) !important;
+    backdrop-filter:none !important; }
+  .hero-inv::before, .section::before, .kpi::before, .kpi::after { display:none !important; }
+  .hero-inv .hi-val, .kpi .val { text-shadow:none !important; }
+  .kpi { animation:none !important; transition:border-color .15s !important; }
+  .kpi:hover, .section:hover, .pcard:hover { transform:none !important; border-color:rgba(255,255,255,.14) !important; }
+  /* Etiquetas: las mismas versalitas que los grupos del menú. El tipo de KPI
+     ya no pinta una barra lateral: lo dice un punto de su color. */
+  .kpi .lbl, .hero-inv .hi-lbl, .agenda-h {
+    font-size:11.5px !important; font-weight:600 !important; letter-spacing:.14em !important;
+    text-transform:uppercase; color:var(--muted) !important; }
+  .kpi .lbl { display:flex; align-items:center; gap:7px; }
+  .kpi .lbl::before { content:''; width:7px; height:7px; border-radius:50%; flex:none; background:var(--o); }
+  .kpi.success .lbl::before{background:var(--green)} .kpi.danger .lbl::before{background:var(--red)}
+  .kpi.warn .lbl::before{background:var(--yellow)} .kpi.info .lbl::before{background:var(--purple)}
+  .kpi.gold .lbl::before{background:var(--gold)} .kpi.usd .lbl::before{background:var(--blue)}
+  .kpi .val { font-weight:700 !important; }
+  /* Títulos de bloque: texto normal, no dorado (el oro es MN) ni en mayúsculas. */
+  .section h3 { padding-left:0 !important; font-weight:700 !important; font-size:16px !important;
+    color:var(--text) !important; text-transform:none !important; letter-spacing:0 !important; }
+  .tit-ico { width:18px; height:18px; flex:none; color:var(--muted); vertical-align:-3px; margin-right:7px; }
+  .tit { display:inline-flex; align-items:center; min-width:0; }
+  .section h3::before { display:none !important; }
+  .agenda-t .ic { border-left:none !important; border-radius:12px !important; width:34px !important; height:34px !important; }
+  .agenda-t.u1 .ic, .agenda-t .ic { background:rgba(96,165,250,.15) !important; }
+  .agenda-t.u2 .ic { background:rgba(var(--o-rgb),.16) !important; }
+  .agenda-t.u3 .ic { background:rgba(248,113,113,.16) !important; }
+  .agenda-t b { font-weight:700 !important; }
+  /* Botones: sin halo, mismo radio en todo el panel. */
+  .btn { border-radius:14px; }
+  .btn-primary, .btn-primary:hover, .btn-gold:hover { box-shadow:none !important; }
+  /* Tablas: el oro significa MN en todo el panel; una cabecera dorada lo contradecía. */
+  th { background:rgba(255,255,255,.03) !important; color:var(--muted) !important;
+    font-weight:600; letter-spacing:.08em; }
+  /* Barras: un tono plano, sin brillo. */
+  .bar-chart .bar { background:var(--o) !important; box-shadow:none !important; border-radius:8px 8px 3px 3px; }
+  .bar-chart .bar::after { display:none !important; }
+  /* Cabecera de cada pantalla: icono de línea en su cuadro teñido, del
+     mismo color que su tarjeta en el menú (lo pone tmLineaCabeceras). */
+  .ph h2 { font-weight:700 !important; letter-spacing:-.01em; }
+  .ph-ico { width:42px; height:42px; border-radius:14px; flex:none; display:inline-flex; align-items:center;
+    justify-content:center; background:rgba(var(--c),.15); color:rgb(var(--c)); }
+  .ph-ico svg { width:23px; height:23px; }
+  /* Topbar: iconos de línea, como el ☰. */
+  .icon-btn { border-radius:12px; color:var(--text); }
+  .icon-btn svg { width:19px; height:19px; }
+  /* Burbuja del Copiloto: tarjeta del sistema en vez de degradado chillón. */
+  #tmCopilotBubble { background:var(--card2) !important; border:1px solid rgba(255,255,255,.12) !important;
+    color:rgb(167,139,250) !important; box-shadow:0 14px 30px -12px rgba(0,0,0,.9) !important; border-radius:20px !important; }
+  #tmCopilotBubble svg { width:27px; height:27px; }
+  /* Accesos rápidos de Inicio: cuatro tarjetas compactas, solo icono y nombre. */
+  .acc { margin:0 0 16px; }
+  .acc-cab { display:flex; align-items:baseline; justify-content:space-between; margin:2px 4px 10px; }
+  .acc-cab span { font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .acc-cab button { background:none; border:none; color:var(--o); font-size:13.5px; font-weight:600; padding:4px 0; }
+  .acc .mnu-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+  .acc .mnu-t { align-items:center; text-align:center; padding:12px 4px 10px; gap:7px; border-radius:18px; }
+  .acc .mnu-ico { width:42px; height:42px; border-radius:14px; }
+  .acc .mnu-t b { font-size:13px; }
+  .acc .mnu-t small { display:none; }
+  /* En el móvil la barra de iconos se va: se navega con ☰ y los accesos.
+     Sigue en el DOM (el menú lee de ella las secciones que existen). */
+  @media (max-width:760px) {
+    .sidebar { display:none !important; }
+    .content { padding-top:16px !important; }
+  }
 </style>
 </head>
 <body>
@@ -1482,6 +1562,10 @@ try{var _piel=localStorage.getItem('tm_piel');
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
           <div class="ph-actions"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+        </div>
+        <div class="acc">
+          <div class="acc-cab"><span>Accesos rápidos</span><button type="button" onclick="tmMenuAbrir()">Ver todo ›</button></div>
+          <div class="mnu-grid" id="inicio-accesos"></div>
         </div>
         <div class="hero-inv" id="inicio-hero">
           <div class="hi-lbl" id="hi-mes-l">Resumen del mes</div>
@@ -2284,8 +2368,14 @@ try{var _piel=localStorage.getItem('tm_piel');
   var EXTRA = {
     '🔀':'<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/>',
     '📥':'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
-    '🔳':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>'
+    '🔳':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
+    '⬇️':'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+    '🤖':'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13v1M15 13v1M9.5 17h5"/><circle cx="12" cy="3.5" r=".5"/>',
+    '🚧':'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'
   };
+  // vista → su fila de GRUPOS (icono y color), para las cabeceras.
+  var POR_VISTA = {};
+  GRUPOS.forEach(function(g){ g.items.forEach(function(it){ POR_VISTA[it[0]] = it; }); });
   function icono(emo){
     if (EXTRA[emo]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXTRA[emo] + '</svg>';
     try { if (typeof tmIconoSVG === 'function') { var s = tmIconoSVG(emo, '', true); if (s) return s; } } catch(e){}
@@ -2326,6 +2416,117 @@ try{var _piel=localStorage.getItem('tm_piel');
     return html;
   }
 
+  function abrirVista(v){
+    if (v === 'vale') { location.href = 'vale.html'; return; }   // igual que su botón en la barra
+    if (typeof window.go === 'function') window.go(v);
+  }
+
+  // Cambia el emoji que encabeza un nodo de texto por su icono de línea.
+  // Solo toca el primer nodo de texto: contadores y spans hermanos se quedan.
+  function emojiDelanteDe(el){
+    var n = el && el.firstChild;
+    if (!n || n.nodeType !== 3) return null;
+    var m = /^\s*([\u2190-\u2BFF\u2600-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF])+/.exec(n.nodeValue);
+    return m ? { nodo:n, emo:m[0].trim(), resto:n.nodeValue.slice(m[0].length) } : null;
+  }
+  function lineaCabeceras(){
+    document.querySelectorAll('.view .ph h2').forEach(function(h){
+      if (h.dataset.linea) return;
+      var e = emojiDelanteDe(h);
+      h.dataset.linea = '1';
+      if (!e) return;
+      var v = (h.closest('.view').id || '').replace(/^view-/, '');
+      var it = POR_VISTA[v];
+      var sp = document.createElement('span');
+      sp.className = 'ph-ico'; sp.style.setProperty('--c', it ? it[4] : C.gris);
+      sp.innerHTML = icono(e.emo);
+      e.nodo.nodeValue = e.resto.replace(/^\s+/, '');
+      h.insertBefore(sp, e.nodo);
+    });
+  }
+  function lineaBoton(b){
+    if (!b || b.dataset.linea) return false;
+    var e = emojiDelanteDe(b);
+    if (!e) return false;
+    var tmp = document.createElement('span'); tmp.innerHTML = icono(e.emo);
+    var svg = tmp.firstChild;
+    if (!svg || svg.nodeType !== 1) return false;   // sin icono: se queda el emoji
+    b.dataset.linea = '1';
+    e.nodo.nodeValue = e.resto;
+    b.insertBefore(svg, e.nodo);
+    return true;
+  }
+  // Títulos de bloque (h3 de las secciones, «Hoy» de la agenda…): el emoji
+  // pasa a icono de línea gris; si no hay icono para ese emoji, se quita.
+  function lineaTitulos(){
+    document.querySelectorAll('.view .section h3, .view .agenda-h, #inicio-graf .section > span:first-child').forEach(function(t){
+      if (t.dataset.linea) return;
+      t.dataset.linea = '1';
+      var e = emojiDelanteDe(t);
+      if (!e) return;
+      // Icono y texto van juntos en un <span>: los h3 son flex con
+      // space-between (para su contador), y sueltos se separaban.
+      var tit = document.createElement('span');
+      tit.className = 'tit';
+      var tmp = document.createElement('span'); tmp.innerHTML = icono(e.emo);
+      var svg = tmp.firstChild;
+      if (svg && svg.nodeType === 1) { svg.setAttribute('class', 'tit-ico'); tit.appendChild(svg); }
+      t.insertBefore(tit, e.nodo);
+      e.nodo.nodeValue = e.resto.replace(/^\s+/, '');
+      tit.appendChild(e.nodo);
+    });
+  }
+  function accesos(){
+    var box = document.getElementById('inicio-accesos');
+    if (!box) return;
+    box.innerHTML = [
+      ['ventas','💰','Vender','', C.verde], ['vale','🧾','Vale','', C.ambar],
+      ['publicar','📣','Publicar','', C.rosa], ['productos','📦','Productos','', C.azul]
+    ].map(function(it){ return tarjeta(it, null); }).join('');
+    box.addEventListener('click', function(e){
+      var t = e.target.closest('[data-mnu]');
+      if (t) abrirVista(t.dataset.mnu);
+    });
+  }
+  // La barra pinta con el icono genérico los emoji que tm-iconos no tiene
+  // (🔀 📥 🔳): tres bolsas iguales. Se les pone el suyo, y tmIco evita que
+  // pintarIconosPestanas lo vuelva a cambiar.
+  function iconosBarra(){
+    document.querySelectorAll('.side-btn[data-view]').forEach(function(b){
+      var it = POR_VISTA[b.dataset.view];
+      if (!it || !EXTRA[it[1]]) return;
+      var guardar = [].slice.call(b.querySelectorAll('.badge, .new-tag'));
+      b.innerHTML = icono(it[1]).replace('<svg ', '<svg class="tm-ico-tab" ');
+      guardar.forEach(function(x){ b.appendChild(x); });
+      b.dataset.tmIco = '1';
+    });
+  }
+  function arrancar(){
+    accesos();
+    iconosBarra();
+    lineaCabeceras();
+    document.querySelectorAll('.tb-actions .icon-btn').forEach(lineaBoton);
+    // Herramientas llega después (ensureTab) y la burbuja la crea el Copiloto.
+    var main = document.querySelector('main.content');
+    lineaTitulos();
+    // Las pantallas repintan sus bloques a menudo: se repasa en el siguiente
+    // cuadro, una vez por tanda de cambios. Lo ya hecho lleva data-linea.
+    var pend = false;
+    if (main) new MutationObserver(function(){
+      if (pend) return; pend = true;
+      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); });
+    }).observe(main, { childList:true, subtree:true });
+    if (!lineaBoton(document.getElementById('tmCopilotBubble'))) {
+      var ob = new MutationObserver(function(){
+        if (lineaBoton(document.getElementById('tmCopilotBubble'))) ob.disconnect();
+      });
+      ob.observe(document.body, { childList:true });
+      setTimeout(function(){ ob.disconnect(); }, 20000);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
+  else arrancar();
+
   var raiz = null, foco = null;
   function cerrar(){
     if (!raiz || raiz.hidden) return;
@@ -2345,10 +2546,8 @@ try{var _piel=localStorage.getItem('tm_piel');
       if (e.target === raiz || e.target.closest('.mnu-x')) { cerrar(); return; }
       var t = e.target.closest('[data-mnu]');
       if (!t) return;
-      var v = t.dataset.mnu;
       cerrar();
-      if (v === 'vale') { location.href = 'vale.html'; return; }   // igual que su botón en la barra
-      if (typeof window.go === 'function') window.go(v);
+      abrirVista(t.dataset.mnu);
     });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') cerrar(); });
     document.body.appendChild(raiz);
