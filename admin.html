@@ -1289,6 +1289,27 @@ try{var _piel=localStorage.getItem('tm_piel');
   #tmCopilotBubble { background:var(--card2) !important; border:1px solid rgba(255,255,255,.12) !important;
     color:rgb(167,139,250) !important; box-shadow:0 14px 30px -12px rgba(0,0,0,.9) !important; border-radius:20px !important; }
   #tmCopilotBubble svg { width:27px; height:27px; }
+  /* Configuración: grupos y bloques plegables. La línea de cada bloque
+     plegado dice cómo está (cfgEstados); ámbar = hay algo que mirar. */
+  .cfg-sec { font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); margin:22px 4px 10px; }
+  #view-config .ph + .cfg-sec { margin-top:4px; }
+  details.cfg-pl { padding:0 18px !important; }
+  details.cfg-pl > summary { list-style:none; cursor:pointer; padding:16px 18px; margin:0 -18px; display:block; }
+  details.cfg-pl > summary::-webkit-details-marker { display:none; }
+  details.cfg-pl > summary h3 { margin:0 !important; }
+  details.cfg-pl > summary h3::after { content:''; width:8px; height:8px; flex:none; margin-left:10px;
+    border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg) translateY(-3px);
+    transition:transform .15s; }
+  details.cfg-pl[open] > summary h3::after { transform:rotate(225deg) translate(-2px,-1px); }
+  details.cfg-pl[open] > summary { padding-bottom:12px; }
+  details.cfg-pl > :last-child { margin-bottom:18px; }
+  .cfg-est { margin-left:auto; font-size:12px; font-weight:600; color:var(--muted); text-align:right;
+    letter-spacing:0; text-transform:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
+  .cfg-est.ok { color:var(--green); }
+  .cfg-est.mal { color:var(--yellow); }
+  details.cfg-sub { margin-top:12px; border-top:1px solid var(--border); padding-top:10px; }
+  details.cfg-sub > summary { cursor:pointer; font-size:12.5px; color:var(--muted); font-weight:600; }
   /* Accesos rápidos de Inicio: cuatro tarjetas compactas, solo icono y nombre. */
   .acc { margin:0 0 16px; }
   .acc-cab { display:flex; align-items:baseline; justify-content:space-between; margin:2px 4px 10px; }
@@ -1604,7 +1625,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-com" onclick="apToggleFiltroComision()" title="Ver los que vendes sin comisión declarada">❓ Sin comisión</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-com" onclick="apToggleFiltroComision()" title="Ver los que vendes sin comisión declarada">❓ Sin comisión</button><button class="btn btn-ghost" onclick="sincronizarTodoConGitHub()" title="Publicar en la tienda lo que cambiaste">🔄 Actualizar tienda</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div id="prod-bulkbar" style="display:none;position:sticky;top:64px;z-index:60;background:rgba(20,16,10,0.97);border:1px solid var(--o);border-radius:11px;padding:9px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px;flex-wrap:wrap">
           <b id="prod-bulk-count" style="color:var(--o);font-size:13px">0 seleccionados</b>
@@ -1620,7 +1641,7 @@ try{var _piel=localStorage.getItem('tm_piel');
             <button class="btn btn-ghost" onclick="bulkPrecio(1)">➕ Subir %</button>
             <button class="btn btn-ghost" onclick="bulkPrecio(-1)">➖ Bajar %</button>
           </div>
-          <p style="font-size:11px;color:var(--muted);margin:0 0 12px">Redondea al entero. Ej: 10% sube $100 → $110. Luego pulsa "Actualizar tienda" en ⚙️ para publicar.</p>
+          <p style="font-size:11px;color:var(--muted);margin:0 0 12px">Redondea al entero. Ej: 10% sube $100 → $110. Luego pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar.</p>
         </details>
         <div class="prod-grid rows" id="prod-grid"></div>
       </div>
@@ -1877,62 +1898,44 @@ try{var _piel=localStorage.getItem('tm_piel');
 
       <!-- El Agente IA (correcciones del catálogo) vive ahora en el Copiloto (burbuja 🤖) -->
 
-      <!-- CONFIGURACIÓN -->
+      <!-- CONFIGURACIÓN
+           Ordenada por lo que se toca: arriba lo de cada semana (tasa, envío,
+           estilo), siempre abierto; debajo, plegado, lo que se configura una
+           vez (conexiones, cuenta) y lo de mantenimiento. Cada bloque plegado
+           dice en su línea cómo está (cfgEstados), y uno con un problema
+           (token por caducar, Firebase sin configurar, espacio casi lleno) se
+           abre solo: plegar no puede servir para esconder un aviso.
+           Los campos, ids y funciones son los de siempre; solo se movieron. -->
       <div id="view-config" class="view">
-        <div class="ph"><div><h2>⚙️ Configuración</h2><p>GitHub, tasa MN y WhatsApp</p></div></div>
+        <div class="ph"><div><h2>⚙️ Configuración</h2><p>Tasa, envío, conexiones y tu cuenta</p></div></div>
 
-        <!-- Instalar la app de gestión.
-             Los accesos directos del icono (Nuevo Vale / Agregar producto /
-             Publicar) solo existen si la app está INSTALADA, y Chrome esconde
-             "Instalar app" en el menú de tres puntos, donde no se ve. Peor: si
-             ya tienes instalada la tienda, a veces ofrece "Añadir acceso
-             directo", que es un marcador y NO trae menú. Este botón usa el
-             evento del navegador, así que o instala de verdad, o dice por qué
-             no puede — en vez de dejarte adivinando. -->
-        <!-- Cuenta de Firebase.
-             Es lo que hace que los datos dejen de vivir solo en este
-             navegador: sin una cuenta, las reglas de Firebase no pueden
-             distinguir al dueño de un desconocido, porque un permiso de
-             LECTURA no ve nada de lo que manda el cliente. Por eso /ventas
-             estaba abierto a quien supiera la URL. -->
-        <div class="section" id="tmPielBox" style="margin-bottom:16px">
-<h3>🎨 Estilo del panel</h3>
-<p style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Cambia el color del panel cuando quieras. Se guarda en este dispositivo y <b style="color:var(--text)">no toca la tienda ni los carteles</b>: lo que ve el cliente sigue saliendo en naranja TiendaMax.</p>
-<div id="tmPielOpciones" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-</div>
-
-<div class="section" id="tmCuentaBox" style="margin-bottom:16px">
-          <h3>👤 Tu cuenta</h3>
-          <p id="tmCuentaEstado" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Comprobando…</p>
-          <div id="tmCuentaForm">
-            <div class="form-group"><label class="form-label" for="tmCuentaEmail">Correo</label><input class="form-input" id="tmCuentaEmail" type="email" placeholder="tu@correo.com" autocomplete="username"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label" for="tmCuentaPass">Contraseña <span style="color:var(--gray);font-weight:600">— mínimo 6</span></label><input class="form-input" id="tmCuentaPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
-            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-              <button class="btn btn-primary" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaEntrar()">Entrar</button>
-              <button class="btn btn-ghost" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaCrear()">Crear cuenta</button>
-            </div>
-            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaRecuperar()">Olvidé la contraseña</button>
-          </div>
-          <button class="btn btn-ghost" id="tmCuentaSalir" style="width:100%;margin-top:10px;display:none" onclick="tmCuentaSalir()">Cerrar sesión</button>
-          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaProbar()">🔌 Probar acceso a lo privado</button>
-          <!-- firebase-rules.json no se publica con el sitio (pages.yml lo
-               excluye), así que se trae del repo. Copiarlo a mano desde GitHub
-               en un móvil es justo el paso donde la gente se rinde. -->
-          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCopiarReglas()">📋 Copiar las reglas de Firebase</button>
-          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaDiagnostico()">🩺 Diagnóstico paso a paso</button>
-          <div id="tmCuentaDiag" style="margin-top:10px"></div>
-          <p id="tmCuentaMsg" style="font-size:12.5px;line-height:1.5;margin-top:10px"></p>
-        </div>
-
-        <div class="section" id="tmInstalarBox" style="margin-bottom:16px">
-          <h3>📲 App de gestión</h3>
-          <p id="tmInstalarMsg" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px">Comprobando…</p>
-          <button class="btn btn-primary" id="tmInstalarBtn" style="width:100%;display:none" onclick="tmInstalarApp()">📲 Instalar app de gestión</button>
-        </div>
-
+        <div class="cfg-sec">Día a día</div>
         <div class="grid-2">
           <div class="section">
-            <h3>🔗 GitHub</h3>
+            <h3>💱 Tasa MN</h3>
+            <div class="form-group"><label class="form-label" for="adminTasaMN">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminMargenMN">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
+            <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+          </div>
+          <div class="section">
+            <h3>🚚 Envío</h3>
+            <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Sale en la tarjeta de confianza de cada producto: el cliente lo ve antes de pedir. Escribe la cobertura y el costo reales.</p>
+            <div class="form-group"><label class="form-label" for="adminEnvioTexto">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar envío</button>
+            <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+          </div>
+        </div>
+        <div class="section" id="tmPielBox">
+          <h3>🎨 Estilo del panel</h3>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin:-4px 0 12px">Solo en este dispositivo. <b style="color:var(--text)">No toca la tienda ni los carteles</b>: el cliente sigue viendo el naranja TiendaMax.</p>
+          <div id="tmPielOpciones" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>
+
+        <div class="cfg-sec">Conexiones</div>
+        <details class="section cfg-pl" data-cfg="github">
+          <summary><h3>🔗 GitHub <small class="cfg-est"></small></h3></summary>
             <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
               <div class="form-group"><label class="form-label" for="githubUser">Usuario</label><input class="form-input" id="githubUser" placeholder="usuario"></div>
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubRepo">Repositorio</label><input class="form-input" id="githubRepo" placeholder="Tiendamax"></div>
@@ -1952,68 +1955,88 @@ try{var _piel=localStorage.getItem('tm_piel');
             <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="tmTokenRenovadoHoy()">🔁 Ya lo cambié hoy</button>
             <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="tmProbarToken()">🔌 Probar token</button>
             <p id="tmTokenStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
-            <button class="btn btn-success" style="width:100%;margin-top:10px;justify-content:center" onclick="sincronizarTodoConGitHub()">🔄 Actualizar tienda ahora</button>
-          </div>
-          <div class="section">
-            <h3>💱 Tasa MN</h3>
-            <div class="form-group"><label class="form-label" for="adminTasaMN">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminMargenMN">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
-            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
-            <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
-          </div>
-          <div class="section">
-            <h3>🚚 Envío</h3>
-            <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Se muestra en la tarjeta de confianza del detalle de producto. Escribí la cobertura y el costo reales — esto lo ve el cliente antes de pedir.</p>
-            <div class="form-group"><label class="form-label" for="adminEnvioTexto">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
-            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar</button>
-            <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
-          </div>
-        </div>
-        <div class="section">
-          <h3>🔥 Firebase (ventas, reseñas, notificaciones)</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Pega el <b>firebaseConfig</b> de tu proyecto (Consola Firebase → Configuración del proyecto → Tus apps). Con esto funcionan ventas en la nube, reseñas y push.</p>
+          </details>
+        <details class="section cfg-pl" data-cfg="firebase">
+          <summary><h3>🔥 Firebase <small class="cfg-est"></small></h3></summary>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 12px">Ventas en la nube, reseñas y notificaciones. Pega el <b>firebaseConfig</b> de tu proyecto (Consola Firebase → Configuración del proyecto → Tus apps).</p>
           <div class="form-group"><label class="form-label" for="fb-config-input">firebaseConfig (JSON o el bloque completo)</label><textarea class="form-textarea" id="fb-config-input" rows="7" placeholder='{ "apiKey": "AIza…", "projectId": "tu-proyecto", "databaseURL": "https://tu-proyecto-default-rtdb.firebaseio.com", … }'></textarea></div>
           <div class="form-group" style="margin-top:10px"><label class="form-label" for="fb-vapid-input">VAPID key (opcional, para notificaciones push)</label><input class="form-input" id="fb-vapid-input" placeholder="B…"></div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-primary" onclick="guardarFirebaseConfig()">💾 Guardar Firebase</button><button class="btn btn-ghost" onclick="probarFirebase()">🔌 Probar conexión</button></div>
           <p id="fb-config-status" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
-        </div>
-        <div class="section">
-          <h3>💾 Espacio del navegador</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El navegador guarda una copia local del catálogo para abrir rápido. Cuando se llena aparece <i>"exceeded the quota"</i> al guardar. Aquí ves qué ocupa y puedes vaciar lo que es historial (no se pierde nada: el catálogo real está en GitHub).</p>
+        </details>
+        <details class="section cfg-pl" data-cfg="ia">
+          <summary><h3>🔑 IA del Copiloto <small class="cfg-est"></small></h3></summary>
+          <div class="form-group"><label class="form-label" for="ia-key">API Key (Claude / Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="sk-ant-… / AIza… / sk-or-… / gsk_… / sk-…"></div>
+          <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
+          <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
+        </details>
+
+        <div class="cfg-sec">Cuenta y seguridad</div>
+        <!-- Cuenta de Firebase.
+             Es lo que hace que los datos dejen de vivir solo en este
+             navegador: sin una cuenta, las reglas de Firebase no pueden
+             distinguir al dueño de un desconocido, porque un permiso de
+             LECTURA no ve nada de lo que manda el cliente. Por eso /ventas
+             estaba abierto a quien supiera la URL.
+             Aquí vivían también "Contraseña del admin" y "Código de
+             recuperación", que manejaban un hash local que el login ya no
+             comprueba: puertas pintadas. La contraseña es la de la cuenta y
+             la recuperación es un correo; su nota vive ahora aquí dentro. -->
+        <details class="section cfg-pl" id="tmCuentaBox" data-cfg="cuenta">
+          <summary><h3>👤 Tu cuenta <small class="cfg-est"></small></h3></summary>
+          <p id="tmCuentaEstado" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Comprobando…</p>
+          <div id="tmCuentaForm">
+            <div class="form-group"><label class="form-label" for="tmCuentaEmail">Correo</label><input class="form-input" id="tmCuentaEmail" type="email" placeholder="tu@correo.com" autocomplete="username"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="tmCuentaPass">Contraseña <span style="color:var(--gray);font-weight:600">— mínimo 6</span></label><input class="form-input" id="tmCuentaPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="btn btn-primary" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaEntrar()">Entrar</button>
+              <button class="btn btn-ghost" style="flex:1;min-width:130px;justify-content:center" onclick="tmCuentaCrear()">Crear cuenta</button>
+            </div>
+          </div>
+          <button class="btn btn-ghost" id="tmCuentaSalir" style="width:100%;margin-top:10px;display:none" onclick="tmCuentaSalir()">Cerrar sesión</button>
+          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaRecuperar()">Olvidé la contraseña</button>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px">La contraseña es la de esta cuenta y vive en Firebase, no en el móvil: borrar los datos del navegador no te deja fuera. Para cambiarla, «Olvidé la contraseña» y te llega un correo.</p>
+          <p id="tmCuentaMsg" style="font-size:12.5px;line-height:1.5;margin-top:10px"></p>
+          <details class="cfg-sub">
+            <summary>Si algo no conecta</summary>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaProbar()">🔌 Probar acceso a lo privado</button>
+            <!-- firebase-rules.json no se publica con el sitio (pages.yml lo
+                 excluye), así que se trae del repo. Copiarlo a mano desde GitHub
+                 en un móvil es justo el paso donde la gente se rinde. -->
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCopiarReglas()">📋 Copiar las reglas de Firebase</button>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="tmCuentaDiagnostico()">🩺 Diagnóstico paso a paso</button>
+            <div id="tmCuentaDiag" style="margin-top:10px"></div>
+          </details>
+        </details>
+        <details class="section cfg-pl" data-cfg="huella">
+          <summary><h3>👆 Huella / Face ID <small class="cfg-est"></small></h3></summary>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 12px">Para entrar al panel sin escribir la contraseña, en este dispositivo.</p>
+          <div id="tmBioSection"></div>
+        </details>
+
+        <div class="cfg-sec">Mantenimiento</div>
+        <details class="section cfg-pl" data-cfg="espacio">
+          <summary><h3>💾 Espacio del navegador <small class="cfg-est"></small></h3></summary>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 12px">El navegador guarda una copia del catálogo para abrir rápido. Si se llena, al guardar sale <i>"exceeded the quota"</i>. Liberar vacía solo historial: el catálogo real está en GitHub.</p>
           <div id="tm-espacio-info" style="font-size:12.5px;color:var(--muted)">Cargando…</div>
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
             <button class="btn btn-ghost" onclick="tmMostrarEspacio()">🔄 Revisar</button>
             <button class="btn btn-primary" onclick="tmLiberarEspacio()">🧹 Liberar espacio</button>
           </div>
-        </div>
-        <div class="section">
-          <h3>🔑 API Key de IA (para el Agente)</h3>
-          <div class="form-group"><label class="form-label" for="ia-key">API Key (Claude / Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="sk-ant-… / AIza… / sk-or-… / gsk_… / sk-…"></div>
-          <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
-          <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
-        </div>
-        <!-- Aquí vivían "Contraseña del admin" y "Código de recuperación".
-             Los dos manejaban el hash local que el login ya no comprueba: eran
-             puertas pintadas, y una puerta pintada es peor que ninguna porque
-             se cree que protege. La contraseña se cambia ahora donde vive de
-             verdad, en la cuenta, y la recuperación es un correo. -->
-        <div class="section">
-          <h3>🔒 Contraseña</h3>
-          <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin:-4px 0 12px">
-            Tu contraseña es la de tu cuenta y vive en Firebase, no en este navegador. Se cambia desde
-            <b>👤 Tu cuenta</b>, aquí arriba: pulsa <b>Olvidé la contraseña</b> y te llega un correo para ponerte una nueva.
-          </p>
-          <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin:0">
-            Ya no hay contraseña guardada en el navegador ni código de recuperación que apuntar:
-            borrar los datos de este móvil ya no te deja fuera.
-          </p>
-        </div>
-        <div class="section">
-          <h3>👆 Seguridad biométrica</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Huella o Face ID para entrar al admin sin escribir la contraseña, en este dispositivo.</p>
-          <div id="tmBioSection"></div>
-        </div>
+        </details>
+        <!-- Instalar la app de gestión.
+             Los accesos directos del icono (Nuevo Vale / Agregar producto /
+             Publicar) solo existen si la app está INSTALADA, y Chrome esconde
+             "Instalar app" en el menú de tres puntos, donde no se ve. Peor: si
+             ya tienes instalada la tienda, a veces ofrece "Añadir acceso
+             directo", que es un marcador y NO trae menú. Este botón usa el
+             evento del navegador, así que o instala de verdad, o dice por qué
+             no puede — en vez de dejarte adivinando. -->
+        <details class="section cfg-pl" id="tmInstalarBox" data-cfg="app">
+          <summary><h3>📲 App de gestión <small class="cfg-est"></small></h3></summary>
+          <p id="tmInstalarMsg" style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px">Comprobando…</p>
+          <button class="btn btn-primary" id="tmInstalarBtn" style="width:100%;display:none" onclick="tmInstalarApp()">📲 Instalar app de gestión</button>
+        </details>
       </div>
 
       <!-- ANALYTICS -->
@@ -2659,6 +2682,65 @@ try{var _piel=localStorage.getItem('tm_piel');
   };
 })();
 </script>
+<script>
+/* ⚙️ Configuración: la línea de cada bloque plegado dice cómo está, para no
+   tener que abrir cinco bloques para saber si todo va bien. Lee lo mismo que
+   ya guardan esos bloques (localStorage, la cuenta pintada) y no guarda nada.
+   Un bloque con algo que mirar se abre solo al entrar: plegarlo no puede
+   servir para esconder un aviso. Se recalcula al entrar en la pantalla y
+   cuando cambia cualquiera de los mensajes de estado de dentro. */
+(function(){
+  function ls(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }
+  var PROV = [['sk-ant-','Claude'],['AIza','Gemini'],['sk-or','OpenRouter'],['gsk_','Groq']];
+  function estados(){
+    var r = {};
+    // GitHub: el token y cuándo caduca (mismo cálculo que el aviso del Copiloto)
+    if (!ls('githubToken')) r.github = ['Falta el token', 'mal'];
+    else {
+      var d = null, toca = false;
+      try { var m = tmTokenMeta(); d = tmTokenDiasRestantes(m); toca = tmTokenToca(m); } catch(e){}
+      if (d === null) r.github = ['Conectado · ¿cuándo caduca?', 'mal'];
+      else if (d < 0) r.github = ['Token caducado', 'mal'];
+      else if (toca) r.github = ['Caduca en ' + d + ' día' + (d !== 1 ? 's' : ''), 'mal'];
+      else r.github = ['Conectado · ' + d + ' días', 'ok'];
+    }
+    var fb = null; try { fb = JSON.parse(ls('firebaseConfig') || 'null'); } catch(e){}
+    r.firebase = fb && fb.projectId ? ['Conectado', 'ok'] : ['Sin configurar', 'mal'];
+    var k = ls('anthropicApiKey');
+    if (!k) r.ia = ['Sin key · opcional', ''];
+    else { var n = 'DeepSeek'; PROV.forEach(function(p){ if (k.indexOf(p[0]) === 0) n = p[1]; }); r.ia = [n, 'ok']; }
+    var est = (document.getElementById('tmCuentaEstado') || {}).textContent || '';
+    if (/^✅/.test(est)) { var b = document.querySelector('#tmCuentaEstado b'); r.cuenta = [b ? b.textContent : 'Sesión iniciada', 'ok']; }
+    else if (/^Sin cuenta/.test(est)) r.cuenta = ['Sin sesión', 'mal'];
+    else if (/^No pude/.test(est)) r.cuenta = ['No conecta', 'mal'];
+    else r.cuenta = ['', ''];
+    r.huella = ls('tm_bio_cred') ? ['Activada', 'ok'] : ['No activada', ''];
+    try { var t = tmDiagnosticoAlmacenamiento().totalKB, pct = Math.round(t / 5120 * 100);
+      r.espacio = [t + ' KB · ' + pct + '%', pct >= 80 ? 'mal' : '']; } catch(e){ r.espacio = ['', '']; }
+    var inst = window.matchMedia && matchMedia('(display-mode: standalone)').matches;
+    r.app = inst ? ['Instalada', 'ok'] : ['', ''];
+    return r;
+  }
+  var abiertos = false;
+  window.cfgEstados = function(){
+    var r = estados();
+    document.querySelectorAll('#view-config details.cfg-pl[data-cfg]').forEach(function(d){
+      var e = r[d.dataset.cfg] || ['', ''], sm = d.querySelector('.cfg-est');
+      if (sm) { sm.textContent = e[0]; sm.className = 'cfg-est' + (e[1] ? ' ' + e[1] : ''); }
+      // Solo al entrar la primera vez: si luego lo pliegas tú, se queda plegado.
+      if (!abiertos && e[1] === 'mal') d.open = true;
+    });
+    abiertos = true;
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    var ob = new MutationObserver(function(){ window.cfgEstados(); });
+    ['tmCuentaEstado','ghTokenVence','tmTokenStatus','fb-config-status','ia-key-status'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) ob.observe(el, { childList:true, characterData:true, subtree:true });
+    });
+  });
+})();
+</script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=e6a536a1"></script>
@@ -2834,6 +2916,7 @@ function go(view, btn){
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
   if(view==='config' && typeof tmPintarPieles==='function'){ try{ tmPintarPieles(); }catch(e){} }
+  if(view==='config' && typeof cfgEstados==='function'){ try{ cfgEstados(); }catch(e){} }
   if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
   if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
   if(view==='comparar' && typeof cmpCargar==='function'){ try{ cmpCargar(); }catch(e){} }
@@ -4680,7 +4763,7 @@ function bulkPrecio(signo){
   let n=0;
   objetivo.forEach(p=>{ const nuevo=Math.max(1, Math.round((Number(p.precioActual)||0)*factor)); if(nuevo!==Number(p.precioActual)){ p.precioActual=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} n++; } });
   apSaveProds(); renderProductos();
-  showToast('💲 '+n+' precios '+(signo>0?'subidos':'bajados')+' '+pct+'%','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('💲 '+n+' precios '+(signo>0?'subidos':'bajados')+' '+pct+'%','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 function apSaveProds(){ syncProductos(); tmGuardarLS('productos', PRODUCTOS); }
 // El módulo de Herramientas (dupNow/rollback/importCsv, más abajo) vive en su
@@ -5215,7 +5298,7 @@ function catAgregar(){
   if(typeof agregarCategoria!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
   const inp=$('#newCategoryName'); if(!inp || !inp.value.trim()){ showToast('⚠️ Escribe la categoría'); return; }
   agregarCategoria();
-  setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS={nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}; }catch(e){} renderCategorias(); showToast('✅ Categoría agregada','Pulsa Actualizar tienda en ⚙️ para publicar'); },120);
+  setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS={nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}; }catch(e){} renderCategorias(); showToast('✅ Categoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar'); },120);
 }
 function subAgregar(){
   const cat=$('#newSubCat') && $('#newSubCat').value;
@@ -5231,7 +5314,7 @@ function subAgregar(){
   SUBCATS=map;
   if(typeof marcarTodoModificado==='function'){} // sync sube subcategorias.json desde localStorage
   renderCategorias();
-  showToast('✅ Subcategoría agregada','Pulsa Actualizar tienda en ⚙️ para publicar');
+  showToast('✅ Subcategoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar');
 }
 // ── Editar/borrar categorías y subcategorías ──
 // El motor sube categorias.json como {nombres:categorias, iconos:iconosPersonalizados}
@@ -5251,7 +5334,7 @@ function catRenombrar(nm){
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)){ p.categoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
   renderCategorias(); renderProductos(); fillAgregarCategorias();
-  showToast('✏️ Categoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('✏️ Categoría renombrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 // Cambiar el emoji/ícono de una categoría (se publica igual que el renombre)
 function catEmoji(nm){
@@ -5263,7 +5346,7 @@ function catEmoji(nm){
   _saveCats(catNombres(), ic);
   tmGuardarLS('iconosPersonalizados', ic);
   renderCategorias(); renderProductos();
-  showToast('😀 Emoji cambiado','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('😀 Emoji cambiado','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 function catBorrar(nm){
   const n=PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
@@ -5273,7 +5356,7 @@ function catBorrar(nm){
   _saveCats(names, ic);
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; }catch(e){}
   renderCategorias(); fillAgregarCategorias();
-  showToast('🗑️ Categoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('🗑️ Categoría borrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 function subRenombrar(cat, s){
   const nuevo=(prompt('Nuevo nombre para la subcategoría:', s)||'').trim(); if(!nuevo||nuevo===s) return;
@@ -5283,7 +5366,7 @@ function subRenombrar(cat, s){
   catApRenombrar(cat, null, s, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)){ p.subcategoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   renderCategorias();
-  showToast('✏️ Subcategoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('✏️ Subcategoría renombrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 function subBorrar(cat, s){
   if(!confirm('¿Borrar la subcategoría "'+s+'"?')) return;
@@ -5291,7 +5374,7 @@ function subBorrar(cat, s){
   if(map[cat]) map[cat]=map[cat].filter(x=>x!==s);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
   renderCategorias();
-  showToast('🗑️ Subcategoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+  showToast('🗑️ Subcategoría borrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 /* ── Apagar / encender categorías y subcategorías ──
    Apagada = no sale en la tienda: ni la tarjeta, ni la pestaña, ni sus
@@ -8647,7 +8730,12 @@ async function pubCatGenImg(cat, lote){
       holder.innerHTML=tmCatalogHTML(cat, prods);
       document.body.appendChild(holder);
       const node=holder.querySelector('.tmcat-card');
-      const canvas=await window.html2canvas(node,{backgroundColor:'#0a0a0a',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
+      // html2canvas copia la página ENTERA antes de dibujar, estilos de cada
+      // nodo incluidos. Lo único que dibuja es esta tarjeta, así que el resto
+      // del <body> (el panel, miles de nodos) se salta: con él la vista previa
+      // tardaba lo que tardara el panel en copiarse, y crecía con cada pantalla.
+      const canvas=await window.html2canvas(node,{backgroundColor:'#0a0a0a',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight,
+        ignoreElements:el=>document.body.contains(el) && el!==document.body && !el.contains(node) && !node.contains(el)});
       holder.remove();
       return await new Promise(res=>canvas.toBlob(res,'image/png',.95));
     }catch(e){ console.error('[catalogo]',e); }
