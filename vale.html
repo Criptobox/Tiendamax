@@ -9,17 +9,22 @@
 <link rel="manifest" href="/vale-manifest.json">
 <link rel="icon" type="image/png" href="/iconos/vale-icon-192.png">
 <link rel="apple-touch-icon" href="/iconos/vale-icon-192.png">
-<!-- Fuentes locales: Playfair y DM Sans ya viajan en el repo como .woff2. -->
+<!-- Fuentes locales: DM Sans, la misma letra que el panel. -->
 <link rel="preload" href="/fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="/css/fonts.css?v=8b616cbe"></noscript>
+<script>
+/* Piel del panel (⚙️ Configuración → Estilo del panel): el vale se abre desde
+   el panel y tiene que verse como él. Antes de pintar, para que no parpadee. */
+try{var _piel=localStorage.getItem('tm_piel');
+  if(_piel&&_piel!=='naranja')document.documentElement.setAttribute('data-piel',_piel);}catch(e){}
+</script>
 <style>
 :root{--gold:#C9A96E;--gold-dark:#8b6914;--bg:#0D0D0D;--bg2:#141414;--bg3:#181818;--bg4:#222;--border:#2a2a2a;--border-gold:#c8a96e33;--text:#f0e6d3;--muted:#888;--dim:#555;--green-light:#52b788;--orange:#FF6B35}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:40px}
 .hdr{background:#111;border-bottom:1px solid var(--border-gold);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:18px;color:#0a0a0a}
+.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#0a0a0a}
 .tasa-btn{background:var(--bg3);border:1px solid var(--border-gold);border-radius:20px;padding:7px 14px;font-size:12px;color:var(--gold);font-weight:600;cursor:pointer}
 .tabs{display:flex;background:var(--bg3);border-radius:12px;padding:4px;margin:14px 14px 0}
 .tab{flex:1;padding:9px;text-align:center;font-size:12px;border-radius:9px;cursor:pointer;color:var(--dim)}
@@ -29,7 +34,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .step-nav{display:flex;gap:6px;margin:14px 0 0}
 .step-btn{flex:1;padding:9px 4px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.04em;border-radius:11px;cursor:pointer;background:var(--bg3);color:var(--dim);border:1px solid var(--border);transition:.18s;text-transform:uppercase}
 .step-btn.active{background:rgba(255,107,53,.16);border-color:#FF6B35;color:#FF6B35}
-.step-btn b{display:block;font-size:17px;margin-bottom:1px;font-family:'Playfair Display',serif}
+.step-btn b{display:block;font-size:17px;margin-bottom:1px}
 .step-panel{display:none}
 .step-panel.active{display:block;animation:fadein .18s ease}
 @keyframes fadein{from{opacity:.4}to{opacity:1}}
@@ -55,13 +60,13 @@ input[readonly]{color:var(--muted)}
 .paste-box.ok{border-color:var(--gold)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{background:#1a2a1a;border:1px solid #2d4a2d;border-radius:20px;padding:4px 11px;font-size:11px;color:var(--green-light)}
-.btn-gold{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:12px;color:#0a0a0a;font-weight:700;font-size:15px;cursor:pointer;font-family:'Playfair Display',serif;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-gold{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:12px;color:#0a0a0a;font-weight:700;font-size:15px;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-ghost{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px}
 .btn-act{width:100%;padding:11px;background:#1a1a1a;border:1px solid var(--border-gold);border-radius:10px;color:var(--gold);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-parse{width:100%;padding:12px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px}
 .btn-parse.ready{background:#1a1a10;border-color:var(--gold);color:var(--gold)}
 .tasa-box{background:var(--bg3);border:1px solid var(--border-gold);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.tasa-val{font-size:20px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif}
+.tasa-val{font-size:20px;font-weight:700;color:var(--gold)}
 .total-box{background:linear-gradient(135deg,#1a2a1a,#152015);border:1px solid #2d5a2d;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
 .ubi-btn{width:100%;padding:11px;background:var(--bg3);border:1px dashed var(--border);border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Sans',sans-serif;margin-top:8px}
 .ubi-link{display:flex;align-items:center;gap:8px;background:#1a2a1a;border:1px solid #2d4a2d;border-radius:10px;padding:11px 14px;margin-top:8px;font-size:13px;color:var(--green-light);text-decoration:none;word-break:break-all}
@@ -117,17 +122,81 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 .vale-img-hdr{padding:11px 14px;border-bottom:1px solid var(--border-gold);font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:flex;align-items:center;justify-content:space-between}
 #valeImgCanvas{display:block;width:100%;max-width:420px;height:auto;margin:14px auto;border-radius:10px;cursor:pointer}
 .btn-dl-vale{width:100%;padding:13px;background:linear-gradient(135deg,#192814,#0d1a08);border:1px solid #2a4a1a;border-radius:12px;color:#52b788;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Sans',sans-serif;margin-top:0}
+/* ── LÍNEA DEL PANEL ─────────────────────────────────────────────
+   El vale se hizo antes que el panel actual, con su propio tema (dorado,
+   letra con serifa, campos verdes llenos). Esta capa, la última, lo pone
+   en el mismo lenguaje que admin.html: fondo y tarjetas del panel, borde
+   fino, radio 20, etiquetas en versalitas grises, acento de la piel e
+   iconos de línea. El dorado se queda solo donde significa MN (la tasa).
+   Nada de aquí toca el ticket que se dibuja para el cliente: es un canvas
+   con sus colores propios. */
+:root{--bg:#0a0a12;--bg2:#15151f;--bg3:#1a1a25;--bg4:#20202c;--border:rgba(255,255,255,.08);
+  --border-gold:rgba(255,255,255,.08);--text:#e0e0e8;--muted:#8a8a96;--dim:#62626e;
+  --green-light:#34d399;--o:#FF6B35;--o-rgb:255,107,53;--o-tinta:#2A0F04;--orange:var(--o);--aviso:#fbbf24}
+/* Pieles: los mismos valores que en admin.html (fondo, tarjetas y acento). */
+html[data-piel="lima"]{--bg:#0C0D0A;--bg2:#14170F;--bg3:#191D14;--o:#C6F24E;--o-rgb:198,242,78;--o-tinta:#16220A;--green-light:#2DD4BF}
+html[data-piel="azul"]{--bg:#080A0F;--bg2:#111621;--bg3:#161C29;--o:#3B82F6;--o-rgb:59,130,246;--o-tinta:#04122B}
+html[data-piel="violeta"]{--bg:#0A0810;--bg2:#161122;--bg3:#1B1529;--o:#8B5CF6;--o-rgb:139,92,246;--o-tinta:#0E0122}
+html[data-piel="grafito"]{--bg:#09090B;--bg2:#141416;--bg3:#1A1A1D;--o:#E4E4E7;--o-rgb:228,228,231;--o-tinta:#0A0A0B}
+body,button,input,textarea,.paste-box{font-family:'DM Sans',-apple-system,sans-serif}
+.hdr{background:var(--bg);border-bottom:1px solid var(--border)}
+.tabs{background:var(--bg2);border:1px solid var(--border);border-radius:16px}
+.tab{color:var(--muted);border-radius:12px;font-size:13px}
+.tab.active{background:var(--bg3);color:var(--text)}
+.step-btn{background:var(--bg2);border-color:var(--border);border-radius:16px;color:var(--muted);font-size:10.5px;letter-spacing:.12em;padding:10px 4px}
+.step-btn b{font-size:18px;font-weight:700}
+.step-btn.active{background:rgba(var(--o-rgb),.14);border-color:rgba(var(--o-rgb),.6);color:var(--o)}
+.sec,.vale-img-sec,.atencion,.venta-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 24px -18px rgba(0,0,0,.9)}
+.sec-hdr,.vale-img-hdr{color:var(--muted);font-size:11.5px;letter-spacing:.14em;border-bottom:1px solid var(--border);padding:14px 16px 12px}
+.sec-body{padding:14px 16px 16px}
+.dot{display:none}
+.lbl{font-size:11px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:5px}
+.la{color:var(--green-light);margin-left:2px}
+.lf{color:var(--o);margin-left:2px}
+input,textarea{background:var(--bg);border:1px solid var(--border);border-radius:12px}
+input:focus,textarea:focus{border-color:var(--o)}
+.auto{background:rgba(52,211,153,.06)!important;border-color:rgba(52,211,153,.28)!important}
+.fill{border-color:rgba(var(--o-rgb),.3)}
+.paste-box{background:var(--bg);border:1px dashed rgba(255,255,255,.16);border-radius:12px}
+.paste-box.ok{border-color:var(--o)}
+.btn-parse,.btn-act,.btn-ghost,.step-back,.ubi-btn{background:var(--bg3);border:1px solid var(--border);border-radius:14px;color:var(--text);font-weight:600}
+.btn-act{color:var(--text)}
+.btn-parse.ready{background:rgba(var(--o-rgb),.14);border-color:rgba(var(--o-rgb),.5);color:var(--o)}
+.step-next{background:var(--o);color:var(--o-tinta);border-radius:14px}
+.btn-gold{background:rgba(var(--o-rgb),.14);border:1px solid rgba(var(--o-rgb),.45);color:var(--o);border-radius:14px;font-size:14px}
+.btn-dl-vale{border-radius:14px}
+.tasa-btn{background:var(--bg2);border:1px solid var(--border)}
+.tasa-box{background:var(--bg3);border:1px solid var(--border);border-radius:14px}
+.total-box{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:14px}
+.atencion{border-color:rgba(251,191,36,.3)}
+.aten-tit{color:var(--aviso)}
+.aten-edit{border:1px solid var(--border);color:var(--text);border-radius:10px}
+.aten-lista li{color:var(--text)}
+.aten-lista li::before{background:var(--aviso)}
+.alm-opt{background:var(--bg3);border:1px solid var(--border);border-radius:14px}
+.alm-opt.sel{border-color:var(--o);background:rgba(var(--o-rgb),.1)}
+.alm-actual .dir{color:var(--text)}
+.venta-box{border-color:rgba(52,211,153,.3)}
+.btn-venta{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);border-radius:14px}
+.hist-item{background:var(--bg3);border:1px solid var(--border);border-radius:14px}
+.hist-est.res{background:rgba(var(--o-rgb),.14);color:var(--o)}
+.modal{background:var(--bg2);border:1px solid rgba(255,255,255,.09);border-radius:28px 28px 0 0}
+.toast{background:var(--bg2);border:1px solid rgba(52,211,153,.35)}
+/* Iconos de línea (los pone valeLinea, abajo) */
+.v-ico{width:17px;height:17px;flex:none;vertical-align:-3px;margin-right:6px}
+.lbl .v-ico{width:14px;height:14px;margin-right:0}
+.sec-hdr .v-ico,.vale-img-hdr .v-ico{width:15px;height:15px}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="admin.html" onclick="return valeVolverAdmin()" title="Volver al admin" style="color:var(--gold);text-decoration:none;font-size:22px;line-height:1;padding:4px 8px;margin-right:2px;border:1px solid var(--border-gold);border-radius:9px">←</a>
+    <a href="admin.html" onclick="return valeVolverAdmin()" title="Volver al admin" style="color:var(--text);text-decoration:none;font-size:22px;line-height:1;padding:4px 8px;margin-right:2px;border:1px solid var(--border);border-radius:9px">←</a>
     <img class="logo" src="/iconos/icon-192.png" alt="TiendaMax" style="object-fit:cover">
     <div>
-      <div style="font-family:'Playfair Display',serif;font-size:16px">Tienda Max</div>
-      <div style="font-size:10px;color:var(--gold);letter-spacing:2px">VALE DEL GESTOR</div>
+      <div style="font-size:16px;font-weight:800">TiendaMax</div>
+      <div style="font-size:11px;color:var(--muted)">Vale del gestor</div>
     </div>
   </div>
   <div class="tasa-btn" onclick="abrirTasa()">💱 <span id="tasaHdr">—</span> CUP</div>
@@ -135,11 +204,11 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="modal-bg" id="modalTasa" onclick="if(event.target===this)cerrarTasa()">
   <div class="modal">
-    <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:14px">💱 Tasa del día</div>
+    <div style="font-size:18px;margin-bottom:14px">💱 Tasa del día</div>
     <a href="https://eltoque.com/es" target="_blank" rel="noopener"
-      style="display:flex;align-items:center;justify-content:space-between;background:#1a1a1a;border:1px solid #c8a96e33;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-decoration:none">
+      style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:14px;text-decoration:none">
       <div>
-        <div style="font-size:13px;color:var(--gold);font-weight:600">📊 Ver tasa en elToque</div>
+        <div style="font-size:13px;color:var(--text);font-weight:600">📊 Ver tasa en elToque</div>
         <div style="font-size:11px;color:var(--dim);margin-top:2px">eltoque.com · tasa informal</div>
       </div>
       <div style="font-size:18px;color:var(--dim)">↗</div>
@@ -233,7 +302,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
       <hr>
       <div class="total-box">
         <div style="font-size:13px;color:var(--green-light)">🔸 Total a pagar</div>
-        <div style="font-size:26px;font-weight:700;color:var(--green-light);font-family:'Playfair Display',serif" id="vTotal">—</div>
+        <div style="font-size:26px;font-weight:700;color:var(--green-light)" id="vTotal">—</div>
         <div style="font-size:13px;color:var(--muted);margin-top:2px" id="vTotalUsd"></div>
       </div>
       <div class="fld" style="margin-top:12px"><div class="lbl">📅 Fecha y hora</div><input type="text" id="vFecha" readonly></div>
@@ -290,7 +359,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 <!-- MODAL ALMACÉN: se abre al enviar si todavía no se eligió -->
 <div class="modal-bg" id="modalAlm" onclick="if(event.target===this)cerrarAlm()">
   <div class="modal" style="max-height:88vh;overflow-y:auto">
-    <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px">📍 ¿Dónde recoge el cliente?</div>
+    <div style="font-size:18px;margin-bottom:4px">📍 ¿Dónde recoge el cliente?</div>
     <p style="font-size:12px;color:var(--muted);margin-bottom:6px" id="almModalSub">La dirección va en el vale que le mandas.</p>
     <div id="almLista"></div>
     <button class="btn-ghost" onclick="cerrarAlm()">Cancelar</button>
@@ -301,7 +370,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 <div class="modal-bg" id="modalCatalogo" onclick="if(event.target===this)cerrarCatalogo()">
   <div class="modal" style="max-height:88vh;display:flex;flex-direction:column;padding-bottom:18px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-family:'Playfair Display',serif;font-size:18px">🛍️ Elegir del catálogo</div>
+      <div style="font-size:18px">🛍️ Elegir del catálogo</div>
       <button class="btn-act" style="width:auto;margin:0;padding:7px 14px" onclick="cerrarCatalogo()">Listo</button>
     </div>
     <input type="text" id="catBuscar" placeholder="🔍 Buscar producto" oninput="renderCatalogo()" style="margin-bottom:10px">
@@ -1541,6 +1610,67 @@ _precargarLogoVale();
 setTimeout(drawValeImg, 300);
 
 // Service worker: lo gestiona el sw.js raíz de tiendamax.org (mismo origen).
+</script>
+<script>
+/* Iconos de línea en la interfaz del vale, como en el panel. Solo botones,
+   etiquetas y cabeceras fijas: los textos que van al cliente (WhatsApp, el
+   ticket dibujado) conservan sus emoji, y lo que escribe el dueño (ATENCIÓN)
+   o se pinta con datos (la lista de almacenes, el historial) no se toca. Un emoji
+   sin icono aquí se queda como está. 🔸 era solo una viñeta: se quita. */
+(function(){
+  var P = {
+    '✍️':'<path d="M12 20h9"/><path d="M16.4 3.6a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/>',
+    '✏️':'<path d="M12 20h9"/><path d="M16.4 3.6a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/>',
+    '📋':'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
+    '⚡':'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+    '📱':'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+    '📲':'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+    '📍':'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    '📌':'<path d="M12 17v5"/><path d="M9 10.8V6h6v4.8l2 2.2v2H7v-2Z"/><path d="M8 2h8"/>',
+    '🛍️':'<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+    '💵':'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+    '📅':'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    '🧾':'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8H8M16 12H8M13 16H8"/>',
+    '🔄':'<path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/><path d="M16 16h5v5"/>',
+    '💱':'<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+    '📊':'<path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/>',
+    '✅':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'
+  };
+  var RE = /(✍️|✏️|📋|⚡|📱|📲|📍|📌|🛍️|💵|📅|🧾|🔄|💱|📊|✅|🔸)️?\s*/;
+  var SEL = '.hdr, .tab, .sec-hdr, .vale-img-hdr, .lbl, .btn-act, .btn-parse, .btn-gold, .btn-dl-vale, .btn-ghost, .ubi-btn, .tasa-btn, #modalTasa a, .modal > div:first-child, .venta-box .t, .btn-venta, .aten-edit';
+  var FUERA = '#histBody, #almLista, #ubiLink, .chips, .aten-tit, .aten-lista';
+  function svg(emo){
+    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor');
+    s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round');
+    s.setAttribute('aria-hidden', 'true'); s.setAttribute('class', 'v-ico');
+    s.innerHTML = P[emo];
+    return s;
+  }
+  function pasar(){
+    document.querySelectorAll(SEL).forEach(function(el){
+      if (el.dataset.vLinea || el.closest(FUERA)) return;
+      el.dataset.vLinea = '1';
+      var textos = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) textos.push(w.currentNode);
+      textos.forEach(function(n){
+        var m;
+        while ((m = RE.exec(n.nodeValue))) {
+          var emo = m[1], resto = n.splitText(m.index);
+          resto.nodeValue = resto.nodeValue.slice(m[0].length);
+          if (emo !== '🔸') n.parentNode.insertBefore(svg(emo.replace(/️$/, '') in P ? emo.replace(/️$/, '') : emo), resto);
+          n = resto;
+        }
+      });
+    });
+  }
+  // Las claves con FE0F (✍️ ✏️ 🛍️) se guardan con él; el resto, sin él.
+  Object.keys(P).forEach(function(k){ var b = k.replace(/️$/, ''); if (!(b in P)) P[b] = P[k]; });
+  var pend = false;
+  function luego(){ if (pend) return; pend = true; requestAnimationFrame(function(){ pend = false; pasar(); }); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pasar); else pasar();
+  new MutationObserver(luego).observe(document.body, { childList:true, subtree:true });
+})();
 </script>
 </body>
 </html>

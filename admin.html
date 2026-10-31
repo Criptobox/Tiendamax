@@ -1248,6 +1248,12 @@ try{var _piel=localStorage.getItem('tm_piel');
     color:var(--text) !important; text-transform:none !important; letter-spacing:0 !important; }
   .tit-ico { width:18px; height:18px; flex:none; color:var(--muted); vertical-align:-3px; margin-right:7px; }
   .tit { display:inline-flex; align-items:center; min-width:0; }
+  [data-ico]::before { content:''; display:inline-block; width:16px; height:16px; flex:none;
+    vertical-align:-3px; margin-right:5px; background:currentColor;
+    -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    -webkit-mask-position:center; mask-position:center; }
+  [data-ico].ico-solo::before { margin-right:0; }
+  .tm-tool-card .ico[data-ico]::before { width:22px; height:22px; margin:0; color:var(--text); }
   .can-ico { width:16px; height:16px; flex:none; vertical-align:-3px; margin-right:5px; }
   .pub-act .can-ico, .pub-act-wide .can-ico { margin-right:2px; }
   /* En chips y etiquetas el icono lleva el tono del canal; en los botones
@@ -2527,6 +2533,42 @@ try{var _piel=localStorage.getItem('tm_piel');
       });
     });
   }
+  // Botones y pastillas de cada pantalla (✏️ ⭐ 🗑️, pestañas internas,
+  // tarjetas de Herramientas…): el emoji del principio pasa a icono de línea
+  // del color del botón; si tm-iconos no lo sabe dibujar, se queda.
+  // El icono NO es un nodo: es un ::before con máscara (una regla CSS por
+  // emoji). Con un <svg> por botón eran 565 nodos más, y la captura de la
+  // tarjeta de categoría (html2canvas copia la página entera) pasó a tardar
+  // más de lo que aguanta. Sin flag de «hecho»: si el panel vuelve a poner
+  // un emoji en el mismo botón, se convierte otra vez.
+  var RE_EMO_INI = /^(\s*)((?:[←-⇿⌀-⏿☀-➿⬀-⯿]|[\uD83C-\uD83E][\uDC00-\uDFFF])️?)\s*/;
+  var ICO_ID = {}, icoN = 0, icoHoja = null;
+  function reglaIcono(emo){
+    if (emo in ICO_ID) return ICO_ID[emo];
+    var paths = ''; try { paths = tmIconoPaths(emo) || ''; } catch(e){}
+    if (!paths) return (ICO_ID[emo] = '');
+    var id = 'i' + (++icoN);
+    var svgTxt = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+    var url = 'url("data:image/svg+xml,' + encodeURIComponent(svgTxt).replace(/'/g, '%27') + '")';
+    if (!icoHoja) { icoHoja = document.createElement('style'); document.head.appendChild(icoHoja); }
+    icoHoja.appendChild(document.createTextNode('[data-ico="' + id + '"]::before{-webkit-mask-image:' + url + ';mask-image:' + url + '}\n'));
+    return (ICO_ID[emo] = id);
+  }
+  function lineaBotones(){
+    document.querySelectorAll('.view button, .view .tm-tool-card .ico').forEach(function(el){
+      if (el.closest('.mnu-t, .side-btn')) return;
+      var n = el.firstChild;
+      while (n && n.nodeType === 3 && !n.nodeValue.trim()) n = n.nextSibling;
+      if (!n || n.nodeType !== 3) return;
+      var m = RE_EMO_INI.exec(n.nodeValue);
+      if (!m) return;
+      var id = reglaIcono(m[2]);
+      if (!id) return;
+      n.nodeValue = n.nodeValue.slice(m[0].length);
+      el.dataset.ico = id;
+      el.classList.toggle('ico-solo', !el.textContent.trim());
+    });
+  }
   function accesos(){
     var box = document.getElementById('inicio-accesos');
     if (!box) return;
@@ -2561,12 +2603,14 @@ try{var _piel=localStorage.getItem('tm_piel');
     var main = document.querySelector('main.content');
     lineaTitulos();
     lineaCanales();
+    if (typeof tmIconoSVG === 'function') lineaBotones();
     // Las pantallas repintan sus bloques a menudo: se repasa en el siguiente
     // cuadro, una vez por tanda de cambios. Lo ya hecho lleva data-linea.
     var pend = false;
     if (main) new MutationObserver(function(){
       if (pend) return; pend = true;
-      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); lineaCanales(); });
+      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); lineaCanales();
+        if (typeof tmIconoSVG === 'function') lineaBotones(); });
     }).observe(main, { childList:true, subtree:true });
     if (!lineaBoton(document.getElementById('tmCopilotBubble'))) {
       var ob = new MutationObserver(function(){
