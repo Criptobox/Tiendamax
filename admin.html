@@ -1161,6 +1161,137 @@ try{var _piel=localStorage.getItem('tm_piel');
   @media (prefers-reduced-motion:reduce) {
     .hero-inv::before, .kpi, .bar-chart .bar, .side-btn.active { animation:none !important; }
   }
+
+  /* ── MENÚ «TODO EL PANEL» (☰ del topbar) ─────────────────────────
+     Hoja inferior con las secciones agrupadas en tarjetas: icono de línea
+     en un cuadro teñido, título y para qué sirve. NO sustituye a la barra
+     de iconos: la abre otra puerta a los mismos go(vista). Los fondos y
+     bordes salen de los tokens, así que sigue a la piel elegida; los tonos
+     de cada icono son fijos para que una sección se reconozca por su color. */
+  .mnu-bg { position:fixed; inset:0; z-index:99999; /* sobre la burbuja del Copiloto (99998) */ background:rgba(0,0,0,.55);
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+    display:flex; align-items:flex-end; justify-content:center; }
+  .mnu-bg[hidden] { display:none; }
+  .mnu { width:100%; max-width:620px; max-height:88vh; display:flex; flex-direction:column;
+    background:var(--bg); border:1px solid rgba(255,255,255,.09); border-bottom:none;
+    border-radius:28px 28px 0 0; box-shadow:0 -24px 60px -20px rgba(0,0,0,.9);
+    animation:mnuSube .22s ease-out; }
+  @keyframes mnuSube { from { transform:translateY(40px); opacity:.4; } to { transform:none; opacity:1; } }
+  .mnu-asa { width:44px; height:5px; border-radius:99px; background:rgba(255,255,255,.18); margin:10px auto 0; }
+  .mnu-cab { display:flex; align-items:flex-start; gap:12px; padding:14px 20px 10px; }
+  .mnu-cab h2 { font-size:22px; font-weight:700; color:var(--text); letter-spacing:-.01em; }
+  .mnu-cab p { font-size:14px; color:var(--muted); margin-top:3px; }
+  .mnu-cab > div { flex:1; min-width:0; }
+  .mnu-x { width:38px; height:38px; border-radius:50%; border:none; background:transparent;
+    color:var(--muted); font-size:22px; line-height:1; }
+  .mnu-x:hover { color:var(--text); background:rgba(255,255,255,.06); }
+  .mnu-cuerpo { overflow-y:auto; padding:4px 16px calc(22px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+  .mnu-sec { font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted); margin:18px 4px 10px; }
+  .mnu-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  .mnu-grid.dos, .mnu-grid.col2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .mnu-t { position:relative; text-align:left; display:flex; flex-direction:column; gap:10px;
+    padding:14px 12px 13px; border-radius:20px; background:var(--card);
+    border:1px solid rgba(255,255,255,.07); color:var(--text); min-width:0;
+    box-shadow:0 10px 24px -18px rgba(0,0,0,.9); transition:transform .12s, border-color .12s, background .12s; }
+  .mnu-t:hover { border-color:rgba(255,255,255,.16); background:var(--card2); }
+  .mnu-t:active { transform:scale(.97); }
+  .mnu-t:focus-visible { outline:2px solid var(--o); outline-offset:2px; }
+  .mnu-t.on { border-color:rgba(var(--o-rgb),.55); background:var(--card2); }
+  .mnu-ico { width:46px; height:46px; border-radius:15px; display:flex; align-items:center; justify-content:center;
+    background:rgba(var(--c),.15); color:rgb(var(--c)); font-size:22px; }
+  .mnu-ico svg { width:24px; height:24px; }
+  .mnu-t b { display:block; font-size:15.5px; font-weight:700; line-height:1.15; overflow-wrap:break-word; }
+  .mnu-t small { display:block; font-size:12.5px; color:var(--muted); line-height:1.25; margin-top:3px; }
+  .mnu-grid.dos .mnu-t { flex-direction:row; align-items:center; gap:12px; padding:14px; }
+  .mnu-grid.dos .mnu-t > span:last-child { min-width:0; }
+  .mnu-cuenta { position:absolute; top:10px; right:10px; min-width:20px; height:20px; padding:0 6px;
+    border-radius:99px; background:var(--red); color:#fff; font-size:11px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; }
+  @media (max-width:359px) { .mnu-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (min-width:900px) { .mnu-bg { align-items:center; } .mnu { border-radius:28px; border-bottom:1px solid rgba(255,255,255,.09); } }
+  @media (prefers-reduced-motion:reduce) { .mnu { animation:none; } }
+
+  /* ── LÍNEA ÚNICA ─────────────────────────────────────────────────
+     El panel acumuló capas de estilo de épocas distintas: barras de color
+     con brillo en los KPI, auras en las esquinas, raya dorada animada en el
+     hero, degradados de cristal en las secciones, emoji en 3D al lado de
+     iconos de línea. Esta capa va la última y deja UN lenguaje, el del menú
+     «Todo el panel»: superficie lisa (--card), borde fino, radio 20, sombra
+     suave, etiquetas en versalitas espaciadas e iconos de línea en un cuadro
+     teñido. El color queda para el dato (estado, USD/MN), no para adornar.
+     Solo estética: ninguna regla de aquí cambia qué se muestra. */
+  body::before { display:none; }
+  .hero-inv, .section, .kpi, .agenda, .stock-card, .rev-card, .pcard, .prod-card,
+  .pub-share-card, .ppv-card, .banner-info, .ai-banner {
+    background:var(--card) !important; border:1px solid rgba(255,255,255,.07) !important;
+    border-radius:20px !important; box-shadow:0 10px 24px -18px rgba(0,0,0,.9) !important;
+    backdrop-filter:none !important; }
+  .hero-inv::before, .section::before, .kpi::before, .kpi::after { display:none !important; }
+  .hero-inv .hi-val, .kpi .val { text-shadow:none !important; }
+  .kpi { animation:none !important; transition:border-color .15s !important; }
+  .kpi:hover, .section:hover, .pcard:hover { transform:none !important; border-color:rgba(255,255,255,.14) !important; }
+  /* Etiquetas: las mismas versalitas que los grupos del menú. El tipo de KPI
+     ya no pinta una barra lateral: lo dice un punto de su color. */
+  .kpi .lbl, .hero-inv .hi-lbl, .agenda-h {
+    font-size:11.5px !important; font-weight:600 !important; letter-spacing:.14em !important;
+    text-transform:uppercase; color:var(--muted) !important; }
+  .kpi .lbl { display:flex; align-items:center; gap:7px; }
+  .kpi .lbl::before { content:''; width:7px; height:7px; border-radius:50%; flex:none; background:var(--o); }
+  .kpi.success .lbl::before{background:var(--green)} .kpi.danger .lbl::before{background:var(--red)}
+  .kpi.warn .lbl::before{background:var(--yellow)} .kpi.info .lbl::before{background:var(--purple)}
+  .kpi.gold .lbl::before{background:var(--gold)} .kpi.usd .lbl::before{background:var(--blue)}
+  .kpi .val { font-weight:700 !important; }
+  /* Títulos de bloque: texto normal, no dorado (el oro es MN) ni en mayúsculas. */
+  .section h3 { padding-left:0 !important; font-weight:700 !important; font-size:16px !important;
+    color:var(--text) !important; text-transform:none !important; letter-spacing:0 !important; }
+  .tit-ico { width:18px; height:18px; flex:none; color:var(--muted); vertical-align:-3px; margin-right:7px; }
+  .tit { display:inline-flex; align-items:center; min-width:0; }
+  .section h3::before { display:none !important; }
+  .agenda-t .ic { border-left:none !important; border-radius:12px !important; width:34px !important; height:34px !important; }
+  .agenda-t.u1 .ic, .agenda-t .ic { background:rgba(96,165,250,.15) !important; }
+  .agenda-t.u2 .ic { background:rgba(var(--o-rgb),.16) !important; }
+  .agenda-t.u3 .ic { background:rgba(248,113,113,.16) !important; }
+  .agenda-t b { font-weight:700 !important; }
+  /* Botones: sin halo, mismo radio en todo el panel. */
+  .btn { border-radius:14px; }
+  .btn-primary, .btn-primary:hover, .btn-gold:hover { box-shadow:none !important; }
+  /* Tablas: el oro significa MN en todo el panel; una cabecera dorada lo contradecía. */
+  th { background:rgba(255,255,255,.03) !important; color:var(--muted) !important;
+    font-weight:600; letter-spacing:.08em; }
+  /* Barras: un tono plano, sin brillo. */
+  .bar-chart .bar { background:var(--o) !important; box-shadow:none !important; border-radius:8px 8px 3px 3px; }
+  .bar-chart .bar::after { display:none !important; }
+  /* Cabecera de cada pantalla: icono de línea en su cuadro teñido, del
+     mismo color que su tarjeta en el menú (lo pone tmLineaCabeceras). */
+  .ph h2 { font-weight:700 !important; letter-spacing:-.01em; }
+  .ph-ico { width:42px; height:42px; border-radius:14px; flex:none; display:inline-flex; align-items:center;
+    justify-content:center; background:rgba(var(--c),.15); color:rgb(var(--c)); }
+  .ph-ico svg { width:23px; height:23px; }
+  /* Topbar: iconos de línea, como el ☰. */
+  .icon-btn { border-radius:12px; color:var(--text); }
+  .icon-btn svg { width:19px; height:19px; }
+  /* Burbuja del Copiloto: tarjeta del sistema en vez de degradado chillón. */
+  #tmCopilotBubble { background:var(--card2) !important; border:1px solid rgba(255,255,255,.12) !important;
+    color:rgb(167,139,250) !important; box-shadow:0 14px 30px -12px rgba(0,0,0,.9) !important; border-radius:20px !important; }
+  #tmCopilotBubble svg { width:27px; height:27px; }
+  /* Accesos rápidos de Inicio: cuatro tarjetas compactas, solo icono y nombre. */
+  .acc { margin:0 0 16px; }
+  .acc-cab { display:flex; align-items:baseline; justify-content:space-between; margin:2px 4px 10px; }
+  .acc-cab span { font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .acc-cab button { background:none; border:none; color:var(--o); font-size:13.5px; font-weight:600; padding:4px 0; }
+  .acc .mnu-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+  .acc .mnu-t { align-items:center; text-align:center; padding:12px 4px 10px; gap:7px; border-radius:18px; }
+  .acc .mnu-ico { width:42px; height:42px; border-radius:14px; }
+  .acc .mnu-t b { font-size:13px; }
+  .acc .mnu-t small { display:none; }
+  /* En el móvil la barra de iconos se va: se navega con ☰ y los accesos.
+     Sigue en el DOM (el menú lee de ella las secciones que existen). */
+  @media (max-width:760px) {
+    .sidebar { display:none !important; }
+    .content { padding-top:16px !important; }
+  }
 </style>
 </head>
 <body>
@@ -1384,6 +1515,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
   <!-- Top bar -->
   <div class="topbar">
+    <button class="icon-btn" type="button" title="Todo el panel" aria-label="Todo el panel" aria-haspopup="dialog" onclick="tmMenuAbrir()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     <img class="logo" src="/iconos/icon-192.png?v=a8c6a6b9" alt="" width="36" height="36" decoding="async">
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
@@ -1430,6 +1562,10 @@ try{var _piel=localStorage.getItem('tm_piel');
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
           <div class="ph-actions"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+        </div>
+        <div class="acc">
+          <div class="acc-cab"><span>Accesos rápidos</span><button type="button" onclick="tmMenuAbrir()">Ver todo ›</button></div>
+          <div class="mnu-grid" id="inicio-accesos"></div>
         </div>
         <div class="hero-inv" id="inicio-hero">
           <div class="hi-lbl" id="hi-mes-l">Resumen del mes</div>
@@ -2191,6 +2327,241 @@ try{var _piel=localStorage.getItem('tm_piel');
       'configuracion':'config', 'clientes-ia':'clientes' };
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
+</script>
+<script>
+/* Menú «Todo el panel» (☰). Lee las secciones de la propia barra
+   (.side-btn[data-view]): una sección que no está en la barra no sale, y una
+   que se añade después (Herramientas, vía ensureTab) cae en «Más» sola. Así
+   la barra sigue siendo la única lista de lo que existe y el menú no puede
+   mandar a una vista que no hay. Solo organiza y navega: todo pasa por go(). */
+(function(){
+  // Tonos fijos (r,g,b) por sección: el color identifica, la piel pone el resto.
+  var C = { naranja:'251,146,60', verde:'52,211,153', azul:'96,165,250', morado:'167,139,250',
+    rosa:'244,114,182', ambar:'251,191,36', turquesa:'45,212,191', rojo:'248,113,113', cian:'34,211,238', gris:'161,161,170' };
+  var GRUPOS = [
+    { t:'Día a día', dos:true, items:[
+      ['inicio','🏠','Inicio','Resumen y agenda', C.naranja],
+      ['ventas','💰','Ventas','Registrar y ver', C.verde],
+      ['vale','🧾','Vale','Factura al cliente', C.ambar],
+      ['publicar','📣','Publicar','Redes y grupos', C.rosa] ]},
+    { t:'Catálogo', items:[
+      ['productos','📦','Productos','Stock y precio', C.azul],
+      ['agregar','➕','Agregar','Producto nuevo', C.verde],
+      ['categorias','🏷️','Categorías','Encender y ordenar', C.ambar],
+      ['tarjetas','💳','Tarjetas','Digitales y coste', C.rosa],
+      ['combos','🎁','Combos','Packs y ofertas', C.rojo],
+      ['almacen','🏭','Almacenes','Dónde está el stock', C.turquesa] ]},
+    { t:'Clientes y pedidos', items:[
+      ['clientes','👥','Clientes','Seguimiento y avisos', C.morado],
+      ['reservas','🔒','Reservas','Vales apartados', C.ambar],
+      ['qr','🔳','Código QR','Para imprimir', C.cian] ]},
+    { t:'Mercado', dos:true, items:[
+      ['comparar','🔀','Comparar','Tienda principal', C.morado],
+      ['reposicion','📥','Reposición','Qué volver a comprar', C.turquesa],
+      ['radar','📡','Radar','Precios de fuera', C.verde],
+      ['analytics','📊','Analytics','Visitas y canales', C.azul] ]},
+    { t:'Ajustes', col2:true, items:[
+      ['config','⚙️','Configuración','Token, IA y estilo', C.gris],
+      ['herramientas','🛠️','Herramientas','Funciones extra', C.ambar] ]}
+  ];
+  // Tres símbolos que tm-iconos no dibuja, en el mismo trazo de línea.
+  var EXTRA = {
+    '🔀':'<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/>',
+    '📥':'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+    '🔳':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
+    '⬇️':'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+    '🤖':'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13v1M15 13v1M9.5 17h5"/><circle cx="12" cy="3.5" r=".5"/>',
+    '🚧':'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'
+  };
+  // vista → su fila de GRUPOS (icono y color), para las cabeceras.
+  var POR_VISTA = {};
+  GRUPOS.forEach(function(g){ g.items.forEach(function(it){ POR_VISTA[it[0]] = it; }); });
+  function icono(emo){
+    if (EXTRA[emo]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXTRA[emo] + '</svg>';
+    try { if (typeof tmIconoSVG === 'function') { var s = tmIconoSVG(emo, '', true); if (s) return s; } } catch(e){}
+    return emo;
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function tarjeta(it, activa){
+    var vista = it[0], btn = vista === 'vale' ? null : document.querySelector('.side-btn[data-view="' + vista + '"]');
+    var badge = btn && btn.querySelector('.badge');
+    var n = badge && badge.offsetParent !== null ? (badge.textContent || '').trim() : '';
+    return '<button type="button" class="mnu-t' + (vista === activa ? ' on' : '') + '" data-mnu="' + esc(vista) + '" style="--c:' + it[4] + '">'
+      + '<span class="mnu-ico">' + (it[5] || icono(it[1])) + '</span>'
+      + '<span><b>' + esc(it[2]) + '</b><small>' + esc(it[3]) + '</small></span>'
+      + (n && n !== '0' ? '<span class="mnu-cuenta">' + esc(n) + '</span>' : '') + '</button>';
+  }
+
+  function pintar(){
+    var hay = {}, conocidas = { vale:1 };
+    document.querySelectorAll('.side-btn[data-view]').forEach(function(b){ hay[b.dataset.view] = b; });
+    var act = document.querySelector('.side-btn.active');
+    var activa = act && act.dataset.view;
+    var html = '';
+    GRUPOS.forEach(function(g){
+      var items = g.items.filter(function(it){ conocidas[it[0]] = 1; return it[0] === 'vale' || hay[it[0]]; });
+      if (!items.length) return;
+      html += '<div class="mnu-sec">' + esc(g.t) + '</div><div class="mnu-grid' + (g.dos ? ' dos' : g.col2 ? ' col2' : '') + '">'
+        + items.map(function(it){ return tarjeta(it, activa); }).join('') + '</div>';
+    });
+    var mas = Object.keys(hay).filter(function(v){ return !conocidas[v]; }).map(function(v){
+      var b = hay[v], t = String(b.title || v).split('·');
+      // La barra ya cambió su emoji por un <svg> (pintarIconosPestanas): se reutiliza.
+      var svg = b.querySelector('svg');
+      var emo = (b.textContent || '').trim().split(/\s/)[0] || '•';
+      return [v, emo, t[0].trim(), (t[1] || '').trim(), C.gris, svg ? svg.outerHTML : ''];
+    });
+    if (mas.length) html += '<div class="mnu-sec">Más</div><div class="mnu-grid">' + mas.map(function(it){ return tarjeta(it, activa); }).join('') + '</div>';
+    return html;
+  }
+
+  function abrirVista(v){
+    if (v === 'vale') { location.href = 'vale.html'; return; }   // igual que su botón en la barra
+    if (typeof window.go === 'function') window.go(v);
+  }
+
+  // Cambia el emoji que encabeza un nodo de texto por su icono de línea.
+  // Solo toca el primer nodo de texto: contadores y spans hermanos se quedan.
+  function emojiDelanteDe(el){
+    var n = el && el.firstChild;
+    if (!n || n.nodeType !== 3) return null;
+    var m = /^\s*([\u2190-\u2BFF\u2600-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF])+/.exec(n.nodeValue);
+    return m ? { nodo:n, emo:m[0].trim(), resto:n.nodeValue.slice(m[0].length) } : null;
+  }
+  function lineaCabeceras(){
+    document.querySelectorAll('.view .ph h2').forEach(function(h){
+      if (h.dataset.linea) return;
+      var e = emojiDelanteDe(h);
+      h.dataset.linea = '1';
+      if (!e) return;
+      var v = (h.closest('.view').id || '').replace(/^view-/, '');
+      var it = POR_VISTA[v];
+      var sp = document.createElement('span');
+      sp.className = 'ph-ico'; sp.style.setProperty('--c', it ? it[4] : C.gris);
+      sp.innerHTML = icono(e.emo);
+      e.nodo.nodeValue = e.resto.replace(/^\s+/, '');
+      h.insertBefore(sp, e.nodo);
+    });
+  }
+  function lineaBoton(b){
+    if (!b || b.dataset.linea) return false;
+    var e = emojiDelanteDe(b);
+    if (!e) return false;
+    var tmp = document.createElement('span'); tmp.innerHTML = icono(e.emo);
+    var svg = tmp.firstChild;
+    if (!svg || svg.nodeType !== 1) return false;   // sin icono: se queda el emoji
+    b.dataset.linea = '1';
+    e.nodo.nodeValue = e.resto;
+    b.insertBefore(svg, e.nodo);
+    return true;
+  }
+  // Títulos de bloque (h3 de las secciones, «Hoy» de la agenda…): el emoji
+  // pasa a icono de línea gris; si no hay icono para ese emoji, se quita.
+  function lineaTitulos(){
+    document.querySelectorAll('.view .section h3, .view .agenda-h, #inicio-graf .section > span:first-child').forEach(function(t){
+      if (t.dataset.linea) return;
+      t.dataset.linea = '1';
+      var e = emojiDelanteDe(t);
+      if (!e) return;
+      // Icono y texto van juntos en un <span>: los h3 son flex con
+      // space-between (para su contador), y sueltos se separaban.
+      var tit = document.createElement('span');
+      tit.className = 'tit';
+      var tmp = document.createElement('span'); tmp.innerHTML = icono(e.emo);
+      var svg = tmp.firstChild;
+      if (svg && svg.nodeType === 1) { svg.setAttribute('class', 'tit-ico'); tit.appendChild(svg); }
+      t.insertBefore(tit, e.nodo);
+      e.nodo.nodeValue = e.resto.replace(/^\s+/, '');
+      tit.appendChild(e.nodo);
+    });
+  }
+  function accesos(){
+    var box = document.getElementById('inicio-accesos');
+    if (!box) return;
+    box.innerHTML = [
+      ['ventas','💰','Vender','', C.verde], ['vale','🧾','Vale','', C.ambar],
+      ['publicar','📣','Publicar','', C.rosa], ['productos','📦','Productos','', C.azul]
+    ].map(function(it){ return tarjeta(it, null); }).join('');
+    box.addEventListener('click', function(e){
+      var t = e.target.closest('[data-mnu]');
+      if (t) abrirVista(t.dataset.mnu);
+    });
+  }
+  // La barra pinta con el icono genérico los emoji que tm-iconos no tiene
+  // (🔀 📥 🔳): tres bolsas iguales. Se les pone el suyo, y tmIco evita que
+  // pintarIconosPestanas lo vuelva a cambiar.
+  function iconosBarra(){
+    document.querySelectorAll('.side-btn[data-view]').forEach(function(b){
+      var it = POR_VISTA[b.dataset.view];
+      if (!it || !EXTRA[it[1]]) return;
+      var guardar = [].slice.call(b.querySelectorAll('.badge, .new-tag'));
+      b.innerHTML = icono(it[1]).replace('<svg ', '<svg class="tm-ico-tab" ');
+      guardar.forEach(function(x){ b.appendChild(x); });
+      b.dataset.tmIco = '1';
+    });
+  }
+  function arrancar(){
+    accesos();
+    iconosBarra();
+    lineaCabeceras();
+    document.querySelectorAll('.tb-actions .icon-btn').forEach(lineaBoton);
+    // Herramientas llega después (ensureTab) y la burbuja la crea el Copiloto.
+    var main = document.querySelector('main.content');
+    lineaTitulos();
+    // Las pantallas repintan sus bloques a menudo: se repasa en el siguiente
+    // cuadro, una vez por tanda de cambios. Lo ya hecho lleva data-linea.
+    var pend = false;
+    if (main) new MutationObserver(function(){
+      if (pend) return; pend = true;
+      requestAnimationFrame(function(){ pend = false; lineaCabeceras(); lineaTitulos(); });
+    }).observe(main, { childList:true, subtree:true });
+    if (!lineaBoton(document.getElementById('tmCopilotBubble'))) {
+      var ob = new MutationObserver(function(){
+        if (lineaBoton(document.getElementById('tmCopilotBubble'))) ob.disconnect();
+      });
+      ob.observe(document.body, { childList:true });
+      setTimeout(function(){ ob.disconnect(); }, 20000);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
+  else arrancar();
+
+  var raiz = null, foco = null;
+  function cerrar(){
+    if (!raiz || raiz.hidden) return;
+    raiz.hidden = true;
+    document.documentElement.style.overflow = '';
+    if (foco && foco.focus) try { foco.focus(); } catch(e){}
+  }
+  function crear(){
+    raiz = document.createElement('div');
+    raiz.className = 'mnu-bg'; raiz.hidden = true;
+    raiz.innerHTML = '<div class="mnu" role="dialog" aria-modal="true" aria-label="Todo el panel">'
+      + '<div class="mnu-asa"></div>'
+      + '<div class="mnu-cab"><div><h2>Todo el panel</h2><p>Todo lo que puedes hacer en tu tienda</p></div>'
+      + '<button type="button" class="mnu-x" aria-label="Cerrar">✕</button></div>'
+      + '<div class="mnu-cuerpo"></div></div>';
+    raiz.addEventListener('click', function(e){
+      if (e.target === raiz || e.target.closest('.mnu-x')) { cerrar(); return; }
+      var t = e.target.closest('[data-mnu]');
+      if (!t) return;
+      cerrar();
+      abrirVista(t.dataset.mnu);
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') cerrar(); });
+    document.body.appendChild(raiz);
+  }
+  window.tmMenuAbrir = function(){
+    if (!raiz) crear();
+    foco = document.activeElement;
+    raiz.querySelector('.mnu-cuerpo').innerHTML = pintar();
+    raiz.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    var on = raiz.querySelector('.mnu-t.on') || raiz.querySelector('.mnu-t');
+    if (on) try { on.focus({ preventScroll:true }); } catch(e){}
+  };
+})();
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
