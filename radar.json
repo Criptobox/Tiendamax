@@ -1,16 +1,54 @@
 {
-  "actualizado": "2026-10-30T16:56:36.875843+00:00",
-  "fecha": "2026-10-30",
+  "actualizado": "2026-10-31T15:57:22.971451+00:00",
+  "fecha": "2026-10-31",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 0,
+    "vigilados": 1,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
-  "productos": []
+  "productos": [
+    {
+      "id": 1778102507659,
+      "nombre": "Báscula Digital de Alta Definición",
+      "tuPrecio": 25.0,
+      "mercado": {
+        "min": 25.0,
+        "mediana": 25.0,
+        "n": 2
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-10-31",
+          "mediana": 25.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Báscula Digital de Alta Definición - ⚖ Capacidad Máxima: Soporta hasta 396.83 lb",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/bascula-digital-de-alta-definicion-capacidad-maxima-soporta-hasta-39683-lb-58481643",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Báscula o pesa digital gramera de cocina nueva en su caja",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/bascula-o-pesa-digital-gramera-de-cocina-nueva-en-su-caja-40575069",
+          "dias": null
+        }
+      ]
+    }
+  ]
 }
