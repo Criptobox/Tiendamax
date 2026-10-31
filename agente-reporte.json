@@ -1,11 +1,26 @@
 {
-  "generado": "2026-10-30T15:26:56.172922+00:00",
-  "productos": 158,
-  "urgentes": 0,
+  "generado": "2026-10-31T14:55:05.722300+00:00",
+  "productos": 161,
+  "urgentes": 2,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 158 productos y encontré 7 de info.",
+  "info": 8,
+  "resumen": "Anoche revisé tus 161 productos y encontré 2 urgente(s), 8 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "Cámara de reversa",
+      "detalle": "→ Cámara de Reversa"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Hamaca de Camping 2 en 1 con Mosquitero",
+      "detalle": "→ Hamaca de Camping 2 en 1 Con Mosquitero"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "Báscula Digital de Alta Definición",
+      "detalle": "quedan 1"
+    },
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
@@ -28,18 +43,18 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Controlador MPPT Boost 1200W",
-      "detalle": "quedan 3"
+      "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
+      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Bielmeier FLUXMAX140 110V 140A Máquina de Soldadura Multiproceso 3 en 1",
-      "detalle": "quedan 3"
+      "nombre": "Cámara de reversa",
+      "detalle": "quedan 2"
     },
     {
       "tipo": "agotados",
-      "nombre": "116 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 113 más"
+      "nombre": "112 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Antorcha de Soldadura TIG (KIT Profesional) y 109 más"
     }
   ]
 }
