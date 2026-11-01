@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-10-31T15:57:22.971451+00:00",
-  "fecha": "2026-10-31",
+  "actualizado": "2026-11-01T17:00:10.864325+00:00",
+  "fecha": "2026-11-01",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -22,7 +22,7 @@
         "mediana": 25.0,
         "n": 2
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -30,6 +30,10 @@
       "historial": [
         {
           "fecha": "2026-10-31",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-11-01",
           "mediana": 25.0
         }
       ],
