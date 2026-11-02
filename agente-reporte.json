@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-01T15:37:53.639442+00:00",
-  "productos": 161,
-  "urgentes": 2,
+  "generado": "2026-11-02T18:59:27.837828+00:00",
+  "productos": 163,
+  "urgentes": 3,
   "advertencias": 0,
-  "info": 8,
-  "resumen": "Anoche revisé tus 161 productos y encontré 2 urgente(s), 8 de info.",
+  "info": 9,
+  "resumen": "Anoche revisé tus 163 productos y encontré 3 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -15,6 +15,11 @@
       "tipo": "nombre",
       "nombre": "Hamaca de Camping 2 en 1 con Mosquitero",
       "detalle": "→ Hamaca de Camping 2 en 1 Con Mosquitero"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Inflador Digital con Batería Recargable y Luz LED",
+      "detalle": "→ Inflador Digital Con Batería Recargable y Luz LED"
     },
     {
       "tipo": "stock_bajo",
@@ -50,6 +55,11 @@
       "tipo": "stock_bajo",
       "nombre": "Cámara de reversa",
       "detalle": "quedan 2"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble Banda AC1200 (Modo 3 en 1)",
+      "detalle": "quedan 3"
     },
     {
       "tipo": "agotados",
