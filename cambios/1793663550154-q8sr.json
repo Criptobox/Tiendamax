@@ -1,0 +1,357 @@
+{
+  "v": 1,
+  "creado": "2026-11-02T23:52:30.154Z",
+  "productos": [
+    {
+      "id": 1793662537113,
+      "nombre": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
+      "descripcion": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en recorridos urbanos intensos. Destaca por incorporar una potente controladora programable VOTOL EM-50 combinada con un motor de alta eficiencia de 3000W, logrando una respuesta de aceleración inmediata, entrega de torque suave y una velocidad máxima controlada de 50 km/h.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793662535527.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793662535527.webp"
+      ],
+      "precioActual": 1800,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 5,
+      "comision": 50,
+      "comisionMoneda": "USD",
+      "categoria": "MOTOS",
+      "subcategoria": "",
+      "masVendido": true,
+      "usado": false,
+      "garantia": "15 días",
+      "devolucion": true,
+      "specs": [
+        "⚡ Motor 3000W / Controladora VOTOL EM-50",
+        "🔋 Batería Litio 48V 50Ah (Hasta 120 km)",
+        "🚀 Velocidad Máx. 50 km/h + Audio Bluetooth/USB"
+      ],
+      "fechaAgregado": "2026-11-02T23:35:37.114Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "YOAZAKI"
+        },
+        {
+          "k": "Modelo / Serie",
+          "v": "707",
+          "nota": "GALACTICA 3000W"
+        },
+        {
+          "k": "Potencia Nominal del Motor",
+          "v": "3000 W",
+          "nota": "Motor DC sin escobillas en masa trasera"
+        },
+        {
+          "k": "Controladora",
+          "v": "VOTOL EM-50",
+          "nota": "control vectorial sinusoidal de alta eficiencia"
+        },
+        {
+          "k": "Batería",
+          "v": "Litio antiexplosiva de ciclo profundo con BMS integrado"
+        },
+        {
+          "k": "Voltaje y Capacidad",
+          "v": "48 V / 50 Ah",
+          "nota": "2400 Wh de energía almacenada"
+        },
+        {
+          "k": "Autonomía Estimada",
+          "v": "Hasta 120 km",
+          "nota": "según modo de manejo, peso del conductor y terreno"
+        },
+        {
+          "k": "Velocidad Máxima",
+          "v": "50 km/h"
+        },
+        {
+          "k": "Sistema de Frenos",
+          "v": "Frenos de disco hidráulicos delantero y trasero sobre rines de aleación"
+        },
+        {
+          "k": "Seguridad",
+          "v": "Tranque/bloqueo mecánico en el timón, alarma sonora antirrobo y encendido remoto keyless"
+        },
+        {
+          "k": "Sistema de Audio",
+          "v": "Bocina/reproductor multimedia integrado con conectividad Bluetooth, puerto USB y ranura Micro SD"
+        },
+        {
+          "k": "Iluminación",
+          "v": "Faro frontal LED principal, luces diurnas, direccionales y luz de freno trasera"
+        },
+        {
+          "k": "Colores Disponibles",
+          "v": "Morado y Negro"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Gran Autonomía de 120 km",
+          "d": "batería de litio de alta densidad de 50Ah ideal para largas jornadas de trabajo, viajes interurbanos o transporte diario sin cargar a diario."
+        },
+        {
+          "t": "Controladora VOTOL EM-50 Integrada",
+          "d": "electrónica de grado profesional que optimiza la entrega de energía del motor de 3000W, reduciendo el calentamiento y suavizando la marcha."
+        },
+        {
+          "t": "Batería de Litio Antiexplosiva",
+          "d": "celdas con protección BMS avanzada contra cortocircuitos, sobrecargas y desbalances térmicos para máxima seguridad."
+        },
+        {
+          "t": "Sistema Multimedia y Conectividad",
+          "d": "reproduce música o audio desde tu teléfono vía Bluetooth, o directamente mediante memorias USB y tarjetas Micro SD."
+        },
+        {
+          "t": "Encendido a Distancia y Alarma Antirrobo",
+          "d": "arranque cómodo sin llave mediante control remoto y protección perimetral con bloqueo de seguridad en el timón."
+        },
+        {
+          "t": "Paquete de Regalo Completo",
+          "d": "incluye casco de protección, cargador inteligente y malla de carga para equipaje."
+        }
+      ],
+      "idealPara": [
+        "Desplazamientos diarios de larga distancia, mensajería, entregas a domicilio o trabajo continuo en la ciudad.",
+        "Usuarios que priorizan la máxima autonomía por carga (120 km) sin depender de puntos de recarga intermedios.",
+        "Quienes buscan un vehículo eléctrico seguro, potente, con controladora VOTOL y entretenimiento integrado."
+      ],
+      "incluye": [
+        "1× Moto eléctrica YOAZAKI 707 (3000W - 48V 50Ah)",
+        "1× Cargador inteligente de alto flujo para batería de litio 48V",
+        "2× Juegos de llaves con controles remotos para alarma y encendido a distancia",
+        "🎁 Regalos incluidos: 1× Casco de protección + 1× Malla elástica de agarre para carga"
+      ],
+      "slug": "moto-707-3000w-48v-50ah",
+      "rev": 1793663550154
+    },
+    {
+      "id": 1793662856382,
+      "nombre": "Downy Unstopables Fresh | Perlas de Perfume Intensificador para Lavado (680g / 24 oz)",
+      "descripcion": "El Downy Unstopables Fresh (680g / 24 oz) es un intensificador de aroma en perlas de perfume diseñadas para agregarse directamente al tambor de la lavadora antes de introducir la ropa. Formulado con microcápsulas de fragancia que se activan con el movimiento y el roce de las prendas, proporciona un aroma fresco y limpio de larga duración que se mantiene en los tejidos hasta por 12 semanas almacenados en el armario.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793662854727.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793662854727.webp"
+      ],
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 6,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "HOGAR",
+      "subcategoria": "DECORACION",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🌸 Aroma: Fresh (Frescura Prolongada)",
+        "🧺 Perlas de Perfume para Lavado (In-Wash Scent Booster)",
+        "⏳ Hasta 12 Semanas de Frescura"
+      ],
+      "fechaAgregado": "2026-11-02T23:40:56.383Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Downy",
+          "nota": "Procter & Gamble"
+        },
+        {
+          "k": "Línea",
+          "v": "Unstopables In-Wash Scent Booster"
+        },
+        {
+          "k": "Aroma / Fragancia",
+          "v": "Fresh"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "680 g / 24 oz",
+          "nota": "Aproximadamente 1.5 L de volumen en envase"
+        },
+        {
+          "k": "Formato",
+          "v": "Perlas sólidas aromáticas solubles en agua"
+        },
+        {
+          "k": "Compatibilidad de Lavadoras",
+          "v": "Compatible con lavadoras tradicionales y de Alta Eficiencia (HE)"
+        },
+        {
+          "k": "Compatibilidad de Telas",
+          "v": "Apto para todo tipo de ropa, colores, ropa deportiva, toallas y lencería de cama"
+        },
+        {
+          "k": "Duración de la Fragancia",
+          "v": "Hasta 12 semanas de frescura desde el lavado hasta el uso"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella ergonómica de plástico reciclable con tapa dosificadora"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Fragancia Intensa y Prolongada",
+          "d": "aroma fresco que supera la duración de los suavizantes líquidos convencionales."
+        },
+        {
+          "t": "Perlas Solubles en Agua Fria y Caliente",
+          "d": "se disuelven por completo durante el ciclo de lavado sin dejar manchas ni residuos en la ropa."
+        },
+        {
+          "t": "Dosificación Personalizable",
+          "d": "usa desde media tapa para un toque sutil de perfume hasta una tapa llena para una fragancia máxima."
+        },
+        {
+          "t": "Apto para Ropa Deportiva y Toallas",
+          "d": "no reduce la capacidad de absorción ni la transpirabilidad de las fibras sintéticas."
+        },
+        {
+          "t": "Uso Seguro en Lavadoras HE",
+          "d": "fórmula de baja espuma que no afecta los sensores ni los conductos de las lavadoras modernas."
+        },
+        {
+          "t": "Tapa Dosificadora Práctica",
+          "d": "permite medir la cantidad exacta de perlas vertiéndolas directamente en el tambor."
+        }
+      ],
+      "idealPara": [
+        "Lavado de toallas, sábanas, cobijas y lencería que requieren mantener un aroma limpio y fresco durante semanas guardadas.",
+        "Ropa deportiva, uniformes y prendas de trabajo propensas a acumular malos olores.",
+        "Usuarios que buscan potenciar la fragancia de su colada combinando las perlas con su detergente habitual."
+      ],
+      "incluye": [
+        "1× Botella de Perlas Aromáticas Downy Unstopables Fresh (680g / 24 oz)"
+      ],
+      "slug": "downy-fresh-680g-24-oz",
+      "rev": 1793663550154
+    },
+    {
+      "id": 1793663513608,
+      "nombre": "Protector de Sobre/Baja Tensión y Sobrecorriente Voltage VT-SVP-02 (110V)",
+      "descripcion": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para salvaguardar electrodomésticos, equipos de climatización, inversores solares e instalaciones eléctricas residenciales o comerciales frente a fluctuaciones destructivas en la red eléctrica. Se instala directamente en tableros de distribución sobre Riel DIN estándar de 35 mm y actúa como un interruptor de desconexión automática inteligente de alta potencia con capacidad de hasta 63 Amperios",
+      "imagen": "https://tiendamax.org/imagenes/img_1793663507904.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793663507904.webp",
+        "https://tiendamax.org/imagenes/img_1793663509547.webp",
+        "https://tiendamax.org/imagenes/img_1793663510997.webp",
+        "https://tiendamax.org/imagenes/img_1793663512371.webp"
+      ],
+      "precioActual": 18,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 9,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📊 Display Digital Voltímetro/Amperímetro",
+        "🔌 Carga Máxima: 63A",
+        "🛡️ Protección Programable por Voltaje y Corriente (Auto-Reconexión)"
+      ],
+      "fechaAgregado": "2026-11-02T23:51:53.609Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Voltage Electronics Art"
+        },
+        {
+          "k": "Modelo",
+          "v": "VT-SVP-02",
+          "nota": "Serie Uso Común / Common Use"
+        },
+        {
+          "k": "Tipo de Dispositivo",
+          "v": "Protector Ajustable de Voltaje y Sobrecorriente",
+          "nota": "Adjustable Over/Under Voltage & Current Protector"
+        },
+        {
+          "k": "Corriente Nominal Máxima",
+          "v": "63 A",
+          "nota": "Ajustable programable"
+        },
+        {
+          "k": "Voltaje Operativo Nominal",
+          "v": "AC 110V / 220V",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Rango de Sobrevoltaje (>V)",
+          "v": "Programable",
+          "nota": "por ejemplo, 130V–150V en 110V / 240V–300V en 220V"
+        },
+        {
+          "k": "Rango de Subvoltaje (<V)",
+          "v": "( (por * Rango / 110V 140V–200V 220V) 80V–100V Programable Sobrecorriente de ejemplo, en>A): Programable de 1A a 63A"
+        },
+        {
+          "k": "Tiempo de Reconexión Automática",
+          "v": "Configurable",
+          "nota": "1 a 500 segundos"
+        },
+        {
+          "k": "Pantalla de Visualización",
+          "v": "Display LED digital dual",
+          "nota": "Voltímetro + Amperímetro en tiempo real"
+        },
+        {
+          "k": "Montaje",
+          "v": "Riel DIN simétrico estándar de 35 mm"
+        },
+        {
+          "k": "Bornes de Conexión",
+          "v": "Entrada superior (IN) y salida inferior (OUT) con tornillos de apriete reforzados"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Protección Triple Configurable",
+          "d": "resguarda simultáneamente contra picos de alto voltaje, caídas severas de tensión y sobrecargas de corriente."
+        },
+        {
+          "t": "Monitoreo Digital en Tiempo Real",
+          "d": "pantalla dual iluminada que permite verificar al instante el estado y consumo de la red eléctrica."
+        },
+        {
+          "t": "Reconexión Automática e Inteligente",
+          "d": "reconecta la carga de forma segura únicamente cuando los parámetros eléctricos retornan a los rangos normales establecidos."
+        },
+        {
+          "t": "Tiempo de Espera Programable",
+          "d": "retardo a la reconexión ideal para proteger compresores de aire acondicionado y motores de refrigeración contra arranques consecutivos."
+        },
+        {
+          "t": "Capacidad de Hasta 63A",
+          "d": "apto para proteger circuitos generales, tableros completos o equipos individuales de alto consumo."
+        },
+        {
+          "t": "Corte Ultra Rápido",
+          "d": "desconexión automática en milisegundos ante picos destructivos causados por fallas de fase o descargas en la red."
+        }
+      ],
+      "idealPara": [
+        "Protecciones de entrada principal en viviendas, apartamentos, oficinas y locales comerciales.",
+        "Respaldar aires acondicionados, refrigeradores, congeladores y electrodomésticos ante inestabilidad en la red eléctrica.",
+        "Tableros de control solar, salida de inversores fotovoltaicos y sistemas de energía de respaldo por batería.",
+        "Cuadros eléctricos residenciales donde se requiera un reemplazo o complemento a los protectores tradicionales de enchufe."
+      ],
+      "incluye": [
+        "1× Protector Digital de Sobretensión y Corriente Voltage VT-SVP-02 (63A)",
+        "1× Manual de usuario e instrucciones de programación de parámetros"
+      ],
+      "slug": "protector-vt-svp-02-110v",
+      "rev": 1793663550154
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
