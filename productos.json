@@ -13444,9 +13444,7 @@
       "🎁 Regalos incluidos: 1× Casco de protección + 1× Malla elástica de agarre para carga"
     ],
     "slug": "moto-707-3000w-48v-50ah",
-    "rev": 1793662857828,
-    "seoTitle": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
-    "seoDescription": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en…"
+    "rev": 1793663515088
   },
   {
     "id": 1793662856382,
@@ -13549,8 +13547,127 @@
       "1× Botella de Perlas Aromáticas Downy Unstopables Fresh (680g / 24 oz)"
     ],
     "slug": "downy-fresh-680g-24-oz",
-    "rev": 1793662857828,
-    "seoTitle": "Downy Unstopables Fresh | Perlas de Perfume… | TiendaMax",
-    "seoDescription": "El Downy Unstopables Fresh (680g / 24 oz) es un intensificador de aroma en perlas de perfume diseñadas para agregarse directamente al tambor de la…"
+    "rev": 1793663515088
+  },
+  {
+    "id": 1793663513608,
+    "nombre": "Protector de Sobre/Baja Tensión y Sobrecorriente Voltage VT-SVP-02 (110V)",
+    "descripcion": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para salvaguardar electrodomésticos, equipos de climatización, inversores solares e instalaciones eléctricas residenciales o comerciales frente a fluctuaciones destructivas en la red eléctrica. Se instala directamente en tableros de distribución sobre Riel DIN estándar de 35 mm y actúa como un interruptor de desconexión automática inteligente de alta potencia con capacidad de hasta 63 Amperios",
+    "imagen": "https://tiendamax.org/imagenes/img_1793663507904.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793663507904.webp",
+      "https://tiendamax.org/imagenes/img_1793663509547.webp",
+      "https://tiendamax.org/imagenes/img_1793663510997.webp",
+      "https://tiendamax.org/imagenes/img_1793663512371.webp"
+    ],
+    "precioActual": 18,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "📊 Display Digital Voltímetro/Amperímetro",
+      "🔌 Carga Máxima: 63A",
+      "🛡️ Protección Programable por Voltaje y Corriente (Auto-Reconexión)"
+    ],
+    "fechaAgregado": "2026-11-02T23:51:53.609Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "Voltage Electronics Art"
+      },
+      {
+        "k": "Modelo",
+        "v": "VT-SVP-02",
+        "nota": "Serie Uso Común / Common Use"
+      },
+      {
+        "k": "Tipo de Dispositivo",
+        "v": "Protector Ajustable de Voltaje y Sobrecorriente",
+        "nota": "Adjustable Over/Under Voltage & Current Protector"
+      },
+      {
+        "k": "Corriente Nominal Máxima",
+        "v": "63 A",
+        "nota": "Ajustable programable"
+      },
+      {
+        "k": "Voltaje Operativo Nominal",
+        "v": "AC 110V / 220V",
+        "nota": "50/60 Hz"
+      },
+      {
+        "k": "Rango de Sobrevoltaje (>V)",
+        "v": "Programable",
+        "nota": "por ejemplo, 130V–150V en 110V / 240V–300V en 220V"
+      },
+      {
+        "k": "Rango de Subvoltaje (<V)",
+        "v": "( (por * Rango / 110V 140V–200V 220V) 80V–100V Programable Sobrecorriente de ejemplo, en>A): Programable de 1A a 63A"
+      },
+      {
+        "k": "Tiempo de Reconexión Automática",
+        "v": "Configurable",
+        "nota": "1 a 500 segundos"
+      },
+      {
+        "k": "Pantalla de Visualización",
+        "v": "Display LED digital dual",
+        "nota": "Voltímetro + Amperímetro en tiempo real"
+      },
+      {
+        "k": "Montaje",
+        "v": "Riel DIN simétrico estándar de 35 mm"
+      },
+      {
+        "k": "Bornes de Conexión",
+        "v": "Entrada superior (IN) y salida inferior (OUT) con tornillos de apriete reforzados"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Protección Triple Configurable",
+        "d": "resguarda simultáneamente contra picos de alto voltaje, caídas severas de tensión y sobrecargas de corriente."
+      },
+      {
+        "t": "Monitoreo Digital en Tiempo Real",
+        "d": "pantalla dual iluminada que permite verificar al instante el estado y consumo de la red eléctrica."
+      },
+      {
+        "t": "Reconexión Automática e Inteligente",
+        "d": "reconecta la carga de forma segura únicamente cuando los parámetros eléctricos retornan a los rangos normales establecidos."
+      },
+      {
+        "t": "Tiempo de Espera Programable",
+        "d": "retardo a la reconexión ideal para proteger compresores de aire acondicionado y motores de refrigeración contra arranques consecutivos."
+      },
+      {
+        "t": "Capacidad de Hasta 63A",
+        "d": "apto para proteger circuitos generales, tableros completos o equipos individuales de alto consumo."
+      },
+      {
+        "t": "Corte Ultra Rápido",
+        "d": "desconexión automática en milisegundos ante picos destructivos causados por fallas de fase o descargas en la red."
+      }
+    ],
+    "idealPara": [
+      "Protecciones de entrada principal en viviendas, apartamentos, oficinas y locales comerciales.",
+      "Respaldar aires acondicionados, refrigeradores, congeladores y electrodomésticos ante inestabilidad en la red eléctrica.",
+      "Tableros de control solar, salida de inversores fotovoltaicos y sistemas de energía de respaldo por batería.",
+      "Cuadros eléctricos residenciales donde se requiera un reemplazo o complemento a los protectores tradicionales de enchufe."
+    ],
+    "incluye": [
+      "1× Protector Digital de Sobretensión y Corriente Voltage VT-SVP-02 (63A)",
+      "1× Manual de usuario e instrucciones de programación de parámetros"
+    ],
+    "slug": "protector-vt-svp-02-110v",
+    "rev": 1793663515088
   }
 ]
