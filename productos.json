@@ -2839,7 +2839,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778602312238.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 40,
+    "stock": 38,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2868,7 +2868,7 @@
     "incluye": [
       "1x Fanfaro 2T 1L"
     ],
-    "rev": 1793393116521,
+    "rev": 1793741352572,
     "descripcion": "Aceite FANFARO M-2T (código G2102) para motores de 2 tiempos, API TC, JASO FB. Envase de 1 litro.",
     "precioOriginal": 0,
     "comision": 0.4,
@@ -11453,7 +11453,7 @@
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 9,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11565,7 +11565,7 @@
       "1× Guía básica con diagrama de cableado y especificaciones técnicas"
     ],
     "slug": "interruptor-m2r63-110-3-3",
-    "rev": 1793393116521,
+    "rev": 1793741282001,
     "seoTitle": "Interruptor de Transferencia Automática (ATS)… | TiendaMax",
     "seoDescription": "El LSP M2R63-110/3 es un interruptor de transferencia automática (ATS) de 3 polos y 63 amperios de clase PC, diseñado para alternar de forma continua…"
   },
