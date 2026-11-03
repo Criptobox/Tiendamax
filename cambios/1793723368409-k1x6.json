@@ -1,0 +1,317 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T16:29:28.409Z",
+  "productos": [
+    {
+      "id": 1793722641800,
+      "nombre": "MANNOL Energy 7511 5W-30",
+      "descripcion": "El MANNOL Energy 7511 5W-30 es un aceite de motor hidrocraqueado (HC) 100% sintético de última generación, formulado con Ester Technology (tecnología de ésteres de SCT), diseñado para la lubricación de motores modernos de gasolina y diésel (con y sin turbocompresor), incluyendo motores con inyección directa o multiválvulas.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793722637612.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793722637612.webp"
+      ],
+      "precioActual": 35,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 23,
+      "comision": 1.75,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🛢️ Viscosidad: SAE 5W-30",
+        "🧪 Fórmula 100% Sintética con Tecnología Ester",
+        "🛡️ Especificaciones: API SN/CH-4 / ACEA A3/B4"
+      ],
+      "fechaAgregado": "2026-11-03T16:17:21.811Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Modelo / Serie",
+          "v": "Energy 7511"
+        },
+        {
+          "k": "Tipo de Base",
+          "v": "100% Sintético con Ésteres",
+          "nota": "Fully Synthetic Ester Technology"
+        },
+        {
+          "k": "Grado de Viscosidad",
+          "v": "SAE 5W-30"
+        },
+        {
+          "k": "Clasificación de Servicio API",
+          "v": "API SN / SN Plus / CH-4"
+        },
+        {
+          "k": "Clasificación ACEA",
+          "v": "ACEA A3/B4"
+        },
+        {
+          "k": "Compatibilidad de Combustible",
+          "v": "Motores a Gasolina, Diésel y Gas",
+          "nota": "GLP/GNC"
+        },
+        {
+          "k": "Aprobaciones y Estándares Recomendados",
+          "v": "VW 502.00/505.00, MB 229.5/229.3, Renault RN0700/RN0710, Ford WSS-M2C913-B"
+        },
+        {
+          "k": "Propiedad Antidesgaste",
+          "v": "Película lubricante reforzada por polaridad magnética molecular de ésteres"
+        },
+        {
+          "k": "Envase",
+          "v": "Garrafa ergonómica de plástico de alta densidad con asa lateral integrada y tapón dosificador con sello de seguridad"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología Ester de SCT",
+          "d": "la estructura polar de los ésteres se adhiere metálicamente a las paredes internas del motor, manteniendo una capa protectora permanente incluso cuando el motor está apagado."
+        },
+        {
+          "t": "Viscosidad Multigrado 5W-30",
+          "d": "excelente comportamiento térmico que facilita arranques en frío óptimos y mantiene la estabilidad de la presión de aceite a altas temperaturas de trabajo."
+        },
+        {
+          "t": "Máxima Protección Antidesgaste y Limpieza",
+          "d": "previene la oxidación, acumulación de hollín, carbón y lodos en los pistones y turbocompresores."
+        },
+        {
+          "t": "Ahorro de Combustible (Fuel Economy)",
+          "d": "reduce la fricción hidrodinámica del motor, contribuyendo a un menor consumo de combustible y menores emisiones contaminantes."
+        },
+        {
+          "t": "Compatibilidad Multicombustible",
+          "d": "formulado tanto para motores de gasolina de alta eficiencia como para motores diésel ligeros que requieran especificación ACEA A3/B4."
+        }
+      ],
+      "idealPara": [
+        "Automóviles de pasajeros, SUVs, vans y camionetas ligeras modernas de gasolina o diésel.",
+        "Motores turboalimentados, con inyección directa (GDI/TSI/TFSI) o multiválvulas que requieren aceites sintéticos de grado 5W-30.",
+        "Vehículos expuestos a condiciones severas de manejo, tráfico urbano intenso o viajes de larga distancia."
+      ],
+      "incluye": [
+        "1× Garrafa de Aceite Sintético MANNOL Energy 7511 5W-30 (Ester Technology)"
+      ],
+      "slug": "mannol-energy-7511-5w30",
+      "rev": 1793723368409
+    },
+    {
+      "id": 1793722839535,
+      "nombre": "Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)",
+      "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793722836703.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793722836703.webp"
+      ],
+      "precioActual": 5,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 17,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Contenido Neto: 500 ml",
+        "🛑 Especificación: DOT 3 Synthetic",
+        "⚙️ Fórmula Heavy Duty Anti-Corrosiva y Térmicamente Estable"
+      ],
+      "fechaAgregado": "2026-11-03T16:20:39.536Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "ROYAL Super"
+        },
+        {
+          "k": "Tipo de Producto",
+          "v": "Líquido / Fluido de Frenos Sintético",
+          "nota": "Heavy Duty Synthetic Brake Fluid"
+        },
+        {
+          "k": "Especificación / Estándar",
+          "v": "DOT 3",
+          "nota": "Cumple normas FMVSS 116 DOT 3, SAE J1703 e ISO 4925"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "500 ml"
+        },
+        {
+          "k": "Base Química",
+          "v": "Éteres de poliglicol sintéticos con inhibidores térmicos y anticorrosivos"
+        },
+        {
+          "k": "Compatibilidad de Sistemas",
+          "v": "Sistemas de frenos de disco (delanteros/traseros), tambor y mandos hidráulicos de embrague",
+          "nota": "clutch"
+        },
+        {
+          "k": "Punto de Ebullición Seco",
+          "v": "≥ 205 °C",
+          "nota": "401 °F"
+        },
+        {
+          "k": "Punto de Ebullición Húmedo",
+          "v": "≥ 140 °C",
+          "nota": "284 °F"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella plástica ergonómica con tapa roscada sellada herméticamente para evitar la absorción de humedad del aire"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Fórmula Sintética Heavy Duty",
+          "d": "elevada estabilidad térmica que minimiza el riesgo de fatiga hidráulica por hervido del fluido en pendientes o uso intensivo."
+        },
+        {
+          "t": "Protección Anticorrosiva Avanzada",
+          "d": "preserva metales como hierro, acero, aluminio y latón contra la herrumbre producida por la humedad inherente del sistema."
+        },
+        {
+          "t": "Compatibilidad con Sellos de Goma",
+          "d": "no deteriora, ablanda ni deforma los retenes, empaquetaduras ni mangueras del circuito de frenado."
+        },
+        {
+          "t": "Transmisión de Presión Inmediata",
+          "d": "excelente viscosidad en frío y caliente que garantiza un tacto firme e instantáneo en el pedal o maneta de freno."
+        },
+        {
+          "t": "Formato Estándar de 500 ml",
+          "d": "cantidad idónea para purgar, rellenar o realizar el cambio completo de fluido hidráulico en la mayoría de motocicletas y automóviles."
+        }
+      ],
+      "idealPara": [
+        "Reemplazo, purgado y rellenado del sistema de frenos en automóviles de pasajeros, camionetas compactas, SUVs y vehículos comerciales ligeros que requieran especificación DOT 3.",
+        "Sistemas de freno hidráulico de motocicletas, scooters y cuatrimotos.",
+        "Circuitos hidráulicos de accionamiento de embrague (clutch) en vehículos mecánicos."
+      ],
+      "incluye": [
+        "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
+      ],
+      "slug": "liquido-duty-dot-3-500-ml",
+      "rev": 1793723368409
+    },
+    {
+      "id": 1793723350923,
+      "nombre": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
+      "descripcion": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues hidráulicos en todo tipo de vehículos automotores modernos. Su avanzada composición química ofrece un punto de ebullición elevado (superior a 240 °C), evitando con máxima efectividad el fenómeno de vapor lock (formación de burbujas de gas por sobrecalentamiento) en frenadas bruscas, prolongadas o bajo cargas pesadas.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793723343627.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793723343627.webp"
+      ],
+      "precioActual": 10,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 15,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Punto de Ebullición: > 240 °C",
+        "🛑 Especificación: FMVSS 116 DOT-4 / SAE J1703",
+        "⚙️ Fórmula Sintética Anti-Corrosiva de Alta"
+      ],
+      "fechaAgregado": "2026-11-03T16:29:10.925Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Modelo / Referencia",
+          "v": "Brake Fluid DOT-4",
+          "nota": "MN3002"
+        },
+        {
+          "k": "Tipo de Producto",
+          "v": "Liquido de frenos sintético",
+          "nota": "Synthetic Brake Fluid"
+        },
+        {
+          "k": "Especificaciones Internacionales",
+          "v": "FMVSS 116 DOT-4, SAE J1703, ISO 4925"
+        },
+        {
+          "k": "Punto de Ebullición Seco",
+          "v": "> 240 °C",
+          "nota": "464 °F"
+        },
+        {
+          "k": "Punto de Ebullición Húmedo",
+          "v": "> 160 °C",
+          "nota": "320 °F"
+        },
+        {
+          "k": "Compatibilidad de Sistemas",
+          "v": "Sistemas de frenos de disco, tambor, ABS (Anti-lock Braking System) y accionamientos hidráulicos de embrague",
+          "nota": "clutch"
+        },
+        {
+          "k": "Propiedad Elastomerica",
+          "v": "Excelente compatibilidad con sellos y mangueras sintéticas"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella azul ergonómica de plástico rígido con asa de agarre texturizada y tapón dosificador con sello de seguridad de fábrica"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Punto de Ebullición Elevado (> 240 °C)",
+          "d": "garantiza una respuesta de frenado estable y sin pérdida de presión hidráulica incluso en condiciones extremas exigentes."
+        },
+        {
+          "t": "Protección Anticorrosiva Multimetal",
+          "d": "aditivos inhibidores que previenen la herrumbre y corrosión galvánica en bombas, latiguillos y bombines."
+        },
+        {
+          "t": "Compatibilidad con Sistemas ABS y ESP",
+          "d": "viscosidad optimizada tanto a bajas como a altas temperaturas para un funcionamiento ágil de las válvulas del sistema antibloqueo."
+        },
+        {
+          "t": "Inerte ante Sellos de Goma",
+          "d": "prolonga la vida útil de los componentes del circuito hidráulico sin ablandar ni agrietar los retenes."
+        },
+        {
+          "t": "Diseño de Botella Ergonómico",
+          "d": "cuello vertedor estrecho para un rellenado limpio y preciso sin derrames accidentales en la carrocería."
+        }
+      ],
+      "idealPara": [
+        "Reemplazo, purgado y relleno en vehículos modernos de gasolina y diésel, camionetas, SUVs y camiones ligeros que requieran norma DOT-4.",
+        "Motocicletas, scooters y cuatrimotos con frenos hidráulicos de alto rendimiento.",
+        "Vehículos equipados con sistemas de frenado antibloqueo (ABS) y control de estabilidad (ESP/TSC)."
+      ],
+      "incluye": [
+        "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
+      ],
+      "slug": "liquido-fluid-dot-4-3002-1l",
+      "rev": 1793723368409
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1793723350923": "1793722839535"
+  }
+}
