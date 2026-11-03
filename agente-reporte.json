@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-02T18:59:27.837828+00:00",
-  "productos": 163,
-  "urgentes": 3,
+  "generado": "2026-11-03T16:44:58.641647+00:00",
+  "productos": 169,
+  "urgentes": 6,
   "advertencias": 0,
   "info": 9,
-  "resumen": "Anoche revisé tus 163 productos y encontré 3 urgente(s), 9 de info.",
+  "resumen": "Anoche revisé tus 169 productos y encontré 6 urgente(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -20,6 +20,21 @@
       "tipo": "nombre",
       "nombre": "Inflador Digital con Batería Recargable y Luz LED",
       "detalle": "→ Inflador Digital Con Batería Recargable y Luz LED"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Downy Unstopables Fresh | Perlas de Perfume Intensificador para Lavado (680g / 24 oz)",
+      "detalle": "→ Downy Unstopables Fresh | Perlas de Perfume Intensificador Para Lavado (680g / 24 oz)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "MANNOL Energy 7511 5W-30",
+      "detalle": "→ Mannol Energy 7511 5W-30"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
+      "detalle": "→ Líquido de Frenos Sintético Mannol Brake Fluid DOT-4 3002 1L"
     },
     {
       "tipo": "stock_bajo",
@@ -63,8 +78,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "112 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Antorcha de Soldadura TIG (KIT Profesional) y 109 más"
+      "nombre": "113 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Antorcha de Soldadura TIG (KIT Profesional) y 110 más"
     }
   ]
 }
