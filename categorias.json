@@ -32,8 +32,8 @@
   "apagadas": {
     "categorias": {
       "CELULARES": {
-        "off": true,
-        "ts": 1791302442683
+        "off": false,
+        "ts": 1793733813460
       },
       "ROPA": {
         "off": false,
