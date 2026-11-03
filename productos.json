@@ -1229,7 +1229,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 23,
+    "stock": 20,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1271,7 +1271,7 @@
     "incluye": [
       "1x Mannol 5W30 5L"
     ],
-    "rev": 1793740402155,
+    "rev": 1793741141563,
     "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
   },
   {
@@ -5782,82 +5782,6 @@
       "1x Par de mosfet"
     ],
     "slug": "inversor-tataliken-4000w-24v",
-    "rev": 1793393116521
-  },
-  {
-    "id": 1783221896639,
-    "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783473953506.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783473953506.webp",
-      "https://tiendamax.org/imagenes/img_1783221876387.webp",
-      "https://tiendamax.org/imagenes/img_1783221878802.webp",
-      "https://tiendamax.org/imagenes/img_1783221880745.webp",
-      "https://tiendamax.org/imagenes/img_1783221882351.webp",
-      "https://tiendamax.org/imagenes/img_1783221883825.webp",
-      "https://tiendamax.org/imagenes/img_1783221885568.webp",
-      "https://tiendamax.org/imagenes/img_1783221887436.webp",
-      "https://tiendamax.org/imagenes/img_1783221888712.webp",
-      "https://tiendamax.org/imagenes/img_1783221890323.webp",
-      "https://tiendamax.org/imagenes/img_1783221892239.webp",
-      "https://tiendamax.org/imagenes/img_1783221893885.webp",
-      "https://tiendamax.org/imagenes/img_1783221895127.webp"
-    ],
-    "precioActual": 33000,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 1,
-    "comision": 1000,
-    "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "",
-    "masVendido": true,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "🚗 Kilometraje: Menos de 13,000 km",
-      "📍 Ubicación: Habana"
-    ],
-    "fechaAgregado": "2026-07-05T03:24:56.640Z",
-    "seoTitle": "Changan CS75 PLUS 2024 (Suv Compacta) en Cuba | TiendaMax",
-    "seoDescription": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño) Precio: 33000usd Kilometraje: Menos de 13,000 km Ubicación: Habana Descripción: ¿Buscas un SUV…",
-    "descripcion": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño)\nPrecio: 33000usd\nKilometraje: Menos de 13,000 km\nUbicación: Habana\nDescripción:\n¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado.\n🚀 Rendimiento y Motor:\nMotor: 1.5L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo).\nTransmisión: Automática de última generación (con modos de manejo Eco/Normal/Sport).\n🛠️ Tecnología y Confort de Lujo:\nPantalla Dual Flotante: Doble pantalla gigante para el tablero de instrumentos y el sistema de infoentretenimiento.\nTecho Panorámico: Gran techo corredizo de cristal que cubre casi todo el vehículo.\nInteriores Premium: Asientos de cuero tipo butaca deportiva, eléctricos y ultra cómodos.\nEncendido por botón, llave inteligente y climatizador automático bizona.\n🛡️ Seguridad Inteligente (¡Full Asistencias!):\nCámara 360° HD: Visión total del entorno en tiempo real para parquear sin un solo rasguño.\nSensores de Proximidad: Delanteros y traseros.\nRadar de Manejo Avanzado (ADAS): Incluye control de crucero adaptativo, frenado autónomo de emergencia y alerta de colisión frontal.\nMúltiples bolsas de aire (Airbags), control de estabilidad (ESP), frenos ABS y asistente de arranque/descenso en pendientes.\n📝 Estado del Vehículo:\nPintura, carrocería e interiores 10/10 (Huele a nuevo).\nTodos sus mantenimientos al día.\nPapeles listos para traspaso inmediato.\n💬 ¡Una oportunidad única! No dejes que te la ganen.",
-    "ficha": [
-      {
-        "k": "Marca",
-        "v": "Changan"
-      },
-      {
-        "k": "Kilometraje",
-        "v": "Menos de 13,000 km"
-      },
-      {
-        "k": "Ubicación",
-        "v": "Habana"
-      }
-    ],
-    "caracteristicas": [
-      {
-        "d": "¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado."
-      },
-      {
-        "d": "L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo)."
-      },
-      {
-        "d": "Automática de última generación (con modos de manejo Eco/Normal/Sport)."
-      }
-    ],
-    "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
-    ],
-    "incluye": [
-      "1x Changan CS75 PLUS 2024 (Suv Compacta)"
-    ],
-    "slug": "changan-cs75-plus-2024",
-    "slugsAnteriores": [
-      "changan-cs75-plus-2024-suv"
-    ],
     "rev": 1793393116521
   },
   {
