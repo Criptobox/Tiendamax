@@ -421,8 +421,14 @@ try{var _piel=localStorage.getItem('tm_piel');
   .vp-card:hover .vp-mas { background:var(--o); border-color:var(--o); }
   .vp-mas.encart { background:var(--green); border-color:var(--green); font-size:14px; font-weight:800; }
   .vp-vacio { padding:18px; text-align:center; color:var(--muted); font-size:12.5px; }
-  .pcard-comm { font-size:13px; margin-top:3px; color:#d9d9e0; }
-  .pcard-comm b { display:block; color:var(--green); font-size:14px; font-weight:800; }
+  .pcard-comm { font-size:12.5px; margin-top:4px; color:var(--muted); }
+  .pcard-comm b { color:var(--green); font-size:13.5px; font-weight:800; }
+  .pcard-comm.mn b { color:var(--gold); }
+  .pcard-comm small { font-size:11px; }
+  .pcard-comm.falta { display:inline-block; border:1px solid rgba(241,196,15,.45); background:rgba(241,196,15,.1);
+    color:var(--yellow); font-weight:700; border-radius:999px; padding:3px 10px; font-family:inherit; cursor:pointer;
+    white-space:nowrap; font-size:12px; }
+  .pcard-comm.nada { color:var(--dim); }
   .pcard-acts { display:flex; gap:7px; flex-shrink:0; align-self:flex-start; }
   .pico { width:44px; height:44px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
   .pico:hover { transform:translateY(-1px); }
@@ -4813,12 +4819,39 @@ function apBulkDel(){
   PRODUCTOS = PRODUCTOS.filter(p=>!AP_SEL.has(String(p.id)));
   apSaveProds(); apSelClear(); showToast('🗑 '+(antes-PRODUCTOS.length)+' productos eliminados','Sincroniza para publicar el cambio');
 }
+/* La comisión, SIEMPRE en la tarjeta: con ella solo cuando existía, un
+   producto sin comisión era una tarjeta a la que le faltaba una línea, y eso
+   no se ve. Tres estados:
+   · con comisión: la cifra y su moneda. Si el producto no declara la moneda
+     se deduce como en 🔀 Comparar (cmpMonedaMia: ≥100 es MN) y se dice que
+     es supuesta — un 1500 pintado como «$1500 USD» es el error de la Linterna;
+   · sin comisión y a la venta (apSinComision, la regla del Copiloto): aviso
+     ámbar que abre la ficha para ponerla, porque es ganancia que no se cuenta;
+   · sin comisión y fuera de venta (agotado o apagado): gris, no es de hoy.
+   Un «0» escrito a mano cuenta como sin comisión, igual que en el Copiloto. */
+function apComisionHTML(p){
+  const c=Number(p.comision)||0, id=String(p.id);
+  if(c>0){
+    const dec = p.comisionMoneda==='MN'||p.comisionMoneda==='USD';
+    const mon = dec ? p.comisionMoneda : ((typeof cmpMonedaMia==='function') ? cmpMonedaMia(p) : (c>=100?'MN':'USD'));
+    const cifra = (Number.isInteger(c)?String(c):c.toFixed(2));
+    const txt = mon==='MN' ? cifra+' MN' : '$'+cifra+' USD';
+    return `<div class="pcard-comm${mon==='MN'?' mn':''}">Comisión <b>${txt}</b>${dec?'':'<small title="El producto no dice la moneda: se supone por la cifra"> · supuesta</small>'}</div>`;
+  }
+  // Sin el Copiloto cargado, apSinComision no sabe nada: mejor avisar de más
+  // (todo lo que tiene stock) que pintar en gris lo que sí es trabajo de hoy.
+  const aLaVenta = (typeof window.tmSinComision==='function') ? apSinComision(p) : (Number(p.stock)||0)>0;
+  if(aLaVenta)
+    return `<button type="button" class="pcard-comm falta" onclick="apEdit('${id}')" title="Ponle la comisión: sin ella esta venta no cuenta en tu ganancia">Falta la comisión</button>`;
+  const por = (Number(p.stock)||0)<=0 ? 'agotado' : (p.activo===false ? 'desactivado' : 'categoría apagada');
+  return `<div class="pcard-comm nada">Sin comisión · ${por}</div>`;
+}
 function apCardHTML(p){
   const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
   const id=String(p.id);
   const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:34px">${emojiCat(p.categoria)}</div>`;
   const off = (Number(p.descuento)>0) ? ` <span style="color:var(--red);font-size:12px">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` <span style="color:var(--red);font-size:12px">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
-  const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión:<b>${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</b></div>` : '';
+  const comm = apComisionHTML(p);
   return `<div class="pcard">
     <div class="pcard-h">
       <input type="checkbox" class="pcard-cb" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')">
