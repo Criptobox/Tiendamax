@@ -1,0 +1,113 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T19:37:34.456Z",
+  "productos": [
+    {
+      "id": 1793662856382,
+      "nombre": "Downy Unstopables Fresh | Perlas de Perfume Intensificador para Lavado (680g / 24 oz)",
+      "descripcion": "El Downy Unstopables Fresh (680g / 24 oz) es un intensificador de aroma en perlas de perfume diseñadas para agregarse directamente al tambor de la lavadora antes de introducir la ropa. Formulado con microcápsulas de fragancia que se activan con el movimiento y el roce de las prendas, proporciona un aroma fresco y limpio de larga duración que se mantiene en los tejidos hasta por 12 semanas almacenados en el armario.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793662854727.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793662854727.webp"
+      ],
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 6,
+      "comision": 3,
+      "comisionMoneda": "USD",
+      "categoria": "HOGAR",
+      "subcategoria": "DECORACION",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🌸 Aroma: Fresh (Frescura Prolongada)",
+        "🧺 Perlas de Perfume para Lavado (In-Wash Scent Booster)",
+        "⏳ Hasta 12 Semanas de Frescura"
+      ],
+      "fechaAgregado": "2026-11-02T23:40:56.383Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Downy",
+          "nota": "Procter & Gamble"
+        },
+        {
+          "k": "Línea",
+          "v": "Unstopables In-Wash Scent Booster"
+        },
+        {
+          "k": "Aroma / Fragancia",
+          "v": "Fresh"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "680 g / 24 oz",
+          "nota": "Aproximadamente 1.5 L de volumen en envase"
+        },
+        {
+          "k": "Formato",
+          "v": "Perlas sólidas aromáticas solubles en agua"
+        },
+        {
+          "k": "Compatibilidad de Lavadoras",
+          "v": "Compatible con lavadoras tradicionales y de Alta Eficiencia (HE)"
+        },
+        {
+          "k": "Compatibilidad de Telas",
+          "v": "Apto para todo tipo de ropa, colores, ropa deportiva, toallas y lencería de cama"
+        },
+        {
+          "k": "Duración de la Fragancia",
+          "v": "Hasta 12 semanas de frescura desde el lavado hasta el uso"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella ergonómica de plástico reciclable con tapa dosificadora"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Fragancia Intensa y Prolongada",
+          "d": "aroma fresco que supera la duración de los suavizantes líquidos convencionales."
+        },
+        {
+          "t": "Perlas Solubles en Agua Fria y Caliente",
+          "d": "se disuelven por completo durante el ciclo de lavado sin dejar manchas ni residuos en la ropa."
+        },
+        {
+          "t": "Dosificación Personalizable",
+          "d": "usa desde media tapa para un toque sutil de perfume hasta una tapa llena para una fragancia máxima."
+        },
+        {
+          "t": "Apto para Ropa Deportiva y Toallas",
+          "d": "no reduce la capacidad de absorción ni la transpirabilidad de las fibras sintéticas."
+        },
+        {
+          "t": "Uso Seguro en Lavadoras HE",
+          "d": "fórmula de baja espuma que no afecta los sensores ni los conductos de las lavadoras modernas."
+        },
+        {
+          "t": "Tapa Dosificadora Práctica",
+          "d": "permite medir la cantidad exacta de perlas vertiéndolas directamente en el tambor."
+        }
+      ],
+      "idealPara": [
+        "Lavado de toallas, sábanas, cobijas y lencería que requieren mantener un aroma limpio y fresco durante semanas guardadas.",
+        "Ropa deportiva, uniformes y prendas de trabajo propensas a acumular malos olores.",
+        "Usuarios que buscan potenciar la fragancia de su colada combinando las perlas con su detergente habitual."
+      ],
+      "incluye": [
+        "1× Botella de Perlas Aromáticas Downy Unstopables Fresh (680g / 24 oz)"
+      ],
+      "slug": "downy-fresh-680g-24-oz",
+      "rev": 1793734654456,
+      "seoTitle": "Downy Unstopables Fresh | Perlas de Perfume… | TiendaMax",
+      "seoDescription": "El Downy Unstopables Fresh (680g / 24 oz) es un intensificador de aroma en perlas de perfume diseñadas para agregarse directamente al tambor de la…"
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
