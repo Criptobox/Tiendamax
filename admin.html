@@ -2407,7 +2407,19 @@ try{var _piel=localStorage.getItem('tm_piel');
     '🔳':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
     '⬇️':'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
     '🤖':'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13v1M15 13v1M9.5 17h5"/><circle cx="12" cy="3.5" r=".5"/>',
-    '🚧':'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'
+    '🚧':'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+    // Los que tm-iconos no trae y salen en botones del panel (pestañas de
+    // Publicar, Herramientas, huella…). Mismo trazo de línea.
+    '🪄':'<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/>',
+    '🕐':'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    '🔁':'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+    '❓':'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/>',
+    '➖':'<path d="M5 12h14"/>',
+    '📁':'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+    '👆':'<path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4M14 13.12c0 2.38 0 6.38-1 8.88M17.29 21.02c.12-.6.43-2.3.5-3.02M2 12a10 10 0 0 1 18-6M2 16h.01M21.8 16c.2-2 .13-5.35 0-6M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2M8.65 22c.21-.66.45-1.32.57-2M9 6.8a6 6 0 0 1 9 5.2v2"/>',
+    '📑':'<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    '↶':'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+    '🧑‍💼':'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"/>'
   };
   // vista → su fila de GRUPOS (icono y color), para las cabeceras.
   var POR_VISTA = {};
@@ -2564,11 +2576,13 @@ try{var _piel=localStorage.getItem('tm_piel');
   // tarjeta de categoría (html2canvas copia la página entera) pasó a tardar
   // más de lo que aguanta. Sin flag de «hecho»: si el panel vuelve a poner
   // un emoji en el mismo botón, se convierte otra vez.
-  var RE_EMO_INI = /^(\s*)((?:[←-⇿⌀-⏿☀-➿⬀-⯿]|[\uD83C-\uD83E][\uDC00-\uDFFF])️?)\s*/;
+  // Un emoji, o una secuencia unida con ZWJ (🧑‍💼), al principio del texto.
+  var RE_EMO_INI = /^(\s*)((?:[←-⇿⌀-⏿☀-➿⬀-⯿]|[\uD83C-\uD83E][\uDC00-\uDFFF])️?(?:‍(?:[☀-➿]|[\uD83C-\uD83E][\uDC00-\uDFFF])️?)*)\s*/;
   var ICO_ID = {}, icoN = 0, icoHoja = null;
   function reglaIcono(emo){
     if (emo in ICO_ID) return ICO_ID[emo];
-    var paths = ''; try { paths = tmIconoPaths(emo) || ''; } catch(e){}
+    var paths = EXTRA[emo] || EXTRA[emo.replace(/\uFE0F/g, '')] || '';
+    if (!paths) try { paths = tmIconoPaths(emo) || ''; } catch(e){}
     if (!paths) return (ICO_ID[emo] = '');
     var id = 'i' + (++icoN);
     var svgTxt = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
@@ -2578,7 +2592,7 @@ try{var _piel=localStorage.getItem('tm_piel');
     return (ICO_ID[emo] = id);
   }
   function lineaBotones(){
-    document.querySelectorAll('.view button, .view .tm-tool-card .ico').forEach(function(el){
+    document.querySelectorAll('.view button, .view .tm-tool-card .ico, .view .cmp-tit').forEach(function(el){
       if (el.closest('.mnu-t, .side-btn')) return;
       var n = el.firstChild;
       while (n && n.nodeType === 3 && !n.nodeValue.trim()) n = n.nextSibling;
