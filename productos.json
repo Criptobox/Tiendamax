@@ -1225,7 +1225,7 @@
   {
     "id": 1778212195565,
     "nombre": "Mannol 5W30 5L",
-    "precioActual": 35,
+    "precioActual": 40,
     "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
@@ -1238,7 +1238,6 @@
     "slug": "mannol-5w30-5l",
     "seoTitle": "Mannol 5W30 5L en Cuba | TiendaMax",
     "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4",
-    "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos.",
     "precioOriginal": 0,
     "comision": 0,
     "comisionMoneda": "USD",
@@ -1272,7 +1271,8 @@
     "incluye": [
       "1x Mannol 5W30 5L"
     ],
-    "rev": 1793393116521
+    "rev": 1793722059392,
+    "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
   },
   {
     "id": 1778212384991,
@@ -13556,7 +13556,6 @@
   {
     "id": 1793663513608,
     "nombre": "Protector de Sobre/Baja Tensión y Sobrecorriente Voltage VT-SVP-02 (110V)",
-    "descripcion": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para salvaguardar electrodomésticos, equipos de climatización, inversores solares e instalaciones eléctricas residenciales o comerciales frente a fluctuaciones destructivas en la red eléctrica. Se instala directamente en tableros de distribución sobre Riel DIN estándar de 35 mm y actúa como un interruptor de desconexión automática inteligente de alta potencia con capacidad de hasta 63 Amperios",
     "imagen": "https://tiendamax.org/imagenes/img_1793663507904.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793663507904.webp",
@@ -13567,7 +13566,7 @@
     "precioActual": 18,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 9,
+    "stock": 0,
     "comision": 0,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -13672,8 +13671,9 @@
       "1× Manual de usuario e instrucciones de programación de parámetros"
     ],
     "slug": "protector-vt-svp-02-110v",
-    "rev": 1793663550154,
+    "rev": 1793722059392,
     "seoTitle": "Protector de Sobre/Baja Tensión y… | TiendaMax",
-    "seoDescription": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para…"
+    "seoDescription": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para…",
+    "descripcion": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para salvaguardar electrodomésticos, equipos de climatización, inversores solares e instalaciones eléctricas residenciales o comerciales frente a fluctuaciones destructivas en la red eléctrica. Se instala directamente en tableros de distribución sobre Riel DIN estándar de 35 mm y actúa como un interruptor de desconexión automática inteligente de alta potencia con capacidad de hasta 63 Amperios"
   }
 ]
