@@ -1,0 +1,155 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T21:27:21.705Z",
+  "productos": [
+    {
+      "id": 1778212384991,
+      "nombre": "Mannol Antifreeze AG13+ (- 40 °c) Advanced 4014. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 29,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag13-plus-4014-5l",
+      "seoTitle": "Mannol Antifreeze AG13+ (- 40 °c) Advanced 4014. 5L",
+      "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG13+ ( - 40 °c) Advanced 4014. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag13-40-c-4014-5l"
+      ],
+      "rev": 1793741241705,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212384991.webp"
+      ]
+    },
+    {
+      "id": 1778212462723,
+      "nombre": "Mannol Antifreeze AG13 (- 40 °c) Hightec 4013. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 21,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag13-4013-5l",
+      "seoTitle": "Mannol Antifreeze AG13 (- 40 °c) Hightec 4013. 5L",
+      "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG13 ( - 40 °c) Hightec 4013. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag13-40-c-4013-5l"
+      ],
+      "rev": 1793741241705,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG13 Hightec (código 4013), color verde, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212462723.webp"
+      ]
+    },
+    {
+      "id": 1778212537706,
+      "nombre": "Mannol Antifreeze AG11 (- 40 °c) Longterm 4011. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 24,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag11-4011-5l",
+      "seoTitle": "Mannol Antifreeze AG11 (- 40 °c) Longterm 4011. 5L",
+      "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG11 ( - 40 °c) Longterm 4011. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag11-40-c-4011-5l"
+      ],
+      "rev": 1793741241705,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212537706.webp"
+      ]
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
