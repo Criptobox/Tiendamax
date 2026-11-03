@@ -13777,9 +13777,7 @@
       "1× Garrafa de Aceite Sintético MANNOL Energy 7511 5W-30 (Ester Technology)"
     ],
     "slug": "mannol-energy-7511-5w30",
-    "rev": 1793722855250,
-    "seoTitle": "MANNOL Energy 7511 5W-30 en Cuba | TiendaMax",
-    "seoDescription": "El MANNOL Energy 7511 5W-30 es un aceite de motor hidrocraqueado (HC) 100% sintético de última generación, formulado con Ester Technology (tecnología de…"
+    "rev": 1793723368409
   },
   {
     "id": 1793722839535,
@@ -13881,8 +13879,108 @@
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
     ],
     "slug": "liquido-duty-dot-3-500-ml",
-    "rev": 1793722855250,
-    "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
-    "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…"
+    "rev": 1793723368409
+  },
+  {
+    "id": 1793723350923,
+    "nombre": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
+    "descripcion": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues hidráulicos en todo tipo de vehículos automotores modernos. Su avanzada composición química ofrece un punto de ebullición elevado (superior a 240 °C), evitando con máxima efectividad el fenómeno de vapor lock (formación de burbujas de gas por sobrecalentamiento) en frenadas bruscas, prolongadas o bajo cargas pesadas.",
+    "imagen": "https://tiendamax.org/imagenes/img_1793723343627.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793723343627.webp"
+    ],
+    "precioActual": 10,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 15,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "categoria": "CARROS",
+    "subcategoria": "ACEITES Y LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "💧 Punto de Ebullición: > 240 °C",
+      "🛑 Especificación: FMVSS 116 DOT-4 / SAE J1703",
+      "⚙️ Fórmula Sintética Anti-Corrosiva de Alta"
+    ],
+    "fechaAgregado": "2026-11-03T16:29:10.925Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Modelo / Referencia",
+        "v": "Brake Fluid DOT-4",
+        "nota": "MN3002"
+      },
+      {
+        "k": "Tipo de Producto",
+        "v": "Liquido de frenos sintético",
+        "nota": "Synthetic Brake Fluid"
+      },
+      {
+        "k": "Especificaciones Internacionales",
+        "v": "FMVSS 116 DOT-4, SAE J1703, ISO 4925"
+      },
+      {
+        "k": "Punto de Ebullición Seco",
+        "v": "> 240 °C",
+        "nota": "464 °F"
+      },
+      {
+        "k": "Punto de Ebullición Húmedo",
+        "v": "> 160 °C",
+        "nota": "320 °F"
+      },
+      {
+        "k": "Compatibilidad de Sistemas",
+        "v": "Sistemas de frenos de disco, tambor, ABS (Anti-lock Braking System) y accionamientos hidráulicos de embrague",
+        "nota": "clutch"
+      },
+      {
+        "k": "Propiedad Elastomerica",
+        "v": "Excelente compatibilidad con sellos y mangueras sintéticas"
+      },
+      {
+        "k": "Envase",
+        "v": "Botella azul ergonómica de plástico rígido con asa de agarre texturizada y tapón dosificador con sello de seguridad de fábrica"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Punto de Ebullición Elevado (> 240 °C)",
+        "d": "garantiza una respuesta de frenado estable y sin pérdida de presión hidráulica incluso en condiciones extremas exigentes."
+      },
+      {
+        "t": "Protección Anticorrosiva Multimetal",
+        "d": "aditivos inhibidores que previenen la herrumbre y corrosión galvánica en bombas, latiguillos y bombines."
+      },
+      {
+        "t": "Compatibilidad con Sistemas ABS y ESP",
+        "d": "viscosidad optimizada tanto a bajas como a altas temperaturas para un funcionamiento ágil de las válvulas del sistema antibloqueo."
+      },
+      {
+        "t": "Inerte ante Sellos de Goma",
+        "d": "prolonga la vida útil de los componentes del circuito hidráulico sin ablandar ni agrietar los retenes."
+      },
+      {
+        "t": "Diseño de Botella Ergonómico",
+        "d": "cuello vertedor estrecho para un rellenado limpio y preciso sin derrames accidentales en la carrocería."
+      }
+    ],
+    "idealPara": [
+      "Reemplazo, purgado y relleno en vehículos modernos de gasolina y diésel, camionetas, SUVs y camiones ligeros que requieran norma DOT-4.",
+      "Motocicletas, scooters y cuatrimotos con frenos hidráulicos de alto rendimiento.",
+      "Vehículos equipados con sistemas de frenado antibloqueo (ABS) y control de estabilidad (ESP/TSC)."
+    ],
+    "incluye": [
+      "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
+    ],
+    "slug": "liquido-fluid-dot-4-3002-1l",
+    "rev": 1793723368409
   }
 ]
