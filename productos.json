@@ -14114,7 +14114,9 @@
       "1× Guía de inicio rápido y manual de usuario"
     ],
     "slug": "smartphone-a100c-64gb-8gb",
-    "rev": 1793733805789
+    "rev": 1793733805789,
+    "seoTitle": "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
+    "seoDescription": "El itel A100C es un smartphone de gama de entrada diseñado para ofrecer un excelente equilibrio entre rendimiento, fluido visual y autonomía a un precio…"
   },
   {
     "id": 1793733803341,
@@ -14243,6 +14245,8 @@
       "1× Manual de usuario e instrucciones de uso"
     ],
     "slug": "smartphone-itel-a100c",
-    "rev": 1793733805789
+    "rev": 1793733805789,
+    "seoTitle": "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
+    "seoDescription": "El itel A100C (Versión 128GB) es una variante mejorada de alta capacidad pensada para usuarios que demandan un almacenamiento superior y mayor durabilidad…"
   }
 ]
