@@ -1,0 +1,697 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T21:13:22.155Z",
+  "productos": [
+    {
+      "id": 1778212195565,
+      "nombre": "Mannol 5W30 5L LONGLIFE",
+      "precioActual": 40,
+      "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 23,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-5w30-5l",
+      "seoTitle": "Mannol 5W30 5L en Cuba | TiendaMax",
+      "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4",
+      "precioOriginal": 0,
+      "comision": 2,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 5W-30"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783918216261.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "5W-30"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol 5W30 5L"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
+    },
+    {
+      "id": 1778212384991,
+      "nombre": "Mannol Antifreeze AG13+ (- 40 °c) Advanced 4014. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 31,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag13-plus-4014-5l",
+      "seoTitle": "Mannol Antifreeze AG13+ (- 40 °c) Advanced 4014. 5L",
+      "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG13+ ( - 40 °c) Advanced 4014. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag13-40-c-4014-5l"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212384991.webp"
+      ]
+    },
+    {
+      "id": 1778212462723,
+      "nombre": "Mannol Antifreeze AG13 (- 40 °c) Hightec 4013. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 22,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag13-4013-5l",
+      "seoTitle": "Mannol Antifreeze AG13 (- 40 °c) Hightec 4013. 5L",
+      "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG13 ( - 40 °c) Hightec 4013. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag13-40-c-4013-5l"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG13 Hightec (código 4013), color verde, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212462723.webp"
+      ]
+    },
+    {
+      "id": 1778212537706,
+      "nombre": "Mannol Antifreeze AG11 (- 40 °c) Longterm 4011. 5L",
+      "precioActual": 15,
+      "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 25,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ag11-4011-5l",
+      "seoTitle": "Mannol Antifreeze AG11 (- 40 °c) Longterm 4011. 5L",
+      "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Antifreeze AG11 ( - 40 °c) Longterm 4011. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ag11-40-c-4011-5l"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
+      "precioOriginal": 0,
+      "comision": 0.75,
+      "comisionMoneda": "USD",
+      "specs": [],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778212537706.webp"
+      ]
+    },
+    {
+      "id": 1778213940333,
+      "nombre": "Mannol Safari 20W - 50 7404 5L",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 52,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-safari-20w50-7404-5l",
+      "seoTitle": "Mannol Safari 20W - 50 7404 5L en Cuba | TiendaMax",
+      "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
+      "comision": 1.25,
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 20W-50"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783918626441.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "20W-50"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Safari 20W - 50 7404 5L"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
+    },
+    {
+      "id": 1778547461235,
+      "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
+      "precioActual": 30,
+      "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 53,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ts4-15w40-7104-5l",
+      "seoTitle": "Mannol ts - 4 SHPD 15W - 40 7104. 5L en Cuba | TiendaMax",
+      "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…",
+      "precioOriginal": 0,
+      "comision": 1.5,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 15W-40"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783919083218.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "15W-40"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol ts - 4 SHPD 15W - 40 7104. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ts-4-15w40-7104-5l"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros."
+    },
+    {
+      "id": 1778547753925,
+      "nombre": "Mannol Defender 10W - 40 7507. 5L",
+      "precioActual": 30,
+      "imagen": "https://tiendamax.org/imagenes/img_1783918493021.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 23,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-10w40-7507-5l",
+      "seoTitle": "Mannol Defender 10W - 40 7507. 5L en Cuba | TiendaMax",
+      "seoDescription": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un…",
+      "precioOriginal": 0,
+      "comision": 1.5,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 10W-40"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783918493021.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "10W-40"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Defender 10W - 40 7507. 5L"
+      ],
+      "rev": 1793740402155,
+      "descripcion": "Aceite de motor MANNOL DEFENDER (código 7507), 10W-40, sintético, API SP, ACEA A3/B4. Envase de 5 litros."
+    },
+    {
+      "id": 1793722839535,
+      "nombre": "Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)",
+      "imagen": "https://tiendamax.org/imagenes/img_1793722836703.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793722836703.webp"
+      ],
+      "precioActual": 5,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 17,
+      "comision": 0.25,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Contenido Neto: 500 ml",
+        "🛑 Especificación: DOT 3 Synthetic",
+        "⚙️ Fórmula Heavy Duty Anti-Corrosiva y Térmicamente Estable"
+      ],
+      "fechaAgregado": "2026-11-03T16:20:39.536Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "ROYAL Super"
+        },
+        {
+          "k": "Tipo de Producto",
+          "v": "Líquido / Fluido de Frenos Sintético",
+          "nota": "Heavy Duty Synthetic Brake Fluid"
+        },
+        {
+          "k": "Especificación / Estándar",
+          "v": "DOT 3",
+          "nota": "Cumple normas FMVSS 116 DOT 3, SAE J1703 e ISO 4925"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "500 ml"
+        },
+        {
+          "k": "Base Química",
+          "v": "Éteres de poliglicol sintéticos con inhibidores térmicos y anticorrosivos"
+        },
+        {
+          "k": "Compatibilidad de Sistemas",
+          "v": "Sistemas de frenos de disco (delanteros/traseros), tambor y mandos hidráulicos de embrague",
+          "nota": "clutch"
+        },
+        {
+          "k": "Punto de Ebullición Seco",
+          "v": "≥ 205 °C",
+          "nota": "401 °F"
+        },
+        {
+          "k": "Punto de Ebullición Húmedo",
+          "v": "≥ 140 °C",
+          "nota": "284 °F"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella plástica ergonómica con tapa roscada sellada herméticamente para evitar la absorción de humedad del aire"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Fórmula Sintética Heavy Duty",
+          "d": "elevada estabilidad térmica que minimiza el riesgo de fatiga hidráulica por hervido del fluido en pendientes o uso intensivo."
+        },
+        {
+          "t": "Protección Anticorrosiva Avanzada",
+          "d": "preserva metales como hierro, acero, aluminio y latón contra la herrumbre producida por la humedad inherente del sistema."
+        },
+        {
+          "t": "Compatibilidad con Sellos de Goma",
+          "d": "no deteriora, ablanda ni deforma los retenes, empaquetaduras ni mangueras del circuito de frenado."
+        },
+        {
+          "t": "Transmisión de Presión Inmediata",
+          "d": "excelente viscosidad en frío y caliente que garantiza un tacto firme e instantáneo en el pedal o maneta de freno."
+        },
+        {
+          "t": "Formato Estándar de 500 ml",
+          "d": "cantidad idónea para purgar, rellenar o realizar el cambio completo de fluido hidráulico en la mayoría de motocicletas y automóviles."
+        }
+      ],
+      "idealPara": [
+        "Reemplazo, purgado y rellenado del sistema de frenos en automóviles de pasajeros, camionetas compactas, SUVs y vehículos comerciales ligeros que requieran especificación DOT 3.",
+        "Sistemas de freno hidráulico de motocicletas, scooters y cuatrimotos.",
+        "Circuitos hidráulicos de accionamiento de embrague (clutch) en vehículos mecánicos."
+      ],
+      "incluye": [
+        "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
+      ],
+      "slug": "liquido-duty-dot-3-500-ml",
+      "rev": 1793740402155,
+      "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
+      "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…",
+      "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes."
+    },
+    {
+      "id": 1793723350923,
+      "nombre": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
+      "imagen": "https://tiendamax.org/imagenes/img_1793723343627.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793723343627.webp"
+      ],
+      "precioActual": 10,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 15,
+      "comision": 0.5,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Punto de Ebullición: > 240 °C",
+        "🛑 Especificación: FMVSS 116 DOT-4 / SAE J1703",
+        "⚙️ Fórmula Sintética Anti-Corrosiva de Alta"
+      ],
+      "fechaAgregado": "2026-11-03T16:29:10.925Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Modelo / Referencia",
+          "v": "Brake Fluid DOT-4",
+          "nota": "MN3002"
+        },
+        {
+          "k": "Tipo de Producto",
+          "v": "Liquido de frenos sintético",
+          "nota": "Synthetic Brake Fluid"
+        },
+        {
+          "k": "Especificaciones Internacionales",
+          "v": "FMVSS 116 DOT-4, SAE J1703, ISO 4925"
+        },
+        {
+          "k": "Punto de Ebullición Seco",
+          "v": "> 240 °C",
+          "nota": "464 °F"
+        },
+        {
+          "k": "Punto de Ebullición Húmedo",
+          "v": "> 160 °C",
+          "nota": "320 °F"
+        },
+        {
+          "k": "Compatibilidad de Sistemas",
+          "v": "Sistemas de frenos de disco, tambor, ABS (Anti-lock Braking System) y accionamientos hidráulicos de embrague",
+          "nota": "clutch"
+        },
+        {
+          "k": "Propiedad Elastomerica",
+          "v": "Excelente compatibilidad con sellos y mangueras sintéticas"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella azul ergonómica de plástico rígido con asa de agarre texturizada y tapón dosificador con sello de seguridad de fábrica"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Punto de Ebullición Elevado (> 240 °C)",
+          "d": "garantiza una respuesta de frenado estable y sin pérdida de presión hidráulica incluso en condiciones extremas exigentes."
+        },
+        {
+          "t": "Protección Anticorrosiva Multimetal",
+          "d": "aditivos inhibidores que previenen la herrumbre y corrosión galvánica en bombas, latiguillos y bombines."
+        },
+        {
+          "t": "Compatibilidad con Sistemas ABS y ESP",
+          "d": "viscosidad optimizada tanto a bajas como a altas temperaturas para un funcionamiento ágil de las válvulas del sistema antibloqueo."
+        },
+        {
+          "t": "Inerte ante Sellos de Goma",
+          "d": "prolonga la vida útil de los componentes del circuito hidráulico sin ablandar ni agrietar los retenes."
+        },
+        {
+          "t": "Diseño de Botella Ergonómico",
+          "d": "cuello vertedor estrecho para un rellenado limpio y preciso sin derrames accidentales en la carrocería."
+        }
+      ],
+      "idealPara": [
+        "Reemplazo, purgado y relleno en vehículos modernos de gasolina y diésel, camionetas, SUVs y camiones ligeros que requieran norma DOT-4.",
+        "Motocicletas, scooters y cuatrimotos con frenos hidráulicos de alto rendimiento.",
+        "Vehículos equipados con sistemas de frenado antibloqueo (ABS) y control de estabilidad (ESP/TSC)."
+      ],
+      "incluye": [
+        "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
+      ],
+      "slug": "liquido-fluid-dot-4-3002-1l",
+      "rev": 1793740402155,
+      "seoTitle": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
+      "seoDescription": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues…",
+      "descripcion": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues hidráulicos en todo tipo de vehículos automotores modernos. Su avanzada composición química ofrece un punto de ebullición elevado (superior a 240 °C), evitando con máxima efectividad el fenómeno de vapor lock (formación de burbujas de gas por sobrecalentamiento) en frenadas bruscas, prolongadas o bajo cargas pesadas."
+    },
+    {
+      "id": 1793740398660,
+      "nombre": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
+      "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793740396177.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793740396177.webp"
+      ],
+      "precioActual": 35,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 5,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "CARROS",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🎈 Presión con Pantalla Digital Dual",
+        "🔋 Batería Recargable con Apagado Automático",
+        "💡 Luz LED + Modos Preestablecidos (Auto / Moto / Bici / Balón)"
+      ],
+      "fechaAgregado": "2026-11-03T21:13:18.661Z",
+      "ficha": [
+        {
+          "k": "Modelo",
+          "v": "ST-221",
+          "nota": "Air Compressor Multifunctional"
+        },
+        {
+          "k": "Tipo de Dispositivo",
+          "v": "Inflador/Compresor de aire digital portátil e inalámbrico"
+        },
+        {
+          "k": "Pantalla de Visualización",
+          "v": "Display digital LCD/LED dual retroiluminado",
+          "nota": "presión actual y objetivo"
+        },
+        {
+          "k": "Unidades de Medición",
+          "v": "PSI, BAR, KPA, kg/cm²"
+        },
+        {
+          "k": "Modos de Inflado",
+          "v": "Automóvil, Motocicleta, Bicicleta y Balón",
+          "nota": "con valores de presión ajustables"
+        },
+        {
+          "k": "Función de Seguridad",
+          "v": "Desconexión y parada automática al alcanzar la presión meta",
+          "nota": "Auto-Stop"
+        },
+        {
+          "k": "Iluminación",
+          "v": "Linterna LED auxiliar integrada en la parte superior para emergencias nocturnas"
+        },
+        {
+          "k": "Alimentación y Carga",
+          "v": "Batería interna de litio recargable vía puerto USB Tipo C"
+        },
+        {
+          "k": "Diseño y Acabado",
+          "v": "Cuerpo termoplástico resistente de color gris/negro con anillo frontal decorativo naranja"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Pantalla Digital de Alta Visibilidad",
+          "d": "interfaz clara que permite monitorear la presión en tiempo real y la carga de la batería."
+        },
+        {
+          "t": "Parada Automática Inteligente (Auto-Stop)",
+          "d": "ajusta el valor deseado y despreocúpate; el compresor se detendrá solo al llegar a la presión exacta."
+        },
+        {
+          "t": "4 Modos de Inflado Preconfigurados",
+          "d": "iconos dedicados para auto, moto, bicicleta y balones que facilitan una configuración instantánea."
+        },
+        {
+          "t": "Operación Inalámbrica y Portátil",
+          "d": "no requiere conexión permanente al encendedor de cigarrillos mientras se utiliza."
+        },
+        {
+          "t": "Linterna LED Integrada",
+          "d": "perfecta para iluminar la válvula del neumático o el entorno durante reparaciones en la noche."
+        },
+        {
+          "t": "Diseño Moderno y Compacto",
+          "d": "tamaño optimizado con boquilla roscada superior de alta resistencia térmica."
+        }
+      ],
+      "idealPara": [
+        "Calibrado y ajuste de presión regular en neumáticos de automóviles y SUVs compactas.",
+        "Inflado rápido en rutas de motocicletas, scooters, bicicletas de montaña (MTB) o de ruta.",
+        "Inflado de balones deportivos (fútbol, baloncesto, voleibol) y colchonetas o accesorios flotantes.",
+        "Kit de herramientas imprescindible en la guantera para emergencias por pérdida de presión en carretera."
+      ],
+      "incluye": [
+        "1× Compresor de aire digital portátil ST-221",
+        "1× Manguera flexible de alta presión con conector roscado",
+        "1× Cable de carga USB",
+        "1× Juego de boquillas y adaptadores (aguja para balones + adaptadores cónicos)",
+        "1× Manual de usuario e instrucciones",
+        "⚙️ Ficha Adicional (Caja Inferior de la Imagen): Switch de Transferencia Automática LSP M2R63-110/3",
+        "🔄 LSP Automatic Transfer Switch (ATS) M2R63-110/3 (63A / 200V AC)",
+        "Marca / Modelo: LSP / M2R63-110/3",
+        "Tipo: Conmutador o Selector de Transferencia Automática de Energía (ATS) para Riel DIN",
+        "Corriente Nominal Operativa (I_e): 63 A",
+        "Voltaje Nominal de Operación (U_e): 200 V AC",
+        "Voltaje Nominal de Aislamiento (U_i): 690 V AC",
+        "Clasificación TSE: Clase PC",
+        "Categoría de Uso: AC-33iB",
+        "Normativa / Cumplimiento: IEC 60947-6-1",
+        "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
+      ],
+      "slug": "compresor-aire-st-221-air",
+      "rev": 1793740402155
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1793740398660": "1793733803341"
+  }
+}
