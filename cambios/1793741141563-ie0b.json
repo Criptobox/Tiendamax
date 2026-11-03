@@ -1,0 +1,62 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T21:25:41.563Z",
+  "productos": [
+    {
+      "id": 1778212195565,
+      "nombre": "Mannol 5W30 5L LONGLIFE",
+      "precioActual": 40,
+      "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 20,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-5w30-5l",
+      "seoTitle": "Mannol 5W30 5L en Cuba | TiendaMax",
+      "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4",
+      "precioOriginal": 0,
+      "comision": 2,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 5W-30"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783918216261.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "5W-30"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol 5W30 5L"
+      ],
+      "rev": 1793741141563,
+      "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
+    }
+  ],
+  "eliminados": [
+    "1783221896639"
+  ],
+  "posiciones": {}
+}
