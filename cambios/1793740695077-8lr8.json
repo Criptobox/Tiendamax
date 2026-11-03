@@ -1,0 +1,124 @@
+{
+  "v": 1,
+  "creado": "2026-11-03T21:18:15.077Z",
+  "productos": [
+    {
+      "id": 1793740692702,
+      "nombre": "Lámpara Ventilador de Techo Flower Fan Light E27 (40W) | Ventilador de Rosca Tipo Bombillo",
+      "descripcion": "La Flower Fan Light (40W) es una solución 2 en 1 innovadora y ultra práctica que combina un ventilador de techo de 6 aspas con una potente lámpara LED de iluminación regulable. Su mayor ventaja radica en su sistema de instalación directo mediante rosca estándar E27, lo que permite roscarla fácilmente en cualquier portalámparas o plafón existente de la casa sin necesidad de realizar cableados eléctricos complejos ni contrataciones técnicas.",
+      "imagen": "https://tiendamax.org/imagenes/img_1793740689654.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793740689654.webp"
+      ],
+      "precioActual": 30,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 5,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "HOGAR",
+      "subcategoria": "ELECTRODOMÉSTICOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💡 Potencia: 40W (AC 85-265V)",
+        "🌀 Rosca Estándar E27 + Extensor Incluido",
+        "🎛️ Control Remoto (CCT 3000K–6500K y Velocidades de Viento)"
+      ],
+      "fechaAgregado": "2026-11-03T21:18:12.703Z",
+      "ficha": [
+        {
+          "k": "Modelo / Serie",
+          "v": "Flower Fan Light",
+          "nota": "Ceiling Fan with Light"
+        },
+        {
+          "k": "Base de Conexión",
+          "v": "Rosca Estándar E27 (Socket E27) + Extensor de rosca incluido"
+        },
+        {
+          "k": "Potencia Total",
+          "v": "40 W"
+        },
+        {
+          "k": "Rango de Voltaje de Entrada",
+          "v": "AC 85 V – 265 V",
+          "nota": "50/60 Hz"
+        },
+        {
+          "k": "Luz LED (Temperatura de Color CCT)",
+          "v": "Regulable de 3000K (Luz Cálida) a 6500K",
+          "nota": "Luz Fría / Blanca"
+        },
+        {
+          "k": "Ajuste de Luz",
+          "v": "Brillo e intensidad regulables por control remoto"
+        },
+        {
+          "k": "Configuración de Aspas",
+          "v": "6 aspas plásticas desmontables de alto flujo de aire y bajo nivel de ruido"
+        },
+        {
+          "k": "Dimensiones Aproximadas",
+          "v": "Diámetro total ~520 mm / Altura ~185 mm"
+        },
+        {
+          "k": "Control Remoto",
+          "v": "Infrarrojo/RF multifunción con botones de velocidad, tono de luz (CCT+, CCT-), modo noche y temporizador",
+          "nota": "1h, 2h, 4h"
+        },
+        {
+          "k": "Clasificación Energética",
+          "v": "Clase A",
+          "nota": "Super Energy Saving"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Instalación Directa en Socket E27",
+          "d": "tan sencillo como cambiar un bombillo convencional, sin herramientas ni modificaciones eléctricas."
+        },
+        {
+          "t": "Control Remoto Completo",
+          "d": "gestiona de forma independiente la luz y el ventilador a distancia desde la comodidad de la cama o el sofá."
+        },
+        {
+          "t": "Tono y Brillo Regulable (CCT 3000K–6500K)",
+          "d": "cambia fácilmente entre luz cálida para relajarse, luz neutra o luz fría para trabajar o estudiar."
+        },
+        {
+          "t": "Ventilador Silencioso de 6 Aspas",
+          "d": "motor eficiente que genera un flujo constante de aire fresco sin ruidos molestos."
+        },
+        {
+          "t": "Temporizador de Apagado",
+          "d": "programa el apagado automático tras 1, 2 o 4 horas de uso, ideal para dormir frescos por la noche."
+        },
+        {
+          "t": "Incluye Extensor E27",
+          "d": "perfecto para portalámparas profundos o empotrados donde se requiera bajar la posición del ventilador."
+        }
+      ],
+      "idealPara": [
+        "Dormitorios, habitaciones infantiles, cocinas, baños, oficinas pequeñas, balcones o cuartos de estudio.",
+        "Espacios donde no es posible realizar instalaciones complejas de ventiladores de techo tradicionales.",
+        "Casas, apartamentos de alquiler o locales comerciales donde se busque una solución rápida de ventilación e iluminación 2 en 1."
+      ],
+      "incluye": [
+        "1× Lámpara Ventilador de Techo E27 (Flower Fan Light 40W)",
+        "6× Aspas de ventilador blancas",
+        "1× Control remoto multifunción",
+        "1× Extensor de rosca E27",
+        "1× Manual de usuario e instrucciones de montaje"
+      ],
+      "slug": "lampara-fan-e27-40w-rosca",
+      "rev": 1793740695077
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1793740692702": "1793740398660"
+  }
+}
