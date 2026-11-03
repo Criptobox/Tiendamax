@@ -14114,8 +14114,135 @@
       "1× Guía de inicio rápido y manual de usuario"
     ],
     "slug": "smartphone-a100c-64gb-8gb",
-    "rev": 1793733655211,
-    "seoTitle": "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
-    "seoDescription": "El itel A100C es un smartphone de gama de entrada diseñado para ofrecer un excelente equilibrio entre rendimiento, fluido visual y autonomía a un precio…"
+    "rev": 1793733805789
+  },
+  {
+    "id": 1793733803341,
+    "nombre": "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
+    "descripcion": "El itel A100C (Versión 128GB) es una variante mejorada de alta capacidad pensada para usuarios que demandan un almacenamiento superior y mayor durabilidad cotidiana. Esta versión destaca por duplicar el espacio interno hasta los 128GB de almacenamiento (ROM), permitiendo guardar miles de fotos, vídeos y aplicaciones pesadas sin preocupaciones de memoria baja. Además, su configuración de memoria RAM alcanza un total de 8GB (3GB físicos + 5GB de RAM extendida virtual), garantizando un rendimiento fluido en multitarea y ejecución ágil del sistema.",
+    "imagen": "https://tiendamax.org/imagenes/img_1793733798030.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793733798030.webp"
+    ],
+    "precioActual": 120,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "CELULARES",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "📱 Pantalla HD+ 6.6\" 90Hz Super Clear",
+      "⚡ 8GB RAM (3GB + 5GB Extendida) + 128GB ROM",
+      "🛡️ Certificación Resistente MIL-STD 810H + Emisor IR y Audio DTS"
+    ],
+    "fechaAgregado": "2026-11-03T19:23:23.341Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "itel"
+      },
+      {
+        "k": "Modelo",
+        "v": "A100C",
+        "nota": "Edición 128GB"
+      },
+      {
+        "k": "Pantalla",
+        "v": "6.6 pulgadas HD+ IPS Super Clear Display con tasa de refresco de 90 Hz"
+      },
+      {
+        "k": "Certificación de Resistencia",
+        "v": "MIL-STD 810H",
+        "nota": "Resistencia probada a golpes y caídas de grado militar"
+      },
+      {
+        "k": "Memoria RAM",
+        "v": "8 GB Totales",
+        "nota": "3 GB de RAM física + 5 GB de memoria RAM extendida"
+      },
+      {
+        "k": "Almacenamiento Interno (ROM)",
+        "v": "128 GB",
+        "nota": "Expandible mediante tarjeta MicroSD"
+      },
+      {
+        "k": "Control Infrarrojo (IR)",
+        "v": "Emisor de infrarrojos integrado para control remoto universal",
+        "nota": "IR Control"
+      },
+      {
+        "k": "Sistema de Audio",
+        "v": "Procesamiento envolvente DTS Audio"
+      },
+      {
+        "k": "Procesador",
+        "v": "Octa-Core de alto rendimiento y eficiencia energética"
+      },
+      {
+        "k": "Cámara Principal",
+        "v": "Módulo doble cámara HD con flash LED y optimización por IA"
+      },
+      {
+        "k": "Cámara Frontal",
+        "v": "Cámara selfie en muesca gota",
+        "nota": "Waterdrop"
+      },
+      {
+        "k": "Conectividad",
+        "v": "4G LTE, Wi-Fi, Bluetooth, Infrarrojos, GPS, conector jack 3.5mm y USB Tipo C"
+      },
+      {
+        "k": "Sistema Operativo",
+        "v": "Android",
+        "nota": "Edición optimizada itel OS"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Almacenamiento Masivo de 128GB",
+        "d": "el doble de espacio interno para guardar documentos, fotos de alta resolución, vídeos y apps sin límite."
+      },
+      {
+        "t": "Configuración 3+5GB RAM (8GB Totales)",
+        "d": "gestión eficiente de la memoria virtual para evitar cierres imprevistos de aplicaciones en segundo plano."
+      },
+      {
+        "t": "Resistencia Grado Militar MIL-STD 810H",
+        "d": "estructura probada ante impactos directos y caídas, ofreciendo mayor durabilidad y tranquilidad."
+      },
+      {
+        "t": "Emisor de Infrarrojos (IR Control)",
+        "d": "controla televisores, decodificadores, aires acondicionados y ventiladores directamente desde tu smartphone."
+      },
+      {
+        "t": "Pantalla Super Clear 90Hz",
+        "d": "excelente definición visual, colores vivos y desplazamiento suave en pantalla."
+      },
+      {
+        "t": "Audio Envolvente DTS",
+        "d": "sonido limpio, nítido y con graves reforzados para juegos, películas y música."
+      }
+    ],
+    "idealPara": [
+      "Usuarios que necesitan gran capacidad de almacenamiento (128GB) para fotos, archivos de trabajo o multimedia.",
+      "Personas que buscan un teléfono resistente a caídas e impactos gracias a su certificación militar.",
+      "Quienes desean la comodidad de un emisor infrarrojo para controlar equipos electrónicos del hogar desde el teléfono.",
+      "Excelente relación precio-prestaciones para uso diario intensivo en redes sociales, llamadas y mensajería."
+    ],
+    "incluye": [
+      "1× Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
+      "1× Cargador de pared",
+      "1× Cable de carga USB",
+      "1× Herramienta para extracción de SIM",
+      "1× Manual de usuario e instrucciones de uso"
+    ],
+    "slug": "smartphone-itel-a100c",
+    "rev": 1793733805789
   }
 ]
