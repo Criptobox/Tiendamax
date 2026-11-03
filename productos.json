@@ -13460,7 +13460,7 @@
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 6,
-    "comision": 0,
+    "comision": 3,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
     "subcategoria": "DECORACION",
@@ -13549,7 +13549,7 @@
       "1× Botella de Perlas Aromáticas Downy Unstopables Fresh (680g / 24 oz)"
     ],
     "slug": "downy-fresh-680g-24-oz",
-    "rev": 1793663550154,
+    "rev": 1793734654456,
     "seoTitle": "Downy Unstopables Fresh | Perlas de Perfume… | TiendaMax",
     "seoDescription": "El Downy Unstopables Fresh (680g / 24 oz) es un intensificador de aroma en perlas de perfume diseñadas para agregarse directamente al tambor de la…"
   },
