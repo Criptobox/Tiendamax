@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-03T16:44:58.641647+00:00",
-  "productos": 169,
-  "urgentes": 6,
+  "generado": "2026-11-04T16:41:54.998066+00:00",
+  "productos": 172,
+  "urgentes": 8,
   "advertencias": 0,
-  "info": 9,
-  "resumen": "Anoche revisé tus 169 productos y encontré 6 urgente(s), 9 de info.",
+  "info": 7,
+  "resumen": "Anoche revisé tus 172 productos y encontré 8 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -37,6 +37,16 @@
       "detalle": "→ Líquido de Frenos Sintético Mannol Brake Fluid DOT-4 3002 1L"
     },
     {
+      "tipo": "nombre",
+      "nombre": "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
+      "detalle": "→ Smartphone Itel A100C (64GB ROM / Hasta 8GB RAM Extendida)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
+      "detalle": "→ Smartphone Itel A100C (128GB ROM / 8GB RAM 3+5GB)"
+    },
+    {
       "tipo": "stock_bajo",
       "nombre": "Báscula Digital de Alta Definición",
       "detalle": "quedan 1"
@@ -50,16 +60,6 @@
       "tipo": "stock_bajo",
       "nombre": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
       "detalle": "quedan 2"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "precio",
-      "nombre": "Changan CS75 PLUS 2024 (Suv Compacta)",
-      "detalle": "precio: 33000"
     },
     {
       "tipo": "stock_bajo",
