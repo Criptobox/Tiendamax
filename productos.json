@@ -1502,7 +1502,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 52,
+    "stock": 50,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1544,7 +1544,7 @@
     "incluye": [
       "1x Mannol Safari 20W - 50 7404 5L"
     ],
-    "rev": 1793740402155,
+    "rev": 1793807038795,
     "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
   },
   {
