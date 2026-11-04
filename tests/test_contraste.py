@@ -42,26 +42,19 @@ class FormulaTest(unittest.TestCase):
         self.assertAlmostEqual(1.0, contraste("#123456", "#123456"), places=3)
 
     def test_es_simetrica(self):
-        self.assertAlmostEqual(contraste("#0C0806", "#8a8078"),
-                               contraste("#8a8078", "#0C0806"), places=6)
+        self.assertAlmostEqual(contraste("#08060a", "#9898a8"),
+                               contraste("#9898a8", "#08060a"), places=6)
 
 
 class PlantillasTest(unittest.TestCase):
     """Las combinaciones que Lighthouse marcaba como fallo, ancladas aquí."""
 
-    FONDO = "#0C0806"      # páginas de categoría (/c/)
-    FICHA = "#08060a"      # fichas de producto (/p/), el fondo de tiendamax.org
-    TARJETA = "#110f13"    # bloques y tarjetas de la ficha
+    # /p/ y /c/ usan la misma paleta, la de tiendamax.org.
+    FICHA = "#08060a"      # fondo de la página
+    TARJETA = "#110f13"    # bloques y tarjetas
 
     CASOS = [
         # (descripción, color de texto, fondo, mínimo)
-        # ── /c/ categorías
-        ("pie de página", "#8a8078", FONDO, MIN_AA),
-        ("enlace del pie", "#C9A96E", FONDO, MIN_AA),
-        ("subtítulo", "#a09080", FONDO, MIN_AA),
-        ("agotado en la tarjeta", "#9a9088", "#181310", MIN_AA),
-        ("precio destacado", "#FF6B35", FONDO, MIN_AA_GRANDE),
-        # ── /p/ ficha de producto, con la paleta de la tienda
         ("ficha: texto secundario", "#9898a8", FICHA, MIN_AA),
         ("ficha: secundario en tarjeta", "#9898a8", TARJETA, MIN_AA),
         ("ficha: descripción", "#d6d6de", TARJETA, MIN_AA),
@@ -74,6 +67,10 @@ class PlantillasTest(unittest.TestCase):
         # 4.15 con este mismo texto.
         ("botón WhatsApp", "#062B14", "#25D366", MIN_AA),
         ("botón coral", "#2B0E00", "#FF6A1F", MIN_AA),
+        # ── /c/ categorías: lo que solo está ahí
+        ("categoría: agotado en la tarjeta", "#9898a8", TARJETA, MIN_AA),
+        ("categoría: «quedan N»", "#F2B632", TARJETA, MIN_AA),
+        ("categoría: etiqueta de descuento", "#2B0E00", "#FF6A1F", MIN_AA),
     ]
 
     def test_todas_las_combinaciones_pasan_aa(self):
@@ -96,8 +93,8 @@ class GeneradorSincronizadoTest(unittest.TestCase):
         cls.fuente = GEN.read_text(encoding="utf-8")
 
     def test_los_colores_comprobados_estan_en_el_generador(self):
-        for color in ("#8a8078", "#062B14", "#2B0E00", "#9a9088",
-                      "#9898a8", "#110f13", "#d6d6de", "#F2B632", "#FF6A1F", "#08060a"):
+        for color in ("#062B14", "#2B0E00", "#9898a8", "#110f13", "#d6d6de",
+                      "#F2B632", "#FF6A1F", "#08060a"):
             self.assertIn(color, self.fuente,
                           f"{color} ya no está en regenerate_artifacts.py: "
                           f"actualiza los casos de tests/test_contraste.py")
@@ -112,7 +109,8 @@ class GeneradorSincronizadoTest(unittest.TestCase):
     def test_el_enlace_del_pie_no_depende_solo_del_color(self):
         # Quien no distingue bien los colores necesita otra señal de que es un
         # enlace; por eso lleva subrayado.
-        self.assertIn(".tm-ftr a{{color:#C9A96E;text-decoration:underline}}", self.fuente)
+        self.assertEqual(2, self.fuente.count(".tm-ftr a{{color:#F2B632;text-decoration:underline}}"),
+                         "el enlace del pie de /p/ y de /c/ tiene que ir subrayado")
 
 
 if __name__ == "__main__":

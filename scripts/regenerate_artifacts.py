@@ -377,55 +377,111 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
 }}
 </script>
 
+<link rel="preload" href="{site}/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* El mismo lenguaje que las fichas /p/ y que tiendamax.org (ver el
+     comentario de PAGE_TEMPLATE): fondo casi negro con el resplandor coral,
+     Playfair en títulos y precios, Inter en el texto, tarjetas lisas con la
+     foto sobre blanco. Colores medidos en tests/test_contraste.py. */
+  @font-face{{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url({site}/fonts/playfair-latin.woff2) format('woff2')}}
+  @font-face{{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url({site}/fonts/inter-normal-latin.woff2) format('woff2')}}
   *{{margin:0;padding:0;box-sizing:border-box}}
-  body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}}
+  :root{{--bg:#08060a;--card:#110f13;--line:rgba(255,255,255,.09);--txt:#f2f2f5;--mut:#9898a8;--o:#FF6A1F;--gold:#F2B632;--serif:'Playfair Display',Georgia,serif}}
+  html{{scroll-behavior:smooth}}
+  body{{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 420px at 50% -120px,rgba(255,106,31,.2),transparent 70%);background-repeat:no-repeat}}
   a{{color:inherit;text-decoration:none}}
-  .tm-hdr{{display:flex;align-items:center;padding:14px 20px;background:#0D0806;border-bottom:1px solid rgba(201,169,110,.15)}}
-  .tm-logo{{font-size:20px;font-weight:800;letter-spacing:-.5px}}
-  .tm-logo .t{{color:#C9A96E}}.tm-logo .m{{color:#FF6B35}}
-  .tm-back{{margin-left:auto;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:6px 14px;border-radius:20px;white-space:nowrap}}
-  .tm-wrap{{max-width:1100px;margin:0 auto;padding:28px 16px 60px}}
-  h1{{font-size:clamp(22px,4vw,30px);font-weight:800;margin-bottom:8px}}
-  .tm-sub{{color:#a09080;font-size:14px;margin-bottom:24px}}
-  .tm-cta{{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00;margin-bottom:28px}}
-  .tm-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}}
-  .tm-card{{background:#181310;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}}
-  .tm-card img{{width:100%;aspect-ratio:1/1;object-fit:cover;background:#1a1410}}
+  .tm-i{{width:18px;height:18px;flex:none}}
+  .tm-hdr{{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;margin:10px 12px 0;padding:10px 12px;border-radius:22px;
+    background:rgba(14,12,16,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}}
+  .tm-logo{{display:flex;align-items:center;gap:10px}}
+  .tm-logo img{{width:36px;height:36px;border-radius:11px;display:block}}
+  .tm-logo span{{font-family:var(--serif);font-size:21px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
+  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13.5px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
+  .tm-wrap{{max-width:1100px;margin:0 auto;padding:16px 16px 40px}}
+  .tm-migas{{font-size:12.5px;color:var(--mut);display:flex;gap:6px;margin-bottom:18px}}
+  .tm-migas a{{color:var(--gold)}}
+  .tm-kick{{display:block;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--o);margin-bottom:10px}}
+  h1{{font-family:var(--serif);font-size:clamp(32px,6vw,48px);line-height:1.05;font-weight:800;margin-bottom:12px}}
+  h1 em,.tm-sec h2 em,.tm-out summary em,.tm-nav-cats h2 em{{color:var(--o);font-style:italic}}
+  .tm-sub{{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--mut);margin-bottom:18px}}
+  .tm-sub span{{display:inline-flex;align-items:center;gap:7px}}
+  .tm-sub .tm-i{{width:16px;height:16px;color:var(--o)}}
+  .tm-sub b{{color:var(--txt)}}
+  /* Saltos a cada subcategoría: con 30 o 40 productos, la lista de una sola
+     tirada obligaba a bajar a ciegas buscando "Routers". */
+  .tm-subs{{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 8px;padding:2px 16px 6px}}
+  .tm-subs::-webkit-scrollbar{{display:none}}
+  .tm-subs a{{flex:none;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid rgba(255,106,31,.55);background:rgba(255,106,31,.08);white-space:nowrap}}
+  .tm-subs a small{{color:var(--mut);font-weight:500;margin-left:4px}}
+  .tm-sec{{margin-top:26px;scroll-margin-top:90px}}
+  .tm-sec h2{{font-family:var(--serif);font-size:22px;font-weight:800;margin-bottom:12px}}
+  .tm-sec h2 small,.tm-out summary small{{font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--mut);margin-left:8px}}
+  .tm-out summary{{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:20px;background:var(--card);border:1px solid var(--line);
+    font-family:var(--serif);font-size:20px;font-weight:800}}
+  .tm-out summary::-webkit-details-marker{{display:none}}
+  .tm-out summary::after{{content:'';margin-left:auto;width:9px;height:9px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg) translateY(-3px);transition:transform .15s}}
+  .tm-out[open] summary{{margin-bottom:12px}}
+  .tm-out[open] summary::after{{transform:rotate(225deg)}}
+  .tm-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}}
+  .tm-card{{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s}}
+  .tm-card:hover{{border-color:rgba(255,106,31,.45)}}
+  .tm-card img{{width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;display:block}}
   .tm-card-body{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}}
-  .tm-card-name{{font-size:12.5px;font-weight:600;line-height:1.3;min-height:32px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
-  .tm-card-price{{font-size:15px;font-weight:800;color:#FF6B35;margin-top:auto}}
-  .tm-card-out{{font-size:10.5px;color:#9a9088}}
-  .tm-nav-cats{{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}}
-  .tm-nav-cats h2{{font-size:13px;color:#9a9088;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}}
-  .tm-nav-cats a{{display:inline-block;font-size:12.5px;color:#C9A96E;border:1px solid rgba(201,169,110,.25);padding:5px 12px;border-radius:20px;margin:0 6px 6px 0}}
-  .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
-  .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
+  .tm-card-name{{font-size:13px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em}}
+  .tm-card-price{{font-family:var(--serif);font-size:19px;font-weight:800;color:var(--o);margin-top:auto;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}}
+  .tm-card-price s{{font-family:Inter,system-ui,sans-serif;font-size:12.5px;font-weight:500;color:var(--mut)}}
+  .tm-card-tag{{position:absolute;top:10px;left:10px;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;background:#FF6A1F;color:#2B0E00}}
+  .tm-card-low{{font-size:12px;font-weight:600;color:var(--gold)}}
+  /* Agotados aparte y atenuados: siguen enlazados porque su ficha es donde
+     se deja el WhatsApp para el aviso, pero no se mezclan con lo que se
+     puede pedir hoy. */
+  .tm-out .tm-card img{{filter:grayscale(.85);opacity:.6}}
+  .tm-out .tm-card-price{{color:var(--mut)}}
+  .tm-card-out{{font-size:12px;font-weight:600;color:var(--mut)}}
+  .tm-cta{{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}}
+  .tm-cta a{{display:inline-flex;align-items:center;gap:8px;padding:13px 18px;border-radius:16px;font-size:15px;font-weight:700}}
+  .tm-cta .tm-i{{width:19px;height:19px}}
+  .tm-cta .w{{background:#25D366;color:#062B14}}
+  .tm-cta .s{{color:var(--gold);border:1px solid rgba(242,182,50,.35)}}
+  .tm-nav-cats{{margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}}
+  .tm-nav-cats h2{{font-family:var(--serif);font-size:20px;font-weight:800;margin-bottom:12px}}
+  .tm-nav-cats a{{display:inline-block;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin:0 6px 8px 0}}
+  .tm-nav-cats a small{{color:var(--mut);font-weight:500;margin-left:4px}}
+  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line)}}
+  .tm-ftr a{{color:#F2B632;text-decoration:underline}}
+  @media (prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}*{{transition:none !important}}}}
+  @media(max-width:520px){{.tm-grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}
 </style>
 
 </head>
 <body>
 
 <header class="tm-hdr">
-  <a href="https://tiendamax.org" class="tm-logo"><span class="t">TIENDA</span><span class="m">MAX</span></a>
-  <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
+  <a href="{site}" class="tm-logo"><img src="{site}/iconos/icon-192.png" alt="" width="36" height="36"><span>Tienda<b>Max</b></span></a>
+  <a href="{site}" class="tm-back"><svg class="tm-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Catálogo</a>
 </header>
 
 <main class="tm-wrap">
-  <h1>{icon} {html_name}</h1>
-  <p class="tm-sub">{sub}</p>
-  <a href="{app_url}" class="tm-cta">🛍️ Ver todo {html_name} en la tienda</a>
-  <div class="tm-grid">
-    {cards_html}
+  <nav class="tm-migas" aria-label="Ruta de navegación"><a href="{site}/">Inicio</a><span>›</span><span>{html_name}</span></nav>
+  <span class="tm-kick">Categoría</span>
+  <h1>{h1_html}</h1>
+  <p class="tm-sub">{sub_html}</p>
+  {subs_html}
+  {secciones_html}
+  {agotados_html}
+  <div class="tm-cta">
+    <a class="w" href="{wa_url}" target="_blank" rel="noopener noreferrer">{ico_wa} ¿Buscas otro? Pregúntanos</a>
+    <a class="s" href="{app_url}">{ico_bag} Ver {html_name} en la tienda</a>
   </div>
   <nav class="tm-nav-cats">
-    <h2>Otras categorías</h2>
+    <h2>Otras <em>categorías</em></h2>
     {other_cats_html}
   </nav>
 </main>
 
 <footer class="tm-ftr">
-  <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
+  <a href="{site}">tiendamax.org</a> &middot; Pedidos por WhatsApp &middot; Pagas al recibirlo
 </footer>
 
 </body>
@@ -1402,12 +1458,39 @@ def category_display_name(cat: str) -> str:
     return _CATEGORY_DISPLAY.get(cat, cat.title() if cat.isupper() else cat)
 
 
-def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
+def _tarjeta_categoria(p: dict) -> str:
+    """Una tarjeta de producto en /c/: foto, nombre, precio limpio y, si es
+    verdad, el descuento y «quedan N»."""
+    name = nombre_limpio(p.get("nombre") or "")
+    img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
+    stock = int(p.get("stock") or 0)
+    act = float(p.get("precioActual") or 0)
+    orig = float(p.get("precioOriginal") or 0)
+    rebaja = orig > act > 0 and not es_digital(p)
+    tag = f'<span class="tm-card-tag">−{round((orig - act) / orig * 100)}%</span>' if rebaja and stock > 0 else ""
+    tachado = f"<s>{precio_corto(orig, p)}</s>" if rebaja else ""
+    if stock <= 0:
+        pie = '<div class="tm-card-out">Agotado · avísame cuando vuelva</div>'
+    elif stock <= 3 and not es_digital(p):
+        pie = f'<div class="tm-card-low">Quedan {stock}</div>'
+    else:
+        pie = ""
+    return (f'<a class="tm-card" href="{url_producto(p)}">{tag}'
+            f'<img src="{img}" alt="{escape(name)}" loading="lazy" decoding="async">'
+            f'<div class="tm-card-body"><div class="tm-card-name">{escape(name)}</div>'
+            f'<div class="tm-card-price">{precio_corto(act, p)}{tachado}</div>{pie}</div></a>')
+
+
+def regenerate_category_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[int, list[str]]:
     """Crea/actualiza /c/<slug>.html por categoría: hoy las categorías solo
     existen como #hash en la SPA (invisibles para Google) — estas páginas dan
-    contenido real e indexable para búsquedas como 'router wifi cuba'."""
+    contenido real e indexable para búsquedas como 'router wifi cuba'.
+
+    Lo que se puede pedir va primero, agrupado por subcategoría con saltos
+    arriba cuando hay más de una; lo agotado va aparte, al final y atenuado.
+    No se promete cobertura de envío: no hay una escrita en ningún sitio (la
+    misma regla que pubCatEnvioTxt en el panel)."""
     C_DIR.mkdir(exist_ok=True)
-    icons = category_icons()
 
     by_cat: dict[str, list[dict]] = {}
     for p in products:
@@ -1422,60 +1505,84 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
     # Orden estable: más productos primero (coincide con relevancia real)
     cat_names = sorted(by_cat.keys(), key=lambda c: -len(by_cat[c]))
     slugs = {c: slugify(c) for c in cat_names}
+    disponibles = {c: sum(1 for p in by_cat[c] if int(p.get("stock") or 0) > 0) for c in cat_names}
 
     written = 0
     valid_files = set()
 
     for cat in cat_names:
         prods = sorted(by_cat[cat], key=lambda p: (int(p.get("stock") or 0) <= 0, -(float(p.get("precioActual") or 0) > 0)))
-        en_stock = sum(1 for p in prods if int(p.get("stock") or 0) > 0)
-        icon = icons.get(cat, "🛍️")
-        html_name = escape(category_display_name(cat))
+        con = [p for p in prods if int(p.get("stock") or 0) > 0]
+        sin = [p for p in prods if int(p.get("stock") or 0) <= 0]
+        en_stock = len(con)
+        nombre = category_display_name(cat)
+        html_name = escape(nombre)
         slug = slugs[cat]
         page_url = f"{SITE}/c/{slug}.html"
         app_url = f"{SITE}/?categoria={urllib.parse.quote(cat)}"
 
-        title = escape(f"{category_display_name(cat)} en Cuba — Envío a domicilio | TiendaMax")
+        title = escape(f"{nombre} en Cuba — Pago al recibir | TiendaMax")
         desc = escape(
             f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
-            f"Envío a toda Cuba, pago contra entrega en USD o MN."
+            f"Pides por WhatsApp y pagas al recibirlo, en USD o MN."
         )
 
-        cards = []
         items_jsonld = []
-        for i, p in enumerate(prods):
-            pid = p.get("id")
-            if not pid:
-                continue
-            name = nombre_limpio(p.get("nombre") or "")
-            price = f"{float(p.get('precioActual') or 0):.2f}"
-            img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
-            stock = int(p.get("stock") or 0)
-            prod_url = url_producto(p)
-            out_html = '<div class="tm-card-out">Agotado</div>' if stock <= 0 else ""
-            cards.append(
-                f'<a class="tm-card" href="{prod_url}">'
-                f'<img src="{img}" alt="{escape(name)}" loading="lazy">'
-                f'<div class="tm-card-body">'
-                f'<div class="tm-card-name">{escape(name)}</div>'
-                f'<div class="tm-card-price">{precio_pagina(p.get("precioActual"), p)}</div>'
-                f'{out_html}'
-                f'</div></a>'
-            )
+        for k, p in enumerate(p for p in prods if p.get("id")):
             items_jsonld.append(json.dumps({
-                "@type": "ListItem", "position": i + 1,
-                "url": prod_url,
-                "name": name,
+                "@type": "ListItem", "position": k + 1,
+                "url": url_producto(p),
+                "name": nombre_limpio(p.get("nombre") or ""),
             }, ensure_ascii=False))
+
+        # Lo disponible, por subcategoría. Los que no tienen van a «Otros».
+        grupos: dict[str, list[dict]] = {}
+        for p in con:
+            if not p.get("id"):
+                continue
+            grupos.setdefault((p.get("subcategoria") or "").strip() or "Otros", []).append(p)
+        orden = sorted(grupos, key=lambda g: (g == "Otros", -len(grupos[g]), g))
+        varios = len(orden) > 1
+
+        def _sid(g):
+            return "s-" + slugify(g)
+        secciones = []
+        for g in orden:
+            cab = (f'<h2>{escape(g.capitalize())} <small>{len(grupos[g])}</small></h2>' if varios else "")
+            secciones.append(f'<section class="tm-sec" id="{_sid(g)}">{cab}<div class="tm-grid">'
+                             + "".join(_tarjeta_categoria(p) for p in grupos[g]) + "</div></section>")
+        if not secciones:
+            secciones.append('<section class="tm-sec"><p class="tm-sub">Ahora mismo no queda nada '
+                             'disponible aquí. Abajo están los agotados: toca uno y deja tu WhatsApp '
+                             'para que te avisemos cuando vuelva.</p></section>')
+        subs_html = ('<nav class="tm-subs" aria-label="Subcategorías">' + "".join(
+            f'<a href="#{_sid(g)}">{escape(g.capitalize())}<small>{len(grupos[g])}</small></a>' for g in orden)
+            + "</nav>") if varios else ""
+        agotados = [p for p in sin if p.get("id")]
+        # Plegados cuando hay algo que pedir (en WiFi eran 36 tarjetas grises
+        # delante del pie); abiertos si la categoría no tiene nada disponible.
+        # Plegar no los saca del HTML: Google y el enlazado interno los ven igual.
+        agotados_html = (
+            f'<details class="tm-sec tm-out" id="agotados"{"" if con else " open"}>'
+            f'<summary>Agotados <em>ahora</em><small>{len(agotados)}</small></summary><div class="tm-grid">'
+            + "".join(_tarjeta_categoria(p) for p in agotados) + "</div></details>") if agotados else ""
+
+        sub_html = (f'<span>{_ico("box")}<b>{en_stock}</b> disponible{"s" if en_stock != 1 else ""}</span>'
+                    f'<span>{_ico("hand")}Pagas al recibirlo</span>'
+                    f'<span>{_ico("wa")}Pedidos por WhatsApp</span>')
+        pal = nombre.split(" ")
+        h1_html = (escape(" ".join(pal[:-1])) + " <em>" + escape(pal[-1]) + "</em>") if len(pal) > 1 else escape(nombre)
 
         # Todas las hermanas, no las 11 primeras: con 13 categorías el corte
         # dejaba una fuera de cada página, y siempre la misma — la de menos
         # productos, que es justo la que más necesita que la enlacen.
-        other_cats = [c for c in cat_names if c != cat]
         other_cats_html = " ".join(
-            f'<a href="{SITE}/c/{slugs[c]}.html">{icons.get(c, "🛍️")} {escape(category_display_name(c))}</a>'
-            for c in other_cats
+            f'<a href="{SITE}/c/{slugs[c]}.html">{escape(category_display_name(c))}'
+            f'<small>{disponibles[c]}</small></a>'
+            for c in cat_names if c != cat
         )
+        wa_url = f"https://wa.me/{wa_num}?text=" + urllib.parse.quote(
+            f"Hola, busco algo de {nombre.lower()} que no vi en la página: {page_url}")
 
         html = CATEGORY_PAGE_TEMPLATE.format(
             title=title,
@@ -1484,11 +1591,17 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
             json_title=json.dumps(f"{cat} — TiendaMax"),
             json_desc=json.dumps(desc),
             items_jsonld=",\n    ".join(items_jsonld),
-            icon=icon,
+            site=SITE,
             html_name=html_name,
-            sub=desc,
+            h1_html=h1_html,
+            sub_html=sub_html,
+            subs_html=subs_html,
+            secciones_html="\n  ".join(secciones),
+            agotados_html=agotados_html,
             app_url=app_url,
-            cards_html="\n    ".join(cards),
+            wa_url=escape(wa_url, quote=True),
+            ico_wa=_ico("wa"),
+            ico_bag=_ico("bag"),
             other_cats_html=other_cats_html,
         )
 
@@ -1653,7 +1766,7 @@ def main() -> int:
     n_written, removed = regenerate_pages(visibles, wa_num, rtdb)
     print(f"   Páginas /p/ actualizadas: {n_written}, borradas: {len(removed)}")
 
-    n_cat_written, cat_removed = regenerate_category_pages(visibles)
+    n_cat_written, cat_removed = regenerate_category_pages(visibles, wa_num)
     print(f"   Páginas /c/ actualizadas: {n_cat_written}, borradas: {len(cat_removed)}")
     category_slugs = sorted({slugify((p.get("categoria") or "").strip()) for p in visibles if p.get("categoria")})
 
