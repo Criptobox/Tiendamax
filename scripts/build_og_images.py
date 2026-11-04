@@ -52,7 +52,7 @@ RUTA_IMG = re.compile(r"(?:^|/)imagenes/([\w.\-]+\.(?:webp|jpg|jpeg|png))(?:[?#]
 # Los emoji del nombre no los tiene ninguna fuente del runner: saldrían como
 # cuadraditos. En una tarjeta diseñada tampoco aportan.
 EMOJI = re.compile(
-    r"[\U0001F000-\U0001FAFF☀-➿️‍⬀-⯿←-⇿⤀-⥿]"
+    r"[\U0001F000-\U0001FAFF☀-➿️‍⬀-⯿←-⇿⤀-⥿〰〽]"
 )
 
 

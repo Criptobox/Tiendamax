@@ -49,24 +49,31 @@ class FormulaTest(unittest.TestCase):
 class PlantillasTest(unittest.TestCase):
     """Las combinaciones que Lighthouse marcaba como fallo, ancladas aquí."""
 
-    FONDO = "#0C0806"
+    FONDO = "#0C0806"      # páginas de categoría (/c/)
+    FICHA = "#08060a"      # fichas de producto (/p/), el fondo de tiendamax.org
+    TARJETA = "#110f13"    # bloques y tarjetas de la ficha
 
     CASOS = [
         # (descripción, color de texto, fondo, mínimo)
+        # ── /c/ categorías
         ("pie de página", "#8a8078", FONDO, MIN_AA),
         ("enlace del pie", "#C9A96E", FONDO, MIN_AA),
-        ("precio tachado", "#8a8078", FONDO, MIN_AA),
-        ("descripción", "#a09080", FONDO, MIN_AA),
-        ("migas de pan", "#8a7b6c", FONDO, MIN_AA),
-        # Los botones conservan el color de marca y oscurecen el texto, que es
-        # lo que ya hacía .tm-cat con el coral. Al revés (blanco sobre el verde
-        # de WhatsApp) daba 1.98.
-        ("botón WhatsApp", "#062B14", "#25D366", MIN_AA),
-        ("botón naranja (extremo claro)", "#2B0E00", "#FF6B35", MIN_AA),
-        ("botón naranja (extremo oscuro)", "#2B0E00", "#E8501E", MIN_AA),
-        ("etiqueta de categoría", "#241100", "#FF6B35", MIN_AA),
+        ("subtítulo", "#a09080", FONDO, MIN_AA),
         ("agotado en la tarjeta", "#9a9088", "#181310", MIN_AA),
         ("precio destacado", "#FF6B35", FONDO, MIN_AA_GRANDE),
+        # ── /p/ ficha de producto, con la paleta de la tienda
+        ("ficha: texto secundario", "#9898a8", FICHA, MIN_AA),
+        ("ficha: secundario en tarjeta", "#9898a8", TARJETA, MIN_AA),
+        ("ficha: descripción", "#d6d6de", TARJETA, MIN_AA),
+        ("ficha: enlaces dorados", "#F2B632", FICHA, MIN_AA),
+        ("ficha: categoría y disponibilidad", "#FF6A1F", FICHA, MIN_AA),
+        ("ficha: precio", "#FF6A1F", FICHA, MIN_AA_GRANDE),
+        # Los botones conservan el color de marca y oscurecen el texto. Al
+        # revés (blanco sobre el verde de WhatsApp, como el botón de la tienda)
+        # da 1.98; y el coral va liso porque su extremo oscuro (#D24E0F) daba
+        # 4.15 con este mismo texto.
+        ("botón WhatsApp", "#062B14", "#25D366", MIN_AA),
+        ("botón coral", "#2B0E00", "#FF6A1F", MIN_AA),
     ]
 
     def test_todas_las_combinaciones_pasan_aa(self):
@@ -89,7 +96,8 @@ class GeneradorSincronizadoTest(unittest.TestCase):
         cls.fuente = GEN.read_text(encoding="utf-8")
 
     def test_los_colores_comprobados_estan_en_el_generador(self):
-        for color in ("#8a8078", "#062B14", "#2B0E00", "#9a9088"):
+        for color in ("#8a8078", "#062B14", "#2B0E00", "#9a9088",
+                      "#9898a8", "#110f13", "#d6d6de", "#F2B632", "#FF6A1F", "#08060a"):
             self.assertIn(color, self.fuente,
                           f"{color} ya no está en regenerate_artifacts.py: "
                           f"actualiza los casos de tests/test_contraste.py")
