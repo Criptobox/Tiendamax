@@ -1143,6 +1143,11 @@
     'tienen','quiero','queria','quería','busco','buscar','necesito','dame','ver',
     'hola','buenas','porfa','favor','gracias','algo','alguna','alguno','cual','cuál',
     'donde','dónde','cuando','cuándo','cuanto','cuánto','vendes','venden','tengo',
+    /* «tienes» faltaba, y no por descuido inocente: _casaConPlural le quita
+       el «-es» para probar el singular y queda «tien», que casa con el
+       principio de «TIENDA de Campaña». «¿Tienes el hap ac3?» contestaba con
+       la tienda de campaña. Lo mismo para las otras formas de tener/vender. */
+    'tienes','tenes','tenemos','vende','vendemos','manejan','manejas',
   ]);
   /* Casa por PRINCIPIO de palabra, no por trozo suelto. Así "router" sigue
      encontrando "routers" y "camara" encuentra "camaras", pero "un" deja de
@@ -1441,6 +1446,25 @@
        parcial crece con el número de palabras y puede pasar por encima de
        la longitud del nombre exacto. Eso es lo que ponía seis Archer por
        delante del Archer A6 que el cliente había escrito completo. */
+    /* La MARCA hace lo mismo que el modelo cuando nombra a uno solo.
+       «¿Tienen el Protector de Voltaje y Sobrecorriente TOMZN?» casaba
+       también con el «Protector de Sobre/Baja Tensión y Sobrecorriente
+       Voltage VT-SVP-02» —comparten casi todas las palabras— y salía «encontré
+       varios». TOMZN solo está en un nombre del catálogo: dicho, decide.
+       Cuenta como marca la palabra que sale en el nombre de uno o dos
+       productos, no más. Gana quien lleva MÁS de esas palabras, así que en
+       «compara el A con el B», cada uno con la suya, empatan y se quedan los
+       dos. */
+    if(finalistas.length > 1){
+      const _enNombres = w => PRODUCTOS.filter(x => tienePalabra(cleanForMatch(x.nombre), w)).length;
+      const _raras = [...new Set(palabrasT)].filter(w => w.length >= 4 && !GENERICAS.has(w)
+        && !esModelo(w) && !esCifra(w) && _enNombres(w) >= 1 && _enNombres(w) <= 2);
+      if(_raras.length){
+        const _cuenta = m => _raras.filter(w => tienePalabra(cleanForMatch(m.p.nombre), w)).length;
+        const _max = Math.max(...finalistas.map(_cuenta));
+        if(_max > 0) finalistas = finalistas.filter(m => _cuenta(m) === _max);
+      }
+    }
     const seen = new Set();
     return finalistas
       .sort((a,b) => (b.exactMatch?1:0) - (a.exactMatch?1:0) || b.score - a.score)
@@ -1986,12 +2010,20 @@
          inventario entero— rozaba una palabra de la descripción de un
          exhibidor y se quedaba sola. La palabra tiene que salir en el
          NOMBRE, que es lo que significa nombrar un producto. */
-      if(_unico.length === 1){
-        const _nom = cleanForMatch(_unico[0].p.nombre);
-        const _porNombre = cleanForMatch(text).split(' ')
+      const _nombrado = p => {
+        const _nom = cleanForMatch(p.nombre);
+        return cleanForMatch(text).split(' ')
           .filter(w => w.length >= 4 || (w.length >= 2 && /[a-z]/.test(w) && /\d/.test(w)))
           .some(w => new RegExp('(^|[^a-z0-9])' + w + '($|[^a-z0-9])').test(_nom));
-        if(_porNombre) return 'detalle';
+      };
+      if(_unico.length === 1 && _nombrado(_unico[0].p)) return 'detalle';
+      /* Dos con el mismo nombre («el compresor»: el de Aire, agotado, y el
+         Portátil ST-221, con stock) tampoco son una pregunta por el
+         inventario: se contesta el stock de cada uno. Antes, al haber dos,
+         salía el conteo global del catálogo. */
+      if(_unico.length > 1){
+        const _todos = findProducts(text, 4, { includeAgotados: true });
+        if(_todos.length > 1 && _todos.every(_nombrado)){ _context.stockDe = _todos; return 'stockDe'; }
       }
     }
     // Va ANTES de categorías: "qué hay disponible" contiene "qué hay" y se lo
@@ -2393,7 +2425,10 @@
   // wifi", "wifi" o "muéstrame la sección de audio" entran, pero "necesito
   // una cámara wifi para el patio" NO — ahí quedan palabras sueltas y sigue
   // siendo una búsqueda normal.
-  const _RELLENO_CAT = /\b(ver|veo|mostrar|muestrame|muestra|ensename|quiero|dame|deseo|necesito|busco|buscar|hay|tienes|tienen|que|todos|todas|todo|toda|los|las|el|la|un|una|de|del|en|por|para|productos|producto|articulos|categoria|categorias|seccion|secciones|catalogo|lista|listado|mas|otros|opciones|disponibles?)\b/g;
+  /* «venden», «vendes» y «manejan» faltaban: «¿venden celulares?» no se
+     leía como la categoría CELULARES (que existe) y acababa en la búsqueda
+     difusa, que contestaba «eso exacto no lo tengo» con una hamaca. */
+  const _RELLENO_CAT = /\b(ver|veo|mostrar|muestrame|muestra|ensename|quiero|dame|deseo|necesito|busco|buscar|hay|tienes|tienen|venden|vendes|manejan|manejas|que|todos|todas|todo|toda|los|las|el|la|un|una|de|del|en|por|para|productos|producto|articulos|categoria|categorias|seccion|secciones|catalogo|lista|listado|mas|otros|opciones|disponibles?)\b/g;
 
   function _detectarCategoriaPedida(text){
     let t = cleanForMatch(text).replace(_RELLENO_CAT, ' ').replace(/\s+/g, ' ').trim();
@@ -2425,7 +2460,10 @@
      repetidor. */
   const _COMO_SE_DICE = [
     [/\b(bocina\w*|bafle\w*|altavoz|altavoces|parlante\w*|corneta\w*)\b/, 'sound audio speaker altavoz'],
-    [/\b(televisor\w*|tele|pantalla)\b/, 'smart tv televisor'],
+    /* Sin «smart»: casaba con el principio de «SMARTphone» y «¿venden
+       televisores?» enseñaba los dos itel A100C. «tv» basta para el
+       «Smart TV Milexus», y por principio de palabra no casa con nada más. */
+    [/\b(televisor\w*|tele|pantalla)\b/, 'tv televisor'],
     [/\b(nevera\w*|refrigerador\w*|friyider)\b/, 'nevera refrigerador'],
     [/\b(lavarropa\w*)\b/, 'lavadora'],
     [/\b(abanico\w*)\b/, 'ventilador'],
@@ -4963,6 +5001,24 @@ ${notasHTML}
     body += '\n<strong>¿Para qué lo vas a usar y cuánto quieres gastar?</strong> Con eso te digo cuál, no el que más caro sea.\n\n';
     body += 'O dime los dos que dudas ("compara el A vs el B") y te los pongo lado a lado con veredicto.';
     return { response: body, products: orden.slice(0,4), quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp'] };
+  };
+
+  /* «¿Está agotado el compresor?» cuando hay más de uno que se llama así:
+     el stock de cada uno, con su tarjeta, y que el cliente diga cuál. */
+  R.stockDe = (text) => {
+    const lista = _context.stockDe || [];
+    _context.stockDe = null;
+    if(!lista.length) return R.stock();
+    const disp = lista.filter(p => p.stock > 0);
+    let body = `📦 Tengo <strong>${lista.length}</strong> con ese nombre` +
+      (disp.length ? (disp.length === lista.length ? ', y los dos están disponibles' : `, y ${disp.length === 1 ? 'uno está disponible' : `${disp.length} están disponibles`}`) : ', pero ahora mismo están agotados') + ':\n\n';
+    if(lista.length > 2 && disp.length === lista.length) body = body.replace('los dos', 'todos');
+    lista.forEach(p => {
+      body += `• ${escapeHtml(p.nombre)} — ${p.stock > 0 ? `<strong>${p.stock}</strong> en stock · ${fmtUSD(p.precio)}` : '<em>agotado</em>'}\n`;
+    });
+    body += disp.length ? '\nDime cuál quieres y te armo el pedido por WhatsApp.'
+                        : '\nToca «Avisarme cuando vuelva» en la ficha y te escribo en cuanto entre.';
+    return { response: body, products: lista.slice(0, 4), quickReplies: ['💬 WhatsApp'] };
   };
 
   R.hiloStock = (text) => {

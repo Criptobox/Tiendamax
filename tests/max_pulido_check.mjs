@@ -212,14 +212,18 @@ ok(/Cobertura de env[ií]os|mensajer[ií]a directa/i.test(await preguntar('cuant
    llegar al fallback ya significa que ninguna ficha puntúa, que es la misma
    comprobación que mantiene honesta a NO_VENDEMOS. */
 await limpiarHilo();
-for(const q of ['venden celulares','venden comida','tienen medicamentos','venden pasaje de avion']){
+/* «venden celulares» estuvo aquí hasta que entró la categoría CELULARES con
+   los itel A100C: desde entonces la respuesta correcta es enseñarlos, y está
+   abajo, entre lo que sí se vende. Su sitio lo ocupan unos zapatos, que no
+   están en el catálogo. */
+for(const q of ['venden zapatos','venden comida','tienen medicamentos','venden pasaje de avion']){
     const r = await preguntar(q);
     ok(/no lo manejo|no est[aá] en el cat[aá]logo/i.test(r),
        `«${q}» se contesta que no, no con "no te entendí": «${r.slice(0,130)}»`);
 }
 /* Pero SOLO cuando de verdad no hay nada: lo que sí está en el catálogo no
    puede recibir un "eso no lo manejo". */
-for(const q of ['venden televisores','tienen ropa','tienen inversores']){
+for(const q of ['venden televisores','tienen ropa','tienen inversores','venden celulares']){
     const r = await preguntar(q);
     ok(!/no lo manejo/i.test(r),
        `«${q}» sí está en el catálogo y no puede negarse: «${r.slice(0,130)}»`);
