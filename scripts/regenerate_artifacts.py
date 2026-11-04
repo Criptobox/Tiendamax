@@ -87,7 +87,7 @@ def url_producto(p: dict) -> str:
 
 # Mismo criterio que EMOJI en build_og_images.py (no se importa: arrastraría
 # Pillow a un script que no lo necesita).
-_EMOJI = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D\u2B00-\u2BFF\u2190-\u21FF\u2900-\u297F]")
+_EMOJI = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D\u2B00-\u2BFF\u2190-\u21FF\u2900-\u297F\u3030\u303D]")
 
 
 def nombre_limpio(nombre: str) -> str:
@@ -154,6 +154,115 @@ def precio_pagina(v, p: dict) -> str:
 def moneda_iso(p: dict) -> str:
     # El peso cubano (MN) es CUP en schema.org / Open Graph.
     return "CUP" if es_mn(p) else "USD"
+
+
+def precio_corto(v, p: dict) -> str:
+    """"$110", "$12.50", "280 MN": como lo dice la tienda, sin los «.00» que en
+    una tarjeta solo son ruido. Un digital, «desde N USDT» (precio_pagina)."""
+    if es_digital(p) or es_mn(p):
+        return precio_pagina(v, p)
+    v = float(v or 0)
+    return f"${int(v)}" if v == int(v) else f"${v:.2f}"
+
+
+def precio_grande(p: dict) -> str:
+    """El precio principal de la ficha: la cifra en grande y la moneda
+    pequeña al lado («$110 USD»). MN y digitales, tal cual (precio_pagina)."""
+    if es_digital(p) or es_mn(p):
+        return precio_pagina(p.get("precioActual"), p)
+    return f'{precio_corto(p.get("precioActual"), p)}<small>USD</small>'
+
+
+# Iconos de línea de la ficha (mismo trazo que el panel y la tienda). Van en
+# línea porque son media docena y una hoja aparte sería otra petición en 3G.
+_ICONOS = {
+    "wa": '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    "check": '<path d="M20 6 9 17l-5-5"/>',
+    "box": '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+    "hand": '<path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    "shield": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+    "bag": '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+    "bell": '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+    "zap": '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+    "arrow": '<path d="M5 12h14M12 5l7 7-7 7"/>',
+}
+
+
+def _ico(nombre: str) -> str:
+    return ('<svg class="tm-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+            f'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{_ICONOS[nombre]}</svg>')
+
+
+def _h1_html(name: str) -> str:
+    """El nombre con sus dos últimas palabras en cursiva coral, como lo
+    escribe la ficha de la tienda («Smartphone itel A100C … <em>RAM
+    Extendida)</em>»). Un nombre de una palabra va entero, sin cursiva."""
+    pal = name.split(" ")
+    if len(pal) < 2:
+        return escape(name)
+    corte = max(1, len(pal) - 2)
+    return escape(" ".join(pal[:corte])) + " <em>" + escape(" ".join(pal[corte:])) + "</em>"
+
+
+def _galeria_html(p: dict, name: str) -> str:
+    """Las fotos del producto, que se pasan deslizando. La primera es lo
+    primero que se ve: se pide ya y con prioridad (antes iba en lazy, que en
+    la foto principal solo retrasa el pintado)."""
+    fotos = []
+    for u in [p.get("imagen"), *(p.get("imagenes") or [])]:
+        if isinstance(u, str) and u.strip() and u.strip() not in fotos:
+            fotos.append(u.strip())
+    if not fotos:
+        fotos = [f"{SITE}/og-image.jpg"]
+    alt = escape(name, quote=True)
+    imgs = "".join(
+        f'<img src="{escape(u, quote=True)}" alt="{alt}" '
+        + ('fetchpriority="high"' if k == 0 else 'loading="lazy" decoding="async"') + '>'
+        for k, u in enumerate(fotos))
+    n = f'<span class="tm-nfotos">{len(fotos)} fotos · desliza</span>' if len(fotos) > 1 else ""
+    return f'<div class="tm-fotos">{imgs}</div>{n}'
+
+
+def _bloques_html(p: dict, desc_raw: str) -> str:
+    """Descripción, ficha técnica, características, para quién es y qué trae.
+    Todo lo cargó el gestor en el panel y la página no enseñaba nada de ello;
+    cada bloque sale solo si el producto lo tiene."""
+    bloques = []
+    if desc_raw:
+        bloques.append(f'<section class="tm-blk"><h2>La <em>descripción</em></h2>'
+                       f'<p class="tm-desc">{escape(desc_raw)}</p></section>')
+    ficha = [f for f in (p.get("ficha") or []) if isinstance(f, dict) and f.get("k") and f.get("v")]
+    if ficha:
+        filas = "".join(
+            f'<div><dt>{escape(nombre_limpio(str(f["k"])))}</dt><dd>{escape(str(f["v"]))}'
+            + (f'<small>{escape(str(f["nota"]))}</small>' if f.get("nota") else "") + "</dd></div>"
+            for f in ficha)
+        bloques.append(f'<section class="tm-blk"><h2>Ficha <em>técnica</em></h2><dl class="tm-ficha">{filas}</dl></section>')
+    cars = [c for c in (p.get("caracteristicas") or []) if isinstance(c, dict) and (c.get("t") or c.get("d"))]
+    if cars:
+        def _car(c):
+            d = str(c.get("d") or "").strip()
+            d = d[:1].upper() + d[1:]
+            t = nombre_limpio(str(c.get("t") or ""))
+            return ('<div class="tm-car">' + (f"<b>{escape(t)}</b>" if t else "")
+                    + (f"<p>{escape(d)}</p>" if d else "") + "</div>")
+        bloques.append('<section class="tm-blk"><h2>Lo que lo hace <em>bueno</em></h2>'
+                       f'<div class="tm-cars">{"".join(_car(c) for c in cars)}</div></section>')
+
+    def _lista(items):
+        return '<ul class="tm-lst">' + "".join(
+            f'<li>{_ico("check")}<span>{escape(nombre_limpio(str(t)))}</span></li>'
+            for t in items) + "</ul>"
+    ideal = [t for t in (p.get("idealPara") or []) if isinstance(t, str) and t.strip()]
+    trae = [t for t in (p.get("incluye") or []) if isinstance(t, str) and t.strip()]
+    dos = ""
+    if ideal:
+        dos += f'<section class="tm-blk"><h2>Ideal <em>para</em></h2>{_lista(ideal)}</section>'
+    if trae:
+        dos += f'<section class="tm-blk"><h2>Qué trae <em>la caja</em></h2>{_lista(trae)}</section>'
+    if dos:
+        bloques.append(f'<div class="tm-dos">{dos}</div>')
+    return f'<div class="tm-cuerpo">{"".join(bloques)}</div>' if bloques else ""
 
 
 # ── El emoji va al compartir, no en el nombre ───────────────────────────────
@@ -391,118 +500,180 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 {json_breadcrumb}
 </script>
 
+<link rel="preload" href="{site}/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* Mismo lenguaje que tiendamax.org (la ficha de producto de la tienda):
+     fondo casi negro con el resplandor coral arriba, coral #FF6A1F, dorado
+     #F2B632, títulos y precio en Playfair con la cola en cursiva coral, Inter
+     para el texto. Las fuentes son las del propio sitio (fonts/), con swap: el
+     texto sale ya con la del sistema y cambia cuando llegan; quien viene de la
+     tienda las tiene en caché. Los colores de texto están medidos en
+     tests/test_contraste.py: el verde de WhatsApp lleva texto oscuro porque el
+     blanco da 1.98:1, y el botón coral va liso porque su extremo oscuro
+     (#D24E0F) bajaba a 4.15:1. */
+  @font-face{{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url({site}/fonts/playfair-latin.woff2) format('woff2')}}
+  @font-face{{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url({site}/fonts/inter-normal-latin.woff2) format('woff2')}}
   *{{margin:0;padding:0;box-sizing:border-box}}
-  body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}}
+  :root{{--bg:#08060a;--card:#110f13;--card2:#18151b;--line:rgba(255,255,255,.09);--txt:#f2f2f5;--mut:#9898a8;--o:#FF6A1F;--gold:#F2B632;--serif:'Playfair Display',Georgia,serif}}
+  body{{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 420px at 50% -120px,rgba(255,106,31,.2),transparent 70%);background-repeat:no-repeat}}
   a{{color:inherit;text-decoration:none}}
-  .tm-hdr{{display:flex;align-items:center;padding:14px 20px;background:#0D0806;border-bottom:1px solid rgba(201,169,110,.15)}}
-  .tm-logo{{font-size:20px;font-weight:800;letter-spacing:-.5px}}
-  .tm-logo .t{{color:#C9A96E}}.tm-logo .m{{color:#FF6B35}}
-  .tm-back{{margin-left:auto;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:6px 14px;border-radius:20px;white-space:nowrap}}
-  .tm-wrap{{max-width:900px;margin:0 auto;padding:28px 16px 60px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}}
-  @media(max-width:640px){{.tm-wrap{{grid-template-columns:1fr;gap:20px}}}}
-  .tm-img{{border-radius:16px;overflow:hidden;background:#1a1410;aspect-ratio:1/1}}
-  .tm-img img{{width:100%;height:100%;object-fit:cover;display:block}}
-  /* Texto oscuro sobre el coral: blanco a 11px daba 2.83:1, por debajo del
-     minimo AA. #241100 da 6.41:1 y el coral de marca se queda igual. */
-  .tm-cat{{display:inline-block;background:#FF6B35;color:#241100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}}
-  h1{{font-size:clamp(20px,4vw,26px);font-weight:800;line-height:1.25;margin-bottom:18px}}
-  .tm-prices{{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}}
-  .tm-price{{font-size:30px;font-weight:800;color:#FF6B35}}
-  .tm-orig{{font-size:17px;color:#8a8078;text-decoration:line-through}}
-  .tm-badge{{background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.3);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}}
-  .tm-desc{{font-size:14px;line-height:1.75;color:#a09080;margin-bottom:22px;white-space:pre-line}}
-  .tm-stok-y{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#4ade80;margin-bottom:22px}}
-  .tm-stok-y::before{{content:'';width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0}}
-  .tm-stok-n{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#9a9088;margin-bottom:22px}}
-  .tm-stok-n::before{{content:'';width:8px;height:8px;border-radius:50%;background:#666;flex-shrink:0}}
+  .tm-i{{width:18px;height:18px;flex:none}}
+  .tm-hdr{{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;margin:10px 12px 0;padding:10px 12px;border-radius:22px;
+    background:rgba(14,12,16,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}}
+  .tm-logo{{display:flex;align-items:center;gap:10px}}
+  .tm-logo img{{width:36px;height:36px;border-radius:11px;display:block}}
+  .tm-logo span{{font-family:var(--serif);font-size:21px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
+  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13.5px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
+  /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
+     la categoría. Sin ellas la ficha era un callejón sin salida — solo se
+     podía salir al home o a WhatsApp. */
+  .tm-migas{{max-width:1080px;margin:0 auto;padding:16px 16px 0;font-size:12.5px;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px;align-items:center}}
+  .tm-migas a{{color:var(--gold)}}
+  .tm-migas a:hover{{text-decoration:underline}}
+  .tm-migas .sep{{opacity:.6}}
+  .tm-migas .actual{{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(52vw,420px)}}
+  .tm-wrap{{max-width:1080px;margin:0 auto;padding:14px 16px 8px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:start}}
+  .tm-img{{position:relative;border-radius:26px;overflow:hidden;background:#fff;aspect-ratio:1/1;border:1px solid var(--line)}}
+  .tm-fotos{{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}}
+  .tm-fotos::-webkit-scrollbar{{display:none}}
+  .tm-fotos img{{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center;display:block}}
+  .tm-nfotos{{position:absolute;right:12px;bottom:12px;font-size:12px;font-weight:700;color:#fff;background:rgba(8,6,10,.72);padding:6px 10px;border-radius:999px}}
+  .tm-cat{{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--o);margin-bottom:12px}}
+  h1{{font-family:var(--serif);font-size:clamp(26px,3.6vw,36px);line-height:1.12;font-weight:800;margin-bottom:18px}}
+  h1 em,.tm-blk h2 em,.tm-rel h2 em,.tm-res h2 em{{color:var(--o);font-style:italic}}
+  .tm-prices{{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}}
+  .tm-price{{font-family:var(--serif);font-size:44px;font-weight:800;line-height:1;color:var(--o)}}
+  .tm-price small{{font-size:18px;margin-left:6px}}
+  .tm-orig{{font-size:18px;color:var(--mut);text-decoration:line-through}}
+  .tm-badge{{background:rgba(255,106,31,.15);color:var(--o);font-size:13px;font-weight:800;padding:4px 10px;border-radius:999px}}
+  .tm-stok-y,.tm-stok-n{{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;margin:12px 0 18px}}
+  .tm-stok-y{{color:var(--o)}}.tm-stok-n{{color:var(--mut)}}
+  .tm-stok-y + .tm-stok-y{{margin-top:-10px}}
+  .tm-keys{{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}}
+  .tm-keys span{{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#f0e6de;padding:9px 14px;border-radius:14px;border:1px solid rgba(255,106,31,.55);background:rgba(255,106,31,.08)}}
+  .tm-keys .tm-i{{color:var(--o);width:16px;height:16px}}
   .tm-actions{{display:flex;flex-direction:column;gap:12px}}
-  .tm-btn{{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;transition:opacity .2s}}
-  .tm-btn:hover{{opacity:.85}}
-  .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00}}
-  .tm-btn-w{{background:#25D366;color:#062B14}}
-  /* Botón secundario. Con stock lo lleva "Ver más en TiendaMax", porque la
-     acción de la página es pedir; agotado lo lleva el de WhatsApp, porque no
-     se puede pedir lo que no hay y queda como "por si quieres preguntar". */
-  .tm-btn-s{{background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.35)}}
+  .tm-btn{{display:flex;align-items:center;justify-content:center;gap:10px;padding:17px 20px;border-radius:18px;font-size:17px;font-weight:800;border:none;font-family:inherit;cursor:pointer;transition:opacity .2s}}
+  .tm-btn:hover{{opacity:.9}}
+  .tm-btn .tm-i{{width:21px;height:21px}}
+  .tm-btn-w{{background:#25D366;color:#062B14;box-shadow:0 14px 30px -14px rgba(37,211,102,.7)}}
+  .tm-btn-p{{background:#FF6A1F;color:#2B0E00}}
+  /* Secundario: con stock "Ver más en TiendaMax" (la acción de la página es
+     pedir); agotado, el de WhatsApp, "por si quieres preguntar". */
+  .tm-btn-s{{background:transparent;color:var(--gold);border:1px solid rgba(242,182,50,.35);font-size:15px;padding:13px 18px}}
+  .tm-conf{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}}
+  .tm-conf > div{{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:14px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line)}}
+  .tm-conf .ic{{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center}}
+  .tm-conf .ic .tm-i{{width:21px;height:21px}}
+  .tm-conf .o{{background:rgba(255,106,31,.16);color:var(--o)}}.tm-conf .g{{background:rgba(37,211,102,.14);color:#4ade80}}
+  .tm-conf b{{font-size:14.5px}}.tm-conf small{{font-size:12.5px;color:var(--mut);line-height:1.4}}
   /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
-  .tm-aviso{{display:none;flex-direction:column;gap:10px;background:rgba(255,107,53,.07);
-    border:1px solid rgba(255,107,53,.28);border-radius:12px;padding:14px}}
+  .tm-aviso{{display:none;flex-direction:column;gap:10px;background:rgba(255,106,31,.07);border:1px solid rgba(255,106,31,.28);border-radius:18px;padding:14px}}
   .tm-aviso.abierto{{display:flex}}
-  .tm-aviso p{{font-size:13px;color:#c4b5a4;line-height:1.5}}
+  .tm-aviso p{{font-size:13.5px;color:#d6d6de;line-height:1.5}}
   .tm-aviso-row{{display:flex;gap:8px}}
-  .tm-aviso input{{flex:1;min-width:0;background:#161010;border:1px solid rgba(201,169,110,.28);
-    border-radius:10px;padding:12px 13px;color:#fff;font-size:15px;font-family:inherit}}
-  .tm-aviso input:focus{{outline:2px solid #FF6B35;outline-offset:1px;border-color:transparent}}
-  .tm-aviso button{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#2B0E00;border:none;
-    border-radius:10px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;
-    font-family:inherit;white-space:nowrap}}
+  .tm-aviso input{{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 13px;color:#fff;font-size:15px;font-family:inherit}}
+  .tm-aviso input:focus{{outline:2px solid var(--o);outline-offset:1px;border-color:transparent}}
+  .tm-aviso button{{background:#FF6A1F;color:#2B0E00;border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}}
   .tm-aviso button:disabled{{opacity:.55;cursor:default}}
   .tm-aviso .msg{{font-size:13px;line-height:1.5}}
   .tm-aviso .msg.ok{{color:#4ade80}}
   .tm-aviso .msg.err{{color:#ff8a6b}}
-  .tm-aviso .luego{{font-size:12px;color:#8a8078}}
-  .tm-aviso .luego a{{color:#C9A96E;text-decoration:underline}}
+  .tm-aviso .luego{{font-size:12px;color:var(--mut)}}
+  .tm-aviso .luego a{{color:var(--gold);text-decoration:underline}}
+  /* Lo que el gestor cargó del producto y la página no enseñaba: ficha,
+     características, para quién es y qué trae. Cada bloque sale solo si el
+     producto lo tiene. */
+  .tm-cuerpo{{max-width:1080px;margin:0 auto;padding:18px 16px 8px;display:grid;gap:14px}}
+  .tm-blk{{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px}}
+  .tm-blk h2,.tm-rel h2,.tm-res h2{{font-family:var(--serif);font-size:21px;font-weight:800;margin-bottom:14px}}
+  .tm-desc{{font-size:15px;line-height:1.7;color:#d6d6de;white-space:pre-line}}
+  .tm-ficha{{display:grid}}
+  .tm-ficha div{{display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:14px;padding:11px 0;border-top:1px solid var(--line)}}
+  .tm-ficha div:first-child{{border-top:0;padding-top:0}}
+  .tm-ficha dt{{font-size:13px;color:var(--mut)}}
+  .tm-ficha dd{{font-size:14px;line-height:1.45;font-weight:500}}
+  .tm-ficha small{{display:block;font-size:12px;color:var(--mut);margin-top:2px;font-weight:400}}
+  .tm-cars{{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}}
+  .tm-car{{background:var(--card2);border-radius:18px;padding:14px;border-left:3px solid var(--o)}}
+  .tm-car b{{display:block;font-size:14.5px;margin-bottom:5px}}
+  .tm-car p{{font-size:13.5px;line-height:1.5;color:var(--mut)}}
+  .tm-dos{{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
+  .tm-lst{{list-style:none;display:grid;gap:10px}}
+  .tm-lst li{{display:flex;gap:10px;font-size:14px;line-height:1.5;color:#e2e2ea}}
+  .tm-lst .tm-i{{color:var(--o);margin-top:2px}}
 {css_extra}  @media (prefers-reduced-motion:reduce){{*{{transition:none !important}}}}
-  .tm-ftr{{text-align:center;padding:24px 16px;color:#8a8078;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
-  .tm-ftr a{{color:#C9A96E;text-decoration:underline}}
-  /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
-     la categoría. Sin ellas la ficha era un callejón sin salida — solo se
-     podía salir al home o a WhatsApp. */
-  .tm-migas{{max-width:900px;margin:0 auto;padding:14px 16px 0;font-size:12.5px;color:#8a7b6c;display:flex;flex-wrap:wrap;gap:6px;align-items:center}}
-  .tm-migas a{{color:#C9A96E}}
-  .tm-migas a:hover{{text-decoration:underline}}
-  .tm-migas .sep{{opacity:.5}}
-  .tm-migas .actual{{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(46vw,340px)}}
-  /* Productos relacionados: convierten 118 fichas sueltas en una malla que se
+  /* Productos relacionados: convierten las fichas sueltas en una malla que se
      puede recorrer, tanto por un cliente como por un rastreador. */
-  .tm-rel{{max-width:900px;margin:0 auto;padding:8px 16px 48px}}
-  .tm-rel h2{{font-size:16px;font-weight:800;margin-bottom:16px;color:#e8dcc8}}
-  .tm-rel-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}}
-  .tm-rel-card{{background:#141010;border:1px solid rgba(201,169,110,.14);border-radius:12px;overflow:hidden;display:block;transition:border-color .2s}}
-  .tm-rel-card:hover{{border-color:rgba(201,169,110,.4)}}
-  .tm-rel-card img{{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1a1410}}
-  .tm-rel-body{{padding:9px 10px 11px}}
-  .tm-rel-name{{font-size:12.5px;line-height:1.35;color:#d8cbb8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px;min-height:34px}}
-  .tm-rel-price{{font-size:14px;font-weight:800;color:#FF6B35}}
-  .tm-rel-mas{{display:inline-block;margin-top:18px;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:8px 16px;border-radius:20px}}
+  .tm-rel{{max-width:1080px;margin:0 auto;padding:22px 16px 30px}}
+  .tm-rel-grid{{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}}
+  .tm-rel-grid::-webkit-scrollbar{{display:none}}
+  .tm-rel-card{{scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s}}
+  .tm-rel-card:hover{{border-color:rgba(255,106,31,.45)}}
+  .tm-rel-card img{{width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;display:block}}
+  .tm-rel-body{{padding:10px 12px 12px}}
+  .tm-rel-name{{font-size:13px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em;margin-bottom:6px}}
+  .tm-rel-price{{font-family:var(--serif);font-size:18px;font-weight:800;color:var(--o)}}
+  .tm-rel-mas{{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--gold);border:1px solid rgba(242,182,50,.35);padding:9px 16px;border-radius:999px}}
+  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line)}}
+  .tm-ftr a{{color:#F2B632;text-decoration:underline}}
+  .tm-barra{{display:none}}
+  @media(max-width:760px){{
+    .tm-wrap{{grid-template-columns:minmax(0,1fr);gap:18px}}
+    .tm-dos{{grid-template-columns:minmax(0,1fr)}}
+    /* Barra fija con el precio y el pedido: en el móvil el botón grande queda
+       atrás en cuanto se baja a leer la ficha. Toca el mismo #tmWa (lo mide
+       MEDIR_JS y le añade el canal); sin JS, el enlace sirve igual. */
+    .tm-barra{{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+      background:rgba(12,10,14,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}}
+    .tm-barra .pz{{display:flex;flex-direction:column;line-height:1.1;min-width:0}}
+    .tm-barra .pz b{{font-family:var(--serif);font-size:24px}}.tm-barra .pz small{{font-size:12px;color:var(--mut);margin-top:2px}}
+    .tm-barra a{{margin-left:auto;display:flex;align-items:center;gap:8px;padding:14px 22px;border-radius:16px;background:#25D366;color:#062B14;font-weight:800;font-size:15.5px}}
+    .con-barra .tm-ftr{{padding-bottom:110px}}
+  }}
 </style>
 
 </head>
-<body>
+<body{body_cls}>
 
 <header class="tm-hdr">
-  <a href="https://tiendamax.org" class="tm-logo"><span class="t">TIENDA</span><span class="m">MAX</span></a>
-  <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
+  <a href="{site}" class="tm-logo"><img src="{site}/iconos/icon-192.png" alt="" width="36" height="36"><span>Tienda<b>Max</b></span></a>
+  <a href="{site}" class="tm-back"><svg class="tm-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Catálogo</a>
 </header>
 
 {breadcrumb_html}
-<main class="tm-wrap">
+<main>
+<div class="tm-wrap">
   <div class="tm-img">
-    <img src="{image}" alt="{html_name}" loading="lazy">
+    {galeria_html}
   </div>
   <div>
     {cat_html}
-    <h1>{html_name}</h1>
+    <h1>{h1_html}</h1>
     <div class="tm-prices">
       <span class="tm-price">{precio_txt}</span>
       {precio_orig_html}
       {pct_desc_html}
     </div>
-    <p class="tm-desc">{desc_full}</p>
-    {stock_html}{garantia_html}
+    {stock_html}
+    {specs_html}
     <div class="tm-actions">
       {acciones_html}
     </div>
+    {confianza_html}
   </div>
+</div>
+{bloques_html}
 </main>
 
 {resenas_html}
 {related_html}
 
 <footer class="tm-ftr">
-  <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
+  <a href="{site}">tiendamax.org</a> &middot; Pedidos por WhatsApp &middot; Todos los derechos reservados
 </footer>
+{barra_html}
 {medir_js}
 {aviso_js}
 </body>
@@ -514,23 +685,21 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 # de cada página, así que dejarlos fijos sería mandarle a las 132 —y a cada
 # visita— reglas para un bloque que no existe en esa página.
 CSS_GARANTIA = """
-  /* Garantía (solo si el producto la trae escrita). */
-  .tm-gar{display:flex;gap:8px;font-size:13px;color:#C9A96E;background:rgba(201,169,110,.08);
-    border:1px solid rgba(201,169,110,.26);border-radius:10px;padding:10px 13px;
-    margin-bottom:20px;line-height:1.55}
+  /* Garantía (solo si el producto la trae escrita): tercera tarjeta de
+     confianza, a lo ancho. */
+  .tm-gar{grid-column:1/-1}
+  .tm-conf .y{background:rgba(242,182,50,.15);color:#F2B632}
 """
 
 CSS_RESENAS = """
   /* Reseñas reales, pintadas al generar (ver _resenas_html). */
-  .tm-res{max-width:1100px;margin:0 auto 44px;padding:0 20px}
-  .tm-res h2{font-size:18px;margin-bottom:14px;color:#f0e6d8}
-  .tm-res-item{background:#161010;border:1px solid rgba(201,169,110,.18);border-radius:12px;
-    padding:14px 16px;margin-bottom:10px}
+  .tm-res{max-width:1080px;margin:0 auto;padding:8px 16px 8px}
+  .tm-res-item{background:#110f13;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:16px 18px;margin-bottom:10px}
   .tm-res-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
-  .tm-res-autor{font-size:14px;font-weight:700;color:#f0e6d8}
-  .tm-res-est{font-size:13px;color:#FFC857;letter-spacing:1px}
-  .tm-res-fecha{font-size:12px;color:#8a8078;margin-left:auto}
-  .tm-res-texto{font-size:14px;line-height:1.65;color:#a09080;white-space:pre-line}
+  .tm-res-autor{font-size:14px;font-weight:700;color:#f2f2f5}
+  .tm-res-est{font-size:13px;color:#F2B632;letter-spacing:1px}
+  .tm-res-fecha{font-size:12px;color:#9898a8;margin-left:auto}
+  .tm-res-texto{font-size:14px;line-height:1.65;color:#d6d6de;white-space:pre-line}
 """
 
 
@@ -786,17 +955,17 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
             f'<img src="{img}" alt="{escape(nombre)}" loading="lazy" decoding="async">'
             f'<div class="tm-rel-body">'
             f'<div class="tm-rel-name">{escape(nombre)}</div>'
-            f'<div class="tm-rel-price">{precio_pagina(p.get("precioActual"), p)}</div>'
+            f'<div class="tm-rel-price">{precio_corto(p.get("precioActual"), p)}</div>'
             f'</div></a>'
         )
 
     ver_mas = (
-        f'<a class="tm-rel-mas" href="{SITE}/c/{slug}.html">Ver toda la categoría →</a>'
+        f'<a class="tm-rel-mas" href="{SITE}/c/{slug}.html">Ver toda la categoría {_ico("arrow")}</a>'
         if slug else ""
     )
     return (
         '<section class="tm-rel">\n'
-        '  <h2>También te puede interesar</h2>\n'
+        '  <h2>También te puede <em>interesar</em></h2>\n'
         '  <div class="tm-rel-grid">\n    '
         + "\n    ".join(tarjetas)
         + f'\n  </div>\n  {ver_mas}\n</section>'
@@ -804,23 +973,19 @@ def _relacionados_html(actual: dict, hermanos: list[dict], slug: str, limite: in
 
 
 def _garantia_html(producto: dict) -> str:
-    """La garantía del producto, si la tiene escrita.
+    """La garantía del producto, si la tiene escrita, como tercera tarjeta de
+    confianza.
 
-    La rellena el gestor a mano y solo 8 productos la traen; no se deduce ni se
-    rellena por defecto, porque aquí una garantía inventada es una promesa que
-    quien la lee viene luego a cobrar. Los textos cortos ("3 meses") se
-    presentan con su etiqueta; los largos ya vienen redactados y se imprimen
-    tal cual.
+    La rellena el gestor a mano y solo unos pocos productos la traen; no se
+    deduce ni se rellena por defecto, porque aquí una garantía inventada es
+    una promesa que quien la lee viene luego a cobrar. Se imprime el texto tal
+    cual lo escribió.
     """
     texto = (producto.get("garantia") or "").strip()
     if not texto:
         return ""
-    if len(texto) > 40:
-        # Los largos ya vienen redactados, con su propio icono a veces; añadirle
-        # el escudo delante deja dos emojis pegados.
-        return f'\n    <div class="tm-gar"><span>{escape(texto)}</span></div>'
-    return ('\n    <div class="tm-gar"><span aria-hidden="true">\U0001F6E1\uFE0F</span>'
-            f'<span>Garantía: {escape(texto)}</span></div>')
+    return (f'<div class="tm-gar"><span class="ic y">{_ico("shield")}</span>'
+            f'<b>Garantía</b><small>{escape(texto)}</small></div>')
 
 
 def _estrellas(n: int) -> str:
@@ -1014,7 +1179,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         precio_orig = float(p.get("precioOriginal") or 0)
         if precio_orig > precio_act > 0:
             pct = round((precio_orig - precio_act) / precio_orig * 100)
-            precio_orig_html = f'<span class="tm-orig">{precio_pagina(precio_orig, p)}</span>'
+            precio_orig_html = f'<span class="tm-orig">{precio_corto(precio_orig, p)}</span>'
             pct_desc_html    = f'<span class="tm-badge">-{pct}%</span>'
         else:
             precio_orig_html = ""
@@ -1023,11 +1188,12 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         if es_digital(p):
             imps = " · ".join(f"{_valor_digital(p, x['v'])}: {int(x['usdt'])} USDT"
                               for x in importes_digital(p))
-            stock_html = (f'<div class="tm-stok-y">⚡ Código por WhatsApp en 5–30 min · '
+            stock_html = (f'<div class="tm-stok-y">{_ico("zap")} Código por WhatsApp en 5–30 min · '
                           f'pago antes, en USDT (BEP20) o USD</div>\n'
-                          f'      <div class="tm-stok-y">{escape(imps)}</div>')
+                          f'    <div class="tm-stok-y">{escape(imps)}</div>')
         elif stock > 0:
-            stock_html = f'<div class="tm-stok-y">En stock ({stock} disponible{"s" if stock != 1 else ""})</div>'
+            stock_html = (f'<div class="tm-stok-y">{_ico("box")} {stock} '
+                          f'{"unidades disponibles" if stock != 1 else "unidad disponible"}</div>')
         else:
             stock_html = '<div class="tm-stok-n">Agotado</div>'
 
@@ -1042,9 +1208,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. ¿De qué importe? {page_url}")
             wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
             acciones_html = (
-                f'<a href="{app_url}" class="tm-btn tm-btn-w">⚡ Elegir importe y pedir</a>\n'
+                f'<a href="{app_url}" class="tm-btn tm-btn-w">{_ico("zap")} Elegir importe y pedir</a>\n'
                 f'      <a href="{wa_link}" class="tm-btn tm-btn-s" id="tmWa" target="_blank" '
-                f'rel="noopener noreferrer">💬 Preguntar por WhatsApp</a>'
+                f'rel="noopener noreferrer">{_ico("wa")} Preguntar por WhatsApp</a>'
             )
         elif stock > 0:
             wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
@@ -1055,8 +1221,8 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             # quería, así que pasa a segundo plano.
             acciones_html = (
                 f'<a href="{wa_link}" class="tm-btn tm-btn-w" id="tmWa" target="_blank" '
-                f'rel="noopener noreferrer">💬 Pedir por WhatsApp</a>\n'
-                f'      <a href="{app_url}" class="tm-btn tm-btn-s">🛍️ Ver más en TiendaMax</a>'
+                f'rel="noopener noreferrer">{_ico("wa")} Pedir por WhatsApp</a>\n'
+                f'      <a href="{app_url}" class="tm-btn tm-btn-s">{_ico("bag")} Ver más en TiendaMax</a>'
             )
         else:
             # Sin stock la pregunta se le da la vuelta: en vez de que el cliente
@@ -1067,7 +1233,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
             acciones_html = (
                 f'<button type="button" class="tm-btn tm-btn-p" id="tmAvisarBtn" '
-                f'aria-expanded="false" aria-controls="tmAviso">🔔 Avísame cuando vuelva</button>\n'
+                f'aria-expanded="false" aria-controls="tmAviso">{_ico("bell")} Avísame cuando vuelva</button>\n'
                 f'      <div class="tm-aviso" id="tmAviso">\n'
                 f'        <p>Déjame tu WhatsApp y te escribo apenas entre. Nada más: '
                 f'ni correo, ni registro.</p>\n'
@@ -1081,7 +1247,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
                 f'<a href="{app_url}">Actívalo en la tienda</a>.</div>\n'
                 f'      </div>\n'
                 f'      <a href="{wa_link}" class="tm-btn tm-btn-s" id="tmWa" '
-                f'target="_blank" rel="noopener noreferrer">💬 Escríbeme</a>'
+                f'target="_blank" rel="noopener noreferrer">{_ico("wa")} Escríbeme</a>'
             )
 
         # El formulario de aviso solo viaja en las fichas agotadas: es lo único
@@ -1094,6 +1260,31 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid))) if rtdb else ""
 
         garantia_html = _garantia_html(p)
+        # Confianza: lo que es verdad de todo pedido físico (se paga al recibir
+        # y se prueba antes: la misma promesa del og:description). Un digital
+        # se paga antes, así que ahí solo va su garantía si la tiene.
+        tarjetas = [] if es_digital(p) else [
+            f'<div><span class="ic o">{_ico("hand")}</span><b>Pagas al recibirlo</b>'
+            f'<small>Lo pruebas antes de pagar</small></div>',
+            f'<div><span class="ic g">{_ico("wa")}</span><b>Pides por WhatsApp</b>'
+            f'<small>Te responde una persona</small></div>']
+        if garantia_html:
+            tarjetas.append(garantia_html)
+        confianza_html = f'<div class="tm-conf">{"".join(tarjetas)}</div>' if tarjetas else ""
+        specs = [nombre_limpio(str(x)) for x in (p.get("specs") or []) if nombre_limpio(str(x))][:4]
+        specs_html = ('<div class="tm-keys">' + "".join(
+            f'<span>{_ico("check")}{escape(x)}</span>' for x in specs) + "</div>") if specs else ""
+        # La barra fija del móvil, solo donde se puede pedir ya. Pulsa el #tmWa
+        # de arriba para que el toque cuente igual (MEDIR_JS) y lleve el canal.
+        if stock > 0 and not es_digital(p):
+            barra_html = (
+                f'<div class="tm-barra"><div class="pz"><b>{precio_corto(p.get("precioActual"), p)}</b>'
+                f'<small>{stock} disponible{"s" if stock != 1 else ""}</small></div>'
+                f'<a href="{wa_link}" target="_blank" rel="noopener noreferrer" '
+                f'onclick="var w=document.getElementById(\'tmWa\');if(w){{w.click();return false}}">'
+                f'{_ico("wa")} Pedir</a></div>')
+        else:
+            barra_html = ""
         del_producto = _resenas_de(resenas, pid)
         resenas_html = _resenas_html(del_producto)
         json_extra = _resenas_jsonld(del_producto)
@@ -1117,7 +1308,15 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             page_url=page_url,
             app_url=app_url,
             price=price,
-            precio_txt=precio_pagina(p.get("precioActual"), p),
+            precio_txt=precio_grande(p),
+            site=SITE,
+            body_cls=' class="con-barra"' if barra_html else "",
+            h1_html=_h1_html(name),
+            galeria_html=_galeria_html(p, name),
+            specs_html=specs_html,
+            confianza_html=confianza_html,
+            bloques_html=_bloques_html(p, desc_raw),
+            barra_html=barra_html,
             moneda_iso=moneda_iso(p),
             json_name=json_name,
             json_desc=json_desc,
