@@ -223,14 +223,14 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html body #vistaInicio .nd-hero-stats .nd-stat span { font-size: 11px !important; letter-spacing: .02em !important; text-transform: none !important; }
 }
 
-/* ── Categorías en el móvil: tarjeta con tinte suave del color de la categoría ──
+/* ── Categorías: tarjeta con tinte suave del color de la categoría ──
    El color es el de siempre (--cat-rgb, lo pone tmPintarCategoria); aquí solo
    cambia cómo se pinta: tinte suave en la tarjeta e icono relleno con el color
    exacto. Dos columnas, «Todos» como barra de ancho completo y, si queda una
    tarjeta suelta al final, ocupa la fila entera. `html:root` solo sube la
    especificidad por encima de las reglas de modo claro de arriba. */
 
-@media (max-width: 899px) {
+@media all {
   html:root body #categorias-home .categorias-grid,
   html:root body #categorias-home #catExtraWrap {
     display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important;
@@ -244,7 +244,7 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html:root body #categorias-home .categoria-card,
   html:root body #categorias-home .categoria-card:nth-child(n) {
     width: auto !important; min-height: 0 !important; padding: 12px 13px 11px !important;
-    display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; text-align: left !important;
+    display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; text-align: center !important;
     border-radius: 22px !important; position: relative;
     background: linear-gradient(rgba(var(--cat-rgb,255,106,31), .17), rgba(var(--cat-rgb,255,106,31), .17)), #15121a !important;
     border: 1px solid rgba(var(--cat-rgb,255,106,31), .16) !important; box-shadow: none !important;
@@ -255,8 +255,8 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
     background: rgb(var(--cat-rgb,255,106,31)) !important; border: 0 !important; filter: none !important; color: #fff !important;
   }
   html:root body #categorias-home .categoria-card .cat-icon svg { width: 21px !important; height: 21px !important; stroke: #fff !important; color: #fff !important; }
-  html:root body #categorias-home .categoria-card .cat-name { font-size: 14.5px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: left !important; }
-  html:root body #categorias-home .categoria-card .cat-count { justify-content: flex-start !important; font-size: 12.5px !important; color: #a9a9b8 !important; margin: 3px 0 0 !important; }
+  html:root body #categorias-home .categoria-card .cat-name { font-size: 14.5px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: center !important; }
+  html:root body #categorias-home .categoria-card .cat-count { justify-content: center !important; font-size: 12.5px !important; color: #a9a9b8 !important; margin: 3px 0 0 !important; }
   html:root body #categorias-home .categoria-card .cat-popular-badge { top: 12px !important; right: 12px !important; left: auto !important; bottom: auto !important; transform: none !important; }
   /* «Todos»: barra de ancho completo, sin icono */
   html:root body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-column: 1 / -1; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 13px 16px !important; }
@@ -271,7 +271,7 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html:root body.light-mode #categorias-home .categoria-card .cat-name { color: #14121a !important; }
   html:root body.light-mode #categorias-home .categoria-card .cat-count { color: #5d5d6d !important; }
 }
-@media (max-width: 899px) {
+@media all {
   html:root body #categorias-home #categoriasGrid > .categoria-card:first-child,
   html:root body #categorias-home #categoriasGrid > .categoria-card:first-child:nth-child(n) { grid-column: 1 / -1 !important; width: 100% !important; box-sizing: border-box; min-height: 0 !important; }
   html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-name,
@@ -281,6 +281,32 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
     background: rgb(var(--cat-rgb,255,106,31)) !important; color: #fff !important; box-shadow: none !important;
   }
   html:root body.light-mode #categorias-home .categoria-card .cat-icon svg { stroke: #fff !important; color: #fff !important; }
+}
+
+/* Escritorio: el MISMO diseño que en el móvil (icono arriba, nombre y cantidad debajo),
+   en filas de cuatro tarjetas centradas; «Todos» sigue siendo la barra de ancho completo. */
+@media (min-width: 900px) {
+  html:root body #categorias-home .categorias-grid,
+  html:root body #categorias-home #catExtraWrap {
+    display: flex !important; flex-wrap: wrap !important; justify-content: center !important;
+    gap: 14px !important; max-width: 1040px; margin: 0 auto !important; padding: 8px 0 10px !important; overflow: visible !important;
+  }
+  html:root body #categorias-home #catExtraWrap.cat-extra-oculto { display: none !important; }
+  html:root body #categorias-home .categorias-grid .categoria-card,
+  html:root body #categorias-home .categorias-grid .categoria-card:nth-child(n),
+  html:root body #categorias-home #catExtraWrap .categoria-card {
+    flex: 0 0 calc((100% - 42px) / 4) !important; width: calc((100% - 42px) / 4) !important; box-sizing: border-box;
+    padding: 16px 16px 15px !important; cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  html:root body #categorias-home .categorias-grid .categoria-card:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 26px -14px rgba(0,0,0,.5) !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child,
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child:nth-child(n) {
+    flex: 0 0 100% !important; width: 100% !important; padding: 15px 22px !important;
+  }
+  html:root body #categorias-home .categoria-card .cat-name { font-size: 16px !important; }
+  html:root body #categorias-home .categoria-card .cat-count { font-size: 14px !important; }
+  html:root body #catVerMasBtn { width: auto; margin: 4px auto 0 !important; padding-left: 28px; padding-right: 28px; }
 }
 
 @media (max-width: 899px) {
@@ -320,14 +346,11 @@ html:root body.light-mode .testimonio-card .resena-verificada, html:root body.li
 html:root body.light-mode .section-eyebrow { color: #C23C10 !important; }
 html:root body.light-mode :is(.categorias-home .section-title em, #mas-vendidos .section-title em, #beneficios h2 em, #testimonios h2 em, .tm-steps-title em, .cta-final h2 em) { --coral-2: #D4480B; }
 
-/* Escala de tamaños: se acaban los medios píxeles (11,5 / 12,5 / 13,5 / 14,5)
-   que sumaban 8 tamaños casi iguales. Cada uno sube al entero siguiente. */
-html:root body .op-chip, html:root body .op-chip-txt, html:root body .section-eyebrow { font-size: 12px !important; }
-html:root body .tm-of-nom, html:root body .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir, html:root body .btn-pedir-card, html:root body #mas-vendidos #masVendidosGrid > .producto-card .btn-pedir-card { font-size: 13px !important; }
-html:root body #categorias-home .categoria-card .cat-count { font-size: 13px !important; }
-html:root body #categorias-home .cat-vermas-btn { font-size: 14px !important; }
-html:root body #categorias-home .categoria-card .cat-name { font-size: 15px !important; }
-html:root body .tm-step-hl, html:root body .testimonio-card .resena-texto, html:root body .resena-texto, html:root body .tm-step p { font-size: 15px !important; }
+/* El chip y el «+ Popular» quedan fuera de la escala (capa) porque tienen su propia regla de ancho. */
+@media (min-width: 361px) { html:root body #vistaInicio .op-chip, html:root body #vistaInicio .op-chip-txt { font-size: 12px !important; } }
+html:root body .verified { font-size: 11px !important; }
+html:root body .section-eyebrow { font-size: 12px !important; }
+@media (max-width: 360px) { html:root body .section-eyebrow { font-size: 11px !important; letter-spacing: .1em !important; } }
 /* A 320–360 px el chip y el selector de moneda no caben con 12 px: el chip se compacta. */
 @media (max-width: 360px) {
   html:root body #vistaInicio .op-chip, html:root body #vistaInicio .op-chip-txt { font-size: 11px !important; }
