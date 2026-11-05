@@ -1,0 +1,62 @@
+{
+  "v": 1,
+  "creado": "2026-11-05T02:15:40.191Z",
+  "productos": [
+    {
+      "id": 1778213940333,
+      "nombre": "Mannol Safari 20W - 50 7404 5L",
+      "precioActual": 25,
+      "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
+      "categoria": "CARROS",
+      "subcategoria": "ACEITES Y LUBRICANTES",
+      "stock": 51,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-safari-20w50-7404-5l",
+      "seoTitle": "Mannol Safari 20W - 50 7404 5L en Cuba | TiendaMax",
+      "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
+      "comision": 1.25,
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 20W-50"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783918626441.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "20W-50"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Mannol Safari 20W - 50 7404 5L"
+      ],
+      "rev": 1793844940191,
+      "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
+    }
+  ],
+  "eliminados": [
+    "1780083017984"
+  ],
+  "posiciones": {}
+}
