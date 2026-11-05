@@ -310,13 +310,16 @@ const rv = await pagina.evaluate(async (pid) => {
     await new Promise(r => setTimeout(r, 100));
     const tituloRest = document.getElementById('revTituloTA').value;
     const avisoRest = !!document.getElementById('revRenovar');
+    const _orig = _dibujarImagenAnuncio; const _llamadas = [];
+    _dibujarImagenAnuncio = function (cv, pr, op) { _llamadas.push(op || null); return _orig.apply(this, arguments); };
     previsualizarRevolico(pid);
     await new Promise(r => setTimeout(r, 100));
+    _dibujarImagenAnuncio = _orig;
     const aviso = (document.getElementById('revRenovar') || {}).textContent || '';
     const version = document.getElementById('revVersion').textContent;
     document.getElementById('btnRevRenovado').click();
     const log = tmPublicaciones();
-    return { distintas: descs.size, aviso0, n0, n1, titulo1, tituloRest, avisoRest, aviso, version,
+    return { llamadas: _llamadas, distintas: descs.size, aviso0, n0, n1, titulo1, tituloRest, avisoRest, aviso, version,
              ultimo: log[log.length - 1] };
 }, SIN.id);
 ok(rv.distintas >= 3, `las versiones del anuncio de Revólico salen casi iguales (${rv.distintas} distintas de 4)`);
@@ -325,7 +328,8 @@ ok(rv.n1 === rv.n0 + 1, `abrir Revólico dos veces desde la misma vista previa a
 ok(rv.tituloRest === rv.titulo1 && !rv.avisoRest, 'al volver de Revólico la vista previa salió con OTRA versión: el título no casa con la descripción ya pegada');
 ok(/Ya lo publicaste en Revólico hoy/.test(rv.aviso) && /renuévalo/.test(rv.aviso), `no avisa de renovar: «${rv.aviso.slice(0, 120)}»`);
 ok(/Versión 2 de 4/.test(rv.version), `el segundo anuncio tiene que salir con la versión siguiente: «${rv.version}»`);
-ok(/foto 2 de/.test(rv.version), 'con varias fotos, el segundo anuncio tiene que llevar otra de portada');
+ok(rv.llamadas.length > 0 && rv.llamadas.every(o => !o || !o.foto), 'Revólico: la imagen del anuncio tiene que ser SIEMPRE la portada del producto, también en el segundo anuncio');
+ok(!/foto \d/.test(rv.version), `la versión no debe hablar de rotar fotos: «${rv.version}»`);
 ok(rv.ultimo && rv.ultimo.red === 'revolico' && rv.ultimo.destino === 'Revolico (renovado)', '«Lo renové» no quedó apuntado');
 
 ok(erroresJs.length === 0, 'errores de JS: ' + erroresJs.join(' | '));

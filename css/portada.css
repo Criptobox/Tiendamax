@@ -293,8 +293,43 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   }
   html:root body #categorias-home #catExtraWrap > .categoria-card:last-child:nth-child(odd) .cat-icon { margin: 0 !important; }
 }
+html:root body #categorias-home .categoria-card .cat-popular-badge { font-size: 10px !important; }
 /* Móviles estrechos: «+ Popular» se reduce a una estrella para no tapar el contador */
 @media (max-width: 360px) {
   html:root body #categorias-home .categoria-card .cat-popular-badge { font-size: 0 !important; padding: 4px 8px !important; }
   html:root body #categorias-home .categoria-card .cat-popular-badge::before { content: "★"; font-size: 11px; }
+}
+
+/* ── Contraste y tamaño mínimo ───────────────────────────────────────────
+   Medido en el móvil: el verde de los pasos sobre blanco daba 1,9:1, el chip
+   «disponibles» 2,0:1 y los títulos en cursiva 2,2:1 (piden 4,5:1 en texto
+   normal y 3:1 en texto grande). Solo toca el modo claro; el oscuro ya pasaba.
+   Y nada por debajo de 10–11 px. `html:root` solo sube la especificidad por
+   encima de las reglas de modo claro de oficial-plus/light-mode. */
+html:root body .cat-popular-badge { font-size: 10px !important; }
+html:root body .tm-of-eyebrow { font-size: 11px !important; }
+html:root body .tm-of-pct, html:root body .pv2-tag, html:root body .pv2-cat { font-size: 11px !important; }
+html:root body .tm-bot-badge { font-size: 11px !important; }
+html:root body .verified { font-size: 10.5px !important; }
+html:root body button { font-family: inherit; }
+html:root body.light-mode .op-chip, html:root body.light-mode .op-chip-txt { color: #A8360A !important; }
+html:root body.light-mode .categorias-home .section-title em, html:root body.light-mode #mas-vendidos .section-title em, html:root body.light-mode #beneficios .section-title em, html:root body.light-mode #reseñas .section-title em, html:root body.light-mode .section-title em { color: #D4480B !important; -webkit-text-fill-color: #D4480B !important; }
+html:root body.light-mode .tm-step-hl { color: #0B7A3B !important; }
+html:root body.light-mode .producto-card.pcard-v2 .pv2-trust { color: #0F7A3E !important; }
+html:root body.light-mode .testimonio-card .resena-verificada, html:root body.light-mode .resena-verificada { color: #0F6B37 !important; }
+html:root body.light-mode .section-eyebrow { color: #C23C10 !important; }
+html:root body.light-mode :is(.categorias-home .section-title em, #mas-vendidos .section-title em, #beneficios h2 em, #testimonios h2 em, .tm-steps-title em, .cta-final h2 em) { --coral-2: #D4480B; }
+
+/* Escala de tamaños: se acaban los medios píxeles (11,5 / 12,5 / 13,5 / 14,5)
+   que sumaban 8 tamaños casi iguales. Cada uno sube al entero siguiente. */
+html:root body .op-chip, html:root body .op-chip-txt, html:root body .section-eyebrow { font-size: 12px !important; }
+html:root body .tm-of-nom, html:root body .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir, html:root body .btn-pedir-card, html:root body #mas-vendidos #masVendidosGrid > .producto-card .btn-pedir-card { font-size: 13px !important; }
+html:root body #categorias-home .categoria-card .cat-count { font-size: 13px !important; }
+html:root body #categorias-home .cat-vermas-btn { font-size: 14px !important; }
+html:root body #categorias-home .categoria-card .cat-name { font-size: 15px !important; }
+html:root body .tm-step-hl, html:root body .testimonio-card .resena-texto, html:root body .resena-texto, html:root body .tm-step p { font-size: 15px !important; }
+/* A 320–360 px el chip y el selector de moneda no caben con 12 px: el chip se compacta. */
+@media (max-width: 360px) {
+  html:root body #vistaInicio .op-chip, html:root body #vistaInicio .op-chip-txt { font-size: 11px !important; }
+  html:root body #vistaInicio .op-chip { padding-left: 8px !important; padding-right: 9px !important; gap: 6px !important; }
 }

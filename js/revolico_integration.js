@@ -1898,9 +1898,8 @@ function _textoRevolico(producto, variante) {
     return { titulo, descripcion: orden.filter(Boolean).join('\n\n') };
 }
 
-// Cuántas veces salió ya en Revólico: de ahí la versión que toca y la foto
-// que va de portada. Así el siguiente anuncio del mismo producto no es el
-// mismo anuncio.
+// Cuántas veces salió ya en Revólico: de ahí la versión de título y
+// descripción que toca (la foto de portada no cambia).
 function _vecesRevolico(pid) {
     const log = (typeof tmPublicaciones === 'function') ? tmPublicaciones() : [];
     return log.filter(e => e && e.red === 'revolico' && e.pid === String(pid)).length;
@@ -1918,7 +1917,6 @@ function previsualizarRevolico(productoId, restaurar) {
     const _vRest = restaurar ? parseInt(restaurar.v, 10) : NaN;
     let revVar = isFinite(_vRest) ? _vRest : _vecesRevolico(producto.id) % TM_VARIANTES;
     const { titulo, descripcion } = _textoRevolico(producto, revVar);
-    const revFotos = _fotosDe(producto);
     const revUrl = catInfo.url;
     // Ya salió en Revólico: lo que toca casi siempre es RENOVAR ese anuncio,
     // no poner otro igual al lado.
@@ -2035,16 +2033,17 @@ function previsualizarRevolico(productoId, restaurar) {
         // anuncio se puede publicar así sin que nadie lo note. Se avisa aquí
         // arriba, que es donde el dueño está mirando.
         const _aviso = document.getElementById('revImgAviso');
-        const foto = revFotos.length ? revFotos[revVar % revFotos.length] : '';
-        _dibujarImagenAnuncio(revCanvas, producto, foto && revVar % revFotos.length ? { foto } : undefined).then(hayFoto => {
+        // La imagen del anuncio es SIEMPRE la portada del producto (`imagen`):
+        // la versión cambia título y descripción, no la foto. Antes rotaba entre
+        // las fotos del producto y, en el segundo anuncio, salía otra distinta.
+        _dibujarImagenAnuncio(revCanvas, producto).then(hayFoto => {
             if (_aviso) _aviso.style.display = hayFoto ? 'none' : 'block';
         }).catch(() => {
             revCanvas.style.display = 'none';
             if (_aviso) { _aviso.textContent = '⚠️ No se pudo generar la imagen del anuncio.'; _aviso.style.display = 'block'; }
         });
         const ver = document.getElementById('revVersion');
-        if (ver) ver.textContent = `Versión ${revVar + 1} de ${TM_VARIANTES}` +
-            (revFotos.length > 1 ? ` · foto ${revVar % revFotos.length + 1} de ${revFotos.length} de portada` : '');
+        if (ver) ver.textContent = `Versión ${revVar + 1} de ${TM_VARIANTES}`;
     };
     pintarRev();
 
