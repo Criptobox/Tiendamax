@@ -157,3 +157,144 @@ html body .btn-pedir-card,
 html body .hero-banner-prev,
 html body .hero-banner-next,
 html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !important; }
+
+/* ── Portada compacta en el móvil ─────────────────────────────────────
+   La primera pantalla enseñaba lema (4 líneas), buscador, selector de moneda
+   y cuatro tarjetas de datos: el 61 % de lo que se ve, sin un producto ni un
+   precio. El primer precio aparecía 260 px por debajo del borde, y la barra
+   inferior (que tapa desde el píxel 770) la hizo todavía más corta.
+
+   Aquí cada cosa conserva su sitio pero ocupa lo que merece:
+     · etiqueta de disponibles y selector USD/MN comparten renglón
+     · el lema, en dos líneas
+     · el buscador, igual
+     · las tres pruebas de confianza, en UNA línea (la cuarta tarjeta,
+       «45 disponibles», ya está en la etiqueta y en el cuadro «Todos»)
+   Es CSS puro: los datos de siempre (el contador, la tasa, la valoración) se
+   siguen pintando en los mismos nodos. Solo ≤768px; el ordenador no cambia.
+   Va en una cuadrícula: el bloque del buscador pasa a display:contents para que
+   el selector de moneda sea hermano de la etiqueta y pueda ir a su lado. */
+@media (max-width: 768px) {
+  html body #vistaInicio .nd-hero-left {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "chip moneda" "lema lema" "busca busca" "confianza confianza";
+    align-items: center; gap: 12px 8px; text-align: center;
+  }
+  html body #vistaInicio .nd-hero-search { display: contents !important; }
+
+  /* Renglón 1: «● 45 disponibles»  ·  «USD | 935 MN» */
+  html body #vistaInicio .op-chip { grid-area: chip; justify-self: start; margin: 0 !important; }
+  html body #vistaInicio .op-chip-fresco { display: none; }
+  html body #vistaInicio .currency-bar {
+    grid-area: moneda; justify-self: end; width: auto !important; min-width: 0 !important; max-width: none !important;
+    margin: 0 !important; padding: 3px !important; gap: 0 !important; min-height: 0 !important;
+    background: transparent !important; border: 0 !important; box-shadow: none !important;
+  }
+  html body #vistaInicio .currency-bar .tasa-info-prefix { display: none !important; }
+  html body #vistaInicio .currency-bar .currency-toggle { padding: 3px !important; }
+  html body #vistaInicio .currency-bar .cur-btn { min-width: 0 !important; padding: 6px 11px !important; font-size: 12px !important; white-space: nowrap; }
+
+  /* Renglón 2: el lema, en dos líneas */
+  html body #vistaInicio .op-h1 {
+    grid-area: lema; margin: 2px 0 0 !important;
+    /* Dos líneas: «Todo lo que necesitas,» y «a un mensaje de distancia» (la
+       segunda, la más ancha, tiene que caber en el ancho útil: de ahí el vw). */
+    font-size: clamp(23px, 7vw, 29px) !important; line-height: 1.14 !important;
+  }
+
+  /* Renglón 3: el buscador */
+  html body #vistaInicio .hsb-search { grid-area: busca; margin: 0 !important; width: 100%; }
+
+  /* Renglón 4: la confianza, en una sola línea y sin tarjetas */
+  html body #vistaInicio .nd-hero-stats {
+    grid-area: confianza; display: flex !important; flex-wrap: wrap; justify-content: center;
+    gap: 2px 14px !important; margin: 0 !important; max-width: none !important; padding: 0 !important;
+  }
+  html body #vistaInicio .nd-hero-stats .nd-stat {
+    flex-direction: row !important; align-items: baseline; gap: 5px !important;
+    padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important;
+    min-height: 0 !important; width: auto !important;
+  }
+  html body #vistaInicio .nd-hero-stats .nd-stat::before { display: none !important; }
+  html body #vistaInicio .nd-hero-stats .nd-stat:first-child { display: none !important; }
+  html body #vistaInicio .nd-hero-stats .nd-stat strong { font-size: 13px !important; }
+  html body #vistaInicio .nd-hero-stats .nd-stat strong i { font-size: 11px !important; margin-left: 1px !important; }
+  html body #vistaInicio .nd-hero-stats .nd-stat span { font-size: 11px !important; letter-spacing: .02em !important; text-transform: none !important; }
+}
+
+/* ── Categorías en el móvil: tarjeta con tinte suave del color de la categoría ──
+   El color es el de siempre (--cat-rgb, lo pone tmPintarCategoria); aquí solo
+   cambia cómo se pinta: tinte suave en la tarjeta e icono relleno con el color
+   exacto. Dos columnas, «Todos» como barra de ancho completo y, si queda una
+   tarjeta suelta al final, ocupa la fila entera. `html:root` solo sube la
+   especificidad por encima de las reglas de modo claro de arriba. */
+
+@media (max-width: 899px) {
+  html:root body #categorias-home .categorias-grid,
+  html:root body #categorias-home #catExtraWrap {
+    display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important;
+    margin: 0 !important; padding: 6px 0 8px !important; width: auto !important;
+    overflow: visible !important; -webkit-mask-image: none !important; mask-image: none !important;
+  }
+  html:root body #categorias-home #catExtraWrap { display: flex !important; flex-wrap: wrap !important; }
+  html:root body #categorias-home #catExtraWrap .categoria-card { width: calc(50% - 5px) !important; box-sizing: border-box; }
+  html:root body #categorias-home #catExtraWrap.cat-extra-oculto { display: none !important; }
+  html:root body #categorias-home .categorias-grid::after { display: none !important; }
+  html:root body #categorias-home .categoria-card,
+  html:root body #categorias-home .categoria-card:nth-child(n) {
+    width: auto !important; min-height: 0 !important; padding: 12px 13px 11px !important;
+    display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; text-align: left !important;
+    border-radius: 22px !important; position: relative;
+    background: linear-gradient(rgba(var(--cat-rgb,255,106,31), .17), rgba(var(--cat-rgb,255,106,31), .17)), #15121a !important;
+    border: 1px solid rgba(var(--cat-rgb,255,106,31), .16) !important; box-shadow: none !important;
+  }
+  html:root body #categorias-home .categoria-card .cat-icon,
+  html:root body #categorias-home .categoria-card:nth-child(n) .cat-icon {
+    width: 40px !important; height: 40px !important; border-radius: 13px !important; margin: 0 0 10px !important;
+    background: rgb(var(--cat-rgb,255,106,31)) !important; border: 0 !important; filter: none !important; color: #fff !important;
+  }
+  html:root body #categorias-home .categoria-card .cat-icon svg { width: 21px !important; height: 21px !important; stroke: #fff !important; color: #fff !important; }
+  html:root body #categorias-home .categoria-card .cat-name { font-size: 14.5px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: left !important; }
+  html:root body #categorias-home .categoria-card .cat-count { justify-content: flex-start !important; font-size: 12.5px !important; color: #a9a9b8 !important; margin: 3px 0 0 !important; }
+  html:root body #categorias-home .categoria-card .cat-popular-badge { top: 12px !important; right: 12px !important; left: auto !important; bottom: auto !important; transform: none !important; }
+  /* «Todos»: barra de ancho completo, sin icono */
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-column: 1 / -1; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 13px 16px !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-icon { display: none !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { margin: 0 !important; }
+  html:root body #catVerMasBtn { width: 100%; margin: 0 0 8px !important; border-radius: 18px !important; }
+  /* Modo claro: pastel como en la referencia */
+  html:root body.light-mode #categorias-home .categoria-card,
+  html:root body.light-mode #categorias-home .categoria-card:nth-child(n) {
+    background: linear-gradient(rgba(var(--cat-rgb,255,106,31), .16), rgba(var(--cat-rgb,255,106,31), .16)), #fff !important; border: 0 !important;
+  }
+  html:root body.light-mode #categorias-home .categoria-card .cat-name { color: #14121a !important; }
+  html:root body.light-mode #categorias-home .categoria-card .cat-count { color: #5d5d6d !important; }
+}
+@media (max-width: 899px) {
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child,
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child:nth-child(n) { grid-column: 1 / -1 !important; width: 100% !important; box-sizing: border-box; min-height: 0 !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-name,
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { white-space: nowrap; }
+  html:root body.light-mode #categorias-home .categoria-card.cat-color .cat-icon,
+  html:root body.light-mode #categorias-home .categoria-card:nth-child(n) .cat-icon {
+    background: rgb(var(--cat-rgb,255,106,31)) !important; color: #fff !important; box-shadow: none !important;
+  }
+  html:root body.light-mode #categorias-home .categoria-card .cat-icon svg { stroke: #fff !important; color: #fff !important; }
+}
+
+@media (max-width: 899px) {
+  html:root body #categorias-home #categoriasGrid > .categoria-card:last-child:nth-child(even) {
+    grid-column: 1 / -1 !important; flex-direction: row !important; align-items: center !important; gap: 12px;
+  }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:last-child:nth-child(even) .cat-icon { margin: 0 !important; }
+  html:root body #categorias-home #catExtraWrap > .categoria-card:last-child:nth-child(odd) {
+    width: 100% !important; flex-direction: row !important; align-items: center !important; gap: 12px;
+  }
+  html:root body #categorias-home #catExtraWrap > .categoria-card:last-child:nth-child(odd) .cat-icon { margin: 0 !important; }
+}
+/* Móviles estrechos: «+ Popular» se reduce a una estrella para no tapar el contador */
+@media (max-width: 360px) {
+  html:root body #categorias-home .categoria-card .cat-popular-badge { font-size: 0 !important; padding: 4px 8px !important; }
+  html:root body #categorias-home .categoria-card .cat-popular-badge::before { content: "★"; font-size: 11px; }
+}
