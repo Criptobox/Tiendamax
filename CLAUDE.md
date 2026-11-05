@@ -205,6 +205,7 @@ The customer pays at the moment of the sale, but **the owner pays the gestor's c
 - **The mark cannot live inside the sale.** `/ventas` is immutable (`".write": "!data.exists()"`), so it is a separate map `{idVenta: {p:1|0, ts}}` in `tm_comis_cobradas` and in `/privado/comisiones_cobradas` (owner-only, rewritable). Same pattern as the costs of the digital cards: local on the tap, the account 1.5 s later, merged per sale by newest `ts`, and what the account lacks is uploaded on load.
 - **Undoing writes `p:0`, it does not delete.** A deleted key is a mark the other phone still has as paid and would upload again.
 - USD and MN are never added (it goes through `gananciasDe`), and a sale with no commission has nothing to collect, so it is not listed.
+- **«Todo lo anterior» (`comisHasta`)** marks every closed month up to the one chosen, for someone who has not marked anything in months. It only offers closed months (the current one is still accumulating), shows up with two or more pending, defaults to *the month before the latest closed one* so the most recent payment is never marked by accident, and asks first with the count and the USD/MN totals.
 - The panel's code lives inside one IIFE: anything an `onclick` calls (`comisMarcar`…) must hang from `window`, or the buttons do nothing and nothing errors until someone taps. `tests/comis_check.mjs` (+ `test_comis_cobrar.py`) runs it in a browser: it caught exactly that.
 
 ### Where a sale came from
