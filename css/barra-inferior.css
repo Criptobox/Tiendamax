@@ -84,10 +84,13 @@
     opacity: 0; pointer-events: none; transform: scale(.6);
   }
 
-  /* El encabezado se queda con lo que no está abajo: logo, me gusta y avisos. */
+  /* El encabezado se queda con lo que no está abajo: logo, me gusta, tema y avisos. El tema va
+     pegado al corazón (en el DOM va después de los avisos). */
   html body.tm-con-barra .header .cart-icon-btn,
-  html body.tm-con-barra .header .hamburger-btn,
-  html body.tm-con-barra .header .header-theme-btn { display: none !important; }
+  html body.tm-con-barra .header .hamburger-btn { display: none !important; }
+  html body.tm-con-barra .header .heart-icon-btn { order: 1; }
+  html body.tm-con-barra .header .header-theme-btn { order: 2; }
+  html body.tm-con-barra .header .notif-icon-btn { order: 3; }
 
   /* Pantalla completa de búsqueda: sin barra. */
   body.search-open .tm-barra { display: none; }
