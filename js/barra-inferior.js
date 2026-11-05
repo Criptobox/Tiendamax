@@ -28,7 +28,9 @@
         if (visible('vistaPedidos')) return 'mas';        // «Mis pedidos» vive en el menú
         if (visible('vistaCategoria')) return 'categorias';
         if (visible('vistaMeGusta')) return '';           // tiene su corazón en el encabezado
-        return enBandaCategorias ? 'categorias' : 'inicio';
+        // Arriba del todo manda «Inicio»: con la portada compacta las categorías
+        // ya asoman en la primera pantalla y no por eso se está «en categorías».
+        return enBandaCategorias && window.pageYOffset > 60 ? 'categorias' : 'inicio';
     }
 
     var ultima = null;
@@ -79,6 +81,7 @@
             marcar();
         }, { rootMargin: '-90px 0px -55% 0px' }).observe(cats);
     }
+    window.addEventListener('scroll', function () { if (window.pageYOffset < 120) marcar(); }, { passive: true });
     barra.addEventListener('click', function (e) {
         var b = e.target.closest('[data-barra]');
         if (b && b.getAttribute('data-barra') !== 'categorias') setTimeout(marcar, 60);
