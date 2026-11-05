@@ -1,0 +1,35 @@
+/* ── Escala tipográfica (móvil) ─────────────────────────────────────────
+   Seis tamaños de texto en la tienda: 11 · 12 · 14 · 16 · 18 · 22. Antes había
+   22 casi iguales (10,5 / 11,5 / 12,5 / 13,5 / 14,5…), uno por regla.
+   Va dentro de una capa (@layer) a propósito: entre declaraciones !important
+   gana la capa MÁS ANTIGUA y, sobre todo, una capa vence a cualquier regla sin
+   capa sea cual sea su especificidad. Es lo único que gana a la maraña de
+   `html body #id … !important` de oficial-plus/rediseno-cards sin otra guerra.
+   Generado midiendo la portada a 390 px; los títulos grandes (>24 px) son
+   fluidos (clamp) y se dejan como están. No toca el badge «+ Popular», el chip
+   del encabezado ni la barra inferior: tienen su propia regla de ancho. */
+@layer escala {
+@media (max-width: 899px) {
+  html:root body div.pv2-trust,
+  html:root body div.hero-banner-slide > span { font-size: 11px !important; }
+  html:root body span.cat-count,
+  html:root body span.tm-of-nom,
+  html:root body div.producto-card.pcard-v2.tm-anim-card.mv-card > div.pv2-body > div.pv2-foot > button.btn-pedir-card.pv2-pedir { font-size: 12px !important; }
+  html:root body span.cat-name,
+  html:root body button.cat-vermas-btn,
+  html:root body span.tm-nom-txt,
+  html:root body div.tm-step > p,
+  html:root body strong.tm-step-hl,
+  html:root body p.tm-steps-foot,
+  html:root body span.resena-autor,
+  html:root body p.resena-texto,
+  html:root body a.btn.btn-large.tm-btn-tg,
+  html:root body a.btn.btn-large.tm-btn-wa,
+  html:root body div.footer-mobile-brand > p,
+  html:root body div.footer-bottom > p { font-size: 14px !important; }
+  html:root body span.tm-of-hoy,
+  html:root body p.section-subtitle,
+  html:root body span.resena-avatar,
+  html:root body p.tm-fade { font-size: 16px !important; }
+}
+}

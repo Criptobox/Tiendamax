@@ -320,14 +320,11 @@ html:root body.light-mode .testimonio-card .resena-verificada, html:root body.li
 html:root body.light-mode .section-eyebrow { color: #C23C10 !important; }
 html:root body.light-mode :is(.categorias-home .section-title em, #mas-vendidos .section-title em, #beneficios h2 em, #testimonios h2 em, .tm-steps-title em, .cta-final h2 em) { --coral-2: #D4480B; }
 
-/* Escala de tamaños: se acaban los medios píxeles (11,5 / 12,5 / 13,5 / 14,5)
-   que sumaban 8 tamaños casi iguales. Cada uno sube al entero siguiente. */
-html:root body .op-chip, html:root body .op-chip-txt, html:root body .section-eyebrow { font-size: 12px !important; }
-html:root body .tm-of-nom, html:root body .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir, html:root body .btn-pedir-card, html:root body #mas-vendidos #masVendidosGrid > .producto-card .btn-pedir-card { font-size: 13px !important; }
-html:root body #categorias-home .categoria-card .cat-count { font-size: 13px !important; }
-html:root body #categorias-home .cat-vermas-btn { font-size: 14px !important; }
-html:root body #categorias-home .categoria-card .cat-name { font-size: 15px !important; }
-html:root body .tm-step-hl, html:root body .testimonio-card .resena-texto, html:root body .resena-texto, html:root body .tm-step p { font-size: 15px !important; }
+/* El chip y el «+ Popular» quedan fuera de la escala (capa) porque tienen su propia regla de ancho. */
+@media (min-width: 361px) { html:root body #vistaInicio .op-chip, html:root body #vistaInicio .op-chip-txt { font-size: 12px !important; } }
+html:root body .verified { font-size: 11px !important; }
+html:root body .section-eyebrow { font-size: 12px !important; }
+@media (max-width: 360px) { html:root body .section-eyebrow { font-size: 11px !important; letter-spacing: .1em !important; } }
 /* A 320–360 px el chip y el selector de moneda no caben con 12 px: el chip se compacta. */
 @media (max-width: 360px) {
   html:root body #vistaInicio .op-chip, html:root body #vistaInicio .op-chip-txt { font-size: 11px !important; }
