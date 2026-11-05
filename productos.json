@@ -1502,7 +1502,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "stock": 50,
+    "stock": 51,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1544,7 +1544,7 @@
     "incluye": [
       "1x Mannol Safari 20W - 50 7404 5L"
     ],
-    "rev": 1793807038795,
+    "rev": 1793844940191,
     "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
   },
   {
@@ -3851,72 +3851,6 @@
     ],
     "slugsAnteriores": [
       "raqueta-electrica-recargable"
-    ],
-    "rev": 1793393116521
-  },
-  {
-    "id": 1780083017984,
-    "nombre": "PC Gaming Setup Premium",
-    "precioActual": 1000,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780083016341.webp",
-    "categoria": "PC Y LAPTOPS",
-    "subcategoria": "GAMING",
-    "stock": 1,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "pc-gaming-setup-premium",
-    "comision": 50,
-    "seoTitle": "PC Gaming Setup Premium en Cuba | TiendaMax",
-    "seoDescription": "PC Gaming Setup Premium (Estilo Acuario / White) Se vende potente PC Gamer con estética full blanca, refrigeración líquida y excelente rendimiento para…",
-    "descripcion": "PC Gaming armada, gabinete blanco con panel de cristal templado, iluminación RGB en los ventiladores y refrigeración líquida del procesador. Incluye tarjeta gráfica GeForce RTX 2070 Super y motherboard Aorus. Lista para jugar a alto rendimiento.",
-    "specs": [
-      "💻 NVIDIA GeForce RTX 2070 Super",
-      "💻 Gigabyte AORUS Gaming",
-      "🧊 Sistema de Refrigeración Líquida AIO para el procesador",
-      "🖥 Chasis blanco Estilo Acuario con doble panel de cristal templado",
-      "💡 Iluminación ARGB personalizable en ventiladores y bomba líquida"
-    ],
-    "ficha": [
-      {
-        "k": "🎮 Tarjeta gráfica",
-        "v": "NVIDIA GeForce RTX 2070 Super"
-      },
-      {
-        "k": "🔧 Placa madre",
-        "v": "Gigabyte AORUS Gaming"
-      },
-      {
-        "k": "❄️ Refrigeración",
-        "v": "Líquida AIO",
-        "nota": "para el procesador"
-      },
-      {
-        "k": "🖥️ Gabinete",
-        "v": "Blanco, doble panel de cristal templado"
-      },
-      {
-        "k": "💡 Iluminación",
-        "v": "ARGB personalizable",
-        "nota": "en ventiladores y bomba líquida"
-      }
-    ],
-    "incluye": [
-      "1x PC Gaming armada y lista para usar"
-    ],
-    "caracteristicas": [
-      {
-        "d": "Refrigeración líquida en el procesador: aguanta sesiones largas sin bajar el rendimiento por calor."
-      },
-      {
-        "d": "Doble panel de cristal templado, con la iluminación ARGB a la vista."
-      }
-    ],
-    "idealPara": [
-      "Jugar a alto rendimiento y trabajos de edición o render."
     ],
     "rev": 1793393116521
   },
