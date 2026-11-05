@@ -225,6 +225,14 @@ function actualizarVisibilidadBannerOferta(esHome) {
 function mostrarVistaInicio() {
     document.getElementById('vistaInicio').style.display = 'block';
     document.getElementById('vistaCategoria').style.display = 'none';
+    // Me gusta y Mis pedidos son vistas aparte: volver al inicio desde ellas
+    // (el logo, «Inicio» del menú, la barra inferior) las dejaba abiertas
+    // encima, sin cerrar. Sus propios botones «volver» ya llamaban a esto
+    // después de ocultarse, así que no cambia nada para ellos.
+    ['vistaMeGusta', 'vistaPedidos'].forEach(function (id) {
+        const v = document.getElementById(id);
+        if (v) v.style.display = 'none';
+    });
     actualizarVisibilidadBannerOferta(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }

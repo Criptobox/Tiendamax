@@ -75,7 +75,7 @@
          inyecta la primera vez que el cliente abre el chat. La URL va aquí
          (y no dentro del JS) para que bump_versions.py le ponga el hash del
          archivo y el navegador no sirva un cerebro viejo desde caché. -->
-    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=c63b1f74">
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=462b40bb">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -261,7 +261,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=0ffaaf0d" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=cc005007" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -272,11 +272,11 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=da987225">
+    <link rel="stylesheet" href="css/bundle.css?v=ec4a49b7">
 
     <!-- Styles moved to bundle.css -->
 </head>
-<body class="tm-no-oferta-banner">
+<body class="tm-no-oferta-banner tm-con-barra">
 <div class="nd-mesh" aria-hidden="true"><div class="nd-orb nd-o1"></div><div class="nd-orb nd-o2"></div><div class="nd-orb nd-o3"></div><div class="nd-orb nd-o4"></div></div>
 <a class="skip-link" href="#vistaInicio">Saltar al contenido</a>
 
@@ -1701,7 +1701,25 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=0ffaaf0d" defer></script>
+
+    <!-- ===== Barra inferior (móvil) — css/barra-inferior.css, js/barra-inferior.js =====
+         Solo se ve en ≤768px. Cada botón usa una acción que ya existe. -->
+    <nav class="tm-barra" id="tmBarra" aria-label="Navegación principal">
+        <button type="button" class="tm-barra-i" data-barra="inicio" data-action="volverAlInicio" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10.5 9-7.5 9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span>Inicio</span>
+        </button>
+        <button type="button" class="tm-barra-i" data-barra="categorias" onclick="tmBarraCategorias()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categorías</span>
+        </button>
+        <button type="button" class="tm-barra-i" data-barra="carrito" data-action="abrirCarrito" aria-label="Carrito">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>Carrito</span><i class="tm-barra-n" id="tmBarraCount" hidden>0</i>
+        </button>
+        <button type="button" class="tm-barra-i" data-barra="mas" data-action="abrirMenuMovil" aria-label="Más opciones">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Más</span>
+        </button>
+    </nav>
+
+    <script src="js/tm-bundle.js?v=cc005007" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1715,6 +1733,7 @@
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
     <script src="js/tienda-plus.js?v=ba354dad" defer></script>
     <script src="js/cart-share.js?v=797b6d55" defer></script>
+    <script src="js/barra-inferior.js?v=7840b773" defer></script>
     <script>
     // Mismo patrón que _searchPanelHistoryPushed (js/src/tm-data.src.js):
     // si se cierra el menú tocando la X o un link (no con el botón atrás),

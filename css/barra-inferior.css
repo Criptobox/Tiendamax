@@ -1,0 +1,110 @@
+/* ── Barra inferior del móvil ─────────────────────────────────────────
+   Inicio · Categorías · Carrito · Más, en una píldora flotante, y la burbuja
+   de Max como botón redondo al lado (la misma disposición que las apps de
+   compra). Solo ≤768px: en el ordenador ya está la navegación del encabezado.
+
+   Capas (z-index) de lo que ya existe: encabezado 1090, cartel de avisos
+   1096, modal de producto 2100, carrito 3000, menú 9999, Max 99998. La barra
+   va en 1095: por encima del encabezado y por DEBAJO de todo lo que se abre
+   encima de la tienda, así que un modal, el carrito o el menú la tapan solos
+   y no hace falta apagarla a mano. Lo único que sí se apaga es la búsqueda a
+   pantalla completa (body.search-open), que es una vista, no una capa.
+
+   El encabezado pierde carrito, tema y hamburguesa en el móvil porque ahora
+   están abajo («Más» abre el mismo menú). Siguen en el DOM: el código que los
+   busca por id o clase (el contador, el menú, el foco al cerrar) no se entera. */
+:root { --tm-barra-h: 62px; --tm-barra-sep: 12px; --tm-barra-fs: 11.5px;
+  /* La píldora ocupa el ancho menos la burbuja de Max, con tope: en una
+     tableta o un móvil tumbado no se estira a 700 px. */
+  --tm-barra-w: min(440px, calc(100vw - 92px)); }
+/* Móviles estrechos (320–380): una letra menos y menos aire, o «Categorías»
+   llena su botón de borde a borde. */
+@media (max-width: 380px) { :root { --tm-barra-w: calc(100vw - 86px); --tm-barra-fs: 10.5px; } }
+@media (max-width: 340px) { :root { --tm-barra-fs: 10px; } .tm-barra { padding: 5px; gap: 0; } }
+
+.tm-barra { display: none; }
+
+@media (max-width: 768px) {
+  html body.tm-con-barra { padding-bottom: calc(var(--tm-barra-h) + var(--tm-barra-sep) + env(safe-area-inset-bottom, 0px) + 28px) !important; }
+
+  .tm-barra {
+    display: flex; position: fixed; z-index: 1095;
+    left: 12px; width: var(--tm-barra-w);
+    bottom: calc(var(--tm-barra-sep) + env(safe-area-inset-bottom, 0px));
+    height: var(--tm-barra-h); padding: 6px; gap: 2px;
+    border-radius: 30px;
+    background: rgba(20, 17, 24, .88);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, .1);
+    box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .05);
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .tm-barra-i {
+    flex: 1 1 0; min-width: 0; position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    border: none; background: transparent; border-radius: 24px; padding: 0;
+    color: #9898a8; font: 600 var(--tm-barra-fs)/1 Inter, system-ui, sans-serif; letter-spacing: .01em;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: color .18s ease, background .18s ease, transform .12s ease;
+  }
+  .tm-barra-i:active { transform: scale(.94); }
+  .tm-barra-i svg { width: 24px; height: 24px; flex: none; }
+  .tm-barra-i[aria-current="page"] { color: #FF6A1F; background: rgba(255, 106, 31, .14); }
+  .tm-barra-i:focus-visible { outline: 2px solid #FF6A1F; outline-offset: -2px; }
+
+  /* Contador del carrito: un punto con cifra sobre el icono. */
+  .tm-barra-n {
+    position: absolute; top: 6px; left: calc(50% + 6px);
+    min-width: 17px; height: 17px; padding: 0 5px; border-radius: 99px;
+    background: #FF6A1F; color: #2B0E00; font: 800 10.5px/17px Inter, system-ui, sans-serif;
+    text-align: center; border: 2px solid rgba(20, 17, 24, .95); box-sizing: content-box;
+  }
+  .tm-barra-n[hidden] { display: none; }
+  .tm-barra-i.tm-bump svg { animation: tmBarraBump .45s ease; }
+  @keyframes tmBarraBump { 0% { transform: scale(1) } 35% { transform: scale(1.25) rotate(-6deg) } 100% { transform: scale(1) } }
+
+  /* Max ES el botón redondo de la barra, no una bola suelta por la pantalla:
+     mismo renglón, centrado con ella (56 contra 62 de alto, de ahí los 3 px),
+     y comparte su suerte. Antes flotaba a 99998 sobre el modal de producto, el
+     carrito y el menú, tapando «Pedir»; y subía y bajaba solo (cartel de
+     avisos, botones de pedir). Aquí se queda en su sitio y, cuando algo tapa
+     la barra (js/barra-inferior.js pone .tm-barra-cubierta), se va con ella.
+     Las reglas de tm-bot (--tmb-esq) y de tm-patches (cartel de avisos) llevan
+     !important: estas ganan por especificidad (html body + clases). */
+  html body.tm-con-barra .tm-bot-bubble {
+    width: 56px; height: 56px; right: auto;
+    left: calc(12px + var(--tm-barra-w) + 10px);
+    bottom: calc(var(--tm-barra-sep) + 3px + env(safe-area-inset-bottom, 0px)) !important;
+    translate: none !important;
+    transition: opacity .2s ease, transform .2s ease, box-shadow .25s ease;
+  }
+  html body.tm-con-barra .tm-bot-welcome { display: none !important; }
+  /* Con algo encima de la barra, tampoco hay bola. */
+  html body.tm-con-barra.tm-barra-cubierta .tm-bot-bubble {
+    opacity: 0; pointer-events: none; transform: scale(.6);
+  }
+
+  /* El encabezado se queda con lo que no está abajo: logo, me gusta y avisos. */
+  html body.tm-con-barra .header .cart-icon-btn,
+  html body.tm-con-barra .header .hamburger-btn,
+  html body.tm-con-barra .header .header-theme-btn { display: none !important; }
+
+  /* Pantalla completa de búsqueda: sin barra. */
+  body.search-open .tm-barra { display: none; }
+  /* Escribiendo: el teclado ya come media pantalla y la barra flotaría encima. */
+  body.tm-escribiendo .tm-barra { transform: translateY(140%); opacity: 0; pointer-events: none; }
+
+  /* Modo claro */
+  html body.light-mode .tm-barra {
+    background: rgba(255, 255, 255, .92); border-color: rgba(0, 0, 0, .08);
+    box-shadow: 0 16px 36px -16px rgba(0, 0, 0, .28), inset 0 1px 0 #fff;
+  }
+  html body.light-mode .tm-barra-i { color: #6B6B7A; }
+  html body.light-mode .tm-barra-i[aria-current="page"] { color: #E8501E; background: rgba(232, 80, 30, .1); }
+  html body.light-mode .tm-barra-n { border-color: #fff; background: #E8501E; color: #fff; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-barra, .tm-barra-i { transition: none; }
+  .tm-barra-i.tm-bump svg { animation: none; }
+}

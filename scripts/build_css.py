@@ -32,6 +32,7 @@ ORDEN = [
     "oferta-banner.css",   # tarjeta del banner de oferta del inicio — clases propias, no pisa nada
     "portada.css",         # orden y tamaño de los bloques del inicio — acotado a #vistaInicio
     "digital.css",         # tarjetas regalo/recargas: precio en USDT y su ficha — clases tm-dig-*, no pisa nada
+    "barra-inferior.css",  # barra inferior del móvil (Inicio/Categorías/Carrito/Más) — clases tm-barra*, solo ≤768px
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 

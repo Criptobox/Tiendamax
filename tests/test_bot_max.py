@@ -76,6 +76,27 @@ class BotPulidoTest(unittest.TestCase):
                            cwd=str(ROOT), capture_output=True, text=True, timeout=600)
         self.assertEqual(0, r.returncode, "\n" + (r.stderr or r.stdout).strip())
 
+    def test_auditoria_del_4_de_noviembre_en_node(self):
+        """Los 18 errores de la auditoría del 4-nov-2026, convertidos en pruebas.
+
+        Se le preguntó a Max «¿cuánto cuesta X y hay en stock?» por cada
+        producto con stock y 18 de 59 salieron mal: 4 de productos que la
+        tienda muestra (inflador, lámpara E27, compresor ST-221, puertos del
+        Archer C50) y 14 de categorías APAGADAS en el panel (TARJETAS, PC Y
+        LAPTOPS), que desde la tienda no existen a propósito: lo que fallaba era
+        cómo decía que no. Se prueba también la otra mitad —encendidas, Max las
+        vende—. Ver el .mjs, que mira el catálogo de hoy y se salta lo que ya
+        no esté.
+        """
+        import shutil
+        import subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(ROOT / "tests" / "max_auditoria_check.mjs")],
+                           cwd=str(ROOT), capture_output=True, text=True, timeout=600)
+        self.assertEqual(0, r.returncode, "\n" + (r.stderr or r.stdout).strip())
+
     def test_lo_que_no_se_vende_se_dice_despues_de_mirar_el_catalogo(self):
         """«Eso no lo manejo» va DESPUÉS de la rama que sí encontró productos.
 
