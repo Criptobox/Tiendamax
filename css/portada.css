@@ -276,3 +276,12 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html[data-cats="b"] body #categorias-home .categoria-card .cat-name { align-self: end; font-size: 11px !important; }
   html[data-cats="b"] body #categorias-home .categoria-card .cat-count { white-space: nowrap; min-width: 0; align-self: start; justify-content: flex-start !important; font-size: 10.5px !important; color: #a9a9b8 !important; margin: 0 !important; }
 }
+/* PREVIEW (temporal): tono de marca — todas las categorías con el naranja de la tienda */
+@media (max-width: 899px) {
+  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card { --cat-rgb: 255, 106, 31 !important; }
+  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card,
+  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card:nth-child(n) {
+    background: #17141b !important; box-shadow: none !important; border: 1px solid rgba(255, 255, 255, .09) !important;
+  }
+  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card .cat-icon, html[data-tono="marca"][data-cats] body #categorias-home .categoria-card:nth-child(n) .cat-icon { background: rgba(255, 106, 31, .14) !important; filter: none !important; color: #FF8A3D !important; }
+}
