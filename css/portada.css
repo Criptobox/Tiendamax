@@ -323,7 +323,7 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html[data-cats="c"] body #categorias-home .categoria-card .cat-icon,
   html[data-cats="c"] body #categorias-home .categoria-card:nth-child(n) .cat-icon {
     width: 44px !important; height: 44px !important; border-radius: 14px !important; margin: 0 0 12px !important;
-    background: rgb(var(--cat-rgb,255,106,31)) !important; border: 0 !important; filter: saturate(.92) !important; color: #fff !important;
+    background: rgb(var(--cat-rgb,255,106,31)) !important; border: 0 !important; filter: none !important; color: #fff !important;
   }
   html[data-cats="c"] body #categorias-home .categoria-card .cat-icon svg { width: 23px !important; height: 23px !important; stroke: #fff !important; color: #fff !important; }
   html[data-cats="c"] body #categorias-home .categoria-card .cat-name { font-size: 15px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: left !important; }
