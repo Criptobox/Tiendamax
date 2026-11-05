@@ -9320,135 +9320,80 @@ html body .cta-final .tm-channels-btns .btn-large { font-family: inherit !import
   html body #vistaInicio .nd-hero-stats .nd-stat span { font-size: 11px !important; letter-spacing: .02em !important; text-transform: none !important; }
 }
 
-/* ── PREVIEW (temporal): dos propuestas de tarjetas de categoría.
-   Se activan con html[data-cats="a|b"]; sin atributo, nada cambia. ── */
-@media (max-width: 899px) {
-  /* A · cuadrícula de 2 columnas, tarjeta horizontal oscura con acento de color */
-  html[data-cats="a"] body #categorias-home .categorias-grid,
-  html[data-cats="a"] body #categorias-home #catExtraWrap {
-    display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important;
-    margin: 0 !important; padding: 6px 0 8px !important; width: auto !important;
-    overflow: visible !important; -webkit-mask-image: none !important; mask-image: none !important;
-  }
-  html[data-cats="a"] body #categorias-home .categorias-grid::after { display: none !important; }
-  /* las extras llevan display:flex en línea (!important): se queda flex y envuelve a 2 columnas */
-  html[data-cats="a"] body #categorias-home #catExtraWrap { display: flex !important; flex-wrap: wrap !important; }
-  html[data-cats="a"] body #categorias-home #catExtraWrap .categoria-card { width: calc(50% - 4px) !important; box-sizing: border-box; }
-  html[data-cats="a"] body #categorias-home .categoria-card .cat-popular-badge { top: 50% !important; bottom: auto !important; right: 8px !important; left: auto !important; transform: translateY(-50%) !important; }
-  html[data-cats="a"] body #categorias-home #catExtraWrap.cat-extra-oculto { display: none !important; }
-  html[data-cats="a"] body #categorias-home .categoria-card,
-  html[data-cats="a"] body #categorias-home .categoria-card:nth-child(n) {
-    width: auto !important; min-height: 58px !important; padding: 9px 10px !important;
-    display: grid !important; grid-template-columns: 38px 1fr; grid-template-rows: auto auto;
-    column-gap: 10px; row-gap: 1px; align-items: center !important; justify-content: stretch !important; text-align: left !important;
-    border-radius: 16px !important;
-    background: linear-gradient(135deg, rgba(var(--cat-rgb,255,106,31), .16), rgba(255,255,255,.03) 70%), #17141b !important;
-    border: 1px solid rgba(var(--cat-rgb,255,106,31), .38) !important; box-shadow: none !important;
-  }
-  html[data-cats="a"] body #categorias-home .categoria-card .cat-icon { grid-row: 1 / 3; margin: 0 !important; width: 38px !important; height: 38px !important;
-    background: rgba(var(--cat-rgb,255,106,31), .20) !important; border: 0 !important; color: rgb(var(--cat-rgb,255,106,31)) !important; filter: brightness(1.25); }
-  html[data-cats="a"] body #categorias-home .categoria-card .cat-icon svg { width: 21px !important; height: 21px !important; }
-  html[data-cats="a"] body #categorias-home .categoria-card .cat-name { align-self: end; font-size: 12.5px !important; letter-spacing: .03em !important; }
-  html[data-cats="a"] body #categorias-home .categoria-card .cat-count { align-self: start; justify-content: flex-start !important; font-size: 11.5px !important; color: #a9a9b8 !important; margin: 0 !important; }
-  /* «Todos» pasa a ser una barra de ancho completo */
-  html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-column: 1 / -1; min-height: 46px !important; }
-  html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-icon { display: none !important; }
-  html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-template-columns: 1fr auto; }
-  html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-name,
-  html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { grid-row: 1; align-self: center; }
-  html[data-cats="a"] body #catVerMasBtn { width: 100%; margin: 0 0 6px !important; border-radius: 16px !important; }
+/* ── Categorías en el móvil: tarjeta con tinte suave del color de la categoría ──
+   El color es el de siempre (--cat-rgb, lo pone tmPintarCategoria); aquí solo
+   cambia cómo se pinta: tinte suave en la tarjeta e icono relleno con el color
+   exacto. Dos columnas, «Todos» como barra de ancho completo y, si queda una
+   tarjeta suelta al final, ocupa la fila entera. `html:root` solo sube la
+   especificidad por encima de las reglas de modo claro de arriba. */
 
-  /* B · la misma tira horizontal, más baja y con acento en vez de relleno */
-  html[data-cats="b"] body #categorias-home .categorias-grid .categoria-card,
-  html[data-cats="b"] body #categorias-home .categorias-grid .categoria-card:nth-child(n) {
-    width: 140px !important; min-height: 64px !important; padding: 9px 10px !important;
-    display: grid !important; grid-template-columns: 30px 1fr; column-gap: 8px; align-items: center !important; text-align: left !important;
-    background: linear-gradient(135deg, rgba(var(--cat-rgb,255,106,31), .18), rgba(255,255,255,.03) 70%), #17141b !important;
-    border: 1px solid rgba(var(--cat-rgb,255,106,31), .38) !important; box-shadow: none !important;
-  }
-  html[data-cats="b"] body #categorias-home .categoria-card .cat-popular-badge { top: 50% !important; bottom: auto !important; right: 8px !important; left: auto !important; transform: translateY(-50%) !important; }
-  html[data-cats="b"] body #categorias-home .categoria-card .cat-icon { grid-row: 1 / 3; margin: 0 !important; width: 30px !important; height: 30px !important;
-    background: rgba(var(--cat-rgb,255,106,31), .20) !important; border: 0 !important; color: rgb(var(--cat-rgb,255,106,31)) !important; filter: brightness(1.25); }
-  html[data-cats="b"] body #categorias-home .categoria-card .cat-icon svg { width: 18px !important; height: 18px !important; }
-  html[data-cats="b"] body #categorias-home .categoria-card .cat-name { align-self: end; font-size: 11px !important; }
-  html[data-cats="b"] body #categorias-home .categoria-card .cat-count { white-space: nowrap; min-width: 0; align-self: start; justify-content: flex-start !important; font-size: 10.5px !important; color: #a9a9b8 !important; margin: 0 !important; }
-}
-/* PREVIEW (temporal): tono de marca — todas las categorías con el naranja de la tienda */
 @media (max-width: 899px) {
-  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card { --cat-rgb: 255, 106, 31 !important; }
-  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card,
-  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card:nth-child(n) {
-    background: #17141b !important; box-shadow: none !important; border: 1px solid rgba(255, 255, 255, .09) !important;
-  }
-  html[data-tono="marca"][data-cats] body #categorias-home .categoria-card .cat-icon, html[data-tono="marca"][data-cats] body #categorias-home .categoria-card:nth-child(n) .cat-icon { background: rgba(255, 106, 31, .14) !important; filter: none !important; color: #FF8A3D !important; }
-}
-/* PREVIEW (temporal): tono «chip» — tarjeta neutra, el color de cada categoría vive en un icono relleno */
-@media (max-width: 899px) {
-  html[data-tono="chip"][data-cats] body #categorias-home .categoria-card,
-  html[data-tono="chip"][data-cats] body #categorias-home .categoria-card:nth-child(n) {
-    background: #17141b !important; border: 1px solid rgba(255, 255, 255, .08) !important; box-shadow: none !important;
-  }
-  html[data-tono="chip"][data-cats] body #categorias-home .categoria-card .cat-icon,
-  html[data-tono="chip"][data-cats] body #categorias-home .categoria-card:nth-child(n) .cat-icon {
-    background: rgb(var(--cat-rgb, 255,106,31)) !important; border: 0 !important; filter: saturate(.9) !important;
-    color: #14100a !important; border-radius: 12px !important;
-  }
-  html[data-tono="chip"][data-cats] body #categorias-home .categoria-card .cat-icon svg { stroke: #14100a !important; color: #14100a !important; }
-}
-@media (max-width: 899px) { html[data-cats="a"] body #categorias-home #categoriasGrid > .categoria-card:first-child { align-items: center !important; } }
-
-/* PREVIEW (temporal) C · tarjeta con tinte suave del color de la categoría, icono relleno arriba (html[data-cats="c"]) */
-@media (max-width: 899px) {
-  html[data-cats="c"] body #categorias-home .categorias-grid,
-  html[data-cats="c"] body #categorias-home #catExtraWrap {
+  html:root body #categorias-home .categorias-grid,
+  html:root body #categorias-home #catExtraWrap {
     display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important;
     margin: 0 !important; padding: 6px 0 8px !important; width: auto !important;
     overflow: visible !important; -webkit-mask-image: none !important; mask-image: none !important;
   }
-  html[data-cats="c"] body #categorias-home #catExtraWrap { display: flex !important; flex-wrap: wrap !important; }
-  html[data-cats="c"] body #categorias-home #catExtraWrap .categoria-card { width: calc(50% - 5px) !important; box-sizing: border-box; }
-  html[data-cats="c"] body #categorias-home #catExtraWrap.cat-extra-oculto { display: none !important; }
-  html[data-cats="c"] body #categorias-home .categorias-grid::after { display: none !important; }
-  html[data-cats="c"] body #categorias-home .categoria-card,
-  html[data-cats="c"] body #categorias-home .categoria-card:nth-child(n) {
-    width: auto !important; min-height: 0 !important; padding: 14px 14px 13px !important;
+  html:root body #categorias-home #catExtraWrap { display: flex !important; flex-wrap: wrap !important; }
+  html:root body #categorias-home #catExtraWrap .categoria-card { width: calc(50% - 5px) !important; box-sizing: border-box; }
+  html:root body #categorias-home #catExtraWrap.cat-extra-oculto { display: none !important; }
+  html:root body #categorias-home .categorias-grid::after { display: none !important; }
+  html:root body #categorias-home .categoria-card,
+  html:root body #categorias-home .categoria-card:nth-child(n) {
+    width: auto !important; min-height: 0 !important; padding: 12px 13px 11px !important;
     display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; text-align: left !important;
     border-radius: 22px !important; position: relative;
     background: linear-gradient(rgba(var(--cat-rgb,255,106,31), .17), rgba(var(--cat-rgb,255,106,31), .17)), #15121a !important;
     border: 1px solid rgba(var(--cat-rgb,255,106,31), .16) !important; box-shadow: none !important;
   }
-  html[data-cats="c"] body #categorias-home .categoria-card .cat-icon,
-  html[data-cats="c"] body #categorias-home .categoria-card:nth-child(n) .cat-icon {
-    width: 44px !important; height: 44px !important; border-radius: 14px !important; margin: 0 0 12px !important;
+  html:root body #categorias-home .categoria-card .cat-icon,
+  html:root body #categorias-home .categoria-card:nth-child(n) .cat-icon {
+    width: 40px !important; height: 40px !important; border-radius: 13px !important; margin: 0 0 10px !important;
     background: rgb(var(--cat-rgb,255,106,31)) !important; border: 0 !important; filter: none !important; color: #fff !important;
   }
-  html[data-cats="c"] body #categorias-home .categoria-card .cat-icon svg { width: 23px !important; height: 23px !important; stroke: #fff !important; color: #fff !important; }
-  html[data-cats="c"] body #categorias-home .categoria-card .cat-name { font-size: 15px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: left !important; }
-  html[data-cats="c"] body #categorias-home .categoria-card .cat-count { justify-content: flex-start !important; font-size: 12.5px !important; color: #a9a9b8 !important; margin: 3px 0 0 !important; }
-  html[data-cats="c"] body #categorias-home .categoria-card .cat-popular-badge { top: 12px !important; right: 12px !important; left: auto !important; bottom: auto !important; transform: none !important; }
+  html:root body #categorias-home .categoria-card .cat-icon svg { width: 21px !important; height: 21px !important; stroke: #fff !important; color: #fff !important; }
+  html:root body #categorias-home .categoria-card .cat-name { font-size: 14.5px !important; letter-spacing: 0 !important; text-transform: none !important; font-weight: 800 !important; text-align: left !important; }
+  html:root body #categorias-home .categoria-card .cat-count { justify-content: flex-start !important; font-size: 12.5px !important; color: #a9a9b8 !important; margin: 3px 0 0 !important; }
+  html:root body #categorias-home .categoria-card .cat-popular-badge { top: 12px !important; right: 12px !important; left: auto !important; bottom: auto !important; transform: none !important; }
   /* «Todos»: barra de ancho completo, sin icono */
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-column: 1 / -1; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 13px 16px !important; }
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-icon { display: none !important; }
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { margin: 0 !important; }
-  html[data-cats="c"] body #catVerMasBtn { width: 100%; margin: 0 0 8px !important; border-radius: 18px !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child { grid-column: 1 / -1; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 13px 16px !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-icon { display: none !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { margin: 0 !important; }
+  html:root body #catVerMasBtn { width: 100%; margin: 0 0 8px !important; border-radius: 18px !important; }
   /* Modo claro: pastel como en la referencia */
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card,
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card:nth-child(n) {
+  html:root body.light-mode #categorias-home .categoria-card,
+  html:root body.light-mode #categorias-home .categoria-card:nth-child(n) {
     background: linear-gradient(rgba(var(--cat-rgb,255,106,31), .16), rgba(var(--cat-rgb,255,106,31), .16)), #fff !important; border: 0 !important;
   }
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card .cat-name { color: #14121a !important; }
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card .cat-count { color: #5d5d6d !important; }
+  html:root body.light-mode #categorias-home .categoria-card .cat-name { color: #14121a !important; }
+  html:root body.light-mode #categorias-home .categoria-card .cat-count { color: #5d5d6d !important; }
 }
 @media (max-width: 899px) {
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child,
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child:nth-child(n) { grid-column: 1 / -1 !important; width: 100% !important; box-sizing: border-box; min-height: 0 !important; }
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-name,
-  html[data-cats="c"] body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { white-space: nowrap; }
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card.cat-color .cat-icon,
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card:nth-child(n) .cat-icon {
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child,
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child:nth-child(n) { grid-column: 1 / -1 !important; width: 100% !important; box-sizing: border-box; min-height: 0 !important; }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-name,
+  html:root body #categorias-home #categoriasGrid > .categoria-card:first-child .cat-count { white-space: nowrap; }
+  html:root body.light-mode #categorias-home .categoria-card.cat-color .cat-icon,
+  html:root body.light-mode #categorias-home .categoria-card:nth-child(n) .cat-icon {
     background: rgb(var(--cat-rgb,255,106,31)) !important; color: #fff !important; box-shadow: none !important;
   }
-  html[data-cats="c"] body.light-mode #categorias-home .categoria-card .cat-icon svg { stroke: #fff !important; color: #fff !important; }
+  html:root body.light-mode #categorias-home .categoria-card .cat-icon svg { stroke: #fff !important; color: #fff !important; }
+}
+
+@media (max-width: 899px) {
+  html:root body #categorias-home #categoriasGrid > .categoria-card:last-child:nth-child(even) {
+    grid-column: 1 / -1 !important; flex-direction: row !important; align-items: center !important; gap: 12px;
+  }
+  html:root body #categorias-home #categoriasGrid > .categoria-card:last-child:nth-child(even) .cat-icon { margin: 0 !important; }
+  html:root body #categorias-home #catExtraWrap > .categoria-card:last-child:nth-child(odd) {
+    width: 100% !important; flex-direction: row !important; align-items: center !important; gap: 12px;
+  }
+  html:root body #categorias-home #catExtraWrap > .categoria-card:last-child:nth-child(odd) .cat-icon { margin: 0 !important; }
+}
+/* Móviles estrechos: «+ Popular» se reduce a una estrella para no tapar el contador */
+@media (max-width: 360px) {
+  html:root body #categorias-home .categoria-card .cat-popular-badge { font-size: 0 !important; padding: 4px 8px !important; }
+  html:root body #categorias-home .categoria-card .cat-popular-badge::before { content: "★"; font-size: 11px; }
 }
 
 /* ===== digital.css ===== */
