@@ -183,7 +183,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 1,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -250,7 +250,7 @@
     "idealPara": [
       "Monitoreo de peso personal y control de salud."
     ],
-    "rev": 1793393116521,
+    "rev": 1793907881678,
     "slugsAnteriores": [
       "bascula-digital-alta"
     ],
@@ -1866,7 +1866,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1789066844710.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1925,7 +1925,7 @@
       "https://tiendamax.org/imagenes/img_1789066844710.webp",
       "https://tiendamax.org/imagenes/img_1778336859697.webp"
     ],
-    "rev": 1793393116521,
+    "rev": 1793907881678,
     "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 2m x 4m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
