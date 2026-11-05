@@ -125,5 +125,42 @@
         teclado();
     }
 
+    /* La bola de Max vive en la barra: si algo cubre la barra (modal de
+       producto, carrito, menú, búsqueda a pantalla completa, teclado, un panel
+       del propio Max), la bola se esconde también. En vez de listar cada capa,
+       se pregunta lo único que importa: ¿lo que hay en el centro de la barra
+       es la barra? Cualquier capa nueva que se añada mañana queda cubierta sin
+       tocar esto. En el ordenador la barra no existe y no se hace nada. */
+    var temporizador = null;
+    function revisarCubierta() {
+        temporizador = null;
+        var visible = getComputedStyle(barra).display !== 'none';
+        var cubierta = false;
+        if (visible) {
+            var r = barra.getBoundingClientRect();
+            var e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            cubierta = !(e && barra.contains(e));
+        } else {
+            // Oculta por CSS: en el ordenador es lo normal (la bola sigue como
+            // siempre); en el móvil es la búsqueda a pantalla completa, y la
+            // bola se va con la barra.
+            cubierta = !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+        }
+        document.body.classList.toggle('tm-barra-cubierta', cubierta);
+    }
+    function programarRevision() {
+        if (temporizador) return;
+        // Tras el cambio y otra vez al acabar su animación de entrada o salida.
+        temporizador = setTimeout(revisarCubierta, 80);
+        setTimeout(revisarCubierta, 420);
+    }
+    if ('MutationObserver' in window) {
+        new MutationObserver(programarRevision)
+            .observe(document.body, { attributes: true, attributeFilter: ['class', 'style'], subtree: true, childList: true });
+    }
+    window.addEventListener('resize', programarRevision);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', programarRevision);
+    revisarCubierta();
+
     marcar();
 })();

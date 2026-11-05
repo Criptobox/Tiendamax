@@ -1242,7 +1242,10 @@
     { re: /\b(laptop\w*|notebook\w*|(computador\w*|ordenador\w*|pc)\s+port[aá]til\w*)\b/i,
       que: 'laptops',
       nota: 'Laptops no manejo.',
-      ofrecer: 'En PC tengo un equipo de escritorio; dime si te sirve.',
+      // Aquí decía «en PC tengo un equipo de escritorio»: la categoría PC Y
+      // LAPTOPS está apagada en el panel y ese equipo no se ve en la tienda.
+      // Una oferta fija no puede seguir al catálogo; sin oferta no miente.
+      ofrecer: '',
       botones: ['📦 Categorías','💬 WhatsApp'] },
     // Lo que no se vende son los de COMBUSTIBLE. "generador" a secas dejaba
     // fuera al generador solar que sí está en la tienda, y con stock.
@@ -1261,6 +1264,32 @@
       nota: 'Tarjetas de memoria microSD no vendo.',
       ofrecer: 'Si es para una cámara, cualquiera de 32-128 GB clase 10 te sirve.',
       botones: ['🔒 Ver cámaras','💬 WhatsApp'] },
+    /* Tarjetas de regalo, saldos y recargas de juegos (categoría TARJETAS) y
+       el PC gamer (PC Y LAPTOPS): están en el catálogo pero APAGADAS en el
+       panel hasta que el dueño las encienda, y desde la tienda no existen.
+       Sin estas líneas Max contestaba «tarjeta PlayStation» con los métodos
+       de pago, «Apple Gift Card» con un altavoz y «Free Fire» con el recuento
+       del catálogo. Se callan solas cuando se encienden: noVendemosPara deja
+       pasar la pregunta si hay con stock algo cuyo NOMBRE encaje (las
+       regexes están escritas para que los nombres de esos productos casen).
+       Marca de plataforma sola NO cuenta (¿corre Free Fire?, ver Netflix):
+       hace falta la palabra de tarjeta, saldo, recarga o código al lado. */
+    { re: /\b(tarjeta\w*|saldo|gift\s?card|recarga\w*|c[oó]digo\w*)\s+(de\s+|para\s+)?(play\s?station|psn|xbox|steam|roblox|netflix|spotify|amazon|google\s?play|apple|itunes|nintendo|razer|fortnite|free\s?fire|pubg|disney|hbo|youtube)\b|\b(play\s?station|psn|xbox|steam|apple|amazon|google\s?play|nintendo)\s+(store\s+)?(gift\s?card|card|plus|pass)\b|\b(diamantes?|recarga\w*|uc|saldo|c[oó]digos?|robux|v-?bucks)\b.{0,16}\b(free\s?fire|pubg|fortnite|roblox)\b|\bspotify\s+premium\b|\b(visa|master\s?card)\b.{0,24}\b(prepag\w*|virtual\w*|recargable\w*|regalo)\b|\btarjeta\w*\s+(prepag\w*|virtual\w*|internacional\w*|de\s+regalo)\b/i,
+      que: 'tarjetas de regalo y recargas',
+      nota: 'Tarjetas de regalo, saldos y recargas de juegos no las tengo disponibles ahora mismo.',
+      ofrecer: '',
+      temprano: true,
+      // Los productos EXISTEN, pero su categoría está apagada en el panel
+      // (ver el comentario de arriba). tests/comandos_check.mjs lo distingue de
+      // una línea que niega algo comprable.
+      apagado: true,
+      botones: ['📦 Categorías','💬 WhatsApp'] },
+    { re: /\b(pc|computador\w*|ordenador\w*)\s+(gamer|gaming|de\s+escritorio|de\s+mesa)\b|\b(setup|equipo)\s+(gamer|gaming)\b|\bpc\s?gamer\b/i,
+      que: 'computadoras de escritorio',
+      nota: 'Computadoras de escritorio y equipos gamer no los manejo ahora mismo.',
+      ofrecer: '',
+      apagado: true,
+      botones: ['📦 Categorías','💬 WhatsApp'] },
     { re: /\bont\b|\bmodem de fibra\b|\bm[oó]dem de fibra\b/i,
       que: 'equipos de fibra (ONT)',
       nota: 'Equipos de fibra (ONT) no vendo — esos los pone ETECSA.',
@@ -1385,6 +1414,7 @@
       (w.length <= 3 || esModelo(w) || esCifra(w)) ? tienePalabra(t, w) : t.includes(w);
 
     const mentions = [];
+    const _porForma = [];
     for(const p of PRODUCTOS){
       const nombre = cleanForMatch(p.nombre);
       if(!nombre) continue;
@@ -1392,6 +1422,23 @@
         mentions.push({p, nombre, score: nombre.length, exactMatch:true});
         continue;
       }
+      /* La gente no copia el nombre entero: lo escribe sin lo que va entre
+         paréntesis («Compresor de Aire Portátil Digital ST-221» por «… ST-221
+         (Air Compressor)») o solo con el título, sin lo que va detrás de « | »
+         («Lámpara Ventilador de Techo Flower Fan Light E27 (40W)» por «… |
+         Ventilador de Rosca Tipo Bombillo»). Sin esto, el único nombre EXACTO
+         era el del otro producto contenido dentro («Compresor de Aire»,
+         «Ventilador de Techo»), y ganaba él: el cliente preguntaba por uno de
+         $35 con stock y le contestaban el de $28 agotado. Estas formas cuentan
+         como nombre exacto, y entre exactos gana el más largo. */
+      const _crudo = String(p.nombre || '');
+      const _titulo = _crudo.split(' | ')[0];
+      const _formas = [_titulo, _crudo.replace(/\([^)]*\)/g, ' '), _titulo.replace(/\([^)]*\)/g, ' ')]
+        .map(cleanForMatch)
+        .filter(f => f && f !== nombre && f.length >= 8 && t.includes(f))
+        .sort((x, y) => y.length - x.length);
+      // Se anota aparte: solo vale si identifica a UN producto (abajo).
+      if(_formas.length) _porForma.push({p, forma: _formas[0]});
       const todas = nombre.split(' ').filter(Boolean);
       const modelos = todas.filter(w => esModelo(w) || esCifra(w));
       const palabras = todas.filter(w => w.length > 3 || esModelo(w) || esCifra(w));
@@ -1405,6 +1452,16 @@
             score: foundDistintivas * 8 + foundTotal * 2 + modelosCasan * 6});
         }
       }
+    }
+    /* Un título abreviado cuenta como nombre exacto solo si es de UN producto.
+       Los dos «Smartphone itel A100C (64GB…)» y «(128GB…)» se llaman igual sin
+       lo que va entre paréntesis: elegir uno enseñaba el equivocado a quien
+       escribía el título a secas, que antes veía los dos. */
+    { const _cuenta = {};
+      _porForma.forEach(x => { _cuenta[x.forma] = (_cuenta[x.forma] || 0) + 1; });
+      _porForma.forEach(x => {
+        if(_cuenta[x.forma] === 1) mentions.push({p: x.p, nombre: x.forma, score: x.forma.length, exactMatch:true});
+      });
     }
     /* Si el cliente NOMBRÓ un modelo, el que lleva otro distinto no es una
        opción: es el equivocado. Quien escribe "nano loco m5" y recibe la
@@ -1840,6 +1897,9 @@
     // "tarjeta de PlayStation", "tarjeta visa": es algo que se vende (la
     // categoría TARJETAS), no una pregunta por cómo se paga.
     if(/\b(tarjeta\w*|gift ?card|recarga\w*|saldo)\b/.test(m) && _nombraDigital(m)) return 'busqueda';
+    // Si NO están en la tienda (categoría apagada), «tarjeta PlayStation» no es
+    // una pregunta por cómo se paga: se dice que no están, antes de «pago».
+    { const _nvT = noVendemosPara(text); if(_nvT && _nvT.temprano) return 'noVendemos'; }
     if(/\b(pago|pagar|pago|tarjeta|efectivo|contrareembolso|contra entrega|al recibir|zelle|enzona|en c[úu]anto.*pago)\b/.test(m)
        || /se paga\b|c[oó]mo se paga/.test(m)) return 'pago';
     if(/\b(garant[ií]a|warranty|garant)\b/.test(m)) return 'garantia';
@@ -2841,7 +2901,11 @@
      la d. Y esa es la avería de SEGURIDAD del módulo: quien la escribe así
      recibía un catálogo de baterías en vez de "deja de cargarla ahora mismo".
      Igual con "calienta mucho" (sin el "se") y "no coge carga". */
-  const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calienta\w*|calentando|hinchad\w*|hinch[oó]\b|hincha\b|inflad\w*|infl[oó]\b|abombad\w*|abomb[oó]\b|huele\b|oli[oó]\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos|no coge carga|no agarra carga)/i;
+  /* «inflad\w*» leía «inflado» (la batería hinchada, la avería de seguridad del
+     módulo) y se llevaba «Inflador Digital con Batería Recargable»: el cliente
+     preguntaba el precio y recibía «vamos a ver qué le pasa». La excepción es
+     solo para inflador/infladores; «inflada» y «se infló» siguen siendo avería. */
+  const _AVERIA_FUERTE = /\b(pit[ao]\w*|pitido|beep\b|parpade\w*|titil\w*|luz roja|se calienta|calienta\w*|calentando|hinchad\w*|hinch[oó]\b|hincha\b|inflad(?!or(?:es)?\b)\w*|infl[oó]\b|abombad\w*|abomb[oó]\b|huele\b|oli[oó]\b|humo\b|zumb\w*|aver[ií]\w*|no da corriente|dura menos|no coge carga|no agarra carga)/i;
   /* El «me» en medio es como se escribe aquí, y partía estas en dos: «se me
      apaga el inversor solo» no casaba con «se apaga» y acababa en el índice
      de INVERSORES —una lista para comprar, a quien ya tiene uno y se le
@@ -2908,10 +2972,22 @@
   }
 
   /** "error 04", "F05", "código E3" → el código tal cual lo escribió. */
+  /* Roscas de bombilla: «E27» es el casquillo de la «Lámpara Ventilador de
+     Techo … E27 (40W)», no el error E27 de un inversor. Con la regla suelta
+     [EFP]+cifras, preguntar el precio de esa lámpara abría el guion de avería. */
+  const _ROSCAS = /^E(12|14|26|27|40)$/i;
   function detectarCodigo(text){
-    const m = text.match(/\b(?:error|err|c[oó]digo|code|falla|fallo)\s*[:#-]?\s*([a-z]?\s?\d{1,3}[a-z]?)\b/i)
-           || text.match(/\b([EFP]\s?-?\s?\d{1,3})\b/i);
-    return m ? m[1].replace(/\s+/g, '').toUpperCase() : null;
+    const m = text.match(/\b(?:error|err|c[oó]digo|code|falla|fallo)\s*[:#-]?\s*([a-z]?\s?\d{1,3}[a-z]?)\b/i);
+    if(m) return m[1].replace(/\s+/g, '').toUpperCase();
+    const suelto = text.match(/\b([EFP]\s?-?\s?\d{1,3})\b/i);
+    if(!suelto) return null;
+    const cod = suelto[1].replace(/\s+/g, '').replace('-', '').toUpperCase();
+    if(_ROSCAS.test(cod)) return null;
+    // Sin la palabra «error»/«código» delante, un código suelto solo vale si
+    // no se está nombrando un producto del catálogo: «lámpara … E27» y
+    // «cable P15» no son averías.
+    if(detectProductMentions(text).length) return null;
+    return cod;
   }
 
   function buscarCodigo(codigo, familia, texto){
@@ -3868,6 +3944,46 @@ ${notasHTML}
     return { response: body, products: [p], quickReplies: ['💬 WhatsApp','📦 Categorías'] };
   }
 
+  /* Lo que preguntaron de UN producto, contestado con su ficha.
+     «¿Cuántos puertos tiene el Archer C50 y de qué velocidad?» devolvía la
+     ficha resumida (tres «specs») sin los puertos, que sí están en la tabla
+     completa del producto (`ficha`: «Puertos LAN/WAN — 1× WAN (10/100 Mbps) +
+     4× LAN»). Y en una revisión anterior llegó a decir que eran Gigabit: peor
+     que no contestar. Aquí solo se repite lo que la ficha dice, línea por
+     línea, y «¿es Gigabit?» se contesta únicamente si la ficha lo permite.
+     Una pregunta de precio o stock no trae palabras de ficha y no añade nada. */
+  const _SIN_DATO = new Set(['cuanto','cuantos','cuanta','cuantas','cual','cuales','como','que','quien','donde','cuando',
+    'tiene','tienen','tengo','tienes','trae','viene','vienen','hay','esta','estan','son','sera','seria','pero','para','con',
+    'sin','por','del','una','unos','unas','este','esta','esto','ese','esa','eso','cuesta','precio','vale','stock',
+    'disponible','disponibles','quiero','necesito','dime','dame','saber','sobre','informacion','info','detalles','detalle',
+    'producto','equipo','modelo','marca','favor','porfa','hola','gracias','tambien','ademas','mas','muy','algo','todo']);
+  function _datosPreguntados(p, consulta){
+    const f = p && p._orig && p._orig.ficha;
+    if(!Array.isArray(f) || !f.length || !consulta) return '';
+    const nombre = new Set(cleanForMatch(p.nombre).split(' '));
+    const q = cleanForMatch(consulta).split(' ')
+      .filter(w => w.length >= 4 && !_SIN_DATO.has(w) && !nombre.has(w));
+    if(!q.length) return '';
+    const fila = x => {
+      const k = String(x.k || '').trim(), v = String(x.v || '').trim(), n = String(x.nota || '').trim();
+      return `• <strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}${n && n !== v ? ` <em>(${escapeHtml(n)})</em>` : ''}`;
+    };
+    const filas = f.filter(x => x && x.k && x.v && q.some(w => _casaConPlural(cleanForMatch(x.k), w)));
+    let extra = '';
+    // «Gigabit»: la ficha de puertos lo dice o dice 10/100; si no dice nada, no se afirma nada.
+    if(q.some(w => /^(gigabit|giga|1000|gbe)$/.test(w))){
+      const pu = f.find(x => x && /puert|ethernet|\blan\b|\bwan\b/i.test(String(x.k || '')));
+      if(pu){
+        const t = (String(pu.v || '') + ' ' + String(pu.nota || ''));
+        if(/gigabit|1000\s?mbps|10\/100\/1000/i.test(t)) extra = '✅ <strong>Sí, tiene puertos Gigabit.</strong>';
+        else if(/10\/100/i.test(t)) extra = '❌ <strong>No son Gigabit:</strong> sus puertos son <strong>10/100 Mbps</strong> (Fast Ethernet).';
+        if(extra && !filas.includes(pu)) filas.unshift(pu);
+      }
+    }
+    if(!filas.length && !extra) return '';
+    return `🎯 <strong>Lo que preguntas:</strong>\n` + (extra ? extra + '\n' : '') + filas.map(fila).join('\n') + '\n\n';
+  }
+
   function buildDetalle(p, originalQuery){
     if(p && p._orig && p._orig.digital && Array.isArray(p._orig.importes)) return buildDetalleDigital(p);
     _context.lastProduct = p;
@@ -3875,6 +3991,7 @@ ${notasHTML}
     const enOferta = p.precioOriginal > 0 && p.precioOriginal > p.precio;
     const usado = p.usado;
     let body = `📦 <strong>${escapeHtml(p.nombre)}</strong>\n\n`;
+    body += _datosPreguntados(p, originalQuery);
     body += `💰 <strong>Precio:</strong> ${fmtUSD(p.precio)} USD · <em>${fmtMN(p.precio)}</em>\n`;
     if(enOferta){
       const off = Math.round((1 - p.precio/p.precioOriginal)*100);
@@ -4553,6 +4670,12 @@ ${notasHTML}
     else if(/(herramienta|tornillo|taladro|martillo|u[ú]tiles|trabajo)/.test(t)) categoria = 'UTILES';
     else if(/\b(ropa|shorts?|pantal[oó]n|camisa|blusa|vestido|chaqueta|abrigo|lencer[ií]a|traje de ba[ñn]o|underwear)\b/.test(t)) categoria = 'ROPA';
 
+    /* La palabra «gaming» daba la categoría JUEGOS, y JUEGOS (como PC Y
+       LAPTOPS y TARJETAS) está apagada en el panel: no tiene productos en la
+       tienda. «En este momento la categoría JUEGOS está agotada» es falso —no
+       está agotada, no se vende— y de paso mandaba a «ver otras categorías». Si
+       la categoría no tiene ninguno visible, no existe para el cliente. */
+    if(categoria && !PRODUCTOS.some(p => p.categoria === categoria)) categoria = null;
     if(categoria){
       const dispCount = PRODUCTOS.filter(p => p.categoria === categoria && p.stock > 0).length;
       if(dispCount === 0){
@@ -5405,6 +5528,17 @@ ${notasHTML}
     trozos.forEach((t, i) => {
       if(i === iPrincipal){ piezas.push({ i, data }); return; }
       if(yaHay.has(t.intent) || !_INTENT_PEGABLE.includes(t.intent)) return;
+      /* «¿Cuántos puertos tiene el Archer C50 y de qué velocidad?»: la segunda
+         mitad no pregunta otra cosa, sigue preguntando por el mismo producto,
+         y su respuesta ya va en «Lo que preguntas» de la ficha. Contestarla
+         como búsqueda aparte pegaba una moto, una lámpara y una soldadora
+         porque una de sus descripciones dice «velocidad». */
+      if(intent === 'detalle' && _context.lastProduct && _datosPreguntados(_context.lastProduct, t.trozo)) return;
+      /* «¿Cuánto cuesta X y hay en stock?»: la segunda mitad pregunta por X, no
+         por el inventario. Pegarle el recuento del catálogo («45 disponibles,
+         112 agotados») debajo de «no lo tengo» o de una ficha confunde: parece
+         que contesta que sí hay. El stock de X ya va en su respuesta. */
+      if((intent === 'detalle' || intent === 'noVendemos') && t.intent === 'stock') return;
       const d2 = (R[t.intent] || R.fallback)(t.trozo) || {};
       if(!_esTextoPegable(d2)) return;
       yaHay.add(t.intent);

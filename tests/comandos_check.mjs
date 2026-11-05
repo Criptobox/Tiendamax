@@ -327,8 +327,26 @@ for (const [q, esperado] of ENCAMINADAS) {
 // cliente por algo que sí tienes es peor que el fallo que esto arregla.
 {
     const catalogo = sb.productos || [];
+    // Categorías apagadas en el panel: existen en productos.json pero la tienda
+    // no las enseña, así que para el cliente no están.
+    const apagadas = new Set(Object.entries(
+        (JSON.parse(readFileSync(join(RAIZ, 'categorias.json'), 'utf8')).apagadas || {}).categorias || {})
+        .filter(([, v]) => v && v.off).map(([k]) => k));
     for (const item of B.NO_VENDEMOS) {
         const encontrado = catalogo.filter(p => Number(p.stock) > 0 && item.re.test(p.nombre || ''));
+        if (item.apagado) {
+            // Una línea marcada `apagado` habla de productos que SÍ están en el
+            // catálogo pero apagados. Vale mientras eso sea verdad: los que
+            // estén en una categoría ENCENDIDA no pueden negarse, y Max tiene
+            // que contestar con el producto (la línea se calla sola).
+            for (const p of encontrado.filter(x => !apagadas.has(x.categoria))) {
+                const r = B.responder('cuanto cuesta ' + p.nombre);
+                ok(!/no (lo |la |los |las )?(manejo|vendo|tengo)/i.test(r.response)
+                   && (r.products || [])[0] && r.products[0].nombre === p.nombre,
+                    `"${item.que}" está marcada como apagada pero "${p.nombre}" (${p.categoria}) está ENCENDIDA y Max la niega`);
+            }
+            continue;
+        }
         ok(!encontrado.length,
             `NO_VENDEMOS dice que no hay "${item.que}" pero el catálogo tiene: ${encontrado.map(p => p.nombre).join(', ')}`);
     }

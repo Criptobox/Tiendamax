@@ -9376,14 +9376,25 @@ body.tm-dig-abierta{overflow:hidden}
   .tm-barra-i.tm-bump svg { animation: tmBarraBump .45s ease; }
   @keyframes tmBarraBump { 0% { transform: scale(1) } 35% { transform: scale(1.25) rotate(-6deg) } 100% { transform: scale(1) } }
 
-  /* Max, redondo y a la altura de la barra. 3px por encima del borde de la
-     barra: la burbuja mide 56 y la barra 62, así quedan centradas. Si hay
-     cartel de avisos, la regla propia de tm-patches la sube (lleva !important
-     y más especificidad). */
-  html body.tm-con-barra:not(.tm-push-banner-visible) .tm-bot-bubble {
+  /* Max ES el botón redondo de la barra, no una bola suelta por la pantalla:
+     mismo renglón, centrado con ella (56 contra 62 de alto, de ahí los 3 px),
+     y comparte su suerte. Antes flotaba a 99998 sobre el modal de producto, el
+     carrito y el menú, tapando «Pedir»; y subía y bajaba solo (cartel de
+     avisos, botones de pedir). Aquí se queda en su sitio y, cuando algo tapa
+     la barra (js/barra-inferior.js pone .tm-barra-cubierta), se va con ella.
+     Las reglas de tm-bot (--tmb-esq) y de tm-patches (cartel de avisos) llevan
+     !important: estas ganan por especificidad (html body + clases). */
+  html body.tm-con-barra .tm-bot-bubble {
     width: 56px; height: 56px; right: auto;
     left: calc(12px + var(--tm-barra-w) + 10px);
-    bottom: calc(var(--tm-barra-sep) + 3px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--tm-barra-sep) + 3px + env(safe-area-inset-bottom, 0px)) !important;
+    translate: none !important;
+    transition: opacity .2s ease, transform .2s ease, box-shadow .25s ease;
+  }
+  html body.tm-con-barra .tm-bot-welcome { display: none !important; }
+  /* Con algo encima de la barra, tampoco hay bola. */
+  html body.tm-con-barra.tm-barra-cubierta .tm-bot-bubble {
+    opacity: 0; pointer-events: none; transform: scale(.6);
   }
 
   /* El encabezado se queda con lo que no está abajo: logo, me gusta y avisos. */
