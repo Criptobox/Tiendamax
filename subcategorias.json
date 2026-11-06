@@ -27,13 +27,14 @@
     "OTROS"
   ],
   "CARROS": [
-    "ACEITES Y LUBRICANTES",
     "REFRIGERANTES",
     "LLANTAS",
     "ACCESORIOS",
     "FILTROS",
     "PIEZAS Y OTROS",
-    "LUBRICANTES"
+    "LUBRICANTES",
+    "CAJA MECÁNICA Y AUTOMÁTICA",
+    "LIQUIDO DE FRENOS"
   ],
   "ROPA": [
     "HOMBRE",
