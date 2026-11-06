@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===== FIX: Subcategories showing only General =====
 // Override renderizarSubcategoriaTabs to also load from GitHub subcategorias.json
 async function cargarSubcategoriasDesdeGitHub() {
+    // En el panel, lo editado y aún sin publicar manda: el sitio va por detrás y lo borraría.
+    if (document.getElementById('adminPanel') && localStorage.getItem('tm_catsub_pend')) return;
     try {
         const res = await fetch('subcategorias.json', { cache: 'no-store' });
         if (res.ok) {

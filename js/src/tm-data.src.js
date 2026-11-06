@@ -1032,7 +1032,11 @@ async function cargarDatosDesdeGitHub() {
             if (tmAplicarApagadas(Array.isArray(dataCat) ? null : dataCat.apagadas)) {
                 productos = tmSoloVisibles(tmParse(localStorage.getItem('productos'), null) || []);
             }
-            if (Array.isArray(dataCat) && dataCat.length > 0) {
+            // En el panel, lo editado y aún sin publicar (tm_catsub_pend) MANDA: copiar aquí la
+            // lista del sitio encima lo borraba al volver a entrar. (La tienda pública no tiene la marca.)
+            if (document.getElementById('adminPanel') && localStorage.getItem('tm_catsub_pend')) {
+                // nada: se queda lo local
+            } else if (Array.isArray(dataCat) && dataCat.length > 0) {
                 localStorage.setItem('categorias', JSON.stringify(dataCat));
                 categorias = tmCatsVisibles(dataCat);
             } else if (dataCat.nombres && dataCat.nombres.length > 0) {
@@ -1087,6 +1091,7 @@ async function cargarDatosDesdeGitHub() {
                 if (!r.ok) return;
                 const fbCat = await r.json();
                 if (!fbCat || !Array.isArray(fbCat.nombres) || fbCat.nombres.length === 0) return;
+                if (document.getElementById('adminPanel') && localStorage.getItem('tm_catsub_pend')) return;   // lo editado sin publicar manda
                 // Solo aplicar si Firebase tiene datos más recientes que categorias.json
                 // (contra la lista entera: la de memoria no lleva las apagadas).
                 const todas = tmParseArray(localStorage.getItem('categorias'));
