@@ -2302,7 +2302,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=cc005007"></script>
+<script src="js/tm-bundle.js?v=54f1dd66"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -3114,9 +3114,8 @@ async function cargarDatos(recargar){
   }
   syncProductos(); // unifica PRODUCTOS con el bareword del motor y window.productos
   _ofertasFinAutoRevertir(); // ofertas con fecha de fin ya vencidas: revertir de una vez
-  CATEGORIAS = await jget('categorias.json') || [];
+  await catSubCargar();
   catApDesdeRepo(CATEGORIAS);
-  SUBCATS = await jget('subcategorias.json') || [];
   RADAR = await jget('radar.json');
   VENTAS = lsVentas();
   renderTodo();
@@ -5453,6 +5452,109 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
 }
 
 /* ============ CATEGORIAS / SUBCATS ============ */
+/* Lo que editas aquí se guarda y NO vuelve atrás.
+
+   Antes pasaba lo contrario, por tres motivos que no daban ningún error:
+   1. cargarDatos() leía categorias.json y subcategorias.json del SITIO (Pages,
+      que va un minuto o más por detrás) encima de lo editado y aún sin publicar:
+      editabas, volvías a entrar y salía lo de antes.
+   2. La publicación fusionaba con el repo por unión, así que lo borrado o
+      renombrado volvía (ver _tmMergeSubcategoriasConRepo en tm-catalog).
+   3. Con un producto modificado en la misma publicación, subcategorias.json ni
+      se subía; y renombrar una subcategoría modifica productos.
+
+   Ahora: lo editado queda en este teléfono y se marca como pendiente
+   (tm_catsub_pend); al abrir, lo pendiente MANDA sobre el repo y, si no hay
+   nada pendiente, se lee el repo fresco (por la API, no por Pages). Añadir,
+   borrar y cambiar el emoji se publican solos a los 4 s. Renombrar NO: cambia
+   también los productos, y publicar el nombre nuevo sin ellos dejaría una
+   pestaña vacía en la tienda; eso sale con «Actualizar tienda». */
+const CATSUB_PEND='tm_catsub_pend', CATSUB_REN='tm_catsub_ren';
+let _catSubTimer=null, _catSubEstado='';
+function _lsLista(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function _lsMapa(k){ try{ const o=JSON.parse(localStorage.getItem(k)||'{}'); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }catch(e){ return {}; } }
+function catSubDatosGitHub(){
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  return (user&&repo&&token) ? {user,repo,token} : null;
+}
+async function catSubLeerRepo(ruta){
+  const g=catSubDatosGitHub();
+  if(g && typeof _tmLeerJsonRepoFresco==='function'){ try{ const j=await _tmLeerJsonRepoFresco(g.user,g.repo,g.token,ruta); if(j) return j; }catch(e){} }
+  try{ return await jget(ruta); }catch(e){ return null; }
+}
+async function catSubCargar(){
+  const [rc, rs] = await Promise.all([catSubLeerRepo('categorias.json'), catSubLeerRepo('subcategorias.json')]);
+  const pend = !!localStorage.getItem(CATSUB_PEND);
+  const base = (rc && !Array.isArray(rc)) ? rc : {};
+  if(pend){
+    // Hay cambios sin publicar: lo editado manda. Del repo solo se toma `apagadas` (que viaja dentro de categorias.json).
+    const nombres=_lsLista('categorias'), iconos=_lsMapa('iconosPersonalizados');
+    CATEGORIAS = nombres.length ? Object.assign({}, base, {nombres, iconos: Object.assign({}, base.iconos||{}, iconos)}) : (rc||[]);
+    const sl=_lsMapa('subcategorias');
+    SUBCATS = Object.keys(sl).length ? sl : (rs||{});
+    // El motor (bundle) publica desde SUS variables: con la lista vieja del repo en ellas,
+    // «Actualizar tienda» subiría lo de antes encima de lo editado.
+    catSubSyncGlobal();
+    if(nombres.length){
+      try{ categorias = nombres.slice(); }catch(e){}
+      try{ if(typeof iconosPersonalizados!=='undefined'){ Object.keys(iconosPersonalizados).forEach(k=>{ if(!(k in iconos)) delete iconosPersonalizados[k]; }); Object.assign(iconosPersonalizados, iconos); } }catch(e){}
+    }
+  } else {
+    CATEGORIAS = rc || [];
+    SUBCATS = rs || [];
+    // Que la copia local no se quede vieja: la fusión de «Actualizar tienda» parte de ella.
+    if(rs && typeof rs==='object' && !Array.isArray(rs)){ try{ localStorage.setItem('subcategorias', JSON.stringify(rs)); }catch(e){} }
+  }
+}
+// Las listas que usan los selectores de productos (la variable `subcategorias` del motor) tienen que ver lo editado.
+function catSubSyncGlobal(){
+  try{ if(typeof subcategorias!=='undefined'){ const m=_lsMapa('subcategorias'); Object.keys(subcategorias).forEach(k=>delete subcategorias[k]); Object.assign(subcategorias, m); } }catch(e){}
+}
+function catSubEstado(t){ _catSubEstado=t||''; const e=document.getElementById('catsub-estado'); if(e) e.textContent=_catSubEstado; }
+function catSubQuitoCat(nm){            // la categoría ya no está: lo suyo en el repo no puede volver
+  const l=_lsLista('categoriasEliminadas'); if(!l.includes(nm)) l.push(nm);
+  try{ localStorage.setItem('categoriasEliminadas', JSON.stringify(l)); }catch(e){}
+}
+function catSubQuitoSub(cat, s){        // s === '*': todas las de esa categoría
+  const m=_lsMapa('subcategoriasEliminadas'); const l=m[cat]||(m[cat]=[]); if(!l.includes(s)) l.push(s);
+  try{ localStorage.setItem('subcategoriasEliminadas', JSON.stringify(m)); }catch(e){}
+}
+function catSubVuelve(nm, sub){         // se vuelve a crear con el mismo nombre: deja de estar «quitado»
+  if(sub==null){
+    try{ localStorage.setItem('categoriasEliminadas', JSON.stringify(_lsLista('categoriasEliminadas').filter(x=>x!==nm))); }catch(e){}
+    const m=_lsMapa('subcategoriasEliminadas'); if(m[nm]){ delete m[nm]; try{ localStorage.setItem('subcategoriasEliminadas', JSON.stringify(m)); }catch(e){} }
+  } else {
+    const m=_lsMapa('subcategoriasEliminadas'); if(m[nm]){ m[nm]=m[nm].filter(x=>x!==sub&&x!=='*'); if(!m[nm].length) delete m[nm]; try{ localStorage.setItem('subcategoriasEliminadas', JSON.stringify(m)); }catch(e){} }
+  }
+}
+// renombrar: no se publica solo (cambia también los productos)
+function catSubPendiente(esRenombre){
+  catSubSyncGlobal();
+  try{ localStorage.setItem(CATSUB_PEND, String(Date.now())); if(esRenombre) localStorage.setItem(CATSUB_REN, '1'); }catch(e){}
+  clearTimeout(_catSubTimer);
+  if(localStorage.getItem(CATSUB_REN)){ catSubEstado('📱 Guardado en este teléfono. Se publica al pulsar 🔄 Actualizar tienda (renombrar también cambia los productos).'); return; }
+  if(!catSubDatosGitHub()){ catSubEstado('📱 Guardado en este teléfono. Configura GitHub en ⚙️ para que se publique.'); return; }
+  catSubEstado('⏳ Guardando en la tienda…');
+  _catSubTimer=setTimeout(catSubPublicar, 4000);
+}
+async function catSubPublicar(){
+  const g=catSubDatosGitHub(); if(!g || localStorage.getItem(CATSUB_REN)) return;
+  const pend=localStorage.getItem(CATSUB_PEND)||'';
+  try{
+    const [rc, rs] = await Promise.all([catSubLeerRepo('categorias.json'), catSubLeerRepo('subcategorias.json')]);
+    const finC = await _tmMergeCategoriasConRepo(g.user, g.repo, rc);
+    const finS = await _tmMergeSubcategoriasConRepo(g.user, g.repo, rs);
+    let subidos=0;
+    if(JSON.stringify(finC)!==JSON.stringify(rc)){ await subirArchivoAGitHub(g.user,g.repo,g.token,'categorias.json',finC); subidos++; }
+    if(JSON.stringify(finS)!==JSON.stringify(rs)){ await subirArchivoAGitHub(g.user,g.repo,g.token,'subcategorias.json',finS); subidos++; }
+    _tmCatSubPublicado(pend);
+    catSubEstado('☁️ Guardado en la tienda'+(subidos?' (se ve en ~1 minuto)':' (ya estaba igual)'));
+  }catch(e){
+    catSubEstado('⚠️ No pude publicarlo ('+((e&&e.message)||'sin conexión')+'). Sigue guardado aquí: pulsa 🔄 Actualizar tienda para reintentar.');
+  }
+}
+window.catSubPublicar=catSubPublicar;
+
 function catNombres(){ if(Array.isArray(CATEGORIAS)) return CATEGORIAS.map(c=>typeof c==='string'?c:(c.nombre||c.name||'')); return (CATEGORIAS&&CATEGORIAS.nombres)||[]; }
 function catIcono(nm){ const ic=(CATEGORIAS&&CATEGORIAS.iconos)||{}; return ic[nm] || ic[(nm||'').toUpperCase()] || emojiCat(nm); }
 let CAT_VIEW='cat';
@@ -5486,13 +5588,15 @@ function renderCategorias(){
       return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}${catOff?' <span class="cat-off-tag">Categoría apagada: no sale ninguna</span>':''}</div>${subs.map(s=>{const se=escJsAttr(s);const off=catApagada(nm,s);return `<div class="${off||catOff?'cat-off':''}" style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px">${catApSwitch(nm,s)}<div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div>${off?'<span class="cat-off-tag">Apagada</span>':''}<span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
-  $('#cat-list').innerHTML = pills + `<div id="cat-ap-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px"></div>` + addForm + body;
+  $('#cat-list').innerHTML = pills + `<div id="cat-ap-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px"></div>` + `<div id="catsub-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px">${esc(_catSubEstado)}</div>` + addForm + body;
   catApAviso();
 }
 function catAgregar(){
   if(typeof agregarCategoria!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
   const inp=$('#newCategoryName'); if(!inp || !inp.value.trim()){ showToast('⚠️ Escribe la categoría'); return; }
+  const _nuevaCat=inp.value.trim();
   agregarCategoria();
+  catSubVuelve(_nuevaCat); catSubPendiente(false);
   setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS={nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}; }catch(e){} renderCategorias(); showToast('✅ Categoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar'); },120);
 }
 function subAgregar(){
@@ -5507,9 +5611,9 @@ function subAgregar(){
   map[cat].push(name);
   try{ localStorage.setItem('subcategorias', JSON.stringify(map)); }catch(e){ console.warn('[subcategorias] cuota llena', e); }
   SUBCATS=map;
-  if(typeof marcarTodoModificado==='function'){} // sync sube subcategorias.json desde localStorage
+  catSubVuelve(cat, name); catSubPendiente(false);
   renderCategorias();
-  showToast('✅ Subcategoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar');
+  showToast('✅ Subcategoría agregada','Se guarda sola en la tienda en unos segundos');
 }
 // ── Editar/borrar categorías y subcategorías ──
 // El motor sube categorias.json como {nombres:categorias, iconos:iconosPersonalizados}
@@ -5518,13 +5622,14 @@ function _saveCats(names, iconos){
   try{ categorias = names.slice(); }catch(e){}
   try{ if(typeof iconosPersonalizados!=='undefined' && iconos){ Object.keys(iconosPersonalizados).forEach(k=>{ if(!(k in iconos)) delete iconosPersonalizados[k]; }); Object.assign(iconosPersonalizados, iconos); } }catch(e){}
   tmGuardarLS('categorias', names);
-  CATEGORIAS = { nombres: names.slice(), iconos: Object.assign({}, (CATEGORIAS&&CATEGORIAS.iconos)||{}, iconos||{}) };
+  CATEGORIAS = Object.assign({}, (CATEGORIAS&&!Array.isArray(CATEGORIAS))?CATEGORIAS:{}, { nombres: names.slice(), iconos: Object.assign({}, (CATEGORIAS&&CATEGORIAS.iconos)||{}, iconos||{}) });
 }
 function catRenombrar(nm){
   const nuevo=(prompt('Nuevo nombre para la categoría:', nm)||'').trim(); if(!nuevo||nuevo===nm) return;
   const names=catNombres().map(c=>c===nm?nuevo:c);
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); if(ic[nm]){ ic[nuevo]=ic[nm]; delete ic[nm]; }
   _saveCats(names, ic);
+  catSubQuitoCat(nm); catSubQuitoSub(nm,'*'); catSubVuelve(nuevo); catSubPendiente(true);
   catApRenombrar(nm, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)){ p.categoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
@@ -5540,8 +5645,9 @@ function catEmoji(nm){
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); ic[nm]=nuevo;
   _saveCats(catNombres(), ic);
   tmGuardarLS('iconosPersonalizados', ic);
+  catSubPendiente(false);
   renderCategorias(); renderProductos();
-  showToast('😀 Emoji cambiado','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
+  showToast('😀 Emoji cambiado','Se guarda solo en la tienda en unos segundos');
 }
 function catBorrar(nm){
   const n=PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
@@ -5550,14 +5656,16 @@ function catBorrar(nm){
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); delete ic[nm];
   _saveCats(names, ic);
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; }catch(e){}
+  catSubQuitoCat(nm); catSubQuitoSub(nm,'*'); catSubPendiente(false);
   renderCategorias(); fillAgregarCategorias();
-  showToast('🗑️ Categoría borrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
+  showToast('🗑️ Categoría borrada','Se guarda sola en la tienda en unos segundos');
 }
 function subRenombrar(cat, s){
   const nuevo=(prompt('Nuevo nombre para la subcategoría:', s)||'').trim(); if(!nuevo||nuevo===s) return;
   let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
   if(map[cat]) map[cat]=map[cat].map(x=>x===s?nuevo:x);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
+  catSubQuitoSub(cat, s); catSubVuelve(cat, nuevo); catSubPendiente(true);
   catApRenombrar(cat, null, s, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)){ p.subcategoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   renderCategorias();
@@ -5568,8 +5676,9 @@ function subBorrar(cat, s){
   let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
   if(map[cat]) map[cat]=map[cat].filter(x=>x!==s);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
+  catSubQuitoSub(cat, s); catSubPendiente(false);
   renderCategorias();
-  showToast('🗑️ Subcategoría borrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
+  showToast('🗑️ Subcategoría borrada','Se guarda sola en la tienda en unos segundos');
 }
 /* ── Apagar / encender categorías y subcategorías ──
    Apagada = no sale en la tienda: ni la tarjeta, ni la pestaña, ni sus

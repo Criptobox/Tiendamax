@@ -511,7 +511,20 @@ async function _tmMergeCategoriasConRepo(user, repo, remotoYaLeido) {
 }
 
 // ── Anti-pisado: igual que la de categorías, pero para subcategorias.json
-// ({ CATEGORIA: [sub, sub...] }). Fusiona por categoría, unión de subcategorías.
+// ({ CATEGORIA: [sub, sub...] }). Fusiona por categoría, unión de subcategorías
+// — PERO sin resucitar lo que el panel borró o renombró.
+//
+// Una unión pura no deja borrar ni renombrar nada: el repo todavía tiene lo
+// viejo, la unión lo devuelve, y la subcategoría «borrada» volvía en cada
+// publicación (con las categorías pasaba igual: `categoriasEliminadas` se leía
+// aquí pero nadie la escribía). El panel apunta ahora lo que quita en
+// `categoriasEliminadas` (nombres) y `subcategoriasEliminadas`
+// ({CAT: [sub, ...]}, con '*' = todas las de esa categoría). Esa lista se vacía
+// en cuanto lo publicado ya no lo tiene (ver _tmCatSubPublicado).
+function _tmSubcatsEliminadas() {
+    try { const o = JSON.parse(localStorage.getItem('subcategoriasEliminadas') || '{}'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; }
+    catch (e) { return {}; }
+}
 async function _tmMergeSubcategoriasConRepo(user, repo, remotoYaLeido) {
     const local = tmParseObject(localStorage.getItem('subcategorias'));
     let remoto = null;
@@ -520,13 +533,33 @@ async function _tmMergeSubcategoriasConRepo(user, repo, remotoYaLeido) {
     if (_j && typeof _j === 'object' && !Array.isArray(_j)) remoto = _j;
     if (!remoto) return local;
 
+    const catsEliminadas = new Set(tmParseArray(localStorage.getItem('categoriasEliminadas')));
+    const tumbas = _tmSubcatsEliminadas();
+    const quitada = (cat, s) => { const t = tumbas[cat] || []; return t.includes('*') || t.includes(s); };
+
     const merged = {};
     Object.keys(local).forEach(cat => { merged[cat] = (local[cat] || []).slice(); });
     Object.keys(remoto).forEach(cat => {
-        if (!merged[cat]) { merged[cat] = (remoto[cat] || []).slice(); return; }
-        (remoto[cat] || []).forEach(s => { if (!merged[cat].includes(s)) merged[cat].push(s); });
+        // Categoría quitada o renombrada desde el panel: lo suyo en el repo no vuelve.
+        if (!merged[cat] && catsEliminadas.has(cat)) return;
+        if (!merged[cat]) merged[cat] = [];
+        (remoto[cat] || []).forEach(s => { if (!merged[cat].includes(s) && !quitada(cat, s)) merged[cat].push(s); });
+        if (!merged[cat].length && !(cat in local)) delete merged[cat];
     });
     return merged;
+}
+
+// Lo publicado ya refleja lo editado: se vacían las listas de «quitado» y la
+// marca de pendiente. Solo si no hubo otra edición mientras se publicaba (la
+// marca guarda la hora de la última edición): esa otra aún está por subir.
+function _tmCatSubPublicado(pendAlEmpezar) {
+    try {
+        if ((localStorage.getItem('tm_catsub_pend') || '') !== (pendAlEmpezar || '')) return;
+        localStorage.removeItem('categoriasEliminadas');
+        localStorage.removeItem('subcategoriasEliminadas');
+        localStorage.removeItem('tm_catsub_pend');
+        localStorage.removeItem('tm_catsub_ren');
+    } catch (e) {}
 }
 
 // Evita que el sync borre descripciones: el admin carga el catálogo lite (sin
@@ -710,6 +743,7 @@ async function sincronizarTodoConGitHub() {
        detrás de otra: cinco idas y vueltas encadenadas antes de empezar a
        subir. Desde un móvil en Cuba eso es el grueso de la espera. (Las
        SUBIDAS siguen en fila: ahí el orden sí importa, ver más abajo.) */
+    const _pendCatSub = localStorage.getItem('tm_catsub_pend') || '';
     const [_cfgRepo, _prodRepo, _catRepo, _subcatRepo, _shasRaiz] = await Promise.all([
         _tmLeerJsonRepoFresco(user, repo, token, 'config.json').catch(() => null),
         _tmLeerJsonRepoFresco(user, repo, token, 'productos.json').catch(() => null),
@@ -818,7 +852,7 @@ async function sincronizarTodoConGitHub() {
     // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
     let archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path.startsWith('cambios/') || ['config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
+        ? archivos.filter(a => a.path.startsWith('cambios/') || ['config.json', 'grupos_facebook_config.json', 'categorias.json', 'subcategorias.json'].includes(a.path))
         : archivos;
 
     /* Lo que ya está igual en el repo no se sube.
@@ -878,6 +912,7 @@ async function sincronizarTodoConGitHub() {
         limpiarProductosModificados();
         if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
         _cuadrarMemoria();
+        _tmCatSubPublicado(_pendCatSub);
         _tmSyncPendientes = [];
         mostrarNotificacion('✅ No había nada que publicar: la tienda ya estaba al día.');
         return;
@@ -918,6 +953,7 @@ async function sincronizarTodoConGitHub() {
         // lite pueden "perder" un producto recién agregado ni resucitar uno
         // agotado — la copia local ya es la publicada.
         _cuadrarMemoria();
+        _tmCatSubPublicado(_pendCatSub);
         _tmPublicarVersionFirebase();
         const info = (hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`)
                    + (_sinCambio ? `, ${_sinCambio} sin cambios` : '');
