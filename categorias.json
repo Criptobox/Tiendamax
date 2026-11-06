@@ -76,6 +76,13 @@
         "ts": 1793342720568
       }
     },
-    "subcategorias": {}
+    "subcategorias": {
+      "CARROS": {
+        "LLANTAS": {
+          "off": true,
+          "ts": 1793983906722
+        }
+      }
+    }
   }
 }
