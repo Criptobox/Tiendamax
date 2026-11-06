@@ -1228,7 +1228,7 @@
     "precioActual": 40,
     "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 20,
     "masVendido": false,
     "usado": false,
@@ -1271,7 +1271,7 @@
     "incluye": [
       "1x Mannol 5W30 5L"
     ],
-    "rev": 1793741141563,
+    "rev": 1793980756906,
     "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
   },
   {
@@ -1280,7 +1280,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 29,
     "masVendido": false,
     "usado": false,
@@ -1313,7 +1313,7 @@
     "slugsAnteriores": [
       "mannol-ag13-40-c-4014-5l"
     ],
-    "rev": 1793741241705,
+    "rev": 1793980756906,
     "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
     "precioOriginal": 0,
     "comision": 0.75,
@@ -1329,7 +1329,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 20,
     "masVendido": false,
     "usado": false,
@@ -1362,7 +1362,7 @@
     "slugsAnteriores": [
       "mannol-ag13-40-c-4013-5l"
     ],
-    "rev": 1793812243887,
+    "rev": 1793980756906,
     "precioOriginal": 0,
     "comision": 0.75,
     "comisionMoneda": "USD",
@@ -1378,7 +1378,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 24,
     "masVendido": false,
     "usado": false,
@@ -1411,7 +1411,7 @@
     "slugsAnteriores": [
       "mannol-ag11-40-c-4011-5l"
     ],
-    "rev": 1793741241705,
+    "rev": 1793980756906,
     "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros.",
     "precioOriginal": 0,
     "comision": 0.75,
@@ -1501,7 +1501,7 @@
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 51,
     "masVendido": false,
     "usado": false,
@@ -1544,7 +1544,7 @@
     "incluye": [
       "1x Mannol Safari 20W - 50 7404 5L"
     ],
-    "rev": 1793844940191,
+    "rev": 1793980756906,
     "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
   },
   {
@@ -1553,7 +1553,7 @@
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783918610323.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 0,
     "masVendido": false,
     "usado": false,
@@ -1597,7 +1597,7 @@
     "incluye": [
       "1x Mannol Special PLUS 10W - 30 7512. 5L"
     ],
-    "rev": 1793393116521
+    "rev": 1793980756906
   },
   {
     "id": 1778336613589,
@@ -2682,7 +2682,7 @@
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 53,
     "masVendido": false,
     "usado": false,
@@ -2728,7 +2728,7 @@
     "slugsAnteriores": [
       "mannol-ts-4-15w40-7104-5l"
     ],
-    "rev": 1793740402155,
+    "rev": 1793980756906,
     "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros."
   },
   {
@@ -2737,7 +2737,7 @@
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783918493021.webp",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "stock": 23,
     "masVendido": false,
     "usado": false,
@@ -2780,7 +2780,7 @@
     "incluye": [
       "1x Mannol Defender 10W - 40 7507. 5L"
     ],
-    "rev": 1793740402155,
+    "rev": 1793980756906,
     "descripcion": "Aceite de motor MANNOL DEFENDER (código 7507), 10W-40, sintético, API SP, ACEA A3/B4. Envase de 5 litros."
   },
   {
@@ -13570,7 +13570,7 @@
     "comision": 1.75,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13656,7 +13656,7 @@
       "1× Garrafa de Aceite Sintético MANNOL Energy 7511 5W-30 (Ester Technology)"
     ],
     "slug": "mannol-energy-7511-5w30",
-    "rev": 1793723368409,
+    "rev": 1793980756906,
     "seoTitle": "MANNOL Energy 7511 5W-30 en Cuba | TiendaMax",
     "seoDescription": "El MANNOL Energy 7511 5W-30 es un aceite de motor hidrocraqueado (HC) 100% sintético de última generación, formulado con Ester Technology (tecnología de…"
   },
@@ -13674,7 +13674,7 @@
     "comision": 0.25,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13759,7 +13759,7 @@
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
     ],
     "slug": "liquido-duty-dot-3-500-ml",
-    "rev": 1793740402155,
+    "rev": 1793980756906,
     "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
     "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…",
     "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes."
@@ -13778,7 +13778,7 @@
     "comision": 0.5,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13863,7 +13863,7 @@
       "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
     ],
     "slug": "liquido-fluid-dot-4-3002-1l",
-    "rev": 1793740402155,
+    "rev": 1793980756906,
     "seoTitle": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
     "seoDescription": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues…",
     "descripcion": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues hidráulicos en todo tipo de vehículos automotores modernos. Su avanzada composición química ofrece un punto de ebullición elevado (superior a 240 °C), evitando con máxima efectividad el fenómeno de vapor lock (formación de burbujas de gas por sobrecalentamiento) en frenadas bruscas, prolongadas o bajo cargas pesadas."
@@ -14382,7 +14382,7 @@
     "comision": 0.5,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14473,9 +14473,7 @@
       "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
     ],
     "slug": "aceite-digear-80w90-1-litro",
-    "rev": 1793980584959,
-    "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
-    "seoDescription": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios…"
+    "rev": 1793980756906
   },
   {
     "id": 1793980370363,
@@ -14492,7 +14490,7 @@
     "comision": 1.75,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14583,9 +14581,7 @@
       "1× Garrafa de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (5 Litros)"
     ],
     "slug": "aceite-digear-80w90-5-litros",
-    "rev": 1793980584959,
-    "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
-    "seoDescription": "El DIMASOIL Digear 80W90 (Garrafa de 5 Litros) es un fluido lubricante de base mineral en formato económico de gran volumen, formulado especialmente para…"
+    "rev": 1793980756906
   },
   {
     "id": 1793980583146,
@@ -14602,7 +14598,7 @@
     "comision": 0.75,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
-    "subcategoria": "ACEITES Y LUBRICANTES",
+    "subcategoria": "LUBRICANTES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14682,8 +14678,6 @@
       "1× Botella de Aceite Sintético para Transmisión FANFARO CVT 8601 (1 Litro)"
     ],
     "slug": "aceite-cvt-8601-1-litro",
-    "rev": 1793980584959,
-    "seoTitle": "Aceite Sintético para Transmisión Automática… | TiendaMax",
-    "seoDescription": "El FANFARO CVT 8601 (1 Litro) es un fluido de transmisión sintético de ultra alto rendimiento diseñado especialmente para las exigencias mecánicas de las…"
+    "rev": 1793980756906
   }
 ]
