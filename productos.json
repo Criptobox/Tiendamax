@@ -13203,19 +13203,17 @@
   {
     "id": 1793662537113,
     "nombre": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
-    "descripcion": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en recorridos urbanos intensos. Destaca por incorporar una potente controladora programable VOTOL EM-50 combinada con un motor de alta eficiencia de 3000W, logrando una respuesta de aceleración inmediata, entrega de torque suave y una velocidad máxima controlada de 50 km/h.",
     "imagen": "https://tiendamax.org/imagenes/img_1793662535527.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793662535527.webp"
     ],
-    "precioActual": 1800,
-    "precioOriginal": 0,
-    "descuento": 0,
+    "precioActual": 1700,
+    "precioOriginal": 1800,
+    "descuento": 6,
     "stock": 5,
-    "comision": 50,
+    "comision": 30,
     "comisionMoneda": "USD",
     "categoria": "MOTOS",
-    "subcategoria": "",
     "masVendido": true,
     "usado": false,
     "garantia": "15 días",
@@ -13323,9 +13321,10 @@
       "🎁 Regalos incluidos: 1× Casco de protección + 1× Malla elástica de agarre para carga"
     ],
     "slug": "moto-707-3000w-48v-50ah",
-    "rev": 1793663550154,
+    "rev": 1794002529516,
     "seoTitle": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
-    "seoDescription": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en…"
+    "seoDescription": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en…",
+    "descripcion": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en recorridos urbanos intensos. Destaca por incorporar una potente controladora programable VOTOL EM-50 combinada con un motor de alta eficiencia de 3000W, logrando una respuesta de aceleración inmediata, entrega de torque suave y una velocidad máxima controlada de 50 km/h."
   },
   {
     "id": 1793662856382,
