@@ -14473,8 +14473,114 @@
       "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
     ],
     "slug": "aceite-digear-80w90-1-litro",
-    "rev": 1793980165123,
-    "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
-    "seoDescription": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios…"
+    "rev": 1793980372043
+  },
+  {
+    "id": 1793980370363,
+    "nombre": "Aceite Mineral para Transmisión DIMASOIL Digear 80W-90 (Garrafa 5 Litros)",
+    "descripcion": "El DIMASOIL Digear 80W90 (Garrafa de 5 Litros) es un fluido lubricante de base mineral en formato económico de gran volumen, formulado especialmente para cajas de cambios manuales, diferenciales, cajas de transferencia y engranajes hipoidales sometidos a cargas severas y presiones extremas (Extreme Pressure / EP). Elaborado con aceites base altamente refinados y un avanzado paquete de aditivos azufre-fósforo, garantiza una protección robusta contra el desgaste metálico, el picado (pitting) y la formación de corrosión en piñones y rodamientos.",
+    "imagen": "https://tiendamax.org/imagenes/img_1793980368355.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793980368355.webp"
+    ],
+    "precioActual": 35,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 1.75,
+    "comisionMoneda": "USD",
+    "categoria": "CARROS",
+    "subcategoria": "ACEITES Y LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "💧 Contenido Neto: 5 Litros",
+      "🛢️ Viscosidad: SAE 80W-90",
+      "🧪 Base Mineral de Alta Calidad (Mineral)",
+      "🛡️ Especificaciones: API GL-4 / GL-5 / MT-1 / MIL-L-2105D"
+    ],
+    "fechaAgregado": "2026-11-06T15:52:50.364Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "DIMASOIL"
+      },
+      {
+        "k": "Línea / Modelo",
+        "v": "Digear 80W90",
+        "nota": "Mineral"
+      },
+      {
+        "k": "Contenido Neto",
+        "v": "5 Litros",
+        "nota": "5000 ml"
+      },
+      {
+        "k": "Tipo de Base",
+        "v": "Mineral de alta calidad refinada"
+      },
+      {
+        "k": "Grado de Viscosidad",
+        "v": "SAE 80W-90"
+      },
+      {
+        "k": "Clasificación de Servicio API",
+        "v": "API GL-4 / API GL-5 / API MT-1"
+      },
+      {
+        "k": "Especificación Militar",
+        "v": "MIL-L-2105D / MIL-PRF-2105E"
+      },
+      {
+        "k": "Compatibilidad de Transmisiones",
+        "v": "Cajas manuales, diferenciales traseros/delanteros, ejes de mando hipoidales y reductoras"
+      },
+      {
+        "k": "Propiedades",
+        "v": "Extrema Presión (EP), antidesgaste, antioxidante y espumante controlado"
+      },
+      {
+        "k": "Envase",
+        "v": "Garrafa ergonómica de 5 Litros de color gris con asa de agarre integrada y tapón roscado con sello de seguridad"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Presentación Económica de 5 Litros",
+        "d": "cantidad ideal para realizar mantenimientos completos en transmisiones pesadas, flotillas de vehículos o múltiples cambios de fluido."
+      },
+      {
+        "t": "Capacidad de Carga de Extrema Presión (EP)",
+        "d": "protege engranajes sometidos a altos torques e impactos mecánicos directos."
+      },
+      {
+        "t": "Viscosidad Multigrado 80W-90",
+        "d": "excelente fluidez en frío para facilitar el engranaje de marchas e impecable resistencia térmica en caliente."
+      },
+      {
+        "t": "Compatibilidad Multinorma GL-4/GL-5",
+        "d": "aditivación balanceada que protege tanto engranajes hipoides pesados como sistemas con sincronizadores de metales amarillos."
+      },
+      {
+        "t": "Inhibición de Herrumbre y Corrosión",
+        "d": "previene el ataque químico en componentes internos producido por la condensación de humedad."
+      },
+      {
+        "t": "Reducción de Ruido y Vibración",
+        "d": "amortigua el contacto dentado entre piñones, favoreciendo un funcionamiento más silencioso de la transmisión."
+      }
+    ],
+    "idealPara": [
+      "Mantenimiento completo de cajas de cambios manuales y diferenciales en camiones, camionetas, picops y autobuses.",
+      "Maquinaria agrícola, equipos de construcción y vehículos de carga pesada que requieren lubricante de transmisión mineral SAE 80W-90 API GL-5.",
+      "Talleres automotrices y flotillas comerciales que buscan un formato de alto rendimiento y mejor relación costo-volumen."
+    ],
+    "incluye": [
+      "1× Garrafa de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (5 Litros)"
+    ],
+    "slug": "aceite-digear-80w90-5-litros",
+    "rev": 1793980372043
   }
 ]
