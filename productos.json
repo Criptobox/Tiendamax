@@ -2986,7 +2986,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1784571184792.webp",
     "categoria": "ROPA",
     "subcategoria": "HOMBRE",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2996,7 +2996,6 @@
     "comision": 5,
     "seoTitle": "Shorts Deportivos Casuales de Secado Rápido | TiendaMax",
     "seoDescription": "Short ideal para el verano Talla M Colores : negro , blanco ,gris y verde",
-    "descripcion": "Short de nylon deportivo, cintura elástica con cordón, bolsillo lateral con cierre y franja reflectiva en la pierna. Disponible en varios colores (verde olivo, gris oscuro, azul marino, gris claro).",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "specs": [
@@ -3048,7 +3047,8 @@
     "idealPara": [
       "Entrenar, correr o el día a día, con secado rápido después del sudor."
     ],
-    "rev": 1793393116521
+    "rev": 1793993770396,
+    "descripcion": "Short de nylon deportivo, cintura elástica con cordón, bolsillo lateral con cierre y franja reflectiva en la pierna. Disponible en varios colores (verde olivo, gris oscuro, azul marino, gris claro)."
   },
   {
     "id": 1778820912552,
