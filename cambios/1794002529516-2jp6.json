@@ -1,0 +1,134 @@
+{
+  "v": 1,
+  "creado": "2026-11-06T22:02:09.516Z",
+  "productos": [
+    {
+      "id": 1793662537113,
+      "nombre": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
+      "imagen": "https://tiendamax.org/imagenes/img_1793662535527.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793662535527.webp"
+      ],
+      "precioActual": 1700,
+      "precioOriginal": 1800,
+      "descuento": 6,
+      "stock": 5,
+      "comision": 30,
+      "comisionMoneda": "USD",
+      "categoria": "MOTOS",
+      "masVendido": true,
+      "usado": false,
+      "garantia": "15 días",
+      "devolucion": true,
+      "specs": [
+        "⚡ Motor 3000W / Controladora VOTOL EM-50",
+        "🔋 Batería Litio 48V 50Ah (Hasta 120 km)",
+        "🚀 Velocidad Máx. 50 km/h + Audio Bluetooth/USB"
+      ],
+      "fechaAgregado": "2026-11-02T23:35:37.114Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "YOAZAKI"
+        },
+        {
+          "k": "Modelo / Serie",
+          "v": "707",
+          "nota": "GALACTICA 3000W"
+        },
+        {
+          "k": "Potencia Nominal del Motor",
+          "v": "3000 W",
+          "nota": "Motor DC sin escobillas en masa trasera"
+        },
+        {
+          "k": "Controladora",
+          "v": "VOTOL EM-50",
+          "nota": "control vectorial sinusoidal de alta eficiencia"
+        },
+        {
+          "k": "Batería",
+          "v": "Litio antiexplosiva de ciclo profundo con BMS integrado"
+        },
+        {
+          "k": "Voltaje y Capacidad",
+          "v": "48 V / 50 Ah",
+          "nota": "2400 Wh de energía almacenada"
+        },
+        {
+          "k": "Autonomía Estimada",
+          "v": "Hasta 120 km",
+          "nota": "según modo de manejo, peso del conductor y terreno"
+        },
+        {
+          "k": "Velocidad Máxima",
+          "v": "50 km/h"
+        },
+        {
+          "k": "Sistema de Frenos",
+          "v": "Frenos de disco hidráulicos delantero y trasero sobre rines de aleación"
+        },
+        {
+          "k": "Seguridad",
+          "v": "Tranque/bloqueo mecánico en el timón, alarma sonora antirrobo y encendido remoto keyless"
+        },
+        {
+          "k": "Sistema de Audio",
+          "v": "Bocina/reproductor multimedia integrado con conectividad Bluetooth, puerto USB y ranura Micro SD"
+        },
+        {
+          "k": "Iluminación",
+          "v": "Faro frontal LED principal, luces diurnas, direccionales y luz de freno trasera"
+        },
+        {
+          "k": "Colores Disponibles",
+          "v": "Morado y Negro"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Gran Autonomía de 120 km",
+          "d": "batería de litio de alta densidad de 50Ah ideal para largas jornadas de trabajo, viajes interurbanos o transporte diario sin cargar a diario."
+        },
+        {
+          "t": "Controladora VOTOL EM-50 Integrada",
+          "d": "electrónica de grado profesional que optimiza la entrega de energía del motor de 3000W, reduciendo el calentamiento y suavizando la marcha."
+        },
+        {
+          "t": "Batería de Litio Antiexplosiva",
+          "d": "celdas con protección BMS avanzada contra cortocircuitos, sobrecargas y desbalances térmicos para máxima seguridad."
+        },
+        {
+          "t": "Sistema Multimedia y Conectividad",
+          "d": "reproduce música o audio desde tu teléfono vía Bluetooth, o directamente mediante memorias USB y tarjetas Micro SD."
+        },
+        {
+          "t": "Encendido a Distancia y Alarma Antirrobo",
+          "d": "arranque cómodo sin llave mediante control remoto y protección perimetral con bloqueo de seguridad en el timón."
+        },
+        {
+          "t": "Paquete de Regalo Completo",
+          "d": "incluye casco de protección, cargador inteligente y malla de carga para equipaje."
+        }
+      ],
+      "idealPara": [
+        "Desplazamientos diarios de larga distancia, mensajería, entregas a domicilio o trabajo continuo en la ciudad.",
+        "Usuarios que priorizan la máxima autonomía por carga (120 km) sin depender de puntos de recarga intermedios.",
+        "Quienes buscan un vehículo eléctrico seguro, potente, con controladora VOTOL y entretenimiento integrado."
+      ],
+      "incluye": [
+        "1× Moto eléctrica YOAZAKI 707 (3000W - 48V 50Ah)",
+        "1× Cargador inteligente de alto flujo para batería de litio 48V",
+        "2× Juegos de llaves con controles remotos para alarma y encendido a distancia",
+        "🎁 Regalos incluidos: 1× Casco de protección + 1× Malla elástica de agarre para carga"
+      ],
+      "slug": "moto-707-3000w-48v-50ah",
+      "rev": 1794002529516,
+      "seoTitle": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
+      "seoDescription": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en…",
+      "descripcion": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en recorridos urbanos intensos. Destaca por incorporar una potente controladora programable VOTOL EM-50 combinada con un motor de alta eficiencia de 3000W, logrando una respuesta de aceleración inmediata, entrega de torque suave y una velocidad máxima controlada de 50 km/h."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
