@@ -14366,5 +14366,113 @@
     "rev": 1793740695077,
     "seoTitle": "Lámpara Ventilador de Techo Flower Fan Light… | TiendaMax",
     "seoDescription": "La Flower Fan Light (40W) es una solución 2 en 1 innovadora y ultra práctica que combina un ventilador de techo de 6 aspas con una potente lámpara LED de…"
+  },
+  {
+    "id": 1793980162525,
+    "nombre": "Aceite Mineral para Transmisión DIMASOIL Digear 80W-90 (1 Litro)",
+    "descripcion": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios manuales, diferenciales, cajas de transferencia y engranajes hipoidales sometidos a cargas severas y presiones extremas (Extreme Pressure / EP). Elaborado con aceites base altamente refinados y un avanzado paquete de aditivos azufre-fósforo, garantiza una protección robusta contra el desgaste metálico, el picado (pitting) y la formación de corrosión en piñones y rodamientos.",
+    "imagen": "https://tiendamax.org/imagenes/img_1793980160899.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1793980160899.webp"
+    ],
+    "precioActual": 10,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 15,
+    "comision": 0.5,
+    "comisionMoneda": "USD",
+    "categoria": "CARROS",
+    "subcategoria": "ACEITES Y LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "💧 Contenido Neto: 1 Litro",
+      "🛢️ Viscosidad: SAE 80W-90",
+      "🧪 Base Mineral de Alta Calidad (Mineral)",
+      "🛡️ Especificaciones: API GL-4 / GL-5 / MT-1 / MIL-L-2105D"
+    ],
+    "fechaAgregado": "2026-11-06T15:49:22.526Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "DIMASOIL"
+      },
+      {
+        "k": "Línea / Modelo",
+        "v": "Digear 80W90",
+        "nota": "Mineral"
+      },
+      {
+        "k": "Contenido Neto",
+        "v": "1 Litro",
+        "nota": "1000 ml"
+      },
+      {
+        "k": "Tipo de Base",
+        "v": "Mineral de alta calidad refinada"
+      },
+      {
+        "k": "Grado de Viscosidad",
+        "v": "SAE 80W-90"
+      },
+      {
+        "k": "Clasificación de Servicio API",
+        "v": "API GL-4 / API GL-5 / API MT-1"
+      },
+      {
+        "k": "Especificación Militar",
+        "v": "MIL-L-2105D / MIL-PRF-2105E"
+      },
+      {
+        "k": "Compatibilidad de Transmisiones",
+        "v": "Cajas manuales, diferenciales traseros/delanteros, ejes de mando hipoidales y reductoras"
+      },
+      {
+        "k": "Propiedades",
+        "v": "Extrema Presión (EP), antidesgaste, antioxidante y espumante controlado"
+      },
+      {
+        "k": "Envase",
+        "v": "Botella plástica ergonómica de 1 Litro de color gris con tapón roscado sellado de fábrica"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Presentación Estándar de 1 Litro",
+        "d": "volumen práctico y justo para cambios de aceite en transmisiones manuales pequeñas, diferenciales o rellenos de nivel."
+      },
+      {
+        "t": "Capacidad de Carga de Extrema Presión (EP)",
+        "d": "protege engranajes sometidos a altos torques e impactos mecánicos directos."
+      },
+      {
+        "t": "Viscosidad Multigrado 80W-90",
+        "d": "excelente fluidez en frío para facilitar el engranaje de marchas e impecable resistencia térmica en caliente."
+      },
+      {
+        "t": "Compatibilidad Multinorma GL-4/GL-5",
+        "d": "aditivación balanceada que protege tanto engranajes hipoides pesados como sistemas con sincronizadores de metales amarillos."
+      },
+      {
+        "t": "Inhibición de Herrumbre y Corrosión",
+        "d": "previene el ataque químico en componentes internos producido por la condensación de humedad."
+      },
+      {
+        "t": "Reducción de Ruido y Vibración",
+        "d": "amortigua el contacto dentado entre piñones, favoreciendo un funcionamiento más silencioso de la transmisión."
+      }
+    ],
+    "idealPara": [
+      "Cajas de cambios manuales y diferenciales de automóviles, camionetas, picops y vehículos comerciales ligeros.",
+      "Maquinaria agrícola, equipos de construcción y camiones que requieran aceite mineral para transmisión de norma SAE 80W-90 API GL-5.",
+      "Transmisiones finales y reductores secundarios de motocicletas, scooters o triciclos mecánicos."
+    ],
+    "incluye": [
+      "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
+    ],
+    "slug": "aceite-digear-80w90-1-litro",
+    "rev": 1793980165123
   }
 ]
