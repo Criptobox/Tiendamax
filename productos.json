@@ -10911,7 +10911,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790961633359.webp"
     ],
-    "precioActual": 65,
+    "precioActual": 60,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 8,
@@ -10991,7 +10991,7 @@
       "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
     ],
     "slug": "base-paneles",
-    "rev": 1793983624118,
+    "rev": 1794156163593,
     "seoTitle": "Base Para Paneles en Cuba | TiendaMax",
     "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…",
     "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel."
@@ -11635,7 +11635,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 8,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11743,7 +11743,7 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "cargador-bc-400-lifepo4-ag-2",
-    "rev": 1793393116521,
+    "rev": 1794156163593,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
     "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…",
     "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS."
