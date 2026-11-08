@@ -11635,7 +11635,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11743,7 +11743,7 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "cargador-bc-400-lifepo4-ag-2",
-    "rev": 1794156411301,
+    "rev": 1794156462401,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
     "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…",
     "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS."
