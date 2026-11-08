@@ -11513,7 +11513,7 @@
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11617,7 +11617,7 @@
       "1× Manual de usuario e instrucciones de operación"
     ],
     "slug": "cargador-bc-300-lifepo4-agm",
-    "rev": 1794150335599,
+    "rev": 1794156411301,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
     "seoDescription": "El LVYUAN BC-400 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente…",
     "descripcion": "El LVYUAN BC-300 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente acumuladores de 12V y 24V con corrientes de salida seleccionables de hasta 30A. Su microprocesador interno identifica automáticamente la tensión del sistema conectado y calibra la curva de carga óptima en función de la química seleccionada: baterías de litio LiFePO4, GEL, AGM, EFB o baterías estándar de plomo-ácido (STD), previniendo sobrecargas o degradación térmica.",
@@ -11635,7 +11635,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11743,7 +11743,7 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "cargador-bc-400-lifepo4-ag-2",
-    "rev": 1794156163593,
+    "rev": 1794156411301,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
     "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…",
     "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS."
