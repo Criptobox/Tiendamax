@@ -11505,8 +11505,7 @@
   },
   {
     "id": 1792173216703,
-    "nombre": "Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 30A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
-    "descripcion": "El LVYUAN BC-400 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente acumuladores de 12V y 24V con corrientes de salida seleccionables de hasta 30A. Su microprocesador interno identifica automáticamente la tensión del sistema conectado y calibra la curva de carga óptima en función de la química seleccionada: baterías de litio LiFePO4, GEL, AGM, EFB o baterías estándar de plomo-ácido (STD), previniendo sobrecargas o degradación térmica.",
+    "nombre": "Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
     "imagen": "https://tiendamax.org/imagenes/img_1792173213173.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1792173213173.webp"
@@ -11536,7 +11535,7 @@
       },
       {
         "k": "Modelo",
-        "v": "BC-400 PRO",
+        "v": "BC-300 PRO",
         "nota": "Serie Smart Charger"
       },
       {
@@ -11612,15 +11611,19 @@
       "Respaldos de energía de emergencia (UPS) para asegurar que los acumuladores permanezcan al 100% antes de cortes prolongados."
     ],
     "incluye": [
-      "1× Cargador Inteligente por Pulsos LVYUAN BC-400 PRO (12V/24V - 30A)",
+      "1× Cargador Inteligente por Pulsos LVYUAN BC-300 PRO (12V/24V - 30A)",
       "1× Par de pinzas caimán reforzadas (positiva roja y negativa negra) preinstaladas",
       "1× Cable de alimentación de corriente alterna (AC)",
       "1× Manual de usuario e instrucciones de operación"
     ],
-    "slug": "cargador-bc-400-lifepo4-agm",
-    "rev": 1793393116521,
+    "slug": "cargador-bc-300-lifepo4-agm",
+    "rev": 1794150335599,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
-    "seoDescription": "El LVYUAN BC-400 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente…"
+    "seoDescription": "El LVYUAN BC-400 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente…",
+    "descripcion": "El LVYUAN BC-300 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente acumuladores de 12V y 24V con corrientes de salida seleccionables de hasta 30A. Su microprocesador interno identifica automáticamente la tensión del sistema conectado y calibra la curva de carga óptima en función de la química seleccionada: baterías de litio LiFePO4, GEL, AGM, EFB o baterías estándar de plomo-ácido (STD), previniendo sobrecargas o degradación térmica.",
+    "slugsAnteriores": [
+      "cargador-bc-400-lifepo4-agm"
+    ]
   },
   {
     "id": 1792173470469,
