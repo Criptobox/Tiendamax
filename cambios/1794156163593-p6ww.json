@@ -1,0 +1,223 @@
+{
+  "v": 1,
+  "creado": "2026-11-08T16:42:43.593Z",
+  "productos": [
+    {
+      "id": 1790961637329,
+      "nombre": "Base Para Paneles",
+      "imagen": "https://tiendamax.org/imagenes/img_1790961633359.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790961633359.webp"
+      ],
+      "precioActual": 60,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 8,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📐 Inclinación Ajustable (15° a 30°)",
+        "🔩 Aluminio Anodizado Anticorrosión"
+      ],
+      "fechaAgregado": "2026-10-02T17:20:37.330Z",
+      "ficha": [
+        {
+          "k": "Tipo de Producto",
+          "v": "Kit de montaje inclinable para módulo fotovoltaico"
+        },
+        {
+          "k": "Rango de Inclinación",
+          "v": "Ajustable entre 15° y 30°",
+          "nota": "según extensión del brazo telescópico y tamaño del panel"
+        },
+        {
+          "k": "Material del Perfil",
+          "v": "Aleación de aluminio de alta resistencia",
+          "nota": "tratamiento anodizado para exteriores"
+        },
+        {
+          "k": "Tornillería y Herrajes",
+          "v": "Acero inoxidable resistente a la intemperie"
+        },
+        {
+          "k": "Compatibilidad de Paneles",
+          "v": "Módulos solares de 50W, 100W, 150W, 200W hasta 300W+ con marco de aluminio estándar"
+        },
+        {
+          "k": "Superficies de Montaje",
+          "v": "Techos de teja, hormigón plano, lámina metálica, cubiertas de vehículos recreativos, embarcaciones o suelo firme"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Patas Telescópicas Extensibles",
+          "d": "permiten calibrar la inclinación estacional aflojando únicamente los tornillos de ajuste."
+        },
+        {
+          "t": "Construcción en Aluminio Anodizado",
+          "d": "previene la formación de óxido y corrosión salina, garantizando años de vida útil a la intemperie."
+        },
+        {
+          "t": "Bases Pivotantes Articuladas",
+          "d": "rótulas delantera y trasera que se adaptan a techos planos o con pendientes leves."
+        },
+        {
+          "t": "Almohadillas de Goma Protectoras",
+          "d": "protegen la superficie del techo, amortiguan vibraciones por viento y sellan los orificios para evitar filtraciones."
+        },
+        {
+          "t": "Tornillería Inoxidable Incluida",
+          "d": "ensamble firme con pernos allen y tornillos autorroscantes para fijación estructural segura."
+        }
+      ],
+      "idealPara": [
+        "Instalaciones solares en techos de casas, garajes, cobertizos y fincas fuera de la red (Off-Grid).",
+        "Casas rodantes, furgonetas camper, remolques y embarcaciones donde se requiere regular la inclinación según la ubicación del viaje.",
+        "Proyectos solares de respaldo de energía y baterías donde se busca exprimir al máximo el rendimiento de cada panel.",
+        "Montajes en suelo o terrazas planas para evitar la acumulación de polvo y agua sobre las celdas solares."
+      ],
+      "incluye": [
+        "2× Brazos telescópicos traseros ajustables con soporte de inclinación",
+        "2× Soportes articulados pivotantes delanteros",
+        "4× Almohadillas de goma aislantes / selladoras",
+        "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
+      ],
+      "slug": "base-paneles",
+      "rev": 1794156163593,
+      "seoTitle": "Base Para Paneles en Cuba | TiendaMax",
+      "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…",
+      "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel."
+    },
+    {
+      "id": 1792173470469,
+      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 40A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
+      "imagen": "https://tiendamax.org/imagenes/img_1792173213173.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1792173213173.webp"
+      ],
+      "precioActual": 140,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CARGADORES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Voltaje: 12V / 24V (Detección Automática)",
+        "🔌 Carga Rápida: Hasta 40A (12V) / 20A (24V)",
+        "🔄 Compatibilidad: LiFePO4, GEL, AGM, EFB y Plomo"
+      ],
+      "fechaAgregado": "2026-10-16T17:57:50.470Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "LVYUAN"
+        },
+        {
+          "k": "Modelo",
+          "v": "BC-400 PRO (40A)"
+        },
+        {
+          "k": "Voltajes Soportados",
+          "v": "12V y 24V DC",
+          "nota": "Identificación y conmutación automática"
+        },
+        {
+          "k": "Corrientes de Carga Seleccionables (12V)",
+          "v": "10A / 20A / 40A"
+        },
+        {
+          "k": "Corrientes de Carga Seleccionables (24V)",
+          "v": "5A / 10A / 20A"
+        },
+        {
+          "k": "Químicas de Batería Compatibles",
+          "v": "LiFePO4 (Fosfato de hierro y litio con BMS), AGM, GEL, EFB, Plomo-Ácido Estándar",
+          "nota": "STD / Calcio / Ciclo Profundo"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Display digital LCD con lectura continua de Voltaje (V), Corriente (A), Química activa y Porcentaje de carga (%)"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Carga Inteligente Automática, Selector de Amperaje (AMPS), Selector de Batería y Modo Reparación",
+          "nota": "Repair Mode"
+        },
+        {
+          "k": "Enfriamiento",
+          "v": "Ventilador forzado interno inteligente de disipación térmica activa"
+        },
+        {
+          "k": "Sistemas de Seguridad",
+          "v": "Protección contra polaridad invertida, cortocircuito, sobretensión, sobrecorriente, sobrecalentamiento y sobrecarga"
+        },
+        {
+          "k": "Voltaje de Entrada AC",
+          "v": "110V – 120V / 220V AC",
+          "nota": "50/60 Hz"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Entrega de Alta Corriente (40A)",
+          "d": "recarga baterías de 100Ah a 300Ah en tiempo récord para maximizar la disponibilidad de los acumuladores."
+        },
+        {
+          "t": "Selector Manual de Amperaje (Botón AMPS)",
+          "d": "permite ajustar la intensidad en 10A (para cargas suaves o baterías pequeñas), 20A (uso estándar) o 40A (carga ultra rápida de alta capacidad)."
+        },
+        {
+          "t": "Compatibilidad Certificada con LiFePO4",
+          "d": "algoritmo de carga de voltaje constante/corriente constante seguro para baterías solares de litio sin disparar las protecciones del BMS."
+        },
+        {
+          "t": "Función de Reparación por Pulsos (Repair Mode)",
+          "d": "revitaliza baterías de plomo sulfatadas o abandonadas mediante pulsos cíclicos de frecuencia."
+        },
+        {
+          "t": "Display LCD Dinámico",
+          "d": "monitoriza de un vistazo la entrega de amperios, voltios exactos y barra de nivel de batería en tiempo real."
+        },
+        {
+          "t": "Chasis de Uso Rudo",
+          "d": "carcasa resistente con soporte ergonómico superior para fijar las pinzas caimán y asa de transporte integrada."
+        },
+        {
+          "t": "Pinzas Caimán Aisladas de Cobre",
+          "d": "mordazas robustas de resorte de alta presión que garantizan un contacto eléctrico firme sin chisporroteos."
+        }
+      ],
+      "idealPara": [
+        "Recarga acelerada de baterías de litio LiFePO4 de 100Ah, 200Ah o más en sistemas solares fotovoltaicos, cabañas aisladas y bancos de inversores.",
+        "Flotas vehiculares, camionetas, camiones ligeros, tractores agrícolas, botes y casas rodantes (RVs).",
+        "Talleres automotrices y centros de servicio eléctrico para diagnóstico y recuperación de baterías descargadas.",
+        "Estaciones de energía de respaldo domésticas y oficinas que requieren reponer rápidamente la carga entre apagones programados."
+      ],
+      "incluye": [
+        "1× Cargador Inteligente por Pulsos LVYUAN BC-400 PRO (40A)",
+        "1× Par de pinzas caimán de servicio pesado (roja positiva / negra negativa) preinstaladas",
+        "1× Cable de conexión AC a la red eléctrica",
+        "1× Manual de usuario e instrucciones de configuración"
+      ],
+      "slug": "cargador-bc-400-lifepo4-ag-2",
+      "rev": 1794156163593,
+      "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-400… | TiendaMax",
+      "seoDescription": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez…",
+      "descripcion": "El LVYUAN BC-400 PRO (versión de 40A) es un cargador y mantenedor inteligente de alta potencia por pulsos, diseñado para recargar con máxima rapidez bancos de baterías exigentes de 12V y 24V, entregando una corriente regulable de hasta 40A en 12V y hasta 20A en sistemas de 24V. Su microprocesador interno identifica automáticamente la tensión conectada y aplica una curva de carga precisa según el tipo de batería seleccionado: litio LiFePO4, AGM, GEL, EFB o acumuladores estándar de plomo-ácido (STD), cuidando la integridad de las celdas y los sistemas BMS."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
