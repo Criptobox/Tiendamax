@@ -14133,12 +14133,11 @@
   {
     "id": 1793740398660,
     "nombre": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
-    "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje.",
     "imagen": "https://tiendamax.org/imagenes/img_1793740396177.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793740396177.webp"
     ],
-    "precioActual": 35,
+    "precioActual": 30,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 5,
@@ -14249,9 +14248,10 @@
       "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
     ],
     "slug": "compresor-aire-st-221-air",
-    "rev": 1793740599029,
+    "rev": 1794257067445,
     "seoTitle": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
-    "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…"
+    "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…",
+    "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje."
   },
   {
     "id": 1793740692702,
