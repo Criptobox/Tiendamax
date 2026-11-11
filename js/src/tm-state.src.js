@@ -701,19 +701,31 @@ function renderizarMasVendidos() {
     /* Los destacados los marca el gestor a mano (masVendido). Con pocos marcados
        —hoy uno solo con stock— la sección enseñaba UNA tarjeta, la segunda
        cosa que ve el cliente en la portada. Si hay menos de DESTACADOS_MIN, se
-       completa hasta DESTACADOS_MAX con lo que se puede comprar ahora: primero
-       lo rebajado (es lo que más empuja) y luego lo que más unidades tiene.
-       Lo marcado a mano va siempre delante. */
+       completa hasta DESTACADOS_MAX con lo que se puede comprar ahora.
+       Lo REBAJADO no entra en el relleno: ya sale entero en «Rebaja» justo
+       encima, y enseñarlo dos veces seguidas parece un fallo (lo fue: la primera
+       versión prefería lo rebajado). Solo si no hubiera otra cosa, se usa.
+       El relleno reparte entre categorías (la que más stock tiene primero, y de
+       cada una lo que más hay), o saldrían seis aceites. Lo marcado a mano va
+       siempre delante. */
     const DESTACADOS_MIN = 4, DESTACADOS_MAX = 6;
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
     let productosAMostrar = masVendidos;
     if (masVendidos.length < DESTACADOS_MIN) {
         const ya = new Set(masVendidos.map(p => String(p.id)));
-        const rebaja = p => Number(p.precioOriginal) > Number(p.precioActual) ? 1 : 0;
-        const relleno = productos
-            .filter(p => !ya.has(String(p.id)) && p.precioActual > 0 && p.stock > 0)
-            .sort((a, b) => (rebaja(b) - rebaja(a)) || (b.stock - a.stock));
-        productosAMostrar = masVendidos.concat(relleno).slice(0, Math.max(DESTACADOS_MAX, masVendidos.length));
+        const rebajado = p => Number(p.precioOriginal) > Number(p.precioActual);
+        const hay = p => !ya.has(String(p.id)) && p.precioActual > 0 && p.stock > 0;
+        const porCategoria = lista => {
+            const grupos = {};
+            lista.sort((a, b) => b.stock - a.stock).forEach(p => { (grupos[p.categoria || ''] = grupos[p.categoria || ''] || []).push(p); });
+            const colas = Object.values(grupos).sort((a, b) => b[0].stock - a[0].stock);
+            const out = [];
+            for (let i = 0; colas.some(c => c.length > i); i++) colas.forEach(c => { if (c[i]) out.push(c[i]); });
+            return out;
+        };
+        const nuevos = porCategoria(productos.filter(p => hay(p) && !rebajado(p)));
+        const repetidos = porCategoria(productos.filter(p => hay(p) && rebajado(p)));
+        productosAMostrar = masVendidos.concat(nuevos, repetidos).slice(0, Math.max(DESTACADOS_MAX, masVendidos.length));
     }
 
     /* El constructor de tarjetas (_tmCrearCard) lo define renderizarProductos
