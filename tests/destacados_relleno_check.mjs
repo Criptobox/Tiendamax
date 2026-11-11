@@ -44,6 +44,17 @@ const hay = catalogo.filter(p => Number(p.stock) > 0).length;
 ok(r.n >= Math.min(4, hay), `Destacados enseña ${r.n} tarjeta(s) con ${hay} productos a la venta: ${JSON.stringify(r.nombres)}`);
 ok(r.n <= Math.max(6, r.manual), `Destacados se pasó de seis: ${r.n}`);
 ok(r.manual === 0 || r.n >= r.manual, 'los marcados a mano tienen que salir todos');
+// Lo rebajado ya sale en «Rebaja», justo encima: Destacados no lo repite mientras haya otra cosa (lo marcado a mano sí puede estar en las dos).
+const dup = await pagina.evaluate(() => {
+    const ids = el => [...el.querySelectorAll('.producto-card')].map(c => c.dataset.id || c.getAttribute('data-producto-id') || c.id || '').filter(Boolean);
+    const nombres = el => [...el.querySelectorAll('.producto-card')].map(c => (c.querySelector('h3,.producto-nombre,.pv2-nombre') || c).textContent.trim().slice(0, 40));
+    const reb = (productos.filter(p => Number(p.precioOriginal) > Number(p.precioActual) && p.stock > 0 && !(p.masVendido === true || p.masVendido === 'true'))).map(p => p.nombre.slice(0, 40));
+    const dest = nombres(document.getElementById('masVendidosGrid'));
+    return { repetidos: dest.filter(n => reb.some(x => x.slice(0, 25) === n.slice(0, 25))), n: dest.length, otros: productos.filter(p => p.stock > 0 && !(Number(p.precioOriginal) > Number(p.precioActual))).length };
+});
+ok(dup.otros < 6 || dup.repetidos.length === 0, `Destacados repite lo que ya sale en Rebaja: ${JSON.stringify(dup.repetidos)}`);
+const cats = await pagina.evaluate(() => [...document.getElementById('masVendidosGrid').querySelectorAll('.producto-card')].map(c => (c.querySelector('.pv2-cat,.cat-tag,.producto-categoria') || {}).textContent || '').filter(Boolean));
+ok(cats.length < 4 || new Set(cats).size >= 3, `Destacados debería repartir entre categorías, no seis de lo mismo: ${JSON.stringify(cats)}`);
 ok(errores.length === 0, 'errores de JS: ' + errores.join(' | '));
 await navegador.close(); servidor.close();
 if (fallos.length) { console.log('❌ destacados:\n - ' + fallos.join('\n - ')); process.exit(1); }
