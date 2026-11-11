@@ -2302,7 +2302,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=290dfa32"></script>
+<script src="js/tm-bundle.js?v=669b4654"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -4350,6 +4350,29 @@ function comisHasta(){
   if(!confirm('¿Marcar como cobradas '+ventas.length+' venta'+(ventas.length!==1?'s':'')+' hasta '+comisMesNombre(k)+' ('+dosMonedas({usd:g.usd,mn:g.mn})+')?\n\nEse dinero ya te lo tiene que haber pagado el dueño. Puedes deshacerlo por mes en «Ya cobradas».')) return;
   comisMarcar(ventas.map(v=>v.id), true);
 }
+/* El resumen de lo pendiente se guarda también en /privado/comision_pendiente para que el
+   recordatorio mensual de Telegram (scripts/aviso_comision.py) diga EXACTAMENTE lo que ve el
+   panel. No se recalcula en el servidor a propósito: las ventas anuladas viven solo en este
+   teléfono (tm_ventas_anuladas) y las reglas de comisión están aquí; una cifra distinta en
+   Telegram que en pantalla es de las que nadie re-cuenta. Se guarda por mes ({usd, mn, n});
+   qué meses ya están cerrados lo decide el aviso el día que corre. */
+function comisResumenParaCuenta(){
+  const R=comisResumen(), meses={};
+  R.meses.forEach(m=>{ meses[m.k]={usd:Math.round(m.g.usd*100)/100, mn:Math.round(m.g.mn*100)/100, n:m.ventas.length}; });
+  return {meses};
+}
+let _comisCuentaTimer=null;
+function comisPublicarResumen(){
+  clearTimeout(_comisCuentaTimer);
+  _comisCuentaTimer=setTimeout(()=>{
+    if(typeof TMAuth==='undefined' || !VENTAS.length) return;          // sin ventas cargadas no se sube un «no hay nada»
+    const r=comisResumenParaCuenta(), firma=JSON.stringify(r.meses);
+    if(localStorage.getItem('tm_comis_resumen')===firma) return;       // nada cambió desde el último envío
+    r.ts=Date.now();
+    TMAuth.fetchPrivado('/privado/comision_pendiente.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)})
+      .then(x=>{ if(x&&x.ok){ try{ localStorage.setItem('tm_comis_resumen', firma); }catch(e){} } }).catch(()=>{});
+  }, 2500);
+}
 function comisMesNombre(k){ const [y,m]=k.split('-'); const d=new Date(Number(y),Number(m)-1,1); const t=d.toLocaleDateString('es-CU',{month:'long',year:'numeric'}); return t.charAt(0).toUpperCase()+t.slice(1); }
 // {pend:{usd,mn,n}, meses:[{k, ventas:[...], g:{usd,mn}, cerrado}], cobradas:[...]}
 function comisResumen(){
@@ -4376,6 +4399,7 @@ function _comisFila(v, pagada){
     +'<button class="btn btn-ghost" style="padding:5px 9px;white-space:nowrap" onclick="comisUna(\''+idq+'\','+(pagada?'false':'true')+')">'+(pagada?'↩️':'✅')+'</button></div>';
 }
 function renderComisPorCobrar(){
+  comisPublicarResumen();
   const box=document.getElementById('comis-box'); if(!box) return;
   const R=comisResumen();
   const hayCobradas=R.cobradas.length;
@@ -4414,7 +4438,7 @@ function renderComisPorCobrar(){
 }
 
 // El panel vive dentro de una función: lo que llaman los onclick (y la prueba) tiene que colgar de window.
-window.comisMarcar=comisMarcar; window.comisHasta=comisHasta; window.comisUna=comisUna; window.comisMes=comisMes; window.comisFusionar=comisFusionar; window.comisResumen=comisResumen; window.renderComisPorCobrar=renderComisPorCobrar; window.comisSincronizar=comisSincronizar;
+window.comisResumenParaCuenta=comisResumenParaCuenta; window.comisMarcar=comisMarcar; window.comisHasta=comisHasta; window.comisUna=comisUna; window.comisMes=comisMes; window.comisFusionar=comisFusionar; window.comisResumen=comisResumen; window.renderComisPorCobrar=renderComisPorCobrar; window.comisSincronizar=comisSincronizar;
 
 /* ============ INICIO ============ */
 /* ── 🤖 Agenda de Inicio ────────────────────────────────────────────────────

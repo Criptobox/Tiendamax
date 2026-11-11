@@ -379,6 +379,8 @@ function verificarStockOfertaBanner() {
 // la vitrina no se vea vacía con estantes de 1 solo producto. Reutilizado por
 // los dos renderers (instantáneo y con datos frescos).
 const TM_CAT_MIN = 3;
+const TM_CAT_MAX_MOVIL = 4;
+function _tmCatEsMovil() { try { return window.matchMedia('(max-width: 899px)').matches; } catch (e) { return false; } }
 function _tmCatVerMas(grid, extras) {
     if (!grid) return;
     const cont = grid.parentNode; if (!cont) return;
@@ -512,17 +514,21 @@ function renderizarCategoriasHome() {
 
     const _catDisplayNames = { 'WIFI': 'REDES' };
     const _extras = [];
+    let _tmMostradas = 0;
     // Incluye las categorías que solo existen dentro de los productos: si no,
     // sus productos no tienen tarjeta por la que llegar (ver tmCategoriasVisibles).
     tmCategoriasVisibles(productos, categorias).forEach(cat => {
         const count = _disp(productos.filter(p => p.categoria === cat));
         const displayCat = _catDisplayNames[cat] || cat;
         // Pocas unidades (< 3) → al desplegable "Ver más"
-        if (count < TM_CAT_MIN) {
+        // En el móvil solo caben TM_CAT_MAX_MOVIL tarjetas antes de la rebaja: con más, la
+        // oferta (lo que se compra) quedaba bajo la primera pantalla. El resto, en «Ver más».
+        if (count < TM_CAT_MIN || (_tmCatEsMovil() && _tmMostradas >= TM_CAT_MAX_MOVIL)) {
             // Sin escapeHtml: _tmCatVerMas inserta con textContent, no innerHTML
             _extras.push({ cat, count, name: displayCat, icon: obtenerIconoCategoria(cat) });
             return;
         }
+        _tmMostradas++;
         const mv = mvPorCat[cat] || 0;
         const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');

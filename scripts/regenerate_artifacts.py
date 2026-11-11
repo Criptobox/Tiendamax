@@ -396,10 +396,10 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
     background:rgba(14,12,16,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}}
   .tm-logo{{display:flex;align-items:center;gap:10px}}
   .tm-logo img{{width:36px;height:36px;border-radius:11px;display:block}}
-  .tm-logo span{{font-family:var(--serif);font-size:21px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
-  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13.5px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
+  .tm-logo span{{font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
+  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
   .tm-wrap{{max-width:1100px;margin:0 auto;padding:16px 16px 40px}}
-  .tm-migas{{font-size:12.5px;color:var(--mut);display:flex;gap:6px;margin-bottom:18px}}
+  .tm-migas{{font-size:12px;color:var(--mut);display:flex;gap:6px;margin-bottom:18px}}
   .tm-migas a{{color:var(--gold)}}
   .tm-kick{{display:block;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--o);margin-bottom:10px}}
   h1{{font-family:var(--serif);font-size:clamp(32px,6vw,48px);line-height:1.05;font-weight:800;margin-bottom:12px}}
@@ -412,13 +412,13 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
      tirada obligaba a bajar a ciegas buscando "Routers". */
   .tm-subs{{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 8px;padding:2px 16px 6px}}
   .tm-subs::-webkit-scrollbar{{display:none}}
-  .tm-subs a{{flex:none;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid rgba(255,106,31,.55);background:rgba(255,106,31,.08);white-space:nowrap}}
+  .tm-subs a{{flex:none;font-size:14px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid rgba(255,106,31,.55);background:rgba(255,106,31,.08);white-space:nowrap}}
   .tm-subs a small{{color:var(--mut);font-weight:500;margin-left:4px}}
   .tm-sec{{margin-top:26px;scroll-margin-top:90px}}
   .tm-sec h2{{font-family:var(--serif);font-size:22px;font-weight:800;margin-bottom:12px}}
-  .tm-sec h2 small,.tm-out summary small{{font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--mut);margin-left:8px}}
+  .tm-sec h2 small,.tm-out summary small{{font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--mut);margin-left:8px}}
   .tm-out summary{{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:20px;background:var(--card);border:1px solid var(--line);
-    font-family:var(--serif);font-size:20px;font-weight:800}}
+    font-family:var(--serif);font-size:22px;font-weight:800}}
   .tm-out summary::-webkit-details-marker{{display:none}}
   .tm-out summary::after{{content:'';margin-left:auto;width:9px;height:9px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg) translateY(-3px);transition:transform .15s}}
   .tm-out[open] summary{{margin-bottom:12px}}
@@ -428,9 +428,9 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-card:hover{{border-color:rgba(255,106,31,.45)}}
   .tm-card img{{width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;display:block}}
   .tm-card-body{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}}
-  .tm-card-name{{font-size:13px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em}}
-  .tm-card-price{{font-family:var(--serif);font-size:19px;font-weight:800;color:var(--o);margin-top:auto;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}}
-  .tm-card-price s{{font-family:Inter,system-ui,sans-serif;font-size:12.5px;font-weight:500;color:var(--mut)}}
+  .tm-card-name{{font-size:14px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em}}
+  .tm-card-price{{font-family:var(--serif);font-size:18px;font-weight:800;color:var(--o);margin-top:auto;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}}
+  .tm-card-price s{{font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:500;color:var(--mut)}}
   .tm-card-tag{{position:absolute;top:10px;left:10px;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;background:#FF6A1F;color:#2B0E00}}
   .tm-card-low{{font-size:12px;font-weight:600;color:var(--gold)}}
   /* Agotados aparte y atenuados: siguen enlazados porque su ficha es donde
@@ -440,15 +440,15 @@ CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-out .tm-card-price{{color:var(--mut)}}
   .tm-card-out{{font-size:12px;font-weight:600;color:var(--mut)}}
   .tm-cta{{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}}
-  .tm-cta a{{display:inline-flex;align-items:center;gap:8px;padding:13px 18px;border-radius:16px;font-size:15px;font-weight:700}}
+  .tm-cta a{{display:inline-flex;align-items:center;gap:8px;padding:13px 18px;border-radius:16px;font-size:14px;font-weight:700}}
   .tm-cta .tm-i{{width:19px;height:19px}}
   .tm-cta .w{{background:#25D366;color:#062B14}}
   .tm-cta .s{{color:var(--gold);border:1px solid rgba(242,182,50,.35)}}
   .tm-nav-cats{{margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}}
-  .tm-nav-cats h2{{font-family:var(--serif);font-size:20px;font-weight:800;margin-bottom:12px}}
-  .tm-nav-cats a{{display:inline-block;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin:0 6px 8px 0}}
+  .tm-nav-cats h2{{font-family:var(--serif);font-size:22px;font-weight:800;margin-bottom:12px}}
+  .tm-nav-cats a{{display:inline-block;font-size:14px;font-weight:600;padding:9px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin:0 6px 8px 0}}
   .tm-nav-cats a small{{color:var(--mut);font-weight:500;margin-left:4px}}
-  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line)}}
+  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12px;border-top:1px solid var(--line)}}
   .tm-ftr a{{color:#F2B632;text-decoration:underline}}
   @media (prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}*{{transition:none !important}}}}
   @media(max-width:520px){{.tm-grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}
@@ -579,12 +579,12 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     background:rgba(14,12,16,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}}
   .tm-logo{{display:flex;align-items:center;gap:10px}}
   .tm-logo img{{width:36px;height:36px;border-radius:11px;display:block}}
-  .tm-logo span{{font-family:var(--serif);font-size:21px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
-  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13.5px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
+  .tm-logo span{{font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:-.3px}}.tm-logo b{{color:var(--o);margin-left:6px}}
+  .tm-back{{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600;padding:8px 14px 8px 9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);white-space:nowrap}}
   /* Migas de pan: además de orientar al visitante, son el enlace de vuelta a
      la categoría. Sin ellas la ficha era un callejón sin salida — solo se
      podía salir al home o a WhatsApp. */
-  .tm-migas{{max-width:1080px;margin:0 auto;padding:16px 16px 0;font-size:12.5px;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px;align-items:center}}
+  .tm-migas{{max-width:1080px;margin:0 auto;padding:16px 16px 0;font-size:12px;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px;align-items:center}}
   .tm-migas a{{color:var(--gold)}}
   .tm-migas a:hover{{text-decoration:underline}}
   .tm-migas .sep{{opacity:.6}}
@@ -602,38 +602,38 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-price{{font-family:var(--serif);font-size:44px;font-weight:800;line-height:1;color:var(--o)}}
   .tm-price small{{font-size:18px;margin-left:6px}}
   .tm-orig{{font-size:18px;color:var(--mut);text-decoration:line-through}}
-  .tm-badge{{background:rgba(255,106,31,.15);color:var(--o);font-size:13px;font-weight:800;padding:4px 10px;border-radius:999px}}
-  .tm-stok-y,.tm-stok-n{{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;margin:12px 0 18px}}
+  .tm-badge{{background:rgba(255,106,31,.15);color:var(--o);font-size:14px;font-weight:800;padding:4px 10px;border-radius:999px}}
+  .tm-stok-y,.tm-stok-n{{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin:12px 0 18px}}
   .tm-stok-y{{color:var(--o)}}.tm-stok-n{{color:var(--mut)}}
   .tm-stok-y + .tm-stok-y{{margin-top:-10px}}
   .tm-keys{{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}}
   .tm-keys span{{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#f0e6de;padding:9px 14px;border-radius:14px;border:1px solid rgba(255,106,31,.55);background:rgba(255,106,31,.08)}}
   .tm-keys .tm-i{{color:var(--o);width:16px;height:16px}}
   .tm-actions{{display:flex;flex-direction:column;gap:12px}}
-  .tm-btn{{display:flex;align-items:center;justify-content:center;gap:10px;padding:17px 20px;border-radius:18px;font-size:17px;font-weight:800;border:none;font-family:inherit;cursor:pointer;transition:opacity .2s}}
+  .tm-btn{{display:flex;align-items:center;justify-content:center;gap:10px;padding:17px 20px;border-radius:18px;font-size:16px;font-weight:800;border:none;font-family:inherit;cursor:pointer;transition:opacity .2s}}
   .tm-btn:hover{{opacity:.9}}
   .tm-btn .tm-i{{width:21px;height:21px}}
   .tm-btn-w{{background:#25D366;color:#062B14;box-shadow:0 14px 30px -14px rgba(37,211,102,.7)}}
   .tm-btn-p{{background:#FF6A1F;color:#2B0E00}}
   /* Secundario: con stock "Ver más en TiendaMax" (la acción de la página es
      pedir); agotado, el de WhatsApp, "por si quieres preguntar". */
-  .tm-btn-s{{background:transparent;color:var(--gold);border:1px solid rgba(242,182,50,.35);font-size:15px;padding:13px 18px}}
+  .tm-btn-s{{background:transparent;color:var(--gold);border:1px solid rgba(242,182,50,.35);font-size:14px;padding:13px 18px}}
   .tm-conf{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}}
   .tm-conf > div{{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:14px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line)}}
   .tm-conf .ic{{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center}}
   .tm-conf .ic .tm-i{{width:21px;height:21px}}
   .tm-conf .o{{background:rgba(255,106,31,.16);color:var(--o)}}.tm-conf .g{{background:rgba(37,211,102,.14);color:#4ade80}}
-  .tm-conf b{{font-size:14.5px}}.tm-conf small{{font-size:12.5px;color:var(--mut);line-height:1.4}}
+  .tm-conf b{{font-size:14px}}.tm-conf small{{font-size:12px;color:var(--mut);line-height:1.4}}
   /* Avísame cuando vuelva (solo fichas agotadas; el porqué, en el script). */
   .tm-aviso{{display:none;flex-direction:column;gap:10px;background:rgba(255,106,31,.07);border:1px solid rgba(255,106,31,.28);border-radius:18px;padding:14px}}
   .tm-aviso.abierto{{display:flex}}
-  .tm-aviso p{{font-size:13.5px;color:#d6d6de;line-height:1.5}}
+  .tm-aviso p{{font-size:14px;color:#d6d6de;line-height:1.5}}
   .tm-aviso-row{{display:flex;gap:8px}}
-  .tm-aviso input{{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 13px;color:#fff;font-size:15px;font-family:inherit}}
+  .tm-aviso input{{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 13px;color:#fff;font-size:14px;font-family:inherit}}
   .tm-aviso input:focus{{outline:2px solid var(--o);outline-offset:1px;border-color:transparent}}
   .tm-aviso button{{background:#FF6A1F;color:#2B0E00;border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}}
   .tm-aviso button:disabled{{opacity:.55;cursor:default}}
-  .tm-aviso .msg{{font-size:13px;line-height:1.5}}
+  .tm-aviso .msg{{font-size:14px;line-height:1.5}}
   .tm-aviso .msg.ok{{color:#4ade80}}
   .tm-aviso .msg.err{{color:#ff8a6b}}
   .tm-aviso .luego{{font-size:12px;color:var(--mut)}}
@@ -643,18 +643,18 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
      producto lo tiene. */
   .tm-cuerpo{{max-width:1080px;margin:0 auto;padding:18px 16px 8px;display:grid;gap:14px}}
   .tm-blk{{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px}}
-  .tm-blk h2,.tm-rel h2,.tm-res h2{{font-family:var(--serif);font-size:21px;font-weight:800;margin-bottom:14px}}
-  .tm-desc{{font-size:15px;line-height:1.7;color:#d6d6de;white-space:pre-line}}
+  .tm-blk h2,.tm-rel h2,.tm-res h2{{font-family:var(--serif);font-size:22px;font-weight:800;margin-bottom:14px}}
+  .tm-desc{{font-size:14px;line-height:1.7;color:#d6d6de;white-space:pre-line}}
   .tm-ficha{{display:grid}}
   .tm-ficha div{{display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:14px;padding:11px 0;border-top:1px solid var(--line)}}
   .tm-ficha div:first-child{{border-top:0;padding-top:0}}
-  .tm-ficha dt{{font-size:13px;color:var(--mut)}}
+  .tm-ficha dt{{font-size:14px;color:var(--mut)}}
   .tm-ficha dd{{font-size:14px;line-height:1.45;font-weight:500}}
   .tm-ficha small{{display:block;font-size:12px;color:var(--mut);margin-top:2px;font-weight:400}}
   .tm-cars{{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}}
   .tm-car{{background:var(--card2);border-radius:18px;padding:14px;border-left:3px solid var(--o)}}
-  .tm-car b{{display:block;font-size:14.5px;margin-bottom:5px}}
-  .tm-car p{{font-size:13.5px;line-height:1.5;color:var(--mut)}}
+  .tm-car b{{display:block;font-size:14px;margin-bottom:5px}}
+  .tm-car p{{font-size:14px;line-height:1.5;color:var(--mut)}}
   .tm-dos{{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
   .tm-lst{{list-style:none;display:grid;gap:10px}}
   .tm-lst li{{display:flex;gap:10px;font-size:14px;line-height:1.5;color:#e2e2ea}}
@@ -669,10 +669,10 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-rel-card:hover{{border-color:rgba(255,106,31,.45)}}
   .tm-rel-card img{{width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;display:block}}
   .tm-rel-body{{padding:10px 12px 12px}}
-  .tm-rel-name{{font-size:13px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em;margin-bottom:6px}}
+  .tm-rel-name{{font-size:14px;line-height:1.35;color:#e2e2ea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.7em;margin-bottom:6px}}
   .tm-rel-price{{font-family:var(--serif);font-size:18px;font-weight:800;color:var(--o)}}
-  .tm-rel-mas{{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--gold);border:1px solid rgba(242,182,50,.35);padding:9px 16px;border-radius:999px}}
-  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line)}}
+  .tm-rel-mas{{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:14px;font-weight:600;color:var(--gold);border:1px solid rgba(242,182,50,.35);padding:9px 16px;border-radius:999px}}
+  .tm-ftr{{text-align:center;padding:26px 16px;color:var(--mut);font-size:12px;border-top:1px solid var(--line)}}
   .tm-ftr a{{color:#F2B632;text-decoration:underline}}
   .tm-barra{{display:none}}
   @media(max-width:760px){{
@@ -685,7 +685,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       background:rgba(12,10,14,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}}
     .tm-barra .pz{{display:flex;flex-direction:column;line-height:1.1;min-width:0}}
     .tm-barra .pz b{{font-family:var(--serif);font-size:24px}}.tm-barra .pz small{{font-size:12px;color:var(--mut);margin-top:2px}}
-    .tm-barra a{{margin-left:auto;display:flex;align-items:center;gap:8px;padding:14px 22px;border-radius:16px;background:#25D366;color:#062B14;font-weight:800;font-size:15.5px}}
+    .tm-barra a{{margin-left:auto;display:flex;align-items:center;gap:8px;padding:14px 22px;border-radius:16px;background:#25D366;color:#062B14;font-weight:800;font-size:16px}}
     .con-barra .tm-ftr{{padding-bottom:110px}}
   }}
 </style>
@@ -753,7 +753,7 @@ CSS_RESENAS = """
   .tm-res-item{background:#110f13;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:16px 18px;margin-bottom:10px}
   .tm-res-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
   .tm-res-autor{font-size:14px;font-weight:700;color:#f2f2f5}
-  .tm-res-est{font-size:13px;color:#F2B632;letter-spacing:1px}
+  .tm-res-est{font-size:14px;color:#F2B632;letter-spacing:1px}
   .tm-res-fecha{font-size:12px;color:#9898a8;margin-left:auto}
   .tm-res-texto{font-size:14px;line-height:1.65;color:#d6d6de;white-space:pre-line}
 """

@@ -96,6 +96,14 @@ ok(v.fila === 'flex' && /72/.test(v.inicio), `Inicio no avisa de lo pendiente: $
 ok(/Marca de golpe|marca de golpe/.test(v.caja) && await pagina.evaluate(() => !!document.getElementById('comis-hasta')),
    'con dos meses cerrados pendientes debería salir «todo lo anterior».');
 
+// 1b) El resumen que lee el recordatorio de Telegram: por mes, por moneda, solo lo pendiente
+//     y sin la venta sin comisión. Es lo MISMO que enseña la pantalla, no un recálculo.
+const resumen = await pagina.evaluate(() => comisResumenParaCuenta());
+const claves = Object.keys(resumen.meses).sort();
+ok(claves.length === 3, `el resumen debería tener 3 meses pendientes: ${JSON.stringify(resumen)}`);
+const mp = resumen.meses[claves[1]];
+ok(mp && mp.usd === 22 && mp.mn === 1800 && mp.n === 2, `el mes pasado debería ser 22 USD + 1,800 MN en 2 ventas (la sin comisión no cuenta): ${JSON.stringify(mp)}`);
+
 // 2) «Me pagaron» el mes pasado: quedan el actual y el de hace dos meses; la venta no se toca.
 await tocar('Me pagaron', 1);       // [actual, mes pasado, hace dos meses]
 await pagina.waitForTimeout(300);
@@ -105,6 +113,8 @@ ok(/2 ventas/.test(v.caja.split('Ya cobradas')[0]) && !/1,800/.test(v.caja.split
 ok(/50/.test(v.inicio) && !/MN/.test(v.inicio), `Inicio debería enseñar solo 50 USD: ${JSON.stringify(v.inicio)}`);
 ok(/Ya cobradas \(2 ventas/.test(v.caja), `las cobradas deberían listarse aparte: ${JSON.stringify(v.caja.slice(-200))}`);
 ok(v.ventasLS === JSON.stringify(VENTAS), 'marcar la comisión modificó las ventas (/ventas es inmutable: la marca va aparte).');
+
+ok(!Object.keys(await pagina.evaluate(() => comisResumenParaCuenta().meses)).includes(claves[1]), 'un mes cobrado no puede seguir en el resumen que lee Telegram.');
 
 // 3) Todo cobrado: «estás al día» y Inicio sin la línea.
 await pagina.evaluate(ids => comisMarcar(ids, true), [ID_ACTUAL, ID_ANTES]);
