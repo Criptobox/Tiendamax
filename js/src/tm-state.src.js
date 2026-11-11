@@ -692,8 +692,23 @@ function renderizarMasVendidos() {
         return;
     }
 
+    /* Los destacados los marca el gestor a mano (masVendido). Con pocos marcados
+       —hoy uno solo con stock— la sección enseñaba UNA tarjeta, la segunda
+       cosa que ve el cliente en la portada. Si hay menos de DESTACADOS_MIN, se
+       completa hasta DESTACADOS_MAX con lo que se puede comprar ahora: primero
+       lo rebajado (es lo que más empuja) y luego lo que más unidades tiene.
+       Lo marcado a mano va siempre delante. */
+    const DESTACADOS_MIN = 4, DESTACADOS_MAX = 6;
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
-    const productosAMostrar = masVendidos.length > 0 ? masVendidos : [...productos].filter(p => p.precioActual > 0 && p.stock > 0).sort((a, b) => b.stock - a.stock).slice(0, 6);
+    let productosAMostrar = masVendidos;
+    if (masVendidos.length < DESTACADOS_MIN) {
+        const ya = new Set(masVendidos.map(p => String(p.id)));
+        const rebaja = p => Number(p.precioOriginal) > Number(p.precioActual) ? 1 : 0;
+        const relleno = productos
+            .filter(p => !ya.has(String(p.id)) && p.precioActual > 0 && p.stock > 0)
+            .sort((a, b) => (rebaja(b) - rebaja(a)) || (b.stock - a.stock));
+        productosAMostrar = masVendidos.concat(relleno).slice(0, Math.max(DESTACADOS_MAX, masVendidos.length));
+    }
 
     /* El constructor de tarjetas (_tmCrearCard) lo define renderizarProductos
        al pintar la rejilla de productos, y en la PRIMERA visita esa rejilla

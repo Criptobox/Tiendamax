@@ -165,6 +165,7 @@ ok(/Cobertura|Matanzas/i.test(await preguntar('hacen envios a matanzas')),
 
 // ── 8) Nada de lo que ya estaba protegido se rompe ───────────────────
 // Cada una de estas tiene su propia cicatriz en los comentarios del cerebro.
+const HAY_PC = PRODS.some(p => /laptop|computadora|\bpc\b/i.test(String(p.nombre)) && Number(p.stock) > 0 && !/apagad/.test(String(p.apagado)));
 const noRomper = [
     ['tienen paneles solares', /no vendo|no tenemos/i, 'paneles solares: sigue diciendo que no'],
     ['aceite para carro', /aceite|mannol|fanfaro/i, 'aceite para carro no puede devolver el ventilador'],
@@ -172,12 +173,31 @@ const noRomper = [
     // tiene. El generador solar BLUETTI y la PC de escritorio existen, y
     // NO_VENDEMOS llegó a taparlos. Lo que no puede pasar es el «no vendo».
     ['necesito un generador', /^(?!.*no (vendo|manejo)).*/is, 'el generador solar está en catálogo: no se puede negar'],
-    ['tienen laptops', /^(?!.*\bno manejo\b).*/is, 'hay una PC en catálogo: la última palabra la tiene el catálogo'],
+    /* Solo mientras haya una PC a la venta. Con la categoría PC Y LAPTOPS apagada
+       y sin ninguna en el catálogo, «laptops no manejo» es la respuesta CORRECTA:
+       esta comprobación existe para que el aviso de «no vendemos» nunca tape lo
+       que sí se vende, no para obligar a Max a ofrecer lo que no hay. */
+    ['tienen laptops', HAY_PC ? /^(?!.*\bno manejo\b).*/is : /./s, 'hay una PC en catálogo: la última palabra la tiene el catálogo'],
     ['acepta transferencia', /pago|transferencia/i, 'pago por transferencia'],
 ];
 for(const [q, re, porque] of noRomper){
     const r = await preguntar(q);
     ok(re.test(r), `${porque} — contestó: «${r.slice(0,140)}»`);
+}
+
+// ── 9) Una cifra suelta no nombra un producto ─────────────────────────
+/* «compara wifi 5 vs wifi 6» salía como comparación de PRODUCTOS porque sacaba
+   como mención un aceite «… para Transmisión … Garrafa 5 Litros»: el 5 como
+   cifra y «para» colado dentro de «compara». Se prueba con un producto de
+   fixture, no con el catálogo del día: el fallo existía solo mientras hubiera
+   un nombre así, y volvió a aparecer al entrar el DIMASOIL. */
+{
+    const trampa = { id: 9999991, nombre: 'Aceite Mineral para Transmisión Prueba 80W-90 (Garrafa 5 Litros)',
+                     categoria: 'CARROS', precioActual: 10, stock: 5, activo: true };
+    PRODS.push(trampa); B.sincronizar();
+    ok(B.detectIntent('compara wifi 5 vs wifi 6') === 'comparacionTecnologica',
+       'una cifra suelta (el 5) más «para» dentro de «compara» no puede ser una mención de producto');
+    PRODS.pop(); B.sincronizar();
 }
 
 if(fallos.length){

@@ -197,6 +197,16 @@ function tmProductosDeVenta(venta) {
     return venta.producto ? [String(venta.producto)] : [];
 }
 
+/** Enlace que abre la ficha del primer producto de la venta (el deep link `?p=`
+ *  de la tienda), o '' si la venta no guardó su id. Solo el primero: un mensaje
+ *  con tres enlaces se lee a spam, y con una reseña suelta ya se gana. */
+function tmEnlaceResena(venta) {
+    if (!venta) return '';
+    const it = (Array.isArray(venta.items) ? venta.items : []).find(x => x && x.productoId);
+    const id = it ? it.productoId : venta.productoId;
+    return id ? 'https://tiendamax.org/?p=' + encodeURIComponent(String(id)) : '';
+}
+
 function _tmListaProductos(nombres) {
     if (!nombres.length) return 'tu compra';
     if (nombres.length === 1) return nombres[0];
@@ -218,10 +228,15 @@ function tmTextoSeguimiento(seg, tienda) {
                'Si tienes cualquier duda con la instalación, dime y te ayudo.';
     }
     if (seg.hito === 'satisfaccion') {
+        /* Con el enlace directo a la ficha: sin él, «deja una reseña» obliga a
+           buscar el producto en la tienda, y casi nadie lo hace. Las reseñas
+           son lo que menos tiene la tienda (3), y esto es lo que las consigue. */
+        const enlace = tmEnlaceResena(seg.venta);
         return saludo + ', soy de ' + firma + '. Ya va un mes con ' + prods +
                ' — ¿todo bien?\n\n' +
-               'Si estás contento, me ayudaría mucho que dejaras una reseña; y si algo no va ' +
-               'como debe, prefiero saberlo y resolverlo.';
+               'Si estás contento, me ayudaría mucho que dejaras una reseña' +
+               (enlace ? ' (son dos minutos, abajo en la ficha: ' + enlace + ')' : '') +
+               '; y si algo no va como debe, prefiero saberlo y resolverlo.';
     }
     return saludo + ', soy de ' + firma + '. Hace un tiempo te llevaste ' + prods +
            '.\n\n¿Sigue todo bien? Si te hace falta algo para completarlo o quieres ' +

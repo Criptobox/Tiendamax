@@ -393,8 +393,12 @@ for(const q of ['tienes el hap ac3','venden televisores','tienen cable de rred']
 }
 for(const q of ['algo para el patio','algo para la piscina']){
     const r = await preguntar(q);
-    ok(/Eso exacto no lo tengo|lo m[aá]s parecido/i.test(r),
-       `«${q}» no nombra nada: sigue siendo "lo más parecido", no una ficha. «${r.slice(0,140)}»`);
+    /* Lo que no puede pasar es que un parecido flojo se presente como la ficha
+       de un producto (con su Stock/Precio). Qué más conteste —«lo más parecido»
+       o, si hoy el catálogo no tiene nada cercano, la ayuda general— depende de
+       lo que haya en el almacén, y eso no es lo que se vigila aquí. */
+    ok(/Eso exacto no lo tengo|lo m[aá]s parecido/i.test(r) || !/Stock|Precio/i.test(r),
+       `«${q}» no nombra nada: no puede salir como la ficha de un producto. «${r.slice(0,140)}»`);
 }
 
 // ── 15) Un hermano nuevo no puede tapar al que nombran ──────────────
