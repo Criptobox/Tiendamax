@@ -168,6 +168,15 @@ const dos = sb.tmSeguimientoDe(venta(3, {
 ok(sb.tmTextoSeguimiento(dos).includes('Router Tenda y Antena CPE'),
     'con varios productos deben listarse todos');
 
+// La reseña: el mensaje del mes lleva el enlace directo a la ficha (?p=<id>); sin id, no lleva ninguno.
+const conId = sb.tmSeguimientoDe(venta(30, { items: [{ producto: 'Router Tenda', productoId: 1777923552923 }] }), {}, AHORA);
+const txtMes = sb.tmTextoSeguimiento(conId, 'TiendaMax');
+ok(conId.hito === 'satisfaccion', 'a los 30 días toca el seguimiento de satisfacción');
+ok(txtMes.includes('https://tiendamax.org/?p=1777923552923'), `el mensaje del mes debe llevar el enlace a la ficha: ${txtMes.slice(0, 200)}`);
+const sinId = sb.tmTextoSeguimiento(sb.tmSeguimientoDe(venta(30, { items: [{ producto: 'Router Tenda' }] }), {}, AHORA), 'TiendaMax');
+ok(!/https?:\/\//.test(sinId) && /reseña/.test(sinId), 'sin id de producto no se inventa un enlace');
+ok(!/https?:\/\//.test(sb.tmTextoSeguimiento(seg, 'TiendaMax')), 'el primer seguimiento no lleva enlaces');
+
 // El enlace tiene que abrir el chat correcto y con el texto puesto.
 const url = sb.tmWaSeguimiento(seg, 'TiendaMax');
 ok(url.startsWith('https://wa.me/5355551234?text='), `enlace mal formado: ${url.slice(0, 60)}`);

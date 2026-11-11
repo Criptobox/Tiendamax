@@ -1446,7 +1446,14 @@
         const distintivas = palabras.filter(w => !GENERICAS.has(w));
         const foundDistintivas = distintivas.filter(casaPalabra).length;
         const foundTotal = palabras.filter(casaPalabra).length;
-        if(foundDistintivas >= 1 && foundTotal >= 2){
+        /* Una cifra suelta identifica entre hermanos (el de 8 puertos y el de
+           5), pero NO basta para nombrar un producto: «compara wifi 5 vs wifi
+           6» sacaba como mención el aceite «DIMASOIL … Garrafa 5 Litros» —el 5
+           como cifra y «para» colado dentro de «compara»— y esa mención falsa
+           convertía una comparación de tecnologías en una de productos. Hace
+           falta además una palabra de verdad. */
+        const foundPalabraReal = distintivas.filter(w => !esCifra(w) && casaPalabra(w)).length;
+        if(foundDistintivas >= 1 && foundPalabraReal >= 1 && foundTotal >= 2){
           const modelosCasan = modelos.filter(casaPalabra).length;
           mentions.push({p, exactMatch:false, modelos, modelosCasan,
             score: foundDistintivas * 8 + foundTotal * 2 + modelosCasan * 6});
