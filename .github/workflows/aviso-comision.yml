@@ -1,0 +1,32 @@
+name: 💵 Recordatorio de comisión por cobrar
+
+on:
+  schedule:
+    # Día 1 de cada mes, 14:00 UTC (10:00 en Cuba): el mes anterior ya está cerrado.
+    - cron: '0 14 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: aviso-comision
+  cancel-in-progress: false
+
+jobs:
+  aviso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r scripts/requirements.txt
+
+      - name: Avisar de la comisión por cobrar
+        run: python scripts/aviso_comision.py
+        env:
+          BOT_TOKEN:                ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID:            ${{ secrets.ADMIN_CHAT_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

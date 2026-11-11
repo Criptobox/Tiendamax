@@ -370,3 +370,14 @@ html:root body .section-eyebrow { font-size: 12px !important; }
   html:root body #vistaInicio .currency-bar .cur-btn svg { width: 14px !important; height: 14px !important; }
   html:root body #vistaInicio .currency-bar .cur-btn.active { box-shadow: 0 3px 9px -2px rgba(255, 106, 31, .45), inset 0 1px 0 rgba(255, 255, 255, .25) !important; }
 }
+
+/* Móvil: aire justo para que la rebaja (lo que se compra) asome con su precio por encima
+   de la barra inferior en una pantalla de ~844 px. Son ~40 px repartidos entre el final
+   del hero, las categorías y el botón «Ver más»; ninguno se nota a la vista. */
+@media (max-width: 768px) {
+  html:root body .hero { padding-bottom: 4px !important; }
+  html:root body #categorias-home { padding-top: 0 !important; padding-bottom: 4px !important; }
+  html:root body #categorias-home #categoriasGrid { padding-top: 2px !important; padding-bottom: 6px !important; }
+  html:root body #catVerMasBtn { padding-top: 9px !important; padding-bottom: 9px !important; margin-bottom: 4px !important; }
+  html:root body #rebajasHome { padding-top: 0 !important; }
+}

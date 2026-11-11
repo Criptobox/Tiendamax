@@ -80,15 +80,18 @@ function renderizarCategoriasHomeInstant() {
     const maxCount = _catsI.length ? Math.max(..._catsI.map(cat => _dispI(localProds.filter(p => p.categoria === cat)))) : 0;
     const _dn = { 'WIFI': 'REDES' };
     const _extrasI = [];
+    let _mostradasI = 0;
     const _minI = (typeof TM_CAT_MIN !== 'undefined') ? TM_CAT_MIN : 3;
     _catsI.forEach(cat => {
         const count = _dispI(localProds.filter(p => p.categoria === cat));
         const icon = obtenerIconoCategoria(cat);
-        // Pocas unidades (< 3) → desplegable "Ver más"
-        if (count < _minI) {
+        // Pocas unidades (< 3) → desplegable "Ver más"; y en el móvil, solo las primeras
+        // TM_CAT_MAX_MOVIL (igual que renderizarCategoriasHome: si no, la tarjeta cambia al llegar la red)
+        if (count < _minI || (typeof _tmCatEsMovil === 'function' && _tmCatEsMovil() && _mostradasI >= TM_CAT_MAX_MOVIL)) {
             _extrasI.push({ cat, count, name: _dn[cat] || cat, icon });
             return;
         }
+        _mostradasI++;
         const card = document.createElement('div');
         card.className = 'categoria-card';
         // Mismo color que el renderer con datos frescos: si no, el pintado
