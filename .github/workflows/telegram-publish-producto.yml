@@ -12,6 +12,12 @@ on:
       - 'config.json'
   workflow_dispatch:
 
+# Guarda los IDs de los mensajes de Telegram con un `git push` (paso final). Sin este permiso el
+# token del workflow solo lee y el push da 403: los IDs no se guardan y la próxima vez el mensaje de
+# un producto agotado o editado no se puede borrar/actualizar, sin que nada más falle.
+permissions:
+  contents: write
+
 concurrency:
   group: telegram-publish-producto
   cancel-in-progress: false
