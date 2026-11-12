@@ -7398,11 +7398,11 @@
       "https://tiendamax.org/imagenes/img_1785866155608.webp",
       "https://tiendamax.org/imagenes/img_1785866157414.webp"
     ],
-    "precioActual": 40,
+    "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
-    "comision": 4,
+    "stock": 5,
+    "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "MOTOS",
     "subcategoria": "CARGADORES",
@@ -7462,7 +7462,7 @@
       "1x Cargador de Batería de Litio BIEN 48V 5A"
     ],
     "slug": "cargador-litio-bien-48v-5a",
-    "rev": 1794446305749,
+    "rev": 1794447416842,
     "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US."
   },
   {
