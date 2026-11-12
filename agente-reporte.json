@@ -1,11 +1,81 @@
 {
-  "generado": "2026-11-11T16:47:03.722703+00:00",
+  "generado": "2026-11-12T17:15:27.148425+00:00",
   "productos": 174,
-  "urgentes": 11,
+  "urgentes": 23,
   "advertencias": 0,
   "info": 6,
-  "resumen": "Anoche revisé tus 174 productos y encontré 11 urgente(s), 6 de info.",
+  "resumen": "Anoche revisé tus 174 productos y encontré 23 urgente(s), 6 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "Juego de Fundas para Asientos (Edición Elegance)",
+      "detalle": "→ Juego de Fundas Para Asientos (Edición Elegance)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Toldo para Sombra 2x4",
+      "detalle": "→ Toldo Para Sombra 2x4"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Cerradura Inteligente Biométrica con Huella y Teclado",
+      "detalle": "→ Cerradura Inteligente Biométrica Con Huella y Teclado"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "KIT de Cámaras Zosi con DVR 8 Canales",
+      "detalle": "→ KIT de Cámaras Zosi Con DVR 8 Canales"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Ventilador para Carro",
+      "detalle": "→ Ventilador Para Carro"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Timbre Inteligente con Cámara HD y WiFi",
+      "detalle": "→ Timbre Inteligente Con Cámara HD y WiFi"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Capa para Moto",
+      "detalle": "→ Capa Para Moto"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "KIT de 4 Cámaras Zosi (con su Disco Duro)",
+      "detalle": "→ KIT de 4 Cámaras Zosi (Con su Disco Duro)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Sistema de Seguridad Zosi para el Hogar - 8 Canales",
+      "detalle": "→ Sistema de Seguridad Zosi Para el Hogar - 8 Canales"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Controlador MPPT 100A con USB",
+      "detalle": "→ Controlador MPPT 100A Con USB"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Base para Paneles",
+      "detalle": "→ Base Para Paneles"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
+      "detalle": "→ Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 40A) | para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
+      "detalle": "→ Cargador Inteligente de Baterías LVYUAN BC-400 PRO (12V/24V - 40A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar para Sistemas Solares Fotovoltaicos y Baterías",
+      "detalle": "→ Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC) | Breaker Bipolar Para Sistemas Solares Fotovoltaicos y Baterías"
+    },
     {
       "tipo": "nombre",
       "nombre": "Cámara de reversa",
@@ -25,16 +95,6 @@
       "tipo": "nombre",
       "nombre": "Downy Unstopables Fresh | Perlas de Perfume Intensificador para Lavado (680g / 24 oz)",
       "detalle": "→ Downy Unstopables Fresh | Perlas de Perfume Intensificador Para Lavado (680g / 24 oz)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "MANNOL Energy 7511 5W-30",
-      "detalle": "→ Mannol Energy 7511 5W-30"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002 1L",
-      "detalle": "→ Líquido de Frenos Sintético Mannol Brake Fluid DOT-4 3002 1L"
     },
     {
       "tipo": "nombre",
@@ -58,8 +118,8 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "Aceite Sintético para Transmisión Automática FANFARO CVT 8601 (1 Litro)",
-      "detalle": "→ Aceite Sintético Para Transmisión Automática FANFARO CVT 8601 (1 Litro)"
+      "nombre": "Aceite Sintético para Transmisión Automática Fanfaro CVT 8601 (1 Litro)",
+      "detalle": "→ Aceite Sintético Para Transmisión Automática Fanfaro CVT 8601 (1 Litro)"
     },
     {
       "tipo": "stock_bajo",
@@ -73,7 +133,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | Para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
+      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
       "detalle": "quedan 1"
     },
     {
