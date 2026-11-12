@@ -4259,7 +4259,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 5,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4353,7 +4353,7 @@
       "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
       "1× Manual de usuario e instrucciones de operación"
     ],
-    "rev": 1793393116521,
+    "rev": 1794446305749,
     "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura."
   },
   {
@@ -7392,7 +7392,6 @@
   {
     "id": 1785866159148,
     "nombre": "Cargador de Batería de Litio BIEN 48V 5A",
-    "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US.",
     "imagen": "https://tiendamax.org/imagenes/img_1785866153002.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1785866153002.webp",
@@ -7402,7 +7401,7 @@
     "precioActual": 40,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 4,
     "comision": 4,
     "comisionMoneda": "USD",
     "categoria": "MOTOS",
@@ -7463,7 +7462,8 @@
       "1x Cargador de Batería de Litio BIEN 48V 5A"
     ],
     "slug": "cargador-litio-bien-48v-5a",
-    "rev": 1793393116521
+    "rev": 1794446305749,
+    "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US."
   },
   {
     "id": 1786631549331,
