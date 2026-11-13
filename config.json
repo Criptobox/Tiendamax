@@ -20,7 +20,8 @@
   "tasaActualizada": "2026-11-11",
   "tasaAvisadaTelegram": 930,
   "tema": {
-    "modo": "navidad",
-    "ts": 1794541009383
+    "modo": "off",
+    "ts": 1794541074865,
+    "temporada": "fuera"
   }
 }
