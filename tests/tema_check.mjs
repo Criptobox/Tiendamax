@@ -83,15 +83,18 @@ const tienda = async (url, cfg, ls) => {
     await p.goto(`http://localhost:${PUERTO}/${url}`, { waitUntil: 'domcontentloaded' });
     const antes = await p.evaluate(() => document.documentElement.getAttribute('data-tema'));
     await p.waitForTimeout(2500);
-    const r = await p.evaluate(() => ({ despues: document.documentElement.getAttribute('data-tema'), ls: localStorage.getItem('tm_tema_cfg') }));
+    const r = await p.evaluate(() => ({ despues: document.documentElement.getAttribute('data-tema'), ls: localStorage.getItem('tm_tema_cfg'),
+        icono: document.querySelector('link[rel="icon"][sizes="32x32"]').getAttribute('href'), apple: document.querySelector('link[rel="apple-touch-icon"]').getAttribute('href') }));
     await p.close();
     return Object.assign({ antes }, r);
 };
 const OFF = { modo: 'off', temporada: 'navidad-2026', ts: DIC.getTime() };
 let t = await tienda('index.html', CONFIG);
 ok(t.antes === 'navidad' && t.despues === 'navidad', `el 10 de diciembre, sin elección, la tienda va de Navidad: ${JSON.stringify(t)}`);
+ok(t.icono === '/iconos/navidad/favicon-32.png' && t.apple === '/iconos/navidad/apple-touch-icon.png', `el icono de la pestaña sigue al tema: ${t.icono} · ${t.apple}`);
 t = await tienda('index.html', Object.assign({}, CONFIG, { tema: OFF }));
 ok(t.despues === null, `apagado en config.json → la tienda sin tema: ${JSON.stringify(t)}`);
+ok(/^\/iconos\/favicon-32\.png/.test(t.icono), `apagado → el icono de siempre: ${t.icono}`);
 ok(t.ls && JSON.parse(t.ls).modo === 'off', 'la elección se recuerda para pintar la próxima visita sin esperar la red');
 t = await tienda('index.html', Object.assign({}, CONFIG, { tema: OFF }), JSON.stringify(OFF));
 ok(t.antes === null, `con lo recordado, la visita siguiente ya nace sin tema (sin parpadeo de Navidad): ${JSON.stringify(t)}`);
