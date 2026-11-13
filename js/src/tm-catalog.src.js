@@ -766,6 +766,9 @@ async function sincronizarTodoConGitHub() {
         // existía: bastaba con que alguien la dejara en localStorage una vez.
         // Un secreto no se cuela en un fichero público por un renglón que
         // nadie usa.
+        // Tema de temporada: si se eligió en ⚙️ Configuración y aún no subió,
+        // viaja aquí; si no, se queda el del repo (Object.assign de arriba).
+        tema:                typeof window.tmTemaParaSubir === 'function' ? window.tmTemaParaSubir(_configBase.tema) : _configBase.tema,
         actualizado:         new Date().toISOString(),
     });
     // Preservar el margen MN configurado (puede ser 0). localStorage manda; si no, se

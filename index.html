@@ -21,6 +21,46 @@
         } catch(e) {}
     })();
     </script>
+<script id="tm-tema-regla">
+/* Tema de temporada: la fecha lo propone y el dueño lo confirma, lo cambia o lo
+   apaga desde ⚙️ Configuración (config.json → tema). Este bloque es IDÉNTICO en
+   index.html y admin.html (test_tema_estacional.py lo comprueba): la tienda y el
+   panel tienen que decir lo mismo de qué tema toca hoy.
+   Un tema elegido a mano caduca a los 45 días y un "apagado" vale solo para la
+   temporada en que se apagó: si no, Halloween seguiría puesto en abril, o la
+   Navidad del año que viene nacería apagada sin que nadie lo decidiera. */
+(function(){
+  function temporada(d){
+    d = d || new Date(); var m = d.getMonth() + 1, x = d.getDate(), y = d.getFullYear();
+    if (m === 12) return 'navidad-' + y;
+    if (m === 1 && x <= 6) return 'navidad-' + (y - 1);
+    if ((m === 10 && x >= 24) || (m === 11 && x <= 1)) return 'halloween-' + y;
+    return '';
+  }
+  window.tmTemaTemporada = temporada;
+  window.tmTemaPorFecha = function(d){ return temporada(d).split('-')[0]; };
+  window.tmTemaEfectivo = function(cfg, d){
+    d = d || new Date();
+    var t = temporada(d), modo = cfg && cfg.modo;
+    if ((modo === 'navidad' || modo === 'halloween') && d.getTime() - (+cfg.ts || 0) < 45 * 864e5) return modo;
+    if (modo === 'off' && cfg.temporada === t) return '';
+    return t.split('-')[0];
+  };
+})();
+</script>
+<script>
+/* Se viste de temporada antes de pintar, con lo último que dijo config.json.
+   ?tema=navidad|halloween|no es la vista previa del panel: no se guarda. */
+(function(){
+  try {
+    var q = /[?&]tema=(navidad|halloween|no)\b/.exec(location.search), t;
+    if (q) t = q[1] === 'no' ? '' : q[1];
+    else t = tmTemaEfectivo(JSON.parse(localStorage.getItem('tm_tema_cfg') || 'null'));
+    if (t) document.documentElement.setAttribute('data-tema', t);
+    window.__tmTemaPreview = !!q;
+  } catch(e) {}
+})();
+</script>
     <style>
     /* Evita parpadeo: si el HTML ya tiene la clase tm-pre-light, fondo claro inmediato */
     html.tm-pre-light, html.tm-pre-light body { background: #FAF8F5 !important; }
@@ -261,7 +301,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=45f76a20" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=a062184e" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -272,7 +312,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=a25c7733">
+    <link rel="stylesheet" href="css/bundle.css?v=27954652">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -571,6 +611,17 @@
                     } else {
                         localStorage.removeItem('ofertaDiaId');
                         localStorage.removeItem('ofertaDiaTexto');
+                    }
+                } catch(e) {}
+                // Tema de temporada: lo que diga config.json manda (y se recuerda
+                // para pintar la próxima visita ya vestida, sin esperar la red).
+                try {
+                    if (cfg && !window.__tmTemaPreview) {
+                        if (cfg.tema) localStorage.setItem('tm_tema_cfg', JSON.stringify(cfg.tema));
+                        else localStorage.removeItem('tm_tema_cfg');
+                        var _t = tmTemaEfectivo(cfg.tema || null);
+                        if (_t) document.documentElement.setAttribute('data-tema', _t);
+                        else document.documentElement.removeAttribute('data-tema');
                     }
                 } catch(e) {}
                 // Se repinta siempre: aunque no haya oferta del día puede haber
@@ -1718,7 +1769,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=45f76a20" defer></script>
+    <script src="js/tm-bundle.js?v=a062184e" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

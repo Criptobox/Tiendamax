@@ -2,6 +2,33 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<script id="tm-tema-regla">
+/* Tema de temporada: la fecha lo propone y el dueño lo confirma, lo cambia o lo
+   apaga desde ⚙️ Configuración (config.json → tema). Este bloque es IDÉNTICO en
+   index.html y admin.html (test_tema_estacional.py lo comprueba): la tienda y el
+   panel tienen que decir lo mismo de qué tema toca hoy.
+   Un tema elegido a mano caduca a los 45 días y un "apagado" vale solo para la
+   temporada en que se apagó: si no, Halloween seguiría puesto en abril, o la
+   Navidad del año que viene nacería apagada sin que nadie lo decidiera. */
+(function(){
+  function temporada(d){
+    d = d || new Date(); var m = d.getMonth() + 1, x = d.getDate(), y = d.getFullYear();
+    if (m === 12) return 'navidad-' + y;
+    if (m === 1 && x <= 6) return 'navidad-' + (y - 1);
+    if ((m === 10 && x >= 24) || (m === 11 && x <= 1)) return 'halloween-' + y;
+    return '';
+  }
+  window.tmTemaTemporada = temporada;
+  window.tmTemaPorFecha = function(d){ return temporada(d).split('-')[0]; };
+  window.tmTemaEfectivo = function(cfg, d){
+    d = d || new Date();
+    var t = temporada(d), modo = cfg && cfg.modo;
+    if ((modo === 'navidad' || modo === 'halloween') && d.getTime() - (+cfg.ts || 0) < 45 * 864e5) return modo;
+    if (modo === 'off' && cfg.temporada === t) return '';
+    return t.split('-')[0];
+  };
+})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a12">
 <meta name="robots" content="noindex,nofollow">
@@ -1935,6 +1962,12 @@ try{var _piel=localStorage.getItem('tm_piel');
             <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
         </div>
+        <div class="section" id="temaBox">
+          <h3>🎄 Tema de temporada</h3>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin:-4px 0 12px">La tienda se viste sola en Navidad (1 dic – 6 ene) y Halloween (24 oct – 1 nov). Aquí lo confirmas, eliges otro o lo apagas. Se guarda solo.</p>
+          <div id="temaOpciones" class="tema-ops" role="radiogroup" aria-label="Tema de la tienda"></div>
+          <p id="temaEstado" style="font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5"></p>
+        </div>
         <div class="section" id="tmPielBox">
           <h3>🎨 Estilo del panel</h3>
           <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin:-4px 0 12px">Solo en este dispositivo. <b style="color:var(--text)">No toca la tienda ni los carteles</b>: el cliente sigue viendo el naranja TiendaMax.</p>
@@ -2302,7 +2335,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=45f76a20"></script>
+<script src="js/tm-bundle.js?v=a062184e"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2704,6 +2737,100 @@ try{var _piel=localStorage.getItem('tm_piel');
   };
 })();
 </script>
+<script>
+/* 🎄 Tema de temporada (config.json → tema = {modo, temporada, ts}).
+   modo: 'auto' (lo que diga la fecha), 'navidad'/'halloween' (a mano, caduca a
+   los 45 días) u 'off' (apagado solo para la temporada en curso). La regla de
+   qué toca vive en el bloque #tm-tema-regla, igual que en la tienda.
+   Mismo patrón que los interruptores de categorías: local en el toque, el repo
+   4 s después releyendo config.json justo antes (y sin haberlo leído NO se
+   escribe: subir solo `tema` dejaría la tienda sin tasa ni Firebase), gana el
+   ts más nuevo, y al cargar se sube lo local que el repo no tenga. */
+(function(){
+  var LS = 'tm_tema_panel', NOMBRE = {navidad:'🎄 Navidad', halloween:'🎃 Halloween', '':'sin tema'};
+  var remoto = null, estado = '', timer = null, subiendo = false;
+  function local(){ try{ var o = JSON.parse(localStorage.getItem(LS) || 'null'); return o && o.modo ? o : null; }catch(e){ return null; } }
+  function gana(a, b){ return !a ? b : !b ? a : ((+b.ts || 0) > (+a.ts || 0) ? b : a); }
+  function actual(){ return gana(remoto, local()); }
+  function cred(){ return { u: localStorage.getItem('githubUser'), r: localStorage.getItem('githubRepo'), t: localStorage.getItem('githubToken') }; }
+  function pintar(){
+    var box = document.getElementById('temaOpciones'), est = document.getElementById('temaEstado'); if(!box) return;
+    var c = actual(), modo = c ? c.modo : 'auto', t = tmTemaTemporada(), fecha = tmTemaPorFecha(), sale = tmTemaEfectivo(c);
+    if (modo === 'off' && c.temporada !== t) modo = 'auto';
+    if ((modo === 'navidad' || modo === 'halloween') && sale !== modo) modo = 'auto';
+    var ops = [['auto','📅 Según la fecha'],['navidad','🎄 Navidad'],['halloween','🎃 Halloween'],['off','⏸️ Apagado']];
+    box.innerHTML = ops.map(function(o){
+      return '<button type="button" role="radio" aria-checked="'+(o[0]===modo)+'" class="tema-op'+(o[0]===modo?' on':'')+'" onclick="temaElegir(\''+o[0]+'\')">'+o[1]+'</button>';
+    }).join('');
+    var linea = (fecha ? 'Por la fecha hoy toca <b>'+NOMBRE[fecha]+'</b>. ' : 'Hoy no toca ningún tema por fecha. ')
+      + 'La tienda muestra: <b>'+NOMBRE[sale]+'</b>.';
+    if (modo === 'off') linea += ' Apagado solo esta temporada: la próxima vuelve a proponerse.';
+    if (modo === 'navidad' || modo === 'halloween') linea += ' Puesto a mano: se quita solo a los 45 días.';
+    var vista = sale || fecha || 'navidad';
+    linea += ' <a href="index.html?tema='+vista+'" target="_blank" rel="noopener" style="color:var(--accent,#E8501E)">👀 Ver la tienda con '+NOMBRE[vista]+'</a>';
+    var e = {pendiente:'⏳ Se guarda en unos segundos…', guardando:'⏳ Guardando…', guardado:'✅ Guardado: la tienda lo refleja en 1–2 min.',
+      error:'⚠️ No se pudo guardar. <button class="btn btn-ghost" style="padding:2px 8px;font-size:11px" onclick="temaSubir()">Reintentar</button>',
+      'sin-token':'⚠️ Falta el token de GitHub: por ahora solo está en este teléfono.'}[estado];
+    est.innerHTML = linea + (e ? '<br>' + e : '');
+  }
+  window.temaElegir = function(modo){
+    var o = {modo: modo, ts: Date.now()};
+    if (modo === 'off') o.temporada = tmTemaTemporada() || 'fuera';
+    try{ localStorage.setItem(LS, JSON.stringify(o)); localStorage.setItem('tm_tema_visto', tmTemaTemporada()); }catch(e){}
+    luego(); pintar();
+    var s = tmTemaEfectivo(o);
+    if (typeof showToast === 'function') showToast(s ? NOMBRE[s] + ' en la tienda' : '⏸️ Tienda sin tema', 'Se ve en 1–2 min');
+  };
+  function luego(){ estado = 'pendiente'; clearTimeout(timer); timer = setTimeout(window.temaSubir, 4000); }
+  window.temaSubir = async function(){
+    var c = cred();
+    if (!c.u || !c.r || !c.t || typeof subirArchivoAGitHub !== 'function' || typeof _tmLeerJsonRepoFresco !== 'function') { estado = 'sin-token'; pintar(); return false; }
+    if (subiendo) { luego(); return false; }
+    subiendo = true; estado = 'guardando'; pintar();
+    try {
+      var cfg = await _tmLeerJsonRepoFresco(c.u, c.r, c.t, 'config.json');
+      if (!cfg || typeof cfg !== 'object' || Array.isArray(cfg) || !cfg.firebaseConfig) throw new Error('no pude leer config.json');
+      var f = gana(cfg.tema || null, local());
+      if (f && JSON.stringify(f) !== JSON.stringify(cfg.tema || null))
+        await subirArchivoAGitHub(c.u, c.r, c.t, 'config.json', Object.assign({}, cfg, {tema: f}));
+      remoto = f; estado = 'guardado'; return true;
+    } catch(e) { estado = 'error'; return false; }
+    finally { subiendo = false; pintar(); }
+  };
+  // "Actualizar tienda" reescribe config.json entero: el tema elegido aquí
+  // tiene que viajar también, o esa publicación lo desharía.
+  window.tmTemaParaSubir = function(delRepo){ return gana(delRepo || null, local()) || undefined; };
+  async function cargar(){
+    var c = cred(), cfg = null;
+    try {
+      if (c.u && c.r && typeof _tmLeerJsonRepoFresco === 'function') cfg = await _tmLeerJsonRepoFresco(c.u, c.r, c.t, 'config.json');
+      else { var r = await fetch('config.json?_=' + Date.now(), {cache:'no-store'}); if (r.ok) cfg = await r.json(); }
+    } catch(e) {}
+    if (cfg && typeof cfg === 'object') {
+      remoto = cfg.tema || null;
+      var l = local();
+      if (l && (+l.ts || 0) > (+(remoto && remoto.ts) || 0)) luego();
+    }
+    pintar();
+    // La primera vez en una temporada, avisar de que la tienda ya se vistió sola.
+    var t = tmTemaTemporada(), s = tmTemaEfectivo(actual());
+    try {
+      if (t && s && localStorage.getItem('tm_tema_visto') !== t && typeof showToast === 'function') {
+        localStorage.setItem('tm_tema_visto', t);
+        showToast(NOMBRE[s] + ': la tienda ya se vistió de temporada', 'Puedes cambiarlo o apagarlo en ⚙️ Configuración');
+      }
+    } catch(e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(cargar, 1500); });
+  else setTimeout(cargar, 1500);
+})();
+</script>
+<style>
+.tema-ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:640px){.tema-ops{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tema-op{padding:10px 8px;border-radius:12px;border:1px solid var(--border,rgba(255,255,255,.12));background:transparent;color:var(--text,#fff);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.tema-op.on{border-color:var(--accent,#E8501E);background:color-mix(in srgb,var(--accent,#E8501E) 16%,transparent);color:var(--text,#fff)}
+</style>
 <script>
 /* ⚙️ Configuración: la línea de cada bloque plegado dice cómo está, para no
    tener que abrir cinco bloques para saber si todo va bien. Lee lo mismo que
