@@ -1,5 +1,5 @@
 {
-  "tasaMN": 910.0,
+  "tasaMN": 910,
   "ofertaDiaId": "1780017975657",
   "ofertaDiaTexto": "🔥🔥🔥TU MEJOR OPCIÓN 🔥🔥🔥",
   "ofertaDiaActualizado": "2026-09-22T21:15:57.512Z",
@@ -18,5 +18,9 @@
   "tasaMNAnterior": 911.5,
   "tasaFuente": "elTOQUE API",
   "tasaActualizada": "2026-11-11",
-  "tasaAvisadaTelegram": 930
+  "tasaAvisadaTelegram": 930,
+  "tema": {
+    "modo": "navidad",
+    "ts": 1794541009383
+  }
 }
