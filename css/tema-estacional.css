@@ -1,0 +1,123 @@
+/* ── Temas de temporada (Navidad, Halloween) ─────────────────────────────
+   Se activan con html[data-tema="navidad" | "halloween"]; sin el atributo no
+   hacen nada. Solo cambian COLOR y adornos: nada de layout, ni tamaños, ni
+   textos. Los adornos son SVG/CSS (sin emojis ni imágenes a descargar) y todo
+   lo decorativo lleva pointer-events:none para no tapar nada.
+
+   Naranja de la tienda → rojo (Navidad) / se queda, con morado (Halloween).
+   `html:root` solo sube la especificidad por encima de las reglas con !important. */
+
+/* ═══════════════ NAVIDAD ═══════════════ */
+html[data-tema="navidad"] { --tema-a: #E5383B; --tema-a2: #A50F1F; --tema-b: #2FA36B; --tema-oro: #F5C451; }
+/* Fondo: brillo rojo y verde en las esquinas, como luces lejanas */
+html[data-tema="navidad"] body:not(.light-mode) {
+  background-image: radial-gradient(900px 420px at 0% 0%, rgba(229,56,59,.20), transparent 60%),
+                    radial-gradient(900px 420px at 100% 12%, rgba(47,163,107,.16), transparent 62%) !important;
+  background-attachment: fixed;
+}
+html[data-tema="navidad"] body.light-mode {
+  background-image: radial-gradient(900px 420px at 0% 0%, rgba(229,56,59,.10), transparent 60%),
+                    radial-gradient(900px 420px at 100% 12%, rgba(47,163,107,.09), transparent 62%) !important;
+  background-attachment: fixed;
+}
+/* Lo naranja de la marca pasa a rojo */
+html:root[data-tema="navidad"] body .hsb-buscar-pill,
+html:root[data-tema="navidad"] body .hsb-apply-btn,
+html:root[data-tema="navidad"] body #vistaInicio .currency-bar .cur-btn.active,
+html:root[data-tema="navidad"] body .tm-barra-n,
+html:root[data-tema="navidad"] body .tm-bot-bubble {
+  background: linear-gradient(135deg, var(--tema-a), var(--tema-a2)) !important; background-image: linear-gradient(135deg, var(--tema-a), var(--tema-a2)) !important;
+  color: #fff !important; box-shadow: 0 6px 16px -4px rgba(229,56,59,.55) !important;
+}
+html:root[data-tema="navidad"] body #vistaInicio .currency-bar .cur-btn.active svg { color: #fff !important; stroke: #fff !important; }
+html:root[data-tema="navidad"] body .tm-barra-i[aria-current="page"] { color: #FF6B6E !important; background: rgba(229,56,59,.16) !important; }
+html:root[data-tema="navidad"] body.light-mode .tm-barra-i[aria-current="page"] { color: var(--tema-a2) !important; background: rgba(229,56,59,.12) !important; }
+html:root[data-tema="navidad"] body .op-chip, html:root[data-tema="navidad"] body .op-chip-txt { color: #FF7F82 !important; border-color: rgba(229,56,59,.35) !important; background-color: rgba(229,56,59,.10) !important; }
+html:root[data-tema="navidad"] body.light-mode .op-chip, html:root[data-tema="navidad"] body.light-mode .op-chip-txt { color: var(--tema-a2) !important; }
+html:root[data-tema="navidad"] body .op-accent, html:root[data-tema="navidad"] body .section-title em { color: #FF6B6E !important; -webkit-text-fill-color: #FF6B6E !important; }
+html:root[data-tema="navidad"] body.light-mode .op-accent, html:root[data-tema="navidad"] body.light-mode .section-title em { color: var(--tema-a2) !important; -webkit-text-fill-color: var(--tema-a2) !important; }
+html:root[data-tema="navidad"] body .tm-oferta { background: linear-gradient(100deg, #8E0F1D 0%, #D42C35 55%, #F0555A 100%) !important; }
+html:root[data-tema="navidad"] body .tm-step-num, html:root[data-tema="navidad"] body .resena-avatar { background: linear-gradient(135deg, var(--tema-a), var(--tema-a2)) !important; }
+/* Guirnalda de luces en el borde de abajo del encabezado */
+html[data-tema="navidad"] .header { position: relative; }
+html[data-tema="navidad"] .header::after {
+  content: ""; position: absolute; left: 18px; right: 18px; bottom: -5px; height: 10px; pointer-events: none; z-index: 2;
+  background:
+    radial-gradient(circle at 5px 5px, #E5383B 0 3px, transparent 3.6px) 0 0 / 40px 10px repeat-x,
+    radial-gradient(circle at 5px 5px, #F5C451 0 3px, transparent 3.6px) 10px 0 / 40px 10px repeat-x,
+    radial-gradient(circle at 5px 5px, #2FA36B 0 3px, transparent 3.6px) 20px 0 / 40px 10px repeat-x,
+    radial-gradient(circle at 5px 5px, #5AA9FF 0 3px, transparent 3.6px) 30px 0 / 40px 10px repeat-x;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,.35)); animation: temaLuces 1.8s steps(2) infinite;
+}
+@keyframes temaLuces { 50% { opacity: .55; } }
+/* Gorro de Papá Noel sobre el logo */
+html[data-tema="navidad"] .logo-premium { position: relative; }
+html[data-tema="navidad"] .logo-premium::before {
+  content: ""; position: absolute; left: -7px; top: -12px; width: 30px; height: 26px; pointer-events: none; transform: rotate(-16deg); z-index: 3;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 26'%3E%3Cpath d='M4 22C4 10 12 3 24 4c-2 4-3 8-3 14z' fill='%23E5383B'/%3E%3Crect x='2' y='18' width='22' height='6' rx='3' fill='%23fff'/%3E%3Ccircle cx='25' cy='4.5' r='3.6' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+/* Nieve: dos capas de copos que caen a velocidades distintas */
+html[data-tema="navidad"] body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1000; opacity: .85;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #fff, transparent), radial-gradient(2px 2px at 90px 120px, #fff, transparent),
+    radial-gradient(3px 3px at 160px 60px, #fff, transparent), radial-gradient(2px 2px at 230px 170px, #fff, transparent),
+    radial-gradient(2.5px 2.5px at 300px 90px, #fff, transparent), radial-gradient(2px 2px at 60px 210px, #fff, transparent),
+    radial-gradient(3px 3px at 340px 240px, #fff, transparent);
+  background-size: 360px 280px; animation: temaNieve 14s linear infinite;
+}
+html[data-tema="navidad"] body.light-mode::before { filter: drop-shadow(0 0 1px rgba(90,120,160,.8)); opacity: .9; }
+@keyframes temaNieve { to { background-position: 40px 280px; } }
+
+/* ═══════════════ HALLOWEEN ═══════════════ */
+html[data-tema="halloween"] { --tema-a: #FF7A18; --tema-a2: #C2410C; --tema-m: #9B5DE5; --tema-v: #7CFF6B; }
+html[data-tema="halloween"] body:not(.light-mode) {
+  background-color: #0A0612 !important;
+  background-image: radial-gradient(800px 420px at 100% 0%, rgba(155,93,229,.26), transparent 62%),
+                    radial-gradient(800px 460px at 0% 38%, rgba(255,122,24,.12), transparent 62%),
+                    linear-gradient(180deg, transparent 70%, rgba(155,93,229,.10)) !important;
+  background-attachment: fixed;
+}
+html[data-tema="halloween"] body.light-mode {
+  background-image: radial-gradient(800px 420px at 100% 0%, rgba(155,93,229,.14), transparent 62%),
+                    radial-gradient(800px 460px at 0% 38%, rgba(255,122,24,.09), transparent 62%) !important;
+  background-attachment: fixed;
+}
+html:root[data-tema="halloween"] body .hsb-buscar-pill,
+html:root[data-tema="halloween"] body #vistaInicio .currency-bar .cur-btn.active { box-shadow: 0 6px 18px -4px rgba(255,122,24,.6), 0 0 0 1px rgba(155,93,229,.35) !important; }
+html:root[data-tema="halloween"] body .tm-barra-i[aria-current="page"] { color: #C9A2FF !important; background: rgba(155,93,229,.18) !important; }
+html:root[data-tema="halloween"] body.light-mode .tm-barra-i[aria-current="page"] { color: #6D28D9 !important; background: rgba(155,93,229,.14) !important; }
+html:root[data-tema="halloween"] body .op-chip, html:root[data-tema="halloween"] body .op-chip-txt { color: #C9A2FF !important; border-color: rgba(155,93,229,.45) !important; background-color: rgba(155,93,229,.12) !important; }
+html:root[data-tema="halloween"] body.light-mode .op-chip, html:root[data-tema="halloween"] body.light-mode .op-chip-txt { color: #6D28D9 !important; }
+html:root[data-tema="halloween"] body .op-accent, html:root[data-tema="halloween"] body .section-title em { color: #FF8A33 !important; -webkit-text-fill-color: #FF8A33 !important; text-shadow: 0 0 18px rgba(255,122,24,.45); }
+html:root[data-tema="halloween"] body.light-mode .op-accent, html:root[data-tema="halloween"] body.light-mode .section-title em { color: #C2410C !important; -webkit-text-fill-color: #C2410C !important; text-shadow: none; }
+html:root[data-tema="halloween"] body .tm-oferta { background: linear-gradient(100deg, #4C1D95 0%, #9B3FD0 38%, #FF7A18 100%) !important; }
+html:root[data-tema="halloween"] body .tm-step-num { background: linear-gradient(135deg, #9B5DE5, #5B21B6) !important; }
+/* Telaraña en la esquina del encabezado y murciélagos que cruzan */
+html[data-tema="halloween"] .header { position: relative; }
+html[data-tema="halloween"] .header::after {
+  content: ""; position: absolute; right: 0; top: 0; width: 96px; height: 78px; pointer-events: none; z-index: 2; opacity: .55; border-top-right-radius: 24px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 78' fill='none' stroke='%23d9c7ff' stroke-width='1.1'%3E%3Cpath d='M96 0 0 0M96 0 96 78M96 0 40 62M96 0 14 30M96 0 74 78'/%3E%3Cpath d='M70 0Q76 14 96 22M44 0Q56 26 96 42M18 0Q36 40 96 64'/%3E%3Cpath d='M60 26 56 38' stroke-width='1.6'/%3E%3Ccircle cx='55' cy='42' r='3' fill='%23d9c7ff'/%3E%3C/svg%3E") right top / contain no-repeat;
+}
+html[data-tema="halloween"] body::before {
+  content: ""; position: fixed; left: -40px; top: 150px; width: 34px; height: 18px; pointer-events: none; z-index: 1000; opacity: .8;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 18'%3E%3Cpath d='M17 6c-2-4-7-5-11-3 2 1 3 3 3 5-2-1-5 0-6 2 2 0 4 1 5 3 1-2 3-3 5-2 1 1 2 3 4 3s3-2 4-3c2-1 4 0 5 2 1-2 3-3 5-3-1-2-4-3-6-2 0-2 1-4 3-5-4-2-9-1-11 3z' fill='%23140b22'/%3E%3C/svg%3E") center/contain no-repeat;
+  filter: drop-shadow(0 0 3px rgba(155,93,229,.9)); animation: temaMurcielago 16s linear infinite;
+}
+@keyframes temaMurcielago { 0% { transform: translate(0,0) rotate(6deg); } 25% { transform: translate(30vw,-26px) rotate(-6deg); } 50% { transform: translate(62vw,16px) rotate(8deg); } 75% { transform: translate(90vw,-18px) rotate(-8deg); } 100% { transform: translate(120vw,10px) rotate(6deg); } }
+/* Sombrero de bruja sobre el logo */
+html[data-tema="halloween"] .logo-premium { position: relative; }
+html[data-tema="halloween"] .logo-premium::before {
+  content: ""; position: absolute; left: -5px; top: -17px; width: 30px; height: 28px; pointer-events: none; transform: rotate(-14deg); z-index: 3;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 28'%3E%3Cpath d='M15 2c1 6 4 12 9 18H5C10 14 13 8 15 2z' fill='%235B21B6'/%3E%3Crect x='1' y='19' width='28' height='5' rx='2.5' fill='%234C1D95'/%3E%3Crect x='8.5' y='15' width='13' height='3' fill='%23FF7A18'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+/* Niebla baja que sube desde el borde inferior */
+html[data-tema="halloween"] body::after {
+  content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 160px; pointer-events: none; z-index: 1000;
+  background: linear-gradient(0deg, rgba(155,93,229,.22), transparent);
+}
+html[data-tema="halloween"] body.light-mode::after { background: linear-gradient(0deg, rgba(155,93,229,.12), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-tema] body::before, html[data-tema] .header::after { animation: none; }
+}

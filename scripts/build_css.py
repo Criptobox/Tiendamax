@@ -34,6 +34,7 @@ ORDEN = [
     "escala-tipografica.css",  # los tamaños de letra, en una capa @layer (gana a los !important sueltos)
     "digital.css",         # tarjetas regalo/recargas: precio en USDT y su ficha — clases tm-dig-*, no pisa nada
     "barra-inferior.css",  # barra inferior del móvil (Inicio/Categorías/Carrito/Más) — clases tm-barra*, solo ≤768px
+    "tema-estacional.css",  # Navidad / Halloween: solo si html[data-tema]; sin el atributo no hace nada
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 
