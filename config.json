@@ -1,5 +1,5 @@
 {
-  "tasaMN": 910,
+  "tasaMN": 911.0,
   "ofertaDiaId": "1780017975657",
   "ofertaDiaTexto": "🔥🔥🔥TU MEJOR OPCIÓN 🔥🔥🔥",
   "ofertaDiaActualizado": "2026-09-22T21:15:57.512Z",
@@ -13,11 +13,11 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-11-11T16:41:13.985638+00:00",
+  "actualizado": "2026-11-14T15:46:22.416693+00:00",
   "margenMN": 20,
-  "tasaMNAnterior": 911.5,
+  "tasaMNAnterior": 910.0,
   "tasaFuente": "elTOQUE API",
-  "tasaActualizada": "2026-11-11",
+  "tasaActualizada": "2026-11-14",
   "tasaAvisadaTelegram": 930,
   "tema": {
     "modo": "off",
