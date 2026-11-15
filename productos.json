@@ -7401,7 +7401,7 @@
     "precioActual": 50,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "MOTOS",
@@ -7462,7 +7462,7 @@
       "1x Cargador de Batería de Litio BIEN 48V 5A"
     ],
     "slug": "cargador-litio-bien-48v-5a",
-    "rev": 1794447416842,
+    "rev": 1794767786758,
     "descripcion": "Cargador de batería de litio de alta eficiencia y corriente estable, diseñado específicamente para acumuladores de movilidad eléctrica o sistemas de almacenamiento. Cuenta con carcasa robusta de disipación térmica, indicador LED de estado de carga y clavija de conexión tipo US."
   },
   {
@@ -11513,7 +11513,7 @@
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -11617,13 +11617,13 @@
       "1× Manual de usuario e instrucciones de operación"
     ],
     "slug": "cargador-bc-300-lifepo4-agm",
-    "rev": 1794156411301,
+    "rev": 1794767786758,
     "seoTitle": "Cargador Inteligente de Baterías LVYUAN BC-300… | TiendaMax",
     "seoDescription": "El LVYUAN BC-400 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente…",
-    "descripcion": "El LVYUAN BC-300 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente acumuladores de 12V y 24V con corrientes de salida seleccionables de hasta 30A. Su microprocesador interno identifica automáticamente la tensión del sistema conectado y calibra la curva de carga óptima en función de la química seleccionada: baterías de litio LiFePO4, GEL, AGM, EFB o baterías estándar de plomo-ácido (STD), previniendo sobrecargas o degradación térmica.",
     "slugsAnteriores": [
       "cargador-bc-400-lifepo4-agm"
-    ]
+    ],
+    "descripcion": "El LVYUAN BC-300 PRO es un cargador y mantenedor inteligente de baterías por pulsos de alta potencia, diseñado para gestionar de forma eficiente acumuladores de 12V y 24V con corrientes de salida seleccionables de hasta 30A. Su microprocesador interno identifica automáticamente la tensión del sistema conectado y calibra la curva de carga óptima en función de la química seleccionada: baterías de litio LiFePO4, GEL, AGM, EFB o baterías estándar de plomo-ácido (STD), previniendo sobrecargas o degradación térmica."
   },
   {
     "id": 1792173470469,
