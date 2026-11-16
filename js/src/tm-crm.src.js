@@ -197,14 +197,91 @@ function tmProductosDeVenta(venta) {
     return venta.producto ? [String(venta.producto)] : [];
 }
 
-/** Enlace que abre la ficha del primer producto de la venta (el deep link `?p=`
- *  de la tienda), o '' si la venta no guardó su id. Solo el primero: un mensaje
- *  con tres enlaces se lee a spam, y con una reseña suelta ya se gana. */
-function tmEnlaceResena(venta) {
-    if (!venta) return '';
+/* ── La reseña ──────────────────────────────────────────────────────────
+   Casi nadie dejaba reseña (3 en toda la tienda) y no por el texto: se pedía
+   al mes, metida en una frase con el enlace entre paréntesis, a todos por
+   igual, y el enlace abría la tienda entera (≈570 KB en 3G) para luego bajar
+   hasta el final de la ficha y rellenar cinco campos.
+
+   Ahora va en dos pasos. El mensaje de los 3 días solo pregunta. Si el
+   cliente contesta contento, el panel ofrece «⭐ Pedir reseña» —se pide a
+   quien acaba de decir que está bien, en ese momento— con un enlace a
+   resena.html: una página de pocos KB con las estrellas arriba y el nombre ya
+   puesto. Y quien prefiere contestar por el chat, contesta por el chat: el
+   gestor la publica desde el panel («✍️ Publicar su reseña»). */
+const TM_RESENA_KEY = 'tm_resena_pedida_v1';
+/* Hasta cuándo, contado desde la compra, tiene sentido ofrecer los botones de
+   la reseña. Pasado eso es mejor dejarlo: ya no es una opinión fresca. */
+const TM_RESENA_VENTANA_DIAS = 45;
+
+function tmResenasPedidas() {
+    try {
+        const v = JSON.parse(localStorage.getItem(TM_RESENA_KEY) || '{}');
+        return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+    } catch (e) { return {}; }
+}
+function tmMarcarResenaPedida(ventaId) {
+    const p = tmResenasPedidas();
+    p[String(ventaId)] = Date.now();
+    try { localStorage.setItem(TM_RESENA_KEY, JSON.stringify(p)); } catch (e) {}
+    return p;
+}
+
+/** Reseña ya publicada para esa venta (desde el panel): la fila deja de
+ *  ofrecer botones. La que deja el cliente en resena.html no llega aquí —no
+ *  hay forma de saber de qué venta es sin pedirle datos—, así que esa fila
+ *  sigue en «pedida» hasta que caduca la ventana. */
+const TM_RESENA_HECHA_KEY = 'tm_resena_hecha_v1';
+function tmResenasHechas() {
+    try {
+        const v = JSON.parse(localStorage.getItem(TM_RESENA_HECHA_KEY) || '{}');
+        return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+    } catch (e) { return {}; }
+}
+function tmMarcarResenaHecha(ventaId) {
+    const h = tmResenasHechas();
+    h[String(ventaId)] = Date.now();
+    try { localStorage.setItem(TM_RESENA_HECHA_KEY, JSON.stringify(h)); } catch (e) {}
+    return h;
+}
+
+/** Qué se puede hacer hoy con la reseña de UNA venta:
+ *  'pedir'   — ya se le escribió el primer seguimiento y aún no se pidió;
+ *  'pedida'  — ya se pidió (queda el botón de publicar lo que conteste);
+ *  null      — sin producto de la tienda, sin WhatsApp, o fuera de plazo.
+ *  No se pide antes de haber preguntado qué tal: pedir reseña a quien aún no
+ *  ha dicho cómo le fue es pedírsela también a quien está molesto. */
+function tmResenaEstado(venta, hechos, pedidas, ahora) {
+    hechos = hechos || tmSeguimientosHechos();
+    pedidas = pedidas || tmResenasPedidas();
+    ahora = ahora || Date.now();
+    if (!venta || !tmTelDe(venta) || !tmProductoResena(venta)) return null;
+    const ts = tmVentaTs(venta);
+    if (!ts || (ahora - ts) > TM_RESENA_VENTANA_DIAS * 86400000) return null;
+    if (tmResenasHechas()[String(venta.id)]) return null;
+    if (pedidas[String(venta.id)]) return 'pedida';
+    return hechos[_tmClaveSeg(venta.id, 'inicial')] ? 'pedir' : null;
+}
+
+/** El producto de la venta sobre el que se pide opinión: el primero que vino
+ *  del catálogo (un artículo escrito a mano no tiene ficha donde reseñarlo).
+ *  Solo uno: dos enlaces se leen a spam, y con una reseña ya se gana. */
+function tmProductoResena(venta) {
+    if (!venta) return null;
     const it = (Array.isArray(venta.items) ? venta.items : []).find(x => x && x.productoId);
-    const id = it ? it.productoId : venta.productoId;
-    return id ? 'https://tiendamax.org/?p=' + encodeURIComponent(String(id)) : '';
+    if (it) return { id: String(it.productoId), nombre: String(it.producto || '') };
+    return venta.productoId ? { id: String(venta.productoId), nombre: String(venta.producto || '') } : null;
+}
+
+/** Enlace a la página de reseña de ese producto, con el nombre de pila del
+ *  cliente ya puesto. `v=1` dice que viene de una compra (la reseña sale
+ *  marcada «compró en TiendaMax»). '' si la venta no guardó el producto. */
+function tmEnlaceResena(venta) {
+    const pr = tmProductoResena(venta);
+    if (!pr) return '';
+    const nombre = tmNombreDe(venta).split(/\s+/)[0] || '';
+    return 'https://tiendamax.org/resena?p=' + encodeURIComponent(pr.id) +
+           (nombre ? '&n=' + encodeURIComponent(nombre) : '') + '&v=1';
 }
 
 function _tmListaProductos(nombres) {
@@ -213,8 +290,33 @@ function _tmListaProductos(nombres) {
     return nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1];
 }
 
-/** El texto que se le manda al cliente. Sin emojis de relleno ni "estimado
- *  cliente": esto lo lee un vecino que compró un inversor, no un suscriptor. */
+function _tmPrimerNombre(venta) {
+    return tmNombreDe(venta).split(/\s+/)[0] || '';
+}
+
+/** El pedido de reseña, para mandar cuando el cliente ya dijo que va bien.
+ *  Corto, una sola petición, el enlace en su propia línea, y la salida de
+ *  contestar por el chat para quien no abre enlaces. */
+function tmTextoPedirResena(venta, tienda) {
+    if (!venta) return '';
+    const nombre = _tmPrimerNombre(venta);
+    const pr = tmProductoResena(venta);
+    const prod = (pr && pr.nombre) || _tmListaProductos(tmProductosDeVenta(venta));
+    const enlace = tmEnlaceResena(venta);
+    return '¡Qué bueno' + (nombre ? ', ' + nombre : '') + '! 🙌\n' +
+           '¿Me regalas tu opinión sobre ' + prod + '? Es un minuto y ayuda mucho a otros a decidirse' +
+           (enlace ? ':\n👉 ' + enlace : '.') + '\n\n' +
+           'Si te es más fácil, respóndeme aquí con las estrellas (del 1 al 5) y una frase, y la publico yo con tu nombre.';
+}
+
+function tmWaPedirResena(venta, tienda) {
+    const tel = tmTelDe(venta);
+    if (!tel) return '';
+    return 'https://wa.me/' + tel + '?text=' + encodeURIComponent(tmTextoPedirResena(venta, tienda));
+}
+
+/** El texto que se le manda al cliente. Sin "estimado cliente": esto lo lee un
+ *  vecino que compró un inversor, no un suscriptor. Una pregunta por mensaje. */
 function tmTextoSeguimiento(seg, tienda) {
     if (!seg) return '';
     const nombre = seg.nombre ? seg.nombre.split(/\s+/)[0] : '';
@@ -223,20 +325,24 @@ function tmTextoSeguimiento(seg, tienda) {
     const firma = (tienda || 'TiendaMax');
 
     if (seg.hito === 'inicial') {
-        return saludo + ', te escribo de ' + firma + '. Hace unos días te llevaste ' +
-               prods + ' — ¿te llegó bien y está funcionando como esperabas?\n\n' +
-               'Si tienes cualquier duda con la instalación, dime y te ayudo.';
+        // Solo la pregunta. La reseña se pide después, a quien conteste que va bien.
+        return saludo + ', soy de ' + firma + ' 👋\n' +
+               '¿Qué tal te va con ' + prods + '? ¿Ya lo tienes funcionando?\n\n' +
+               'Si te surge cualquier duda con la instalación, me escribes por aquí.';
     }
     if (seg.hito === 'satisfaccion') {
-        /* Con el enlace directo a la ficha: sin él, «deja una reseña» obliga a
-           buscar el producto en la tienda, y casi nadie lo hace. Las reseñas
-           son lo que menos tiene la tienda (3), y esto es lo que las consigue. */
+        /* Si la reseña ya se pidió, el mes es solo un «¿sigue bien?»: pedirla
+           dos veces es lo que hace que la gente deje de contestar. Si nunca se
+           pidió (el primer seguimiento se saltó), se pide aquí, igual de corto. */
+        const yaPedida = !!tmResenasPedidas()[String(seg.venta && seg.venta.id)];
+        const base = saludo + ', soy de ' + firma + '. Ya va un mes con ' + prods + ', ¿sigue todo bien?';
+        if (yaPedida) return base + '\n\nSi algo no va como debe, dime y lo resolvemos.';
         const enlace = tmEnlaceResena(seg.venta);
-        return saludo + ', soy de ' + firma + '. Ya va un mes con ' + prods +
-               ' — ¿todo bien?\n\n' +
-               'Si estás contento, me ayudaría mucho que dejaras una reseña' +
-               (enlace ? ' (son dos minutos, abajo en la ficha: ' + enlace + ')' : '') +
-               '; y si algo no va como debe, prefiero saberlo y resolverlo.';
+        return base + '\n\n' +
+               (enlace ? 'Si estás contento, ¿me dejas tu opinión? Es un minuto:\n👉 ' + enlace + '\n\n' +
+                         'O respóndeme aquí con las estrellas (1 a 5) y una frase, y yo publico tu reseña.'
+                       : 'Si estás contento, respóndeme con las estrellas (1 a 5) y una frase, y yo publico tu reseña.') +
+               '\nY si algo falla, prefiero saberlo y resolverlo.';
     }
     return saludo + ', soy de ' + firma + '. Hace un tiempo te llevaste ' + prods +
            '.\n\n¿Sigue todo bien? Si te hace falta algo para completarlo o quieres ' +

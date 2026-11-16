@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0D0D0D">
+<title>Tu opinión — TiendaMax</title>
+<meta name="description" content="Cuéntanos qué tal tu compra en TiendaMax: un minuto, y ayudas a otros a decidirse.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="⭐ ¿Qué tal tu compra? | TiendaMax">
+<meta property="og:description" content="Un minuto: toca las estrellas y listo. Tu opinión ayuda a otros a decidirse.">
+<meta property="og:image" content="https://tiendamax.org/og-image.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png">
+<link rel="apple-touch-icon" href="/iconos/apple-touch-icon.png">
+<!--
+  Página para dejar una reseña, a la que lleva el enlace del seguimiento
+  post-venta (tmEnlaceResena en js/src/tm-crm.src.js):
+    /resena?p=<id del producto>&n=<nombre de pila>&v=1
+  Existe porque el enlace a la tienda descargaba la portada entera (≈570 KB en
+  3G) y luego había que bajar hasta el final de la ficha y rellenar cinco
+  campos: casi nadie llegaba. Aquí todo cabe en una pantalla, el nombre viene
+  puesto y las frases de un toque ahorran escribir.
+  · No baja el catálogo (104 KB comprimido): el nombre y la imagen del producto
+    salen de su ficha de redirección p/producto-<id>.html (≈2 KB, og:tags).
+  · Escribe en /resenas/<id>/<ts> igual que el formulario de la ficha, con la
+    misma validación de firebase-rules.json; `ts` lo pone el servidor, para que
+    un teléfono con la hora mal no vea su reseña rechazada sin saber por qué.
+  · Sin fuentes de Google ni bundle: Inter local y CSS/JS en línea.
+-->
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:300 800;font-display:swap;src:url(/fonts/inter-normal-latin.woff2) format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url(/fonts/playfair-latin.woff2) format('woff2')}
+:root{
+  --bg:#0D0D0D; --card:#161412; --card2:#1E1B18; --line:rgba(255,255,255,.09);
+  --text:#F5EFE6; --muted:#A39A8F; --accent:#FF6B35; --accent2:#E8501E; --gold:#FFC83D; --ok:#2FBF71;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#FAF8F5; --card:#FFFFFF; --card2:#F5F0E8; --line:rgba(30,20,10,.10);
+         --text:#1E1A16; --muted:#6F665C; --accent:#E8501E; --accent2:#C2410C; --gold:#F5A400; }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg)}
+body{color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;
+     display:flex;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+.caja{width:100%;max-width:440px}
+.marca{display:flex;align-items:center;gap:8px;font:700 18px 'Playfair Display',Georgia,serif;margin:4px 2px 14px}
+.marca img{width:28px;height:28px;border-radius:8px}
+.marca b{color:var(--accent)}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.prod-img{display:block;width:100%;aspect-ratio:1200/630;object-fit:cover;background:var(--card2)}
+.prod-img.vacia{display:none}
+.cuerpo{padding:18px 18px 20px}
+h1{font:800 clamp(22px,6vw,26px)/1.2 'Playfair Display',Georgia,serif;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--accent)}
+.sub{color:var(--muted);font-size:14px;line-height:1.45;margin-top:6px}
+.estrellas{display:flex;justify-content:space-between;gap:6px;margin:20px 0 6px}
+.estrella{flex:1;aspect-ratio:1;max-width:64px;border:0;background:var(--card2);border-radius:16px;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;transition:transform .15s ease,background .15s ease}
+.estrella svg{width:62%;height:62%;fill:none;stroke:var(--muted);stroke-width:1.6;transition:fill .15s,stroke .15s}
+.estrella.on{background:rgba(255,200,61,.14)}
+.estrella.on svg{fill:var(--gold);stroke:var(--gold)}
+.estrella:active{transform:scale(.92)}
+.etq{text-align:center;font-weight:700;font-size:15px;min-height:22px;color:var(--gold)}
+.paso{display:none;margin-top:16px}
+.paso.ver{display:block;animation:sube .25s ease}
+@keyframes sube{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lbl{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:999px;padding:9px 14px;font:600 14px Inter,system-ui,sans-serif;cursor:pointer}
+.chip.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--text)}
+textarea,input{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:12px 14px;font:16px Inter,system-ui,sans-serif;outline:none}
+textarea{min-height:84px;resize:vertical;margin-top:12px}
+textarea:focus,input:focus{border-color:var(--accent)}
+.cuenta{text-align:right;font-size:12px;color:var(--muted);margin-top:4px}
+.fila{margin-top:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:16px;
+     font:800 16px Inter,system-ui,sans-serif;cursor:pointer;text-decoration:none;margin-top:16px}
+.btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 10px 24px -10px rgba(232,80,30,.7)}
+.btn-p[disabled]{opacity:.55;box-shadow:none;cursor:default}
+.btn-s{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.btn-wa{background:#25D366;color:#fff}
+.aviso{margin-top:14px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--accent) 10%,transparent);
+       border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);font-size:14px;line-height:1.45}
+.err{color:#ff7a7a;font-size:13px;margin-top:10px;min-height:18px;text-align:center}
+.priv{color:var(--muted);font-size:12px;text-align:center;margin-top:10px;line-height:1.4}
+.gracias{text-align:center;padding:28px 20px 24px}
+.gracias .ico{width:72px;height:72px;margin:0 auto 14px;border-radius:50%;background:color-mix(in srgb,var(--ok) 18%,transparent);
+              display:flex;align-items:center;justify-content:center}
+.gracias .ico svg{width:38px;height:38px;stroke:var(--ok);stroke-width:2.6;fill:none}
+.gracias p{color:var(--muted);margin-top:8px;line-height:1.5}
+</style>
+</head>
+<body>
+<main class="caja">
+  <div class="marca"><img src="/iconos/favicon-96.png" alt="" width="28" height="28">Tienda <b>Max</b></div>
+
+  <section class="prod" id="form">
+    <img class="prod-img vacia" id="img" alt="">
+    <div class="cuerpo">
+      <h1 id="titulo">¿Qué tal tu compra?</h1>
+      <p class="sub">Toca las estrellas. Es un minuto, y tu opinión ayuda a otros a decidirse.</p>
+
+      <div class="estrellas" role="radiogroup" aria-label="Tu calificación" id="estrellas"></div>
+      <div class="etq" id="etq" aria-live="polite"></div>
+
+      <div class="paso" id="paso2">
+        <p class="lbl" id="lblChips">¿Qué te gustó? (toca las que quieras)</p>
+        <div class="chips" id="chips"></div>
+        <textarea id="texto" maxlength="400" placeholder="Si quieres, cuéntalo con tus palabras…"></textarea>
+        <div class="cuenta"><span id="cuenta">0</span>/400</div>
+        <div id="malo" class="aviso" style="display:none">
+          Sentimos que no haya ido bien. Escríbenos y lo resolvemos: preferimos saberlo.
+          <a class="btn btn-wa" id="waMalo" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+        </div>
+        <div class="fila">
+          <p class="lbl">Tu nombre</p>
+          <input id="autor" maxlength="50" autocomplete="given-name" placeholder="Ej: Mario">
+        </div>
+        <button class="btn btn-p" id="enviar" type="button" disabled>Publicar mi opinión</button>
+        <div class="err" id="err" role="alert"></div>
+        <p class="priv">Se publica con tu nombre de pila. No pedimos teléfono ni correo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="prod gracias" id="gracias" hidden>
+    <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h1 id="gTitulo">¡Gracias!</h1>
+    <p id="gTexto">Tu opinión ya está en la tienda.</p>
+    <a class="btn btn-p" id="verProd" href="/">Ver el producto</a>
+    <a class="btn btn-s" href="/">Ir a la tienda</a>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var q = new URLSearchParams(location.search);
+  var PID = (q.get('p') || '').replace(/[^0-9a-zA-Z_-]/g, '').slice(0, 40);
+  var NOMBRE = (q.get('n') || '').trim().slice(0, 50);
+  var DE_COMPRA = q.get('v') === '1';
+  var WA = '5354320170';
+  var RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com';
+  var ETIQUETAS = ['', 'Malo', 'Regular', 'Bien', 'Muy bien', '¡Excelente!'];
+  var BUENAS = ['Llegó rápido', 'Funciona perfecto', 'Buena atención', 'Buen precio', 'Lo recomiendo'];
+  var MALAS = ['Tardó en llegar', 'No funciona bien', 'Esperaba otra cosa', 'Buena atención'];
+  var HECHA = 'tm_resena_hecha_' + PID;
+  var $ = function (id) { return document.getElementById(id); };
+  var prod = { nombre: '', url: '/' }, estrellas = 0, elegidas = [];
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // Estrellas: botones de verdad (teclado y lector de pantalla incluidos).
+  var SVG = '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>';
+  $('estrellas').innerHTML = [1, 2, 3, 4, 5].map(function (n) {
+    return '<button type="button" class="estrella" role="radio" aria-checked="false" aria-label="' + n + ' estrella' + (n > 1 ? 's' : '') + ' — ' + ETIQUETAS[n] + '" data-n="' + n + '">' + SVG + '</button>';
+  }).join('');
+  $('estrellas').addEventListener('click', function (e) {
+    var b = e.target.closest('.estrella'); if (!b) return;
+    elegir(+b.dataset.n);
+  });
+
+  function elegir(n) {
+    var antes = estrellas; estrellas = n;
+    document.querySelectorAll('.estrella').forEach(function (b) {
+      var on = +b.dataset.n <= n; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(+b.dataset.n === n));
+    });
+    $('etq').textContent = ETIQUETAS[n];
+    var bueno = n >= 4, eraBueno = antes >= 4;
+    if (!antes || bueno !== eraBueno) { elegidas = []; pintarChips(bueno ? BUENAS : MALAS); }
+    $('lblChips').textContent = bueno ? '¿Qué te gustó? (toca las que quieras)' : '¿Qué pasó? (toca lo que aplique)';
+    $('malo').style.display = n <= 3 ? 'block' : 'none';
+    $('paso2').classList.add('ver');
+    validar();
+  }
+
+  function pintarChips(lista) {
+    $('chips').innerHTML = lista.map(function (t) {
+      return '<button type="button" class="chip' + (elegidas.indexOf(t) >= 0 ? ' on' : '') + '" aria-pressed="' + (elegidas.indexOf(t) >= 0) + '">' + esc(t) + '</button>';
+    }).join('');
+  }
+  $('chips').addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    var t = c.textContent, i = elegidas.indexOf(t);
+    if (i >= 0) elegidas.splice(i, 1); else elegidas.push(t);
+    c.classList.toggle('on', i < 0); c.setAttribute('aria-pressed', String(i < 0));
+    validar();
+  });
+
+  function textoFinal() {
+    var libre = $('texto').value.trim();
+    var frases = elegidas.join(' · ');
+    return (frases && libre) ? frases + '. ' + libre : (frases || libre);
+  }
+  function validar() {
+    var t = textoFinal(); $('cuenta').textContent = $('texto').value.length;
+    var listo = estrellas > 0 && t.length >= 10 && $('autor').value.trim().length >= 1;
+    $('enviar').disabled = !listo;
+    $('err').textContent = '';
+    return listo;
+  }
+  $('texto').addEventListener('input', validar);
+  $('autor').addEventListener('input', validar);
+  $('autor').value = NOMBRE;
+
+  // El producto: su ficha de redirección trae nombre, imagen y URL en las og:tags.
+  function meta(html, prop) {
+    var m = new RegExp('<meta property="' + prop + '" content="([^"]*)"').exec(html);
+    if (!m) return '';
+    var t = document.createElement('textarea'); t.innerHTML = m[1]; return t.value;
+  }
+  function pintarProducto() {
+    var nombre = prod.nombre;
+    $('titulo').innerHTML = (NOMBRE ? 'Hola ' + esc(NOMBRE) + ', ' : '') + '¿qué tal ' + (nombre ? 'tu <em>' + esc(nombre) + '</em>' : 'tu compra') + '?';
+    if (!NOMBRE) $('titulo').innerHTML = $('titulo').innerHTML.replace(/^¿qué/, '¿Qué');
+    $('verProd').href = prod.url;
+    $('waMalo').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hola, compré ' + (nombre || 'un producto') + ' en TiendaMax y tengo un problema: ');
+  }
+  pintarProducto();
+  if (PID) {
+    fetch('/p/producto-' + encodeURIComponent(PID) + '.html', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (html) {
+        if (!html) return;
+        prod.nombre = meta(html, 'og:title').replace(/\s*\|\s*TiendaMax\s*$/, '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+        var img = meta(html, 'og:image'), url = meta(html, 'og:url');
+        if (url) prod.url = url.replace(/^https:\/\/tiendamax\.org/, '');
+        if (img) { var el = $('img'); el.src = img.replace(/^https:\/\/tiendamax\.org/, ''); el.alt = prod.nombre; el.onload = function () { el.classList.remove('vacia'); }; }
+        pintarProducto();
+      }).catch(function () {});
+  }
+
+  function gracias(nombre) {
+    $('form').hidden = true; $('gracias').hidden = false;
+    $('gTitulo').textContent = '¡Gracias' + (nombre ? ', ' + nombre : '') + '!';
+    $('gTexto').textContent = estrellas && estrellas <= 3
+      ? 'Tu opinión ya está en la tienda. Si nos escribes, lo resolvemos.'
+      : 'Tu opinión ya está en la tienda y ayuda a otros a decidirse.';
+    window.scrollTo(0, 0);
+  }
+  if (!PID) { $('titulo').textContent = 'Este enlace está incompleto'; document.querySelector('.sub').textContent = 'Pídenos uno nuevo por WhatsApp.'; $('estrellas').hidden = true; }
+  else if (lsGet(HECHA)) { $('gracias').hidden = false; $('form').hidden = true; $('gTexto').textContent = 'Ya nos dejaste tu opinión de este producto. ¡Gracias!'; }
+
+  function baseRtdb() {
+    return fetch('/config.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) { return (c && c.firebaseConfig && c.firebaseConfig.databaseURL) || RTDB_RESPALDO; })
+      .catch(function () { return RTDB_RESPALDO; });
+  }
+
+  $('enviar').addEventListener('click', function () {
+    if (!validar()) return;
+    var b = $('enviar'); b.disabled = true; b.textContent = 'Publicando…';
+    var id = Date.now(), autor = $('autor').value.trim().slice(0, 50);
+    var r = {
+      id: id,
+      ts: { '.sv': 'timestamp' },
+      autor: autor,
+      texto: textoFinal().slice(0, 400),
+      estrellas: estrellas,
+      fecha: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
+      productoId: PID,
+      productoNombre: prod.nombre,
+      comprador: DE_COMPRA,
+      origen: 'enlace'
+    };
+    baseRtdb().then(function (base) {
+      var ctrl = new AbortController(), t = setTimeout(function () { ctrl.abort(); }, 10000);
+      return fetch(base + '/resenas/' + encodeURIComponent(PID) + '/' + id + '.json', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(r), signal: ctrl.signal
+      }).finally(function () { clearTimeout(t); });
+    }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      lsSet(HECHA, String(id));
+      gracias(autor.split(/\s+/)[0]);
+    }).catch(function () {
+      b.disabled = false; b.textContent = 'Publicar mi opinión';
+      $('err').textContent = 'No se pudo publicar (¿sin conexión?). Prueba otra vez en un momento.';
+    });
+  });
+})();
+</script>
+</body>
+</html>
