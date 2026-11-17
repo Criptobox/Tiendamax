@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 TiendaMax — Radar de precios.
-Compara los precios de TUS productos marcados (radar:true en productos.json) con el
-mercado cubano (Revolico, Porlalivre, lelespc), 1×/día. Guarda resultado e historial
+Compara los precios de los productos que elegiste en el panel (📡 Radar → «Qué
+vigilar», guardados en radar-vigilar.json) con el mercado cubano (Revolico, Porlalivre, lelespc), 1×/día. Guarda resultado e historial
 en radar.json y te manda un push de resumen al admin.
 
 Diseño defensivo: si una fuente o un producto falla, se ignora y se sigue — NUNCA
@@ -20,6 +20,10 @@ def _norm(s):
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "radar.json")
+# La lista la escribe el panel. Antes se marcaba con radar:true dentro de
+# productos.json, pero el panel no tenía ningún botón para ponerlo: los cinco
+# que había se quedaron agotados y el radar enseñaba una pantalla vacía.
+VIGILAR = os.path.join(ROOT, "radar-vigilar.json")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 FUENTES = ["revolico", "porlalivre", "lelespc"]
 MAX_PROD = 40          # tope de productos vigilados por corrida (respetuoso)
@@ -292,12 +296,22 @@ def analizar(prod, muestras, prev_hist, fecha):
     return res
 
 
+def ids_vigilar(productos, ruta=None):
+    """Ids elegidos en el panel. Sin el archivo (aún nadie eligió), los que
+    llevan radar:true en productos.json, como antes."""
+    d = load_json(ruta or VIGILAR, None)
+    if isinstance(d, dict) and isinstance(d.get("ids"), list):
+        return {str(i) for i in d["ids"]}
+    return {str(p.get("id")) for p in productos if p.get("radar")}
+
+
 def main():
     productos = load_json(os.path.join(ROOT, "productos.json"), []) or []
     # Solo se vigilan realmente los productos con stock > 0 (igual que el admin UI:
     # un producto agotado no vale la pena vigilarlo, ya no está a la venta).
-    vigilados = [p for p in productos if p.get("radar") and float(p.get("stock") or 0) > 0][:MAX_PROD]
-    omitidos = sum(1 for p in productos if p.get("radar") and float(p.get("stock") or 0) <= 0)
+    elegidos = ids_vigilar(productos)
+    vigilados = [p for p in productos if str(p.get("id")) in elegidos and float(p.get("stock") or 0) > 0][:MAX_PROD]
+    omitidos = sum(1 for p in productos if str(p.get("id")) in elegidos and float(p.get("stock") or 0) <= 0)
     rate = tasa_base()
     fecha = datetime.datetime.now(datetime.timezone.utc).astimezone().strftime("%Y-%m-%d")
     print(f"Radar: {len(vigilados)} productos vigilados · tasa base {rate}"

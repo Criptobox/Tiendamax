@@ -530,6 +530,23 @@ try{var _piel=localStorage.getItem('tm_piel');
   .agenda-pie { margin-top:11px; padding-top:10px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.5; }
   .agenda-pie b { color:var(--text); }
 
+  /* Radar: elegir qué vigilar */
+  .radar-elegir summary{cursor:pointer;list-style:none;font-size:15px;color:#fff}
+  .radar-elegir summary::-webkit-details-marker{display:none}
+  .radar-n{color:var(--muted);font-weight:500;font-size:13px}
+  .radar-ayuda{font-size:12.5px;color:var(--muted);margin:8px 0}
+  .radar-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .radar-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,107,53,.5);background:rgba(255,107,53,.12);color:#fff;font-family:inherit;font-size:12.5px;cursor:pointer;text-align:left}
+  .radar-chip.off{opacity:.55;border-style:dashed}
+  .radar-chip span{color:var(--muted)}
+  .radar-filtros{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .radar-filtros .form-input{flex:1 1 180px;min-width:0}
+  .radar-filtros .form-select{flex:1 1 140px;min-width:0}
+  .radar-op{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 12px;margin-top:6px;border-radius:10px;border:1px solid var(--border,rgba(255,255,255,.1));background:rgba(255,255,255,.03);color:#fff;font-family:inherit;font-size:13px;text-align:left;cursor:pointer}
+  .radar-op-n{flex:1;min-width:0}
+  .radar-op-p{color:var(--o);font-weight:700;white-space:nowrap}
+  .radar-op-mas{color:var(--green);font-weight:800;font-size:16px}
+  .radar-pie{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
   .rev-hero { text-align:center; padding:22px 18px; }
@@ -1746,6 +1763,20 @@ try{var _piel=localStorage.getItem('tm_piel');
       <!-- RADAR -->
       <div id="view-radar" class="view">
         <div class="ph"><div><h2>📡 Radar de precios</h2><p id="radar-sub">Precios reales de la competencia</p></div></div>
+        <details class="section radar-elegir" id="radar-elegir">
+          <summary><b>🎯 Qué vigilar</b> <span id="radar-elegir-n" class="radar-n"></span></summary>
+          <p class="radar-ayuda">Elige los productos que quieres comparar con Revolico, Porlalivre y lelespc (máximo 40). Los agotados no se buscan hasta que vuelvan a tener stock.</p>
+          <div id="radar-elegidos"></div>
+          <div class="radar-filtros">
+            <input class="form-input" id="radar-buscar" type="search" placeholder="🔍 Buscar producto…" oninput="radarPintarElegir()" autocomplete="off">
+            <select class="form-select" id="radar-cat" onchange="radarPintarElegir()" aria-label="Categoría"><option value="">Todas las categorías</option></select>
+          </div>
+          <div id="radar-opciones"></div>
+          <div class="radar-pie">
+            <button class="btn btn-primary" id="radar-guardar" onclick="radarGuardar()">💾 Guardar y buscar precios</button>
+            <span id="radar-estado" class="radar-ayuda" role="status"></span>
+          </div>
+        </details>
         <div class="banner-info" id="radar-resumen"></div>
         <div id="radar-lista"></div>
       </div>
@@ -3271,6 +3302,7 @@ async function cargarDatos(recargar){
   await catSubCargar();
   catApDesdeRepo(CATEGORIAS);
   RADAR = await jget('radar.json');
+  await radarCargarIds();
   VENTAS = lsVentas();
   renderTodo();
   cargarVentasFirebase(); // combina con las ventas guardadas en Firebase (otros dispositivos)
@@ -6160,34 +6192,127 @@ function renderAlmacen(){
 /* El análisis de correcciones (Agente IA) vive ahora en js/admin-copilot.js
    (burbuja Copiloto → tab 🩺 Correcciones), con aplicación automática + sync. */
 
-/* ============ RADAR (reusa radar.json) ============ */
-// Únfamilo entre Inicio y Radar: lo vigilado de verdad es lo que está en
-// radar.json y además tiene stock (agotado no vale la pena vigilarlo).
+/* ============ RADAR (reusa radar.json) ============
+   Qué se vigila lo elige el gestor aquí y va a radar-vigilar.json, que lee
+   scripts/precio_radar.py. Antes era un radar:true dentro de productos.json
+   que ningún botón del panel ponía: los cinco marcados se agotaron y la
+   pantalla quedó vacía, sin forma de cambiarlos. Guardar sube la lista y
+   pide una pasada del radar en el momento (no hay que esperar a mañana). */
+const RADAR_ARCHIVO = 'radar-vigilar.json', RADAR_WORKFLOW = 'precio-radar.yml', RADAR_MAX = 40, RADAR_LS = 'tm_radar_ids';
+let RADAR_IDS = null, RADAR_PEND = false, RADAR_GUARDANDO = false;
+async function radarCargarIds(){
+  // Pendiente de guardar en este teléfono → manda lo local.
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&o.pend&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); RADAR_PEND=true; return; } }catch(e){}
+  const d = await jget(RADAR_ARCHIVO+'?_='+Date.now());
+  if(d && Array.isArray(d.ids)){ RADAR_IDS=new Set(d.ids.map(String)); return; }
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); return; } }catch(e){}
+  RADAR_IDS = new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id)));   // lo de antes, mientras nadie elija
+}
+function radarIds(){ return RADAR_IDS || new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id))); }
+const _rn = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function radarConStock(p){ return (Number(p&&p.stock)||0)>0 && p.activo!==false; }
+function radarPintarElegir(){
+  const box=$('#radar-opciones'); if(!box) return;
+  const ids=radarIds();
+  const cs=$('#radar-cat');
+  if(cs && cs.options.length<=1){
+    [...new Set(PRODUCTOS.filter(radarConStock).map(p=>p.categoria).filter(Boolean))].sort().forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; cs.appendChild(o); });
+  }
+  const n=$('#radar-elegir-n'); if(n) n.textContent = ids.size ? '· '+ids.size+' elegido'+(ids.size!==1?'s':'') : '· ninguno elegido';
+  // Abierta mientras no haya nada que vigilar de verdad (nada elegido, o todo agotado).
+  const det=$('#radar-elegir'); if(det && !PRODUCTOS.some(p=>ids.has(String(p.id))&&radarConStock(p))) det.open=true;
+  // Lo elegido, siempre a la vista y con su ✕.
+  const sel=PRODUCTOS.filter(p=>ids.has(String(p.id)));
+  const eb=$('#radar-elegidos');
+  if(eb) eb.innerHTML = sel.length ? '<div class="radar-chips">'+sel.map(p=>`<button type="button" class="radar-chip${radarConStock(p)?'':' off'}" onclick="radarToggle('${esc(String(p.id))}')" title="Quitar del radar">${esc(p.nombre)}${radarConStock(p)?'':' · agotado'} <span aria-hidden="true">✕</span></button>`).join('')+'</div>' : '';
+  const q=_rn(($('#radar-buscar')||{}).value||'').trim(), cat=(cs&&cs.value)||'';
+  if(!q && !cat){ box.innerHTML='<p class="radar-ayuda">Busca un producto o elige una categoría para añadirlo.</p>'; return; }
+  const words=q.split(/\s+/).filter(Boolean);
+  const lista=PRODUCTOS.filter(p=>radarConStock(p) && !ids.has(String(p.id)) && (!cat||p.categoria===cat) && words.every(w=>_rn(p.nombre||'').includes(w))).slice(0,30);
+  box.innerHTML = lista.length ? lista.map(p=>`<button type="button" class="radar-op" onclick="radarToggle('${esc(String(p.id))}')"><span class="radar-op-n">${esc(p.nombre)}</span><span class="radar-op-p">${money(p.precioActual||p.precio)}</span><span class="radar-op-mas">＋</span></button>`).join('')
+    : '<p class="radar-ayuda">Nada con stock que coincida.</p>';
+}
+function radarToggle(id){
+  const ids=new Set(radarIds()); id=String(id);
+  if(ids.has(id)) ids.delete(id);
+  else { if(ids.size>=RADAR_MAX){ showToast('Máximo '+RADAR_MAX+' productos','Quita alguno antes de añadir otro'); return; } ids.add(id); }
+  RADAR_IDS=ids; RADAR_PEND=true;
+  try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids:[...ids], pend:true, ts:Date.now()})); }catch(e){}
+  const es=$('#radar-estado'); if(es) es.textContent='Sin guardar — pulsa «Guardar y buscar precios».';
+  radarPintarElegir(); renderRadar();
+}
+async function radarGuardar(){
+  if(RADAR_GUARDANDO) return;
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  const es=$('#radar-estado'), btn=$('#radar-guardar');
+  if(!(user&&repo&&token) || typeof subirArchivoAGitHub!=='function'){ if(es) es.textContent='⚠️ Falta el token de GitHub (⚙️ Configuración). La lista se queda en este teléfono.'; return; }
+  RADAR_GUARDANDO=true; if(btn) btn.disabled=true;
+  const ids=[...radarIds()];
+  try{
+    if(es) es.textContent='Guardando…';
+    await subirArchivoAGitHub(user, repo, token, RADAR_ARCHIVO, { actualizado:new Date().toISOString(), ids });
+    RADAR_PEND=false;
+    try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids, pend:false, ts:Date.now()})); }catch(e){}
+  }catch(e){
+    if(es) es.textContent='⚠️ No se pudo guardar: '+((e&&e.message)||'sin conexión')+'. Se queda en este teléfono.';
+    RADAR_GUARDANDO=false; if(btn) btn.disabled=false; return;
+  }
+  const api=`https://api.github.com/repos/${user}/${repo}/actions/workflows/${RADAR_WORKFLOW}`;
+  const cab={ 'Authorization':'token '+token, 'Accept':'application/vnd.github+json' };
+  try{
+    const desde=Date.now()-15000;
+    const r=await fetch(api+'/dispatches',{ method:'POST', headers:Object.assign({'Content-Type':'application/json'},cab), body:JSON.stringify({ref:'main'}) });
+    if(r.status!==204){ if(es) es.textContent='✅ Guardado. Se buscarán en la pasada de mañana (no pude lanzarla ahora: '+r.status+').'; return; }
+    if(es) es.textContent='✅ Guardado. Buscando precios ahora… tarda unos minutos, puedes seguir usando el panel.';
+    // Se espera a la corrida pedida y luego se lee radar.json por la API (Pages va un minuto detrás).
+    let corrida=null;
+    for(let i=0;i<40 && !(corrida&&corrida.status==='completed');i++){
+      await new Promise(res=>setTimeout(res,10000));
+      try{ const q=await fetch(api+'/runs?event=workflow_dispatch&per_page=1&_='+Date.now(),{headers:cab}); const j=q.ok?await q.json():null; const run=j&&j.workflow_runs&&j.workflow_runs[0]; if(run && Date.parse(run.created_at)>=desde) corrida=run; }catch(e){}
+    }
+    if(!(corrida&&corrida.status==='completed')){ if(es) es.textContent='✅ Guardado. La búsqueda sigue en marcha; vuelve a abrir el Radar en un rato.'; return; }
+    try{
+      const q=await fetch(`https://api.github.com/repos/${user}/${repo}/contents/radar.json?ref=main&_=${Date.now()}`,{headers:Object.assign({},cab,{Accept:'application/vnd.github.raw'})});
+      if(q.ok){ RADAR=await q.json(); }
+    }catch(e){}
+    renderRadar();
+    if(es) es.textContent = corrida.conclusion==='success' ? '✅ Precios actualizados.' : '⚠️ La búsqueda terminó con error; enseño lo último que hay.';
+  }finally{ RADAR_GUARDANDO=false; if(btn) btn.disabled=false; }
+}
+// Lo que se enseña: lo elegido que tiene stock. Con datos en radar.json, sus
+// precios; sin ellos aún, una línea que dice que falta buscarlo.
 function radarVigilados(){
-  if(!RADAR || !RADAR.productos) return [];
-  return RADAR.productos.filter(r=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); return !p || (Number(p.stock)||0)>0; });
+  const ids=radarIds();
+  const datos={}; ((RADAR&&RADAR.productos)||[]).forEach(r=>{ datos[String(r.id)]=r; });
+  return PRODUCTOS.filter(p=>ids.has(String(p.id)) && radarConStock(p)).map(p=>datos[String(p.id)]||{id:p.id, nombre:p.nombre, tuPrecio:Number(p.precioActual||p.precio)||null, pendiente:true});
 }
 function renderRadar(){
-  if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
+  radarPintarElegir();
+  const lista=$('#radar-lista'), resumen=$('#radar-resumen'); if(!lista) return;
+  $('#radar-sub').textContent = RADAR&&(RADAR.fecha||RADAR.actualizado) ? 'Actualizado: '+(RADAR.fecha||RADAR.actualizado) : 'Precios reales de la competencia';
   const vigilados = radarVigilados();
-  if(!vigilados.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Todos los productos vigilados están agotados ahora mismo. Vuelven al radar cuando repongas stock.</div></div>`; $('#radar-resumen').textContent=''; $('#radar-sub').textContent='Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—'); return; }
-  $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
-  // Siempre recalcular el conteo desde los vigilados reales (con stock). El
-  // RADAR.resumen viene horneado en radar.json con el total sin filtrar (ej: 5)
-  // y desincronizaba con lo que se muestra abajo (ej: 3).
-  const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').';
-  $('#radar-resumen').innerHTML = esc(res);
+  if(!vigilados.length){
+    lista.innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>${radarIds().size?'Lo que elegiste está agotado ahora mismo. Elige productos con stock arriba.':'Elige arriba los productos que quieres vigilar.'}</div></div>`;
+    if(resumen) resumen.textContent=''; return;
+  }
+  const conDatos=vigilados.filter(r=>!r.pendiente).length;
+  const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' (fuentes: '+(((RADAR&&RADAR.fuentes)||[]).join(', ')||'Revolico')+').'+(conDatos<vigilados.length?' '+(vigilados.length-conDatos)+' aún sin buscar.':'');
+  if(resumen) resumen.innerHTML = esc(res);
   const okUrl = u => /^https?:\/\//i.test(u||'');
-  $('#radar-lista').innerHTML = vigilados.map(r=>{
+  lista.innerHTML = vigilados.map(r=>{
+    if(r.pendiente) return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;color:var(--muted)">⏳ Aún sin buscar. ${RADAR_PEND?'Pulsa «Guardar y buscar precios».':'Sale en la próxima búsqueda.'}</div></div>`;
     const med=r.mercado&&r.mercado.mediana, min=r.mercado&&r.mercado.min, n=r.mercado&&r.mercado.n;
     const tuyo=r.tuPrecio;
     let comp='';
-    if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
+    if(!n) comp='<span style="color:var(--muted)">No encontré anuncios de esto en la última semana.</span>';
+    else if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
     const muestras=(r.muestras||[]).slice().sort((a,b)=>(a.precio||0)-(b.precio||0));
     const det = muestras.length?`<details style="margin-top:10px"><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios reales (verificar)</summary><div style="margin-top:8px">${muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver anuncio →</a>`:''; return `<div style="padding:7px 10px;background:rgba(0,0,0,0.25);border-radius:7px;margin-bottom:5px;font-size:12px"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>`; }).join('')}</div></details>`:'';
-    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div><div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> ${n?`(${n} anuncios)`:''}</div><div>${comp}</div></div>${det}</div>`;
+    const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncios)</div>` : '';
+    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div>${merc}<div>${comp}</div></div>${det}</div>`;
   }).join('');
 }
+window.radarPintarElegir=radarPintarElegir; window.radarToggle=radarToggle; window.radarGuardar=radarGuardar;
 
 
 /* ============ COMPARAR CON LA TIENDA PRINCIPAL ============
