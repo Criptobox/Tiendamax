@@ -315,12 +315,13 @@ try{var _piel=localStorage.getItem('tm_piel');
   /* Tarjeta de producto — calcada del admin anterior (foto grande, botones
      grandes tintados en fila, stock abajo con −/+ cuadrados y uds en color) */
   #prod-grid.rows { display:flex; flex-direction:column; gap:12px; }
-  .pcard { background:rgba(255,255,255,0.035); border:1px solid var(--border); border-radius:18px; padding:15px 14px; }
-  .pcard-h { display:flex; gap:10px; align-items:center; }
+  .pcard { background:rgba(255,255,255,0.035); border:1px solid var(--border); border-radius:16px; padding:11px 12px; }
+  .pcard-h { display:flex; gap:10px; align-items:flex-start; }
   .pcard-cb { width:22px; height:22px; accent-color:var(--o); flex-shrink:0; cursor:pointer; border-radius:6px; }
-  .pcard-thumb { width:76px; height:76px; object-fit:cover; border-radius:12px; flex-shrink:0; background:rgba(255,255,255,0.05); }
+  .pcard-thumb { width:58px; height:58px; object-fit:cover; border-radius:11px; flex-shrink:0; background:rgba(255,255,255,0.05); }
   .pcard-info { flex:1; min-width:0; }
-  .pcard-nm { font-size:15px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; letter-spacing:.3px; }
+  /* El nombre entero, en dos líneas si hace falta: «Anker So…» no dice qué producto es. */
+  .pcard-nm { font-size:14px; font-weight:800; color:#fff; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:3px; }
   .pcard-meta { font-size:14px; white-space:nowrap; color:#b9b9c2; font-weight:600; }
   /* ── Elegir producto para una venta ──────────────────────────────────
      Antes era un <select> con <optgroup>. En Android el desplegable nativo se
@@ -456,8 +457,8 @@ try{var _piel=localStorage.getItem('tm_piel');
     color:var(--yellow); font-weight:700; border-radius:999px; padding:3px 10px; font-family:inherit; cursor:pointer;
     white-space:nowrap; font-size:12px; }
   .pcard-comm.nada { color:var(--dim); }
-  .pcard-acts { display:flex; gap:7px; flex-shrink:0; align-self:flex-start; }
-  .pico { width:44px; height:44px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
+  .pcard-acts { display:flex; gap:6px; flex-shrink:0; margin-left:auto; }
+  .pico { width:38px; height:38px; border-radius:11px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
   .pico:hover { transform:translateY(-1px); }
   /* Interruptor de categoría/subcategoría: verde = se ve en la tienda. */
   .cat-sw { position:relative; width:46px; height:26px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.10); cursor:pointer; flex-shrink:0; padding:0; transition:background .15s; }
@@ -470,16 +471,16 @@ try{var _piel=localStorage.getItem('tm_piel');
   .pico.del { background:rgba(120,45,45,0.35); border-color:rgba(231,76,60,0.3); }
   .pico.star { background:rgba(70,60,35,0.45); border-color:rgba(241,196,15,0.25); filter:grayscale(1) opacity(0.55); }
   .pico.star.on { filter:none; background:rgba(241,196,15,0.2); border-color:rgba(241,196,15,0.5); }
-  .pcard-stock { display:flex; align-items:center; gap:10px; margin-top:13px; }
-  .stbtn { width:50px; height:42px; border-radius:11px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:20px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
+  .pcard-stock { display:flex; align-items:center; gap:6px; margin-top:9px; flex-wrap:wrap; }
+  .stbtn { width:40px; height:38px; border-radius:11px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:20px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
   .stbtn.minus { background:rgba(100,42,42,0.45); border-color:rgba(231,76,60,0.28); }
   .stbtn.plus { background:rgba(35,90,55,0.5); border-color:rgba(46,204,113,0.35); }
-  .stbtn.zero { width:46px; height:42px; font-size:14px; font-weight:800; color:#cfcfd6; background:rgba(255,255,255,0.06); }
+  .stbtn.zero { width:38px; height:38px; font-size:13px; font-weight:800; color:#cfcfd6; background:rgba(255,255,255,0.06); }
   .stbtn:hover { filter:brightness(1.25); }
   .st-label { font-size:15px; color:#b9b9c2; font-weight:600; }
-  .st-val { font-size:19px; font-weight:900; margin-left:auto; letter-spacing:.3px; }
+  .st-val { font-size:16px; font-weight:900; letter-spacing:.2px; min-width:58px; text-align:center; }
   .st-val.ok { color:var(--green); } .st-val.low { color:var(--yellow); } .st-val.out { color:var(--red); }
-  @media (max-width:400px) { .pcard-thumb { width:64px; height:64px; } .pico { width:40px; height:40px; font-size:18px; } .pcard-cb { width:19px; height:19px; } }
+  @media (max-width:400px) { .pico { width:36px; height:36px; font-size:17px; } .stbtn { width:36px; } .pcard-cb { width:19px; height:19px; } }
   /* Modal de edición */
   .pmodal { position:fixed; inset:0; z-index:200000; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; padding:16px; }
   .pmodal.show { display:flex; }
@@ -529,6 +530,23 @@ try{var _piel=localStorage.getItem('tm_piel');
   .agenda-pie { margin-top:11px; padding-top:10px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.5; }
   .agenda-pie b { color:var(--text); }
 
+  /* Radar: elegir qué vigilar */
+  .radar-elegir summary{cursor:pointer;list-style:none;font-size:15px;color:#fff}
+  .radar-elegir summary::-webkit-details-marker{display:none}
+  .radar-n{color:var(--muted);font-weight:500;font-size:13px}
+  .radar-ayuda{font-size:12.5px;color:var(--muted);margin:8px 0}
+  .radar-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .radar-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,107,53,.5);background:rgba(255,107,53,.12);color:#fff;font-family:inherit;font-size:12.5px;cursor:pointer;text-align:left}
+  .radar-chip.off{opacity:.55;border-style:dashed}
+  .radar-chip span{color:var(--muted)}
+  .radar-filtros{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .radar-filtros .form-input{flex:1 1 180px;min-width:0}
+  .radar-filtros .form-select{flex:1 1 140px;min-width:0}
+  .radar-op{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 12px;margin-top:6px;border-radius:10px;border:1px solid var(--border,rgba(255,255,255,.1));background:rgba(255,255,255,.03);color:#fff;font-family:inherit;font-size:13px;text-align:left;cursor:pointer}
+  .radar-op-n{flex:1;min-width:0}
+  .radar-op-p{color:var(--o);font-weight:700;white-space:nowrap}
+  .radar-op-mas{color:var(--green);font-weight:800;font-size:16px}
+  .radar-pie{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
   .rev-hero { text-align:center; padding:22px 18px; }
@@ -1360,6 +1378,47 @@ try{var _piel=localStorage.getItem('tm_piel');
     .content { padding-top:16px !important; }
   }
 </style>
+<style>
+/* 🧾 Historial de ventas en fichas */
+.vh-list{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:900px){.vh-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vh-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;min-width:0}
+.vh-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.vh-top b{color:var(--text,#fff);font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vh-top span{color:var(--gray);font-size:11.5px;flex:none}
+.vh-prod{color:var(--gray);font-size:12.5px;margin-top:3px;line-height:1.35}
+.vh-bot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.vh-tot{color:var(--text,#fff);font-weight:800;font-size:14px}
+.vh-bot .tj-tag{margin-top:0}
+.vh-del{margin-left:auto;padding:4px 9px;color:var(--red)}
+/* 👥 Clientes en fichas (renderClientes) */
+.cli-aviso{font-size:12px;color:var(--gray);margin:0 0 10px;line-height:1.5}.cli-aviso b{color:var(--text,#fff)}
+.cli-barra{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cli-chips{display:flex;gap:6px;flex-wrap:wrap}
+.cli-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:900px){.cli-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cli-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cli-card.cli-toca{border-color:rgba(var(--o-rgb),.45)}
+.cli-top{display:flex;align-items:center;gap:11px;min-width:0}
+.cli-av{flex:none;width:40px;height:40px;border-radius:50%;background:rgba(var(--o-rgb),.16);color:var(--o);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px}
+.cli-id{flex:1;min-width:0;display:flex;flex-direction:column}
+.cli-id b{color:var(--text,#fff);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cli-id span{color:var(--gray);font-size:12px;font-weight:600}
+.cli-num{flex:none;text-align:center;line-height:1.1}.cli-num b{display:block;color:var(--text,#fff);font-size:18px}.cli-num span{color:var(--gray);font-size:10.5px}
+.cli-meta{color:var(--gray);font-size:12px}
+.cli-seg:empty{display:none}
+.cli-tj{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:linear-gradient(120deg,#16120F,#2A1A12);border:1px solid rgba(255,107,53,.35)}
+.cli-tj-nueva{background:var(--card2);border-style:dashed;border-color:var(--border)}
+.cli-tj-vieja{opacity:.7}
+.cli-tj-txt{flex:1;min-width:150px;display:flex;flex-direction:column}
+.cli-tj-txt b{color:#F5EFE6;font:800 14px ui-monospace,'JetBrains Mono',monospace;letter-spacing:.06em}
+.cli-tj-nueva .cli-tj-txt b{color:var(--text,#fff);font-family:inherit;font-weight:700;font-size:13px;letter-spacing:0}
+.cli-tj-txt span{color:#B9AFA4;font-size:11.5px;margin-top:2px}
+.cli-tj-nueva .cli-tj-txt span{color:var(--gray)}
+.cli-tj-acc{display:flex;gap:6px}
+.cli-tj .btn{padding:6px 12px;font-size:12px;white-space:nowrap}
+.tj-tag{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;border:1px solid rgba(255,107,53,.4);background:rgba(255,107,53,.1);color:#FF8A5B;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap}
+</style>
 </head>
 <body>
 
@@ -1611,7 +1670,6 @@ try{var _piel=localStorage.getItem('tm_piel');
            fuera de la ventana de la app. «←» en el vale vuelve aquí. -->
       <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="location.href='vale.html'">🧾</button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="reposicion" title="Reposición · qué volver a comprar">📥<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="qr" title="Código QR para imprimir">🔳<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡</button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
@@ -1659,7 +1717,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-com" onclick="apToggleFiltroComision()" title="Ver los que vendes sin comisión declarada">❓ Sin comisión</button><button class="btn btn-ghost" onclick="sincronizarTodoConGitHub()" title="Publicar en la tienda lo que cambiaste">🔄 Actualizar tienda</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-com" onclick="apToggleFiltroComision()" title="Ver los que vendes sin comisión declarada">❓ Sin comisión</button><button class="btn btn-ghost" onclick="sincronizarTodoConGitHub()" title="Publicar en la tienda lo que cambiaste">🔄 Actualizar tienda</button><button class="btn btn-ghost" onclick="go('almacen')" title="Dónde está el stock">🏭 Almacenes</button><button class="btn btn-ghost" onclick="go('herramientas')" title="CSV, duplicar, repetidos e historial de cambios">🧰 Utilidades</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div id="prod-bulkbar" style="display:none;position:sticky;top:64px;z-index:60;background:rgba(20,16,10,0.97);border:1px solid var(--o);border-radius:11px;padding:9px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px;flex-wrap:wrap">
           <b id="prod-bulk-count" style="color:var(--o);font-size:13px">0 seleccionados</b>
@@ -1705,28 +1763,22 @@ try{var _piel=localStorage.getItem('tm_piel');
       <!-- RADAR -->
       <div id="view-radar" class="view">
         <div class="ph"><div><h2>📡 Radar de precios</h2><p id="radar-sub">Precios reales de la competencia</p></div></div>
+        <details class="section radar-elegir" id="radar-elegir">
+          <summary><b>🎯 Qué vigilar</b> <span id="radar-elegir-n" class="radar-n"></span></summary>
+          <p class="radar-ayuda">Elige los productos que quieres comparar con Revolico, Porlalivre y lelespc (máximo 40). Los agotados no se buscan hasta que vuelvan a tener stock.</p>
+          <div id="radar-elegidos"></div>
+          <div class="radar-filtros">
+            <input class="form-input" id="radar-buscar" type="search" placeholder="🔍 Buscar producto…" oninput="radarPintarElegir()" autocomplete="off">
+            <select class="form-select" id="radar-cat" onchange="radarPintarElegir()" aria-label="Categoría"><option value="">Todas las categorías</option></select>
+          </div>
+          <div id="radar-opciones"></div>
+          <div class="radar-pie">
+            <button class="btn btn-primary" id="radar-guardar" onclick="radarGuardar()">💾 Guardar y buscar precios</button>
+            <span id="radar-estado" class="radar-ayuda" role="status"></span>
+          </div>
+        </details>
         <div class="banner-info" id="radar-resumen"></div>
         <div id="radar-lista"></div>
-      </div>
-
-      <!-- REPOSICIÓN -->
-      <div id="view-reposicion" class="view">
-        <div class="ph">
-          <div><h2>📥 Reposición</h2><p id="repo-sub">Qué volver a comprar, ordenado por lo que más se vende</p></div>
-          <div class="ph-actions">
-            <button class="btn btn-ghost" onclick="repoCopiar()">📋 Copiar lista</button>
-            <button class="btn btn-success" onclick="repoWhatsApp()">💬 Al proveedor</button>
-          </div>
-        </div>
-        <div class="banner-info" id="repo-resumen"></div>
-        <div class="section" style="margin-bottom:12px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <label class="form-label" style="margin:0" for="repo-umbral">Avisar cuando el stock esté en o por debajo de</label>
-            <input class="form-input" id="repo-umbral" type="number" min="0" step="1" value="5" style="width:80px" onchange="renderReposicion()">
-            <span style="font-size:12px;color:var(--muted)">unidades</span>
-          </div>
-        </div>
-        <div id="repo-lista"></div>
       </div>
 
       <!-- CÓDIGO QR -->
@@ -1768,7 +1820,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
       <!-- VENTAS -->
       <div id="view-ventas" class="view">
-        <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
+        <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div><div class="ph-actions"><button class="btn btn-ghost" onclick="go('reservas')" title="Vales apartados que aún no son venta">🔒 Reservas<span id="ventas-res-n"></span></button></div></div>
         <div class="section">
           <h3>⚡ Registrar venta</h3>
           <!-- Elegir el producto con un toque, sin escribir el nombre: la tira de
@@ -1806,7 +1858,14 @@ try{var _piel=localStorage.getItem('tm_piel');
           <button class="btn btn-primary" id="venta-registrar-btn" style="width:100%;margin-top:12px;display:none" onclick="ventaRegistrar()">✅ Registrar venta</button>
         </div>
         <div id="comis-box"></div>
-        <div class="kpis" id="ventas-kpis"></div>
+        <div class="section">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+            <h3 style="margin:0">📅 Reporte de ganancias</h3>
+            <select class="form-select" id="rep-mes" style="min-width:150px;margin-left:auto" onchange="renderReporteMensual()"></select>
+            <button class="btn btn-ghost" onclick="reporteCopiar()">📋 Copiar</button>
+          </div>
+          <div id="rep-mensual"></div>
+        </div>
         <div class="grid-2">
           <div class="section"><h3>🏆 Productos más vendidos</h3><div id="ventas-top"></div></div>
           <div class="section"><h3>💵 Comisiones ganadas</h3><div id="ventas-comis"></div></div>
@@ -2090,15 +2149,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 
       <!-- ANALYTICS -->
       <div id="view-analytics" class="view">
-        <div class="ph"><div><h2>📊 Analytics</h2><p>Métricas reales del catálogo y ventas</p></div></div>
-        <div class="section">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-            <h3 style="margin:0">📅 Reporte de ganancias</h3>
-            <select class="form-select" id="rep-mes" style="min-width:150px;margin-left:auto" onchange="renderReporteMensual()"></select>
-            <button class="btn btn-ghost" onclick="reporteCopiar()">📋 Copiar</button>
-          </div>
-          <div id="rep-mensual"></div>
-        </div>
+        <div class="ph"><div><h2>📊 Analytics</h2><p>Visitas, de dónde llegan y qué miran tus clientes. Lo que ganas está en 🏠 Inicio y 💰 Ventas.</p></div></div>
         <div class="kpis" id="an-kpis"></div>
         <div class="section"><h3>👁 Visitas — Últimos 7 días <span class="badge">registro real</span></h3><div class="bar-chart-wrap"><div class="bar-chart" id="chart-visitas"></div></div></div>
         <div class="section"><h3>📣 De dónde llegan <span class="badge">registro real</span></h3>
@@ -2434,20 +2485,16 @@ try{var _piel=localStorage.getItem('tm_piel');
       ['agregar','➕','Agregar','Producto nuevo', C.verde],
       ['categorias','🏷️','Categorías','Encender y ordenar', C.ambar],
       ['tarjetas','💳','Tarjetas','Digitales y coste', C.rosa],
-      ['combos','🎁','Combos','Packs y ofertas', C.rojo],
-      ['almacen','🏭','Almacenes','Dónde está el stock', C.turquesa] ]},
+      ['combos','🎁','Combos','Packs y ofertas', C.rojo] ]},
     { t:'Clientes y pedidos', items:[
       ['clientes','👥','Clientes','Seguimiento y avisos', C.morado],
-      ['reservas','🔒','Reservas','Vales apartados', C.ambar],
       ['qr','🔳','Código QR','Para imprimir', C.cian] ]},
     { t:'Mercado', dos:true, items:[
       ['comparar','🔀','Comparar','Tienda principal', C.morado],
-      ['reposicion','📥','Reposición','Qué volver a comprar', C.turquesa],
       ['radar','📡','Radar','Precios de fuera', C.verde],
       ['analytics','📊','Analytics','Visitas y canales', C.azul] ]},
     { t:'Ajustes', col2:true, items:[
-      ['config','⚙️','Configuración','Token, IA y estilo', C.gris],
-      ['herramientas','🛠️','Herramientas','Funciones extra', C.ambar] ]}
+      ['config','⚙️','Configuración','Token, IA y estilo', C.gris] ]}
   ];
   // Tres símbolos que tm-iconos no dibuja, en el mismo trazo de línea.
   var EXTRA = {
@@ -2904,7 +2951,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/admin-copilot.js?v=2650e5f3"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
-<script src="js/tarjeta-cliente.js?v=8b465ca4"></script>
+<script src="js/tarjeta-cliente.js?v=71e8c8b5"></script>
 
 <script>
 (function(){
@@ -3255,6 +3302,7 @@ async function cargarDatos(recargar){
   await catSubCargar();
   catApDesdeRepo(CATEGORIAS);
   RADAR = await jget('radar.json');
+  await radarCargarIds();
   VENTAS = lsVentas();
   renderTodo();
   cargarVentasFirebase(); // combina con las ventas guardadas en Firebase (otros dispositivos)
@@ -3326,7 +3374,7 @@ async function tmClientesDesdeFirebase(base, ventas){
 
 function renderTodo(){
   renderInicio(); renderProductos(); renderCategorias();
-  renderRadar(); renderVentas(); renderReposicion(); renderQR();
+  renderRadar(); renderVentas(); renderQR();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
   // Entrando por #tarjetas la vista se pinta antes de que lleguen los productos.
@@ -4842,7 +4890,6 @@ function renderInicio(){
      venta". */
   const conStock = PRODUCTOS.filter(p=>Number(p.stock)>0).length;
   const enOferta = PRODUCTOS.filter(p=>Number(p.precioOriginal)>Number(p.precioActual) && Number(p.precioActual)>0).length;
-  const vendidoMes = sumaMonedas(vMes, ventaTotales);
   // El mes pasado, para comparar. La ganancia de ESTE mes ya está en la
   // tarjeta grande de arriba: repetirla aquí era el mismo defecto que tenía
   // el banner del robot, decir dos veces lo mismo a dos centímetros.
@@ -4852,7 +4899,8 @@ function renderInicio(){
   const pctVenta = PRODUCTOS.length ? Math.round(conStock/PRODUCTOS.length*100) : 0;
   const k = [
     ['gold','Ganancia '+anterior.toLocaleDateString('es-CU',{month:'long'}), dosMonedas({usd:gAnt.usd, mn:gAnt.mn}), vAnt.length+' venta'+(vAnt.length!==1?'s':''),'muted',''],
-    ['success','Vendido este mes', dosMonedas(vendidoMes), 'importe cobrado','muted',''],
+    // «Vendido este mes» ya está en el bloque grande (#hi-vendido): aquí iba repetido.
+    ['success','Por contactar hoy', (typeof tmSeguimientosPendientes==='function'?tmSeguimientosPendientes(VENTAS).length:0), 'seguimientos en 👥 Clientes','muted',''],
     ['usd','Ventas hoy', dosMonedas(ventasHoy), nHoy+' venta'+(nHoy!==1?'s':''),'muted',''],
     ['','A la venta', conStock, 'de '+PRODUCTOS.length+' productos','muted', _anilloSVG(pctVenta,'#FF6B35')],
     ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', '7 días','muted','<span id="inicio-visitas-spark"></span>'],
@@ -4906,75 +4954,27 @@ async function _tmRefrescarSubsBadge(){
   }catch(e){}
 }
 
-/* ============ REPOSICIÓN — qué volver a comprar ============ */
 const SITE_URL = 'https://tiendamax.org';
-function _repoUmbral(){ const el=$('#repo-umbral'); const v=el?parseInt(el.value,10):5; return isNaN(v)?5:Math.max(0,v); }
-// Unidades vendidas por producto: combina el histórico de vendidos.json
-// (window._tmVendidos, que carga el bundle) con las ventas registradas (VENTAS).
-function _unidadesVendidas(){
-  const byId={}, byName={};
-  const V = (window._tmVendidos && typeof window._tmVendidos==='object') ? window._tmVendidos : {};
-  Object.keys(V).forEach(id=>{ const n=Number(V[id])||0; if(n>0) byId[String(id)]=(byId[String(id)]||0)+n; });
-  VENTAS.forEach(v=>{
-    let items = v.productos||v.items;
-    if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, productoId:v.productoId}];
-    (items||[]).forEach(it=>{
-      const q=Number(it.cantidad||it.qty||1)||1;
-      if(it.productoId!=null) byId[String(it.productoId)]=(byId[String(it.productoId)]||0)+q;
-      const nm=it.nombre||it.nm||it.producto; if(nm) byName[norm(nm)]=(byName[norm(nm)]||0)+q;
-    });
-  });
-  return {byId, byName};
-}
-function _prodVendidas(p, u){ let n=u.byId[String(p.id)]||0; const bn=u.byName[norm(p.nombre)]; if(bn&&bn>n) n=bn; return n; }
-let _repoCache=[];
-function renderReposicion(){
-  const box=$('#repo-lista'); if(!box) return;
-  const umbral=_repoUmbral();
-  const u=_unidadesVendidas();
-  const cand = PRODUCTOS
-    .filter(p=>p.activo!==false)
-    .map(p=>({p, stock:Number(p.stock)||0, vendidas:_prodVendidas(p,u)}))
-    .filter(x=>x.stock<=umbral)
-    .sort((a,b)=> (b.vendidas-a.vendidas) || (a.stock-b.stock) || String(a.p.nombre).localeCompare(String(b.p.nombre)));
-  _repoCache=cand;
-  const agot = cand.filter(x=>x.stock<=0).length;
-  const res=$('#repo-resumen');
-  if(res) res.innerHTML = cand.length
-    ? `<b>${cand.length}</b> producto(s) para reponer — <b style="color:var(--red)">${agot} agotado(s)</b> y ${cand.length-agot} con stock bajo. Ordenados por los que <b>más se venden</b>.`
-    : `✅ Todo con stock por encima de ${umbral}. Nada urgente que reponer.`;
-  if(!cand.length){ box.innerHTML=`<div class="empty"><div class="ico">📥</div>Nada que reponer ahora mismo.</div>`; return; }
-  box.innerHTML = cand.map(x=>{
-    const p=x.p, out=x.stock<=0;
-    const img=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen||'';
-    const badge = out?'<span class="sp-status urg">Agotado</span>':`<span class="sp-status warn">Quedan ${x.stock}</span>`;
-    const vel = x.vendidas>0?`🔥 ${x.vendidas} vendidas`:'sin ventas registradas';
-    return `<div class="stock-card ${out?'urg':'warn'}"><div class="sp-head">
-        <div class="sp-thumb">${img?`<img src="${esc(img)}" alt="">`:emojiCat(p.categoria)}</div>
-        <div style="min-width:0"><div class="sp-name">${esc(p.nombre)}</div><div class="sp-meta">${esc(p.categoria||'')} · ${vel}</div></div>
-        ${badge}
-      </div></div>`;
-  }).join('');
-}
-function _repoTexto(){
-  if(!_repoCache.length) return '';
-  const lines=_repoCache.map(x=>{ const out=x.stock<=0; return `• ${x.p.nombre}${out?' (AGOTADO)':' (quedan '+x.stock+')'}${x.vendidas?' — '+x.vendidas+' vendidas':''}`; });
-  return `🛒 Lista de reposición — TiendaMax\n(${_repoCache.length} productos, los que más se venden primero)\n\n`+lines.join('\n');
-}
-function repoCopiar(){ const t=_repoTexto(); if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Lista copiada','Pégasela a tu proveedor'); }catch(e){ showToast('No se pudo copiar'); } }
-function repoWhatsApp(){ const t=_repoTexto(); if(!t){ showToast('Nada que enviar'); return; } window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener,noreferrer'); }
 
-/* ============ CÓDIGO QR (imagen QR de una URL pública; img-src https: lo permite) ============ */
-// api.qrserver.com no genera el logo DENTRO del QR (no es un parámetro que
-// soporte su API gratis) — se superpone el logo oficial encima con CSS, y se
-// sube la corrección de errores a "H" (~30% de tolerancia) para que el
-// recorte del centro no afecte que el QR siga siendo escaneable.
+/* ============ CÓDIGO QR ============ */
+/* El QR se dibuja aquí, con js/qr-mini.js (el mismo de la Tarjeta TiendaMax):
+   antes se pedía la imagen a api.qrserver.com, y sin conexión —o con ella
+   lenta— la pantalla enseñaba un cuadro vacío justo cuando había que imprimir.
+   El logo va encima y más pequeño (18 % del lado): este QR es de corrección M
+   (~15 %), no H como el de fuera. Si el enlace no cabe (más de ~100 letras),
+   se vuelve al servicio de fuera, que sí lo genera. */
+function _qrSvg(data){
+  const q=(typeof window.tmQR==='function')?window.tmQR(data):null; if(!q) return '';
+  let d=''; for(let f=0;f<q.n;f++) for(let c=0;c<q.n;c++) if(q.get(f,c)) d+='M'+(c+2)+' '+(f+2)+'h1v1h-1z';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${q.n+4} ${q.n+4}" shape-rendering="crispEdges" style="display:block;width:100%;height:100%"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#111"/></svg>`;
+}
 function _qrImg(data, size){
-  const s=size||260, logo=Math.round(s*0.22);
-  const url='https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=8&ecc=H&data='+encodeURIComponent(data);
-  return `<div style="position:relative;display:inline-flex;width:${s}px;height:${s}px;background:#fff;border-radius:14px;padding:8px;box-sizing:content-box">
-    <img src="${esc(url)}" width="${s}" height="${s}" alt="Código QR" style="display:block;width:100%;height:100%">
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${logo}px;height:${logo}px;border-radius:9px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+  const s=size||260, logo=Math.round(s*0.18);
+  const svg=_qrSvg(data);
+  const dentro = svg || `<img src="${esc('https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=8&ecc=H&data='+encodeURIComponent(data))}" width="${s}" height="${s}" alt="Código QR" style="display:block;width:100%;height:100%">`;
+  return `<div class="qr-caja" data-local="${svg?1:0}" role="img" aria-label="Código QR" style="position:relative;display:inline-flex;width:${s}px;height:${s}px;background:#fff;border-radius:14px;padding:8px;box-sizing:content-box">
+    ${dentro}
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${logo}px;height:${logo}px;border-radius:9px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25)">
       <img src="/iconos/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </div>
   </div>`;
@@ -5038,16 +5038,18 @@ function qrRenderCategoria(){
 }
 function qrImprimir(data, titulo){
   const w=window.open('','_blank','width=420,height=580'); if(!w) return;
+  const svg=_qrSvg(data);
   const img='https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&ecc=H&data='+encodeURIComponent(data);
   const logo=location.origin+'/iconos/icon-192.png';
   w.document.write('<!DOCTYPE html><meta charset=utf-8><title>QR TiendaMax</title><body style="margin:0;font-family:system-ui,sans-serif;text-align:center;padding:26px">'
     +'<div style="position:relative;display:inline-block">'
-    +'<img src="'+img+'" style="width:320px;height:320px" onload="setTimeout(function(){window.print()},150)">'
-    +'<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:11px;overflow:hidden;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"><img src="'+logo+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>'
+    +(svg ? '<div style="width:320px;height:320px">'+svg+'</div>' : '<img src="'+img+'" style="width:320px;height:320px" onload="setTimeout(function(){window.print()},150)">')
+    +'<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:11px;overflow:hidden;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"><img src="'+logo+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>'
     +'</div>'
     +'<h2 style="margin:16px 0 4px">'+esc(titulo)+'</h2>'
     +'<div style="color:#555;font-size:13px;word-break:break-all">'+esc(data)+'</div></body>');
   w.document.close();
+  if(svg) setTimeout(()=>{ try{ w.print(); }catch(e){} }, 300);
 }
 
 /* ============ PRODUCTOS ============ */
@@ -5178,18 +5180,17 @@ function apCardHTML(p){
         <div class="pcard-meta">${moneyP(p)}${off}</div>
         ${comm}
       </div>
+    </div>
+    <div class="pcard-stock">
+      <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
+      <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
+      <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
+      <button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado" ${st<=0?'disabled style="opacity:.35"':''}>→0</button>
       <div class="pcard-acts">
         <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
         <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
         <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
       </div>
-    </div>
-    <div class="pcard-stock">
-      <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
-      <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
-      <span class="st-label">Stock:</span>
-      <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
-      <button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado" ${st<=0?'disabled style="opacity:.35"':''}>→0</button>
     </div>
   </div>`;
 }
@@ -6191,34 +6192,127 @@ function renderAlmacen(){
 /* El análisis de correcciones (Agente IA) vive ahora en js/admin-copilot.js
    (burbuja Copiloto → tab 🩺 Correcciones), con aplicación automática + sync. */
 
-/* ============ RADAR (reusa radar.json) ============ */
-// Únfamilo entre Inicio y Radar: lo vigilado de verdad es lo que está en
-// radar.json y además tiene stock (agotado no vale la pena vigilarlo).
+/* ============ RADAR (reusa radar.json) ============
+   Qué se vigila lo elige el gestor aquí y va a radar-vigilar.json, que lee
+   scripts/precio_radar.py. Antes era un radar:true dentro de productos.json
+   que ningún botón del panel ponía: los cinco marcados se agotaron y la
+   pantalla quedó vacía, sin forma de cambiarlos. Guardar sube la lista y
+   pide una pasada del radar en el momento (no hay que esperar a mañana). */
+const RADAR_ARCHIVO = 'radar-vigilar.json', RADAR_WORKFLOW = 'precio-radar.yml', RADAR_MAX = 40, RADAR_LS = 'tm_radar_ids';
+let RADAR_IDS = null, RADAR_PEND = false, RADAR_GUARDANDO = false;
+async function radarCargarIds(){
+  // Pendiente de guardar en este teléfono → manda lo local.
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&o.pend&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); RADAR_PEND=true; return; } }catch(e){}
+  const d = await jget(RADAR_ARCHIVO+'?_='+Date.now());
+  if(d && Array.isArray(d.ids)){ RADAR_IDS=new Set(d.ids.map(String)); return; }
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); return; } }catch(e){}
+  RADAR_IDS = new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id)));   // lo de antes, mientras nadie elija
+}
+function radarIds(){ return RADAR_IDS || new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id))); }
+const _rn = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function radarConStock(p){ return (Number(p&&p.stock)||0)>0 && p.activo!==false; }
+function radarPintarElegir(){
+  const box=$('#radar-opciones'); if(!box) return;
+  const ids=radarIds();
+  const cs=$('#radar-cat');
+  if(cs && cs.options.length<=1){
+    [...new Set(PRODUCTOS.filter(radarConStock).map(p=>p.categoria).filter(Boolean))].sort().forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; cs.appendChild(o); });
+  }
+  const n=$('#radar-elegir-n'); if(n) n.textContent = ids.size ? '· '+ids.size+' elegido'+(ids.size!==1?'s':'') : '· ninguno elegido';
+  // Abierta mientras no haya nada que vigilar de verdad (nada elegido, o todo agotado).
+  const det=$('#radar-elegir'); if(det && !PRODUCTOS.some(p=>ids.has(String(p.id))&&radarConStock(p))) det.open=true;
+  // Lo elegido, siempre a la vista y con su ✕.
+  const sel=PRODUCTOS.filter(p=>ids.has(String(p.id)));
+  const eb=$('#radar-elegidos');
+  if(eb) eb.innerHTML = sel.length ? '<div class="radar-chips">'+sel.map(p=>`<button type="button" class="radar-chip${radarConStock(p)?'':' off'}" onclick="radarToggle('${esc(String(p.id))}')" title="Quitar del radar">${esc(p.nombre)}${radarConStock(p)?'':' · agotado'} <span aria-hidden="true">✕</span></button>`).join('')+'</div>' : '';
+  const q=_rn(($('#radar-buscar')||{}).value||'').trim(), cat=(cs&&cs.value)||'';
+  if(!q && !cat){ box.innerHTML='<p class="radar-ayuda">Busca un producto o elige una categoría para añadirlo.</p>'; return; }
+  const words=q.split(/\s+/).filter(Boolean);
+  const lista=PRODUCTOS.filter(p=>radarConStock(p) && !ids.has(String(p.id)) && (!cat||p.categoria===cat) && words.every(w=>_rn(p.nombre||'').includes(w))).slice(0,30);
+  box.innerHTML = lista.length ? lista.map(p=>`<button type="button" class="radar-op" onclick="radarToggle('${esc(String(p.id))}')"><span class="radar-op-n">${esc(p.nombre)}</span><span class="radar-op-p">${money(p.precioActual||p.precio)}</span><span class="radar-op-mas">＋</span></button>`).join('')
+    : '<p class="radar-ayuda">Nada con stock que coincida.</p>';
+}
+function radarToggle(id){
+  const ids=new Set(radarIds()); id=String(id);
+  if(ids.has(id)) ids.delete(id);
+  else { if(ids.size>=RADAR_MAX){ showToast('Máximo '+RADAR_MAX+' productos','Quita alguno antes de añadir otro'); return; } ids.add(id); }
+  RADAR_IDS=ids; RADAR_PEND=true;
+  try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids:[...ids], pend:true, ts:Date.now()})); }catch(e){}
+  const es=$('#radar-estado'); if(es) es.textContent='Sin guardar — pulsa «Guardar y buscar precios».';
+  radarPintarElegir(); renderRadar();
+}
+async function radarGuardar(){
+  if(RADAR_GUARDANDO) return;
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  const es=$('#radar-estado'), btn=$('#radar-guardar');
+  if(!(user&&repo&&token) || typeof subirArchivoAGitHub!=='function'){ if(es) es.textContent='⚠️ Falta el token de GitHub (⚙️ Configuración). La lista se queda en este teléfono.'; return; }
+  RADAR_GUARDANDO=true; if(btn) btn.disabled=true;
+  const ids=[...radarIds()];
+  try{
+    if(es) es.textContent='Guardando…';
+    await subirArchivoAGitHub(user, repo, token, RADAR_ARCHIVO, { actualizado:new Date().toISOString(), ids });
+    RADAR_PEND=false;
+    try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids, pend:false, ts:Date.now()})); }catch(e){}
+  }catch(e){
+    if(es) es.textContent='⚠️ No se pudo guardar: '+((e&&e.message)||'sin conexión')+'. Se queda en este teléfono.';
+    RADAR_GUARDANDO=false; if(btn) btn.disabled=false; return;
+  }
+  const api=`https://api.github.com/repos/${user}/${repo}/actions/workflows/${RADAR_WORKFLOW}`;
+  const cab={ 'Authorization':'token '+token, 'Accept':'application/vnd.github+json' };
+  try{
+    const desde=Date.now()-15000;
+    const r=await fetch(api+'/dispatches',{ method:'POST', headers:Object.assign({'Content-Type':'application/json'},cab), body:JSON.stringify({ref:'main'}) });
+    if(r.status!==204){ if(es) es.textContent='✅ Guardado. Se buscarán en la pasada de mañana (no pude lanzarla ahora: '+r.status+').'; return; }
+    if(es) es.textContent='✅ Guardado. Buscando precios ahora… tarda unos minutos, puedes seguir usando el panel.';
+    // Se espera a la corrida pedida y luego se lee radar.json por la API (Pages va un minuto detrás).
+    let corrida=null;
+    for(let i=0;i<40 && !(corrida&&corrida.status==='completed');i++){
+      await new Promise(res=>setTimeout(res,10000));
+      try{ const q=await fetch(api+'/runs?event=workflow_dispatch&per_page=1&_='+Date.now(),{headers:cab}); const j=q.ok?await q.json():null; const run=j&&j.workflow_runs&&j.workflow_runs[0]; if(run && Date.parse(run.created_at)>=desde) corrida=run; }catch(e){}
+    }
+    if(!(corrida&&corrida.status==='completed')){ if(es) es.textContent='✅ Guardado. La búsqueda sigue en marcha; vuelve a abrir el Radar en un rato.'; return; }
+    try{
+      const q=await fetch(`https://api.github.com/repos/${user}/${repo}/contents/radar.json?ref=main&_=${Date.now()}`,{headers:Object.assign({},cab,{Accept:'application/vnd.github.raw'})});
+      if(q.ok){ RADAR=await q.json(); }
+    }catch(e){}
+    renderRadar();
+    if(es) es.textContent = corrida.conclusion==='success' ? '✅ Precios actualizados.' : '⚠️ La búsqueda terminó con error; enseño lo último que hay.';
+  }finally{ RADAR_GUARDANDO=false; if(btn) btn.disabled=false; }
+}
+// Lo que se enseña: lo elegido que tiene stock. Con datos en radar.json, sus
+// precios; sin ellos aún, una línea que dice que falta buscarlo.
 function radarVigilados(){
-  if(!RADAR || !RADAR.productos) return [];
-  return RADAR.productos.filter(r=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); return !p || (Number(p.stock)||0)>0; });
+  const ids=radarIds();
+  const datos={}; ((RADAR&&RADAR.productos)||[]).forEach(r=>{ datos[String(r.id)]=r; });
+  return PRODUCTOS.filter(p=>ids.has(String(p.id)) && radarConStock(p)).map(p=>datos[String(p.id)]||{id:p.id, nombre:p.nombre, tuPrecio:Number(p.precioActual||p.precio)||null, pendiente:true});
 }
 function renderRadar(){
-  if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
+  radarPintarElegir();
+  const lista=$('#radar-lista'), resumen=$('#radar-resumen'); if(!lista) return;
+  $('#radar-sub').textContent = RADAR&&(RADAR.fecha||RADAR.actualizado) ? 'Actualizado: '+(RADAR.fecha||RADAR.actualizado) : 'Precios reales de la competencia';
   const vigilados = radarVigilados();
-  if(!vigilados.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Todos los productos vigilados están agotados ahora mismo. Vuelven al radar cuando repongas stock.</div></div>`; $('#radar-resumen').textContent=''; $('#radar-sub').textContent='Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—'); return; }
-  $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
-  // Siempre recalcular el conteo desde los vigilados reales (con stock). El
-  // RADAR.resumen viene horneado en radar.json con el total sin filtrar (ej: 5)
-  // y desincronizaba con lo que se muestra abajo (ej: 3).
-  const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').';
-  $('#radar-resumen').innerHTML = esc(res);
+  if(!vigilados.length){
+    lista.innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>${radarIds().size?'Lo que elegiste está agotado ahora mismo. Elige productos con stock arriba.':'Elige arriba los productos que quieres vigilar.'}</div></div>`;
+    if(resumen) resumen.textContent=''; return;
+  }
+  const conDatos=vigilados.filter(r=>!r.pendiente).length;
+  const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' (fuentes: '+(((RADAR&&RADAR.fuentes)||[]).join(', ')||'Revolico')+').'+(conDatos<vigilados.length?' '+(vigilados.length-conDatos)+' aún sin buscar.':'');
+  if(resumen) resumen.innerHTML = esc(res);
   const okUrl = u => /^https?:\/\//i.test(u||'');
-  $('#radar-lista').innerHTML = vigilados.map(r=>{
+  lista.innerHTML = vigilados.map(r=>{
+    if(r.pendiente) return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;color:var(--muted)">⏳ Aún sin buscar. ${RADAR_PEND?'Pulsa «Guardar y buscar precios».':'Sale en la próxima búsqueda.'}</div></div>`;
     const med=r.mercado&&r.mercado.mediana, min=r.mercado&&r.mercado.min, n=r.mercado&&r.mercado.n;
     const tuyo=r.tuPrecio;
     let comp='';
-    if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
+    if(!n) comp='<span style="color:var(--muted)">No encontré anuncios de esto en la última semana.</span>';
+    else if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
     const muestras=(r.muestras||[]).slice().sort((a,b)=>(a.precio||0)-(b.precio||0));
     const det = muestras.length?`<details style="margin-top:10px"><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios reales (verificar)</summary><div style="margin-top:8px">${muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver anuncio →</a>`:''; return `<div style="padding:7px 10px;background:rgba(0,0,0,0.25);border-radius:7px;margin-bottom:5px;font-size:12px"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>`; }).join('')}</div></details>`:'';
-    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div><div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> ${n?`(${n} anuncios)`:''}</div><div>${comp}</div></div>${det}</div>`;
+    const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncios)</div>` : '';
+    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div>${merc}<div>${comp}</div></div>${det}</div>`;
   }).join('');
 }
+window.radarPintarElegir=radarPintarElegir; window.radarToggle=radarToggle; window.radarGuardar=radarGuardar;
 
 
 /* ============ COMPARAR CON LA TIENDA PRINCIPAL ============
@@ -7112,7 +7206,9 @@ function renderVentas(){
   const _g = gananciasDe(VENTAS);
   const ganUSD=_g.usd, ganMN=_g.mn, comisPorProd=_g.porProducto, cont=_g.unidades;
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
-  $('#ventas-kpis').innerHTML=[['usd','Hoy',dosMonedas(tHoy),nHoy+' ventas'],['success','Total vendido',dosMonedas(total),VENTAS.length+' ventas'],['gold','Ganancia USD',money(ganUSD),''],['gold','Ganancia MN',moneyMN(ganMN),''],['info','Ticket promedio',dosMonedas(VENTAS.length?{usd:total.usd/VENTAS.length, mn:total.mn/VENTAS.length}:{usd:0,mn:0}),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  // Las cifras (hoy, total, ganancia, ticket) se quitaron: repetían Inicio. Aquí queda el reporte del mes.
+  if(typeof renderReporteMensual==='function') renderReporteMensual();
+  try{ const rn=$('#ventas-res-n'); if(rn){ const n=(window.TMReservas&&TMReservas.lista?TMReservas.lista():[]).filter(r=>r&&r.estado==='reservada').length; rn.textContent=n?' ('+n+')':''; } }catch(e){}
   // top productos vendidos
   const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:18px">${i===0?'🏆':'📦'}</div><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--o);font-weight:800">${q} uds</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle aún.</div>`;
@@ -7133,7 +7229,13 @@ function renderVentas(){
   const totPer = sumaMonedas(filtradas, ventaTotales);
   const totEl=$('#ventas-periodo-tot'); if(totEl) totEl.innerHTML = filtradas.length? `<b style="color:var(--o)">${filtradas.length}</b> venta(s) · <b style="color:var(--green)">${dosMonedas(totPer)}</b>${per!=='all'||q?' (filtro activo)':''}` : '';
   const ult=filtradas.slice(0,200);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${dosMonedas(ventaTotales(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
+  /* Una ficha por venta (antes, una tabla de cinco columnas que en el móvil
+     se salía unos 1000 px por la derecha, con el 🗑 fuera de la pantalla). */
+  $('#ventas-lista').innerHTML = ult.length?`<div class="vh-list">${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—');
+      const tj=(typeof window.tmTarjetaDeVenta==='function')?window.tmTarjetaDeVenta(v):'';
+      return `<div class="vh-item"><div class="vh-top"><b>${esc(v.cliente||v.nombre||'Sin nombre')}</b><span>${d?d.toLocaleDateString('es-CU'):'—'}</span></div>
+        <div class="vh-prod">${items||'—'}</div>
+        <div class="vh-bot"><span class="vh-tot">${dosMonedas(ventaTotales(v))}</span>${tj}<button class="btn btn-ghost vh-del" title="Anular venta y devolver stock" aria-label="Anular venta" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></div></div>`;}).join('')}</div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
 }
 // Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
 function ventaAnular(id){
@@ -7213,9 +7315,8 @@ function renderReporteMensual(){
 function reporteCopiar(){ const t=window.__repMesTexto||''; if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Reporte copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } }
 function renderAnalytics(){
   renderReporteMensual();
-  const totalVal=valorInvPorMoneda(PRODUCTOS);
   const total=sumaMonedas(VENTAS, ventaTotales);
-  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',valorInvTexto(totalVal)],['success','Vendido',dosMonedas(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#an-kpis').innerHTML=[['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   cargarVisitasWeb();
   cargarFuentes();
   cargarInteresProductos();
@@ -7708,8 +7809,10 @@ async function anSubsBorrarTodos(){ await tmBorrarTodosSuscriptores(); const d=a
 async function anSubsBorrarUno(fbKey,fp,tok){ await tmBorrarSuscriptor(fbKey,fp,tok); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
 
 /* ============ CLIENTES ============ */
-let CLI_VIEW='clientes';
+let CLI_VIEW='clientes', CLI_Q='', CLI_FILTRO='todos';
 function cliSwitch(v){ CLI_VIEW=v; renderClientes(); }
+function cliFiltro(k){ CLI_FILTRO=k; renderClientes(); }
+window.cliFiltro=cliFiltro;
 function renderClientes(){
   // Un cliente por fila, con el seguimiento dentro. Se probó como pestaña
   // aparte y era el mismo dato en dos sitios: aquí el nombre y el teléfono,
@@ -7778,10 +7881,41 @@ function renderClientes(){
         <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="segSaltar('${id}')">Saltar</button>
       </div>`;
     };
-    box.innerHTML = list.length
-      ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
-         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span>${(c.tel&&typeof window.tmTarjetaChip==='function')?window.tmTarjetaChip(c.tel, c.nombre):''}</td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
-      : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
+    /* Una ficha por cliente, no una tabla: en el móvil la tabla de cinco
+       columnas escondía justo la de los botones (seguimiento) fuera de la
+       pantalla. Arriba se busca por nombre o WhatsApp y se filtra; al teclear
+       solo se repinta la lista, para no perder el foco del buscador. */
+    if(!list.length){
+      box.innerHTML = `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
+      return;
+    }
+    const conTj=c=>!!(c.tel && window.tmTarjetas && window.tmTarjetas.porTel(c.tel));
+    const nTj=list.filter(conTj).length;
+    const ficha=c=>{
+      const ini=esc(((c.nombre||'?').trim()[0]||'?').toUpperCase());
+      return `<div class="cli-card${c.seg?' cli-toca':''}">
+        <div class="cli-top"><div class="cli-av">${ini}</div>
+          <div class="cli-id"><b>${esc(c.nombre||'(sin nombre)')}</b><span>${esc(c.tel||'sin WhatsApp')}</span></div>
+          <div class="cli-num"><b>${c.compras}</b><span>compra${c.compras===1?'':'s'}</span></div></div>
+        <div class="cli-meta">Total ${dosMonedas(c.total)} · última ${fecha(c.ultima)}</div>
+        <div class="cli-seg">${accion(c)}</div>
+        ${(c.tel&&typeof window.tmTarjetaBloque==='function')?window.tmTarjetaBloque(c.tel):''}
+      </div>`;
+    };
+    const pintar=()=>{
+      const q=norm(CLI_Q||''), qd=(CLI_Q||'').replace(/\D/g,'');
+      const vis=list.filter(c=>(CLI_FILTRO==='contactar'?!!c.seg:CLI_FILTRO==='tarjeta'?conTj(c):true)
+        && (!q || norm(c.nombre||'').includes(q) || (qd.length>=3 && String(c.tel||'').includes(qd))));
+      const cards=$('#cli-cards'); if(!cards) return;
+      cards.innerHTML = vis.length ? vis.map(ficha).join('') : `<div class="empty" style="grid-column:1/-1">Nadie coincide con «${esc(CLI_Q||'')}».</div>`;
+    };
+    const chip=(k,t)=>`<button type="button" class="vo-chip" aria-pressed="${CLI_FILTRO===k}" onclick="cliFiltro('${k}')">${t}</button>`;
+    box.innerHTML = `${porContactar?`<div class="cli-aviso">📞 <b>${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
+      <div class="cli-barra"><input class="form-input" id="cli-buscar" type="search" placeholder="Buscar por nombre o WhatsApp" value="${esc(CLI_Q||'')}" autocomplete="off">
+        <div class="cli-chips">${chip('todos','Todos ('+list.length+')')}${chip('contactar','📞 Por contactar ('+porContactar+')')}${chip('tarjeta','🎁 Con tarjeta ('+nTj+')')}</div></div>
+      <div class="cli-grid" id="cli-cards"></div>`;
+    const inp=$('#cli-buscar'); if(inp) inp.oninput=()=>{ CLI_Q=inp.value; pintar(); };
+    pintar();
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
   } else if(CLI_VIEW==='avisos'){
@@ -9762,7 +9896,6 @@ window.tmPonerPiel=tmPonerPiel; window.tmPintarPieles=tmPintarPieles;
 // dentro de un IIFE: sin estos tres, los botones son decorativos.
 window.agendaAbrir=agendaAbrir; window.agendaHecho=agendaHecho; window.agendaVerTodas=agendaVerTodas;
 window.go=go; window.irASuscriptores=irASuscriptores; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
-window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
 window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
 /* La línea que dice cuándo vence el token, y el botón de «ya lo cambié».
    Tres estados, no dos: no lo sé / faltan N / ya venció. El primero es el que
@@ -9881,20 +10014,15 @@ function ensureTab(){
  const side=document.querySelector('.sidebar');
  if(side && !side.querySelector('[data-view="herramientas"]')){
    const b=document.createElement('button');
-   b.type='button'; b.className='side-btn'; b.dataset.view='herramientas'; b.title='Herramientas'; b.textContent='🛠️';
+   b.type='button'; b.className='side-btn'; b.dataset.view='herramientas'; b.title='Utilidades'; b.textContent='🧰'; b.hidden=true;
    b.addEventListener('click',()=>{ if(typeof window.go==='function') window.go('herramientas',b); });
    side.appendChild(b);
  }
  const content=document.querySelector('main.content'); if(!content) return;
  const sec=document.createElement('div'); sec.id='view-herramientas'; sec.className='view'; sec.innerHTML=html(); content.appendChild(sec); bind(sec);
 }
-function html(){return `<div class="ph"><div><h2>🛠️ Herramientas</h2><p>Funciones avanzadas — todo queda en este dispositivo (localStorage); lo que toca productos usa tu guardado/sincronización real.</p></div></div>
-${tier('TIER 1 — EMPIEZA ESTA SEMANA','ROI alto','')}
-<div class="tm-tools-grid">${card('ai','🤖','Generador de descripciones IA','Genera descripciones, títulos SEO y textos WhatsApp/Facebook.')}${card('compress','🖼️','Compresión on-upload','Comprime imágenes en navegador antes de subir.')}${card('duplicate','📑','Duplicar producto','Crea variantes sin re-tipiar todo el formulario.')}${card('history','↶','Historial de cambios','Snapshots, diff básico y rollback de productos.')}${card('csv','📄','Importar / Exportar CSV','Backup masivo, edición en Excel y migración.')}${card('dups','🔍','Detector de duplicados','Busca coincidencias por nombre, precio y categoría.')}</div>
-${tier('TIER 2 — ESTE MES','Más valor','gold')}
-<div class="tm-tools-grid">${card('schedule','📅','Programar publicación','Cola local con fecha/hora y recordatorios.')}${card('coupons','🏷️','Cupones / descuentos','Códigos con %, fijo, fecha de expiración.')}${card('locations','📍','Multi-ubicación','Stock por depósito: Habana, Santiago, etc.')}${card('ab','〽️','A/B testing de precios','Variantes A/B y registro manual de resultados.')}${card('totp','🔐','2FA / TOTP','Segundo factor opcional con códigos temporales.')}${card('roles','👥','Roles de usuario','Admin/editor/viewer y permisos granulares.')}</div>
-${tier('TIER 3 — DIFERENCIADORES','Escala','purple')}
-<div class="tm-tools-grid">${card('competitors','🌐','Comparador competencia','Registra precios de Revolico/ML para comparar.')}${card('margin','💵','Calculadora de margen','Coste + envío + comisión = ganancia real.')}${card('posts','📣','Posts para redes','Caption FB/IG, story 9:16 y grupos.')}${card('heatmap','◎','Heatmap de clics','Mapa por productos/categorías usando analytics disponibles.')}${card('crm','🧑‍💼','CRM de clientes (manual)','Libreta de clientes que escribís vos — no lee tus ventas reales.')}${card('shipping','🚚','Tracking envíos (manual)','Notas de estado que escribís vos — no lee tus pedidos reales.')}</div>
+function html(){return `<div class="ph"><div><h2>🧰 Utilidades del catálogo</h2><p>Copias de seguridad, CSV, duplicar y detectar repetidos. Lo que toca productos usa tu guardado y «Actualizar tienda» de siempre.</p></div></div>
+<div class="tm-tools-grid">${card('csv','📄','Importar / Exportar CSV','Backup del catálogo, edición en Excel y migración.')}${card('duplicate','📑','Duplicar producto','Crea una variante sin volver a escribir todo.')}${card('dups','🔍','Detector de duplicados','Productos repetidos por nombre, precio y categoría.')}${card('history','↶','Historial de cambios','Copias automáticas del catálogo y «deshacer».')}</div>
 <div id="tmToolPanel" class="tm-panel"></div>`}
 function tier(t,b,cls){return `<div class="tm-tier"><h4>${t}</h4><span class="tm-tier-badge ${cls||''}">${b}</span></div>`}
 function card(id,ico,t,p){return `<div class="tm-tool-card" data-tool="${id}"><div class="ico" style="background:${color(id)}">${ico}</div><h5>${t}</h5><p>${p}</p></div>`}
@@ -9902,26 +10030,11 @@ function color(id){const m={ai:'rgba(155,89,182,.18)',compress:'rgba(var(--gold-
 function bind(sec){sec.addEventListener('click',e=>{const c=e.target.closest('[data-tool]');if(c) openTool(c.dataset.tool); const a=e.target.closest('[data-act]'); if(a) actions(a.dataset.act,a);});}
 function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button type="button" class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
 function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — ${moneyP(p, p.precioActual||p.price||0)}</option>`).join('')}
-function openTool(id){({ai,compress,duplicate,history,csv,dups,schedule,coupons,locations,ab,totp,roles,competitors,margin,posts,heatmap,crm,shipping}[id]||ai)()}
-function ai(){panel('🤖 Generador de descripciones IA','Funciona localmente con plantillas. Si luego conectas API, se puede cambiar por Claude/GPT.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAiProd">Producto</label><select id="tmAiProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAiTone">Tono</label><select id="tmAiTone"><option>Premium vendedor</option><option>Corto WhatsApp</option><option>Técnico</option><option>Facebook grupos</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="aiGen">Generar textos</button><button type="button" class="tm-btn" data-act="copyOut">Copiar resultado</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y genera.</div>`)}
-function compress(){panel('🖼️ Compresión on-upload','Activa compresión visual y genera versión WebP/base64 antes de subir.',`<div class="tm-field"><label for="tmCompressFile">Probar compresión</label><input type="file" id="tmCompressFile" accept="image/*"></div><div class="tm-form-grid"><div class="tm-field"><label for="tmCompressW">Ancho máximo</label><input id="tmCompressW" type="number" value="1200"></div><div class="tm-field"><label for="tmCompressQ">Calidad WebP</label><input id="tmCompressQ" type="number" step="0.05" value="0.82"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compressRun">Comprimir imagen</button></div><div id="tmToolOut2" class="tm-code" style="margin-top:12px">La compresión real puede conectarse al input productImage.</div>`)}
+function openTool(id){({duplicate,history,csv,dups}[id]||csv)()}
 function duplicate(){panel('📑 Duplicar producto','Crea una copia con nuevo ID y “Copia” en el nombre.',`<div class="tm-field"><label for="tmDupProd">Producto a duplicar</label><select id="tmDupProd">${productOptions()}</select></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="dupNow">Duplicar ahora</button></div><div class="tm-note">Luego puedes editarlo desde Productos.</div>`)}
 function history(){const snaps=safeJson(SNAP,[]); panel('↶ Historial de cambios','Se crean snapshots automáticos cuando se guardan productos.',`<div class="tm-actions"><button type="button" class="tm-btn primary" data-act="snapshot">Crear snapshot ahora</button></div><div class="tm-list">${snaps.slice(0,20).map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${new Date(s.ts).toLocaleString()}</b><small>${s.count} productos · ${esc(s.note||'snapshot')}</small></div><button type="button" class="tm-btn tm-mini" data-act="rollback" data-i="${i}">Rollback</button></div>`).join('')||'<div class="tm-note">Sin snapshots todavía.</div>'}</div>`)}
 function csv(){panel('📄 Importar / Exportar CSV','Exporta productos reales o importa CSV con columnas nombre,descripcion,precioActual,stock,categoria.',`<div class="tm-csv-drop"><input type="file" id="tmCsvFile" accept=".csv,text/csv"><br>Selecciona CSV para importar</div><div class="tm-actions"><button type="button" class="tm-btn gold" data-act="exportCsv">Exportar productos.csv</button><button type="button" class="tm-btn primary" data-act="importCsv">Importar CSV</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`)}
 function dups(){const ps=prods();let rows=[];for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){let a=ps[i],b=ps[j],n1=(a.nombre||'').toLowerCase(),n2=(b.nombre||'').toLowerCase();if(n1&&n2&&(n1===n2||n1.includes(n2)||n2.includes(n1))){rows.push([a,b])}} panel('🔍 Detector de duplicados','Coincidencias por nombre similar.',`<div class="tm-list">${rows.slice(0,30).map(([a,b])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(a.nombre)}</b><small>Posible duplicado: ${esc(b.nombre)}</small></div></div>`).join('')||'<div class="tm-note tm-ok">No se detectaron duplicados obvios.</div>'}</div>`)}
-function schedule(){const d=data();panel('📅 Programar publicación','Cola local de publicaciones. No publica sola en Facebook/Revolico; prepara recordatorio y texto.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmSchProd">Producto</label><select id="tmSchProd">${productOptions()}</select></div><div class="tm-field"><label for="tmSchDate">Fecha/hora</label><input id="tmSchDate" type="datetime-local"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="schAdd">Programar</button></div><div class="tm-list">${d.scheduled.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>${new Date(x.when).toLocaleString()}</small></div><button type="button" class="tm-btn tm-mini" data-act="schDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin publicaciones programadas.</div>'}</div>`)}
-function coupons(){const d=data();panel('🏷️ Cupones / descuentos','Crea códigos para campañas. Luego se pueden integrar al carrito público.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCupCode">Código</label><input id="tmCupCode" placeholder="FLASH10"></div><div class="tm-field"><label for="tmCupType">Tipo</label><select id="tmCupType"><option value="percent">%</option><option value="fixed">Fijo USD</option></select></div><div class="tm-field"><label for="tmCupVal">Valor</label><input id="tmCupVal" type="number" value="10"></div><div class="tm-field"><label for="tmCupExp">Expira</label><input id="tmCupExp" type="date"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="cupAdd">Agregar cupón</button></div><div class="tm-list">${d.coupons.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.code)} — ${c.value}${c.type==='percent'?'%':' USD'}</b><small>Expira: ${esc(c.exp||'sin fecha')}</small></div><button type="button" class="tm-btn tm-mini" data-act="cupDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin cupones.</div>'}</div>`)}
-function locations(){const d=data();panel('📍 Multi-ubicación','Stock por depósito sin cambiar el stock total hasta que decidas sincronizar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmLocProd">Producto</label><select id="tmLocProd">${productOptions()}</select></div><div class="tm-field"><label for="tmLocName">Ubicación</label><input id="tmLocName" placeholder="Habana"></div><div class="tm-field"><label for="tmLocStock">Stock</label><input id="tmLocStock" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="locSet">Guardar stock ubicación</button></div><div class="tm-list">${Object.entries(d.stock||{}).map(([pid,locs])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc((prods().find(p=>String(p.id)===String(pid))||{}).nombre||pid)}</b><small>${Object.entries(locs).map(([l,n])=>esc(l)+': '+n).join(' · ')}</small></div></div>`).join('')||'<div class="tm-note">Sin stock por ubicación.</div>'}</div>`)}
-function ab(){const d=data();panel('〽️ A/B testing de precios','Define dos precios y registra manualmente vistas/ventas.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAbProd">Producto</label><select id="tmAbProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAbA">Precio A</label><input id="tmAbA" type="number"></div><div class="tm-field"><label for="tmAbB">Precio B</label><input id="tmAbB" type="number"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="abAdd">Crear test</button></div><div class="tm-list">${d.ab.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>A $${x.a} vs B $${x.b} · ganador sugerido: ${Number(x.b)>Number(x.a)?'medir conversión':'A'}</small></div><button type="button" class="tm-btn tm-mini" data-act="abDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin tests.</div>'}</div>`)}
-function totp(){const d=data();panel('🔐 2FA / TOTP','Segundo factor opcional. El secreto se guarda local; para máxima seguridad debe validarse también en backend.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label for="tmTotpSecret">Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="totpEnable">Activar/guardar 2FA</button><button type="button" class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy. Integración de bloqueo real disponible en un siguiente paso.</div>`)}
-function roles(){const d=data();panel('👥 Roles de usuario','Define roles. La aplicación de permisos se puede conectar por sección.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmRoleName">Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label for="tmRolePerms">Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button type="button" class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
-function competitors(){const d=data();panel('🌐 Comparador competencia','Registra manualmente URLs/precios de Revolico/Marketplace para comparar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCompProd">Producto</label><select id="tmCompProd">${productOptions()}</select></div><div class="tm-field"><label for="tmCompPrice">Precio competencia</label><input id="tmCompPrice" type="number"></div><div class="tm-field" style="grid-column:1/-1"><label for="tmCompUrl">URL</label><input id="tmCompUrl" placeholder="https://..."></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compAdd">Agregar comparación</button></div><div class="tm-list">${d.competitors.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)} — competencia $${x.price}</b><small>${esc(x.url)}</small></div><button type="button" class="tm-btn tm-mini" data-act="compDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin comparaciones.</div>'}</div>`)}
-function margin(){panel('💵 Calculadora de margen','Calcula ganancia real por unidad.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmMPrice">Precio venta</label><input id="tmMPrice" type="number" value="100"></div><div class="tm-field"><label for="tmMCost">Coste</label><input id="tmMCost" type="number" value="70"></div><div class="tm-field"><label for="tmMShip">Envío</label><input id="tmMShip" type="number" value="5"></div><div class="tm-field"><label for="tmMCom">Comisión</label><input id="tmMCom" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="marginCalc">Calcular</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
-function posts(){panel('📣 Posts para redes','Genera texto listo para Facebook, Instagram, WhatsApp y grupos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmPostProd">Producto</label><select id="tmPostProd">${productOptions()}</select></div><div class="tm-field"><label for="tmPostType">Formato</label><select id="tmPostType"><option>Facebook grupo</option><option>Instagram caption</option><option>Story 9:16</option><option>WhatsApp</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="postGen">Generar post</button><button type="button" class="tm-btn" data-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
-function heatmap(){const ps=prods().slice(0,20);panel('◎ Heatmap de clics','Vista estimada usando productos y analytics disponibles.',`<div class="tm-list">${ps.map((p,i)=>{const v=Math.round((20-i)*7+Math.random()*20);return `<div class="tm-row"><div class="tm-row-main"><b>${esc(p.nombre)}</b><small>${esc(p.categoria)} · intensidad ${v}%</small><div style="height:8px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:6px"><div style="height:8px;width:${Math.min(100,v)}%;background:linear-gradient(90deg,#C9A96E,#FF6B35);border-radius:99px"></div></div></div></div>`}).join('')}</div>`)}
-function crm(){const d=data();panel('🧑‍💼 CRM de clientes (manual)','Los agregás vos a mano — no se llena solo con tus ventas ni pedidos reales.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCrmName">Nombre</label><input id="tmCrmName"></div><div class="tm-field"><label for="tmCrmPhone">WhatsApp</label><input id="tmCrmPhone"></div><div class="tm-field"><label for="tmCrmLtv">Total comprado USD</label><input id="tmCrmLtv" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="crmAdd">Agregar cliente</button></div><div class="tm-list">${d.clients.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.name)} · ${esc(c.phone)}</b><small>LTV $${c.ltv}</small></div><button type="button" class="tm-btn tm-mini" data-act="crmDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin clientes.</div>'}</div>`)}
-function shipping(){const d=data();panel('🚚 Tracking envíos (manual)','Lo actualizás vos a mano — no lee el estado real de tus pedidos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmShipName">Pedido/cliente</label><input id="tmShipName"></div><div class="tm-field"><label for="tmShipStatus">Estado</label><select id="tmShipStatus"><option>Preparando</option><option>En camino</option><option>Entregado</option><option>Incidencia</option></select></div><div class="tm-field" style="grid-column:1/-1"><label for="tmShipNote">Nota</label><input id="tmShipNote"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="shipAdd">Agregar tracking</button></div><div class="tm-list">${d.shipments.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(s.name)} — ${esc(s.status)}</b><small>${esc(s.note||'')}</small></div><button type="button" class="tm-btn tm-mini" data-act="shipDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin envíos.</div>'}</div>`)}
-function randomSecret(){return Array.from(crypto.getRandomValues(new Uint8Array(10))).map(x=>'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'[x%32]).join('')}
 /* Guardaba 30 copias ENTERAS del catálogo, y patchSnapshots() dispara una
    antes de cada guardado. Con 174 KB de catálogo son 5,1 MB: la cuota
    completa del navegador (~5 MB) se agotaba sola en unos 29 guardados, y a
@@ -9940,31 +10053,14 @@ function snapshot(note='manual'){
 function refreshAdmin2(){ if(typeof window.cargarDatos==='function') window.cargarDatos(true); }
 function actions(act,el){let d=data(), ps=prods();
  if(act==='closePanel'){$('#tmToolPanel').className='tm-panel';return}
- if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');toast('Copiado','success');return}
- if(act==='aiGen'){let p=ps.find(x=>String(x.id)===$('#tmAiProd').value)||ps[0];let tono=$('#tmAiTone').value;$('#tmToolOut').textContent=`${p.nombre}\n\n${p.descripcion||'Producto disponible en TiendaMax.'}\n\n💵 Precio: ${moneyP(p)}\n📦 Stock: ${p.stock||0}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto ${tono}:\n🔥 ${p.nombre} disponible ahora en TiendaMax. Calidad, entrega coordinada y atención por WhatsApp. Escríbenos para reservar.`;return}
- if(act==='compressRun'){let f=$('#tmCompressFile').files[0]; if(!f)return toast('Selecciona imagen','error'); compressFile(f,Number($('#tmCompressW').value)||1200,Number($('#tmCompressQ').value)||.82);return}
  if(act==='dupNow'){let p=ps.find(x=>String(x.id)===$('#tmDupProd').value); if(!p)return; snapshot('antes de duplicar'); let np={...p,id:Date.now(),nombre:(p.nombre||'Producto')+' — Copia',fechaAgregado:new Date().toISOString()}; ps.push(np); guardarProds(ps); marcarMod(np.id); toast('Producto duplicado'); refreshAdmin2(); duplicate(); return}
  if(act==='snapshot'){snapshot();toast('Snapshot creado');history();return}
  if(act==='rollback'){let s=safeJson(SNAP,[])[Number(el.dataset.i)]; if(!s)return; guardarProds(s.productos); s.productos.forEach(p=>marcarMod(p.id)); toast('Rollback aplicado','warning'); refreshAdmin2(); history(); return}
  if(act==='exportCsv'){const rows=[['id','nombre','descripcion','precioActual','precioOriginal','stock','categoria','subcategoria','comision','imagen'],...ps.map(p=>[p.id,p.nombre,p.descripcion,p.precioActual,p.precioOriginal,p.stock,p.categoria,p.subcategoria,p.comision,p.imagen])]; dl('productos_tiendamax.csv',rows.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');return}
  if(act==='importCsv'){let f=$('#tmCsvFile').files[0]; if(!f)return toast('Selecciona CSV','error'); f.text().then(t=>{let rows=parseCSV(t),h=rows.shift().map(x=>x.trim());snapshot('antes de importar CSV');const ids=[];rows.forEach(r=>{let o={id:Date.now()+Math.floor(Math.random()*9999)};h.forEach((k,i)=>o[k]=r[i]);o.precioActual=Number(o.precioActual||0);o.stock=Number(o.stock||0);ps.push(o);ids.push(o.id)});guardarProds(ps);ids.forEach(marcarMod);toast('CSV importado');refreshAdmin2();});return}
- if(act==='schAdd'){let p=ps.find(x=>String(x.id)===$('#tmSchProd').value);d.scheduled.unshift({id:Date.now(),pid:p.id,name:p.nombre,when:$('#tmSchDate').value});setData(d);schedule();return}
- if(act==='cupAdd'){d.coupons.unshift({code:$('#tmCupCode').value,type:$('#tmCupType').value,value:$('#tmCupVal').value,exp:$('#tmCupExp').value});setData(d);coupons();return}
- if(act==='locSet'){let pid=$('#tmLocProd').value;d.stock[pid]=d.stock[pid]||{};d.stock[pid][$('#tmLocName').value||'General']=Number($('#tmLocStock').value)||0;setData(d);locations();return}
- if(act==='abAdd'){let p=ps.find(x=>String(x.id)===$('#tmAbProd').value);d.ab.unshift({pid:p.id,name:p.nombre,a:$('#tmAbA').value,b:$('#tmAbB').value});setData(d);ab();return}
- if(act==='totpEnable'){d.totp={enabled:true,secret:$('#tmTotpSecret').value};setData(d);totp();return}
- if(act==='totpDisable'){d.totp={enabled:false};setData(d);totp();return}
- if(act==='roleAdd'){d.roles.push({name:$('#tmRoleName').value,perms:$('#tmRolePerms').value});setData(d);roles();return}
- if(act==='compAdd'){let p=ps.find(x=>String(x.id)===$('#tmCompProd').value);d.competitors.unshift({pid:p.id,name:p.nombre,price:$('#tmCompPrice').value,url:$('#tmCompUrl').value});setData(d);competitors();return}
- if(act==='marginCalc'){let price=+$('#tmMPrice').value||0,cost=+$('#tmMCost').value||0,ship=+$('#tmMShip').value||0,com=+$('#tmMCom').value||0;let profit=price-cost-ship-com;$('#tmToolOut').textContent=`Ganancia: $${profit.toFixed(2)}\nMargen: ${price?((profit/price)*100).toFixed(1):0}%\nCosto total: $${(cost+ship+com).toFixed(2)}`;return}
- if(act==='postGen'){let p=ps.find(x=>String(x.id)===$('#tmPostProd').value);$('#tmToolOut').textContent=`🔥 ${p.nombre}\n\n${p.descripcion||'Disponible en TiendaMax.'}\n\n💵 ${moneyP(p)}\n📦 Stock: ${p.stock||0}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;return}
- if(act==='crmAdd'){d.clients.unshift({name:$('#tmCrmName').value,phone:$('#tmCrmPhone').value,ltv:$('#tmCrmLtv').value});setData(d);crm();return}
- if(act==='shipAdd'){d.shipments.unshift({name:$('#tmShipName').value,status:$('#tmShipStatus').value,note:$('#tmShipNote').value});setData(d);shipping();return}
- if(/Del$/.test(act)){let arr={schDel:'scheduled',cupDel:'coupons',abDel:'ab',roleDel:'roles',compDel:'competitors',crmDel:'clients',shipDel:'shipments'}[act]; if(arr){d[arr].splice(Number(el.dataset.i),1);setData(d);openTool({scheduled:'schedule',coupons:'coupons',ab:'ab',roles:'roles',competitors:'competitors',clients:'crm',shipments:'shipping'}[arr]);}}
 }
-function compressFile(file,maxW,q){const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>{$('#tmToolOut').textContent=`Original: ${(file.size/1024).toFixed(1)} KB\nComprimida: ${(b.size/1024).toFixed(1)} KB\nAhorro: ${Math.max(0,100-b.size/file.size*100).toFixed(1)}%`;},'image/webp',q)};img.src=URL.createObjectURL(file)}
 function patchSnapshots(){if(window.__tmToolsSnap)return;window.__tmToolsSnap=true;const orig=window.guardarProductos;if(typeof orig==='function'){window.guardarProductos=function(){try{snapshot('auto antes de guardar')}catch(e){} return orig.apply(this,arguments)}}}
-function boot(){ensureTab();patchSnapshots();setInterval(()=>{const due=data().scheduled.filter(x=>x.when&&new Date(x.when)<=new Date()&&!x.notified);if(due.length){let d=data();d.scheduled=d.scheduled.map(x=>due.find(y=>y.id===x.id)?{...x,notified:true}:x);setData(d);toast('📅 Hay publicaciones programadas pendientes','warning')}},60000)}
+function boot(){ensureTab();patchSnapshots();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>

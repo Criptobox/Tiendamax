@@ -478,15 +478,48 @@
     })();
   };
 
-  /* ── Clientes: la tarjeta de cada uno ── */
-  window.tmTarjetaChip = function (telefono) {
-    var t = porTel(telefono), tl = tel(telefono); if (!tl) return '';
-    if (!t) return cfg().on ? '<br><button class="btn btn-ghost" style="padding:2px 8px;font-size:10.5px;margin-top:4px" onclick="tmTarjetaCrearPara(\'' + tl + '\')">🎁 Crear tarjeta</button>' : '';
-    var r = restantes(t), refs = contar(t.extra);
-    return '<br><button class="btn btn-ghost" style="padding:2px 8px;font-size:10.5px;margin-top:4px" onclick="tmTarjetaVer(\'' + t.c + '\')">🎁 ' + bonito(t.c) + ' · ' +
-      (vencida(t) ? 'caducada' : r + ' desc.') + (refs ? ' · 🤝 ' + refs : '') + '</button>';
-  };
+  /* ── Clientes: la tarjeta de cada uno (ficha en Clientes, historial de ventas) ── */
   window.tmTarjetaVer = function (c) { var t = porCodigo(c); if (t) hoja(t, false); };
+  // Compartir de un toque: la imagen y el mensaje a la hoja de compartir del
+  // móvil. Si el navegador no deja (PC, o tardó en dibujar y perdió el toque),
+  // abre la hoja de la tarjeta, que tiene «Enviar por WhatsApp» y «Guardar».
+  window.tmTarjetaCompartir = async function (c) {
+    var t = porCodigo(c); if (!t) return;
+    try {
+      var cv = document.createElement('canvas'); await dibujar(cv, t);
+      var b = await new Promise(function (ok) { cv.toBlob(ok, 'image/png'); });
+      var f = (typeof File === 'function') ? new File([b], 'tarjeta-tiendamax-' + t.c + '.png', { type: 'image/png' }) : null;
+      if (f && navigator.canShare && navigator.canShare({ files: [f] })) {
+        try { await navigator.share({ files: [f], text: textoEnvio(t) }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+    } catch (e) {}
+    hoja(t, false);
+  };
+  // El bloque de la tarjeta dentro de la ficha de cada cliente (Clientes).
+  window.tmTarjetaBloque = function (telefono) {
+    var tl = tel(telefono); if (!tl) return '';
+    var t = porTel(tl);
+    if (!t) {
+      if (!cfg().on) return '';
+      return '<div class="cli-tj cli-tj-nueva"><div class="cli-tj-txt"><b>🎁 Sin tarjeta todavía</b><span>Hasta 1000 MN en sus próximas ' + USOS + ' compras desde $' + MINIMO + '</span></div>' +
+        '<button class="btn btn-ghost" onclick="tmTarjetaCrearPara(\'' + tl + '\')">Crear tarjeta</button></div>';
+    }
+    var r = restantes(t), refs = contar(t.extra), v = vencida(t);
+    var estado = v ? 'Caducó el ' + fechaCorta(t.x) : (r + ' descuento' + (r === 1 ? '' : 's') + ' · hasta el ' + fechaCorta(t.x)) + (refs ? ' · 🤝 ' + refs + ' traído' + (refs === 1 ? '' : 's') : '');
+    return '<div class="cli-tj' + (v ? ' cli-tj-vieja' : '') + '"><div class="cli-tj-txt"><b>🎁 ' + bonito(t.c) + '</b><span>' + escH(estado) + '</span></div>' +
+      '<div class="cli-tj-acc"><button class="btn btn-primary" onclick="tmTarjetaCompartir(\'' + t.c + '\')">📤 Compartir</button>' +
+      '<button class="btn btn-ghost" onclick="tmTarjetaVer(\'' + t.c + '\')">Ver</button></div></div>';
+  };
+  // La tarjeta en el historial de ventas: la venta que la creó y la que la usó.
+  window.tmTarjetaDeVenta = function (venta) {
+    if (!venta) return '';
+    var o = leer(), h = [];
+    Object.keys(o).forEach(function (c) { var t = o[c]; if (t && String(t.v) === String(venta.id)) h.push('<button class="tj-tag" onclick="tmTarjetaVer(\'' + c + '\')">🎁 Tarjeta ' + bonito(c) + ' creada</button>'); });
+    if (venta.tarjeta && o[venta.tarjeta] && String(o[venta.tarjeta].v) !== String(venta.id)) h.push('<button class="tj-tag" onclick="tmTarjetaVer(\'' + venta.tarjeta + '\')">🎁 −' + (Number(venta.descTarjetaMN) || 0) + ' MN · ' + bonito(venta.tarjeta) + '</button>');
+    else if (venta.tarjeta && !o[venta.tarjeta]) h.push('<span class="tj-tag">🎁 −' + (Number(venta.descTarjetaMN) || 0) + ' MN · ' + bonito(venta.tarjeta) + '</span>');
+    return h.join('');
+  };
   window.tmTarjetaCrearPara = function (tl) {
     var vs = (typeof cargarVentas === 'function' ? cargarVentas() : []).filter(function (v) { return tel(v.telefono) === tl; });
     var nombre = (vs.find(function (v) { return v.cliente; }) || {}).cliente || '';
