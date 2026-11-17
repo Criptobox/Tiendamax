@@ -1360,6 +1360,35 @@ try{var _piel=localStorage.getItem('tm_piel');
     .content { padding-top:16px !important; }
   }
 </style>
+<style>
+/* 👥 Clientes en fichas (renderClientes) */
+.cli-aviso{font-size:12px;color:var(--gray);margin:0 0 10px;line-height:1.5}.cli-aviso b{color:var(--text,#fff)}
+.cli-barra{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cli-chips{display:flex;gap:6px;flex-wrap:wrap}
+.cli-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:900px){.cli-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cli-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cli-card.cli-toca{border-color:rgba(var(--o-rgb),.45)}
+.cli-top{display:flex;align-items:center;gap:11px;min-width:0}
+.cli-av{flex:none;width:40px;height:40px;border-radius:50%;background:rgba(var(--o-rgb),.16);color:var(--o);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px}
+.cli-id{flex:1;min-width:0;display:flex;flex-direction:column}
+.cli-id b{color:var(--text,#fff);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cli-id span{color:var(--gray);font-size:12px;font-weight:600}
+.cli-num{flex:none;text-align:center;line-height:1.1}.cli-num b{display:block;color:var(--text,#fff);font-size:18px}.cli-num span{color:var(--gray);font-size:10.5px}
+.cli-meta{color:var(--gray);font-size:12px}
+.cli-seg:empty{display:none}
+.cli-tj{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:linear-gradient(120deg,#16120F,#2A1A12);border:1px solid rgba(255,107,53,.35)}
+.cli-tj-nueva{background:var(--card2);border-style:dashed;border-color:var(--border)}
+.cli-tj-vieja{opacity:.7}
+.cli-tj-txt{flex:1;min-width:150px;display:flex;flex-direction:column}
+.cli-tj-txt b{color:#F5EFE6;font:800 14px ui-monospace,'JetBrains Mono',monospace;letter-spacing:.06em}
+.cli-tj-nueva .cli-tj-txt b{color:var(--text,#fff);font-family:inherit;font-weight:700;font-size:13px;letter-spacing:0}
+.cli-tj-txt span{color:#B9AFA4;font-size:11.5px;margin-top:2px}
+.cli-tj-nueva .cli-tj-txt span{color:var(--gray)}
+.cli-tj-acc{display:flex;gap:6px}
+.cli-tj .btn{padding:6px 12px;font-size:12px;white-space:nowrap}
+.tj-tag{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;border:1px solid rgba(255,107,53,.4);background:rgba(255,107,53,.1);color:#FF8A5B;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap}
+</style>
 </head>
 <body>
 
@@ -2904,7 +2933,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/admin-copilot.js?v=2650e5f3"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
-<script src="js/tarjeta-cliente.js?v=8b465ca4"></script>
+<script src="js/tarjeta-cliente.js?v=71e8c8b5"></script>
 
 <script>
 (function(){
@@ -7133,7 +7162,7 @@ function renderVentas(){
   const totPer = sumaMonedas(filtradas, ventaTotales);
   const totEl=$('#ventas-periodo-tot'); if(totEl) totEl.innerHTML = filtradas.length? `<b style="color:var(--o)">${filtradas.length}</b> venta(s) · <b style="color:var(--green)">${dosMonedas(totPer)}</b>${per!=='all'||q?' (filtro activo)':''}` : '';
   const ult=filtradas.slice(0,200);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${dosMonedas(ventaTotales(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}${(typeof window.tmTarjetaDeVenta==='function')?'<br>'+window.tmTarjetaDeVenta(v):''}</td><td>${items||'—'}</td><td class="nm">${dosMonedas(ventaTotales(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
 }
 // Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
 function ventaAnular(id){
@@ -7708,8 +7737,10 @@ async function anSubsBorrarTodos(){ await tmBorrarTodosSuscriptores(); const d=a
 async function anSubsBorrarUno(fbKey,fp,tok){ await tmBorrarSuscriptor(fbKey,fp,tok); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
 
 /* ============ CLIENTES ============ */
-let CLI_VIEW='clientes';
+let CLI_VIEW='clientes', CLI_Q='', CLI_FILTRO='todos';
 function cliSwitch(v){ CLI_VIEW=v; renderClientes(); }
+function cliFiltro(k){ CLI_FILTRO=k; renderClientes(); }
+window.cliFiltro=cliFiltro;
 function renderClientes(){
   // Un cliente por fila, con el seguimiento dentro. Se probó como pestaña
   // aparte y era el mismo dato en dos sitios: aquí el nombre y el teléfono,
@@ -7778,10 +7809,41 @@ function renderClientes(){
         <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="segSaltar('${id}')">Saltar</button>
       </div>`;
     };
-    box.innerHTML = list.length
-      ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
-         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span>${(c.tel&&typeof window.tmTarjetaChip==='function')?window.tmTarjetaChip(c.tel, c.nombre):''}</td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
-      : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
+    /* Una ficha por cliente, no una tabla: en el móvil la tabla de cinco
+       columnas escondía justo la de los botones (seguimiento) fuera de la
+       pantalla. Arriba se busca por nombre o WhatsApp y se filtra; al teclear
+       solo se repinta la lista, para no perder el foco del buscador. */
+    if(!list.length){
+      box.innerHTML = `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
+      return;
+    }
+    const conTj=c=>!!(c.tel && window.tmTarjetas && window.tmTarjetas.porTel(c.tel));
+    const nTj=list.filter(conTj).length;
+    const ficha=c=>{
+      const ini=esc(((c.nombre||'?').trim()[0]||'?').toUpperCase());
+      return `<div class="cli-card${c.seg?' cli-toca':''}">
+        <div class="cli-top"><div class="cli-av">${ini}</div>
+          <div class="cli-id"><b>${esc(c.nombre||'(sin nombre)')}</b><span>${esc(c.tel||'sin WhatsApp')}</span></div>
+          <div class="cli-num"><b>${c.compras}</b><span>compra${c.compras===1?'':'s'}</span></div></div>
+        <div class="cli-meta">Total ${dosMonedas(c.total)} · última ${fecha(c.ultima)}</div>
+        <div class="cli-seg">${accion(c)}</div>
+        ${(c.tel&&typeof window.tmTarjetaBloque==='function')?window.tmTarjetaBloque(c.tel):''}
+      </div>`;
+    };
+    const pintar=()=>{
+      const q=norm(CLI_Q||''), qd=(CLI_Q||'').replace(/\D/g,'');
+      const vis=list.filter(c=>(CLI_FILTRO==='contactar'?!!c.seg:CLI_FILTRO==='tarjeta'?conTj(c):true)
+        && (!q || norm(c.nombre||'').includes(q) || (qd.length>=3 && String(c.tel||'').includes(qd))));
+      const cards=$('#cli-cards'); if(!cards) return;
+      cards.innerHTML = vis.length ? vis.map(ficha).join('') : `<div class="empty" style="grid-column:1/-1">Nadie coincide con «${esc(CLI_Q||'')}».</div>`;
+    };
+    const chip=(k,t)=>`<button type="button" class="vo-chip" aria-pressed="${CLI_FILTRO===k}" onclick="cliFiltro('${k}')">${t}</button>`;
+    box.innerHTML = `${porContactar?`<div class="cli-aviso">📞 <b>${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
+      <div class="cli-barra"><input class="form-input" id="cli-buscar" type="search" placeholder="Buscar por nombre o WhatsApp" value="${esc(CLI_Q||'')}" autocomplete="off">
+        <div class="cli-chips">${chip('todos','Todos ('+list.length+')')}${chip('contactar','📞 Por contactar ('+porContactar+')')}${chip('tarjeta','🎁 Con tarjeta ('+nTj+')')}</div></div>
+      <div class="cli-grid" id="cli-cards"></div>`;
+    const inp=$('#cli-buscar'); if(inp) inp.oninput=()=>{ CLI_Q=inp.value; pintar(); };
+    pintar();
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
   } else if(CLI_VIEW==='avisos'){

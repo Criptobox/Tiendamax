@@ -210,7 +210,15 @@ ok(!falsa[0] && !falsa[1], 'un código que no existe no descuenta nada');
 const antes = (await tarjetaDe(p, MARIO)).r;
 const trasAnular = await p.evaluate(([tel, id]) => { _fbEliminarVenta(id); return tmTarjetas.restantes(tmTarjetas.porTel(tel)); }, [MARIO, r3.venta.id]);
 ok(trasAnular === antes + 1, `anular una venta devuelve su descuento: ${antes} → ${trasAnular}`);
-ok((await p.evaluate(tel => window.tmTarjetaChip(tel), MARIO)).includes('🤝 3'), 'Clientes enseña cuántos trajo');
+ok((await p.evaluate(tel => window.tmTarjetaBloque(tel), MARIO)).includes('🤝 3'), 'Clientes enseña cuántos trajo');
+// La ficha del cliente en Clientes lleva su tarjeta con Compartir; el historial de ventas, qué venta la creó.
+const fichas = await p.evaluate(([tel, nom]) => { go('clientes'); renderClientes();
+    const f = [...document.querySelectorAll('#cli-cards .cli-card')].find(x => x.innerText.includes(tel));
+    go('ventas'); const hist = document.getElementById('ventas-lista').innerText;
+    return { ficha: f ? f.innerText : '', compartir: !!(f && [...f.querySelectorAll('button')].some(b => /Compartir/.test(b.textContent))), hist }; }, [MARIO, 'Mario']);
+ok(fichas.compartir && fichas.ficha.includes(C.slice(0, 2) + '-' + C.slice(2)), 'la ficha del cliente enseña su tarjeta con «Compartir»: ' + fichas.ficha.slice(0, 200));
+ok(fichas.hist.includes('Tarjeta ' + C.slice(0, 2) + '-' + C.slice(2) + ' creada'), 'el historial dice qué venta creó la tarjeta');
+ok(/−1000 MN · TM-/.test(fichas.hist), 'y en qué venta se usó: ' + fichas.hist.slice(0, 300));
 // Las bolsitas: el espejo cuenta las compras de Mario (sin la anulada).
 const kMario = await p.evaluate(tel => { const t = tmTarjetas.porTel(tel); return tmTarjetas.compras(t); }, MARIO);
 await p.evaluate(tel => { const t = tmTarjetas.porTel(tel); return Promise.resolve(); }, MARIO);
