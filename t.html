@@ -7,26 +7,29 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F0E0D">
 <title>Tu Tarjeta — TiendaMax</title>
-<meta name="description" content="Tu Tarjeta TiendaMax: 1000 MN de descuento en cada una de tus próximas 3 compras.">
+<meta name="description" content="Tu Tarjeta TiendaMax: hasta 1000 MN de descuento en tus próximas compras.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="🎁 Tu Tarjeta TiendaMax">
-<meta property="og:description" content="1000 MN de descuento en cada una de tus próximas 3 compras.">
+<meta property="og:description" content="Hasta 1000 MN de descuento en tus próximas compras.">
 <meta property="og:image" content="https://tiendamax.org/og-image.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png">
 <link rel="apple-touch-icon" href="/iconos/apple-touch-icon.png">
 <!--
-  Lo que abre el QR de la Tarjeta de cliente (js/tarjeta-cliente.js en el panel):
+  Lo que abre el QR de la Tarjeta TiendaMax (js/tarjeta-cliente.js en el panel):
     /t?c=TM7K3QX9
-  Lee /tarjetas/<código> — {r: descuentos que quedan, n: nombre de pila,
-  e: emitida} — y nada más: ni teléfono ni compras, que viven en /privado.
-  La regla deja leer un código concreto, nunca la lista. Página ligera como
-  resena.html: sin bundle, sin catálogo, Inter/Playfair locales.
+  Lee /tarjetas/<código> = {r: descuentos que quedan, n: nombre de pila,
+  e: emitida, x: caduca, f: acepta referidos, g: premios por amigos} y nada más:
+  ni teléfono ni compras, que viven en /privado. La regla deja leer un código
+  concreto, nunca la lista. Los tramos de aquí tienen que ser los de
+  TRAMOS en tarjeta-cliente.js (test_tarjeta_cliente.py lo comprueba).
+  «Regala a un amigo» comparte /?ref=<código>: js/referido.js lo recoge en la
+  tienda. Página ligera como resena.html: sin bundle, sin catálogo.
 -->
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:300 800;font-display:swap;src:url(/fonts/inter-normal-latin.woff2) format('woff2')}
 @font-face{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url(/fonts/playfair-latin.woff2) format('woff2')}
-:root{--bg:#0D0D0D;--card:#161412;--card2:#1E1B18;--line:rgba(255,255,255,.09);--text:#F5EFE6;--muted:#A39A8F;--accent:#FF6B35;--accent2:#E8501E;--ok:#2FBF71}
-@media (prefers-color-scheme: light){:root{--bg:#FAF8F5;--card:#FFFFFF;--card2:#F5F0E8;--line:rgba(30,20,10,.10);--text:#1E1A16;--muted:#6F665C;--accent:#E8501E;--accent2:#C2410C}}
+:root{--bg:#0D0D0D;--card:#161412;--card2:#1E1B18;--line:rgba(255,255,255,.09);--text:#F5EFE6;--muted:#A39A8F;--accent:#FF6B35;--accent2:#E8501E;--gold:#C9A96E}
+@media (prefers-color-scheme: light){:root{--bg:#FAF8F5;--card:#FFFFFF;--card2:#F5F0E8;--line:rgba(30,20,10,.10);--text:#1E1A16;--muted:#6F665C;--accent:#E8501E;--accent2:#C2410C;--gold:#8B6914}}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg)}
 body{color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
@@ -34,7 +37,6 @@ body{color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Robo
 .marca{display:flex;align-items:center;gap:8px;font:700 18px 'Playfair Display',Georgia,serif;margin:4px 2px 14px}
 .marca img{width:28px;height:28px;border-radius:8px}
 .marca b{color:var(--accent)}
-/* La tarjeta siempre es oscura, como la de papel. */
 .tj{position:relative;overflow:hidden;border-radius:22px;padding:22px 22px 20px;background:#0F0E0D;color:#F5EFE6;border:1px solid rgba(255,255,255,.10);
     box-shadow:0 20px 40px -24px rgba(0,0,0,.6);aspect-ratio:1.586;display:flex;flex-direction:column}
 .tj::after{content:"";position:absolute;right:-30%;bottom:-55%;width:100%;height:110%;background:radial-gradient(closest-side,rgba(255,107,53,.32),transparent);pointer-events:none}
@@ -42,24 +44,31 @@ body{color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Robo
 .tj-marca{font:700 19px 'Playfair Display',Georgia,serif}.tj-marca b{color:#FF6B35}
 .tj-tipo{font-size:10px;letter-spacing:.18em;color:#9C9389;font-weight:700}
 .tj-nombre{font:800 clamp(24px,7vw,30px)/1.1 'Playfair Display',Georgia,serif;margin-top:auto;position:relative;z-index:1;overflow-wrap:anywhere}
-.tj-oferta{font-size:13.5px;color:#C9C0B5;margin-top:4px;position:relative;z-index:1}
+.tj-oferta{font-size:13px;color:#C9C0B5;margin-top:4px;position:relative;z-index:1}
 .tj-oferta b{color:#FF6B35}
-.tj-pie{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:14px;position:relative;z-index:1}
+.tj-pie{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:12px;position:relative;z-index:1}
 .tj-cod{font:700 17px ui-monospace,'JetBrains Mono',monospace;letter-spacing:.12em}
 .tj-cod small{display:block;font:700 9.5px Inter,system-ui,sans-serif;letter-spacing:.16em;color:#9C9389;margin-bottom:3px}
-.puntos{display:flex;gap:6px}
+.puntos{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:52%}
 .pt{width:26px;height:26px;border-radius:50%;border:2.5px solid #FF6B35;display:flex;align-items:center;justify-content:center;font:800 11px Inter,sans-serif;color:#FF6B35;background:rgba(255,107,53,.16)}
 .pt.usado{border-color:rgba(255,255,255,.18);background:transparent;color:transparent;position:relative}
 .pt.usado::after{content:"";position:absolute;width:14px;height:2.5px;background:rgba(255,255,255,.35);transform:rotate(-45deg);border-radius:2px}
-.estado{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px}
 h1{font:800 clamp(21px,6vw,24px)/1.2 'Playfair Display',Georgia,serif}
 h1 em{font-style:italic;color:var(--accent)}
+h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
 .sub{color:var(--muted);font-size:14px;line-height:1.5;margin-top:6px}
+.tramos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.tramo{border:1px solid var(--line);background:var(--card2);border-radius:14px;padding:10px 8px;text-align:center}
+.tramo b{display:block;font:800 16px Inter,sans-serif}
+.tramo span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.tramo.si b{color:var(--accent)}
 .pasos{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px}
 .pasos li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45}
 .pasos .n{flex:none;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:16px;font:800 16px Inter,system-ui,sans-serif;cursor:pointer;text-decoration:none;margin-top:14px}
 .btn-wa{background:#25D366;color:#fff;box-shadow:0 10px 24px -12px rgba(37,211,102,.8)}
+.btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .btn-s{background:var(--card2);color:var(--text);border:1px solid var(--line)}
 .letra{color:var(--muted);font-size:12px;text-align:center;margin-top:12px;line-height:1.45}
 .cargando{opacity:.55}
@@ -72,54 +81,66 @@ h1 em{font-style:italic;color:var(--accent)}
   <section class="tj cargando" id="tj" aria-label="Tu Tarjeta TiendaMax">
     <div class="tj-top"><span class="tj-marca">Tienda<b>Max</b></span><span class="tj-tipo">TARJETA DE CLIENTE</span></div>
     <div class="tj-nombre" id="nombre">Tu tarjeta</div>
-    <div class="tj-oferta"><b>1000 MN</b> de descuento en cada una de tus próximas 3 compras</div>
+    <div class="tj-oferta">Hasta <b>1000 MN</b> de descuento en tus próximas compras<span id="vence"></span></div>
     <div class="tj-pie">
       <div class="tj-cod"><small>TU CÓDIGO</small><span id="cod">—</span></div>
       <div class="puntos" id="puntos" aria-label="Descuentos que te quedan"></div>
     </div>
   </section>
 
-  <section class="estado" id="estado">
+  <section class="bloque" id="estado">
     <h1 id="titulo">Comprobando tu tarjeta…</h1>
     <p class="sub" id="sub"></p>
+    <div class="tramos" id="tramos" hidden>
+      <div class="tramo"><b>Menos de $25</b><span>sin descuento<br>(no se gasta)</span></div>
+      <div class="tramo si"><b>Desde $25</b><span>−500 MN</span></div>
+      <div class="tramo si"><b>Desde $45</b><span>−1000 MN</span></div>
+    </div>
     <ol class="pasos" id="pasos" hidden>
       <li><span class="n">1</span><span>Elige lo que quieras en la tienda.</span></li>
       <li><span class="n">2</span><span>Escríbenos por WhatsApp con tu código.</span></li>
-      <li><span class="n">3</span><span>Te descontamos <b>1000 MN</b> al pagar. Pagas al recibir, como siempre.</span></li>
+      <li><span class="n">3</span><span>Te descontamos al pagar, según el tramo. Pagas al recibir, como siempre.</span></li>
     </ol>
     <a class="btn btn-wa" id="wa" target="_blank" rel="noopener" hidden>Pedir con mi descuento</a>
     <a class="btn btn-s" href="/">Ver la tienda</a>
-    <p class="letra">Un descuento por compra. Tarjeta personal, no canjeable por efectivo.</p>
   </section>
+
+  <section class="bloque" id="regalo" hidden>
+    <h2>🎁 Regala un descuento a un amigo</h2>
+    <p class="sub" id="regaloSub">Tu amigo recibe hasta 1000 MN en su primera compra desde $25. Y cuando compre, tú ganas un descuento más (hasta 2 amigos).</p>
+    <button type="button" class="btn btn-p" id="compartir">Enviarle mi regalo</button>
+  </section>
+  <p class="letra">Un descuento por compra, en MN. Tarjeta personal, no canjeable por efectivo.</p>
 </main>
 <script>
 (function () {
   'use strict';
-  var WA = '5354320170', RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com', USOS = 3;
+  var WA = '5354320170', RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com';
+  var USOS = 3, EXTRA_MAX = 2;
   var $ = function (id) { return document.getElementById(id); };
   var c = (new URLSearchParams(location.search).get('c') || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
   if (/^[0-9A-Z]{6}$/.test(c)) c = 'TM' + c;
   var valido = /^TM[2-9A-HJKMNP-Z]{6}$/.test(c);
   var bonito = valido ? c.slice(0, 2) + '-' + c.slice(2) : '';
   $('cod').textContent = bonito || '—';
-
-  function puntos(r) {
+  function fecha(ts) { try { return new Date(ts).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } }
+  function puntos(r, total) {
     var h = '';
-    for (var i = 0; i < USOS; i++) h += '<span class="pt' + (i < r ? '' : ' usado') + '" aria-hidden="true">' + (i < r ? (i + 1) : '') + '</span>';
+    for (var i = 0; i < total; i++) h += '<span class="pt' + (i < r ? '' : ' usado') + '" aria-hidden="true">' + (i < r ? (i + 1) : '') + '</span>';
     $('puntos').innerHTML = h;
-    $('puntos').setAttribute('aria-label', 'Te quedan ' + r + ' de ' + USOS + ' descuentos');
+    $('puntos').setAttribute('aria-label', 'Te quedan ' + r + ' descuentos');
   }
   function wa(texto) { var a = $('wa'); a.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(texto); a.hidden = false; }
   function pedir() { wa('Hola, quiero hacer un pedido con mi Tarjeta TiendaMax ' + bonito + ' 🎁'); }
 
   if (!valido) {
-    $('tj').classList.remove('cargando'); puntos(0);
+    $('tj').classList.remove('cargando'); puntos(0, USOS);
     $('titulo').textContent = 'Este enlace no es de una tarjeta';
     $('sub').textContent = 'Revisa el código o escríbenos y lo buscamos.';
     wa('Hola, tengo una Tarjeta TiendaMax y el enlace no me funciona.');
     return;
   }
-  puntos(USOS);
+  puntos(USOS, USOS);
   fetch('/config.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
     .then(function (cfg) {
       var base = (cfg && cfg.firebaseConfig && cfg.firebaseConfig.databaseURL) || RTDB_RESPALDO;
@@ -129,24 +150,41 @@ h1 em{font-style:italic;color:var(--accent)}
     .then(function (t) {
       $('tj').classList.remove('cargando');
       if (!t || typeof t.r !== 'number') {
-        puntos(0);
+        puntos(0, USOS);
         $('titulo').textContent = 'No encontramos esta tarjeta';
         $('sub').textContent = 'Puede que se haya creado hace un momento. Escríbenos y la comprobamos.';
         wa('Hola, mi Tarjeta TiendaMax ' + bonito + ' no aparece.');
         return;
       }
-      var r = Math.max(0, Math.min(USOS, t.r)), n = String(t.n || '').trim();
+      var g = Math.max(0, Math.min(EXTRA_MAX, t.g || 0)), total = USOS + g, r = Math.max(0, Math.min(total, t.r));
+      var n = String(t.n || '').trim(), vencida = t.x && Date.now() > t.x;
       if (n) $('nombre').textContent = n;
+      if (t.x) $('vence').textContent = (vencida ? ' · caducó el ' : ' · hasta el ') + fecha(t.x);
       document.title = (n ? 'Tarjeta de ' + n : 'Tu Tarjeta') + ' — TiendaMax';
-      puntos(r);
-      if (r > 0) {
-        $('titulo').innerHTML = (n ? 'Hola ' + n.replace(/[<>&"]/g, '') + ', te quedan ' : 'Te quedan ') + '<em>' + r + ' descuento' + (r > 1 ? 's' : '') + '</em> de 1000 MN';
-        $('sub').textContent = 'Uno en cada compra. Así se usa:';
-        $('pasos').hidden = false;
+      puntos(vencida ? 0 : r, total);
+      var limpio = n.replace(/[<>&"]/g, '');
+      if (vencida) {
+        $('titulo').textContent = 'Tu tarjeta caducó';
+        $('sub').textContent = '¡Gracias por comprar con nosotros! Sigue atento a las rebajas de la tienda.';
+      } else if (r > 0) {
+        $('titulo').innerHTML = (limpio ? 'Hola ' + limpio + ', te quedan ' : 'Te quedan ') + '<em>' + r + ' descuento' + (r > 1 ? 's' : '') + '</em>';
+        $('sub').textContent = 'Uno por compra, según lo que compres:' + (g ? ' (' + g + ' te lo ganaste recomendando, ¡gracias!)' : '');
+        $('tramos').hidden = false; $('pasos').hidden = false;
         pedir();
       } else {
-        $('titulo').textContent = 'Ya usaste tus ' + USOS + ' descuentos';
-        $('sub').textContent = '¡Gracias por comprar con nosotros! Sigue atento a las rebajas de la tienda.';
+        $('titulo').textContent = 'Ya usaste tus descuentos';
+        $('sub').textContent = '¡Gracias por comprar con nosotros! Recomienda la tienda y gana uno más.';
+      }
+      // Regalar a un amigo: mientras la campaña siga y la tarjeta valga.
+      if (t.f === 1 && !vencida) {
+        $('regalo').hidden = false;
+        if (g >= EXTRA_MAX) $('regaloSub').textContent = 'Tu amigo recibe hasta 1000 MN en su primera compra desde $25. Ya ganaste tus ' + EXTRA_MAX + ' descuentos por recomendar, ¡gracias!';
+        var enlace = 'https://tiendamax.org/?ref=' + c;
+        var texto = '🎁 Te regalo hasta 1000 MN de descuento en tu primera compra en TiendaMax (desde $25). Pagas al recibir. Entra aquí: ' + enlace;
+        $('compartir').onclick = function () {
+          if (navigator.share) { navigator.share({ text: texto }).catch(function () {}); return; }
+          window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+        };
       }
     })
     .catch(function () {

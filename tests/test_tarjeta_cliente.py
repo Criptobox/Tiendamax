@@ -43,6 +43,28 @@ class TarjetaClienteTest(unittest.TestCase):
             self.assertFalse(rx.match("TM" + malo * 6), malo)
         self.assertIn("/^TM[2-9A-HJKMNP-Z]{6}$/", T)
 
+    def test_los_tramos_son_los_mismos_en_el_panel_y_en_la_pagina(self):
+        # La página promete lo que el panel cobra: si se separan, el cliente reclama con razón.
+        tramos = re.search(r"var TRAMOS = \[\[(\d+), (\d+)\], \[(\d+), (\d+)\]\]", MOD)
+        self.assertIsNotNone(tramos)
+        alto_usd, alto_mn, medio_usd, medio_mn = tramos.groups()
+        self.assertIn(f"<b>Desde ${medio_usd}</b><span>−{medio_mn} MN</span>", T)
+        self.assertIn(f"<b>Desde ${alto_usd}</b><span>−{alto_mn} MN</span>", T)
+        self.assertIn(f"<b>Menos de ${medio_usd}</b>", T)
+        usos = re.search(r"var USOS = (\d+), EXTRA_MAX = (\d+)", MOD).groups()
+        self.assertIn(f"var USOS = {usos[0]}, EXTRA_MAX = {usos[1]};", T)
+        # La regla aguanta el máximo de descuentos y de premios.
+        c = REGLAS["tarjetas"]["$codigo"]
+        self.assertIn(f"<= {int(usos[0]) + int(usos[1])}", c["r"][".validate"])
+        self.assertIn(f"<= {usos[1]}", c["g"][".validate"])
+
+    def test_el_referido_solo_va_en_pedidos_a_la_tienda(self):
+        ref = (RAIZ / "js" / "referido.js").read_text(encoding="utf-8")
+        idx = (RAIZ / "index.html").read_text(encoding="utf-8")
+        self.assertIn('src="js/referido.js?v=', idx)
+        # Un wa.me sin número es compartir con un amigo: no se toca.
+        self.assertIn("if (!m || !m[1]) return url;", ref)
+
     def test_la_venta_lleva_la_tarjeta_a_firebase(self):
         # Sin esto el otro teléfono cuenta la comisión entera de una venta que dejó 1000 MN menos.
         self.assertIn("v.tarjeta = venta.tarjeta; v.descTarjetaMN = venta.descTarjetaMN", UI)
