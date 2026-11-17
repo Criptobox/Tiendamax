@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-15T15:58:37.406908+00:00",
+  "generado": "2026-11-16T19:06:15.540361+00:00",
   "productos": 174,
   "urgentes": 23,
   "advertencias": 0,
-  "info": 6,
-  "resumen": "Anoche revisé tus 174 productos y encontré 23 urgente(s), 6 de info.",
+  "info": 5,
+  "resumen": "Anoche revisé tus 174 productos y encontré 23 urgente(s), 5 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -133,11 +133,6 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Cargador Inteligente de Baterías LVYUAN BC-300 PRO (12V/24V - 30A) | para Baterías LiFePO4, Gel, AGM y Plomo-Ácido",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
       "nombre": "Cámara de reversa",
       "detalle": "quedan 2"
     },
@@ -148,8 +143,8 @@
     },
     {
       "tipo": "agotados",
-      "nombre": "117 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 114 más"
+      "nombre": "119 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 116 más"
     }
   ]
 }
