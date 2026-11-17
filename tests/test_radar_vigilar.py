@@ -30,6 +30,56 @@ class IdsVigilarTest(unittest.TestCase):
         self.assertEqual({"1"}, pr.ids_vigilar(self.PRODS, "/no/existe.json"))
 
 
+class MismoModeloTest(unittest.TestCase):
+    """El radar enseñaba el cargador de 20A como competencia del de 30A: con
+    «cargador» + «baterías» en común bastaba. La cifra es el producto."""
+    def test_otra_cifra_de_la_misma_unidad_no_es_el_mismo(self):
+        n = "VEVOR Cargador de Batería Inteligente 30A"
+        self.assertFalse(pr.mismo_modelo(n, "Cargador de baterías 20A 12v"))
+        self.assertFalse(pr.mismo_modelo(n, "cargador 35 amperios vevor"))
+        self.assertTrue(pr.mismo_modelo(n, "Cargador VEVOR 30 amperios"))
+        self.assertFalse(pr.mismo_modelo("Inversor Tataliken 4000W", "inversor 3500w"))
+        self.assertFalse(pr.mismo_modelo("Switch Gigabit de 8 Puertos", "switch 5 puertos"))
+        self.assertFalse(pr.mismo_modelo("Batería Automotriz Lubrim 12V 60Ah", "bateria 12v 75ah"))
+
+    def test_amperios_hora_no_son_amperios(self):
+        self.assertEqual({"ah": {"60"}, "v": {"12"}}, pr._cifras_texto("bateria 60 amperios hora 12 voltios"))
+
+    def test_otro_modelo_no_es_el_mismo(self):
+        self.assertFalse(pr.mismo_modelo("NanoStation M5 Loco", "Nanostation loco m2"))
+        self.assertTrue(pr.mismo_modelo("NanoStation M5 Loco", "nanostation m5 loco"))
+
+    def test_sin_cifra_en_el_anuncio_no_se_descarta_por_eso(self):
+        self.assertTrue(pr.mismo_modelo("VEVOR Cargador 30A", "Cargador VEVOR inteligente"))
+
+    def test_varias_cifras_del_producto_valen_todas(self):
+        n = "Cargador LVYUAN BC-400 PRO (12V/24V - 40A)"
+        self.assertTrue(pr.mismo_modelo(n, "cargador 24v 40 amp"))
+        self.assertFalse(pr.mismo_modelo(n, "cargador 12v 20a"))
+
+
+class BuscarTest(unittest.TestCase):
+    def setUp(self):
+        self.pedidas = []
+        def falso(q, rate):
+            self.pedidas.append(q)
+            return [{"titulo": "Cargador vevor 30A nuevo", "precio": 90, "url": "u1"},
+                    {"titulo": "Cargador vevor 20A", "precio": 40, "url": "u2"},
+                    {"titulo": "Cargador vevor 30 amperios", "precio": 95, "url": "u3"}]
+        self._antes = (pr.SCRAPERS, pr.FUENTES, pr.PAUSA)
+        pr.SCRAPERS, pr.FUENTES, pr.PAUSA = {"x": falso}, ["x"], 0
+
+    def tearDown(self):
+        pr.SCRAPERS, pr.FUENTES, pr.PAUSA = self._antes
+
+    def test_terminos_excluidos_y_otra_cifra(self):
+        m, desc = pr.buscar({"nombre": "VEVOR Cargador de Batería Inteligente 30A"}, 400,
+                            "cargador vevor 30a", ["u3"])
+        self.assertEqual(["cargador vevor 30a"], self.pedidas)
+        self.assertEqual(["u1"], [x["url"] for x in m])
+        self.assertEqual(1, desc)
+
+
 class PanelTest(unittest.TestCase):
     def test_panel_y_script_usan_el_mismo_archivo_y_workflow(self):
         html = open(os.path.join(RAIZ, "admin.html"), encoding="utf-8").read()
@@ -37,7 +87,9 @@ class PanelTest(unittest.TestCase):
         self.assertIn("RADAR_WORKFLOW = 'precio-radar.yml'", html)
         self.assertTrue(os.path.exists(os.path.join(RAIZ, ".github/workflows/precio-radar.yml")))
         self.assertTrue(pr.VIGILAR.endswith("radar-vigilar.json"))
-        for f in ("radarToggle", "radarGuardar", "radarPintarElegir"):
+        self.assertIn("terminos:term, excluir:excl", html)
+        for f in ("radarToggle", "radarGuardar", "radarPintarElegir", "radarNoEs",
+                  "radarDeshacer", "radarTermEditar", "radarTermGuardar"):
             self.assertIn("window." + f + "=" + f, html)
 
 

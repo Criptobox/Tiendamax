@@ -547,6 +547,17 @@ try{var _piel=localStorage.getItem('tm_piel');
   .radar-op-p{color:var(--o);font-weight:700;white-space:nowrap}
   .radar-op-mas{color:var(--green);font-weight:800;font-size:16px}
   .radar-pie{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .radar-pie-fijo{position:sticky;top:60px;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#1d1a17;border:1px solid rgba(255,107,53,.55);font-size:13px;color:#fff}
+  .radar-pie-fijo[hidden]{display:none}
+  .radar-busca{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .radar-busca b{color:#fff;font-weight:600}
+  .radar-tag{font-size:10.5px;padding:1px 6px;border-radius:999px;background:rgba(255,107,53,.18);color:var(--o)}
+  .radar-lnk{background:none;border:0;padding:4px 2px;color:var(--o);font:inherit;font-weight:700;cursor:pointer}
+  .radar-term{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .radar-term .form-input{flex:1 1 180px;min-width:0}
+  .radar-anuncio{display:flex;gap:8px;align-items:center;padding:7px 10px;background:rgba(0,0,0,.25);border-radius:7px;margin-bottom:5px;font-size:12px}
+  .radar-anuncio-t{flex:1;min-width:0;overflow-wrap:anywhere}
+  .radar-no{flex:none;min-height:34px;padding:4px 9px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
   .rev-hero { text-align:center; padding:22px 18px; }
@@ -1778,6 +1789,10 @@ try{var _piel=localStorage.getItem('tm_piel');
           </div>
         </details>
         <div class="banner-info" id="radar-resumen"></div>
+        <div class="radar-pie-fijo" id="radar-pie-fijo" hidden>
+          <span>Tienes cambios sin guardar</span>
+          <button class="btn btn-primary" onclick="radarGuardar()">💾 Guardar y buscar</button>
+        </div>
         <div id="radar-lista"></div>
       </div>
 
@@ -6200,12 +6215,19 @@ function renderAlmacen(){
    pide una pasada del radar en el momento (no hay que esperar a mañana). */
 const RADAR_ARCHIVO = 'radar-vigilar.json', RADAR_WORKFLOW = 'precio-radar.yml', RADAR_MAX = 40, RADAR_LS = 'tm_radar_ids';
 let RADAR_IDS = null, RADAR_PEND = false, RADAR_GUARDANDO = false;
+// Lo que el gestor afina por producto: con qué palabras buscarlo
+// (terminos: {pid: "cargador 30a"}) y qué anuncios no son ese producto
+// (excluir: {pid: [url…]}). Viajan en el mismo radar-vigilar.json.
+let RADAR_TERM = {}, RADAR_EXCL = {}, RADAR_EDIT = null;
+function _radarTomar(o){ RADAR_IDS=new Set((o.ids||[]).map(String)); RADAR_TERM=(o.terminos&&typeof o.terminos==='object')?o.terminos:{}; RADAR_EXCL=(o.excluir&&typeof o.excluir==='object')?o.excluir:{}; }
+function _radarLocal(pend){ try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids:[...radarIds()], terminos:RADAR_TERM, excluir:RADAR_EXCL, pend:!!pend, ts:Date.now()})); }catch(e){} }
+function _radarSinGuardar(){ RADAR_PEND=true; _radarLocal(true); const es=$('#radar-estado'); if(es) es.textContent='Sin guardar — pulsa «Guardar y buscar precios».'; const pie=$('#radar-pie-fijo'); if(pie) pie.hidden=false; }
 async function radarCargarIds(){
   // Pendiente de guardar en este teléfono → manda lo local.
-  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&o.pend&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); RADAR_PEND=true; return; } }catch(e){}
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&o.pend&&Array.isArray(o.ids)){ _radarTomar(o); RADAR_PEND=true; return; } }catch(e){}
   const d = await jget(RADAR_ARCHIVO+'?_='+Date.now());
-  if(d && Array.isArray(d.ids)){ RADAR_IDS=new Set(d.ids.map(String)); return; }
-  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&Array.isArray(o.ids)){ RADAR_IDS=new Set(o.ids.map(String)); return; } }catch(e){}
+  if(d && Array.isArray(d.ids)){ _radarTomar(d); return; }
+  try{ const o=JSON.parse(localStorage.getItem(RADAR_LS)||'null'); if(o&&Array.isArray(o.ids)){ _radarTomar(o); return; } }catch(e){}
   RADAR_IDS = new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id)));   // lo de antes, mientras nadie elija
 }
 function radarIds(){ return RADAR_IDS || new Set(PRODUCTOS.filter(p=>p.radar).map(p=>String(p.id))); }
@@ -6236,9 +6258,7 @@ function radarToggle(id){
   const ids=new Set(radarIds()); id=String(id);
   if(ids.has(id)) ids.delete(id);
   else { if(ids.size>=RADAR_MAX){ showToast('Máximo '+RADAR_MAX+' productos','Quita alguno antes de añadir otro'); return; } ids.add(id); }
-  RADAR_IDS=ids; RADAR_PEND=true;
-  try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids:[...ids], pend:true, ts:Date.now()})); }catch(e){}
-  const es=$('#radar-estado'); if(es) es.textContent='Sin guardar — pulsa «Guardar y buscar precios».';
+  RADAR_IDS=ids; _radarSinGuardar();
   radarPintarElegir(); renderRadar();
 }
 async function radarGuardar(){
@@ -6250,9 +6270,12 @@ async function radarGuardar(){
   const ids=[...radarIds()];
   try{
     if(es) es.textContent='Guardando…';
-    await subirArchivoAGitHub(user, repo, token, RADAR_ARCHIVO, { actualizado:new Date().toISOString(), ids });
-    RADAR_PEND=false;
-    try{ localStorage.setItem(RADAR_LS, JSON.stringify({ids, pend:false, ts:Date.now()})); }catch(e){}
+    // Solo lo de productos que siguen elegidos: lo de los quitados sobra.
+    const term={}, excl={};
+    ids.forEach(id=>{ if(RADAR_TERM[id]) term[id]=RADAR_TERM[id]; if(RADAR_EXCL[id]&&RADAR_EXCL[id].length) excl[id]=RADAR_EXCL[id]; });
+    await subirArchivoAGitHub(user, repo, token, RADAR_ARCHIVO, { actualizado:new Date().toISOString(), ids, terminos:term, excluir:excl });
+    RADAR_PEND=false; _radarLocal(false);
+    const pie=$('#radar-pie-fijo'); if(pie) pie.hidden=true;
   }catch(e){
     if(es) es.textContent='⚠️ No se pudo guardar: '+((e&&e.message)||'sin conexión')+'. Se queda en este teléfono.';
     RADAR_GUARDANDO=false; if(btn) btn.disabled=false; return;
@@ -6288,6 +6311,7 @@ function radarVigilados(){
 }
 function renderRadar(){
   radarPintarElegir();
+  const pf=$('#radar-pie-fijo'); if(pf) pf.hidden=!RADAR_PEND;
   const lista=$('#radar-lista'), resumen=$('#radar-resumen'); if(!lista) return;
   $('#radar-sub').textContent = RADAR&&(RADAR.fecha||RADAR.actualizado) ? 'Actualizado: '+(RADAR.fecha||RADAR.actualizado) : 'Precios reales de la competencia';
   const vigilados = radarVigilados();
@@ -6298,21 +6322,65 @@ function renderRadar(){
   const conDatos=vigilados.filter(r=>!r.pendiente).length;
   const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' (fuentes: '+(((RADAR&&RADAR.fuentes)||[]).join(', ')||'Revolico')+').'+(conDatos<vigilados.length?' '+(vigilados.length-conDatos)+' aún sin buscar.':'');
   if(resumen) resumen.innerHTML = esc(res);
-  const okUrl = u => /^https?:\/\//i.test(u||'');
-  lista.innerHTML = vigilados.map(r=>{
-    if(r.pendiente) return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;color:var(--muted)">⏳ Aún sin buscar. ${RADAR_PEND?'Pulsa «Guardar y buscar precios».':'Sale en la próxima búsqueda.'}</div></div>`;
-    const med=r.mercado&&r.mercado.mediana, min=r.mercado&&r.mercado.min, n=r.mercado&&r.mercado.n;
-    const tuyo=r.tuPrecio;
-    let comp='';
-    if(!n) comp='<span style="color:var(--muted)">No encontré anuncios de esto en la última semana.</span>';
-    else if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
-    const muestras=(r.muestras||[]).slice().sort((a,b)=>(a.precio||0)-(b.precio||0));
-    const det = muestras.length?`<details style="margin-top:10px"><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios reales (verificar)</summary><div style="margin-top:8px">${muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver anuncio →</a>`:''; return `<div style="padding:7px 10px;background:rgba(0,0,0,0.25);border-radius:7px;margin-bottom:5px;font-size:12px"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>`; }).join('')}</div></details>`:'';
-    const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncios)</div>` : '';
-    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div>${merc}<div>${comp}</div></div>${det}</div>`;
-  }).join('');
+  lista.innerHTML = vigilados.map(radarTarjeta).join('');
+}
+/* Mediana quitando el 20 % de arriba y de abajo con 5 o más precios: la misma
+   regla que _mediana_recortada en scripts/precio_radar.py. Se recalcula aquí
+   solo para que un «no es este» cambie el número al momento; en la próxima
+   búsqueda el script ya lo deja fuera y los dos dan lo mismo. */
+function radarMediana(vals){
+  let v=vals.slice().sort((a,b)=>a-b); const n=v.length; if(!n) return null;
+  if(n>=5){ const k=Math.max(1,Math.floor(n*0.2)); const r=v.slice(k,n-k); if(r.length) v=r; }
+  const m=v.length>>1; return v.length%2 ? v[m] : (v[m-1]+v[m])/2;
+}
+function radarTarjeta(r){
+  const pid=String(r.id), okUrl=u=>/^https?:\/\//i.test(u||'');
+  const term=RADAR_TERM[pid]||'', busca=term||r.busqueda||'';
+  const editando=RADAR_EDIT===pid;
+  const lineaBusca = editando
+    ? `<div class="radar-term"><input class="form-input" id="radar-term-${esc(pid)}" value="${esc(busca)}" placeholder="Ej.: cargador vevor 30a" autocomplete="off">
+         <button type="button" class="btn btn-primary" onclick="radarTermGuardar('${esc(pid)}')">OK</button>
+         ${term?`<button type="button" class="btn btn-ghost" onclick="radarTermGuardar('${esc(pid)}',true)">Por el nombre</button>`:''}</div>
+       <div class="radar-ayuda">Escribe cómo lo anuncia la gente, con su cifra o modelo (30a, 4000w, m5): los anuncios con otra cifra se descartan solos.</div>`
+    : `<div class="radar-busca">🔎 Busca: <b>${esc(busca||'el nombre del producto')}</b>${term?' <span class="radar-tag">tuyo</span>':''} <button type="button" class="radar-lnk" onclick="radarTermEditar('${esc(pid)}')">✏️ Cambiar</button></div>`;
+  if(r.pendiente) return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;color:var(--muted);margin-top:6px">⏳ Aún sin buscar. ${RADAR_PEND?'Pulsa «Guardar y buscar precios».':'Sale en la próxima búsqueda.'}</div></div>`;
+  const fuera=new Set(RADAR_EXCL[pid]||[]);
+  const todas=(r.muestras||[]).slice().sort((a,b)=>(a.precio||0)-(b.precio||0));
+  const muestras=todas.filter(m=>!fuera.has(m.url));
+  const quitadas=todas.length-muestras.length;
+  // Sin quitar nada, los números del script; con algo quitado, recalculados.
+  let min=r.mercado&&r.mercado.min, med=r.mercado&&r.mercado.mediana, n=r.mercado&&r.mercado.n;
+  if(quitadas){ const ps=muestras.map(m=>m.precio).filter(x=>x>0); n=ps.length; min=n?Math.min(...ps):null; med=radarMediana(ps); }
+  const tuyo=r.tuPrecio;
+  let comp='';
+  if(!n) comp='<span style="color:var(--muted)">No encontré anuncios de esto en la última semana.</span>';
+  else if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
+  const filas=muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver →</a>`:''; return `<div class="radar-anuncio"><div class="radar-anuncio-t"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>${okUrl(m.url)?`<button type="button" class="radar-no" onclick="radarNoEs('${esc(pid)}','${esc(m.url)}')" title="Este anuncio es de otro producto">✕ No es este</button>`:''}</div>`; }).join('');
+  const notas=[];
+  if(r.descartados) notas.push(`${r.descartados} descartado${r.descartados!==1?'s':''} por otra cifra o modelo`);
+  if(fuera.size) notas.push(`${fuera.size} quitado${fuera.size!==1?'s':''} por ti · <button type="button" class="radar-lnk" onclick="radarDeshacer('${esc(pid)}')">deshacer</button>`);
+  const det = (muestras.length||notas.length)?`<details style="margin-top:10px"${quitadas?' open':''}><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios (verifica que son el mismo)</summary><div style="margin-top:8px">${filas}${notas.length?`<div class="radar-ayuda">${notas.join(' · ')}</div>`:''}</div></details>`:'';
+  const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncio${n!==1?'s':''})</div>` : '';
+  return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;line-height:1.9;margin-top:4px"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div>${merc}<div>${comp}</div></div>${det}</div>`;
+}
+function radarNoEs(pid, url){
+  const l=RADAR_EXCL[pid]||(RADAR_EXCL[pid]=[]);
+  if(!l.includes(url)) l.push(url);
+  _radarSinGuardar(); renderRadar();
+  showToast('Quitado de la comparación','Guarda para que no vuelva a contar');
+}
+function radarDeshacer(pid){ delete RADAR_EXCL[pid]; _radarSinGuardar(); renderRadar(); }
+function radarTermEditar(pid){ RADAR_EDIT=String(pid); renderRadar(); const i=$('#radar-term-'+pid); if(i){ i.focus(); i.select(); } }
+function radarTermGuardar(pid, borrar){
+  const i=$('#radar-term-'+pid), v=borrar?'':String((i&&i.value)||'').replace(/\s+/g,' ').trim().slice(0,60);
+  const antes=RADAR_TERM[pid]||'';
+  if(v) RADAR_TERM[pid]=v; else delete RADAR_TERM[pid];
+  RADAR_EDIT=null;
+  if(v!==antes) _radarSinGuardar();
+  renderRadar();
 }
 window.radarPintarElegir=radarPintarElegir; window.radarToggle=radarToggle; window.radarGuardar=radarGuardar;
+window.radarNoEs=radarNoEs; window.radarDeshacer=radarDeshacer; window.radarTermEditar=radarTermEditar; window.radarTermGuardar=radarTermGuardar;
 
 
 /* ============ COMPARAR CON LA TIENDA PRINCIPAL ============

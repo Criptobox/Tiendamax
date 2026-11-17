@@ -92,6 +92,59 @@ def coincide(prod_kw, titulo):
     return len(matched) >= 2 and distintiva
 
 
+# ── Cifras y modelos ─────────────────────────────────────────────────────────
+# Dos palabras en común bastaban para dar un anuncio por bueno, y en este
+# catálogo «cargador» + «baterías» lo comparten el de 20A y el de 30A: el radar
+# enseñaba el precio del de 20A como competencia del de 30A. La cifra con su
+# unidad (30a, 4000w, 12v, 60ah) y el modelo (m5, ac3) son lo único que separa
+# un producto de su hermano, igual que en el buscador de Max.
+_UNIDADES = [
+    (r"amperios?\s*hora|ah", "ah"),       # antes que «amperios», o 60 amperios hora sería 60A
+    (r"amperios?|amperes?|amps?", "a"),
+    (r"vatios|watts?", "w"),
+    (r"voltios?|volts?", "v"),
+    (r"pulgadas?|\"|''", "in"),
+    (r"puertos?", "p"),
+]
+
+
+def _cifras_texto(texto):
+    """{unidad: {valores}} de un texto: '30A' / '30 amperios' → {'a': {'30'}}."""
+    t = _norm(texto)
+    for pat, u in _UNIDADES:
+        t = re.sub(r"(\d+(?:[.,]\d+)?)\s*(?:" + pat + r")\b", lambda m: m.group(1).replace(",", ".") + u + " ", t)
+    out = {}
+    for num, u in re.findall(r"\b(\d+(?:\.\d+)?)(a|w|v|ah|in|p|kw|kva|mah|gb|tb|mbps)\b", t):
+        out.setdefault(u, set()).add(num)
+    return out
+
+
+def _modelos_texto(texto):
+    """Designadores letra+cifra cortos (m5, ac3, ax3, x5): {prefijo: {modelo}}."""
+    t = _norm(texto)
+    out = {}
+    for m in re.findall(r"\b([a-z]{1,3})(\d{1,3})\b", t):
+        if m[0] in ("a", "w", "v", "ah", "in", "p", "kw", "mah", "gb", "tb"):
+            continue                        # eso es una cifra con unidad, no un modelo
+        out.setdefault(m[0], set()).add(m[0] + m[1])
+    return out
+
+
+def mismo_modelo(nombre, titulo):
+    """False si el anuncio dice OTRA cifra en una unidad que el producto declara
+    (20A en el de 30A, 3500W en el de 4000W) u otro modelo con el mismo prefijo
+    (m2 en el m5). Si el anuncio no dice la cifra, no se descarta por eso."""
+    pc, tc = _cifras_texto(nombre), _cifras_texto(titulo)
+    for u, vals in pc.items():
+        if u in tc and not (tc[u] & vals):
+            return False
+    pm, tm = _modelos_texto(nombre), _modelos_texto(titulo)
+    for pre, vals in pm.items():
+        if pre in tm and not (tm[pre] & vals):
+            return False
+    return True
+
+
 PRECIO_RE = re.compile(r"(\d[\d.,]{1,9})\s*(usd|cup|mn|mlc|\$)?", re.I)
 
 
@@ -218,15 +271,27 @@ def scrape_lelespc(query, rate):
 SCRAPERS = {"revolico": scrape_revolico, "porlalivre": scrape_porlalivre, "lelespc": scrape_lelespc}
 
 
-def buscar(prod, rate):
-    kw = keywords(prod.get("nombre"))
-    q = query_de(prod.get("nombre"))
-    muestras = []
+def buscar(prod, rate, terminos=None, excluir=None):
+    """Anuncios del mismo producto. `terminos` (lo que el gestor escribió en el
+    panel) sustituye a la búsqueda por el nombre; `excluir` son los enlaces que
+    marcó «no es este». Devuelve (muestras, descartados por otro modelo)."""
+    base = (terminos or "").strip() or prod.get("nombre")
+    kw = keywords(base)
+    q = (terminos or "").strip() or query_de(prod.get("nombre"))
+    # Las cifras del nombre y las de los términos mandan las dos.
+    ref = (prod.get("nombre") or "") + " " + (terminos or "")
+    fuera = set(excluir or [])
+    muestras, descartados = [], 0
     for f in FUENTES:
         try:
             res = SCRAPERS[f](q, rate)
             for it in res:
+                if it.get("url") in fuera:
+                    continue
                 if not coincide(kw, it["titulo"]):
+                    continue
+                if not mismo_modelo(ref, it["titulo"]):
+                    descartados += 1
                     continue
                 # Solo anuncios de la última semana (si se conoce la fecha).
                 d = it.get("dias")
@@ -236,7 +301,7 @@ def buscar(prod, rate):
             time.sleep(PAUSA)
         except Exception as e:
             print(f"  ⚠ {f} falló para «{q}»: {e}")
-    return muestras
+    return muestras, descartados
 
 
 def _mediana_recortada(vals):
@@ -292,15 +357,23 @@ def analizar(prod, muestras, prev_hist, fecha):
         res["estado"] = "sin_datos"
         res["deltaAyerMediana"] = None
     res["historial"] = hist[-HIST_DIAS:]
-    res["muestras"] = sorted(muestras, key=lambda x: x["precio"])[:6]
+    # Todas las que cuentan (con tope): el panel las enseña para verificar y
+    # recalcula al momento si el gestor marca una como «no es este».
+    res["muestras"] = sorted(muestras, key=lambda x: x["precio"])[:20]
     return res
+
+
+def config_vigilar(ruta=None):
+    """radar-vigilar.json tal cual, o {} si no existe."""
+    d = load_json(ruta or VIGILAR, None)
+    return d if isinstance(d, dict) else {}
 
 
 def ids_vigilar(productos, ruta=None):
     """Ids elegidos en el panel. Sin el archivo (aún nadie eligió), los que
     llevan radar:true en productos.json, como antes."""
-    d = load_json(ruta or VIGILAR, None)
-    if isinstance(d, dict) and isinstance(d.get("ids"), list):
+    d = config_vigilar(ruta)
+    if isinstance(d.get("ids"), list):
         return {str(i) for i in d["ids"]}
     return {str(p.get("id")) for p in productos if p.get("radar")}
 
@@ -309,6 +382,7 @@ def main():
     productos = load_json(os.path.join(ROOT, "productos.json"), []) or []
     # Solo se vigilan realmente los productos con stock > 0 (igual que el admin UI:
     # un producto agotado no vale la pena vigilarlo, ya no está a la venta).
+    cfg = config_vigilar()
     elegidos = ids_vigilar(productos)
     vigilados = [p for p in productos if str(p.get("id")) in elegidos and float(p.get("stock") or 0) > 0][:MAX_PROD]
     omitidos = sum(1 for p in productos if str(p.get("id")) in elegidos and float(p.get("stock") or 0) <= 0)
@@ -322,12 +396,18 @@ def main():
 
     resultados = []
     for p in vigilados:
+        pid = str(p.get("id"))
+        term = str((cfg.get("terminos") or {}).get(pid) or "").strip()
+        excl = (cfg.get("excluir") or {}).get(pid) or []
         try:
-            muestras = buscar(p, rate)
+            muestras, desc = buscar(p, rate, term, excl)
         except Exception as e:
             print(f"  ⚠ producto {p.get('nombre')}: {e}")
-            muestras = []
-        resultados.append(analizar(p, muestras, prev_hist.get(str(p.get("id"))), fecha))
+            muestras, desc = [], 0
+        r = analizar(p, muestras, prev_hist.get(pid), fecha)
+        r["busqueda"] = term or query_de(p.get("nombre"))
+        r["descartados"] = desc
+        resultados.append(r)
         print(f"  · {str(p.get('nombre'))[:34]:34} → {resultados[-1]['mercado']}")
 
     resumen = {
