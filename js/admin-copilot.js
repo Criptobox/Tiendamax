@@ -154,6 +154,7 @@ function addTask(list,t){
 /* En la tienda: activo y fuera de toda categoría o subcategoría apagada en
    el panel (window.tmProductoApagado, admin.html). Lo apagado no sale a la
    venta, así que no es trabajo de hoy ni se propone publicarlo. */
+const VISTAS_SIN_WA = 25;   // visitas con las que un producto sin clics a WhatsApp ya dice algo
 function enTienda(p){
   return !!p && p.activo !== false
     && !(typeof window.tmProductoApagado === 'function' && window.tmProductoApagado(p));
@@ -668,11 +669,14 @@ async function buildTasks(){
   }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
   state.hot = hot;
   state.factsVistas = facts.vistas; state.factsWhats = facts.whats;
+  // Si esta pasada no pudo leer visitas o WhatsApp, «ninguno» sería mentira:
+  // 0 vistas se ve igual que una lectura rota.
+  state.analiticaOk = !_lecturas.fallos.some(f=>/analytics\/(vistas|whatsapp)/.test(f.path));
   trendSnapshot(facts.vistas, facts.whats);
   const topHot = hot.find(x=>num(x.p.stock)>0);
   if (topHot && (topHot.wa>=3 || topHot.views>=25)) addTask(tasks,{kind:'hot',urgency:3,icon:'🔥',pid:topHot.p.id,title:`Producto caliente: ${topHot.p.nombre}`,detail:`${topHot.views} vistas · ${topHot.wa} WhatsApp · stock ${num(topHot.p.stock)}. Publicarlo puede vender rápido.`,action:'Publicar',tab:'publicar-ahora'});
 
-  const noSalesViews = hot.find(x=>x.views>=25 && x.wa===0 && num(x.p.stock)>2);
+  const noSalesViews = hot.find(x=>x.views>=VISTAS_SIN_WA && x.wa===0 && num(x.p.stock)>2);
   if (noSalesViews) addTask(tasks,{kind:'offer',urgency:2,icon:'🏷️',pid:noSalesViews.p.id,title:`Oferta sugerida: ${noSalesViews.p.nombre}`,detail:`Muchas vistas (${noSalesViews.views}) pero pocos WhatsApp. Prueba oferta flash o mejor texto.`,action:'Oferta',tab:'oferta-dia'});
 
   const sinSeo = ps.filter(p=>p.activo!==false && !p.seoTitle && !p.seoDescription);
@@ -2262,6 +2266,19 @@ window.tmCopilotoTareas = function(){ return (state.tasks||[]).map(t=>({...t}));
 // no si está cargando ahora: entre pasada y pasada `loading` es false y las
 // tareas siguen siendo las buenas.
 window.tmCopilotoListo = function(){ return !!state.tasksListas; };
+/* Productos que la gente mira y nadie pide: el precio es el sospechoso. Misma
+   regla que «Oferta sugerida» (VISTAS_SIN_WA vistas y 0 WhatsApp) pero todos los
+   que la cumplen, no solo el primero. 📡 Radar los propone para vigilar. Tres
+   estados, no dos: aún no calculado / no pude leer las visitas / lista (que
+   puede estar vacía). Una lectura rota no es «ningún producto». */
+window.tmSinClicsConVistas = function(){
+  if(!state.tasksListas) return {estado:'cargando', items:[]};
+  if(!state.analiticaOk) return {estado:'error', items:[]};
+  const v=state.factsVistas||{}, w=state.factsWhats||{};
+  const items=products().filter(p=>enTienda(p) && num(p.stock)>0 && num(v[String(p.id)])>=VISTAS_SIN_WA && num(w[String(p.id)])===0)
+    .map(p=>({id:p.id, nombre:p.nombre, vistas:num(v[String(p.id)])})).sort((a,b)=>b.vistas-a.vistas);
+  return {estado:'ok', items};
+};
 window.tmCopilotoAbrirTarea = abrirTarea;
 window.tmCopilotoDescartarTarea = descartarTarea;
 // Las tareas se recalculan solas cada 90 s y al arrancar; Inicio se pinta
