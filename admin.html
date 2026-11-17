@@ -564,6 +564,15 @@ try{var _piel=localStorage.getItem('tm_piel');
   .radar-com.mal{border:1px solid rgba(255,90,80,.5)}
   .radar-com-n{color:var(--muted);font-size:11.5px}
   .radar-com-t{color:var(--muted)}
+  .radar-graf{margin-top:10px;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.03)}
+  .radar-graf-t{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .radar-graf .radar-graf-t{margin:0 0 6px;color:#e8e2d9}
+  .radar-graf svg{display:block;width:100%;height:84px}
+  .radar-leyenda{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:12px;color:var(--muted)}
+  .radar-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+  .radar-sug{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(217,179,106,.4);background:rgba(217,179,106,.07)}
+  .radar-sug-t{font-size:12.5px;color:#e8e2d9;margin-bottom:4px}
+  .radar-op-s{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
   .radar-no{flex:none;min-height:34px;padding:4px 9px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
@@ -1785,6 +1794,7 @@ try{var _piel=localStorage.getItem('tm_piel');
           <summary><b>🎯 Qué vigilar</b> <span id="radar-elegir-n" class="radar-n"></span></summary>
           <p class="radar-ayuda">Elige los productos que quieres comparar con Revolico, Porlalivre y lelespc (máximo 40). Los agotados no se buscan hasta que vuelvan a tener stock.</p>
           <div id="radar-elegidos"></div>
+          <div id="radar-sugeridos"></div>
           <div class="radar-filtros">
             <input class="form-input" id="radar-buscar" type="search" placeholder="🔍 Buscar producto…" oninput="radarPintarElegir()" autocomplete="off">
             <select class="form-select" id="radar-cat" onchange="radarPintarElegir()" aria-label="Categoría"><option value="">Todas las categorías</option></select>
@@ -2466,7 +2476,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=3833f697"></script>
+<script src="js/revolico_integration.js?v=36d9e6c9"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -2970,7 +2980,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=e6a536a1"></script>
-<script src="js/admin-copilot.js?v=2650e5f3"></script>
+<script src="js/admin-copilot.js?v=4a19301b"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
 <script src="js/tarjeta-cliente.js?v=71e8c8b5"></script>
@@ -6254,6 +6264,7 @@ function radarPintarElegir(){
   const sel=PRODUCTOS.filter(p=>ids.has(String(p.id)));
   const eb=$('#radar-elegidos');
   if(eb) eb.innerHTML = sel.length ? '<div class="radar-chips">'+sel.map(p=>`<button type="button" class="radar-chip${radarConStock(p)?'':' off'}" onclick="radarToggle('${esc(String(p.id))}')" title="Quitar del radar">${esc(p.nombre)}${radarConStock(p)?'':' · agotado'} <span aria-hidden="true">✕</span></button>`).join('')+'</div>' : '';
+  radarPintarSugeridos(ids);
   const q=_rn(($('#radar-buscar')||{}).value||'').trim(), cat=(cs&&cs.value)||'';
   if(!q && !cat){ box.innerHTML='<p class="radar-ayuda">Busca un producto o elige una categoría para añadirlo.</p>'; return; }
   const words=q.split(/\s+/).filter(Boolean);
@@ -6261,6 +6272,25 @@ function radarPintarElegir(){
   box.innerHTML = lista.length ? lista.map(p=>`<button type="button" class="radar-op" onclick="radarToggle('${esc(String(p.id))}')"><span class="radar-op-n">${esc(p.nombre)}</span><span class="radar-op-p">${money(p.precioActual||p.precio)}</span><span class="radar-op-mas">＋</span></button>`).join('')
     : '<p class="radar-ayuda">Nada con stock que coincida.</p>';
 }
+/* 💡 Para vigilar: los productos con muchas visitas y ningún WhatsApp. Si nadie
+   los pide, a lo mejor el precio es el problema, y el radar dice si lo es.
+   Los calcula el Copiloto (window.tmSinClicsConVistas): no se repite el análisis
+   aquí. «Cargando» no pinta nada; «no pude leer» lo dice, porque callar leería
+   como «ningún producto» y no es lo mismo. */
+function radarPintarSugeridos(ids){
+  const box=$('#radar-sugeridos'); if(!box) return;
+  if(typeof window.tmSinClicsConVistas!=='function'){ box.innerHTML=''; return; }
+  const r=window.tmSinClicsConVistas();
+  if(r.estado==='cargando'){ box.innerHTML=''; return; }
+  if(r.estado==='error'){ box.innerHTML='<p class="radar-ayuda">💡 No pude leer las visitas ahora, así que no te propongo nada.</p>'; return; }
+  const lista=r.items.filter(x=>!ids.has(String(x.id))).slice(0,5);
+  if(!lista.length){ box.innerHTML='<p class="radar-ayuda">💡 Ahora mismo ningún producto tiene muchas visitas sin WhatsApp.</p>'; return; }
+  box.innerHTML='<div class="radar-sug"><div class="radar-sug-t">💡 Te propongo vigilar estos: los miran y nadie escribe. A lo mejor el precio es el problema.</div>'+
+    lista.map(x=>`<button type="button" class="radar-op" onclick="radarToggle('${esc(String(x.id))}')"><span class="radar-op-n">${esc(x.nombre)}<small class="radar-op-s">${x.vistas} visitas · 0 WhatsApp</small></span><span class="radar-op-mas">＋</span></button>`).join('')+'</div>';
+}
+// El Copiloto termina su pasada después de que se pinta la pantalla: sin este
+// aviso las propuestas no aparecerían hasta tocar algo.
+(function(){ const antes=window.tmInicioAgenda; window.tmInicioAgenda=function(){ try{ if(typeof antes==='function') antes.apply(this,arguments); }finally{ try{ const v=document.getElementById('view-radar'); if(v&&v.classList.contains('active')&&typeof radarPintarElegir==='function') radarPintarElegir(); }catch(e){} } }; })();
 function radarToggle(id){
   const ids=new Set(radarIds()); id=String(id);
   if(ids.has(id)) ids.delete(id);
@@ -6363,6 +6393,32 @@ function radarComision(r, min, tuyo){
   if(queda>0) return `<div class="radar-com ok">💸 Igualarlo es bajar ${money(baja)}. Tu comisión es ${fmt(com)}: te quedarían <b>${fmt(queda)}</b>.${nota}</div>`;
   return `<div class="radar-com mal">💸 Igualarlo es bajar ${money(baja)}, y tu comisión es ${fmt(com)}: <b>no te alcanza</b>${queda<0?' (perderías '+fmt(-queda)+')':''}.${nota}</div>`;
 }
+/* La tendencia de los últimos días: lo típico del mercado, lo más barato y tu
+   precio. Un punto por día (lo guarda así scripts/precio_radar.py). Con un solo
+   día no hay tendencia que dibujar y lo dice, en vez de enseñar un punto
+   solo que parece un gráfico. */
+function radarGrafica(r){
+  const h=(r.historial||[]).filter(e=>e&&e.fecha&&e.mediana>0&&!isNaN(Date.parse(e.fecha)));
+  if(h.length<2) return '<div class="radar-graf-t">📈 La tendencia se ve a partir del segundo día de búsquedas.</div>';
+  const SER=[{k:'mediana',c:'#d9b36a',n:'Típico'},{k:'min',c:'#50c878',n:'Más barato'},{k:'tu',c:'#ffffff',n:'Tú',d:'4 3'}];
+  const pts=SER.map(s=>({s, p:h.filter(e=>e[s.k]>0).map(e=>[Date.parse(e.fecha),Number(e[s.k])])}));
+  const todos=pts.flatMap(x=>x.p.map(q=>q[1])), tt=h.map(e=>Date.parse(e.fecha));
+  const t0=Math.min(...tt), t1=Math.max(...tt); let y0=Math.min(...todos), y1=Math.max(...todos);
+  if(y1-y0<1){ y0-=1; y1+=1; }
+  const W=320,H=84,P=8, X=t=>P+(t1>t0?(t-t0)/(t1-t0):0)*(W-2*P), Y=v=>H-P-(v-y0)/(y1-y0)*(H-2*P);
+  const lineas=pts.filter(x=>x.p.length).map(({s,p})=>{
+    const ultimo=p[p.length-1];
+    return (p.length>1?`<polyline fill="none" stroke="${s.c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"${s.d?` stroke-dasharray="${s.d}"`:''} points="${p.map(q=>X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1)).join(' ')}"/>`:'')+
+           `<circle cx="${X(ultimo[0]).toFixed(1)}" cy="${Y(ultimo[1]).toFixed(1)}" r="3.2" fill="${s.c}"/>`;
+  }).join('');
+  const ult=e=>{ const v=h.slice().reverse().find(x=>x[e]>0); return v?v[e]:null; };
+  const leyenda=SER.map(s=>{ const v=ult(s.k); return v==null?'':`<span class="radar-leg"><i style="background:${s.c}"></i>${s.n} ${money(v)}</span>`; }).join('');
+  const a=h[0].mediana, b=h[h.length-1].mediana, dias=Math.round((t1-t0)/864e5), pct=Math.round((b-a)/a*100);
+  const resumen=`Típico ${money(a)} → ${money(b)} en ${dias} día${dias!==1?'s':''}${pct?` (${pct>0?'+':''}${pct} %)`:' (sin cambio)'}`;
+  return `<div class="radar-graf"><div class="radar-graf-t">📈 ${esc(resumen)}</div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc('Tendencia: '+resumen)}" preserveAspectRatio="none">${lineas}</svg>
+    <div class="radar-leyenda">${leyenda}</div></div>`;
+}
 function radarTarjeta(r){
   const pid=String(r.id), okUrl=u=>/^https?:\/\//i.test(u||'');
   const term=RADAR_TERM[pid]||'', busca=term||r.busqueda||'';
@@ -6395,7 +6451,7 @@ function radarTarjeta(r){
   const nConv = muestras.filter(m=>m.moneda==='CUP').length;
   const convTxt = nConv ? `<div class="radar-conv">💱 ${nConv===1?'1 anuncio está en CUP y se convirtió':nConv+' anuncios están en CUP y se convirtieron'} a dólares${tasaR?' a 1 USD = '+tasaR+' MN':''}. Marcado${nConv!==1?'s':''} «convertido» abajo.</div>` : '';
   const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncio${n!==1?'s':''})</div>` : '';
-  return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;line-height:1.9;margin-top:4px"><div>Tu precio: ${tuTxt}</div>${merc}${convTxt}<div>${comp}</div></div>${radarComision(r,min,tuyo)}${det}</div>`;
+  return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;line-height:1.9;margin-top:4px"><div>Tu precio: ${tuTxt}</div>${merc}${convTxt}<div>${comp}</div></div>${radarComision(r,min,tuyo)}${radarGrafica(r)}${det}</div>`;
 }
 function radarNoEs(pid, url){
   const l=RADAR_EXCL[pid]||(RADAR_EXCL[pid]=[]);
@@ -6414,6 +6470,7 @@ function radarTermGuardar(pid, borrar){
   renderRadar();
 }
 window.radarPintarElegir=radarPintarElegir; window.radarToggle=radarToggle; window.radarGuardar=radarGuardar;
+window.tmRadarDatos=function(){ return RADAR; };   // lo lee revolico_integration.js (_lineaMasBarato)
 window.radarNoEs=radarNoEs; window.radarDeshacer=radarDeshacer; window.radarTermEditar=radarTermEditar; window.radarTermGuardar=radarTermGuardar;
 
 

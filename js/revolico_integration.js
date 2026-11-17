@@ -921,6 +921,41 @@ function _cuandoTxt(ts) {
 //  FACEBOOK
 // ══════════════════════════════════════════════════════════════
 
+/* «Comparé con Revolico el 17/11: no encontré ninguno más barato.» Solo si es
+   verdad, y con la fecha dentro: un post en un grupo se queda semanas y un
+   «hoy» sin fecha deja de ser cierto en cuanto alguien baja el precio (por eso
+   Revólico tampoco lleva el stock). Sale de lo que dejó 📡 Radar y exige TODO:
+     · la búsqueda es de hace menos de TM_RADAR_FRESCO_H horas;
+     · el precio de este producto es el mismo que cuando se comparó (si lo
+       cambiaste después, la comparación ya no habla de este precio);
+     · se encontraron al menos 3 anuncios, y alguno es de Revolico (con uno solo,
+       «ninguno más barato» es no haber mirado);
+     · nadie, entre los que cuentan, está por debajo.
+   Sin cualquiera de ellas no sale nada: callar nunca es mentira. Va en los
+   posts de Facebook —las cuatro versiones— y NO en Revólico: ese anuncio dura
+   meses. Los anuncios que el gestor quitó con «No es este» no se descuentan: el
+   mínimo que se mira incluye los dudosos, que solo puede hacer la afirmación
+   más difícil de cumplir. */
+const TM_RADAR_FRESCO_H = 20;
+function _lineaMasBarato(p) {
+    try {
+        const R = (typeof window.tmRadarDatos === 'function') ? window.tmRadarDatos() : null;
+        if (!R || !Array.isArray(R.productos) || !R.actualizado) return '';
+        const cuando = Date.parse(R.actualizado), edad = Date.now() - cuando;
+        if (!(edad >= 0 && edad < TM_RADAR_FRESCO_H * 3600000)) return '';
+        const r = R.productos.find(x => x && String(x.id) === String((p || {}).id));
+        if (!r || r.tuMoneda === 'MN') return '';
+        const tu = Number(r.tuPrecio) || 0, m = r.mercado || {};
+        if (!(tu > 0) || Math.abs(tu - (Number(p.precioActual) || 0)) > 0.005) return '';
+        if (!(Number(p.stock) > 0)) return '';
+        if (!(Number(m.n) >= 3) || !((r.muestras || []).some(x => x && x.fuente === 'revolico'))) return '';
+        if (!(Number(m.min) >= tu)) return '';
+        const d = new Date(cuando);
+        const fecha = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+        return `✅ Comparé con Revolico el ${fecha}: no encontré ninguno más barato.`;
+    } catch (e) { return ''; }
+}
+
 /* opciones = { variante: 0-3, enlaces: bool (por defecto sí), grupo }
 
    La versión 0 es el post de siempre. Las otras tres cambian el arranque, el
@@ -958,6 +993,8 @@ function _textoFacebook(producto, opciones) {
 
     if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
     if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
+    const _masBarato = _lineaMasBarato(producto);
+    if (_masBarato) t += _masBarato + '\n';
     // Escasez real (solo si de verdad queda poco): es lo que más mueve a escribir.
     const _st = Number(producto.stock || 0);
     if (_st > 0 && _st <= 3) t += _st === 1 ? '⚡ ¡Queda 1 disponible!\n' : `⚡ ¡Últimas ${_st} unidades!\n`;
@@ -1004,6 +1041,8 @@ function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
     }
     if (producto.garantia)   L.push(`🛡️ Garantía: ${producto.garantia}`);
     if (producto.devolucion) L.push('✅ Devolución segura garantizada');
+    const masBarato = _lineaMasBarato(producto);
+    if (masBarato) L.push(masBarato);
     const st = Number(producto.stock || 0);
     if (st > 0 && st <= 3) L.push(st === 1 ? '⚡ Queda 1' : `⚡ Quedan ${st}`);
     L.push('');

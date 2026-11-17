@@ -357,6 +357,19 @@ def _filtrar_outliers(precios, tu):
     return dentro if len(dentro) >= 3 else (dentro or precios)
 
 
+def historial_por_dia(hist, fecha, med=None, mn=None, tu=None):
+    """Un punto por día, el último de ese día. Cada búsqueda añadía uno: tres
+    pasadas manuales el mismo día eran tres puntos, la gráfica de «14 días»
+    eran 14 búsquedas, y «ayer» era una búsqueda de hace una hora."""
+    por_dia = {}
+    for e in (hist or []):
+        if e.get("fecha") and e.get("mediana"):
+            por_dia[e["fecha"]] = e
+    if med is not None:
+        por_dia[fecha] = {"fecha": fecha, "mediana": med, "min": mn, "tu": tu}
+    return [por_dia[d] for d in sorted(por_dia)][-HIST_DIAS:]
+
+
 def analizar(prod, muestras, prev_hist, fecha, tasa=None):
     tu = float(prod.get("precioActual") or 0)
     # Un producto con precio fijo en MN (la ficha dice «280 MN») no vale 280
@@ -381,7 +394,9 @@ def analizar(prod, muestras, prev_hist, fecha, tasa=None):
     if precios:
         mn = min(precios); med = round(_mediana_recortada(precios), 2)
         res["mercado"] = {"min": mn, "mediana": med, "n": len(precios)}
-        ayer = hist[-1]["mediana"] if hist else None
+        # «Ayer» es el último día anterior a hoy, no la búsqueda de hace una hora.
+        antes = [e for e in hist if e.get("fecha") != fecha and e.get("mediana")]
+        ayer = antes[-1]["mediana"] if antes else None
         res["deltaAyerMediana"] = round(med - ayer, 2) if ayer else None
         if tu > med * 1.10:
             res["estado"] = "encima"
@@ -392,14 +407,14 @@ def analizar(prod, muestras, prev_hist, fecha, tasa=None):
         else:
             res["estado"] = "competitivo"
             res["sugerencia"] = {"texto": "Precio competitivo respecto al mercado"}
-        hist.append({"fecha": fecha, "mediana": med})
+        hist = historial_por_dia(hist, fecha, med, mn, tu)
     else:
         res["mercado"] = {"min": 0, "mediana": 0, "n": 0}
         res["estado"] = "sin_datos"
         res["deltaAyerMediana"] = None
     if tu_orig is not None:
         res["tuMoneda"], res["tuPrecioOrig"] = "MN", tu_orig
-    res["historial"] = hist[-HIST_DIAS:]
+    res["historial"] = historial_por_dia(hist, fecha)
     # Todas las que cuentan (con tope): el panel las enseña para verificar y
     # recalcula al momento si el gestor marca una como «no es este».
     res["muestras"] = sorted(muestras, key=lambda x: x["precio"])[:20]

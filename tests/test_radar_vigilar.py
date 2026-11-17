@@ -88,6 +88,90 @@ class MonedaTest(unittest.TestCase):
         self.assertEqual("sin_datos", a["estado"])
 
 
+class HistorialTest(unittest.TestCase):
+    """Un punto por día: cada búsqueda manual añadía uno y «ayer» era una
+    búsqueda de hace una hora."""
+    def test_varias_busquedas_el_mismo_dia_dejan_un_punto(self):
+        h = [{"fecha": "2026-11-16", "mediana": 100}, {"fecha": "2026-11-17", "mediana": 90},
+             {"fecha": "2026-11-17", "mediana": 85}]
+        out = pr.historial_por_dia(h, "2026-11-17", 80, 70, 100)
+        self.assertEqual(["2026-11-16", "2026-11-17"], [e["fecha"] for e in out])
+        self.assertEqual((80, 70, 100), (out[1]["mediana"], out[1]["min"], out[1]["tu"]))
+
+    def test_ayer_es_el_ultimo_dia_anterior_no_la_busqueda_de_antes(self):
+        h = [{"fecha": "2026-11-16", "mediana": 100}, {"fecha": "2026-11-17", "mediana": 90}]
+        a = pr.analizar({"id": 1, "nombre": "x", "precioActual": 100},
+                        [{"precio": p, "titulo": "x"} for p in (70, 80, 90)], h, "2026-11-17", 925)
+        self.assertEqual(-20, a["deltaAyerMediana"])      # 80 - 100, no 80 - 90
+        self.assertEqual(2, len(a["historial"]))
+
+    def test_sin_dia_anterior_no_hay_delta(self):
+        h = [{"fecha": "2026-11-17", "mediana": 90}]
+        a = pr.analizar({"id": 1, "nombre": "x", "precioActual": 100},
+                        [{"precio": 80, "titulo": "x"}], h, "2026-11-17", 925)
+        self.assertIsNone(a["deltaAyerMediana"])
+
+    def test_tope_de_dias(self):
+        h = [{"fecha": f"2026-10-{d:02d}", "mediana": 100} for d in range(1, 29)]
+        self.assertEqual(pr.HIST_DIAS, len(pr.historial_por_dia(h, "2026-11-01", 90)))
+
+    def test_los_puntos_sin_mediana_no_cuentan(self):
+        self.assertEqual([], pr.historial_por_dia([{"fecha": "2026-11-16", "mediana": 0}], "2026-11-17"))
+
+
+class ProponerVigilarTest(unittest.TestCase):
+    """💡 El radar propone lo que se mira y nadie pide. Lo calcula el Copiloto:
+    el panel no repite el análisis, y una lectura rota no es «ninguno»."""
+    JS = open(os.path.join(RAIZ, "js", "admin-copilot.js"), encoding="utf-8").read()
+    HTML = open(os.path.join(RAIZ, "admin.html"), encoding="utf-8").read()
+
+    def test_la_misma_regla_que_oferta_sugerida(self):
+        # Una sola constante: con dos copias, «oferta sugerida» y «para vigilar»
+        # acabarían hablando de productos distintos.
+        self.assertEqual(1, self.JS.count("const VISTAS_SIN_WA = 25;"))
+        self.assertIn("x.views>=VISTAS_SIN_WA && x.wa===0", self.JS)
+        self.assertIn("num(v[String(p.id)])>=VISTAS_SIN_WA", self.JS)
+
+    def test_tres_estados_y_lectura_rota_no_es_ninguno(self):
+        cuerpo = self.JS[self.JS.index("window.tmSinClicsConVistas = function()"):]
+        cuerpo = cuerpo[:cuerpo.index("\n};") + 3]
+        for estado in ("'cargando'", "'error'", "'ok'"):
+            self.assertIn(estado, cuerpo)
+        self.assertLess(cuerpo.index("tasksListas"), cuerpo.index("analiticaOk"))
+        self.assertIn("state.analiticaOk = !_lecturas.fallos.some", self.JS)
+        self.assertRegex(self.JS, r"analytics\\/\(vistas\|whatsapp\)")
+
+    def test_el_panel_usa_la_del_copiloto_y_no_repite_el_analisis(self):
+        self.assertIn("window.tmSinClicsConVistas", self.HTML)
+        self.assertNotIn("/analytics/vistas", self.HTML[self.HTML.index("function radarPintarSugeridos"):
+                                                          self.HTML.index("function radarToggle")])
+
+    def test_repinta_cuando_el_copiloto_termina(self):
+        self.assertIn("window.tmInicioAgenda=function(){", self.HTML.replace(" ", ""))
+        self.assertIn("radarPintarElegir()", self.HTML[self.HTML.index("const antes=window.tmInicioAgenda"):][:400])
+
+
+class MasBaratoEnPostsTest(unittest.TestCase):
+    """«Comparé con Revolico el 17/11: no encontré ninguno más barato» solo sale
+    si es verdad, con fecha, y no en Revólico (ese anuncio dura meses)."""
+    def test_la_frase_en_navegador(self):
+        import shutil
+        import subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, os.path.join(RAIZ, "tests", "radar_publicar_check.mjs")], cwd=RAIZ,
+                           capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
+
+    def test_los_textos_la_piden_a_la_misma_funcion_y_revolico_no(self):
+        src = open(os.path.join(RAIZ, "js", "revolico_integration.js"), encoding="utf-8").read()
+        self.assertEqual(1, src.count("function _lineaMasBarato("))
+        self.assertEqual(2, src.count("_lineaMasBarato(producto)"))      # versión 0 y versiones 1-3
+        rev = src[src.index("function _textoRevolico("):src.index("function _vecesRevolico")]
+        self.assertNotIn("_lineaMasBarato", rev)
+
+
 class MemoriaTest(unittest.TestCase):
     """128GB/8GB RAM y 64GB/8GB RAM comparten el 8: no son el mismo teléfono."""
     N = "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)"
@@ -207,6 +291,7 @@ class PanelTest(unittest.TestCase):
         self.assertTrue(pr.VIGILAR.endswith("radar-vigilar.json"))
         self.assertIn("terminos:term, excluir:excl", html)
         self.assertIn("function radarComision(", html)
+        self.assertIn("function radarGrafica(", html)
         for f in ("radarToggle", "radarGuardar", "radarPintarElegir", "radarNoEs",
                   "radarDeshacer", "radarTermEditar", "radarTermGuardar"):
             self.assertIn("window." + f + "=" + f, html)
