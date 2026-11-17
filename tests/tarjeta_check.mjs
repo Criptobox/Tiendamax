@@ -173,7 +173,27 @@ const gan = await p.evaluate(([id1, id2]) => {
 ok(gan.con !== null && gan.sin - gan.con === 1000, 'la ganancia en MN baja exactamente 1000: ' + JSON.stringify(gan));
 
 // ── 3) Tres usos y se acabó; una tarjeta inventada no descuenta ───────────
-await vender(p, 'Mario Pérez', TEL, true);
+// El tercer uso, escaneando la tarjeta (foto) con el formulario sin datos del cliente:
+// queda aplicada y la venta, a su nombre y su WhatsApp, sin teclear nada.
+const codigos = await p.evaluate(() => [tmTarjetaCodigoDe('https://tiendamax.org/t?c=TM4VE3C8'), tmTarjetaCodigoDe('tm-4ve3c8'), tmTarjetaCodigoDe('4VE3C8'), tmTarjetaCodigoDe('https://otra.cosa/?c=TM0OIL11'), tmTarjetaCodigoDe('hola')]);
+ok(JSON.stringify(codigos) === JSON.stringify(['TM4VE3C8', 'TM4VE3C8', 'TM4VE3C8', '', '']), 'leer el código del QR, de un texto o de 6 letras: ' + JSON.stringify(codigos));
+const sinLector = await p.evaluate(async () => { delete window.BarcodeDetector; await tmTarjetaEscanear(); const t = document.getElementById('tje-est').textContent; document.getElementById('tje-cerrar').click(); return t; });
+ok(/no lee QR/.test(sinLector) && /código/.test(sinLector), 'sin lector en el navegador (iPhone) lo dice y manda a escribir el código: ' + sinLector);
+await p.evaluate(([pid, c]) => {
+    window.BarcodeDetector = class { constructor() {} async detect() { return [{ rawValue: 'https://tiendamax.org/t?c=' + c }]; } };
+    navigator.mediaDevices.getUserMedia = () => Promise.reject(new Error('sin cámara en la prueba'));
+    document.getElementById('tarjeta-hoja')?.remove();
+    ventaAdd(pid);
+    tmTarjetaEscanear();
+}, [P.id, C]);
+await p.waitForTimeout(400);
+await p.setInputFiles('#tje-foto', join(RAIZ, 'iconos', 'favicon-96.png'));
+await p.waitForTimeout(1200);
+const esc = await p.evaluate(() => ({ abierto: !!document.getElementById('tarjeta-escaner'), tel: document.getElementById('venta-tel').value,
+    nom: document.getElementById('venta-cliente').value, caja: document.getElementById('venta-tarjeta').innerText }));
+ok(!esc.abierto && esc.tel === TEL && esc.nom === 'Mario Pérez' && /aplicado/.test(esc.caja), 'escanear la tarjeta la aplica y pone nombre y WhatsApp: ' + JSON.stringify(esc));
+const r3 = await p.evaluate(async () => { ventaRegistrar(); await new Promise(r => setTimeout(r, 900)); const v = JSON.parse(localStorage.getItem('registroVentas'))[0]; return { t: v.tarjeta, tel: v.telefono }; });
+ok(r3.t === C && r3.tel === TEL, 'la venta escaneada lleva la tarjeta y el WhatsApp del cliente: ' + JSON.stringify(r3));
 const r4 = await vender(p, 'Mario Pérez', TEL, true);
 const r5 = await vender(p, 'Mario Pérez', TEL, true);
 ok(r4.venta.tarjeta === C, 'el tercer uso se aplica');

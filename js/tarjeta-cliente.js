@@ -242,13 +242,24 @@
     (cart || []).forEach(function (it) { var g = (Number(it.comision) || 0) * (Number(it.cantidad) || 1); if (it.comisionMoneda === 'MN') mn += g; else usd += g; });
     return { mn: mn, usd: usd };
   }
+  var ESC = '';   // código leído con la cámara o tecleado: manda sobre el WhatsApp
+  var BTN_ESC = '<button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="tmTarjetaEscanear()">📷 Escanear tarjeta</button>';
   function pintarVenta(cart) {
     if (cart) CARRITO = cart;
     var box = document.getElementById('venta-tarjeta'); if (!box) return;
     var telIn = document.getElementById('venta-tel'), codIn = document.getElementById('venta-tj-cod');
     var cod = codIn ? codIn.value : '';
-    var t = (cod && porCodigo(cod)) || porTel(telIn && telIn.value);
-    if (!t || !CARRITO.length) { VENTA_TJ = null; aplicar = false; box.innerHTML = CARRITO.length ? '<div style="margin-top:8px;font-size:11.5px;color:var(--gray)">🎁 ¿Trae Tarjeta TiendaMax? <input id="venta-tj-cod" class="form-input" placeholder="Código TM-…" style="display:inline-block;width:140px;padding:4px 8px;font-size:12px" value="' + escH(cod) + '" oninput="tmTarjetaVentaPintar()"></div>' + (cod ? '<div style="font-size:11.5px;color:#ffb347;margin-top:4px">No encuentro esa tarjeta en este teléfono.</div>' : '') : ''; return; }
+    if (cod) ESC = '';
+    var t = (ESC && porCodigo(ESC)) || (cod && porCodigo(cod)) || porTel(telIn && telIn.value);
+    if (!t || !CARRITO.length) {
+      VENTA_TJ = null; aplicar = false;
+      box.innerHTML = CARRITO.length
+        ? '<div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--gray)">🎁 ¿Trae Tarjeta TiendaMax? ' + BTN_ESC +
+          '<input id="venta-tj-cod" class="form-input" placeholder="o escribe el código" style="width:150px;padding:4px 8px;font-size:12px" value="' + escH(cod) + '" oninput="tmTarjetaVentaPintar()"></div>' +
+          (cod ? '<div style="font-size:11.5px;color:#ffb347;margin-top:4px">No encuentro esa tarjeta en este teléfono.</div>' : '')
+        : '';
+      return;
+    }
     var r = restantes(t);
     if (VENTA_TJ && VENTA_TJ !== t.c) aplicar = false;
     VENTA_TJ = t.c;
@@ -264,7 +275,83 @@
       '<button type="button" class="btn ' + (aplicar ? 'btn-primary' : 'btn-ghost') + '" style="padding:5px 11px;font-size:12px" onclick="tmTarjetaAplicar()">' + (aplicar ? '✅ −1000 MN aplicado' : 'Aplicar −1000 MN') + '</button></div>' +
       (aviso ? '<div style="font-size:11.5px;color:var(--gold,#c9a96e);margin-top:6px">' + escH(aviso) + ' Cobra al cliente 1000 MN menos.</div>' : '') + '</div>';
   }
-  window.tmTarjetaVentaPintar = function (cart) { if (cart && !cart.length) { aplicar = false; VENTA_TJ = null; var ci = document.getElementById('venta-tj-cod'); if (ci) ci.value = ''; } pintarVenta(cart); };
+  window.tmTarjetaVentaPintar = function (cart) { if (cart && !cart.length) { aplicar = false; VENTA_TJ = null; ESC = ''; var ci = document.getElementById('venta-tj-cod'); if (ci) ci.value = ''; } pintarVenta(cart); };
+
+  /* ── Escanear la tarjeta ──
+     Al entregar (se paga al recibir) el gestor tiene la tarjeta delante: un
+     escaneo la deja aplicada, con el nombre y el WhatsApp del cliente puestos
+     si estaban vacíos — así la venta queda a su nombre sin teclear. Si la manda
+     en foto por WhatsApp, «Desde una foto» lee la imagen.
+     Usa el lector del propio navegador (BarcodeDetector: Chrome en Android).
+     Donde no existe (iPhone), lo dice y queda escribir el código: 6 letras. */
+  function codigoDe(texto) {
+    var s = String(texto || '').trim(), m = /[?&]c=([0-9A-Za-z-]+)/.exec(s);
+    var c = (m ? m[1] : s).toUpperCase().replace(/[^0-9A-Z]/g, '');
+    if (/^[0-9A-Z]{6}$/.test(c)) c = 'TM' + c;
+    return /^TM[2-9A-HJKMNP-Z]{6}$/.test(c) ? c : '';
+  }
+  async function aplicarEscaneada(c) {
+    var t = porCodigo(c);
+    if (!t) { try { await sincronizar(); } catch (e) {} t = porCodigo(c); }   // creada en otro teléfono
+    if (!t) return { ok: false, msg: 'Esa tarjeta (' + bonito(c) + ') no está en tu cuenta.' };
+    if (restantes(t) <= 0) return { ok: false, msg: (t.n || 'Ese cliente') + ' ya usó sus ' + USOS + ' descuentos.' };
+    ESC = c;
+    var telIn = document.getElementById('venta-tel'), nomIn = document.getElementById('venta-cliente');
+    if (telIn && !tel(telIn.value) && t.t) telIn.value = t.t;
+    if (nomIn && !nomIn.value.trim() && t.n) nomIn.value = t.n;
+    VENTA_TJ = t.c; aplicar = true; pintarVenta();
+    return { ok: true, t: t };
+  }
+  window.tmTarjetaCodigoDe = codigoDe;
+  window.tmTarjetaEscanear = async function () {
+    var prev = document.getElementById('tarjeta-escaner'); if (prev) prev.remove();
+    var d = document.createElement('div'); d.id = 'tarjeta-escaner';
+    d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:14px';
+    d.innerHTML = '<div style="width:100%;max-width:420px;background:var(--card,#15151f);border-radius:20px;padding:16px;color:var(--text,#fff)">' +
+      '<h3 style="margin:0 0 10px">📷 Escanear tarjeta</h3>' +
+      '<div style="position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:1"><video id="tje-video" playsinline muted style="width:100%;height:100%;object-fit:cover"></video>' +
+      '<div style="position:absolute;inset:18%;border:3px solid #FF6B35;border-radius:18px;box-shadow:0 0 0 999px rgba(0,0,0,.35)"></div></div>' +
+      '<p id="tje-est" style="font-size:12.5px;color:var(--gray,#aaa);margin:10px 0 0;min-height:18px">Apunta al QR de la tarjeta.</p>' +
+      '<div style="display:flex;gap:8px;margin-top:10px"><label class="btn btn-ghost" style="flex:1;text-align:center;cursor:pointer">🖼️ Desde una foto<input id="tje-foto" type="file" accept="image/*" hidden></label>' +
+      '<button class="btn btn-ghost" style="flex:1" id="tje-cerrar">Cancelar</button></div></div>';
+    document.body.appendChild(d);
+    var est = d.querySelector('#tje-est'), video = d.querySelector('#tje-video'), stream = null, vivo = true;
+    function cerrar() { vivo = false; if (stream) stream.getTracks().forEach(function (x) { x.stop(); }); d.remove(); }
+    d.querySelector('#tje-cerrar').onclick = cerrar;
+    var lector = null;
+    try { if ('BarcodeDetector' in window) lector = new window.BarcodeDetector({ formats: ['qr_code'] }); } catch (e) {}
+    async function resultado(valor) {
+      var c = codigoDe(valor);
+      if (!c) { est.textContent = 'Ese QR no es de una Tarjeta TiendaMax.'; return false; }
+      est.textContent = 'Tarjeta ' + bonito(c) + '…';
+      var r = await aplicarEscaneada(c);
+      if (!r.ok) { est.textContent = r.msg; return false; }
+      cerrar();
+      if (typeof showToast === 'function') showToast('🎁 Tarjeta de ' + (r.t.n || 'cliente') + ' aplicada', '−1000 MN · le quedan ' + (restantes(r.t) - 1) + ' después de esta');
+      return true;
+    }
+    d.querySelector('#tje-foto').onchange = async function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      if (!lector) { est.textContent = 'Este navegador no lee QR: escribe el código de la tarjeta (las 6 letras tras TM-).'; return; }
+      try {
+        var bmp = await createImageBitmap(f), cod = await lector.detect(bmp);
+        if (!cod.length) { est.textContent = 'No veo ningún QR en esa foto. Prueba con otra más cerca.'; return; }
+        await resultado(cod[0].rawValue);
+      } catch (err) { est.textContent = 'No pude leer esa foto.'; }
+    };
+    if (!lector) { est.textContent = 'Este navegador no lee QR (pasa en iPhone). Escribe el código de la tarjeta: las 6 letras tras TM-.'; return; }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+      if (!vivo) { stream.getTracks().forEach(function (x) { x.stop(); }); return; }
+      video.srcObject = stream; await video.play();
+    } catch (e) { est.textContent = 'Sin acceso a la cámara. Usa «Desde una foto» o escribe el código.'; return; }
+    (async function bucle() {
+      while (vivo) {
+        try { var cs = await lector.detect(video); if (cs.length && await resultado(cs[0].rawValue)) return; } catch (e) {}
+        await new Promise(function (r) { setTimeout(r, 300); });
+      }
+    })();
+  };
   window.tmTarjetaAplicar = function () { aplicar = !aplicar; pintarVenta(); };
   window.tmTarjetaVenta = function () { return (aplicar && VENTA_TJ) ? { codigo: VENTA_TJ, mn: DESCUENTO_MN } : null; };
   // La venta desde una reserva (vale entregado): se pregunta, con la tarjeta delante.
