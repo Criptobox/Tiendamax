@@ -72,6 +72,13 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
 .btn-s{background:var(--card2);color:var(--text);border:1px solid var(--line)}
 .letra{color:var(--muted);font-size:12px;text-align:center;margin-top:12px;line-height:1.45}
 .cargando{opacity:.55}
+/* El QR para que el gestor lo escanee al vender: blanco y con margen, como lo pide un lector. */
+.qr{display:flex;align-items:center;gap:16px}
+.qr-cuadro{flex:none;width:168px;height:168px;background:#fff;border-radius:16px;padding:10px;box-shadow:0 8px 22px -14px rgba(0,0,0,.6)}
+.qr-cuadro svg{display:block;width:100%;height:100%}
+.qr-txt{min-width:0}
+.qr-txt .cod{font:800 18px ui-monospace,'JetBrains Mono',monospace;letter-spacing:.1em;margin-top:8px;color:var(--text)}
+@media (max-width:360px){.qr{flex-direction:column;text-align:center}.qr-cuadro{width:200px;height:200px}}
 .bolsas{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center}
 .bolsa{width:30px;height:30px;color:var(--accent)}
 .bolsas .mas{font:800 14px Inter,sans-serif;color:var(--accent);margin-left:2px}
@@ -92,6 +99,17 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
     <div class="tj-pie">
       <div class="tj-cod"><small>TU CÓDIGO</small><span id="cod">—</span></div>
       <div class="puntos" id="puntos" aria-label="Descuentos que te quedan"></div>
+    </div>
+  </section>
+
+  <section class="bloque" id="qrB" hidden>
+    <div class="qr">
+      <div class="qr-cuadro" id="qr" role="img" aria-label="Código QR de tu tarjeta"></div>
+      <div class="qr-txt">
+        <h2>📲 Enséñalo al pagar</h2>
+        <p class="sub">Al recibir tu pedido, muestra este QR y te aplicamos el descuento.</p>
+        <div class="cod" id="qrCod"></div>
+      </div>
     </div>
   </section>
 
@@ -129,6 +147,7 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
   </section>
   <p class="letra">Un descuento por compra, en MN. Tarjeta personal, no canjeable por efectivo.</p>
 </main>
+<script src="/js/qr-mini.js"></script>
 <script>
 (function () {
   'use strict';
@@ -193,6 +212,19 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
       if (t.x) $('vence').textContent = (vencida ? ' · caducó el ' : ' · hasta el ') + fecha(t.x);
       document.title = (n ? 'Tarjeta de ' + n : 'Tu Tarjeta') + ' — TiendaMax';
       puntos(vencida ? 0 : r, total);
+      // Su QR, el mismo que lleva la tarjeta: el gestor lo escanea desde el panel
+      // (📷 Escanear tarjeta) y la venta queda a su nombre con el descuento puesto.
+      if (!vencida && typeof tmQR === 'function') {
+        var q = tmQR('https://tiendamax.org/t?c=' + c);
+        if (q) {
+          var d = '';
+          for (var f = 0; f < q.n; f++) for (var cc = 0; cc < q.n; cc++) if (q.get(f, cc)) d += 'M' + (cc + 4) + ' ' + (f + 4) + 'h1v1h-1z';
+          $('qr').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (q.n + 8) + ' ' + (q.n + 8) + '" shape-rendering="crispEdges"><path d="' + d + '" fill="#111"/></svg>';
+          $('qr').dataset.n = q.n;
+          $('qrCod').textContent = bonito;
+          $('qrB').hidden = false;
+        }
+      }
       var limpio = n.replace(/[<>&"]/g, '');
       if (vencida) {
         $('titulo').textContent = 'Tu tarjeta caducó';

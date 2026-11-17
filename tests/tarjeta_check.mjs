@@ -258,16 +258,18 @@ for (const [url, espera] of [[`/t.html?c=${C}`, 'bien'], ['/t.html?c=TM2345AB', 
         tot: document.querySelectorAll('.pt').length, tramos: !document.getElementById('tramos').hidden, regalo: !document.getElementById('regalo').hidden,
         regaloTxt: document.getElementById('regaloSub').textContent, ancho: document.documentElement.scrollWidth,
         bolsas: document.querySelectorAll('#bolsas .bolsa').length, comprasT: document.getElementById('comprasT').textContent,
-        form: getComputedStyle(document.getElementById('codigoF')).display !== 'none', guardada: localStorage.getItem('tm_mi_tarjeta') }));
+        form: getComputedStyle(document.getElementById('codigoF')).display !== 'none',
+        qr: !document.getElementById('qrB').hidden ? Number(document.getElementById('qr').dataset.n || 0) : 0, qrCod: document.getElementById('qrCod').textContent, guardada: localStorage.getItem('tm_mi_tarjeta') }));
     ok(s.ancho <= 320, `${url}: a 320 px no se sale (${s.ancho})`);
     if (espera === 'bien') {
         ok(s.n === 'Mario' && /te quedan 2 descuentos/.test(s.t) && s.pts === 2 && s.tot === 5 && s.tramos, 't.html: nombre, lo que queda (de 3+2) y los tramos: ' + JSON.stringify(s));
         ok(s.regalo && /Ya ganaste tus 2/.test(s.regaloTxt), 'con la campaña viva ofrece regalar, y dice que llegó al tope: ' + s.regaloTxt);
         ok(decodeURIComponent(s.wa).includes(C.slice(0, 2) + '-' + C.slice(2)), 'el pedido lleva el código');
         ok(!s.form, 'con la tarjeta cargada no se ve el campo para escribir el código');
+        ok(s.qr > 0 && s.qrCod === C.slice(0, 2) + '-' + C.slice(2), 'su perfil enseña su QR y su código para escanearlo al vender: ' + JSON.stringify([s.qr, s.qrCod]));
         ok(s.bolsas === 5 && /Has comprado 5 veces/.test(s.comprasT), 'una bolsita por compra: ' + JSON.stringify([s.bolsas, s.comprasT]));
         ok(s.guardada && JSON.parse(s.guardada).c === C, 'abrir su tarjeta la deja recordada en el teléfono');
-    } else if (espera === 'caducada') ok(/caducó/.test(s.t) && !s.regalo && s.pts === 0, 'caducada: ' + JSON.stringify(s));
+    } else if (espera === 'caducada') ok(/caducó/.test(s.t) && !s.regalo && s.pts === 0 && !s.qr, 'caducada (sin QR para cobrar): ' + JSON.stringify(s));
     else if (espera === 'apagada') ok(!s.regalo && /te quedan 3/.test(s.t), 'campaña apagada: se puede usar pero no regalar: ' + JSON.stringify(s));
     else if (espera === 'no-existe') ok(/No encontramos/.test(s.t), 'código que no existe: ' + s.t);
     else ok(/no es de una tarjeta/.test(s.t) && s.form, 'código mal formado (y ofrece escribirlo): ' + s.t);
