@@ -108,6 +108,9 @@ _UNIDADES = [
 ]
 
 
+_MAYOR_MANDA = {"gb", "tb"}
+
+
 def _cifras_texto(texto):
     """{unidad: {valores}} de un texto: '30A' / '30 amperios' → {'a': {'30'}}."""
     t = _norm(texto)
@@ -136,7 +139,14 @@ def mismo_modelo(nombre, titulo):
     (m2 en el m5). Si el anuncio no dice la cifra, no se descarta por eso."""
     pc, tc = _cifras_texto(nombre), _cifras_texto(titulo)
     for u, vals in pc.items():
-        if u in tc and not (tc[u] & vals):
+        if u not in tc:
+            continue
+        if u in _MAYOR_MANDA:
+            # «128GB / 8GB RAM» y «64GB + 8GB RAM» comparten el 8: lo que
+            # distingue el teléfono es la cifra grande, la memoria.
+            if max(map(float, vals)) != max(map(float, tc[u])):
+                return False
+        elif not (tc[u] & vals):
             return False
     pm, tm = _modelos_texto(nombre), _modelos_texto(titulo)
     for pre, vals in pm.items():
@@ -145,25 +155,31 @@ def mismo_modelo(nombre, titulo):
     return True
 
 
+# Un precio con su moneda. Los miles se escriben también con espacio
+# («280 000 CUP»): sin esto se leía «280» y, sin moneda, valía 280 dólares.
+_NUM = r"(?:\d{1,3}(?:[ \u00a0]\d{3})+(?:[.,]\d{1,2})?|\d[\d.,]{1,9})"
+PRECIO_TXT_RE = re.compile(r"\$?\s*" + _NUM + r"\s*(?:USD|CUP|MN|MLC)?", re.I)
 PRECIO_RE = re.compile(r"(\d[\d.,]{1,9})\s*(usd|cup|mn|mlc|\$)?", re.I)
 
 
-def parse_precio_usd(texto, rate):
-    """Devuelve precio en USD (aprox) o None. Convierte CUP/MN con la tasa base."""
+def parse_precio(texto, rate):
+    """{'usd', 'moneda', 'orig'} o None. `orig` es la cifra tal como la escribió
+    el anunciante y `moneda` ('USD' | 'CUP' | 'MLC') la suya: un anuncio en CUP
+    se convierte a USD con la tasa de la tienda SOLO para poder compararlo, y el
+    panel lo dice (antes se convertía sin avisar y un anuncio de 280 000 CUP
+    parecía un precio en dólares como los demás)."""
     if not texto:
         return None
     s = texto.replace("\xa0", " ").strip().lower()
-    cur = "usd"
+    cur = "USD"
     if "cup" in s or " mn" in s or s.endswith("mn"):
-        cur = "cup"
+        cur = "CUP"
     elif "mlc" in s:
-        cur = "mlc"
-    elif "usd" in s or "$" in s:
-        cur = "usd"
-    m = re.search(r"\d[\d.,]{0,12}", s)
+        cur = "MLC"
+    m = re.search(_NUM, s) or re.search(r"\d[\d.,]{0,12}", s)
     if not m:
         return None
-    raw = re.sub(r"[^\d.,]", "", m.group(0))
+    raw = re.sub(r"[^\d.,]", "", m.group(0))   # los espacios de miles se van aquí
     try:
         # ".dd"/",dd" final (1-2 dígitos) = decimales; el resto, miles
         dm = re.search(r"^(.*\d)[.,](\d{1,2})$", raw)
@@ -175,14 +191,21 @@ def parse_precio_usd(texto, rate):
         return None
     if val <= 0:
         return None
-    if cur == "cup":
+    usd = val
+    if cur == "CUP":
         if not rate:
             return None
-        val = val / rate
+        usd = val / rate
     # mlc ~ usd; usd as-is
-    if val < 1 or val > 100000:
+    if usd < 1 or usd > 100000:
         return None
-    return round(val, 2)
+    return {"usd": round(usd, 2), "moneda": cur, "orig": round(val, 2)}
+
+
+def parse_precio_usd(texto, rate):
+    """Devuelve precio en USD (aprox) o None. Convierte CUP/MN con la tasa base."""
+    p = parse_precio(texto, rate)
+    return p["usd"] if p else None
 
 
 def _get(url, params=None):
@@ -206,15 +229,17 @@ def scrape_revolico(query, rate):
         cont = a.find_parent()
         precio_txt = ""
         if cont:
-            pm = re.search(r"\$?\s*\d[\d.,]{1,9}\s*(USD|CUP|MN|MLC)?", cont.get_text(" ", strip=True), re.I)
+            pm = PRECIO_TXT_RE.search(cont.get_text(" ", strip=True))
             if pm:
                 precio_txt = pm.group(0)
-        usd = parse_precio_usd(precio_txt, rate)
+        pp = parse_precio(precio_txt, rate)
+        usd = pp["usd"] if pp else None
         if usd:
             href = a.get("href", "")
             url = href if href.startswith("http") else ("https://www.revolico.com" + href)
             dias = _edad_dias(cont.get_text(" ", strip=True)) if cont else None
-            out.append({"fuente": "revolico", "titulo": titulo[:90], "precio": usd, "url": url, "dias": dias})
+            out.append({"fuente": "revolico", "titulo": titulo[:90], "precio": usd, "url": url, "dias": dias,
+                        "moneda": pp["moneda"], "orig": pp["orig"]})
         if len(out) >= 25:
             break
     return out
@@ -231,15 +256,17 @@ def scrape_porlalivre(query, rate):
         txt = card.get_text(" ", strip=True)
         if not txt or len(txt) < 8:
             continue
-        pm = re.search(r"\$?\s*\d[\d.,]{1,9}\s*(USD|CUP|MN|MLC)?", txt, re.I)
+        pm = PRECIO_TXT_RE.search(txt)
         if not pm:
             continue
-        usd = parse_precio_usd(pm.group(0), rate)
-        if not usd:
+        pp = parse_precio(pm.group(0), rate)
+        if not pp:
             continue
+        usd = pp["usd"]
         a = card.find("a", href=True)
         url = a["href"] if a and a["href"].startswith("http") else ("https://porlalivre.com" + (a["href"] if a else ""))
-        out.append({"fuente": "porlalivre", "titulo": txt[:90], "precio": usd, "url": url, "dias": _edad_dias(txt)})
+        out.append({"fuente": "porlalivre", "titulo": txt[:90], "precio": usd, "url": url, "dias": _edad_dias(txt),
+                    "moneda": pp["moneda"], "orig": pp["orig"]})
         if len(out) >= 25:
             break
     return out
@@ -257,12 +284,14 @@ def scrape_lelespc(query, rate):
         pr = li.select_one(".price, .amount")
         if not nom or not pr:
             continue
-        usd = parse_precio_usd(pr.get_text(" ", strip=True), rate)
-        if not usd:
+        pp = parse_precio(pr.get_text(" ", strip=True), rate)
+        if not pp:
             continue
+        usd = pp["usd"]
         a = li.find("a", href=True)
         out.append({"fuente": "lelespc", "titulo": nom.get_text(" ", strip=True)[:90],
-                    "precio": usd, "url": a["href"] if a else "https://lelespc.store/"})
+                    "precio": usd, "url": a["href"] if a else "https://lelespc.store/",
+                    "moneda": pp["moneda"], "orig": pp["orig"]})
         if len(out) >= 25:
             break
     return out
@@ -328,14 +357,26 @@ def _filtrar_outliers(precios, tu):
     return dentro if len(dentro) >= 3 else (dentro or precios)
 
 
-def analizar(prod, muestras, prev_hist, fecha):
+def analizar(prod, muestras, prev_hist, fecha, tasa=None):
     tu = float(prod.get("precioActual") or 0)
+    # Un producto con precio fijo en MN (la ficha dice «280 MN») no vale 280
+    # dólares: se compara en USD a la tasa de hoy y se dice cuál era el suyo.
+    tu_orig = None
+    if str(prod.get("moneda") or "").upper() in ("MN", "CUP") and tu > 0:
+        if not tasa:
+            return {"id": prod.get("id"), "nombre": prod.get("nombre"), "tuPrecio": None,
+                    "tuMoneda": "MN", "tuPrecioOrig": tu, "mercado": {"min": 0, "mediana": 0, "n": 0},
+                    "estado": "sin_datos", "deltaAyerMediana": None, "historial": list(prev_hist or []),
+                    "muestras": [], "convertidos": 0}
+        tu_orig, tu = tu, round(tu / tasa, 2)
     precios_raw = sorted(it["precio"] for it in muestras if it.get("precio"))
     precios = _filtrar_outliers(precios_raw, tu)
     # conserva solo las muestras cuyos precios sobrevivieron el filtro
     _ok = set(precios)
     muestras = [m for m in muestras if m.get("precio") in _ok] or muestras
     res = {"id": prod.get("id"), "nombre": prod.get("nombre"), "tuPrecio": tu}
+    # Cuántos de los anuncios que cuentan estaban en CUP y se convirtieron.
+    res["convertidos"] = sum(1 for m in muestras if m.get("moneda") == "CUP")
     hist = list(prev_hist or [])
     if precios:
         mn = min(precios); med = round(_mediana_recortada(precios), 2)
@@ -356,6 +397,8 @@ def analizar(prod, muestras, prev_hist, fecha):
         res["mercado"] = {"min": 0, "mediana": 0, "n": 0}
         res["estado"] = "sin_datos"
         res["deltaAyerMediana"] = None
+    if tu_orig is not None:
+        res["tuMoneda"], res["tuPrecioOrig"] = "MN", tu_orig
     res["historial"] = hist[-HIST_DIAS:]
     # Todas las que cuentan (con tope): el panel las enseña para verificar y
     # recalcula al momento si el gestor marca una como «no es este».
@@ -404,7 +447,7 @@ def main():
         except Exception as e:
             print(f"  ⚠ producto {p.get('nombre')}: {e}")
             muestras, desc = [], 0
-        r = analizar(p, muestras, prev_hist.get(pid), fecha)
+        r = analizar(p, muestras, prev_hist.get(pid), fecha, rate)
         r["busqueda"] = term or query_de(p.get("nombre"))
         r["descartados"] = desc
         resultados.append(r)
@@ -420,6 +463,7 @@ def main():
         "actualizado": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "fecha": fecha,
         "fuentes": FUENTES,
+        "tasa": rate,          # 1 USD = tasa MN, la de los anuncios convertidos
         "resumen": resumen,
         "productos": resultados,
     }
