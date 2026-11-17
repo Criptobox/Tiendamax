@@ -1,15 +1,16 @@
 {
-  "actualizado": "2026-11-17T14:51:40.670986+00:00",
+  "actualizado": "2026-11-17T19:39:39.135842+00:00",
   "fecha": "2026-11-17",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
+  "tasa": 925.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -17,12 +18,13 @@
       "id": 1778104924836,
       "nombre": "Generador Solar Portátil BLUETTI AC180",
       "tuPrecio": 640.0,
+      "convertidos": 0,
       "mercado": {
-        "min": 499.0,
-        "mediana": 682.5,
-        "n": 22
+        "min": 620.0,
+        "mediana": 700.0,
+        "n": 21
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 17.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -31,63 +33,208 @@
         {
           "fecha": "2026-11-17",
           "mediana": 682.5
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 700.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "499 USD 🪷Estación de Energía Portátil Bluetti AC70🪷768Wh $499",
-          "precio": 499.0,
-          "url": "https://www.revolico.com/item/estacion-de-energia-portatil-bluetti-ac70768wh-56077757",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "620 USD BLUETTI Estación de energía portátil AC180, batería de reserva LiFePO4 de 1152 Wh ",
           "precio": 620.0,
           "url": "https://www.revolico.com/item/bluetti-estacion-de-energia-portatil-ac180-bateria-de-reserva-lifepo4-de-1152-wh-con-2-salidas-de-ca-de-1800-w-57331265",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 620.0
         },
         {
           "fuente": "revolico",
           "titulo": "640 USD Generador Solar Portátil BLUETTI AC180 · 1152 Wh",
           "precio": 640.0,
           "url": "https://www.revolico.com/item/generador-solar-portatil-bluetti-ac180-1152-wh-58583466",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 640.0
         },
         {
           "fuente": "revolico",
           "titulo": "640 USD Estacion de carga portátil  BLUETTI AC 180.",
           "precio": 640.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-58105890",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 640.0
         },
         {
           "fuente": "revolico",
           "titulo": "640 USD ESTACION DE CARGA PORTÁTIL [BATERÍAS] Estacion de carga portátil BLUETTI AC 180. 🔹",
           "precio": 640.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-baterias-estacion-de-carga-portatil-bluetti-ac-180-potencia-de-salida-de-1800w-continuo-58734277",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 640.0
         },
         {
           "fuente": "revolico",
           "titulo": "640 USD BLUETTI AC180 -",
           "precio": 640.0,
           "url": "https://www.revolico.com/item/bluetti-ac180-665-55917921",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 640.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "665 USD Estacion de carga portátil  BLUETTI AC 180. Compatible con Paneles y Energía Solar",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-54870185",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "665 USD BLUETTI AC180 – Estación de Carga Portátil 1800W. Interesados al 53998989 o 549819",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180-estacion-de-carga-portatil-1800w-interesados-al-53998989-o-54981957-56752827",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "665 USD Estacion de carga portátil  BLUETTI AC 180.",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-57536961",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "665 USD Bluetti AC180 [665]",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180-665-57652277",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "665 USD Estación Bluetti AC180 [665]",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/estacion-bluetti-ac180-665-57834261",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD Estación de carga portátil Bluetti ac180",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac180-56866224",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD BLUETTI AC180 - Estacion de carga portatil - BLUETTI AC180 - Plantas - Estacion en",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180-estacion-de-carga-portatil-bluetti-ac180-plantas-estacion-energeticas-ecoflow-54773983",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD BLUETTI Estación de energía portátil AC180",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/bluetti-estacion-de-energia-portatil-ac180-56369746",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD Estacion de carga portátil  BLUETTI AC 180",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-56869755",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD Bluetti AC180 1152Wh 1800W – Carga 0-80% en 45 min – MENSAJERÍA GRATIS",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180-1152wh-1800w-carga-0-80-en-45-min-mensajeria-gratis-58794050",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "700 USD Estación de carga Bluetti AC180",
+          "precio": 700.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-bluetti-ac180-57166936",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 700.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "730 USD 🔋 BLUETTI AC180 – Estación de energía portátil",
+          "precio": 730.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180-estacion-de-energia-portatil-57094112",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 730.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "740 USD Estación de energía portátil Bluetti AC180 batería de reserva LiFePO4 de 1152 Wh c",
+          "precio": 740.0,
+          "url": "https://www.revolico.com/item/estacion-de-energia-portatil-bluetti-ac180-bateria-de-reserva-lifepo4-de-1152-wh-con-2-salidas-de-ca-de-1800-w-pico-de-56985152",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 740.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "820 USD BLUETTI AC180P DE 1800W y 1440Wh.. ESTACIÓN DE ENERGÍA PORTÁTIL NUEVA EN SU CAJA",
+          "precio": 820.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180p-de-1800w-y-1440wh-nueva-en-su-caja-58740505",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 820.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "835 USD 🔋 BLUETTI AC180P  🔋 Capacidad: 1.440 Wh | Máxima: 1.440 Wh ⚡ Potencia: 1.800 W nom",
+          "precio": 835.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180p-capacidad-1440-wh-maxima-1440-wh-potencia-1800-w-nominal-2700-w-power-lifting-58852990",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 835.0
         }
-      ]
+      ],
+      "busqueda": "generador solar portátil bluetti ac180",
+      "descartados": 2
     },
     {
       "id": 1787071784077,
       "nombre": "Cargador y Mantenedor de Baterías VEVOR 35A",
       "tuPrecio": 125.0,
+      "convertidos": 0,
       "mercado": {
-        "min": 115.0,
+        "min": 125.0,
         "mediana": 125.0,
-        "n": 3
+        "n": 2
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -96,47 +243,55 @@
         {
           "fecha": "2026-11-17",
           "mediana": 125.0
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 125.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "115 USD VEVOR Cargador de Batería Inteligente 30A · 6V / 12V / 24V DC",
-          "precio": 115.0,
-          "url": "https://www.revolico.com/item/vevor-cargador-de-bateria-inteligente-30a-6v-12v-24v-dc-58583425",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "125 USD Cargador y Mantenedor de Baterías VEVOR 35A con Pantalla Digital",
           "precio": 125.0,
           "url": "https://www.revolico.com/item/cargador-y-mantenedor-de-baterias-vevor-35a-con-pantalla-digital-58332137",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 125.0
         },
         {
           "fuente": "revolico",
           "titulo": "125 USD 🔌 Cargador y Mantenedor VEVOR 35A con Pantalla Digital",
           "precio": 125.0,
           "url": "https://www.revolico.com/item/cargador-y-mantenedor-vevor-35a-con-pantalla-digital-58331959",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 125.0
         }
-      ]
+      ],
+      "busqueda": "cargador mantenedor baterías vevor 35a",
+      "descartados": 1
     },
     {
       "id": 1787079480177,
       "nombre": "Controlador MPPT Boost 1200W",
       "tuPrecio": 90.0,
+      "convertidos": 0,
       "mercado": {
         "min": 85.0,
         "mediana": 135.0,
-        "n": 19
+        "n": 20
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
+        {
+          "fecha": "2026-11-17",
+          "mediana": 135.0
+        },
         {
           "fecha": "2026-11-17",
           "mediana": 135.0
@@ -148,55 +303,196 @@
           "titulo": "85 USD Controlador Solar MPPT Boost 1200W",
           "precio": 85.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-57154267",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 85.0
         },
         {
           "fuente": "revolico",
           "titulo": "90 USD Controlador MPPT Boost 1200W · 12V a 60V DC",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/controlador-mppt-boost-1200w-12v-a-60v-dc-58583389",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 90.0
         },
         {
           "fuente": "revolico",
           "titulo": "90 USD Controlador solar MPPT boost 1200w",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58386836",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 90.0
         },
         {
           "fuente": "revolico",
           "titulo": "90 USD Controlador Solar MPPT Boost 1200W",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58332151",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 90.0
         },
         {
           "fuente": "revolico",
           "titulo": "90 USD ☀️ Controlador Solar MPPT Boost 1200W",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58331974",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 90.0
         },
         {
           "fuente": "revolico",
           "titulo": "100 USD Controlador MPPT Solar Boost 1200W (48V / 60V / 72V) - Nuevo en Caja",
           "precio": 100.0,
           "url": "https://www.revolico.com/item/controlador-mppt-solar-boost-1200w-48v-60v-72v-nuevo-en-caja-56634706",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD 🚫🚫 ULTIMAS UNIDADE Controlador solar Mppt 1200w Boost trabaja en 48,60 y 72v.",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/ultimas-unidade-controlador-solar-mppt-1200w-boost-trabaja-en-4860-y-72v-56615518",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W en 130 usd",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-en-140-usd-56279997",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 130.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58514161",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 135.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "135 USD Controlador solar Boost Q7 Lumina Mppt 1200w",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58408912",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 135.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  Potencia máxima: 1200W. Tecnología M",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt135-usdaqui-vendemos-57535984",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 135.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W. ✅ Tecnolog",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt-para-mayor-eficiencia-de-carga-57250846",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 135.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W nuevo con mensajería !",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-nuevo-con-mensajeria-56299820",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 135.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "138 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 138.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58141393",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 138.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "140 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 140.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-56278890",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 140.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "145 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 145.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58825067",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 145.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "145 USD Controlador Solar MPPT 1200W Lumina Q7 Boost – Panel hasta 1200W – Transporte incl",
+          "precio": 145.0,
+          "url": "https://www.revolico.com/item/controlador-solar-mppt-1200w-lumina-q7-boost-panel-hasta-1200w-transporte-incluido-diez-de-octubre-58807064",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 145.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "145 USD Controlador Solar Boost Q7-Lumina MPPT 1200W",
+          "precio": 145.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58650822",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 145.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "145 USD 👑 Controlador Solar Boost Q7-LUMINA MPPT 1200W PRECIO: 145 USD Garantía 7 días 🚗",
+          "precio": 145.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-precio-145-usd-garantia-7-dias-58649173",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 145.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "160 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 160.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58352430",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 160.0
         }
-      ]
+      ],
+      "busqueda": "controlador mppt boost 1200w",
+      "descartados": 0
     },
     {
       "id": 1788627372873,
       "nombre": "VEVOR Cargador de Batería Inteligente 30A",
       "tuPrecio": 115.0,
+      "convertidos": 0,
       "mercado": {
-        "min": 73.0,
+        "min": 85.0,
         "mediana": 115.0,
-        "n": 24
+        "n": 14
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -205,68 +501,163 @@
         {
           "fecha": "2026-11-17",
           "mediana": 115.0
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 115.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "73 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 73.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-73-57893709",
-          "dias": null
+          "titulo": "85 USD Cargador inteligente VEVOR",
+          "precio": 85.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-57895723",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 85.0
         },
         {
           "fuente": "revolico",
-          "titulo": "73 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 73.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-56697144",
-          "dias": null
+          "titulo": "115 USD VEVOR Cargador de Batería Inteligente 30A · 6V / 12V / 24V DC",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/vevor-cargador-de-bateria-inteligente-30a-6v-12v-24v-dc-58583425",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 75.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-75usd-58677023",
-          "dias": null
+          "titulo": "115 USD Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-de-baterias-vevor-30a-6v12v24v-58332119",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 75.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-75-58654988",
-          "dias": null
+          "titulo": "115 USD 🔌 Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-de-baterias-vevor-30a-6v12v24v-58331944",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
-          "titulo": "75 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 75.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-57568815",
-          "dias": null
+          "titulo": "115 USD Cargador de Bateria 30A Vevor [115]",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-de-bateria-30a-vevor-115-57834421",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
-          "titulo": "80 USD Cargador Inteligente VEVOR de 20A para Baterías LiFePO4 y Plomo-Ácido AGM/GEL/SLA d",
-          "precio": 80.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-vevor-de-20a-para-baterias-lifepo4-y-plomo-acido-agmgelsla-de-61224-v-con-lcd-58483303",
-          "dias": null
+          "titulo": "115 USD Cargador 30A Vevor [115]",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-30a-vevor-115-57576733",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR 6v, 12v y 24v, 30A Cargador VEVOR 6v, 12v y 24v, 30A. * Potencia de",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-vevor-6v-12v-y-24v-30a-cargador-vevor-6v-12v-y-24v-30a-potencia-de-carga-de-hasta-30-a-con-corriente-y-58660292",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR de 30A (6V, 12V y 24V)",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-de-20a-12v-y-24v-55222199",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR 6v, 12v y 24v, 30A $115",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-vevor-6v-12v-y-24v-30a-115-58483208",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR 6v, 12v y 24v,  30A.",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-vevor-6v-12v-y-24v-30a-58297362",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR 6v, 12v y 24v, 30A",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-vevor-6v-12v-y-24v-30a-57748809",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Cargador VEVOR 6v, 12v y 24v, 30A",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/cargador-vevor-6v-12v-y-24v-30a-57594667",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Cargador Inteligente de Baterías VEVOR 6V/12V/24V 30A",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-de-baterias-vevor-6v12v24v-30a-57680305",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 130.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Cargador inteligente",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-57714278",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 130.0
         }
-      ]
+      ],
+      "busqueda": "vevor cargador batería inteligente 30a",
+      "descartados": 10
     },
     {
       "id": 1790961637329,
       "nombre": "Base para Paneles",
       "tuPrecio": 60.0,
+      "convertidos": 0,
       "mercado": {
         "min": 60.0,
         "mediana": 60.0,
         "n": 1
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
+        {
+          "fecha": "2026-11-17",
+          "mediana": 60.0
+        },
         {
           "fecha": "2026-11-17",
           "mediana": 60.0
@@ -278,20 +669,25 @@
           "titulo": "60 USD Base paneles",
           "precio": 60.0,
           "url": "https://www.revolico.com/item/base-paneles-58655668",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 60.0
         }
-      ]
+      ],
+      "busqueda": "base paneles",
+      "descartados": 0
     },
     {
       "id": 1792172735426,
       "nombre": "Interruptor de Transferencia Automática (ATS) LSP M2R63-110/3 | Transfer de 3 Polos 63A (Control 110V)",
       "tuPrecio": 65.0,
+      "convertidos": 0,
       "mercado": {
         "min": 40.0,
         "mediana": 65.0,
-        "n": 19
+        "n": 15
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -300,63 +696,163 @@
         {
           "fecha": "2026-11-17",
           "mediana": 65.0
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 65.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "40 USD ⚡ INTERRUPTOR DE TRANSFERENCIA AUTOMÁTICA ATS 2P – 100A",
-          "precio": 40.0,
-          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-2p-100a-58551496",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "40 USD Interruptor de transferencia automática.",
           "precio": 40.0,
           "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-58116478",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 40.0
         },
         {
           "fuente": "revolico",
           "titulo": "45 USD Interruptor de Transferencia Automática ATS 63A y 100A Red y Generador 45 USD la Un",
           "precio": 45.0,
           "url": "https://www.revolico.com/item/interruptor-transferencia-automatica-ats-63a-red-y-generador-37000-cup-la-habana-57355089",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "50 USD TRANSFER AUTOMATICO 3 POLOS  ATS 100A 220V ( interruptor de transferencia automátic",
-          "precio": 50.0,
-          "url": "https://www.revolico.com/item/terruptor-de-transferencia-automatica-ats-100a-220v-interruptor-de-transferencia-de-energia-din-montado-en-rie-57412032",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 45.0
         },
         {
           "fuente": "revolico",
           "titulo": "55 USD Interruptor de transferencia automática (Transfer)",
           "precio": 55.0,
           "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-56906442",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 55.0
         },
         {
           "fuente": "revolico",
           "titulo": "60 USD Interruptor de Transferencia Automática (ATS) - AC 110V, 2P, 63A",
           "precio": 60.0,
           "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-ac-110v-2p-63a-57587499",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 60.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "65 USD Interruptor de Transferencia Automática LSP M2R63 63A",
+          "precio": 65.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-lsp-m2r63-63a-58332171",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 65.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "65 USD Interruptor De Transferencia Automática (ATS) Dual 2P 63A 110V Automático Y Manual ",
+          "precio": 65.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-dual-2p-63a-110v-automatico-y-manual-con-carcasa-metalica-modelo-gcq2-63-55113724",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 65.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "65 USD Interruptor de (ATS) LSP M2R63-110/3 | Transfer de 3 Polos 63A 110V)",
+          "precio": 65.0,
+          "url": "https://www.revolico.com/item/interruptor-de-ats-lsp-m2r63-1103-transfer-de-3-polos-63a-110v-58583198",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 65.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "65 USD Breaker de transferencia automática 2P  ATS",
+          "precio": 65.0,
+          "url": "https://www.revolico.com/item/breaker-de-transferencia-automatica-2p-ats-56245087",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 65.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "69 USD Interruptor De Transferencia Automática (ATS) NLQ3-125 4P 63A Automático Y Manual P",
+          "precio": 69.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-nlq3-125-4p-63a-automatico-y-manual-para-generador-e-inversor-55113400",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 69.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD ⚡Interruptor de transferencia automático / Transfer Switch Automático (ATS)⚡110 y 2",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatico-transfer-switch-automatico-ats110-y-220-voltios-100-a-58618129",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 80.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD Interruptor de transferencia automática (Transfer)",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-56932554",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 80.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD *INTERRUPTOR DE TRANSFERENCIA AUTOMÁTICA (TRANSFER)*",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-56761793",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 80.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD INTERRUPTOR DE TRANSFERENCIA AUTOMÁTICA (TRANSFER). NUEVO. ENTREGA INMEDIATA",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-nuevo-entrega-inmediata-56706848",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 80.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD Interruptor de transferencia automático / 110 y 220 V  /  2P y 3P / 100 A",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatico-110-y-220-v-2p-y-3p-100-a-58769007",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 80.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Interruptor de transferencia automática digital, 110v 63A.",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-digital-110v-63a-57799766",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.0
         }
-      ]
+      ],
+      "busqueda": "interruptor transferencia automática ats lsp",
+      "descartados": 4
     },
     {
       "id": 1793733652655,
       "nombre": "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
       "tuPrecio": 110.0,
+      "convertidos": 0,
       "mercado": {
-        "min": 100.0,
-        "mediana": 101.0,
+        "min": 97.0,
+        "mediana": 100.59,
         "n": 9
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": -0.41,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -365,63 +861,109 @@
         {
           "fecha": "2026-11-17",
           "mediana": 101.0
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 100.59
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
+          "titulo": "97 USD Celular nuevo iTel Acity A100C",
+          "precio": 97.0,
+          "url": "https://www.revolico.com/item/celular-nuevo-itel-acity-a100c-58896187",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 97.0
+        },
+        {
+          "fuente": "revolico",
           "titulo": "100 USD iTel Acity A100C",
           "precio": 100.0,
           "url": "https://www.revolico.com/item/itel-acity-a100c-58357609",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.0
         },
         {
           "fuente": "revolico",
           "titulo": "100.59 USD iTel Acity A100C",
           "precio": 100.59,
           "url": "https://www.revolico.com/item/itel-acity-a100c-58606038",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.59
         },
         {
           "fuente": "revolico",
           "titulo": "100.59 USD TELEFONO CELULAR  iTel Acity A100C (x) $100.59",
           "precio": 100.59,
           "url": "https://www.revolico.com/item/telefono-celular-itel-acity-a100c-x-10059-58552635",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.59
         },
         {
           "fuente": "revolico",
           "titulo": "100.59 USD 🪙Gana por comprar🪙 teléfono iTel Acity A100C",
           "precio": 100.59,
           "url": "https://www.revolico.com/item/gana-por-comprar-telefono-itel-acity-a100c-58364930",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 100.59
         },
         {
           "fuente": "revolico",
           "titulo": "101 USD 📱 ITEL ACITY A100C – 3GB + 64GB – $101 USD ⚡",
           "precio": 101.0,
           "url": "https://www.revolico.com/item/itel-acity-a100c-3gb-64gb-101-usd-58514474",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 101.0
         },
         {
           "fuente": "revolico",
           "titulo": "110 USD Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
           "precio": 110.0,
           "url": "https://www.revolico.com/item/smartphone-itel-a100c-64gb-rom-hasta-8gb-ram-extendida-58583104",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 110.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "110 USD 📱 Smartphone itel A100C — 64GB, hasta 8GB RAM, Pantalla 6.6\" 90Hz",
+          "precio": 110.0,
+          "url": "https://www.revolico.com/item/smartphone-itel-a100c-64gb-hasta-8gb-ram-pantalla-66-90hz-58566334",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 110.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "115 USD Telefonos Itel A50C y A100C",
+          "precio": 115.0,
+          "url": "https://www.revolico.com/item/telefonos-itel-a50c-y-a100c-57854163",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         }
-      ]
+      ],
+      "busqueda": "smartphone itel a100c 64gb rom",
+      "descartados": 1
     },
     {
       "id": 1793733803341,
       "nombre": "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
       "tuPrecio": 120.0,
+      "convertidos": 0,
       "mercado": {
-        "min": 110.0,
-        "mediana": 117.5,
-        "n": 6
+        "min": 115.0,
+        "mediana": 120.0,
+        "n": 4
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 2.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -430,52 +972,52 @@
         {
           "fecha": "2026-11-17",
           "mediana": 117.5
+        },
+        {
+          "fecha": "2026-11-17",
+          "mediana": 120.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "110 USD Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
-          "precio": 110.0,
-          "url": "https://www.revolico.com/item/smartphone-itel-a100c-64gb-rom-hasta-8gb-ram-extendida-58583104",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "110 USD 📱 Smartphone itel A100C — 64GB, hasta 8GB RAM, Pantalla 6.6\" 90Hz",
-          "precio": 110.0,
-          "url": "https://www.revolico.com/item/smartphone-itel-a100c-64gb-hasta-8gb-ram-pantalla-66-90hz-58566334",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
           "titulo": "115 USD Telefonos Itel A50C y A100C",
           "precio": 115.0,
           "url": "https://www.revolico.com/item/telefonos-itel-a50c-y-a100c-57854163",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
           "titulo": "120 USD Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
           "precio": 120.0,
           "url": "https://www.revolico.com/item/smartphone-itel-a100c-128gb-rom-8gb-ram-35gb-58583135",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 120.0
         },
         {
           "fuente": "revolico",
           "titulo": "120 USD 📱 Smartphone itel A100C 128GB — 8GB RAM, MIL-STD 810H y Control IR",
           "precio": 120.0,
           "url": "https://www.revolico.com/item/smartphone-itel-a100c-128gb-8gb-ram-mil-std-810h-y-control-ir-58616434",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 120.0
         },
         {
           "fuente": "revolico",
           "titulo": "150 USD Teléfono o Smartphone ITEL A100Cs",
           "precio": 150.0,
           "url": "https://www.revolico.com/item/telefono-o-smartphone-itel-a100cs-57769407",
-          "dias": null
+          "dias": null,
+          "moneda": "USD",
+          "orig": 150.0
         }
-      ]
+      ],
+      "busqueda": "smartphone itel a100c 128gb rom",
+      "descartados": 2
     }
   ]
 }
