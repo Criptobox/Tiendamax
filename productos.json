@@ -1330,7 +1330,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
     "categoria": "CARROS",
     "subcategoria": "REFRIGERANTES",
-    "stock": 20,
+    "stock": 21,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1362,7 +1362,7 @@
     "slugsAnteriores": [
       "mannol-ag13-40-c-4013-5l"
     ],
-    "rev": 1793994800647,
+    "rev": 1794896072924,
     "precioOriginal": 0,
     "comision": 0.75,
     "comisionMoneda": "USD",
@@ -12862,7 +12862,6 @@
   {
     "id": 1793392791910,
     "nombre": "Batería Automotriz Lubrim 12V 60Ah",
-    "descripcion": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos modernos de gasolina y diésel de cilindrada pequeña a mediana. Fabricada con tecnología de placas de aleación Plomo-Calcio (Ca/Ca), ofrece una mínima tasa de autodescarga, mayor potencia de arranque en frío y una resistencia superior a la corrosión y altas temperaturas dentro del compartimento del motor.",
     "imagen": "https://tiendamax.org/imagenes/img_1793392775198.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793392775198.webp"
@@ -12870,7 +12869,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 8,
+    "stock": 7,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -12958,9 +12957,10 @@
       "2× Tapas protectoras de seguridad para bornes (roja/negra)"
     ],
     "slug": "bateria-lubrim-12v-60ah",
-    "rev": 1793393116521,
+    "rev": 1794896072924,
     "seoTitle": "Batería Automotriz Lubrim 12V 60Ah en Cuba | TiendaMax",
-    "seoDescription": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos…"
+    "seoDescription": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos…",
+    "descripcion": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos modernos de gasolina y diésel de cilindrada pequeña a mediana. Fabricada con tecnología de placas de aleación Plomo-Calcio (Ca/Ca), ofrece una mínima tasa de autodescarga, mayor potencia de arranque en frío y una resistencia superior a la corrosión y altas temperaturas dentro del compartimento del motor."
   },
   {
     "id": 1793571457168,
