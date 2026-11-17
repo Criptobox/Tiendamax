@@ -128,9 +128,17 @@
   }
 
   /* ── Cuenta (Firebase) ── */
+  // Cuántas compras lleva ese WhatsApp (sin las anuladas): las bolsitas 🛍️ que ve en
+  // su tarjeta y en la tienda. Solo el número: ni productos ni precios, el código
+  // de la tarjeta lo puede tener alguien más.
+  function compras(t) {
+    var tl = t && t.t; if (!tl) return 0;
+    var an = anuladas();
+    return ((typeof cargarVentas === 'function') ? cargarVentas() : []).filter(function (v) { return tel(v.telefono) === tl && an.indexOf(String(v.id)) === -1; }).length;
+  }
   function publico(t) {
     var cf = cfg();
-    return { r: restantes(t), n: pila(t.n).slice(0, 30), e: t.e, x: t.x || 0, f: (cf.on && !vencida(t)) ? 1 : 0, g: premios(t) };
+    return { r: restantes(t), n: pila(t.n).slice(0, 30), e: t.e, x: t.x || 0, f: (cf.on && !vencida(t)) ? 1 : 0, g: premios(t), k: Math.min(999, compras(t)) };
   }
   async function subir(c) {
     var t = leer()[c];
@@ -311,6 +319,9 @@
       } else if (cfg().on && v.telefono && primeraCompraSalvo(v.telefono, v.id)) {
         var tn = crear(v.cliente, v.telefono, v.id);
         setTimeout(function () { hoja(tn, true); }, 300);
+      } else if (v.telefono) {
+        // Compra sin usar la tarjeta: su tarjeta suma una bolsita igual.
+        var tc = porTel(v.telefono); if (tc) subir(tc.c);
       }
       return v;
     };
@@ -509,7 +520,7 @@
   document.addEventListener('DOMContentLoaded', pintarCfg);
   if (document.readyState !== 'loading') setTimeout(pintarCfg, 0);
 
-  window.tmTarjetas = { leer: leer, porTel: porTel, porCodigo: porCodigo, restantes: restantes, premios: premios, vencida: vencida, crear: crear, dibujar: dibujar,
+  window.tmTarjetas = { compras: compras, leer: leer, porTel: porTel, porCodigo: porCodigo, restantes: restantes, premios: premios, vencida: vencida, crear: crear, dibujar: dibujar,
     textoEnvio: textoEnvio, fusionar: fusionar, sincronizar: sincronizar, descuentoDe: descuentoDe, cfg: cfg, USOS: USOS, EXTRA_MAX: EXTRA_MAX, TRAMOS: TRAMOS };
   setTimeout(function () { sincronizar().catch(function () {}); }, 4000);
 })();

@@ -72,6 +72,13 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
 .btn-s{background:var(--card2);color:var(--text);border:1px solid var(--line)}
 .letra{color:var(--muted);font-size:12px;text-align:center;margin-top:12px;line-height:1.45}
 .cargando{opacity:.55}
+.bolsas{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center}
+.bolsa{width:30px;height:30px;color:var(--accent)}
+.bolsas .mas{font:800 14px Inter,sans-serif;color:var(--accent);margin-left:2px}
+.codigo-f{display:flex;gap:8px;margin-top:12px}
+.codigo-f[hidden]{display:none}
+.codigo-f input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:13px 14px;font:700 16px ui-monospace,'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.codigo-f button{border:0;border-radius:14px;padding:0 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font:800 15px Inter,sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
@@ -102,7 +109,17 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
       <li><span class="n">3</span><span>Te descontamos al pagar, según el tramo. Pagas al recibir, como siempre.</span></li>
     </ol>
     <a class="btn btn-wa" id="wa" target="_blank" rel="noopener" hidden>Pedir con mi descuento</a>
+    <form class="codigo-f" id="codigoF" hidden>
+      <input id="codigoIn" placeholder="TM-XXXXXX" maxlength="9" autocomplete="off" aria-label="Código de tu tarjeta">
+      <button type="submit">Ver</button>
+    </form>
     <a class="btn btn-s" href="/">Ver la tienda</a>
+  </section>
+
+  <section class="bloque" id="compras" hidden>
+    <h2 id="comprasT">🛍️ Tus compras</h2>
+    <p class="sub" id="comprasSub"></p>
+    <div class="bolsas" id="bolsas" aria-hidden="true"></div>
   </section>
 
   <section class="bloque" id="regalo" hidden>
@@ -118,7 +135,9 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
   var WA = '5354320170', RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com';
   var USOS = 3, EXTRA_MAX = 2;
   var $ = function (id) { return document.getElementById(id); };
-  var c = (new URLSearchParams(location.search).get('c') || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
+  var GUARDA = 'tm_mi_tarjeta';
+  function recordada() { try { var o = JSON.parse(localStorage.getItem(GUARDA) || 'null'); return o && o.c ? o.c : ''; } catch (e) { return ''; } }
+  var c = (new URLSearchParams(location.search).get('c') || recordada()).toUpperCase().replace(/[^0-9A-Z]/g, '');
   if (/^[0-9A-Z]{6}$/.test(c)) c = 'TM' + c;
   var valido = /^TM[2-9A-HJKMNP-Z]{6}$/.test(c);
   var bonito = valido ? c.slice(0, 2) + '-' + c.slice(2) : '';
@@ -133,11 +152,19 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
   function wa(texto) { var a = $('wa'); a.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(texto); a.hidden = false; }
   function pedir() { wa('Hola, quiero hacer un pedido con mi Tarjeta TiendaMax ' + bonito + ' 🎁'); }
 
+  // Sin enlace (o perdido): se escribe el código y queda recordado en este teléfono.
+  $('codigoF').onsubmit = function (e) {
+    e.preventDefault();
+    var v = $('codigoIn').value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    if (/^[0-9A-Z]{6}$/.test(v)) v = 'TM' + v;
+    location.href = location.pathname + '?c=' + encodeURIComponent(v);
+  };
   if (!valido) {
     $('tj').classList.remove('cargando'); puntos(0, USOS);
-    $('titulo').textContent = 'Este enlace no es de una tarjeta';
-    $('sub').textContent = 'Revisa el código o escríbenos y lo buscamos.';
-    wa('Hola, tengo una Tarjeta TiendaMax y el enlace no me funciona.');
+    $('titulo').textContent = c ? 'Este enlace no es de una tarjeta' : 'Mira tu Tarjeta TiendaMax';
+    $('sub').textContent = c ? 'Revisa el código o escríbenos y lo buscamos.' : 'Escribe el código de tu tarjeta (está debajo de tu nombre, TM-…).';
+    $('codigoF').hidden = false;
+    if (c) wa('Hola, tengo una Tarjeta TiendaMax y el enlace no me funciona.');
     return;
   }
   puntos(USOS, USOS);
@@ -151,11 +178,15 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
       $('tj').classList.remove('cargando');
       if (!t || typeof t.r !== 'number') {
         puntos(0, USOS);
+        try { if (recordada() === c) localStorage.removeItem(GUARDA); } catch (e) {}
+        $('codigoF').hidden = false;
         $('titulo').textContent = 'No encontramos esta tarjeta';
         $('sub').textContent = 'Puede que se haya creado hace un momento. Escríbenos y la comprobamos.';
         wa('Hola, mi Tarjeta TiendaMax ' + bonito + ' no aparece.');
         return;
       }
+      // Es suya: este teléfono la recuerda, y la tienda le saluda por su nombre.
+      try { localStorage.setItem(GUARDA, JSON.stringify({ c: c, ts: Date.now() })); localStorage.setItem('tm_mi_tarjeta_dato', JSON.stringify(t)); } catch (e) {}
       var g = Math.max(0, Math.min(EXTRA_MAX, t.g || 0)), total = USOS + g, r = Math.max(0, Math.min(total, t.r));
       var n = String(t.n || '').trim(), vencida = t.x && Date.now() > t.x;
       if (n) $('nombre').textContent = n;
@@ -174,6 +205,15 @@ h2{font:800 19px/1.25 'Playfair Display',Georgia,serif}
       } else {
         $('titulo').textContent = 'Ya usaste tus descuentos';
         $('sub').textContent = '¡Gracias por comprar con nosotros! Recomienda la tienda y gana uno más.';
+      }
+      // Las bolsitas: una por compra. Solo el número; qué compró no sale aquí.
+      var k = Math.max(0, Math.min(999, Number(t.k) || 0));
+      if (k > 0) {
+        $('compras').hidden = false;
+        $('comprasT').textContent = '🛍️ Has comprado ' + k + ' ' + (k === 1 ? 'vez' : 'veces');
+        $('comprasSub').textContent = k === 1 ? '¡Gracias por confiar en nosotros!' : '¡Gracias por volver! Cada compra suma.';
+        var bolsa = '<svg class="bolsa" viewBox="0 0 24 24" fill="currentColor"><path d="M6 8h12l1 13H5L6 8z" opacity=".9"/><path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+        $('bolsas').innerHTML = new Array(Math.min(k, 12) + 1).join(bolsa) + (k > 12 ? '<span class="mas">+' + (k - 12) + '</span>' : '');
       }
       // Regalar a un amigo: mientras la campaña siga y la tarjeta valga.
       if (t.f === 1 && !vencida) {

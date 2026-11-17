@@ -45,7 +45,7 @@ const ok = (cond, msg) => { if (!cond) fallos.push(msg); };
 const REGLA = JSON.parse(readFileSync(join(RAIZ, 'firebase-rules.json'), 'utf8')).rules.tarjetas;
 ok(REGLA && REGLA['.read'] === false && /admin_uid/.test(REGLA['$codigo']['.write']), 'la regla de /tarjetas: no se lista, y solo escribe la cuenta del dueño');
 const codRe = new RegExp(REGLA['$codigo']['.read'].match(/\/(\^.*\$)\//)[1]);
-const cumplePublica = o => o && Object.keys(o).every(k => ['r', 'n', 'e', 'x', 'f', 'g'].includes(k)) && typeof o.r === 'number' && o.r >= 0 && o.r <= 5
+const cumplePublica = o => o && Object.keys(o).every(k => ['r', 'n', 'e', 'x', 'f', 'g', 'k'].includes(k)) && typeof o.r === 'number' && o.r >= 0 && o.r <= 5
     && typeof o.e === 'number' && (o.n === undefined || (typeof o.n === 'string' && o.n.length <= 30)) && [0, 1].includes(o.f) && o.g >= 0 && o.g <= 2;
 
 // Tres productos en USD, uno por tramo.
@@ -211,6 +211,13 @@ const antes = (await tarjetaDe(p, MARIO)).r;
 const trasAnular = await p.evaluate(([tel, id]) => { _fbEliminarVenta(id); return tmTarjetas.restantes(tmTarjetas.porTel(tel)); }, [MARIO, r3.venta.id]);
 ok(trasAnular === antes + 1, `anular una venta devuelve su descuento: ${antes} → ${trasAnular}`);
 ok((await p.evaluate(tel => window.tmTarjetaChip(tel), MARIO)).includes('🤝 3'), 'Clientes enseña cuántos trajo');
+// Las bolsitas: el espejo cuenta las compras de Mario (sin la anulada).
+const kMario = await p.evaluate(tel => { const t = tmTarjetas.porTel(tel); return tmTarjetas.compras(t); }, MARIO);
+await p.evaluate(tel => { const t = tmTarjetas.porTel(tel); return Promise.resolve(); }, MARIO);
+await vender(p, BARATO, 'Mario Pérez', MARIO);             // compra sin usar la tarjeta: suma bolsita igual
+await p.waitForTimeout(1000);
+ok((DB.tarjetas || {})[C] && DB.tarjetas[C].k === kMario + 1, `cada compra suma una bolsita en la página, use o no la tarjeta: ${kMario} → ${(DB.tarjetas || {})[C] && DB.tarjetas[C].k}`);
+ok(!('p' in (DB.tarjetas[C] || {})) && !JSON.stringify(DB.tarjetas[C]).match(/[A-Za-z]{4,} [A-Z0-9]/), 'el espejo no lleva productos');
 
 // ── 4) Caducidad y campaña apagada ────────────────────────────────────────
 const cad = await p.evaluate(tel => { const o = tmTarjetas.leer(), t = tmTarjetas.porTel(tel); o[t.c].x = Date.now() - 1000; localStorage.setItem('tm_tarjetas_v1', JSON.stringify(o)); return tmTarjetas.restantes(tmTarjetas.porTel(tel)); }, PEDRO);
@@ -238,7 +245,7 @@ await ctx.close();
 
 // ── 6) t.html ─────────────────────────────────────────────────────────────
 const ahora = Date.now();
-DB.tarjetas[C] = { r: 2, n: 'Mario', e: ahora, x: ahora + 30 * 864e5, f: 1, g: 2 };
+DB.tarjetas[C] = { r: 2, n: 'Mario', e: ahora, x: ahora + 30 * 864e5, f: 1, g: 2, k: 5 };
 DB.tarjetas.TM2345AB = { r: 3, n: 'Vieja', e: ahora - 100 * 864e5, x: ahora - 864e5, f: 1, g: 0 };
 DB.tarjetas.TM2345AC = { r: 3, n: 'Sin', e: ahora, x: ahora + 864e5, f: 0, g: 0 };
 for (const [url, espera] of [[`/t.html?c=${C}`, 'bien'], ['/t.html?c=TM2345AB', 'caducada'], ['/t.html?c=TM2345AC', 'apagada'], ['/t.html?c=TM2345AD', 'no-existe'], ['/t.html?c=hola', 'malo']]) {
@@ -249,16 +256,35 @@ for (const [url, espera] of [[`/t.html?c=${C}`, 'bien'], ['/t.html?c=TM2345AB', 
     const s = await pg.evaluate(() => ({ t: document.getElementById('titulo').textContent, n: document.getElementById('nombre').textContent,
         wa: document.getElementById('wa').hidden ? '' : document.getElementById('wa').href, pts: document.querySelectorAll('.pt:not(.usado)').length,
         tot: document.querySelectorAll('.pt').length, tramos: !document.getElementById('tramos').hidden, regalo: !document.getElementById('regalo').hidden,
-        regaloTxt: document.getElementById('regaloSub').textContent, ancho: document.documentElement.scrollWidth }));
+        regaloTxt: document.getElementById('regaloSub').textContent, ancho: document.documentElement.scrollWidth,
+        bolsas: document.querySelectorAll('#bolsas .bolsa').length, comprasT: document.getElementById('comprasT').textContent,
+        form: getComputedStyle(document.getElementById('codigoF')).display !== 'none', guardada: localStorage.getItem('tm_mi_tarjeta') }));
     ok(s.ancho <= 320, `${url}: a 320 px no se sale (${s.ancho})`);
     if (espera === 'bien') {
         ok(s.n === 'Mario' && /te quedan 2 descuentos/.test(s.t) && s.pts === 2 && s.tot === 5 && s.tramos, 't.html: nombre, lo que queda (de 3+2) y los tramos: ' + JSON.stringify(s));
         ok(s.regalo && /Ya ganaste tus 2/.test(s.regaloTxt), 'con la campaña viva ofrece regalar, y dice que llegó al tope: ' + s.regaloTxt);
         ok(decodeURIComponent(s.wa).includes(C.slice(0, 2) + '-' + C.slice(2)), 'el pedido lleva el código');
+        ok(!s.form, 'con la tarjeta cargada no se ve el campo para escribir el código');
+        ok(s.bolsas === 5 && /Has comprado 5 veces/.test(s.comprasT), 'una bolsita por compra: ' + JSON.stringify([s.bolsas, s.comprasT]));
+        ok(s.guardada && JSON.parse(s.guardada).c === C, 'abrir su tarjeta la deja recordada en el teléfono');
     } else if (espera === 'caducada') ok(/caducó/.test(s.t) && !s.regalo && s.pts === 0, 'caducada: ' + JSON.stringify(s));
     else if (espera === 'apagada') ok(!s.regalo && /te quedan 3/.test(s.t), 'campaña apagada: se puede usar pero no regalar: ' + JSON.stringify(s));
     else if (espera === 'no-existe') ok(/No encontramos/.test(s.t), 'código que no existe: ' + s.t);
-    else ok(/no es de una tarjeta/.test(s.t), 'código mal formado: ' + s.t);
+    else ok(/no es de una tarjeta/.test(s.t) && s.form, 'código mal formado (y ofrece escribirlo): ' + s.t);
+    await c2.close();
+}
+
+{
+    const c2 = await contexto({ width: 390, height: 800 });
+    const pg = await c2.newPage();
+    await pg.goto(`http://localhost:${PUERTO}/t.html`, { waitUntil: 'networkidle' });
+    const sin = await pg.evaluate(() => ({ t: document.getElementById('titulo').textContent, form: getComputedStyle(document.getElementById('codigoF')).display !== 'none' }));
+    ok(/Mira tu Tarjeta/.test(sin.t) && sin.form, 'sin enlace pide el código: ' + JSON.stringify(sin));
+    await pg.fill('#codigoIn', C.slice(2));
+    await Promise.all([pg.waitForNavigation({ waitUntil: 'networkidle' }), pg.click('#codigoF button')]);
+    await pg.goto(`http://localhost:${PUERTO}/t.html`, { waitUntil: 'networkidle' });
+    const con = await pg.evaluate(() => document.getElementById('nombre').textContent);
+    ok(con === 'Mario', 'escrito una vez, la próxima vez /t abre su tarjeta sola: ' + con);
     await c2.close();
 }
 
@@ -287,6 +313,26 @@ ok(pedido.includes('Hola, quiero el router') && pedido.includes('Vengo recomenda
 ok(st.abiertos[1] === 'https://wa.me/?text=' + encodeURIComponent('Mira esto'), 'compartir con alguien (sin número) no se toca: ' + st.abiertos[1]);
 const sa = await tienda('TM2345AC');   // campaña apagada en esa tarjeta
 ok(!sa.ls && !/Vengo recomendado/.test(decodeURIComponent(sa.abiertos[0] || '')), 'una tarjeta sin campaña no regala: ' + JSON.stringify(sa.ls));
+
+// ── 8) La tienda saluda a quien tiene tarjeta ─────────────────────────────
+async function tiendaCon(codigo) {
+    const c3 = await contexto({ width: 390, height: 844 });
+    const pg = await c3.newPage();
+    pg.on('pageerror', e => erroresJs.push('tienda(mi): ' + String(e).slice(0, 160)));
+    await pg.addInitScript(c => { if (!sessionStorage.getItem('_i')) { sessionStorage.setItem('_i', '1'); localStorage.setItem('tm_mi_tarjeta', JSON.stringify({ c, ts: Date.now() })); } }, codigo);
+    await pg.goto(`http://localhost:${PUERTO}/index.html`, { waitUntil: 'domcontentloaded' });
+    await pg.waitForTimeout(3500);
+    const s = await pg.evaluate(() => { const el = document.getElementById('tmMiTarjeta'), chip = document.querySelector('#vistaInicio .op-chip');
+        return { txt: el ? el.innerText.replace(/\s+/g, ' ') : '', href: el ? el.getAttribute('href') : '', chipOculto: chip ? getComputedStyle(chip).display === 'none' : null,
+                 ls: localStorage.getItem('tm_mi_tarjeta'), ancho: document.documentElement.scrollWidth }; });
+    await c3.close();
+    return s;
+}
+const mi = await tiendaCon(C);
+ok(/Hola Mario/.test(mi.txt) && /\b5\b/.test(mi.txt) && /\b2\b/.test(mi.txt) && mi.href === '/t?c=' + C && mi.chipOculto === true, 'la tienda saluda con nombre, bolsitas y descuentos, y abre su tarjeta: ' + JSON.stringify(mi));
+ok(mi.ancho <= 390, 'la píldora no ensancha la portada: ' + mi.ancho);
+const borrada = await tiendaCon('TM2345AD');      // ya no existe
+ok(!borrada.txt && !borrada.ls && borrada.chipOculto === false, 'una tarjeta que ya no existe se olvida y vuelve lo de siempre: ' + JSON.stringify(borrada));
 
 ok(!erroresJs.length, 'errores de JS: ' + erroresJs.join(' | '));
 await navegador.close(); servidor.close();

@@ -14,6 +14,13 @@
  *    Un wa.me SIN número (compartir con un amigo) no se toca.
  * Sin compra no hay premio: esto solo hace que el código llegue con el pedido.
  * El descuento lo aplica el panel (js/tarjeta-cliente.js), que comprueba todo.
+ *
+ * 🛍️ Mi tarjeta: quien abrió SU tarjeta (t.html) queda recordado en este
+ * teléfono (tm_mi_tarjeta). Sin registro ni contraseña: su tarjeta es su
+ * cuenta. Al entrar a la tienda, en lugar de «N disponibles» ve una píldora
+ * con su nombre, las bolsitas de lo que lleva comprado y los descuentos que
+ * le quedan, que abre su tarjeta. Pinta primero lo guardado (sin esperar la
+ * red, en 3G) y lo refresca detrás; si la tarjeta ya no existe, se olvida.
  */
 (function () {
   'use strict';
@@ -92,5 +99,48 @@
       })
       .catch(function () {});
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+  /* ── 🛍️ Mi tarjeta ── */
+  function miCodigo() { try { var o = JSON.parse(localStorage.getItem('tm_mi_tarjeta') || 'null'); return o && RE.test(o.c) ? o.c : ''; } catch (e) { return ''; } }
+  function pildora(c, t) {
+    var chip = document.querySelector('#vistaInicio .op-chip'); if (!chip) return;
+    var el = document.getElementById('tmMiTarjeta');
+    if (!t || typeof t.r !== 'number') { if (el) el.remove(); chip.style.display = ''; return; }
+    if (!el) {
+      if (!document.getElementById('tmMiTarjetaCss')) {
+        var st = document.createElement('style'); st.id = 'tmMiTarjetaCss';
+        st.textContent = '.tm-mi{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:7px 12px 7px 9px;border-radius:999px;border:1px solid rgba(255,107,53,.55);' +
+          'background:rgba(255,107,53,.10);color:inherit;text-decoration:none;font:600 13px/1.2 Inter,system-ui,sans-serif;white-space:nowrap}' +
+          '.tm-mi b{font-weight:800}.tm-mi .tm-mi-b{display:inline-flex;align-items:center;gap:3px;color:#FF6B35;font-weight:800}' +
+          '.tm-mi svg{width:16px;height:16px;flex:none}.tm-mi .tm-mi-n{overflow:hidden;text-overflow:ellipsis}';
+        document.head.appendChild(st);
+      }
+      el = document.createElement('a'); el.id = 'tmMiTarjeta'; el.className = 'tm-mi';
+      chip.parentNode.insertBefore(el, chip);
+    }
+    var bolsa = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 8h12l1 13H5L6 8z"/><path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    var regalo = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>';
+    var n = String(t.n || '').replace(/[<>&"]/g, ''), k = Math.max(0, Number(t.k) || 0), vencida = t.x && Date.now() > t.x;
+    el.href = '/t?c=' + c;
+    el.setAttribute('aria-label', (n ? n + ': ' : '') + k + ' compras, ' + (vencida ? 'tarjeta caducada' : t.r + ' descuentos') + '. Ver mi tarjeta');
+    el.innerHTML = '<span class="tm-mi-n">Hola <b>' + (n || 'de nuevo') + '</b></span>' +
+      (k ? '<span class="tm-mi-b">' + bolsa + k + '</span>' : '') +
+      '<span class="tm-mi-b">' + regalo + (vencida ? '—' : t.r) + '</span>';
+    chip.style.display = 'none';
+  }
+  function miTarjeta() {
+    var c = miCodigo(); if (!c) return;
+    var dato = null; try { dato = JSON.parse(localStorage.getItem('tm_mi_tarjeta_dato') || 'null'); } catch (e) {}
+    if (dato) pildora(c, dato);
+    base().then(function (b) { return fetch(b + '/tarjetas/' + c + '.json', { cache: 'no-store' }); })
+      .then(function (r) { if (!r.ok) throw new Error('red'); return r.json(); })
+      .then(function (t) {
+        if (!t) { try { localStorage.removeItem('tm_mi_tarjeta'); localStorage.removeItem('tm_mi_tarjeta_dato'); } catch (e) {} pildora(c, null); return; }
+        try { localStorage.setItem('tm_mi_tarjeta_dato', JSON.stringify(t)); } catch (e) {}
+        pildora(c, t);
+      })
+      .catch(function () {});   // sin red se queda lo guardado
+  }
+
+  function todo() { iniciar(); miTarjeta(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', todo); else todo();
 })();

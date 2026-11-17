@@ -333,6 +333,9 @@
         "g": {
           ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2"
         },
+        "k": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999"
+        },
         "$otro": {
           ".validate": false
         }
