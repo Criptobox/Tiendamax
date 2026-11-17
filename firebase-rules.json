@@ -309,6 +309,38 @@
         }
       }
     },
+    "tarjetas": {
+      ".read": false,
+      "$codigo": {
+        ".read": "$codigo.matches(/^TM[2-9A-HJKMNP-Z]{6}$/)",
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val() && $codigo.matches(/^TM[2-9A-HJKMNP-Z]{6}$/)",
+        ".validate": "newData.hasChildren(['r', 'e'])",
+        "r": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5"
+        },
+        "n": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "e": {
+          ".validate": "newData.isNumber()"
+        },
+        "x": {
+          ".validate": "newData.isNumber()"
+        },
+        "f": {
+          ".validate": "newData.isNumber() && (newData.val() === 0 || newData.val() === 1)"
+        },
+        "g": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2"
+        },
+        "k": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999"
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
+    },
     "pedidos": {
       ".read": false,
       ".write": false,

@@ -168,14 +168,38 @@ const dos = sb.tmSeguimientoDe(venta(3, {
 ok(sb.tmTextoSeguimiento(dos).includes('Router Tenda y Antena CPE'),
     'con varios productos deben listarse todos');
 
-// La reseña: el mensaje del mes lleva el enlace directo a la ficha (?p=<id>); sin id, no lleva ninguno.
+// La reseña va en dos pasos: el primer mensaje solo pregunta; se pide después,
+// a quien contestó contento, con un enlace a resena.html (no a la tienda entera).
+ok(!/https?:\/\//.test(txt) && !/reseña/i.test(txt), `el primer seguimiento solo pregunta, sin enlaces ni reseña: ${txt}`);
+ok(txt.length < 220, `el primer mensaje tiene que ser corto (${txt.length} caracteres)`);
+const vRes = venta(4, { items: [{ producto: 'Router Tenda', productoId: 1777923552923 }] });
+ok(sb.tmResenaEstado(vRes, {}, {}, AHORA) === null, 'no se pide reseña antes de haber preguntado qué tal');
+const hechoIni = { [vRes.id + '|inicial']: AHORA };
+ok(sb.tmResenaEstado(vRes, hechoIni, {}, AHORA) === 'pedir', 'tras el primer seguimiento toca pedir la reseña');
+ok(sb.tmResenaEstado(vRes, hechoIni, { [vRes.id]: AHORA }, AHORA) === 'pedida', 'pedida una vez, no se vuelve a ofrecer pedirla');
+ok(sb.tmResenaEstado(venta(60, { items: [{ producto: 'X', productoId: 1 }] }), { [hace(60) + '|inicial']: AHORA }, {}, AHORA) === null,
+   'pasada la ventana ya no se pide');
+ok(sb.tmResenaEstado(venta(4, { items: [{ producto: 'Escrito a mano' }] }), hechoIni, {}, AHORA) === null,
+   'un artículo sin ficha no tiene dónde reseñarse');
+const enl = sb.tmEnlaceResena(vRes);
+ok(enl === 'https://tiendamax.org/resena?p=1777923552923&n=Ana&v=1', `enlace a la página de reseña con el nombre de pila: ${enl}`);
+const pedir = sb.tmTextoPedirResena(vRes, 'TiendaMax');
+ok(pedir.includes('\n👉 ' + enl), 'el enlace va en su propia línea');
+ok(/Router Tenda/.test(pedir) && /^¡Qué bueno, Ana!/.test(pedir), `nombra al cliente y el producto: ${pedir.slice(0, 80)}`);
+ok(/respóndeme aquí con las estrellas/.test(pedir), 'ofrece contestar por el chat, para quien no abre enlaces');
+ok(sb.tmWaPedirResena(vRes).startsWith('https://wa.me/5355551234?text='), 'el pedido abre el chat del cliente');
+
+// El mes: si la reseña no se pidió, se pide aquí (corto y con el enlace); si ya se pidió, no se repite.
 const conId = sb.tmSeguimientoDe(venta(30, { items: [{ producto: 'Router Tenda', productoId: 1777923552923 }] }), {}, AHORA);
 const txtMes = sb.tmTextoSeguimiento(conId, 'TiendaMax');
 ok(conId.hito === 'satisfaccion', 'a los 30 días toca el seguimiento de satisfacción');
-ok(txtMes.includes('https://tiendamax.org/?p=1777923552923'), `el mensaje del mes debe llevar el enlace a la ficha: ${txtMes.slice(0, 200)}`);
+ok(txtMes.includes('\n👉 https://tiendamax.org/resena?p=1777923552923'), `el mes sin reseña pedida lleva el enlace: ${txtMes.slice(0, 200)}`);
+sb.localStorage.setItem('tm_resena_pedida_v1', JSON.stringify({ [conId.venta.id]: AHORA }));
+const txtMes2 = sb.tmTextoSeguimiento(conId, 'TiendaMax');
+ok(!/https?:\/\//.test(txtMes2) && !/reseña/.test(txtMes2), `con la reseña ya pedida, el mes no la vuelve a pedir: ${txtMes2}`);
+sb.localStorage.removeItem('tm_resena_pedida_v1');
 const sinId = sb.tmTextoSeguimiento(sb.tmSeguimientoDe(venta(30, { items: [{ producto: 'Router Tenda' }] }), {}, AHORA), 'TiendaMax');
 ok(!/https?:\/\//.test(sinId) && /reseña/.test(sinId), 'sin id de producto no se inventa un enlace');
-ok(!/https?:\/\//.test(sb.tmTextoSeguimiento(seg, 'TiendaMax')), 'el primer seguimiento no lleva enlaces');
 
 // El enlace tiene que abrir el chat correcto y con el texto puesto.
 const url = sb.tmWaSeguimiento(seg, 'TiendaMax');

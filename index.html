@@ -314,7 +314,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=a062184e" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=ea07682d" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1783,7 +1783,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=a062184e" defer></script>
+    <script src="js/tm-bundle.js?v=ea07682d" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1796,6 +1796,8 @@
     <script src="js/subcategorias.js?v=9bc64200" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
     <script src="js/tienda-plus.js?v=ba354dad" defer></script>
+    <!-- 🤝 Referidos: recoge /?ref=<código de tarjeta> y lo pone en el pedido por WhatsApp -->
+    <script src="js/referido.js?v=6a8dedf5" defer></script>
     <script src="js/cart-share.js?v=797b6d55" defer></script>
     <script src="js/barra-inferior.js?v=2ad62283" defer></script>
     <script>

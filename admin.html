@@ -1791,6 +1791,9 @@ try{var _piel=localStorage.getItem('tm_piel');
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-cliente">Cliente <span style="color:var(--gray);font-weight:600">— opcional</span></label><input class="form-input" id="venta-cliente" placeholder="Nombre" autocomplete="off"></div>
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-tel">WhatsApp <span style="color:var(--gray);font-weight:600">— para el seguimiento</span></label><input class="form-input" id="venta-tel" placeholder="5355551234" inputmode="tel" autocomplete="off"></div>
           </div>
+          <!-- 🎁 Tarjeta de cliente: si este WhatsApp tiene una con descuentos
+               pendientes, aquí sale para aplicarla (js/tarjeta-cliente.js). -->
+          <div id="venta-tarjeta"></div>
           <!-- ¿De dónde salió esta venta? Un toque, y opcional. Es la otra
                mitad del contador de /analytics/fuentes: ese dice cuánta gente
                trae cada canal, y esto cuántos de esos compran. Sin él, un
@@ -1961,6 +1964,11 @@ try{var _piel=localStorage.getItem('tm_piel');
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar envío</button>
             <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
+        </div>
+        <div class="section" id="tarjetaCfgBox">
+          <h3>🎁 Tarjeta TiendaMax</h3>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin:-4px 0 12px">La tarjeta de descuentos que nace con la primera compra de cada cliente, y los referidos. Es una campaña: la apagas cuando quieras.</p>
+          <div id="tarjetaCfg"></div>
         </div>
         <div class="section" id="temaBox">
           <h3>🎄 Tema de temporada</h3>
@@ -2335,7 +2343,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=a062184e"></script>
+<script src="js/tm-bundle.js?v=ea07682d"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2894,6 +2902,9 @@ try{var _piel=localStorage.getItem('tm_piel');
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=e6a536a1"></script>
 <script src="js/admin-copilot.js?v=2650e5f3"></script>
+<!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
+<script src="js/qr-mini.js?v=f43cbef0"></script>
+<script src="js/tarjeta-cliente.js?v=8b465ca4"></script>
 
 <script>
 (function(){
@@ -3679,7 +3690,8 @@ function reservaVender(id){
   if(!m.ok){ mostrarNotificacion('❌ '+m.msg,'error'); return; }
   const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, moneda:i.moneda, comision:i.comision, comisionMoneda:i.comisionMoneda}));
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
-  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true});
+  const tarjeta=(typeof window.tmTarjetaPreguntar==='function') ? window.tmTarjetaPreguntar(r.telefono, items) : null;
+  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true, tarjeta:tarjeta||undefined});
   try{ const v=JSON.parse(localStorage.getItem('tm_vale_vender')||'null'); if(v && v.id===id) localStorage.removeItem('tm_vale_vender'); }catch(e){}
   renderReservas();
 }
@@ -4065,6 +4077,7 @@ function ventaRenderCart(){
     </div>`;
   }).join('');
   ventaRenderTotales();
+  if(typeof window.tmTarjetaVentaPintar==='function') window.tmTarjetaVentaPintar(VENTA_CART);
 }
 /* ── ¿Por dónde llegó la venta? ─────────────────────────────────────────
    Cinco canales y un toque. Las claves son las MISMAS que cuenta
@@ -4133,7 +4146,8 @@ function ventaRegistrar(){
     nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
     tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
   };
-  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN, grupo: VENTA_GRUPO});
+  const tarjeta = (typeof window.tmTarjetaVenta==='function') ? window.tmTarjetaVenta() : null;
+  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN, grupo: VENTA_GRUPO, tarjeta: tarjeta||undefined});
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
@@ -4141,6 +4155,7 @@ function ventaRegistrar(){
   VENTA_ORIGEN=''; VENTA_GRUPO=''; ventaRenderOrigen();
   if($('#venta-cliente')) $('#venta-cliente').value='';
   if($('#venta-tel')) $('#venta-tel').value='';
+  if(typeof window.tmTarjetaVentaPintar==='function') window.tmTarjetaVentaPintar([]);
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
   showToast('✅ Venta registrada', cliente.tel
     ? 'Stock ajustado · seguimiento programado a los 3, 30 y 90 días'
@@ -4391,6 +4406,10 @@ function gananciasDe(ventas){
       if(mon==='MN') mn+=g; else usd+=g;
       if(nm){ const r=porProducto[nm]||(porProducto[nm]={usd:0,mn:0}); r[mon==='MN'?'mn':'usd']+=g; }
     });
+    // Tarjeta de cliente: el descuento (en MN) sale de la comisión del gestor.
+    // Va contra el total en MN y no contra un producto; puede dejarlo en
+    // negativo, y eso es lo que pasó de verdad.
+    mn-=Number(v.descTarjetaMN)||0;
   });
   return {usd, mn, porProducto, unidades};
 }
@@ -7706,7 +7725,8 @@ function renderClientes(){
     // persona salía en dos filas si una venta llevaba el nombre y otra solo el
     // teléfono — con las compras repartidas y dos botones al mismo número.
     const k = tel ? ('tel:'+tel) : ('nom:'+norm(nm));
-    if(!cli[k]) cli[k]={nombre:nm,compras:0,total:{usd:0,mn:0},tel:tel,ultima:0,seg:null};
+    if(!cli[k]) cli[k]={nombre:nm,compras:0,total:{usd:0,mn:0},tel:tel,ultima:0,seg:null,ventas:[]};
+    cli[k].ventas.push(v);
     cli[k].compras++; const tv=ventaTotales(v); cli[k].total.usd+=tv.usd; cli[k].total.mn+=tv.mn;
     const ts=(typeof tmVentaTs==='function')?tmVentaTs(v):0;
     if(ts&&ts>cli[k].ultima){ cli[k].ultima=ts; if(nm) cli[k].nombre=nm; }  // el nombre más reciente
@@ -7730,9 +7750,23 @@ function renderClientes(){
   if(CLI_VIEW==='clientes'){
     const fecha=ts=>ts?esc(new Date(ts).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})):'—';
     const accion=c=>{
-      if(!c.seg) return c.tel
-        ? `<span style="color:var(--gray);font-size:11.5px">Al día</span>`
-        : `<span style="color:var(--gray);font-size:11.5px">Sin WhatsApp</span>`;
+      if(!c.seg){
+        if(!c.tel) return `<span style="color:var(--gray);font-size:11.5px">Sin WhatsApp</span>`;
+        const r=resenaDeCliente(c);
+        if(!r) return `<span style="color:var(--gray);font-size:11.5px">Al día</span>`;
+        const id=esc(String(r.venta.id));
+        const pub=`<button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="resenaPublicar('${id}')">✍️ Publicar su reseña</button>`;
+        // Se pide a quien ya contestó que va bien: por eso el botón sale tras
+        // el primer seguimiento y no antes, y la pista lo recuerda.
+        if(r.estado==='pedir') return `<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <div style="min-width:132px"><span style="color:#fff;font-weight:700;font-size:12px">⭐ ¿Contestó contento?</span><br>
+          <span style="color:var(--gray);font-size:11px">Pídele la reseña ahora</span></div>
+          <button class="btn btn-primary" style="padding:5px 11px;font-size:11.5px;white-space:nowrap" onclick="resenaPedir('${id}')">⭐ Pedir reseña</button>${pub}</div>`;
+        const d=Math.max(0,Math.floor((Date.now()-r.pedida)/864e5));
+        return `<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <div style="min-width:132px"><span style="color:#fff;font-weight:700;font-size:12px">⭐ Reseña pedida</span><br>
+          <span style="color:var(--gray);font-size:11px">${d?'hace '+d+'d':'hoy'} · ¿te la mandó por chat?</span></div>${pub}</div>`;
+      }
       const s=c.seg, id=esc(String(s.venta.id));
       // El retraso se enseña porque un seguimiento se enfría: a los 3 días
       // "¿te llegó bien?" es atención; a los 12, un trámite.
@@ -7746,7 +7780,7 @@ function renderClientes(){
     };
     box.innerHTML = list.length
       ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
-         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span></td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
+         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span>${(c.tel&&typeof window.tmTarjetaChip==='function')?window.tmTarjetaChip(c.tel, c.nombre):''}</td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
       : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
@@ -7894,6 +7928,83 @@ function segSaltar(ventaId){
   renderClientes();
 }
 window.segEnviar=segEnviar; window.segSaltar=segSaltar; window.segSincronizarTodos=segSincronizarTodos;
+
+/* ── Reseñas desde el seguimiento ──
+   Segundo paso del seguimiento: a quien contestó que va bien se le pide la
+   reseña con un enlace a resena.html (una pantalla, el nombre puesto). Y si
+   contesta por el chat con estrellas y una frase, se publica desde aquí con su
+   nombre de pila — mucha gente contesta pero no abre enlaces. La lógica de
+   cuándo toca vive en tm-crm (tmResenaEstado); aquí solo se pinta. */
+function resenaDeCliente(c){
+  if(typeof tmResenaEstado!=='function') return null;
+  const hechos=tmSeguimientosHechos(), pedidas=tmResenasPedidas();
+  const vs=(c.ventas||[]).slice().sort((a,b)=>(tmVentaTs(b)||0)-(tmVentaTs(a)||0));
+  for(const v of vs){
+    const e=tmResenaEstado(v, hechos, pedidas);
+    if(e) return {venta:v, estado:e, pedida:Number(pedidas[String(v.id)])||0};
+  }
+  return null;
+}
+function resenaPedir(ventaId){
+  const v=VENTAS.find(x=>String(x.id)===String(ventaId)); if(!v) return;
+  window.open(tmWaPedirResena(v,'TiendaMax'),'_blank','noopener,noreferrer');
+  tmMarcarResenaPedida(ventaId);
+  tmRegistrarContacto(tmTelDe(v));
+  renderClientes();
+}
+function resenaPublicar(ventaId){
+  const v=VENTAS.find(x=>String(x.id)===String(ventaId)); if(!v) return;
+  const prods=(Array.isArray(v.items)?v.items:[]).filter(i=>i&&i.productoId);
+  if(!prods.length){ showToast('⚠️ Esa venta no tiene productos del catálogo','No hay ficha donde publicar la reseña'); return; }
+  const nom=((v.cliente||v.nombre||'').trim().split(/\s+/)[0])||'';
+  document.getElementById('resena-pub')?.remove();
+  const d=document.createElement('div'); d.id='resena-pub';
+  d.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;padding:12px';
+  const est=n=>`<button type="button" data-n="${n}" class="rp-e" style="flex:1;font-size:26px;padding:8px 0;border-radius:12px;border:1px solid var(--border);background:var(--card2);cursor:pointer;filter:grayscale(1);opacity:.55">⭐</button>`;
+  d.innerHTML=`<div style="width:100%;max-width:460px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;color:var(--text,#fff);max-height:92vh;overflow:auto">
+    <h3 style="margin:0 0 4px">✍️ Publicar su reseña</h3>
+    <p style="font-size:12px;color:var(--gray);margin:0 0 12px">Copia lo que te contestó por WhatsApp. Sale en la tienda con su nombre de pila y marcada como compra. <b>Solo si te dio permiso.</b></p>
+    <label class="form-label">Producto</label>
+    <select id="rp-prod" class="form-input" style="margin-bottom:10px">${prods.map(i=>`<option value="${esc(String(i.productoId))}">${esc(i.producto||'')}</option>`).join('')}</select>
+    <label class="form-label">Estrellas</label>
+    <div id="rp-est" style="display:flex;gap:6px;margin-bottom:10px">${[1,2,3,4,5].map(est).join('')}</div>
+    <label class="form-label" for="rp-txt">Lo que dijo</label>
+    <textarea id="rp-txt" class="form-input" maxlength="400" rows="3" placeholder="Ej: Llegó rapidísimo y funciona perfecto" style="margin-bottom:10px"></textarea>
+    <label class="form-label" for="rp-autor">Nombre</label>
+    <input id="rp-autor" class="form-input" maxlength="50" value="${esc(nom)}">
+    <p id="rp-err" style="color:#ff7a7a;font-size:12px;min-height:16px;margin:8px 0 0"></p>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('resena-pub').remove()">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2" id="rp-ok">Publicar</button>
+    </div></div>`;
+  document.body.appendChild(d);
+  let n=0;
+  d.addEventListener('click',e=>{ if(e.target===d) d.remove(); });
+  d.querySelector('#rp-est').addEventListener('click',e=>{
+    const b=e.target.closest('.rp-e'); if(!b) return; n=+b.dataset.n;
+    d.querySelectorAll('.rp-e').forEach(x=>{ const on=+x.dataset.n<=n; x.style.filter=on?'none':'grayscale(1)'; x.style.opacity=on?'1':'.55'; });
+  });
+  d.querySelector('#rp-ok').addEventListener('click',async()=>{
+    const pid=d.querySelector('#rp-prod').value, texto=d.querySelector('#rp-txt').value.trim(), autor=d.querySelector('#rp-autor').value.trim();
+    const err=d.querySelector('#rp-err');
+    if(!n){ err.textContent='Elige las estrellas'; return; }
+    if(texto.length<10){ err.textContent='La reseña necesita al menos 10 letras'; return; }
+    if(!autor){ err.textContent='Falta el nombre'; return; }
+    const base=rtdbBase(); if(!base){ err.textContent='Configura Firebase en ⚙️ Configuración'; return; }
+    const it=prods.find(i=>String(i.productoId)===pid)||{};
+    const id=Date.now(), b=d.querySelector('#rp-ok'); b.disabled=true; b.textContent='Publicando…';
+    try{
+      const r=await fetch(base+'/resenas/'+encodeURIComponent(pid)+'/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id, ts:{'.sv':'timestamp'}, autor:autor.slice(0,50), texto:texto.slice(0,400), estrellas:n,
+          fecha:new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}),
+          productoId:pid, productoNombre:it.producto||'', comprador:true, origen:'whatsapp'})});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      tmMarcarResenaHecha(ventaId);
+      d.remove(); showToast('✅ Reseña publicada','Sale en la tienda en unos minutos'); renderClientes();
+    }catch(e){ b.disabled=false; b.textContent='Publicar'; err.textContent='No se pudo publicar ('+e.message+'). Prueba otra vez.'; }
+  });
+}
+window.resenaPedir=resenaPedir; window.resenaPublicar=resenaPublicar;
 
 /* ── Reviews reales (Firebase /resenas) ── */
 function rtdbBase(){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null); }catch(e){ return null; } }
@@ -9709,7 +9820,7 @@ window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManu
 // Todo este bloque va dentro de un IIFE, así que una función que no se
 // exporte acá NO existe para los onclick="" del HTML: el botón queda mudo,
 // sin error visible. Estas faltaban y por eso no hacían nada.
-window.renderClientes=renderClientes;
+window.renderClientes=renderClientes; window.tmGananciasDe=gananciasDe;
 window.pubCatCartelesLote=pubCatCartelesLote;
 window.pubToggleSinPublicar=pubToggleSinPublicar;
 // Las llaman los onclick del HTML que genera este mismo bloque; sin
