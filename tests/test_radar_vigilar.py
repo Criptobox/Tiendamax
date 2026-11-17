@@ -104,6 +104,78 @@ class MemoriaTest(unittest.TestCase):
         self.assertFalse(pr.mismo_modelo(n, "itel 128GB"))
 
 
+def _r(id, tu, mn, n=3, firma="f", **k):
+    d = {"id": id, "nombre": f"Prod {id} <b>", "tuPrecio": tu, "firma": firma,
+         "mercado": {"min": mn, "n": n, "mediana": mn},
+         "muestras": [{"precio": mn, "url": f"https://x/{id}", "titulo": "Anuncio & co"}]}
+    d.update(k)
+    return d
+
+
+class AvisoTelegramTest(unittest.TestCase):
+    """Solo avisa cuando se mueve el mercado, no cuando el gestor toca algo."""
+    PREV = {"productos": [_r(1, 100, 100), _r(2, 100, 70), _r(3, 100, 100), _r(4, 100, 100, firma="otra"),
+                          _r(5, 100, 100), _r(6, 100, 100, firma=None)]}
+
+    def _ids(self, ahora):
+        c = pr.cambios_radar(self.PREV, ahora)
+        return [x["id"] for x in c["bajaron"]], [x["id"] for x in c["ya_no"]]
+
+    def test_avisa_de_quien_se_pone_por_debajo_y_de_quien_deja_de_estarlo(self):
+        self.assertEqual(([1], [2]), self._ids([_r(1, 100, 60), _r(2, 100, 100)]))
+
+    def test_una_diferencia_de_redondeo_no_es_noticia(self):
+        self.assertEqual(([], []), self._ids([_r(3, 100, 98)]))
+
+    def test_si_cambio_tu_busqueda_o_tus_anuncios_quitados_no_avisa(self):
+        # El mercado no se movió: lo movió el gestor.
+        self.assertEqual(([], []), self._ids([_r(4, 100, 60)]))
+
+    def test_si_cambio_tu_precio_no_avisa(self):
+        self.assertEqual(([], []), self._ids([_r(5, 90, 60)]))
+
+    def test_sin_firma_anterior_o_producto_nuevo_no_avisa(self):
+        self.assertEqual(([], []), self._ids([_r(6, 100, 60), _r(7, 100, 50)]))
+
+    def test_primera_corrida_sin_nada_antes_no_avisa(self):
+        c = pr.cambios_radar(None, [_r(1, 100, 10)])
+        self.assertEqual("", pr.mensaje_aviso(c))
+
+    def test_firma_depende_de_terminos_y_de_lo_quitado(self):
+        a = pr.firma_busqueda("cargador 30a", ["u1"])
+        self.assertEqual(a, pr.firma_busqueda(" Cargador 30A ", ["u1"]))
+        self.assertNotEqual(a, pr.firma_busqueda("cargador 30a", ["u1", "u2"]))
+        self.assertNotEqual(a, pr.firma_busqueda("otro", ["u1"]))
+
+    def test_el_mensaje_escapa_el_html_y_lleva_el_anuncio(self):
+        txt = pr.mensaje_aviso(pr.cambios_radar(self.PREV, [_r(1, 100, 60)]))
+        self.assertIn("Prod 1 &lt;b&gt;", txt)
+        self.assertIn("Anuncio &amp; co", txt)
+        self.assertIn('href="https://x/1"', txt)
+        self.assertNotIn("<b>Prod 1 <b>", txt)
+
+    def test_producto_en_mn_se_nombra_en_mn(self):
+        r = _r(1, 0.3, 0.1, tuMoneda="MN", tuPrecioOrig=280.0)
+        txt = pr.mensaje_aviso({"bajaron": [r], "ya_no": []})
+        self.assertIn("280 MN", txt)
+
+    def test_el_mensaje_cabe_en_telegram_con_muchos_productos(self):
+        rs = [_r(i, 100, 50) for i in range(40)]
+        txt = pr.mensaje_aviso({"bajaron": rs, "ya_no": []})
+        self.assertLessEqual(len(txt), 4096)
+        self.assertIn("y 32 más en el Radar", txt)
+
+    def test_el_script_no_manda_telegram_por_su_cuenta_y_el_workflow_espera_al_commit(self):
+        src = open(os.path.join(RAIZ, "scripts", "precio_radar.py"), encoding="utf-8").read()
+        cuerpo = src[src.index("def main():"):src.index('if __name__ == "__main__":')]
+        self.assertNotIn("enviar_telegram(", cuerpo)
+        wf = open(os.path.join(RAIZ, ".github/workflows/precio-radar.yml"), encoding="utf-8").read()
+        paso = wf[wf.index("- name: Avisar por Telegram"):]
+        self.assertIn("steps.commit.outputs.subido == '1'", paso.split("run:")[0])
+        self.assertIn("secrets.BOT_TOKEN", paso)
+        self.assertIn("aviso-radar.txt", wf)
+
+
 class BuscarTest(unittest.TestCase):
     def setUp(self):
         self.pedidas = []

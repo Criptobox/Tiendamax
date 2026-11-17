@@ -10,7 +10,7 @@ rompe la corrida. Los parsers son v1 (best-effort): se afinan tras la 1ª corrid
 viendo qué devuelve cada sitio. Ejecutar en GitHub Actions (allí sí hay internet).
 """
 from __future__ import annotations
-import json, os, re, sys, time, statistics, datetime, unicodedata
+import json, os, re, sys, time, statistics, datetime, unicodedata, hashlib, html
 
 
 def _norm(s):
@@ -421,6 +421,129 @@ def ids_vigilar(productos, ruta=None):
     return {str(p.get("id")) for p in productos if p.get("radar")}
 
 
+# ── Aviso por Telegram ───────────────────────────────────────────────────────
+# Solo cuando cambia algo que mueve una decisión: alguien se pone por debajo de
+# tu precio, o ya no queda nadie por debajo. Nunca un resumen diario: un aviso
+# que llega todos los días enseña a no leerlo, y este es el que importa.
+UMBRAL_BARATO = 0.03     # «por debajo» = al menos un 3 % menos; el resto es ruido de redondeo
+MAX_AVISOS = 8           # productos por mensaje (el resto, en el panel)
+PANEL_RADAR = "https://tiendamax.org/admin.html#radar"
+
+
+def firma_busqueda(terminos, excluir):
+    """Qué le pidió el gestor a este producto: sus palabras de búsqueda y los
+    anuncios que quitó. Si cambia entre dos corridas, lo que se mueve es la
+    configuración y no el mercado, y no se avisa de eso."""
+    base = json.dumps([str(terminos or "").strip().lower(), sorted(excluir or [])], ensure_ascii=False)
+    return hashlib.sha1(base.encode("utf-8")).hexdigest()[:10]
+
+
+def _mas_barato(r):
+    """(hay_alguien_por_debajo, mínimo) de un resultado del radar."""
+    m = (r.get("mercado") or {})
+    mn, tu = m.get("min"), r.get("tuPrecio")
+    if not (m.get("n") and mn and tu):
+        return False, mn
+    return mn < tu * (1 - UMBRAL_BARATO), mn
+
+
+def cambios_radar(prev, resultados):
+    """{'bajaron': [...], 'ya_no': [...]} comparando con la corrida anterior.
+
+    No avisa de un producto que (a) no estaba antes (acaba de entrar al radar:
+    no hay con qué comparar), (b) cambió de búsqueda o de anuncios quitados, o
+    (c) cambió de precio: en esos tres casos lo que se movió es lo que hizo el
+    gestor, no el mercado. Una corrida anterior sin `firma` (formato viejo)
+    tampoco sirve para comparar."""
+    antes = {str(p.get("id")): p for p in ((prev or {}).get("productos") or [])}
+    out = {"bajaron": [], "ya_no": []}
+    for r in resultados:
+        a = antes.get(str(r.get("id")))
+        if not a or not a.get("firma") or a.get("firma") != r.get("firma"):
+            continue
+        if abs((a.get("tuPrecio") or 0) - (r.get("tuPrecio") or 0)) > 0.005:
+            continue
+        era, _ = _mas_barato(a)
+        es, _ = _mas_barato(r)
+        if es and not era:
+            out["bajaron"].append(r)
+        elif era and not es:
+            out["ya_no"].append(r)
+    return out
+
+
+def _h(t):
+    return html.escape(str(t if t is not None else ""), quote=False)
+
+
+def _tu_txt(r):
+    if r.get("tuMoneda") == "MN":
+        return f"{r.get('tuPrecioOrig'):,.0f} MN".replace(",", " ")
+    return f"${r.get('tuPrecio'):,.2f}".replace(".00", "")
+
+
+def _usd(v):
+    return f"${v:,.2f}".replace(".00", "")
+
+
+def mensaje_aviso(cambios):
+    """Texto HTML de Telegram, o '' si no hay nada que decir."""
+    bajaron, ya_no = cambios.get("bajaron") or [], cambios.get("ya_no") or []
+    if not (bajaron or ya_no):
+        return ""
+    partes = []
+    if bajaron:
+        partes.append(f"📡 <b>Alguien se puso por debajo de tu precio</b> ({len(bajaron)})")
+        for r in bajaron[:MAX_AVISOS]:
+            tu = r.get("tuPrecio")
+            m = r.get("mercado") or {}
+            n_bajo = sum(1 for x in (r.get("muestras") or []) if (x.get("precio") or 0) < tu * (1 - UMBRAL_BARATO))
+            linea = f"\n\n<b>{_h(r.get('nombre'))}</b>\n├ Tú: {_h(_tu_txt(r))}\n└ Más barato: <b>{_usd(m.get('min'))}</b>"
+            if n_bajo > 1:
+                linea += f" · {n_bajo} anuncios por debajo"
+            barato = next((x for x in (r.get("muestras") or []) if x.get("precio") == m.get("min")), None)
+            if barato and str(barato.get("url") or "").startswith("http"):
+                linea += f'\n<a href="{_h(barato["url"])}">Ver el anuncio</a> · {_h(str(barato.get("titulo") or "")[:60])}'
+            partes.append(linea)
+        if len(bajaron) > MAX_AVISOS:
+            partes.append(f"\n\n<i>…y {len(bajaron) - MAX_AVISOS} más en el Radar.</i>")
+        partes.append("\n\n<i>Mira el anuncio antes de bajar: puede ser otro modelo. En el Radar, «✕ No es este» lo saca, y ahí ves qué le pasa a tu comisión.</i>")
+    if ya_no:
+        if partes:
+            partes.append("\n\n")
+        partes.append(f"✅ <b>Ya nadie está por debajo de tu precio</b> ({len(ya_no)})")
+        for r in ya_no[:MAX_AVISOS]:
+            partes.append(f"\n· {_h(r.get('nombre'))} — tú {_h(_tu_txt(r))}")
+        if len(ya_no) > MAX_AVISOS:
+            partes.append(f"\n<i>…y {len(ya_no) - MAX_AVISOS} más.</i>")
+    return "".join(partes)
+
+
+def enviar_telegram(texto):
+    """Lo manda al chat del dueño, con un botón que abre el Radar. Devuelve True
+    si Telegram lo aceptó."""
+    import urllib.request
+    token, chat = os.environ.get("BOT_TOKEN", ""), os.environ.get("ADMIN_CHAT_ID", "")
+    if not (token and chat and (texto or "").strip()):
+        print("ℹ️ Sin BOT_TOKEN/ADMIN_CHAT_ID o sin texto: no se manda nada a Telegram.")
+        return False
+    cuerpo = json.dumps({
+        "chat_id": chat, "text": texto[:4096], "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "reply_markup": {"inline_keyboard": [[{"text": "📡 Abrir el Radar", "url": PANEL_RADAR}]]},
+    }).encode("utf-8")
+    req = urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
+                                 data=cuerpo, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ok = 200 <= r.status < 300
+    except Exception as e:
+        print(f"❌ Telegram: {e}", file=sys.stderr)
+        return False
+    print("✅ Aviso del radar enviado a Telegram." if ok else "❌ Telegram no lo aceptó.")
+    return ok
+
+
 def main():
     productos = load_json(os.path.join(ROOT, "productos.json"), []) or []
     # Solo se vigilan realmente los productos con stock > 0 (igual que el admin UI:
@@ -449,6 +572,7 @@ def main():
             muestras, desc = [], 0
         r = analizar(p, muestras, prev_hist.get(pid), fecha, rate)
         r["busqueda"] = term or query_de(p.get("nombre"))
+        r["firma"] = firma_busqueda(term, excl)
         r["descartados"] = desc
         resultados.append(r)
         print(f"  · {str(p.get('nombre'))[:34]:34} → {resultados[-1]['mercado']}")
@@ -469,6 +593,14 @@ def main():
     }
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    # El aviso de Telegram se deja escrito; lo manda el workflow cuando el
+    # commit ya está en main, para que llegue una sola vez.
+    destino = os.environ.get("AVISO_TELEGRAM", "")
+    if destino:
+        texto = mensaje_aviso(cambios_radar(prev, resultados))
+        with open(destino, "w", encoding="utf-8") as f:
+            f.write(texto)
+        print("📝 Aviso de Telegram preparado." if texto else "📝 Nada que avisar por Telegram.")
     print(f"✅ radar.json escrito. Resumen: {resumen}")
 
     # Push de resumen al admin (opcional; no rompe si falta Firebase)
@@ -487,4 +619,12 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "--enviar-telegram":
+        try:
+            with open(sys.argv[2], encoding="utf-8") as f:
+                _texto = f.read()
+        except OSError:
+            _texto = ""
+        enviar_telegram(_texto)
+        sys.exit(0)
     sys.exit(main())
