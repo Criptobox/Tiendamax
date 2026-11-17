@@ -2582,7 +2582,7 @@
     "categoria": "CARROS",
     "subcategoria": "LLANTAS",
     "stock": 0,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2629,8 +2629,8 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778546857180_ext.webp"
     ],
-    "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
-    "rev": 1793393116521
+    "rev": 1794929236173,
+    "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja."
   },
   {
     "id": 1778547214210,
@@ -3689,7 +3689,7 @@
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 0,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -3779,8 +3779,8 @@
       "Llevar de viaje, paseos en bicicleta o caminatas gracias a su formato compacto, ligero y cordón de transporte.",
       "Disfrutar de música, podcasts y películas desde el móvil, tablet o laptop con sonido claro y graves envolventes."
     ],
-    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes.",
-    "rev": 1793393116521
+    "rev": 1794929236173,
+    "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes."
   },
   {
     "id": 1780079294429,
@@ -4999,7 +4999,7 @@
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -5082,8 +5082,8 @@
       "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
     ],
     "slug": "audifonos-gaming-nubwo",
-    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.",
-    "rev": 1793393116521
+    "rev": 1794929236173,
+    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego."
   },
   {
     "id": 1782439525089,
@@ -5161,7 +5161,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -5217,12 +5217,12 @@
       "1x Interruptor de Transferencia Automática 100A",
       "1x Diagrama de conexión"
     ],
-    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz.",
     "slug": "transferencia-automatica",
     "slugsAnteriores": [
       "transferencia-manual"
     ],
-    "rev": 1793393116521
+    "rev": 1794929236173,
+    "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz."
   },
   {
     "id": 1782535594832,
@@ -5652,7 +5652,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -5665,7 +5665,6 @@
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
     "seoTitle": "Inversor Tataliken 4000W (24V) en Cuba | TiendaMax",
     "seoDescription": "Inversor Tataliken de 24V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada para bancos de baterías de 24V, con menos corriente en el cableado que un equivalente de 12V.",
-    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.",
     "ficha": [
       {
         "k": "Marca",
@@ -5716,7 +5715,8 @@
       "1x Par de mosfet"
     ],
     "slug": "inversor-tataliken-4000w-24v",
-    "rev": 1793393116521
+    "rev": 1794929236173,
+    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar."
   },
   {
     "id": 1783453597496,
@@ -11260,7 +11260,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "masVendido": true,
+    "masVendido": false,
     "usado": true,
     "garantia": "",
     "devolucion": false,
@@ -11371,7 +11371,7 @@
       "Sustitución directa de baterías pesadas de ciclo profundo en instalaciones solares aisladas (Off-Grid)."
     ],
     "slug": "bateria-lifepo4-lp15-12100",
-    "rev": 1793393116521,
+    "rev": 1794929236173,
     "seoTitle": "Batería de Litio LiFePO4 Must LP15-12100 (12.8V… | TiendaMax",
     "seoDescription": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento…",
     "descripcion": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento, diseñado para sustituir ventajosamente a las tradicionales baterías de plomo-ácido, gel o AGM en sistemas solares fotovoltaicos, respaldos de emergencia e instalaciones aisladas. Gracias a su química LiFePO4, proporciona una estabilidad térmica y química superior, eliminando riesgos de fuga de gases o sobrecalentamiento crítico y ofreciendo una vida útil que supera holgadamente los 4000 a 6000 ciclos al 80% de profundidad de descarga (DoD)."
