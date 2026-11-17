@@ -557,6 +557,13 @@ try{var _piel=localStorage.getItem('tm_piel');
   .radar-term .form-input{flex:1 1 180px;min-width:0}
   .radar-anuncio{display:flex;gap:8px;align-items:center;padding:7px 10px;background:rgba(0,0,0,.25);border-radius:7px;margin-bottom:5px;font-size:12px}
   .radar-anuncio-t{flex:1;min-width:0;overflow-wrap:anywhere}
+  .radar-conv{font-size:12px;color:#d9b36a;margin-top:2px}
+  .radar-conv-t{font-size:11px;color:#d9b36a;white-space:nowrap}
+  .radar-com{margin-top:8px;padding:9px 11px;border-radius:10px;font-size:12.5px;line-height:1.45;background:rgba(255,255,255,.04);color:#e8e2d9}
+  .radar-com.ok{border:1px solid rgba(80,200,120,.4)}
+  .radar-com.mal{border:1px solid rgba(255,90,80,.5)}
+  .radar-com-n{color:var(--muted);font-size:11.5px}
+  .radar-com-t{color:var(--muted)}
   .radar-no{flex:none;min-height:34px;padding:4px 9px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
@@ -6333,6 +6340,29 @@ function radarMediana(vals){
   if(n>=5){ const k=Math.max(1,Math.floor(n*0.2)); const r=v.slice(k,n-k); if(r.length) v=r; }
   const m=v.length>>1; return v.length%2 ? v[m] : (v[m-1]+v[m])/2;
 }
+const _radarMN = n => Math.round(Number(n)||0).toLocaleString('es-US') + ' MN';
+/* Qué pasa con tu comisión si igualas al más barato. La comisión del gestor es
+   un importe fijo por producto y sale del precio de venta, así que bajar el
+   precio $X le quita $X (lo que se dice en la línea). Se compara en la moneda
+   en que se declaró la comisión, y solo con la tasa de la búsqueda si hay que
+   pasar de una a otra; sin comisión declarada, o sin tasa para convertirla, no
+   se inventa nada. Devuelve el HTML de una línea, o '' si no hay nada que decir. */
+function radarComision(r, min, tuyo){
+  if(!(min>0 && tuyo>0 && min<tuyo)) return '';
+  const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); if(!p) return '';
+  const com=Number(p.comision)||0;
+  if(!com) return '<div class="radar-com"><span class="radar-com-t">💸 Sin comisión declarada en este producto: no puedo calcular si te conviene igualarlo.</span></div>';
+  const tasa=Number(RADAR&&RADAR.tasa)||0;
+  const mn=String(p.comisionMoneda||'').toUpperCase()==='MN' || (!p.comisionMoneda && com>=1000);
+  const baja=tuyo-min;                                   // en USD
+  if(mn && !tasa) return '<div class="radar-com"><span class="radar-com-t">💸 Tu comisión es en MN y esta búsqueda no trae la tasa para compararla.</span></div>';
+  const bajaEn = mn ? baja*tasa : baja;                  // en la moneda de la comisión
+  const fmt = v => mn ? _radarMN(v) : money(v);
+  const queda = com-bajaEn;
+  const nota = mn ? ' <span class="radar-com-n">(a la tasa de hoy: 1 USD = '+tasa+' MN)</span>' : '';
+  if(queda>0) return `<div class="radar-com ok">💸 Igualarlo es bajar ${money(baja)}. Tu comisión es ${fmt(com)}: te quedarían <b>${fmt(queda)}</b>.${nota}</div>`;
+  return `<div class="radar-com mal">💸 Igualarlo es bajar ${money(baja)}, y tu comisión es ${fmt(com)}: <b>no te alcanza</b>${queda<0?' (perderías '+fmt(-queda)+')':''}.${nota}</div>`;
+}
 function radarTarjeta(r){
   const pid=String(r.id), okUrl=u=>/^https?:\/\//i.test(u||'');
   const term=RADAR_TERM[pid]||'', busca=term||r.busqueda||'';
@@ -6355,13 +6385,17 @@ function radarTarjeta(r){
   let comp='';
   if(!n) comp='<span style="color:var(--muted)">No encontré anuncios de esto en la última semana.</span>';
   else if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
-  const filas=muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver →</a>`:''; return `<div class="radar-anuncio"><div class="radar-anuncio-t"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>${okUrl(m.url)?`<button type="button" class="radar-no" onclick="radarNoEs('${esc(pid)}','${esc(m.url)}')" title="Este anuncio es de otro producto">✕ No es este</button>`:''}</div>`; }).join('');
+  const filas=muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver →</a>`:''; const cup=m.moneda==='CUP'; const px=cup?`<b style="color:${barato?'var(--green)':'#fff'}">${_radarMN(m.orig)}</b> <span class="radar-conv-t">≈ ${money(m.precio)} · convertido</span>`:`<b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b>`; return `<div class="radar-anuncio"><div class="radar-anuncio-t">${px} · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>${okUrl(m.url)?`<button type="button" class="radar-no" onclick="radarNoEs('${esc(pid)}','${esc(m.url)}')" title="Este anuncio es de otro producto">✕ No es este</button>`:''}</div>`; }).join('');
   const notas=[];
   if(r.descartados) notas.push(`${r.descartados} descartado${r.descartados!==1?'s':''} por otra cifra o modelo`);
   if(fuera.size) notas.push(`${fuera.size} quitado${fuera.size!==1?'s':''} por ti · <button type="button" class="radar-lnk" onclick="radarDeshacer('${esc(pid)}')">deshacer</button>`);
-  const det = (muestras.length||notas.length)?`<details style="margin-top:10px"${quitadas?' open':''}><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios (verifica que son el mismo)</summary><div style="margin-top:8px">${filas}${notas.length?`<div class="radar-ayuda">${notas.join(' · ')}</div>`:''}</div></details>`:'';
+  const det = (muestras.length||notas.length)?`<details style="margin-top:10px"${quitadas?' open':''}><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver ${muestras.length===1?'el anuncio':'los '+muestras.length+' anuncios'} (verifica que ${muestras.length===1?'es':'son'} el mismo)</summary><div style="margin-top:8px">${filas}${notas.length?`<div class="radar-ayuda">${notas.join(' · ')}</div>`:''}</div></details>`:'';
+  const tasaR=Number(RADAR&&RADAR.tasa)||0;
+  const tuTxt = r.tuMoneda==='MN' ? `<b style="color:var(--o)">${_radarMN(r.tuPrecioOrig)}</b> <span style="color:var(--muted)">(≈ ${money(tuyo)})</span>` : `<b style="color:var(--o)">${money(tuyo)}</b>`;
+  const nConv = muestras.filter(m=>m.moneda==='CUP').length;
+  const convTxt = nConv ? `<div class="radar-conv">💱 ${nConv===1?'1 anuncio está en CUP y se convirtió':nConv+' anuncios están en CUP y se convirtieron'} a dólares${tasaR?' a 1 USD = '+tasaR+' MN':''}. Marcado${nConv!==1?'s':''} «convertido» abajo.</div>` : '';
   const merc = n ? `<div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> (${n} anuncio${n!==1?'s':''})</div>` : '';
-  return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;line-height:1.9;margin-top:4px"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div>${merc}<div>${comp}</div></div>${det}</div>`;
+  return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3>${lineaBusca}<div style="font-size:13px;line-height:1.9;margin-top:4px"><div>Tu precio: ${tuTxt}</div>${merc}${convTxt}<div>${comp}</div></div>${radarComision(r,min,tuyo)}${det}</div>`;
 }
 function radarNoEs(pid, url){
   const l=RADAR_EXCL[pid]||(RADAR_EXCL[pid]=[]);

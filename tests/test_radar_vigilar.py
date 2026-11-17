@@ -58,6 +58,52 @@ class MismoModeloTest(unittest.TestCase):
         self.assertFalse(pr.mismo_modelo(n, "cargador 12v 20a"))
 
 
+class MonedaTest(unittest.TestCase):
+    """Un anuncio en CUP se convierte a USD con la tasa solo para compararlo, y
+    el radar guarda su moneda y su cifra original para decirlo."""
+    def test_cada_anuncio_lleva_su_moneda_y_su_cifra(self):
+        self.assertEqual({"usd": 499.0, "moneda": "USD", "orig": 499.0}, pr.parse_precio("499 USD", 925))
+        self.assertEqual({"usd": 150.0, "moneda": "MLC", "orig": 150.0}, pr.parse_precio("150 mlc", 925))
+        p = pr.parse_precio("280,000 cup", 925)
+        self.assertEqual(("CUP", 280000.0, 302.7), (p["moneda"], p["orig"], p["usd"]))
+
+    def test_miles_con_espacio_no_se_leen_como_280_dolares(self):
+        # «280 000 CUP» se leía «280» y, sin moneda, valía 280 dólares.
+        m = pr.PRECIO_TXT_RE.search("Vendo ventilador 280 000 CUP negociable")
+        self.assertEqual("280 000 CUP", m.group(0).strip())
+        self.assertEqual("CUP", pr.parse_precio(m.group(0), 925)["moneda"])
+        self.assertEqual(1200.0, pr.parse_precio("$1 200 USD", 925)["usd"])
+
+    def test_cup_sin_tasa_no_se_inventa(self):
+        self.assertIsNone(pr.parse_precio("280000 cup", None))
+
+    def test_producto_en_mn_se_compara_en_usd_y_dice_cual_era_el_suyo(self):
+        a = pr.analizar({"id": 1, "nombre": "Cable", "precioActual": 280, "moneda": "MN"},
+                        [{"precio": 3.0, "titulo": "x", "moneda": "CUP", "orig": 2775}], [], "2026-11-17", 925)
+        self.assertEqual((0.3, "MN", 280.0, 1), (a["tuPrecio"], a["tuMoneda"], a["tuPrecioOrig"], a["convertidos"]))
+
+    def test_producto_en_mn_sin_tasa_no_se_compara(self):
+        a = pr.analizar({"id": 1, "nombre": "Cable", "precioActual": 280, "moneda": "MN"}, [], [], "2026-11-17", None)
+        self.assertIsNone(a["tuPrecio"])
+        self.assertEqual("sin_datos", a["estado"])
+
+
+class MemoriaTest(unittest.TestCase):
+    """128GB/8GB RAM y 64GB/8GB RAM comparten el 8: no son el mismo teléfono."""
+    N = "Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)"
+
+    def test_la_cifra_grande_manda(self):
+        self.assertFalse(pr.mismo_modelo(self.N, "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM)"))
+        self.assertFalse(pr.mismo_modelo(self.N, "ITEL ACITY A100C - 3GB + 64GB"))
+        self.assertTrue(pr.mismo_modelo(self.N, "itel A100C 128GB 8GB RAM"))
+        self.assertTrue(pr.mismo_modelo(self.N, "iTel Acity A100C"))
+
+    def test_el_de_64_acepta_el_anuncio_con_otra_ram(self):
+        n = "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)"
+        self.assertTrue(pr.mismo_modelo(n, "ITEL ACITY A100C - 3GB + 64GB"))
+        self.assertFalse(pr.mismo_modelo(n, "itel 128GB"))
+
+
 class BuscarTest(unittest.TestCase):
     def setUp(self):
         self.pedidas = []
@@ -88,6 +134,7 @@ class PanelTest(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(RAIZ, ".github/workflows/precio-radar.yml")))
         self.assertTrue(pr.VIGILAR.endswith("radar-vigilar.json"))
         self.assertIn("terminos:term, excluir:excl", html)
+        self.assertIn("function radarComision(", html)
         for f in ("radarToggle", "radarGuardar", "radarPintarElegir", "radarNoEs",
                   "radarDeshacer", "radarTermEditar", "radarTermGuardar"):
             self.assertIn("window." + f + "=" + f, html)
