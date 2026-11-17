@@ -1791,6 +1791,9 @@ try{var _piel=localStorage.getItem('tm_piel');
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-cliente">Cliente <span style="color:var(--gray);font-weight:600">— opcional</span></label><input class="form-input" id="venta-cliente" placeholder="Nombre" autocomplete="off"></div>
             <div class="form-group" style="margin:0"><label class="form-label" for="venta-tel">WhatsApp <span style="color:var(--gray);font-weight:600">— para el seguimiento</span></label><input class="form-input" id="venta-tel" placeholder="5355551234" inputmode="tel" autocomplete="off"></div>
           </div>
+          <!-- 🎁 Tarjeta de cliente: si este WhatsApp tiene una con descuentos
+               pendientes, aquí sale para aplicarla (js/tarjeta-cliente.js). -->
+          <div id="venta-tarjeta"></div>
           <!-- ¿De dónde salió esta venta? Un toque, y opcional. Es la otra
                mitad del contador de /analytics/fuentes: ese dice cuánta gente
                trae cada canal, y esto cuántos de esos compran. Sin él, un
@@ -2335,7 +2338,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=941e1870"></script>
+<script src="js/tm-bundle.js?v=ea07682d"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2894,6 +2897,9 @@ try{var _piel=localStorage.getItem('tm_piel');
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=e6a536a1"></script>
 <script src="js/admin-copilot.js?v=2650e5f3"></script>
+<!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
+<script src="js/qr-mini.js?v=f43cbef0"></script>
+<script src="js/tarjeta-cliente.js?v=18b4fdf3"></script>
 
 <script>
 (function(){
@@ -3679,7 +3685,8 @@ function reservaVender(id){
   if(!m.ok){ mostrarNotificacion('❌ '+m.msg,'error'); return; }
   const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, moneda:i.moneda, comision:i.comision, comisionMoneda:i.comisionMoneda}));
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
-  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true});
+  const tarjeta=(typeof window.tmTarjetaPreguntar==='function') ? window.tmTarjetaPreguntar(r.telefono, items) : null;
+  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true, tarjeta:tarjeta||undefined});
   try{ const v=JSON.parse(localStorage.getItem('tm_vale_vender')||'null'); if(v && v.id===id) localStorage.removeItem('tm_vale_vender'); }catch(e){}
   renderReservas();
 }
@@ -4065,6 +4072,7 @@ function ventaRenderCart(){
     </div>`;
   }).join('');
   ventaRenderTotales();
+  if(typeof window.tmTarjetaVentaPintar==='function') window.tmTarjetaVentaPintar(VENTA_CART);
 }
 /* ── ¿Por dónde llegó la venta? ─────────────────────────────────────────
    Cinco canales y un toque. Las claves son las MISMAS que cuenta
@@ -4133,7 +4141,8 @@ function ventaRegistrar(){
     nombre: ($('#venta-cliente') && $('#venta-cliente').value || '').trim(),
     tel:    ($('#venta-tel')     && $('#venta-tel').value     || '').trim()
   };
-  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN, grupo: VENTA_GRUPO});
+  const tarjeta = (typeof window.tmTarjetaVenta==='function') ? window.tmTarjetaVenta() : null;
+  registrarVentaPedido(vendidos, cliente, {origen: VENTA_ORIGEN, grupo: VENTA_GRUPO, tarjeta: tarjeta||undefined});
   // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
@@ -4141,6 +4150,7 @@ function ventaRegistrar(){
   VENTA_ORIGEN=''; VENTA_GRUPO=''; ventaRenderOrigen();
   if($('#venta-cliente')) $('#venta-cliente').value='';
   if($('#venta-tel')) $('#venta-tel').value='';
+  if(typeof window.tmTarjetaVentaPintar==='function') window.tmTarjetaVentaPintar([]);
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
   showToast('✅ Venta registrada', cliente.tel
     ? 'Stock ajustado · seguimiento programado a los 3, 30 y 90 días'
@@ -4391,6 +4401,10 @@ function gananciasDe(ventas){
       if(mon==='MN') mn+=g; else usd+=g;
       if(nm){ const r=porProducto[nm]||(porProducto[nm]={usd:0,mn:0}); r[mon==='MN'?'mn':'usd']+=g; }
     });
+    // Tarjeta de cliente: el descuento (en MN) sale de la comisión del gestor.
+    // Va contra el total en MN y no contra un producto; puede dejarlo en
+    // negativo, y eso es lo que pasó de verdad.
+    mn-=Number(v.descTarjetaMN)||0;
   });
   return {usd, mn, porProducto, unidades};
 }
@@ -7761,7 +7775,7 @@ function renderClientes(){
     };
     box.innerHTML = list.length
       ? `${porContactar?`<div style="font-size:11.5px;color:var(--gray);margin:0 0 10px">📞 <b style="color:#fff">${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
-         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span></td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
+         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Última compra</th><th>Seguimiento</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre||'(sin nombre)')}<br><span style="color:var(--gray);font-weight:600;font-size:11px">${esc(c.tel||'sin WhatsApp')}</span>${(c.tel&&typeof window.tmTarjetaChip==='function')?window.tmTarjetaChip(c.tel, c.nombre):''}</td><td>${c.compras}</td><td class="nm">${dosMonedas(c.total)}</td><td>${fecha(c.ultima)}</td><td>${accion(c)}</td></tr>`).join('')}</tbody></table></div>`
       : `<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se llenan solos: pon el nombre y el WhatsApp al registrar la venta, en ⚡ Ventas. A los 3 días aparece aquí a quién toca escribirle.</small></div></div>`;
   } else if(CLI_VIEW==='reviews'){
     renderReviewsReal(box);
@@ -9801,7 +9815,7 @@ window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManu
 // Todo este bloque va dentro de un IIFE, así que una función que no se
 // exporte acá NO existe para los onclick="" del HTML: el botón queda mudo,
 // sin error visible. Estas faltaban y por eso no hacían nada.
-window.renderClientes=renderClientes;
+window.renderClientes=renderClientes; window.tmGananciasDe=gananciasDe;
 window.pubCatCartelesLote=pubCatCartelesLote;
 window.pubToggleSinPublicar=pubToggleSinPublicar;
 // Las llaman los onclick del HTML que genera este mismo bloque; sin

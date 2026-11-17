@@ -422,6 +422,9 @@ function _ventaParaFirebase(venta) {
     // Igual que el canal: es un dato de la tienda, y sin él las ventas por
     // grupo solo contarían las anotadas en este teléfono.
     if (venta.grupo) v.grupo = venta.grupo;
+    // La tarjeta TiendaMax usada y su descuento: sin ellos, el otro teléfono
+    // contaría la comisión entera de una venta que dejó 1000 MN menos.
+    if (venta.tarjeta) { v.tarjeta = venta.tarjeta; v.descTarjetaMN = venta.descTarjetaMN; }
     return v;
 }
 
@@ -719,6 +722,15 @@ function registrarVentaPedido(items, cliente, opts) {
     // nombre, así que no dice nada del grupo a quien lo lea.
     const grp = String((opts && opts.grupo) || '').trim();
     if (venta.origen === 'facebook' && /^[a-z0-9]{4,8}$/.test(grp)) venta.grupo = grp;
+
+    // Tarjeta de cliente (js/tarjeta-cliente.js, solo en el panel): el código
+    // y el descuento en MN que salen de la comisión del gestor. Quien comprueba
+    // que la tarjeta existe y le quedan usos es ese módulo, antes de llamar aquí.
+    const tj = opts && opts.tarjeta;
+    if (tj && /^TM[0-9A-Z]{6}$/.test(String(tj.codigo || '')) && Number(tj.mn) > 0) {
+        venta.tarjeta = String(tj.codigo);
+        venta.descTarjetaMN = Number(tj.mn);
+    }
 
     // Nombre y teléfono del cliente. El tab Clientes ya los leía (v.cliente /
     // v.telefono) y salía vacío porque nadie los escribía nunca.

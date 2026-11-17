@@ -309,6 +309,26 @@
         }
       }
     },
+    "tarjetas": {
+      ".read": false,
+      "$codigo": {
+        ".read": "$codigo.matches(/^TM[2-9A-HJKMNP-Z]{6}$/)",
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val() && $codigo.matches(/^TM[2-9A-HJKMNP-Z]{6}$/)",
+        ".validate": "newData.hasChildren(['r', 'e'])",
+        "r": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+        },
+        "n": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "e": {
+          ".validate": "newData.isNumber()"
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
+    },
     "pedidos": {
       ".read": false,
       ".write": false,
