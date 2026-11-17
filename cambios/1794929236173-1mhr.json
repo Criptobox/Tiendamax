@@ -1,0 +1,561 @@
+{
+  "v": 1,
+  "creado": "2026-11-17T15:27:16.173Z",
+  "productos": [
+    {
+      "id": 1778546857180,
+      "nombre": "Juego Llantas R15 Pulido",
+      "precioActual": 460,
+      "imagen": "https://tiendamax.org/imagenes/img_1778546857180_ext.webp",
+      "categoria": "CARROS",
+      "subcategoria": "LLANTAS",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 23,
+      "slug": "juego-llantas-r15-pulido",
+      "comision": 10,
+      "seoTitle": "Juego Llantas R15 Pulido en Cuba | TiendaMax",
+      "seoDescription": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja.",
+      "ficha": [
+        {
+          "k": "🏷️ Marca",
+          "v": "Ocenti Racing"
+        },
+        {
+          "k": "🛞 Rodado",
+          "v": "R15"
+        },
+        {
+          "k": "🎨 Acabado",
+          "v": "Negro pulido"
+        },
+        {
+          "k": "✨ Diseño",
+          "v": "5 rayos deportivo"
+        },
+        {
+          "k": "📦 Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      ],
+      "incluye": [
+        "1x Juego de 4 llantas R15"
+      ],
+      "specs": [
+        "🛞 Rodado: R15 4x113",
+        "✨ Diseño: 5 rayos deportivo",
+        "🎨 Acabado: Negro pulido"
+      ],
+      "precioOriginal": 600,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1778546857180_ext.webp"
+      ],
+      "rev": 1794929236173,
+      "descripcion": "Juego de llantas/rines R15, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro pulido. Vienen nuevas en su caja."
+    },
+    {
+      "id": 1780017975657,
+      "nombre": "Xiaomi Sound Outdoor",
+      "precioActual": 65,
+      "precioOriginal": 75,
+      "imagen": "https://tiendamax.org/imagenes/img_1789065763743.webp",
+      "categoria": "AUDIO",
+      "subcategoria": "AUDIO",
+      "stock": 0,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 13,
+      "slug": "xiaomi-sound-outdoor",
+      "comision": 5,
+      "specs": [
+        "⚡ 30W"
+      ],
+      "seoTitle": "Xiaomi Sound Outdoor en Cuba | TiendaMax",
+      "seoDescription": "(Nuevo en caja) ¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ⚡ Lo mejor de este altavoz: Potencia de 30W…",
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1789065763743.webp",
+        "https://tiendamax.org/imagenes/img_1783836630474.webp",
+        "https://tiendamax.org/imagenes/img_1783836546487.webp",
+        "https://tiendamax.org/imagenes/img_1780017975657.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Xiaomi"
+        },
+        {
+          "k": "Modelo",
+          "v": "Sound Outdoor (30W)"
+        },
+        {
+          "k": "Potencia de Salida",
+          "v": "30W RMS",
+          "nota": "Woofer + Tweeter + Doble radiador pasivo"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Bluetooth 5.4"
+        },
+        {
+          "k": "Batería y Autonomía",
+          "v": "Hasta 12 horas de reproducción continua",
+          "nota": "a volumen medio"
+        },
+        {
+          "k": "Resistencia",
+          "v": "Certificación IP67",
+          "nota": "resistente al agua y al polvo"
+        },
+        {
+          "k": "Puerto de Carga",
+          "v": "USB Tipo C",
+          "nota": "soporta carga rápida de 15W"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Potencia de salida de 30W con arquitectura acústica de alta fidelidad: combina un woofer para frecuencias medias/bajas, un tweeter para agudos cristalinos y dos radiadores pasivos laterales para graves profundos y contundentes."
+        },
+        {
+          "d": "Conexión inalámbrica Bluetooth 5.4 que asegura transmisión de audio fluida, menor latencia, mayor alcance y eficiencia energética."
+        },
+        {
+          "d": "Certificación IP67 a prueba de polvo y sumergible en agua, diseñada para resistir lluvia, arena, salpicaduras y entornos exteriores exigentes."
+        },
+        {
+          "d": "Función de emparejamiento TWS (True Wireless Stereo) para conectar dos unidades y crear un sistema de sonido estéreo envolvente, con capacidad de enlazar hasta 100 altavoces compatibles en simultáneo."
+        },
+        {
+          "d": "Batería recargable de larga duración que ofrece hasta 12 horas de música ininterrumpida y recarga rápida mediante puerto USB-C."
+        },
+        {
+          "d": "Diseño cilíndrico ergonómico con acabado en tela resistente, base antideslizante y cordón elástico de sujeción integrado para transportarlo cómodamente en la mano, colgado a una mochila o en la bicicleta."
+        },
+        {
+          "d": "Micrófono integrado para responder llamadas en modo manos libres con cancelación de eco y voz nítida."
+        },
+        {
+          "d": "Botones físicos engomados de acceso rápido para control de volumen, reproducción, emparejamiento Bluetooth y encendido."
+        }
+      ],
+      "incluye": [
+        "1× Altavoz Bluetooth Xiaomi Sound Outdoor (30W)",
+        "1× Cable de carga USB Tipo C",
+        "1× Cordón / correa de transporte (integrada)",
+        "1× Manual de usuario"
+      ],
+      "idealPara": [
+        "Días de playa, piscina, campamentos, terrazas y reuniones al aire libre donde se requiera resistencia al agua y gran potencia acústica.",
+        "Llevar de viaje, paseos en bicicleta o caminatas gracias a su formato compacto, ligero y cordón de transporte.",
+        "Disfrutar de música, podcasts y películas desde el móvil, tablet o laptop con sonido claro y graves envolventes."
+      ],
+      "rev": 1794929236173,
+      "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes."
+    },
+    {
+      "id": 1782439428159,
+      "nombre": "Audífonos Diademas Gaming Inalámbricos Nubwo",
+      "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+        "https://tiendamax.org/imagenes/img_1784569823396.webp"
+      ],
+      "precioActual": 50,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "AUDIO",
+      "subcategoria": "AUDIO",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "📶 Conectividad: Inalámbrica 2.4 GHz",
+        "🔊 Drivers / Altavoces: Neodimio de 50 mm",
+        "🔋 Autonomía: Hasta 30"
+      ],
+      "fechaAgregado": "2026-06-26T02:03:48.159Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "Audífonos Diademas Gaming Inalámbricos Nubwo | TiendaMax",
+      "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Nubwo"
+        },
+        {
+          "k": "Modelo",
+          "v": "G06 Wireless Gaming Headset"
+        },
+        {
+          "k": "Conectividad",
+          "v": "Inalámbrica 2.4 GHz (Receptor USB) + Bluetooth + Cable auxiliar de 3.5 mm"
+        },
+        {
+          "k": "Drivers / Altavoces",
+          "v": "Neodimio de 50 mm"
+        },
+        {
+          "k": "Autonomía",
+          "v": "Hasta 30 – 40 horas de uso continuo",
+          "nota": "según volumen y modo"
+        },
+        {
+          "k": "Micrófono",
+          "v": "Micrófono flexible con cancelación de ruido"
+        },
+        {
+          "k": "Compatibilidad",
+          "v": "PC, PlayStation (PS4 / PS5), Nintendo Switch, Laptops, teléfonos móviles y Xbox",
+          "nota": "mediante cable de 3.5 mm al mando"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Conectividad 3 en 1",
+          "d": "enlace inalámbrico de 2.4 GHz de latencia ultrabaja (<30 ms) mediante receptor USB, modo Bluetooth para dispositivos móviles y conexión analógica por cable 3.5 mm."
+        },
+        {
+          "d": "Controladores de neodimio de 50 mm de alta precisión que entregan sonido envolvente estéreo nítido, agudos limpios y graves profundos para identificar pasos y disparos con exactitud."
+        },
+        {
+          "d": "Micrófono omnidireccional con supresión de ruido ambiental, flexible y posicionable para comunicaciones claras en partidas cooperativas o llamadas."
+        },
+        {
+          "d": "Batería recargable de gran capacidad para largas sesiones de juego continuas sin necesidad de recargas frecuentes."
+        },
+        {
+          "d": "Almohadillas ergonómicas de espuma con memoria viscoelástica y recubrimiento transpirable que aíslan el ruido exterior sin generar presión excesiva en las orejas."
+        },
+        {
+          "d": "Diadema ajustable con estructura reforzada y almohadilla superior acolchada para máxima comodidad durante horas de uso."
+        },
+        {
+          "t": "Controles integrados en el auricular",
+          "d": "selector de encendido, rueda de control de volumen y botón de silenciado rápido de micrófono (Mute)."
+        }
+      ],
+      "incluye": [
+        "1× Audífonos Diadema Gaming Inalámbricos Nubwo G06",
+        "1× Transmisor / Adaptador USB inalámbrico 2.4 GHz",
+        "1× Cable de carga USB",
+        "1× Cable de audio analógico jack 3.5 mm",
+        "1× Guía de usuario rápida"
+      ],
+      "idealPara": [
+        "Jugadores competitivos de PC, PS4 y PS5 que requieren audio inalámbrico en tiempo real sin desfase ni retraso en el juego.",
+        "Teletrabajo, clases virtuales, videollamadas y streaming en directo con voz clara y aislamiento de sonido ambiente.",
+        "Disfrutar de música, series y películas en smartphones, tablets o laptops alternando rápidamente entre Bluetooth y cable auxiliar."
+      ],
+      "slug": "audifonos-gaming-nubwo",
+      "rev": 1794929236173,
+      "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego."
+    },
+    {
+      "id": 1782439688529,
+      "nombre": "Transferencia Automática o Manual",
+      "imagen": "https://tiendamax.org/imagenes/img_1783838238277.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783838238277.webp",
+        "https://tiendamax.org/imagenes/img_1782439684820.webp"
+      ],
+      "precioActual": 65,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "CONTROLADORES SOLARES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Voltaje: 110V",
+        "⚡ Corriente: 100A"
+      ],
+      "fechaAgregado": "2026-06-26T02:08:08.529Z",
+      "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+      "seoTitle": "Transferencia Automática o Manual en Cuba | TiendaMax",
+      "seoDescription": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red…",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "SMOQ"
+        },
+        {
+          "k": "Modelo",
+          "v": "SMOQ3-100/2P"
+        },
+        {
+          "k": "Tipo",
+          "v": "Interruptor de Transferencia Automática (ATS)"
+        },
+        {
+          "k": "Corriente nominal",
+          "v": "100A continuo"
+        },
+        {
+          "k": "Voltaje nominal",
+          "v": "110V / 220V AC"
+        },
+        {
+          "k": "Montaje",
+          "v": "Riel DIN estándar de 35mm"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Conmutación ultra rápida entre dos fuentes eléctricas sin apagar equipos."
+        },
+        {
+          "d": "Selector frontal para modo de operación 100% Automático o Manual."
+        },
+        {
+          "d": "Contactos de plata de alta durabilidad con capacidad de corte de 100A."
+        }
+      ],
+      "idealPara": [
+        "Cuadros eléctricos residenciales para automatizar el cambio entre red de la calle e inversor."
+      ],
+      "incluye": [
+        "1x Interruptor de Transferencia Automática 100A",
+        "1x Diagrama de conexión"
+      ],
+      "slug": "transferencia-automatica",
+      "slugsAnteriores": [
+        "transferencia-manual"
+      ],
+      "rev": 1794929236173,
+      "descripcion": "Interruptor de transferencia automática/manual, tipo SMOQ3-100/2P, monta en riel DIN. Conmuta entre la red eléctrica normal y una planta/generador (o entre dos fuentes) sin que tengas que cambiarlo a mano. Corriente nominal 100A, 230V AC, frecuencia 50/60Hz."
+    },
+    {
+      "id": 1783179800783,
+      "nombre": "Inversor Tataliken 4000W (24V)",
+      "imagen": "https://tiendamax.org/imagenes/img_1785946325577.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1785946325577.webp"
+      ],
+      "precioActual": 180,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "INVERSORES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Potencia: 2000W continuos / 4000W pico",
+        "🔋 Conversión 24V DC a AC",
+        "🔌 Salida: 110V / 120V AC",
+        "〰️ Tipo de onda: Sinusoidal modificada"
+      ],
+      "fechaAgregado": "2026-07-04T15:43:20.783Z",
+      "seoTitle": "Inversor Tataliken 4000W (24V) en Cuba | TiendaMax",
+      "seoDescription": "Inversor Tataliken de 24V a 110V/120V AC: 2000W continuos y 4000W de pico. Onda sinusoidal modificada para bancos de baterías de 24V, con menos corriente en el cableado que un equivalente de 12V.",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Tataliken"
+        },
+        {
+          "k": "Potencia continua",
+          "v": "2000W nominal"
+        },
+        {
+          "k": "Potencia pico",
+          "v": "4000W arranque"
+        },
+        {
+          "k": "Voltaje de entrada",
+          "v": "24V DC",
+          "nota": "Baterías en serie o banco 24V"
+        },
+        {
+          "k": "Voltaje de salida",
+          "v": "110V / 220V AC a 60Hz"
+        },
+        {
+          "k": "Tipo de onda",
+          "v": "Onda Sinusoidal Modificada"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Menor grosor de cable requerido y menor caída de tensión ante consumos altos."
+        },
+        {
+          "d": "Doble ventilador de enfriamiento automático por sensor térmico para trabajo pesado."
+        },
+        {
+          "d": "Consumo en vacío ultra bajo (< 0.6A) para ahorrar batería en horas nocturnas."
+        },
+        {
+          "d": "Display digital frontal para monitoreo en tiempo real del voltaje de entrada."
+        }
+      ],
+      "idealPara": [
+        "Sistemas solares o bancos con 2 baterías en serie de 24V que buscan máxima eficiencia energética."
+      ],
+      "incluye": [
+        "1x Inversor Tataliken 4000W 24V",
+        "1x Par de pinzas caimán reforzadas",
+        "1x Par de mosfet"
+      ],
+      "slug": "inversor-tataliken-4000w-24v",
+      "rev": 1794929236173,
+      "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar."
+    },
+    {
+      "id": 1791502917024,
+      "nombre": "Batería de Litio LiFePO4 Must LP15-12100 (12.8V 100Ah / 1280Wh) 80 Ciclos de Carga",
+      "imagen": "https://tiendamax.org/imagenes/img_1791502915309.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1791502915309.webp"
+      ],
+      "precioActual": 200,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 0,
+      "comision": 0,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "masVendido": false,
+      "usado": true,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ 12.8V 100Ah (1280Wh)",
+        "🔌 Descarga máx. 100A / Carga 50A",
+        "🔄 4000+ Ciclos útiles (BMS Inteligente)"
+      ],
+      "fechaAgregado": "2026-10-08T23:41:57.025Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MUST Energy"
+        },
+        {
+          "k": "Modelo",
+          "v": "LP15-12100"
+        },
+        {
+          "k": "Química de Celdas",
+          "v": "Fosfato de Hierro y Litio",
+          "nota": "LiFePO4"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12.8V"
+        },
+        {
+          "k": "Capacidad Nominal",
+          "v": "100 Ah"
+        },
+        {
+          "k": "Energía Almacenada",
+          "v": "1280 Wh",
+          "nota": "1.28 kWh"
+        },
+        {
+          "k": "Voltaje Máximo de Carga",
+          "v": "14.6V DC"
+        },
+        {
+          "k": "Corriente Máxima de Carga",
+          "v": "50A"
+        },
+        {
+          "k": "Corriente Máxima de Descarga Continua",
+          "v": "100A",
+          "nota": "soporta picos de arranque"
+        },
+        {
+          "k": "Rango de Temperatura de Operación",
+          "v": "0°C a ~45°C"
+        },
+        {
+          "k": "Ciclos de Vida Estimados",
+          "v": "≥ 4000 – 6000 ciclos",
+          "nota": "@ 80% DoD"
+        },
+        {
+          "k": "Terminales de Conexión",
+          "v": "Pernos roscados M8 con tuerca y arandela de fijación"
+        },
+        {
+          "k": "Sistema de Gestión (BMS)",
+          "v": "Integrado",
+          "nota": "protección contra sobretensión, subtensión, sobrecorriente y cortocircuito"
+        },
+        {
+          "k": "Escalabilidad",
+          "v": "Compatible para conexión en paralelo (mayor capacidad en Ah) o en serie",
+          "nota": "hasta 24V o 48V nominales"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Larga Vida Útil (LiFePO4)",
+          "d": "dura entre 5 y 10 veces más que las baterías convencionales de plomo-ácido o gel sin sufrir por descargas profundas diarias."
+        },
+        {
+          "t": "Descarga Continua de 100A",
+          "d": "suministra holgadamente la corriente que demandan inversores de 1kW a 1.2kW en 12V, o escalada en bancos serie de 24V/48V."
+        },
+        {
+          "t": "BMS Integrado de Alta Precisión",
+          "d": "desconexión automática y balanceo pasivo interno para salvaguardar la integridad de las celdas ante fallas externas."
+        },
+        {
+          "t": "Carga Acelerada (hasta 50A)",
+          "d": "recupera el 100% de la carga en apenas 2 a 3 horas conectada a paneles solares o generador con cargador adecuado."
+        },
+        {
+          "t": "Reducción Drástica de Peso y Volumen",
+          "d": "aproximadamente 60% a 70% más ligera que un acumulador de plomo de 100Ah, facilitando su manipulación y montaje."
+        },
+        {
+          "t": "Tensión Estable y Constante",
+          "d": "mantiene el voltaje por encima de 12.5V durante casi todo el ciclo de descarga, evitando caídas repentinas en el inversor."
+        },
+        {
+          "t": "Asa Superior Reforzada",
+          "d": "correa de agarre resistente para moverla e instalarla de forma ergonómica en racks, gabinetes o vehículos."
+        }
+      ],
+      "idealPara": [
+        "Inversores híbridos y cargadores solares residenciales (12V individual, o bancos de 2S a 24V / 4S a 48V).",
+        "Respaldos de energía de emergencia (UPS) para mantener encendidos routers, luces, ventiladores, TVs y refrigeración durante apagones.",
+        "Furgonetas camper, autocaravanas, remolques y embarcaciones marinas que requieren energía auxiliar ligera y segura.",
+        "Sustitución directa de baterías pesadas de ciclo profundo en instalaciones solares aisladas (Off-Grid)."
+      ],
+      "slug": "bateria-lifepo4-lp15-12100",
+      "rev": 1794929236173,
+      "seoTitle": "Batería de Litio LiFePO4 Must LP15-12100 (12.8V… | TiendaMax",
+      "seoDescription": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento…",
+      "descripcion": "La batería de litio ferrofosfato MUST LP15-12100 (12.8V 100Ah / 1280Wh) es un módulo de almacenamiento de energía de ciclo profundo de alto rendimiento, diseñado para sustituir ventajosamente a las tradicionales baterías de plomo-ácido, gel o AGM en sistemas solares fotovoltaicos, respaldos de emergencia e instalaciones aisladas. Gracias a su química LiFePO4, proporciona una estabilidad térmica y química superior, eliminando riesgos de fuga de gases o sobrecalentamiento crítico y ofreciendo una vida útil que supera holgadamente los 4000 a 6000 ciclos al 80% de profundidad de descarga (DoD)."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
