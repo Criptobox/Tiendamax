@@ -530,6 +530,32 @@ try{var _piel=localStorage.getItem('tm_piel');
   .agenda-pie { margin-top:11px; padding-top:10px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.5; }
   .agenda-pie b { color:var(--text); }
 
+  /* Mis grupos de Facebook: una línea por grupo, se abre al tocarla */
+  .gfb{border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.03);overflow:hidden}
+  .gfb-cab{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;width:100%;min-height:52px;padding:10px 12px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+  .gfb-nom{grid-column:1;font-size:14px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gfb-meta{grid-column:1;font-size:12px;color:var(--muted);line-height:1.4}
+  .gfb-fl{grid-column:2;grid-row:1 / span 2;color:var(--muted);font-size:14px}
+  .gfb-aviso{color:var(--red)}
+  .gfb-cuerpo{padding:2px 12px 12px;border-top:1px solid var(--border)}
+  .gfb-lab{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 5px}
+  .gfb-in{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:14px}
+  .gfb-url{display:flex;gap:8px;align-items:center}
+  .gfb-ir{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1px solid var(--border);color:var(--o);text-decoration:none;font-size:18px}
+  .gfb-temas{display:flex;flex-wrap:wrap;gap:6px}
+  .gfb-tema{min-height:36px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:inherit;font-size:12.5px;cursor:pointer}
+  .gfb-tema small{opacity:.7;margin-left:3px}
+  .gfb-tema.on{border-color:rgba(255,107,53,.7);background:rgba(255,107,53,.16);color:#fff;font-weight:700}
+  .gfb-tema.todas{border-style:dashed}
+  .gfb-ayuda{font-size:12px;color:var(--muted);line-height:1.45;margin:8px 0 0}
+  .gfb-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .gfb-acc .btn{flex:1 1 150px;justify-content:center}
+  .gfb-barra{display:flex;gap:10px;align-items:center;margin-bottom:2px}
+  .gfb-barra small{color:var(--muted);white-space:nowrap}
+  .gfb-vacio{font-size:13px;color:var(--muted);text-align:center;padding:10px 0;margin:0}
+  .gfb-alta{margin:0 0 12px;padding:12px;border-radius:12px;border:1px dashed rgba(255,107,53,.55);background:rgba(255,107,53,.06)}
+  .gfb-alta[hidden]{display:none}
+  #listaGruposFB .gfb-cuerpo [id^=grupoFBStats_]{line-height:1.45}
   /* Radar: elegir qué vigilar */
   .radar-elegir summary{cursor:pointer;list-style:none;font-size:15px;color:#fff}
   .radar-elegir summary::-webkit-details-marker{display:none}
@@ -2476,7 +2502,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=36d9e6c9"></script>
+<script src="js/revolico_integration.js?v=ebd890c0"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -9219,9 +9245,9 @@ function pubCompartirHTML(){
   ${pubFuentesHTML()}
   <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
-    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Pega los enlaces una vez y di de qué es cada grupo: luego «Facebook» en cada producto lo manda solo a los grupos que le tocan.</p>
     <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px"></div>
-    <button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="agregarGrupoFB()">+ Agregar grupo</button>
+    <button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="gfbAbrirAlta()">+ Agregar grupos</button>
     <!-- Los grupos se guardan solos en el repositorio. Si no llegaron, hay que poder verlo. -->
     <p id="pub-grupos-estado" style="font-size:10.5px;color:var(--muted);margin:8px 0 0;text-align:center">${typeof tmGruposEstadoTexto==='function'?esc(tmGruposEstadoTexto()):''}</p>
   </div>
@@ -9984,6 +10010,12 @@ async function pubShareAct(id,act){
   if(act==='story'){ showToast('⏳ Generando imagen…'); await pubShareStory(p); return; }
   if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p,'wa')),'_blank','noopener,noreferrer'); return; }
   if(act==='fb'){
+    // Con grupos guardados, a lo que se viene es a publicar: la cola, directo (dos
+    // toques menos). La vista previa queda como «otro destino» dentro de la cola.
+    try{
+      const gs=JSON.parse(localStorage.getItem('gruposFB')||'[]').filter(g=>g&&g.url&&String(g.url).includes('facebook.com'));
+      if(gs.length && typeof tmColaGrupos==='function'){ tmColaGrupos(p.id); return; }
+    }catch(e){}
     if(typeof previsualizarFacebook==='function'){ previsualizarFacebook(p.id, null); return; }
     window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p,'fb'))+'&quote='+encodeURIComponent(pubTxt(p,'fb')),'_blank','noopener,noreferrer'); return;
   }

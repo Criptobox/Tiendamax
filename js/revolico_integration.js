@@ -918,6 +918,268 @@ function _cuandoTxt(ts) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  MIS GRUPOS: lista compacta
+// ══════════════════════════════════════════════════════════════
+
+/* Con 12 grupos, la tarjeta de siempre (nombre, enlace y los 43 productos como
+   casillas) medía 4.500 px: 22.000 px de pantalla para cargar los grupos, y
+   por eso nadie los cargaba. Ahora cada grupo es UNA línea (nombre, de qué es,
+   cuándo se publicó por última vez, cuánto trae) y se abre al tocarla.
+
+   Y el «tema»: antes la lista de productos por grupo solo la leía el botón
+   «publicar productos en este grupo»; la cola y el plan mandaban cada producto
+   a TODOS los grupos, y un producto de GYM llegaba al grupo de energía solar.
+   Un grupo declara sus categorías; sin marcar nada, lleva todo. */
+function _normCat(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toUpperCase(); }
+function _grupoCategorias(g) { return Array.isArray(g && g.categorias) ? g.categorias.map(String).filter(Boolean) : []; }
+function _grupoAcepta(g, p) {
+    const cs = _grupoCategorias(g);
+    if (!cs.length) return true;
+    const c = _normCat(p && p.categoria);
+    return cs.some(x => _normCat(x) === c);
+}
+function _categoriasTienda() {
+    const m = new Map();
+    _catalogo().forEach(p => {
+        if (!p || p.activo === false || !p.categoria) return;
+        const k = _normCat(p.categoria), e = m.get(k) || { nombre: String(p.categoria), total: 0, conStock: 0 };
+        e.total++; if (Number(p.stock) > 0) e.conStock++;
+        m.set(k, e);
+    });
+    return [...m.values()].sort((a, b) => b.conStock - a.conStock || a.nombre.localeCompare(b.nombre));
+}
+function _gfbSlug(url) {
+    const m = /\/groups\/([^\/?#]+)/i.exec(String(url || ''));
+    if (m) return decodeURIComponent(m[1]);
+    const u = String(url || '').replace(/^https?:\/\/[^\/]+\/?/i, '').split(/[?#]/)[0].replace(/\/+$/, '');
+    return u;
+}
+function _gfbNombre(g) {
+    const n = String((g && g.nombre) || '').trim();
+    if (n) return n;
+    const s = _gfbSlug(g && g.url);
+    return s ? (/^\d+$/.test(s) ? 'Grupo ' + s.slice(-5) : s) : 'Grupo sin enlace';
+}
+function _grupoTemaTxt(g) {
+    const cs = _grupoCategorias(g);
+    return !cs.length ? 'Todas las categorías' : (cs.length <= 2 ? cs.join(' · ') : cs.length + ' categorías');
+}
+function _grupoUltimaTxt(g) {
+    let ts = 0;
+    _pubsGrupo(g).forEach(e => { if (e.ts > ts) ts = e.ts; });
+    return ts ? 'última ' + _cuandoTxt(ts) : 'sin publicar aún';
+}
+function _gfbMeta(g, i) {
+    const b = [];
+    if (!_grupoValido(g)) b.push('<b class="gfb-aviso">⚠️ falta el enlace</b>');
+    b.push('🏷️ ' + _escH(_grupoTemaTxt(g)));
+    b.push('🕐 ' + _escH(_grupoUltimaTxt(g)));
+    const max = _grupoMaxDia(g);
+    if (max) b.push('máx ' + max + '/día');
+    if (!_grupoEnlaces(g)) b.push('sin enlaces');
+    return b.join(' · ') + '<span class="gfb-wa" id="gfbWa_' + i + '"></span>';
+}
+let _GFB_ABIERTO = new Set();
+
+function _gfbPintarTemas(cont, g) {
+    const sel = new Set(_grupoCategorias(g).map(_normCat));
+    const lista = _categoriasTienda();
+    _grupoCategorias(g).forEach(n => { if (!lista.some(x => _normCat(x.nombre) === _normCat(n))) lista.push({ nombre: n, conStock: 0 }); });
+    cont.innerHTML = lista.map(c => {
+        const on = sel.has(_normCat(c.nombre));
+        return `<button type="button" class="gfb-tema${on ? ' on' : ''}" data-act="tema" data-cat="${_escH(c.nombre)}" aria-pressed="${on}">${_escH(c.nombre)} <small>${c.conStock}</small></button>`;
+    }).join('') + (sel.size ? '<button type="button" class="gfb-tema todas" data-act="temas-todas">✕ Todas</button>' : '');
+}
+function _gfbArmarCuerpo(cuerpo, g, i) {
+    cuerpo.innerHTML = `
+      <label class="gfb-lab" for="gfbNom_${i}">Nombre del grupo</label>
+      <input class="gfb-in" id="gfbNom_${i}" type="text" data-campo="nombre" value="${_escH(g.nombre || '')}" placeholder="Ej: Tecnología Habana" autocomplete="off">
+      <label class="gfb-lab" for="gfbUrl_${i}">Enlace del grupo</label>
+      <div class="gfb-url"><input class="gfb-in" id="gfbUrl_${i}" type="text" inputmode="url" data-campo="url" value="${_escH(g.url || '')}" placeholder="https://www.facebook.com/groups/…" autocomplete="off"><a class="gfb-ir" href="#" data-act="ir" title="Abrir el grupo" aria-label="Abrir el grupo">↗</a></div>
+      <div class="gfb-lab">De qué es este grupo</div>
+      <div class="gfb-temas" data-temas></div>
+      <p class="gfb-ayuda">Sin marcar nada, a este grupo le tocan todos los productos. Si marcas categorías, solo le tocan esas (en la cola y en el plan del día). El número es cuántos hay con stock.</p>`;
+    _gfbPintarTemas(cuerpo.querySelector('[data-temas]'), g);
+    if (typeof window.tmGrupoExtras === 'function') { try { window.tmGrupoExtras(cuerpo, g, i); } catch (e) {} }
+    const acc = document.createElement('div');
+    acc.className = 'gfb-acc';
+    acc.innerHTML = '<button type="button" class="btn btn-primary" data-act="publicar">📢 Publicar productos en este grupo</button>'
+                  + '<button type="button" class="btn btn-ghost gfb-quitar" data-act="quitar">🗑 Quitar grupo</button>';
+    cuerpo.appendChild(acc);
+}
+function _gfbFila(g, i) {
+    const ab = _GFB_ABIERTO.has(i);
+    const q = _normCat(_gfbNombre(g) + ' ' + _gfbSlug(g.url) + ' ' + _grupoCategorias(g).join(' '));
+    return `<div class="gfb" id="grupoFB_${i}" data-i="${i}" data-q="${_escH(q)}">
+        <button type="button" class="gfb-cab" data-act="abrir" aria-expanded="${ab}">
+          <span class="gfb-nom">${_escH(_gfbNombre(g))}</span>
+          <span class="gfb-meta">${_gfbMeta(g, i)}</span>
+          <span class="gfb-fl" aria-hidden="true">${ab ? '▾' : '▸'}</span>
+        </button>
+        <div class="gfb-cuerpo"${ab ? '' : ' hidden'}></div>
+      </div>`;
+}
+function _gfbRefrescarCab(i) {
+    const fila = document.getElementById('grupoFB_' + i), g = _gruposFB()[i];
+    if (!fila || !g) return;
+    fila.querySelector('.gfb-nom').textContent = _gfbNombre(g);
+    fila.querySelector('.gfb-meta').innerHTML = _gfbMeta(g, i);
+    fila.dataset.q = _normCat(_gfbNombre(g) + ' ' + _gfbSlug(g.url) + ' ' + _grupoCategorias(g).join(' '));
+    _gfbPintarWa();
+}
+// Lo que trae cada grupo, en la línea. Un fallo de red aquí NO escribe nada
+// (el detalle de dentro sí dice «no pude leer»): una línea que dijera «0» por
+// una red caída acusaría al grupo de no traer nada.
+function _gfbPintarWa() {
+    _gruposStats().then(d => {
+        _gruposFB().forEach((g, i) => {
+            const el = document.getElementById('gfbWa_' + i);
+            if (!el) return;
+            const cod = tmGrupoCodigo(g), e = (cod && d[cod]) || {};
+            const wa = Number(e.whatsapp && e.whatsapp.count) || 0;
+            el.textContent = (wa && _grupoEnlaces(g)) ? ' · 💬 ' + wa + ' toque' + (wa === 1 ? '' : 's') : '';
+        });
+    }).catch(() => {});
+}
+function renderizarGruposFB(grupos) {
+    const cont = document.getElementById('listaGruposFB');
+    if (!cont) return;
+    grupos = Array.isArray(grupos) ? grupos : _gruposFB();
+    if (!cont._gfbEventos) { cont._gfbEventos = true; _gfbEnganchar(cont); }
+    if (!grupos.length) {
+        cont.innerHTML = '<p class="gfb-vacio">No hay grupos aún. Pulsa «+ Agregar grupos» y pega los enlaces de los que usas.</p>';
+        return;
+    }
+    const barra = grupos.length > 6
+        ? '<div class="gfb-barra"><input id="gfbBuscar" class="gfb-in" type="search" placeholder="🔍 Buscar grupo…" autocomplete="off"><small id="gfbCuenta"></small></div>' : '';
+    cont.innerHTML = barra + grupos.map((g, i) => _gfbFila(g, i)).join('');
+    grupos.forEach((g, i) => {
+        const cuerpo = document.querySelector('#grupoFB_' + i + ' .gfb-cuerpo');
+        if (cuerpo) _gfbArmarCuerpo(cuerpo, g, i);
+    });
+    _gfbPintarWa();
+}
+function _gfbEnganchar(cont) {
+    cont.addEventListener('click', e => {
+        const b = e.target.closest('[data-act]');
+        if (!b) return;
+        const fila = b.closest('.gfb');
+        const i = fila ? Number(fila.dataset.i) : -1;
+        const g = _gruposFB()[i];
+        switch (b.dataset.act) {
+            case 'abrir': {
+                const cuerpo = fila.querySelector('.gfb-cuerpo');
+                const ab = cuerpo.hidden;
+                cuerpo.hidden = !ab;
+                b.setAttribute('aria-expanded', String(ab));
+                b.querySelector('.gfb-fl').textContent = ab ? '▾' : '▸';
+                if (ab) _GFB_ABIERTO.add(i); else _GFB_ABIERTO.delete(i);
+                break;
+            }
+            case 'ir': e.preventDefault(); if (g && g.url) window.open(g.url, '_blank', 'noopener,noreferrer'); break;
+            case 'publicar': publicarEnGrupoFB(i); break;
+            case 'quitar':
+                if (g && window.confirm('¿Quitar «' + _gfbNombre(g) + '» de tu lista?')) { _GFB_ABIERTO.clear(); eliminarGrupoFB(i); }
+                break;
+            case 'tema':
+            case 'temas-todas': {
+                if (!g) break;
+                let cs = _grupoCategorias(g);
+                if (b.dataset.act === 'temas-todas') cs = [];
+                else {
+                    const k = _normCat(b.dataset.cat);
+                    cs = cs.some(x => _normCat(x) === k) ? cs.filter(x => _normCat(x) !== k) : cs.concat([b.dataset.cat]);
+                }
+                actualizarGrupoFB(i, 'categorias', cs);
+                _gfbPintarTemas(fila.querySelector('[data-temas]'), _gruposFB()[i]);
+                _gfbRefrescarCab(i);
+                break;
+            }
+        }
+    });
+    cont.addEventListener('input', e => {
+        const t = e.target;
+        if (t.id === 'gfbBuscar') {
+            const ws = _normCat(t.value).split(/\s+/).filter(Boolean);
+            let n = 0;
+            cont.querySelectorAll('.gfb').forEach(f => { const v = ws.every(w => f.dataset.q.includes(w)); f.style.display = v ? '' : 'none'; if (v) n++; });
+            const c = document.getElementById('gfbCuenta');
+            if (c) c.textContent = ws.length ? n + ' de ' + cont.querySelectorAll('.gfb').length : '';
+            return;
+        }
+        const campo = t.dataset && t.dataset.campo;
+        const fila = t.closest && t.closest('.gfb');
+        if (!campo || !fila) return;
+        const i = Number(fila.dataset.i);
+        actualizarGrupoFB(i, campo, t.value);
+        _gfbRefrescarCab(i);
+    });
+}
+
+/* Alta en bloque: pegar los enlaces de todos los grupos de una vez, en vez de
+   una tarjeta, un nombre y un enlace por grupo. Una línea por grupo; si antes
+   del enlace hay un nombre, es el nombre del grupo. */
+function gfbParsear(texto, existentes) {
+    const vistos = new Set((existentes || []).filter(_grupoValido).map(tmGrupoCodigo));
+    const nuevos = []; let repetidos = 0, sinEnlace = 0;
+    String(texto || '').split(/\r?\n/).forEach(linea => {
+        linea = linea.trim();
+        if (!linea) return;
+        const m = /https?:\/\/\S*facebook\.com\S*/i.exec(linea);
+        if (!m) { sinEnlace++; return; }
+        let url = '';
+        try {
+            const u = new URL(m[0].replace(/[),.;]+$/, ''));
+            const gr = /^\/groups\/([^\/]+)/i.exec(u.pathname);
+            url = 'https://www.facebook.com' + (gr ? '/groups/' + gr[1] + '/' : u.pathname.replace(/\/+$/, '') + '/');
+        } catch (e) { sinEnlace++; return; }
+        const g = { url };
+        const cod = tmGrupoCodigo(g);
+        if (vistos.has(cod)) { repetidos++; return; }
+        vistos.add(cod);
+        const nombre = linea.replace(m[0], '').replace(/^[\s\-–—|:,.]+|[\s\-–—|:,.]+$/g, '').trim();
+        nuevos.push({ nombre: nombre || _gfbNombre(g), url });
+    });
+    return { nuevos, repetidos, sinEnlace };
+}
+window.gfbParsear = gfbParsear;
+window.gfbAbrirAlta = function() {
+    const lista = document.getElementById('listaGruposFB');
+    if (!lista) return;
+    let caja = document.getElementById('gfbAlta');
+    if (!caja) { caja = document.createElement('div'); caja.id = 'gfbAlta'; caja.className = 'gfb-alta'; lista.parentNode.insertBefore(caja, lista); }
+    caja.hidden = false;
+    caja.innerHTML = `
+      <label class="gfb-lab" for="gfbAltaTxt">Pega los enlaces de tus grupos, uno por línea</label>
+      <textarea id="gfbAltaTxt" class="gfb-in" rows="6" placeholder="Tecnología Habana https://www.facebook.com/groups/tecnohabana&#10;https://www.facebook.com/groups/123456789"></textarea>
+      <p class="gfb-ayuda">Si antes del enlace escribes un nombre, ese es el nombre del grupo. Si no, uso el final del enlace; luego lo cambias. Los que ya tengas no se repiten.</p>
+      <div class="gfb-acc"><button type="button" class="btn btn-primary" id="gfbAltaOk">Agregar</button><button type="button" class="btn btn-ghost" id="gfbAltaNo">Cancelar</button></div>
+      <p id="gfbAltaRes" class="gfb-ayuda" role="status"></p>`;
+    document.getElementById('gfbAltaNo').onclick = () => { caja.hidden = true; };
+    document.getElementById('gfbAltaOk').onclick = () => {
+        const r = gfbParsear(document.getElementById('gfbAltaTxt').value, _gruposFB());
+        const res = document.getElementById('gfbAltaRes');
+        if (!r.nuevos.length) {
+            res.textContent = r.repetidos ? 'Esos grupos ya los tienes.' : 'No encontré ningún enlace de Facebook. Pega la dirección completa del grupo.';
+            return;
+        }
+        const gs = _gruposFB();
+        const t = Date.now();
+        r.nuevos.forEach((n, k) => gs.push({ nombre: n.nombre, url: n.url, productos: [], categorias: [], ts: t + k }));
+        _gruposGuardarLocal(gs);
+        _gruposSubirLuego();
+        const c = document.getElementById('pub-fb-groups-count'); if (c) c.textContent = gs.length;
+        renderizarGruposFB(gs);
+        caja.hidden = true;
+        if (typeof mostrarNotificacion === 'function')
+            mostrarNotificacion(`✅ ${r.nuevos.length} grupo${r.nuevos.length === 1 ? '' : 's'} agregado${r.nuevos.length === 1 ? '' : 's'}`
+                + (r.repetidos ? ` · ${r.repetidos} ya estaba${r.repetidos === 1 ? '' : 'n'}` : '')
+                + (r.sinEnlace ? ` · ${r.sinEnlace} línea${r.sinEnlace === 1 ? '' : 's'} sin enlace` : ''), 'success');
+    };
+    document.getElementById('gfbAltaTxt').focus();
+};
+
+// ══════════════════════════════════════════════════════════════
 //  FACEBOOK
 // ══════════════════════════════════════════════════════════════
 
@@ -1125,7 +1387,7 @@ function previsualizarFacebook(productoId, grupoUrl) {
           </div>
           ${_grupos.length ? `<button type="button" id="btnFbColaGrupos"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#FF6B35,#C9A96E);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
-            📢 Publicar en mis grupos, uno a uno (${_grupos.length})
+            📢 Publicar en mis grupos, uno a uno (${_grupos.filter(g => _grupoAcepta(g, producto)).length})
           </button>
           <p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">Cada grupo recibe su propia versión del texto y de la imagen, con una pausa entre uno y otro.</p>` : ''}
           <button type="button" id="btnAbrirFb"
@@ -1237,9 +1499,11 @@ function publicarEnGrupoFB(iGrupo) {
     const grupos = _gruposFB();
     const grupo = grupos[iGrupo];
     if (!grupo || !grupo.url) { mostrarNotificacion('❌ Agrega la URL del grupo primero', 'error'); return; }
-    const prods = catalogo.filter(p => (grupo.productos || []).includes(p.id))
+    // Por el TEMA del grupo (sus categorías), no por la lista de ids con que se
+    // creó: esa era una foto de aquel día, y un producto nuevo no entraba nunca.
+    const prods = catalogo.filter(p => p && p.activo !== false && _grupoAcepta(grupo, p))
         .sort((a, b) => (!a.stock || a.stock <= 0) - (!b.stock || b.stock <= 0));
-    if (prods.length === 0) { mostrarNotificacion('❌ No hay productos seleccionados para este grupo', 'error'); return; }
+    if (prods.length === 0) { mostrarNotificacion('❌ No hay productos de las categorías de este grupo', 'error'); return; }
 
     const existing = document.getElementById('grupoPublicarModal');
     if (existing) document.body.removeChild(existing);
@@ -1410,6 +1674,11 @@ function _colaPuedeSeguir(preguntar) {
 // Por qué un grupo no entra en la cola de este producto ('' si entra).
 // `planeados`: los que este mismo plan ya le mete hoy a ese grupo.
 function _colaMotivo(g, pid, planeados) {
+    // El tema del grupo manda: un grupo de energía solar no es sitio para GYM.
+    // Va apartado y con su razón (y «Incluir igual»), como lo demás: quien sabe
+    // si ese grupo admite otra cosa es el gestor.
+    const prod = _productoPorId(pid);
+    if (prod && !_grupoAcepta(g, prod)) return `este grupo no lleva ${String(prod.categoria || 'esta categoría')}`;
     const ult = tmGrupoUltimaDe(g, pid);
     if (ult && Date.now() - ult < TM_COLA_REPETIR_DIAS * 86400000) return `ya salió aquí ${_cuandoTxt(ult)}`;
     const max = _grupoMaxDia(g);
@@ -1479,7 +1748,7 @@ async function tmColaGrupos(productoId) {
         const motivo = _colaMotivo(x.g, producto.id);
         return { p: producto, i: x.i, g: x.g, nota: x.nota || '', estado: motivo ? 'apartado' : 'pendiente', motivo };
     });
-    _colaMontar({ items, titulo: producto.nombre, plan: false, nota: _notaOrden(stats, orden) });
+    _colaMontar({ items, titulo: producto.nombre, plan: false, productoId: producto.id, nota: _notaOrden(stats, orden) });
 }
 
 /* El plan del día: los productos de «Hoy toca» repartidos por tus grupos en
@@ -1498,9 +1767,25 @@ async function tmColaPlan(ids) {
     const orden = _ordenarGrupos(validos, stats);
     const planeados = new Map();
     const items = [];
+    const dados = new Map();      // grupo → productos que el plan ya le dio
+    let previo = null;
     for (let r = 0; r < prods.length; r++) {
         orden.forEach((x, j) => {
-            const p = prods[(r + j) % prods.length];
+            // El producto que le toca por el reparto en diagonal; si el grupo no
+            // lleva su categoría (o ya se lo dio el plan), el siguiente que sí.
+            // Nunca el mismo producto en dos pasos seguidos (si hay más de uno).
+            let p = null;
+            for (let k = 0; k < prods.length && !p; k++) {
+                const c = prods[(r + j + k) % prods.length];
+                if (!_grupoAcepta(x.g, c)) continue;
+                if ((dados.get(x.i) || new Set()).has(c.id)) continue;
+                if (prods.length > 1 && previo && c.id === previo.id) continue;
+                p = c;
+            }
+            if (!p) return;
+            if (!dados.has(x.i)) dados.set(x.i, new Set());
+            dados.get(x.i).add(p.id);
+            previo = p;
             const ya = planeados.get(x.i) || 0;
             const motivo = _colaMotivo(x.g, p.id, ya);
             if (!motivo) planeados.set(x.i, ya + 1);
@@ -1529,6 +1814,7 @@ function _colaMontar(cola) {
         </div>
         <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
           <div style="font-size:13px;font-weight:700;">${_escH(cola.titulo)}</div>
+          ${cola.productoId ? `<div style="font-size:12px;"><a href="#" id="colaOtroDestino">📘 Otro destino (tu página, Marketplace…): vista previa del post</a></div>` : ''}
           ${cola.nota ? `<div id="colaNota" style="font-size:12px;opacity:.8;">${_escH(cola.nota)}</div>` : ''}
           <div id="colaPaso"></div>
           <div id="colaLista" style="display:flex;flex-direction:column;gap:6px;"></div>
@@ -1543,6 +1829,8 @@ function _colaMontar(cola) {
         </div>
       </div>`;
     document.body.appendChild(modal);
+    const otro = document.getElementById('colaOtroDestino');
+    if (otro) otro.addEventListener('click', e => { e.preventDefault(); cerrarColaGrupos(); previsualizarFacebook(cola.productoId, null); });
     document.getElementById('colaPausaSel').addEventListener('change', function() {
         try { localStorage.setItem(TM_COLA_PAUSA_KEY, this.value); } catch (e) {}
     });
@@ -1585,18 +1873,23 @@ function _colaPintar() {
         const producto = it.p;
         paso.innerHTML = reabrir + `
           <div style="font-size:12px;opacity:.8;margin-bottom:6px;">${plan ? 'Paso' : 'Grupo'} ${hechos + 1} de ${hechos + pendientes} · ${plan ? `<b>${_escH(producto.nombre)}</b> → ` : ''}<b>${_escH(_grupoDestino(it.g))}</b> · versión ${it.v + 1} de ${TM_VARIANTES}${sinEnlaces ? ' · <span style="color:#f5b041;">sin enlaces</span>' : ''}</div>
-          <canvas id="colaCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
+          <canvas id="colaCanvas" style="width:100%;max-height:250px;object-fit:contain;border-radius:12px;display:block;background:#111;"></canvas>
           <div id="colaAvisoFoto" style="display:none;margin-top:6px;font-size:12px;color:#ff9a90;">⚠️ La foto no cargó — la imagen saldría con el icono de cámara.</div>
-          <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">1️⃣ GUARDA LA IMAGEN</div>
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:8px;margin-top:8px;">
             <button id="colaCopiarImg" type="button" class="btn btn-ghost" style="flex:1;">📋 Copiar imagen</button>
             <button id="colaBajarImg" type="button" class="btn btn-ghost" style="flex:1;">⬇️ Descargar</button>
           </div>
-          <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">2️⃣ COPIA EL TEXTO Y ABRE EL GRUPO</div>
-          <textarea id="colaTexto" rows="10" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
-          <div id="colaCuenta" style="font-size:12px;margin:6px 0;min-height:16px;"></div>
-          <button id="colaAbrir" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">📋 Copiar texto y abrir el grupo →</button>
-          <button id="colaSaltar" type="button" class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;">⏭️ Saltar ${plan ? 'este paso' : 'este grupo'}</button>`;
+          <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">TEXTO PARA ESTE GRUPO (puedes editarlo)</div>
+          <textarea id="colaTexto" rows="6" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
+          <!-- Fija abajo: el botón de cada paso no puede quedar debajo del pliegue. -->
+          <div style="position:sticky;bottom:0;margin-top:10px;padding:10px 0 2px;background:linear-gradient(180deg,rgba(20,20,28,0),rgba(20,20,28,.96) 18%);">
+            <div id="colaCuenta" style="font-size:12px;margin:0 0 6px;min-height:16px;"></div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:8px;cursor:pointer;">
+              <input type="checkbox" id="colaConImagen" ${_colaConImagen() ? 'checked' : ''}> Guardar también la imagen (en un solo toque)
+            </label>
+            <button id="colaAbrir" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;"></button>
+            <button id="colaSaltar" type="button" class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;">⏭️ Saltar ${plan ? 'este paso' : 'este grupo'}</button>
+          </div>`;
         document.getElementById('colaTexto').value =
             _textoFacebook(producto, { variante: it.v, enlaces: !sinEnlaces, grupo: it.g });
         const cv = document.getElementById('colaCanvas');
@@ -1610,11 +1903,18 @@ function _colaPintar() {
             }, 'image/png');
         });
         document.getElementById('colaBajarImg').addEventListener('click', () => {
-            const a = document.createElement('a');
-            a.download = `tiendamax-${producto.id}-v${it.v + 1}.jpg`;
-            a.href = cv.toDataURL('image/jpeg', 0.9);
-            a.click();
+            if (!_colaBajarImagen()) mostrarNotificacion('❌ No se pudo guardar la imagen — usa 📋 Copiar imagen', 'error');
         });
+        const chkImg = document.getElementById('colaConImagen');
+        const rotulo = () => {
+            const b = document.getElementById('colaAbrir');
+            if (b) b.textContent = chkImg.checked ? '⬇️ Guardar imagen, copiar texto y abrir el grupo →' : '📋 Copiar texto y abrir el grupo →';
+        };
+        chkImg.addEventListener('change', () => {
+            try { localStorage.setItem(TM_COLA_IMG_KEY, chkImg.checked ? '1' : '0'); } catch (e) {}
+            rotulo();
+        });
+        rotulo();
         document.getElementById('colaAbrir').addEventListener('click', _colaAbrir);
         document.getElementById('colaSaltar').addEventListener('click', () => {
             it.estado = 'saltado'; it.motivo = 'lo saltaste';
@@ -1671,10 +1971,32 @@ function _colaTic() {
     }
 }
 
+/* Un solo toque por grupo: guardar la imagen, copiar el texto y abrir el grupo.
+   Antes eran dos toques y el segundo quedaba debajo del pliegue; con diez
+   grupos son veinte toques y veinte bajadas de pantalla. Cada grupo lleva SU
+   imagen (la versión cambia el recorte y el fondo), así que no vale guardarla
+   una vez. La descarga va ANTES de lo demás y dentro del mismo toque: el
+   navegador solo deja abrir el grupo mientras dura el gesto. */
+const TM_COLA_IMG_KEY = 'tm_cola_con_imagen';
+function _colaConImagen() { try { return localStorage.getItem(TM_COLA_IMG_KEY) !== '0'; } catch (e) { return true; } }
+function _colaBajarImagen() {
+    const it = _COLA && _COLA.items[_COLA.actual], cv = document.getElementById('colaCanvas');
+    if (!it || !cv) return false;
+    try {
+        const a = document.createElement('a');
+        a.download = `tiendamax-${it.p.id}-v${it.v + 1}.jpg`;
+        a.href = cv.toDataURL('image/jpeg', 0.9);
+        document.body.appendChild(a); a.click(); a.remove();
+        return true;
+    } catch (e) { return false; }   // foto de otro dominio sin permiso: el lienzo no se puede exportar
+}
 async function _colaAbrir() {
     if (!_COLA) return;
     const it = _COLA.items[_COLA.actual];
     if (!it || !_colaPuedeSeguir(false) || _colaEsperaPausa() > 0) return;
+    const chk = document.getElementById('colaConImagen');
+    const quiereImg = !!(chk && chk.checked);
+    const imgOk = quiereImg ? _colaBajarImagen() : false;
     const ta = document.getElementById('colaTexto');
     await _copiar(ta ? ta.value : '');
     let w = null;
@@ -1683,7 +2005,7 @@ async function _colaAbrir() {
     it.estado = 'abierto'; it.motivo = '';
     _COLA.ultimo = _COLA.actual;
     _colaEmpezarPausa();
-    mostrarNotificacion(w ? '✅ Texto copiado — pégalo en el grupo' : '⚠️ El navegador bloqueó la ventana. El texto ya está copiado: abre el grupo con «Abrirlo otra vez».', w ? 'success' : 'warning');
+    mostrarNotificacion(w ? (imgOk ? '✅ Imagen guardada y texto copiado — pégalo en el grupo' : (quiereImg ? '⚠️ No pude guardar la imagen; el texto ya está copiado — pégalo en el grupo' : '✅ Texto copiado — pégalo en el grupo')) : '⚠️ El navegador bloqueó la ventana. El texto ya está copiado: abre el grupo con «Abrirlo otra vez».', w ? 'success' : 'warning');
     _colaAvanzar();
     _colaPintar();
 }

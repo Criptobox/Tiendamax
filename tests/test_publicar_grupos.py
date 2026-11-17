@@ -35,6 +35,35 @@ class GruposEnNavegadorTest(unittest.TestCase):
         self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
 
 
+class ListaDeGruposEnNavegadorTest(unittest.TestCase):
+    """12 grupos en una línea cada uno, el tema que manda en la cola y el plan,
+    el alta en bloque y el toque único. tests/grupos_lista_check.mjs."""
+    def test_lista_tema_alta_y_toque_unico(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(ROOT / "tests" / "grupos_lista_check.mjs")], cwd=str(ROOT),
+                           capture_output=True, text=True, timeout=400)
+        self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
+
+    def test_la_lista_nueva_vive_en_el_panel_y_no_en_el_bundle_de_los_clientes(self):
+        # renderizarGruposFB se redefine en revolico_integration.js (solo el panel)
+        # y gana por cargar después del bundle.
+        self.assertIn("function renderizarGruposFB(grupos)", MODULO.read_text(encoding="utf-8"))
+        admin = (ROOT / "admin.html").read_text(encoding="utf-8")
+        self.assertLess(admin.index("tm-bundle.js"), admin.index("revolico_integration.js"))
+        self.assertIn('onclick="gfbAbrirAlta()"', admin)
+
+    def test_la_cola_y_el_plan_preguntan_por_el_tema(self):
+        src = MODULO.read_text(encoding="utf-8")
+        motivo = src[src.index("function _colaMotivo("):src.index("/* ── Qué trae cada grupo")]
+        self.assertIn("_grupoAcepta(g, prod)", motivo)
+        plan = src[src.index("async function tmColaPlan("):src.index("window.tmColaPlan = tmColaPlan;")]
+        self.assertIn("_grupoAcepta(x.g, c)", plan)
+        self.assertNotIn("(grupo.productos || []).includes", src,
+                         "publicarEnGrupoFB vuelve a leer la lista de ids con que se creó el grupo: un producto nuevo no entraría nunca")
+
+
 class MarcaDeGrupoTest(unittest.TestCase):
     """El mismo filtro de 4–8 minúsculas o cifras en los tres sitios."""
 
