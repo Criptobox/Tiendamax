@@ -2502,7 +2502,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=ebd890c0"></script>
+<script src="js/revolico_integration.js?v=40d4b0a4"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -5344,6 +5344,16 @@ function renderProductos(){
 function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
 function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+/* Un campo de un producto, guardado por el mismo camino que cualquier edición
+   (marcado para «Actualizar tienda» y en local). Lo usa el editor del gancho de
+   la cola de Facebook (js/revolico_integration.js), que vive fuera de este bloque. */
+window.tmGuardarCampoProducto=function(id,campo,valor){
+  const p=apFind(id); if(!p) return false;
+  p[campo]=valor;
+  try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(id); }catch(e){}
+  apSaveProds();
+  return true;
+};
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){}
   // Las fotos del producto borrado quedarían en imagenes/ para siempre. Se
@@ -9377,8 +9387,33 @@ const PUB_GANCHOS = [
   [/gym|deporte|fitness/,             ['💪 EMPIEZA HOY, NO EL LUNES','🏋️ TU GIMNASIO EN CASA']],
   [/belleza|salud|cuidado/,           ['✨ LO QUE TE MERECES','✨ CUÍDATE COMO SE DEBE']],
 ];
-const PUB_GANCHOS_DEF = ['🔥 APROVECHA ANTES QUE SE ACABE','🔥 LO BUENO SE ACABA RÁPIDO','⭐ ESTO ESTÁ VOLANDO','🔥 QUEDAN POCOS'];
+/* Sin categoría conocida, nada de «QUEDAN POCOS» ni «ESTO ESTÁ VOLANDO»: con
+   300 unidades en stock son mentira, y la escasez real ya la dice cada línea. */
+const PUB_GANCHOS_DEF = ['🛍️ LO QUE HAY HOY, CON SU PRECIO','🤝 LO VES, LO PRUEBAS Y PAGAS AL RECIBIRLO'];
+/* POSTS POR PROBLEMA. Para estas categorías el post no vende «la categoría»:
+   pregunta por el problema que la gente ya tiene, cada producto dice para qué
+   sirve, y el cierre invita a contarlo — quien no sabe si necesita un inversor
+   o un generador sí sabe que se le va la luz, y esa conversación en WhatsApp
+   es la venta. Para las demás, el gancho de siempre. */
+const PUB_PROBLEMAS = [
+  [/energ|solar|inversor|bater|apag/, { pregunta:'🔌 ¿Cuánto quieres mantener encendido cuando se va la luz?',
+      cierre:'Dime qué quieres mantener encendido y te digo qué te sirve.' }],
+  [/moto/,                            { pregunta:'🏍️ ¿La moto pide su mantenimiento?',
+      cierre:'Dime qué moto tienes y te digo cuál le va.' }],
+  [/carro|auto|vehic/,                { pregunta:'🚗 ¿Al carro le toca su mantenimiento?',
+      cierre:'Dime marca y modelo de tu carro y te digo cuál le va.' }],
+  [/wifi|router|internet|^red/,       { pregunta:'📶 ¿El WiFi no te llega a toda la casa o quieres compartir la conexión?',
+      cierre:'Dime dónde quieres señal y te digo qué equipo te sirve.' }],
+  [/segurid|camara|alarma/,           { pregunta:'🛡️ ¿Quieres saber quién llega a tu casa, aunque no estés?',
+      cierre:'Dime qué quieres vigilar y te digo qué te sirve.' }],
+];
+function pubCatProblema(cat){
+  const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const par=PUB_PROBLEMAS.find(([re])=>re.test(c));
+  return par?par[1]:null;
+}
 function pubCatGancho(cat){
+  const prob=pubCatProblema(cat); if(prob) return prob.pregunta;
   const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const par=PUB_GANCHOS.find(([re])=>re.test(c));
   const lista=par?par[1]:PUB_GANCHOS_DEF;
@@ -9434,7 +9469,10 @@ const PUB_CAT_LISTA_MAX = 14; // en el texto: pasada esa cifra ya nadie baja
 function pubCatConfianza(prods){
   const arr=prods||[];
   const con=arr.length && arr.every(p=>String(p.garantia||'').trim());
-  return '✅ '+(con?'Garantía · ':'')+'Pruébalo al recibir · Atención personalizada';
+  // Pagar al recibirlo es lo que más pesa y es verdad siempre — salvo en los
+  // códigos digitales, que se pagan antes de comprarlos.
+  const digital=arr.some(p=>p&&p.digital);
+  return '✅ '+(con?'Garantía · ':'')+(digital?'':'Pruébalo al recibir y paga en la entrega · ')+'Atención personalizada';
 }
 /* El texto de cobertura que el propio gestor configuró en ⚙️ Envíos. Sin él no
    se inventa ni una zona ni un plazo. */
@@ -9473,6 +9511,12 @@ function pubCatLinea(p,cat,plano){
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
   }else if(st>0&&st<=2){ l+=st===1?' (queda 1)':` (últimas ${st})`; }
   if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes ${pubCatPrecio({precioActual:p.precioOriginal,moneda:p.moneda})})`;
+  // En un post por problema, para qué sirve cada uno: es lo que deja elegir a
+  // quien no sabe de modelos. Sale del «Ideal para» del producto (nunca el
+  // genérico que comparten varios); sin él, la línea queda como estaba.
+  if(!plano && pubCatProblema(cat) && typeof _usosDe==='function'){
+    const u=_usosDe(p,1)[0]; if(u) l+=`\n   ↳ ${u}`;
+  }
   return l;
 }
 /* UN TEXTO POR RED. Era uno solo para las cuatro, y cada una lo castiga de una
@@ -9502,28 +9546,33 @@ function pubCatText(cat, red, prods){
   const envio=pubCatEnvioTxt();
   if(plano){
     return `${_catClean(cat)} — ${lista.length} disponibles${desde?', '+desde:''}\n\n${cuerpo}`
-      + `\n\nPrecios de HOY: mañana suben con la tasa.\n${confianza.replace('✅ ','')}`
+      + `\n\n${confianza.replace('✅ ','')}`
       + (envio?`\n${envio}`:'')
       + `\n\nEscríbeme por WhatsApp. Catálogo completo en tiendamax.org`;
   }
-  const urgencia='⏳ Precios de HOY — mañana suben con la tasa';
+  /* Aquí había una línea de urgencia que decía que los precios de hoy subían
+     mañana con la tasa. Los precios están en dólares (o fijos en MN) y no
+     cambian con la tasa: era urgencia inventada. La pregunta de cierre hace
+     mejor ese trabajo. */
+  const prob=pubCatProblema(cat);
+  const cierre=prob?`💬 ${prob.cierre}\n`:'';
   if(red==='fb'){
     const l2=`${_catClean(cat)}: ${lista.length} en stock${desde?' · '+desde:''}${(envio&&envio.length<=42)?' · '+envio:''}`;
     return `${pubCatGancho(cat)}\n${l2}\n${sep}\n\n${cuerpo}`
-      + `\n\n${urgencia}\n${confianza}`
-      + `\n\n📲 Comenta "QUIERO" o escríbeme por WhatsApp — te lo aparto 24 h\n🔗 tiendamax.org`
+      + `\n\n${confianza}`
+      + `\n\n${cierre}📲 ${prob?'Escríbeme por WhatsApp':'Comenta "QUIERO" o escríbeme por WhatsApp'} — te lo aparto 24 h\n🔗 tiendamax.org`
       + `\n\n${pubCatHashtags(cat,lista)}`;
   }
   if(red==='ig'){
     return `${pubCatGancho(cat)}\n${_catClean(cat)}${desde?' · '+desde:''}\n${sep}\n\n${cuerpo}`
-      + `\n\n${urgencia}\n${confianza}`
-      + `\n\n📲 Escríbeme por WhatsApp — el enlace está en la bio`
+      + `\n\n${confianza}`
+      + `\n\n${cierre}📲 Escríbeme por WhatsApp — el enlace está en la bio`
       + `\n\n${pubCatHashtags(cat,lista)}`;
   }
   return `🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n${cuerpo}`
-    + `\n\n${urgencia}\n${confianza}`
+    + `\n\n${confianza}`
     + (envio?`\n📦 ${envio}`:'')
-    + `\n\n📲 Responde a este mensaje y te lo aparto 24 h\n🔗 tiendamax.org`;
+    + `\n\n${cierre}📲 Responde a este mensaje y te lo aparto 24 h\n🔗 tiendamax.org`;
 }
 function pubCatWrapName(ctx,text,maxW,maxLines){
   const words=String(text).split(/\s+/).filter(Boolean);

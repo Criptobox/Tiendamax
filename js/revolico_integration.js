@@ -72,30 +72,163 @@ function _waPedido(producto, src) {
     return `https://wa.me/${String(num).replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
 }
 
-function _hashtagsCategoria(categoria, soloCategoria) {
-    const mapa = {
-        'WiFi':        '#wifi #router #internet #repetidor',
-        'Energía':     '#energia #solar #inversor #bateria',
-        'Celulares':   '#celular #movil #smartphone',
-        'Computación': '#computacion #laptop #pc',
-        'PC y Laptops':'#laptop #computadora #pc',
-        'Hogar':       '#hogar #casa #electrodomesticos',
-        'Audio':       '#audio #sonido #musica',
-        'Cámaras':     '#camara #fotografia #seguridad',
-        'Iluminación': '#iluminacion #led',
-        'Carros':      '#autos #carros #vehiculos',
-        'Motos':       '#motos #motocicletas',
-        'Ropa':        '#ropa #moda #fashion',
-        'Lencería':    '#ropa #lenceria #moda',
-        'Seguridad':   '#seguridad #camaras #alarma',
-        'Juegos':      '#videojuegos #juegos #gaming',
-        'Útiles':      '#hogar #utiles #herramientas',
-        'Herramientas':'#herramientas #tools',
-        'Electrónica': '#electronica #tecnologia',
+/* Los hashtags de cada categoría. La tabla tenía «Energía», «Carros», «WiFi»
+   y el catálogo escribe ENERGIA, CARROS, WIFI: no coincidía ninguna, así que
+   todo salía con #tecnologia — un aceite de motor incluido. Ahora se compara
+   sin acentos ni mayúsculas. #oferta solo con una rebaja de verdad y #envio
+   fuera: prometía un envío que el producto no declara. */
+const _HASHTAGS_CAT = {
+    WIFI: '#wifi #router #internet', ENERGIA: '#energia #solar #apagones', CELULARES: '#celular #movil',
+    COMPUTACION: '#computacion #laptop', HOGAR: '#hogar #casa', AUDIO: '#audio #sonido',
+    CAMARAS: '#camara #seguridad', ILUMINACION: '#iluminacion #led', CARROS: '#carros #autos #mecanica',
+    MOTOS: '#motos', ROPA: '#ropa #moda', SEGURIDAD: '#seguridad #camaras', JUEGOS: '#videojuegos #gaming',
+    UTILES: '#herramientas #hogar', HERRAMIENTAS: '#herramientas', ELECTRONICA: '#electronica',
+    GYM: '#gym #fitness', TARJETAS: '#tarjetas #recargas',
+};
+function _hashtagsCategoria(categoria, soloCategoria, producto) {
+    const k = String(categoria || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim();
+    const cat = _HASHTAGS_CAT[k] || '';
+    if (soloCategoria) return cat;
+    const rebaja = producto && Number(producto.precioOriginal) > Number(producto.precioActual) && Number(producto.precioActual) > 0;
+    return ['#tiendamax #cuba', rebaja ? '#oferta' : '', cat].filter(Boolean).join(' ');
+}
+
+/* ── Vender el problema que resuelve, no la ficha ────────────────────────
+   El post abría con el nombre y la descripción técnica: «Estación de energía
+   portátil de alta potencia…». En un grupo nadie busca eso; busca que no se le
+   eche a perder la comida en el apagón. Ahora abre con el uso (el gancho que el
+   gestor aprobó, o el primer «Ideal para» del producto), el nombre y el precio
+   van en la segunda línea — Facebook corta en «Ver más» a las dos — y luego
+   «te sirve para», lo que lo prueba, la confianza y una pregunta.
+   Todo sale de los datos del producto: nada que no declare. */
+function _normTxt(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+// Una frase de «Ideal para» que comparten 3 productos o más es relleno (los
+// aceites traen todos «Mantenimiento preventivo, recarga y protección…»): no
+// dice nada de ESE producto, y no se usa.
+function _usoGenerico(t) {
+    const n = _normTxt(t);
+    if (!n) return true;
+    let c = 0;
+    _catalogo().forEach(p => { if ((p.idealPara || []).some(x => _normTxt(x) === n)) c++; });
+    return c >= 3;
+}
+// Corta en el primer límite natural (dos puntos, paréntesis, punto y coma,
+// coma) sin pasar de `max`; nunca a media palabra.
+function _frase(t, max) {
+    let s = String(t || '').replace(/\s+/g, ' ').trim();
+    if (s.length <= max) return s.replace(/[.;:,]+$/, '');
+    const corte = s.slice(0, max + 1).search(/\s*[:(;]|\s—\s/);
+    if (corte >= 25) return s.slice(0, corte).replace(/[.;:,]+$/, '');
+    const coma = s.slice(0, max).lastIndexOf(',');
+    if (coma >= 25) return s.slice(0, coma);
+    return s.slice(0, s.lastIndexOf(' ', max)).replace(/[.;:,]+$/, '') + '…';
+}
+// Lo que el producto no declara no puede colarse por una frase del fabricante:
+// «tarjeta de garantía» se lee como una promesa, y «antes» como una rebaja.
+function _sinPromesas(p, t) {
+    if (!String(p.garantia || '').trim() && /garant[ií]a/i.test(t)) return false;
+    const rebaja = Number(p.precioOriginal) > Number(p.precioActual);
+    if (!rebaja && /\b(antes|ahorr)/i.test(t)) return false;
+    return true;
+}
+function _usosDe(p, n) {
+    return (Array.isArray(p.idealPara) ? p.idealPara : [])
+        .filter(t => !_usoGenerico(t) && _sinPromesas(p, t))
+        .map(t => _frase(t, 95)).filter(Boolean).slice(0, n || 3);
+}
+// Lo que lo hace bueno: el título de cada característica, o su primera frase.
+const _FICHA_RELLENO = /^(categor|estado|marca|modelo|tipo|tecnolog|color)/i;
+function _pruebasDe(p, n) {
+    const car = (Array.isArray(p.caracteristicas) ? p.caracteristicas : [])
+        .map(c => (c && (c.t || c.d)) ? String(c.t || c.d) : '')
+        .filter(t => t && _sinPromesas(p, t)).map(t => _frase(t, 90));
+    const fic = (Array.isArray(p.ficha) ? p.ficha : [])
+        .filter(f => f && f.k && f.v && !_FICHA_RELLENO.test(String(f.k).replace(/^[^\wÁ-ú]+/, '')) && String(f.v).length <= 55)
+        .map(f => `${String(f.k).replace(/^[^\wÁ-ú]+/, '').trim()}: ${String(f.v).trim()}`)
+        .filter(t => _sinPromesas(p, t));
+    // Fuera las que repiten el arranque de la descripción y, si hay otras,
+    // las que solo caben cortadas con «…»: un renglón a medias se lee a descuido.
+    const ini = _normTxt(p.descripcion).slice(0, 40);
+    const todas = (car.length ? car : fic).filter(t => t && !(ini && _normTxt(t).slice(0, 40) === ini));
+    const enteras = todas.filter(t => !/…$/.test(t));
+    return (enteras.length >= 2 ? enteras : todas).slice(0, n || 3);
+}
+// El gancho: el que aprobó el gestor (`gancho`) o el primer uso real.
+function _ganchoDe(p) {
+    const g = String(p.gancho || '').trim();
+    if (g && !_ganchoProblema(p, g)) return g;
+    const u = _usosDe(p, 1)[0];
+    return u ? '🎯 ' + u.charAt(0).toUpperCase() + u.slice(1) : '';
+}
+/* ¿Puede salir este gancho? Nada que el producto no declare:
+     · cada cifra (con su unidad) tiene que estar en los datos del producto —
+       «dura 10 años» sin ese 10 en la ficha es inventado;
+     · ni garantía si no la declara, ni «antes/ahorras» sin rebaja;
+     · ni precio: ya va en la línea de abajo, y uno escrito aquí se queda viejo.
+   Devuelve '' si vale, o el motivo para decírselo al gestor. */
+function _ganchoProblema(p, g) {
+    g = String(g || '').trim();
+    if (!g) return '';
+    if (g.length < 12) return 'muy corto: di el problema que resuelve';
+    if (g.length > 140) return 'muy largo: que quepa en una línea (máx. 140)';
+    if (!_sinPromesas(p, g)) return 'promete algo que el producto no declara (garantía o rebaja)';
+    if (/\$|usd|\bmn\b|cup|precio/i.test(g)) return 'sin precio: ya va en la línea de abajo';
+    const datos = _normTxt([p.nombre, p.descripcion, JSON.stringify(p.ficha || []), JSON.stringify(p.caracteristicas || []),
+        JSON.stringify(p.idealPara || []), JSON.stringify(p.incluye || []), JSON.stringify(p.specs || '')].join(' '));
+    // Cada cifra CON su unidad: «10 horas» no está en una ficha que dice «10A».
+    // Sin unidad basta con que la cifra esté. Las unidades se escriben de varias
+    // formas (1800W / 1800 vatios): se comparan por su forma corta.
+    const corta = u => {
+        u = _normTxt(u);
+        const m = [[/^(h|hr|hora)/, 'h'], [/^(min)/, 'min'], [/^(w|vat|watt)/, 'w'], [/^(kw)/, 'kw'], [/^(wh)/, 'wh'],
+                   [/^(a|amp)/, 'a'], [/^(ah)/, 'ah'], [/^(v|volt)/, 'v'], [/^(mah)/, 'mah'], [/^(gb)/, 'gb'], [/^(l|lit)/, 'l'],
+                   [/^(m|metro)/, 'm'], [/^(%|por)/, '%'], [/^(dia|día)/, 'd'], [/^(ano|año)/, 'y'], [/^(mes)/, 'mes'], [/^(ciclo)/, 'ciclo']];
+        for (const [re, k] of m) if (re.test(u)) return k;
+        return u.slice(0, 3);
     };
-    if (soloCategoria) return mapa[categoria] || '#tecnologia';
-    const base = '#tiendamax #cuba #oferta #envio';
-    return `${base} ${mapa[categoria] || '#tecnologia'}`;
+    const RE = /(\d+(?:[.,]\d+)?)\s*([a-záéíóúñ%]+)?/gi;
+    const enDatos = [];
+    let x;
+    while ((x = RE.exec(datos))) enDatos.push([x[1].replace(/[.,]/g, ''), x[2] ? corta(x[2]) : '']);
+    const enG = [];
+    const gn = _normTxt(g);
+    RE.lastIndex = 0;
+    while ((x = RE.exec(gn))) enG.push([x[1].replace(/[.,]/g, ''), x[2] ? corta(x[2]) : '', x[0].trim()]);
+    // Palabras que siguen a una cifra y NO son unidad («3 en 1», «2 puertos»…):
+    // ahí cuenta la cifra sola.
+    const noUnidad = /^(en|de|y|o|a|para|con|por|puertos?|salidas?|tomas?|usb|piezas?|unidades?|veces|x)$/;
+    for (const [n, u, txt] of enG) {
+        const esUnidad = u && !noUnidad.test(_normTxt(txt.replace(/^[\d.,\s]+/, '')));
+        const ok = enDatos.some(([dn, du]) => dn === n && (!esUnidad || du === u));
+        if (!ok) return `«${txt}» no está en los datos del producto`;
+    }
+    return '';
+}
+
+// La IA propone; el gestor aprueba. Solo con los datos del producto.
+async function _ganchoConIA(p) {
+    if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
+    const datos = {
+        nombre: p.nombre, categoria: p.categoria, descripcion: String(p.descripcion || '').slice(0, 700),
+        idealPara: p.idealPara || [], caracteristicas: (p.caracteristicas || []).map(c => c && (c.t || c.d)).filter(Boolean).slice(0, 6),
+        ficha: (p.ficha || []).map(f => f && `${f.k}: ${f.v}`).filter(Boolean).slice(0, 8),
+    };
+    const prompt = `Eres vendedor en grupos de Facebook de Cuba. Escribe UNA sola línea (máximo 110 caracteres) que abra un post de venta:
+una pregunta o frase sobre el PROBLEMA concreto del cliente que este producto resuelve, y cómo lo resuelve.
+Reglas estrictas:
+- Usa SOLO estos datos. No inventes cifras, duraciones, garantías, envíos ni precios.
+- No pongas el nombre completo del producto ni el precio (van en la línea siguiente).
+- Español sencillo y cercano de Cuba. Empieza con un emoji. Sin comillas ni hashtags.
+Datos: ${JSON.stringify(datos)}
+Responde solo con la línea.`;
+    const r = await tmAIChat(prompt, { max_tokens: 120, temperature: 0.7 });
+    return String(r || '').split('\n').map(x => x.trim()).filter(Boolean)[0].replace(/^["«]|["»]$/g, '').slice(0, 140);
+}
+
+// Lo que más pesa en Cuba, y es verdad siempre: se ve y se paga al recibirlo.
+// Un código digital se paga primero: ahí no se dice.
+function _lineaConfianza(p) {
+    return (p && p.digital) ? '' : '🤝 Lo ves y lo pruebas al recibirlo: pagas cuando lo tienes en la mano.';
 }
 
 // ── AI helpers ──────────────────────────────────────────────────────────────
@@ -118,7 +251,7 @@ async function _generarTextoFacebookAI(producto) {
 async function _generarTextoRevolicoAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
     const url  = tmUrlProducto(producto);
-    const tags = _hashtagsCategoria(producto.categoria);
+    const tags = _hashtagsCategoria(producto.categoria, false, producto);
     const info = [
         `Nombre: ${producto.nombre}`,
         `Precio: ${_precioTxt(producto)}`,
@@ -1232,27 +1365,29 @@ function _textoFacebook(producto, opciones) {
     const conEnlaces = o.enlaces !== false;
     if (v) return _textoFacebookOtra(producto, v, conEnlaces, o.grupo);
 
-    const precio   = producto.precioActual;
-    const hashtags = _hashtagsCategoria(producto.categoria);
+    const precio = producto.precioActual;
+    const rebaja = producto.precioOriginal > 0 && producto.precioOriginal > precio;
+    const gancho = _ganchoDe(producto);
+    const usos = _usosDe(producto, 3), pruebas = _pruebasDe(producto, 3);
+    const confianza = _lineaConfianza(producto);
 
-    let t = `✨ ${producto.nombre}\n\n`;
-
-    if (producto.usado) t += '♻️ Producto usado / refurbished\n\n';
+    // Las dos primeras líneas son las que se leen antes de «Ver más»: el uso,
+    // y el nombre con el precio.
+    let t = gancho ? `${gancho}\n` : '';
+    t += rebaja
+        ? `✅ ${producto.nombre} — antes ${_precioTxt(producto, producto.precioOriginal)}, AHORA ${_precioTxt(producto, precio)}\n`
+        : `✅ ${producto.nombre} — ${_precioTxt(producto, precio)}\n`;
+    if (rebaja) t += `🎉 Ahorras ${_precioTxt(producto, (producto.precioOriginal - precio).toFixed(0))}\n`;
+    if (producto.usado) t += '♻️ Producto usado / refurbished\n';
+    t += '\n';
+    if (usos.length > (gancho && !producto.gancho ? 1 : 0)) {
+        const resto = (gancho && !producto.gancho) ? usos.slice(1) : usos;
+        if (resto.length) t += 'Te sirve para:\n' + resto.map(u => `• ${u}`).join('\n') + '\n\n';
+    }
+    if (pruebas.length) t += pruebas.map(x => `✔️ ${x}`).join('\n') + '\n\n';
     if (producto.descripcion) t += `${producto.descripcion}\n\n`;
 
     t += '━━━━━━━━━━━━━━━━━━━━━\n';
-
-    if (producto.precioOriginal > 0 && producto.precioOriginal > precio) {
-        const ahorro = (producto.precioOriginal - precio).toFixed(0);
-        // OJO: Facebook NO renderiza markdown. Antes se usaba ~~tachado~~ y en el
-        // post salían las virgulillas literales ("~~$85 USD~~"), que se ve a
-        // descuido. En texto plano se lee mejor "Antes / AHORA".
-        t += `💰 Antes ${_precioTxt(producto, producto.precioOriginal)}  👉  AHORA ${_precioTxt(producto, precio)}\n`;
-        t += `🎉 Ahorras ${_precioTxt(producto, ahorro)}\n`;
-    } else {
-        t += `💰 Precio: ${_precioTxt(producto, precio)}\n`;
-    }
-
     if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
     if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
     const _masBarato = _lineaMasBarato(producto);
@@ -1260,16 +1395,16 @@ function _textoFacebook(producto, opciones) {
     // Escasez real (solo si de verdad queda poco): es lo que más mueve a escribir.
     const _st = Number(producto.stock || 0);
     if (_st > 0 && _st <= 3) t += _st === 1 ? '⚡ ¡Queda 1 disponible!\n' : `⚡ ¡Últimas ${_st} unidades!\n`;
+    if (confianza) t += confianza + '\n';
 
-    t += '\n━━━━━━━━━━━━━━━━━━━━━\n';
+    t += '━━━━━━━━━━━━━━━━━━━━━\n';
     if (conEnlaces) {
-        t += `📲 Pídelo en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
+        t += `👉 ¿Te lo aparto? Escríbeme en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
         t += `🔗 Fotos y detalles: ${_urlProducto(producto, 'facebook', o.grupo)}\n\n`;
     } else {
-        t += `💬 Escríbeme al WhatsApp: ${_numWaLegible()}\n\n`;
+        t += `👉 ¿Te lo aparto? Escríbeme al WhatsApp: ${_numWaLegible()}\n\n`;
     }
-    t += hashtags;
-
+    t += _hashtagsCategoria(producto.categoria, false, producto);
     return t;
 }
 
@@ -1281,25 +1416,35 @@ function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
         ? `Antes ${_precioTxt(producto, antes)} → ahora ${_precioTxt(producto, precio)} (ahorras ${_precioTxt(producto, (antes - precio).toFixed(0))})`
         : _precioTxt(producto, precio);
     const desc  = String(producto.descripcion || '').trim();
-    const ficha = _fichaCorta(producto, 4);
+    const gancho = _ganchoDe(producto);
+    const usos = _usosDe(producto, 3), pruebas = _pruebasDe(producto, 4);
+    const confianza = _lineaConfianza(producto);
     const L = [];
     if (v === 1) {
         // El precio arriba, antes que nada: quien baja por el grupo decide ahí.
-        L.push(`🔥 ${producto.nombre}`, `💰 ${linPrecio}`, '');
+        // Debajo, para qué le sirve.
+        L.push(`🔥 ${producto.nombre} — ${linPrecio}`);
+        if (gancho) L.push(gancho);
+        L.push('');
         if (producto.usado) L.push('♻️ Usado / refurbished', '');
-        if (ficha.length) L.push(ficha.join('\n'), '');
+        if (pruebas.length) L.push(pruebas.map(x => `• ${x}`).join('\n'), '');
         else if (desc) L.push(_primerasLineas(desc, 3), '');
     } else if (v === 2) {
-        L.push(`📦 ${producto.nombre}`, '');
+        // El problema primero y el precio en la segunda línea; después, en
+        // prosa, la descripción.
+        if (gancho) L.push(gancho);
+        L.push(`📦 ${producto.nombre}: ${linPrecio}`, '');
         if (producto.usado) L.push('♻️ Producto usado / refurbished', '');
+        if (usos.length) L.push('Sirve para ' + usos.map(u => u.charAt(0).toLowerCase() + u.slice(1)).join(' · '), '');
         if (desc) L.push(desc, '');
-        L.push('▫️▫️▫️', `Precio: ${linPrecio}`);
     } else {
-        L.push(String(producto.nombre || ''), '');
+        // Una pregunta de cierre por delante del pedido, y la lista de lo que
+        // lo hace bueno.
+        if (gancho) L.push(gancho.replace(/^🎯\s*/, '❓ ¿Lo necesitas para esto? '));
+        L.push(`💵 ${linPrecio} · ${producto.nombre}`, '');
         if (producto.usado) L.push('♻️ Usado', '');
-        if (ficha.length) L.push(ficha.map(f => f.replace(/^•/, '✅')).join('\n'), '');
-        if (desc) L.push(_primerasLineas(desc, ficha.length ? 2 : 6), '');
-        L.push(`💵 ${linPrecio}`);
+        if (pruebas.length) L.push(pruebas.map(f => `✅ ${f}`).join('\n'), '');
+        if (desc) L.push(_primerasLineas(desc, pruebas.length ? 2 : 6), '');
     }
     if (producto.garantia)   L.push(`🛡️ Garantía: ${producto.garantia}`);
     if (producto.devolucion) L.push('✅ Devolución segura garantizada');
@@ -1307,15 +1452,16 @@ function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
     if (masBarato) L.push(masBarato);
     const st = Number(producto.stock || 0);
     if (st > 0 && st <= 3) L.push(st === 1 ? '⚡ Queda 1' : `⚡ Quedan ${st}`);
+    if (confianza) L.push(confianza);
     L.push('');
-    const cta = [null, ['💬 Pedidos por WhatsApp:', '👀 Más fotos:'],
-                       ['👉 Para pedirlo, toca aquí:', '🌐 Ficha completa:'],
-                       ['📩 Escríbeme:', '📷 Ver fotos:']][v];
+    const cta = [null, ['💬 ¿Lo quieres? Pídelo por WhatsApp:', '👀 Más fotos:'],
+                       ['👉 ¿Te lo reservo? Toca aquí:', '🌐 Ficha completa:'],
+                       ['📩 ¿Alguna duda? Escríbeme:', '📷 Ver fotos:']][v];
     if (conEnlaces) {
         L.push(cta[0], _waPedido(producto, 'facebook'),
                `${cta[1]} ${_urlProducto(producto, 'facebook', grupo)}`);
     } else {
-        L.push(`💬 Escríbeme al WhatsApp: ${_numWaLegible()}`);
+        L.push(`💬 ¿Te lo aparto? Escríbeme al WhatsApp: ${_numWaLegible()}`);
     }
     const tags = v === 1 ? _hashtagsCategoria(producto.categoria, true) : v === 3 ? '#tiendamax #cuba' : '';
     if (tags) L.push('', tags);
@@ -1879,6 +2025,7 @@ function _colaPintar() {
             <button id="colaCopiarImg" type="button" class="btn btn-ghost" style="flex:1;">📋 Copiar imagen</button>
             <button id="colaBajarImg" type="button" class="btn btn-ghost" style="flex:1;">⬇️ Descargar</button>
           </div>
+          <div id="colaGancho" style="margin-top:10px;"></div>
           <div style="font-size:11px;font-weight:700;opacity:.6;margin:10px 0 4px;">TEXTO PARA ESTE GRUPO (puedes editarlo)</div>
           <textarea id="colaTexto" rows="6" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
           <!-- Fija abajo: el botón de cada paso no puede quedar debajo del pliegue. -->
@@ -1892,6 +2039,7 @@ function _colaPintar() {
           </div>`;
         document.getElementById('colaTexto').value =
             _textoFacebook(producto, { variante: it.v, enlaces: !sinEnlaces, grupo: it.g });
+        _colaPintarGancho(producto, it, sinEnlaces);
         const cv = document.getElementById('colaCanvas');
         _dibujarImagenAnuncio(cv, producto, _opcionesImagenVariante(producto, it.v, it.v)).then(hay => {
             const a = document.getElementById('colaAvisoFoto'); if (a) a.style.display = hay ? 'none' : 'block';
@@ -1943,6 +2091,51 @@ function _colaPintar() {
         _colaPintar();
     }));
     _colaTic();
+}
+
+/* El gancho de este producto, en el paso de publicar: es donde se nota que
+   falta. Se escribe una vez y vale para todos los grupos y todas las versiones.
+   «✨ Proponer» lo pide a la IA con los datos del producto; nada se guarda
+   sin que el gestor lo vea, y nada se guarda si no pasa _ganchoProblema. */
+function _colaPintarGancho(producto, it, sinEnlaces) {
+    const caja = document.getElementById('colaGancho');
+    if (!caja) return;
+    const propio = String(producto.gancho || '').trim();
+    const actual = _ganchoDe(producto);
+    caja.innerHTML = `
+      <details ${propio ? '' : 'open'} style="border-radius:10px;background:rgba(255,255,255,.05);padding:8px 10px;">
+        <summary style="cursor:pointer;font-size:12.5px;">🎯 Gancho: ${propio ? '<b>' + _escH(propio) + '</b>' : (actual ? 'sale del «Ideal para» — mejor escribe el problema que resuelve' : '<b style="color:#f5b041;">falta</b> — di qué problema resuelve')}</summary>
+        <input id="colaGanchoIn" type="text" maxlength="140" value="${_escH(propio)}" placeholder="Ej.: 🔌 ¿Se va la luz? Sigue con el refrigerador y el router encendidos"
+          style="width:100%;box-sizing:border-box;margin-top:8px;padding:9px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:inherit;font:inherit;font-size:13px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button type="button" id="colaGanchoIA" class="btn btn-ghost" style="flex:1 1 140px;">✨ Proponer con IA</button>
+          <button type="button" id="colaGanchoOk" class="btn btn-primary" style="flex:1 1 140px;">Guardar gancho</button>
+        </div>
+        <div id="colaGanchoMsg" style="font-size:12px;margin-top:6px;opacity:.85;" role="status"></div>
+      </details>`;
+    const inp = document.getElementById('colaGanchoIn'), msg = document.getElementById('colaGanchoMsg');
+    document.getElementById('colaGanchoIA').addEventListener('click', async () => {
+        msg.textContent = '⏳ Pensando…';
+        try {
+            const g = await _ganchoConIA(producto);
+            inp.value = g;
+            const mal = _ganchoProblema(producto, g);
+            msg.textContent = mal ? `⚠️ La IA propuso algo que no puedo dejar salir: ${mal}. Corrígelo o pide otro.` : 'Revísalo y pulsa «Guardar gancho».';
+        } catch (e) { msg.textContent = '⚠️ ' + ((e && e.message) || 'No pude pedírselo a la IA'); }
+    });
+    document.getElementById('colaGanchoOk').addEventListener('click', () => {
+        const g = inp.value.replace(/\s+/g, ' ').trim();
+        const mal = _ganchoProblema(producto, g);
+        if (mal) { msg.textContent = '⚠️ No lo guardo: ' + mal + '.'; return; }
+        if (typeof window.tmGuardarCampoProducto !== 'function' || !window.tmGuardarCampoProducto(producto.id, 'gancho', g)) {
+            msg.textContent = '⚠️ No pude guardarlo en el producto.'; return;
+        }
+        producto.gancho = g;
+        document.getElementById('colaTexto').value = _textoFacebook(producto, { variante: it.v, enlaces: !sinEnlaces, grupo: it.g });
+        _colaPintarGancho(producto, it, sinEnlaces);
+        const m2 = document.getElementById('colaGanchoMsg');
+        if (m2) m2.textContent = g ? '✅ Guardado. Súbelo con «🔄 Actualizar tienda» para que te siga en otro teléfono.' : '✅ Quitado.';
+    });
 }
 
 // Cada segundo: la cuenta atrás y si el botón de abrir está disponible. Solo

@@ -56,7 +56,10 @@ RAIZ = Path(__file__).resolve().parents[1]
 CATALOGO = "productos.json"
 CARPETA = "cambios"
 # Campos que el panel puede no traer y que no se pueden perder por eso.
-CONSERVAR = ("descripcion", "slug", "slugsAnteriores")
+# `gancho` (la frase de venta que el gestor aprobó): un teléfono con el catálogo
+# de antes de que existiera lo subiría sin él y se perdería ese trabajo. Borrarlo
+# a propósito se guarda como "" (la clave existe), y eso sí se respeta.
+CONSERVAR = ("descripcion", "slug", "slugsAnteriores", "gancho")
 
 
 class CambioInvalido(ValueError):
