@@ -408,9 +408,9 @@
       }
     ],
     "idealPara": [
-      "Autos de uso diario, camionetas, SUVs y vehículos de transporte ligero que requieren un arranque confiable y soporte para accesorios eléctricos (aire acondicionado, sonido, luces auxiliares).",
-      "Reemplazo directo en vehículos medianos con especificación de batería de 70 Ah a 75 Ah.",
-      "Sistemas básicos de respaldo eléctrico e inversores de corriente de 12V para emergencias o energía solar simple."
+      "Cambiar la batería del carro cuando ya no arranca bien",
+      "Carros que piden batería de 70 a 75 Ah",
+      "Batería de respaldo para un inversor de 12V cuando se va la luz"
     ],
     "incluye": [
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
@@ -1124,9 +1124,9 @@
       }
     ],
     "idealPara": [
-      "Respaldo doméstico durante apagones prolongados: mantiene funcionando refrigeradores, ventiladores, routers Wi-Fi, laptops, iluminación y televisores.",
-      "Alimentación continua de equipos médicos sensibles como máquinas CPAP.",
-      "Campamentos, viajes en casas rodantes (RV), trabajo en exteriores y herramientas eléctricas en zonas sin red eléctrica."
+      "Seguir con el refrigerador, el ventilador y el router encendidos cuando se va la luz",
+      "Cargar laptops, teléfonos y el televisor durante el apagón",
+      "Trabajar con herramientas eléctricas donde no hay corriente"
     ],
     "incluye": [
       "1× Generador Solar Portátil BLUETTI AC180 (1152 Wh / 1800W)",
@@ -1266,7 +1266,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "El cambio de aceite de tu Volkswagen o Audi con especificación Longlife",
+      "Motores que piden 5W-30 y cambios de aceite espaciados"
     ],
     "incluye": [
       "1x Mannol 5W30 5L"
@@ -1305,7 +1306,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "Que el motor no se caliente: refrigerante amarillo listo para echar, sin mezclar con agua",
+      "Rellenar o cambiar el refrigerante del radiador (AG13+)"
     ],
     "incluye": [
       "1x Mannol Antifreeze AG13+ ( - 40 °c) Advanced 4014. 5L"
@@ -1354,7 +1356,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "Que el motor no se caliente: refrigerante verde listo para echar, sin mezclar con agua",
+      "Rellenar o cambiar el refrigerante del radiador (AG13)"
     ],
     "incluye": [
       "1x Mannol Antifreeze AG13 ( - 40 °c) Hightec 4013. 5L"
@@ -1403,7 +1406,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "Que el motor no se caliente: refrigerante azul listo para echar, sin mezclar con agua",
+      "Rellenar o cambiar el refrigerante del radiador (AG11)"
     ],
     "incluye": [
       "1x Mannol Antifreeze AG11 ( - 40 °c) Longterm 4011. 5L"
@@ -1539,7 +1543,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "El cambio de aceite de carros con motor ya trabajado, que piden aceite más espeso",
+      "Motores que piden 20W-50 con el calor de aquí"
     ],
     "incluye": [
       "1x Mannol Safari 20W - 50 7404 5L"
@@ -2455,7 +2460,9 @@
       }
     ],
     "idealPara": [
-      "Protección perimetral y vigilancia 24/7 de viviendas, portales, pasillos y negocios para control de acceso y prevención."
+      "Ver desde el teléfono quién toca a la puerta, aunque no estés en casa",
+      "Hablar con quien está en la puerta sin abrirla",
+      "Ver la entrada de noche con la visión nocturna"
     ],
     "incluye": [
       "1x Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
@@ -2720,7 +2727,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "El cambio de aceite de camiones y motores diésel de trabajo",
+      "Motores diésel que piden 15W-40"
     ],
     "incluye": [
       "1x Mannol ts - 4 SHPD 15W - 40 7104. 5L"
@@ -2775,7 +2783,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "El cambio de aceite de carros que piden 10W-40",
+      "Motores de gasolina o diésel de uso diario"
     ],
     "incluye": [
       "1x Mannol Defender 10W - 40 7507. 5L"
@@ -2863,7 +2872,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento preventivo, recarga y protección de vehículos para prolongar la vida útil del motor y sistema eléctrico."
+      "Mezclar con la gasolina de tu moto de 2 tiempos",
+      "Motos y equipos de motor de 2 tiempos"
     ],
     "incluye": [
       "1x Fanfaro 2T 1L"
@@ -3114,7 +3124,11 @@
       "Estacas de fijación, cuerdas de sujeción y bolsa de transporte."
     ],
     "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas.",
-    "rev": 1793393116521
+    "rev": 1793393116521,
+    "idealPara": [
+      "Armar sombra en un momento en la playa o el campismo, sin herramientas",
+      "Salidas al campo o picnic con la familia"
+    ]
   },
   {
     "id": 1778820983383,
@@ -4168,7 +4182,11 @@
       "1x Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
     ],
     "rev": 1793393116521,
-    "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua."
+    "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua.",
+    "idealPara": [
+      "Bucear más rato sin que el frío del agua te saque",
+      "Esnórquel y deportes acuáticos"
+    ]
   },
   {
     "id": 1780887971522,
@@ -4345,9 +4363,9 @@
       }
     ],
     "idealPara": [
-      "Talleres mecánicos, electricistas automotrices, centros de diagnóstico y flotas de transporte que requieren diagnósticos rápidos y confiables.",
-      "Usuarios particulares que buscan verificar el estado real de la batería de su vehículo antes de viajes largos o detectar problemas de arranque.",
-      "Comprobación del estado de baterías de ciclo profundo, AGM y GEL en sistemas de respaldo o bancos solares de 12V."
+      "Saber si la batería del carro está buena antes de comprar otra",
+      "Revisar las baterías del inversor o del banco solar de 12V",
+      "Talleres y electricistas automotrices"
     ],
     "incluye": [
       "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
@@ -4400,7 +4418,8 @@
       }
     ],
     "idealPara": [
-      "Cuartos chicos, pasillos y espacios de techo bajo."
+      "Refrescar un cuarto chico donde no cabe un ventilador de techo grande",
+      "Pasillos y espacios de techo bajo"
     ],
     "incluye": [
       "1x Mini ventilador de techo"
@@ -4474,7 +4493,8 @@
       }
     ],
     "idealPara": [
-      "Entrenamiento de fuerza y recuperación muscular."
+      "Rendir más en el gimnasio y recuperarte mejor después de entrenar",
+      "Entrenamiento de fuerza"
     ],
     "incluye": [
       "1x Envase de creatina monohidratada 500 g"
@@ -8284,9 +8304,9 @@
       }
     ],
     "idealPara": [
-      "Automóviles, camionetas, SUVs, camiones, botes, maquinaria agrícola y plantas eléctricas.",
-      "Mantenimiento y carga de bancos de baterías para sistemas solares e inversores (baterías AGM, GEL o LiFePO4 de 12V y 24V).",
-      "Talleres automotrices, garajes y usuarios particulares que requieren tanto cargas rápidas de emergencia como mantenimiento a largo plazo."
+      "Recuperar y mantener la batería del inversor o del carro",
+      "Cargar bancos de baterías de 12V y 24V de sistemas solares",
+      "Talleres y quien tiene varias baterías que cuidar"
     ],
     "incluye": [
       "1× Cargador y Mantenedor de Baterías VEVOR 35A",
@@ -8459,9 +8479,9 @@
       }
     ],
     "idealPara": [
-      "Recarga solar directa de motos eléctricas, triciclos eléctricos (moto-taxis), scooters y carritos de golf de 48V, 60V o 72V usando pocos paneles solares.",
-      "Sistemas solares aislados (Off-Grid) con bancos de baterías a 48V/60V/72V donde el espacio para instalar paneles en serie es limitado.",
-      "Estaciones de carga portátiles o proyectos DIY que requieran elevar el voltaje fotovoltaico hacia acumuladores de alta tensión."
+      "Cargar con sol tu moto eléctrica de 48V, 60V o 72V usando pocos paneles",
+      "Triciclos eléctricos y moto-taxis",
+      "Sistemas solares con baterías de 48V, 60V o 72V"
     ],
     "incluye": [
       "1× Controlador de Carga Solar MPPT Boost 1200W",
@@ -9649,10 +9669,9 @@
       }
     ],
     "idealPara": [
-      "Talleres automotrices, flotas de transporte, camiones diésel y maquinaria agrícola o pesada con sistemas de 24V.",
-      "Mantenimiento y recarga rápida de baterías de autos, camionetas, lanchas y vehículos recreativos a 12V.",
-      "Cuidado y recuperación de baterías de 6V en motos clásicas, juguetes eléctricos y equipos antiguos.",
-      "Carga de respaldo conectada a la red comercial o planta eléctrica para bancos de baterías solares (GEL, AGM o LiFePO4)."
+      "Cargar la batería del carro o de la moto en casa, sin depender de nadie",
+      "Baterías de 6V, 12V y 24V: motos, carros y camiones",
+      "Cargar las baterías del banco solar con la corriente o la planta"
     ],
     "incluye": [
       "1× Cargador Inteligente Multivoltaje VEVOR 30A (6V/12V/24V) con pinzas caimán de uso rudo",
@@ -9989,10 +10008,9 @@
       }
     ],
     "idealPara": [
-      "Salidas a la playa, días de piscina, campamentos y senderismo gracias a su resistencia total al agua IPX7.",
-      "Uso continuo en el hogar, habitaciones u oficinas con batería para varios días de uso habitual.",
-      "Fiestas y reuniones en exteriores aprovechando la tecnología PartyCast y el refuerzo de graves.",
-      "Usuarios que buscan personalizar la firma acústica mediante una aplicación móvil dedicada."
+      "Música para la playa, la piscina o la fiesta, aunque se moje",
+      "Que dure días sin cargar en la casa",
+      "Juntar varias bocinas en la fiesta con PartyCast"
     ],
     "incluye": [
       "1× Bocina portátil Bluetooth soundcore Select 3",
@@ -10351,10 +10369,9 @@
       }
     ],
     "idealPara": [
-      "Proyectos de herrería ligera, carpintería metálica, balcones, rejas y cerrajería residencial.",
-      "Mantenimiento general, reparaciones mecánicas rápidas en autos, motos, remolques y herramientas agrícolas.",
-      "Aficionados al bricolaje (DIY) y usuarios que dan sus primeros pasos en la soldadura gracias a la calibración sinérgica automática.",
-      "Reparaciones y montajes al aire libre donde el viento impide el uso de gas de protección."
+      "Hacer y arreglar rejas, puertas y balcones tú mismo",
+      "Arreglos rápidos de carros, motos y herramientas",
+      "Soldar al aire libre sin gas, aunque haya viento"
     ],
     "incluye": [
       "1× Soldadora Inverter Multiproceso Bielmeier FLUXMAX 140",
@@ -10979,10 +10996,9 @@
       }
     ],
     "idealPara": [
-      "Instalaciones solares en techos de casas, garajes, cobertizos y fincas fuera de la red (Off-Grid).",
-      "Casas rodantes, furgonetas camper, remolques y embarcaciones donde se requiere regular la inclinación según la ubicación del viaje.",
-      "Proyectos solares de respaldo de energía y baterías donde se busca exprimir al máximo el rendimiento de cada panel.",
-      "Montajes en suelo o terrazas planas para evitar la acumulación de polvo y agua sobre las celdas solares."
+      "Poner los paneles solares en el techo con la inclinación que más carga da",
+      "Montarlos en el suelo o en una azotea plana",
+      "Sacarle el máximo a cada panel de tu sistema de respaldo"
     ],
     "incluye": [
       "2× Brazos telescópicos traseros ajustables con soporte de inclinación",
@@ -11226,10 +11242,9 @@
       }
     ],
     "idealPara": [
-      "Seguridad y patrullaje nocturno en fincas, granjas, almacenes, obras y perímetros residenciales.",
-      "Observación de fauna silvestre, aves nocturnas y expediciones de caza deportiva.",
-      "Acampadas, senderismo nocturno, navegación fluvial y búsqueda o rescate.",
-      "Detección de intrusos o vigilancia discreta sin fuentes de luz visibles."
+      "Vigilar de noche la finca, el patio o el almacén sin encender luces",
+      "Ver y grabar en la oscuridad total con infrarrojo",
+      "Campismo y salidas de noche"
     ],
     "incluye": [
       "1× Binoculares de visión nocturna digital 4K / 36MP",
@@ -11487,10 +11502,8 @@
       }
     ],
     "idealPara": [
-      "Conmutación automática entre la red eléctrica pública y sistemas solares fotovoltaicos con inversor.",
-      "Transferencia automática a generadores de respaldo a gasolina o diésel en casas, negocios y fincas.",
-      "Tableros de distribución eléctrica que abastecen cargas críticas, servidores, sistemas de refrigeración o bombeo.",
-      "Instalaciones residenciales o comerciales donde se requiera alternar entre dos acometidas o contadores diferentes."
+      "Que la casa pase sola a las baterías o a la planta cuando se va la luz, y vuelva cuando llega",
+      "Casas, negocios y fincas con inversor solar o planta de respaldo"
     ],
     "incluye": [
       "1× Interruptor de Transferencia Automática LSP M2R63-110/3 (3P 63A)",
@@ -11861,10 +11874,9 @@
       }
     ],
     "idealPara": [
-      "Protección y seccionamiento de cadenas (strings) de paneles solares fotovoltaicos antes de la entrada a inversores solares híbridos o controladores de carga MPPT.",
-      "Desconexión segura y protección de líneas DC entre bancos de baterías (LiFePO4, Gel, AGM) y centros de carga.",
-      "Cuadros de protecciones solares exteriores (cajas Combiner Box) y tableros generales de corriente continua.",
-      "Sistemas de alimentación ininterrumpida (UPS industriales), estaciones de telecomunicaciones y bancos de energía aislados (Off-Grid)."
+      "Proteger tu sistema solar y tus baterías de un cortocircuito",
+      "Entre los paneles y el inversor o el controlador MPPT",
+      "Entre el banco de baterías y el resto de la instalación"
     ],
     "incluye": [
       "1× Disyuntor Termomagnético DC TEDDYELE MCB2P-63 (2P 40A / 440V DC)"
@@ -12736,9 +12748,8 @@
       }
     ],
     "idealPara": [
-      "Instalación en autos, camionetas, vans, pickups, SUVs, taxis y microbuses para facilitar el parqueo en espacios reducidos.",
-      "Eliminar puntos ciegos traseros y prevenir accidentes con peatones, mascotas u objetos bajos al dar marcha atrás.",
-      "Conductores que buscan una solución de parqueo clara, de bajo costo y fácil de instalar mediante cableado RCA estándar."
+      "Parquear y dar marcha atrás sin chocar, viendo lo que hay detrás",
+      "Ver de noche detrás del carro con sus luces LED"
     ],
     "incluye": [
       "1× Monitor LCD de 4.3\" con soporte adhesivo y visor superior antirreflejo",
@@ -12844,9 +12855,9 @@
       }
     ],
     "idealPara": [
-      "Acampadas, senderismo, viajes de mochilero (backpacking) y expediciones en zonas boscosas o húmedas con presencia de mosquitos.",
-      "Salidas a la playa, días de campo, parques o descanso en el patio/jardín de la casa.",
-      "Refugio de descanso ligero en kits de emergencia, supervivencia o expediciones de fin de semana."
+      "Dormir fresco y sin mosquitos cuando se va la luz",
+      "Terraza, patio, playa o campismo",
+      "Mochila de emergencia"
     ],
     "incluye": [
       "1× Hamaca de camping 2 en 1 con mosquitero e integrada con su bolsa de guardado",
@@ -12948,9 +12959,9 @@
       }
     ],
     "idealPara": [
-      "Sustitución de batería de arranque en automóviles de pasajeros, sedanes, hachbacks y SUVs compactas.",
-      "Vehículos particulares y comerciales de uso diario que requieren un arranque seguro y fiable.",
-      "Banco de respaldo básico de 12V para iluminación LED de emergencia, inversores pequeños o sistemas de seguridad."
+      "Cambiar la batería del carro cuando ya no arranca bien",
+      "Carros chicos y medianos que piden batería de 60 Ah",
+      "Respaldo de 12V para luces LED o un inversor pequeño"
     ],
     "incluye": [
       "1× Batería automotriz LUBRIM 12V 60Ah",
@@ -13065,10 +13076,9 @@
       }
     ],
     "idealPara": [
-      "Inflado y calibración rápida de neumáticos de automóviles, camionetas ligeras y SUVs.",
-      "Motocicletas, scooters, bicicletas eléctricas y bicicletas de montaña (MTB/Ruta) que requieren presiones exactas.",
-      "Balones deportivos (fútbol, baloncesto, voleibol) e inflables recreativos de playa o piscina.",
-      "Kit de emergencia indispensable en el vehículo para responder ante pérdidas de presión o pinchazos en el camino."
+      "Inflar las gomas del carro, la moto o la bici donde sea, sin buscar ponchera",
+      "Llevarlo en el carro para cuando una goma pierda aire",
+      "Balones e inflables de playa"
     ],
     "incluye": [
       "1× Compresor de aire digital inalámbrico ATJ-6988",
@@ -13188,10 +13198,9 @@
       }
     ],
     "idealPara": [
-      "Proveedores de internet (WISPs), redes domésticas y oficinas pequeñas que buscan un router confiable de doble banda.",
-      "Expandir cobertura en modo Punto de Acceso conectándolo por cable a un router principal de fibra o módem.",
-      "Instalaciones respaldadas por baterías de 12V o sistemas solares donde se requiere mantener el Wi-Fi activo sin gastar energía en exceso.",
-      "Streaming HD/4K y conexiones simultáneas de teléfonos, computadoras y televisores inteligentes."
+      "WiFi en toda la casa con un router que gasta poco, bueno para el apagón con baterías",
+      "Usarlo como punto de acceso para llevar la señal a otro cuarto",
+      "Conectar a la vez teléfonos, computadoras y el televisor"
     ],
     "incluye": [
       "1× Router Wi-Fi de Doble Banda TP-Link Archer C50",
@@ -13314,9 +13323,9 @@
       }
     ],
     "idealPara": [
-      "Desplazamientos diarios de larga distancia, mensajería, entregas a domicilio o trabajo continuo en la ciudad.",
-      "Usuarios que priorizan la máxima autonomía por carga (120 km) sin depender de puntos de recarga intermedios.",
-      "Quienes buscan un vehículo eléctrico seguro, potente, con controladora VOTOL y entretenimiento integrado."
+      "Moverte por la ciudad sin gastar en gasolina: hasta 120 km por carga",
+      "Mensajería y entregas",
+      "Ir al trabajo todos los días"
     ],
     "incluye": [
       "1× Moto eléctrica YOAZAKI 707 (3000W - 48V 50Ah)",
@@ -13423,9 +13432,8 @@
       }
     ],
     "idealPara": [
-      "Lavado de toallas, sábanas, cobijas y lencería que requieren mantener un aroma limpio y fresco durante semanas guardadas.",
-      "Ropa deportiva, uniformes y prendas de trabajo propensas a acumular malos olores.",
-      "Usuarios que buscan potenciar la fragancia de su colada combinando las perlas con su detergente habitual."
+      "Que la ropa, las sábanas y las toallas huelan a limpio por semanas",
+      "Ropa de trabajo y deportiva que coge mal olor"
     ],
     "incluye": [
       "1× Botella de Perlas Aromáticas Downy Unstopables Fresh (680g / 24 oz)"
@@ -13651,9 +13659,9 @@
       }
     ],
     "idealPara": [
-      "Automóviles de pasajeros, SUVs, vans y camionetas ligeras modernas de gasolina o diésel.",
-      "Motores turboalimentados, con inyección directa (GDI/TSI/TFSI) o multiválvulas que requieren aceites sintéticos de grado 5W-30.",
-      "Vehículos expuestos a condiciones severas de manejo, tráfico urbano intenso o viajes de larga distancia."
+      "El cambio de aceite de carros modernos que piden 5W-30 sintético",
+      "Motores turbo o de inyección directa",
+      "Mucho tráfico o viajes largos"
     ],
     "incluye": [
       "1× Garrafa de Aceite Sintético MANNOL Energy 7511 5W-30 (Ester Technology)"
@@ -13754,9 +13762,9 @@
       }
     ],
     "idealPara": [
-      "Reemplazo, purgado y rellenado del sistema de frenos en automóviles de pasajeros, camionetas compactas, SUVs y vehículos comerciales ligeros que requieran especificación DOT 3.",
-      "Sistemas de freno hidráulico de motocicletas, scooters y cuatrimotos.",
-      "Circuitos hidráulicos de accionamiento de embrague (clutch) en vehículos mecánicos."
+      "Cambiar o rellenar el líquido de frenos de carros que piden DOT 3",
+      "Frenos hidráulicos de motos",
+      "Circuito del clutch hidráulico"
     ],
     "incluye": [
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
@@ -13858,9 +13866,9 @@
       }
     ],
     "idealPara": [
-      "Reemplazo, purgado y relleno en vehículos modernos de gasolina y diésel, camionetas, SUVs y camiones ligeros que requieran norma DOT-4.",
-      "Motocicletas, scooters y cuatrimotos con frenos hidráulicos de alto rendimiento.",
-      "Vehículos equipados con sistemas de frenado antibloqueo (ABS) y control de estabilidad (ESP/TSC)."
+      "Cambiar o rellenar el líquido de frenos de carros que piden DOT-4",
+      "Motos con frenos hidráulicos",
+      "Carros con frenos ABS"
     ],
     "incluye": [
       "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
@@ -13984,9 +13992,8 @@
       }
     ],
     "idealPara": [
-      "Usuarios que buscan un teléfono inteligente completo, fluido y de gran pantalla sin realizar un gran desembolso económico.",
-      "Uso diario en mensajería (WhatsApp, Telegram), redes sociales (Facebook, TikTok, Instagram) y consumo de video en YouTube o streaming.",
-      "Excelente opción como primer smartphone, equipo para estudiantes o teléfono secundario de trabajo."
+      "Un teléfono con pantalla grande para WhatsApp, Facebook y videos sin gastar mucho",
+      "Primer teléfono, para estudiantes o como segundo teléfono"
     ],
     "incluye": [
       "1× Smartphone itel A100C (64GB / 8GB RAM Extended)",
@@ -14114,10 +14121,9 @@
       }
     ],
     "idealPara": [
-      "Usuarios que necesitan gran capacidad de almacenamiento (128GB) para fotos, archivos de trabajo o multimedia.",
-      "Personas que buscan un teléfono resistente a caídas e impactos gracias a su certificación militar.",
-      "Quienes desean la comodidad de un emisor infrarrojo para controlar equipos electrónicos del hogar desde el teléfono.",
-      "Excelente relación precio-prestaciones para uso diario intensivo en redes sociales, llamadas y mensajería."
+      "Espacio de sobra para fotos y videos: 128GB",
+      "Un teléfono que aguanta golpes y caídas",
+      "Usarlo de control remoto para el televisor y el aire con su infrarrojo"
     ],
     "incluye": [
       "1× Smartphone itel A100C (128GB ROM / 8GB RAM 3+5GB)",
@@ -14225,10 +14231,9 @@
       }
     ],
     "idealPara": [
-      "Calibrado y ajuste de presión regular en neumáticos de automóviles y SUVs compactas.",
-      "Inflado rápido en rutas de motocicletas, scooters, bicicletas de montaña (MTB) o de ruta.",
-      "Inflado de balones deportivos (fútbol, baloncesto, voleibol) y colchonetas o accesorios flotantes.",
-      "Kit de herramientas imprescindible en la guantera para emergencias por pérdida de presión en carretera."
+      "Inflar las gomas del carro, la moto o la bici donde sea, sin buscar ponchera",
+      "Llevarlo en la guantera para cuando una goma pierda aire",
+      "Balones y colchones inflables"
     ],
     "incluye": [
       "1× Compresor de aire digital portátil ST-221",
@@ -14354,9 +14359,9 @@
       }
     ],
     "idealPara": [
-      "Dormitorios, habitaciones infantiles, cocinas, baños, oficinas pequeñas, balcones o cuartos de estudio.",
-      "Espacios donde no es posible realizar instalaciones complejas de ventiladores de techo tradicionales.",
-      "Casas, apartamentos de alquiler o locales comerciales donde se busque una solución rápida de ventilación e iluminación 2 en 1."
+      "Ventilador y luz en un solo bombillo: se enrosca donde va el bombillo, sin electricista",
+      "Cuartos, cocinas y balcones",
+      "Casas de alquiler donde no puedes hacer instalaciones"
     ],
     "incluye": [
       "1× Lámpara Ventilador de Techo E27 (Flower Fan Light 40W)",
@@ -14468,9 +14473,8 @@
       }
     ],
     "idealPara": [
-      "Cajas de cambios manuales y diferenciales de automóviles, camionetas, picops y vehículos comerciales ligeros.",
-      "Maquinaria agrícola, equipos de construcción y camiones que requieran aceite mineral para transmisión de norma SAE 80W-90 API GL-5.",
-      "Transmisiones finales y reductores secundarios de motocicletas, scooters o triciclos mecánicos."
+      "Cambiar el aceite de la caja de velocidades y el diferencial del carro",
+      "Camiones, maquinaria agrícola y triciclos mecánicos que piden 80W-90"
     ],
     "incluye": [
       "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
@@ -14578,9 +14582,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento completo de cajas de cambios manuales y diferenciales en camiones, camionetas, picops y autobuses.",
-      "Maquinaria agrícola, equipos de construcción y vehículos de carga pesada que requieren lubricante de transmisión mineral SAE 80W-90 API GL-5.",
-      "Talleres automotrices y flotillas comerciales que buscan un formato de alto rendimiento y mejor relación costo-volumen."
+      "Cambiar el aceite de la caja y el diferencial de camiones y camionetas",
+      "Talleres que gastan mucho aceite de transmisión 80W-90"
     ],
     "incluye": [
       "1× Garrafa de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (5 Litros)"
@@ -14678,8 +14681,8 @@
       }
     ],
     "idealPara": [
-      "Mantenimiento, nivelación y cambio de fluido en transmisiones automáticas CVT de automóviles, crossovers y SUVs modernas (Nissan, Toyota, Honda, Mitsubishi, Subaru, Suzuki, Mercedes-Benz, Audi/VW).",
-      "Vehículos con cajas de cambios variadoras por correa de acero o cadena articulada que requieran norma MB 236.20 o equivalentes de fabricante original."
+      "El cambio de aceite de la caja automática CVT de tu carro",
+      "Nissan, Toyota, Honda, Mitsubishi, Suzuki y otros con caja CVT"
     ],
     "incluye": [
       "1× Botella de Aceite Sintético para Transmisión FANFARO CVT 8601 (1 Litro)"
@@ -14783,9 +14786,9 @@
       }
     ],
     "idealPara": [
-      "Instalación, cableado y conexión en serie o paralelo de paneles solares fotovoltaicos en tejados y estructuras de soporte.",
-      "Conexión de bajantes solares hacia cajas de combinación (combiner boxes), inversores híbridos y controladores de carga MPPT.",
-      "Sistemas solares autónomos residenciales, comerciales e instalaciones industriales aisladas o conectadas a la red."
+      "Conectar tus paneles solares de forma segura, sin empalmes que se calienten",
+      "Unir paneles en serie o en paralelo",
+      "Llevar la bajante de los paneles al inversor o al controlador MPPT"
     ],
     "incluye": [
       "1× Conector solar MC4 macho (Carcasa plástica + Pin metálico interno)",
