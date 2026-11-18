@@ -55,33 +55,38 @@ function cargarNumeroWhatsApp() {
 // Texto real de cobertura/costo de envío — lo escribe el admin (⚙️ Configuración → 🚚 Envío).
 // Sin valor guardado, no se inventa "toda Cuba" ni ningún alcance: se muestra un texto
 // genérico honesto que no promete cobertura que no existe.
-// OJO: `envioTexto` vive en el localStorage del teléfono del gestor, así que en
-// el teléfono de un cliente siempre sale el texto por defecto. Por eso el
-// defecto es la cobertura real (dueño, 18-nov-2026: mensajería solo en La
-// Habana, se paga al recibir) y corto: «Según zona · costo aparte» se cortaba
-// a 320 px y no decía nada.
+/* 🚚 Mensajería: las zonas las escribe el dueño en ⚙️ Configuración y viajan en
+   config.json → `envios` = {zonas:[{nombre, precio, tiempo}], resto, ts}. La
+   tienda las guarda en `tm_envios_cfg` al leer config.json (index.html), así
+   que les llegan a TODOS los clientes — el texto de antes vivía solo en el
+   localStorage del teléfono del gestor y ningún cliente lo veía nunca.
+   Siempre se paga al recibir (dueño, 18-nov-2026): eso no es configurable.
+   Sin configuración: mensajería en La Habana, el resto por WhatsApp. */
+const TM_ENVIOS_DEF = { zonas: [{ nombre: 'La Habana', precio: '', tiempo: '' }],
+                        resto: 'Al resto del país lo coordinamos por WhatsApp (encomienda o transportista).' };
+function tmEnviosNormalizar(o) {
+    if (!o || !Array.isArray(o.zonas)) return null;
+    const t = (v, n) => String(v == null ? '' : v).replace(/[<>]/g, '').trim().slice(0, n);
+    const zonas = o.zonas.map(z => ({ nombre: t(z && z.nombre, 60), precio: t(z && z.precio, 40), tiempo: t(z && z.tiempo, 40) }))
+        .filter(z => z.nombre).slice(0, 20);
+    if (!zonas.length) return null;
+    return { zonas, resto: t(o.resto, 200) || TM_ENVIOS_DEF.resto, ts: Number(o.ts) || 0 };
+}
+function tmEnviosCfg() {
+    try {
+        const o = tmEnviosNormalizar(JSON.parse(localStorage.getItem('tm_envios_cfg') || 'null'));
+        if (o) return o;
+    } catch (e) {}
+    return TM_ENVIOS_DEF;
+}
+// La línea corta de la ficha: cabe a 320 px.
 function getEnvioTexto() {
-    const saved = (localStorage.getItem('envioTexto') || '').trim();
-    return saved || 'Mensajería en La Habana';
+    const z = tmEnviosCfg().zonas;
+    if (z.length === 1) return 'Mensajería en ' + z[0].nombre + (z[0].precio ? ' · ' + z[0].precio : '');
+    return 'Mensajería en ' + z[0].nombre + ' y ' + (z.length - 1) + ' zona' + (z.length > 2 ? 's' : '') + ' más';
 }
-
-function guardarEnvioTexto() {
-    const input = document.getElementById('adminEnvioTexto');
-    const status = document.getElementById('envioTextoStatus');
-    if (!input) return;
-    const val = input.value.trim();
-    localStorage.setItem('envioTexto', val);
-    if (status) {
-        status.textContent = val ? '✅ Guardado' : '✅ Guardado (se mostrará "Mensajería en La Habana")';
-        status.style.color = '#2ECC71';
-    }
-    mostrarNotificacion('✅ Texto de envío guardado');
-}
-
 function cargarEnvioTexto() {
-    const saved = localStorage.getItem('envioTexto');
-    const input = document.getElementById('adminEnvioTexto');
-    if (input && saved) input.value = saved;
+    if (typeof window !== 'undefined' && typeof window.tmEnviosPintar === 'function') window.tmEnviosPintar();
 }
 
 function _gaEvent(name, params) {

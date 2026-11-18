@@ -2074,12 +2074,14 @@ try{var _piel=localStorage.getItem('tm_piel');
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
-          <div class="section">
-            <h3>🚚 Envío</h3>
-            <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Sale en la tarjeta de confianza de cada producto: el cliente lo ve antes de pedir. Escribe la cobertura y el costo reales.</p>
-            <div class="form-group"><label class="form-label" for="adminEnvioTexto">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
-            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar envío</button>
-            <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+          <div class="section" id="enviosBox">
+            <h3>🚚 Mensajería</h3>
+            <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px;line-height:1.5">Las zonas a las que llega tu mensajería, con su precio y tiempo si quieres. <b style="color:var(--text)">Lo ven todos los clientes</b>: en la ficha de cada producto y cuando le preguntan a Max. Siempre se paga al recibir.</p>
+            <div id="enviosZonas"></div>
+            <button type="button" class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="envAgregar()">+ Agregar zona</button>
+            <div class="form-group" style="margin-top:12px"><label class="form-label" for="enviosResto">Para el resto del país</label><input class="form-input" id="enviosResto" maxlength="200" placeholder="Lo coordinamos por WhatsApp (encomienda o transportista)"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="envGuardar()">💾 Guardar mensajería</button>
+            <p id="enviosEstado" style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5"></p>
           </div>
         </div>
         <div class="section" id="tarjetaCfgBox">
@@ -2452,7 +2454,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=0971d017"></script>
+<script src="js/tm-bundle.js?v=7a410706"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2938,7 +2940,97 @@ try{var _piel=localStorage.getItem('tm_piel');
   else setTimeout(cargar, 1500);
 })();
 </script>
+<script>
+/* 🚚 Mensajería (config.json → envios = {zonas:[{nombre,precio,tiempo}], resto, ts}).
+   Mismo patrón que el tema: local en el toque de «Guardar», el repo 4 s
+   después releyendo config.json justo antes (y sin haberlo leído NO se
+   escribe), gana el ts más nuevo, y al cargar se sube lo local que el repo no
+   tenga. La tienda lo lee de config.json: les llega a todos los clientes. */
+(function(){
+  var LS = 'tm_envios_panel', remoto = null, estado = '', timer = null, subiendo = false, filas = null;
+  function norm(o){ return (typeof tmEnviosNormalizar === 'function') ? tmEnviosNormalizar(o) : o; }
+  function local(){ try{ return norm(JSON.parse(localStorage.getItem(LS) || 'null')); }catch(e){ return null; } }
+  function gana(a, b){ return !a ? b : !b ? a : ((+b.ts || 0) > (+a.ts || 0) ? b : a); }
+  function actual(){ return gana(remoto, local()) || (typeof TM_ENVIOS_DEF !== 'undefined' ? TM_ENVIOS_DEF : {zonas:[{nombre:'La Habana'}], resto:''}); }
+  function cred(){ return { u: localStorage.getItem('githubUser'), r: localStorage.getItem('githubRepo'), t: localStorage.getItem('githubToken') }; }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  // La copia que lee getEnvioTexto en ESTE teléfono (la vista previa del panel).
+  function espejo(c){ try{ localStorage.setItem('tm_envios_cfg', JSON.stringify(c)); }catch(e){} }
+  function leerFilas(){
+    var box = document.getElementById('enviosZonas'); if (!box) return filas || [];
+    return Array.prototype.map.call(box.querySelectorAll('.env-fila'), function(f){
+      return { nombre: f.querySelector('[data-k=nombre]').value, precio: f.querySelector('[data-k=precio]').value, tiempo: f.querySelector('[data-k=tiempo]').value };
+    });
+  }
+  function pintar(){
+    var box = document.getElementById('enviosZonas'), est = document.getElementById('enviosEstado'), resto = document.getElementById('enviosResto');
+    if (!box) return;
+    var c = actual();
+    if (!filas) filas = c.zonas.map(function(z){ return {nombre:z.nombre, precio:z.precio||'', tiempo:z.tiempo||''}; });
+    box.innerHTML = filas.map(function(z, i){
+      return '<div class="env-fila">'
+        + '<input class="form-input" data-k="nombre" maxlength="60" placeholder="Zona (ej: La Habana, Playa…)" value="' + esc(z.nombre) + '" aria-label="Zona">'
+        + '<input class="form-input" data-k="precio" maxlength="40" placeholder="Precio (ej: 500 MN)" value="' + esc(z.precio) + '" aria-label="Precio">'
+        + '<input class="form-input" data-k="tiempo" maxlength="40" placeholder="Tiempo (ej: 24–48 h)" value="' + esc(z.tiempo) + '" aria-label="Tiempo">'
+        + '<button type="button" class="pico del" title="Quitar zona" onclick="envQuitar(' + i + ')">🗑️</button></div>';
+    }).join('');
+    if (resto && document.activeElement !== resto) resto.value = (c.resto && c.resto !== (typeof TM_ENVIOS_DEF !== 'undefined' ? TM_ENVIOS_DEF.resto : '')) ? c.resto : '';
+    var vista = (typeof getEnvioTexto === 'function') ? getEnvioTexto() : '';
+    var e = {pendiente:'⏳ Se guarda en unos segundos…', guardando:'⏳ Guardando…', guardado:'✅ Guardado: la tienda lo refleja en 1–2 min.',
+      error:'⚠️ No se pudo guardar. <button class="btn btn-ghost" style="padding:2px 8px;font-size:11px" onclick="envSubir()">Reintentar</button>',
+      'sin-token':'⚠️ Falta el token de GitHub: por ahora solo está en este teléfono.', vacio:'⚠️ Pon al menos una zona.'}[estado];
+    if (est) est.innerHTML = (vista ? 'En la ficha sale: <b>' + esc(vista) + '</b>.' : '') + (e ? '<br>' + e : '');
+  }
+  window.tmEnviosPintar = pintar;
+  window.envAgregar = function(){ filas = leerFilas(); filas.push({nombre:'', precio:'', tiempo:''}); pintar(); };
+  window.envQuitar = function(i){ filas = leerFilas(); filas.splice(i, 1); pintar(); };
+  window.envGuardar = function(){
+    filas = leerFilas();
+    var r = document.getElementById('enviosResto');
+    var o = norm({ zonas: filas, resto: r ? r.value : '', ts: Date.now() });
+    if (!o) { estado = 'vacio'; pintar(); return; }
+    try{ localStorage.setItem(LS, JSON.stringify(o)); }catch(e){}
+    espejo(o); filas = null; luego(); pintar();
+    if (typeof showToast === 'function') showToast('🚚 Mensajería guardada', 'La ven los clientes en 1–2 min');
+  };
+  function luego(){ estado = 'pendiente'; clearTimeout(timer); timer = setTimeout(window.envSubir, 4000); }
+  window.envSubir = async function(){
+    var c = cred();
+    if (!c.u || !c.r || !c.t || typeof subirArchivoAGitHub !== 'function' || typeof _tmLeerJsonRepoFresco !== 'function') { estado = 'sin-token'; pintar(); return false; }
+    if (subiendo) { luego(); return false; }
+    subiendo = true; estado = 'guardando'; pintar();
+    try {
+      var cfg = await _tmLeerJsonRepoFresco(c.u, c.r, c.t, 'config.json');
+      if (!cfg || typeof cfg !== 'object' || Array.isArray(cfg) || !cfg.firebaseConfig) throw new Error('no pude leer config.json');
+      var f = gana(norm(cfg.envios) || null, local());
+      if (f && JSON.stringify(f) !== JSON.stringify(cfg.envios || null))
+        await subirArchivoAGitHub(c.u, c.r, c.t, 'config.json', Object.assign({}, cfg, {envios: f}));
+      remoto = f; estado = 'guardado'; return true;
+    } catch(e) { estado = 'error'; return false; }
+    finally { subiendo = false; pintar(); }
+  };
+  // «Actualizar tienda» reescribe config.json entero: las zonas viajan también.
+  window.tmEnviosParaSubir = function(delRepo){ return gana(norm(delRepo) || null, local()) || delRepo || undefined; };
+  async function cargar(){
+    var c = cred(), cfg = null;
+    try {
+      if (c.u && c.r && typeof _tmLeerJsonRepoFresco === 'function') cfg = await _tmLeerJsonRepoFresco(c.u, c.r, c.t, 'config.json');
+      else { var r = await fetch('config.json?_=' + Date.now(), {cache:'no-store'}); if (r.ok) cfg = await r.json(); }
+    } catch(e) {}
+    if (cfg && typeof cfg === 'object') {
+      remoto = norm(cfg.envios) || null;
+      var l = local();
+      if (l && (+l.ts || 0) > (+(remoto && remoto.ts) || 0)) luego();
+    }
+    espejo(actual()); filas = null; pintar();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(cargar, 1600); });
+  else setTimeout(cargar, 1600);
+})();
+</script>
 <style>
+.env-fila{display:grid;grid-template-columns:1.4fr 1fr 1fr 40px;gap:6px;margin-bottom:6px;align-items:center}
+@media (max-width:480px){.env-fila{grid-template-columns:1fr 1fr 40px}.env-fila [data-k=nombre]{grid-column:1/-1}}
 .tema-ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media (min-width:640px){.tema-ops{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .tema-op{padding:10px 8px;border-radius:12px;border:1px solid var(--border,rgba(255,255,255,.12));background:transparent;color:var(--text,#fff);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
@@ -9602,7 +9694,9 @@ function pubCatConfianza(prods){
 }
 /* El texto de cobertura que el propio gestor configuró en ⚙️ Envíos. Sin él no
    se inventa ni una zona ni un plazo. */
-function pubCatEnvioTxt(){ try{ return (localStorage.getItem('envioTexto')||'').trim(); }catch(e){ return ''; } }
+/* La cobertura que el dueño puso en ⚙️ Configuración → 🚚 Mensajería (la
+   misma que ven los clientes). Sin zonas propias, no se inventa ninguna. */
+function pubCatEnvioTxt(){ try{ return localStorage.getItem('tm_envios_cfg') && typeof getEnvioTexto==='function' ? getEnvioTexto() : ''; }catch(e){ return ''; } }
 /* «desde X», con la moneda dicha. Nunca un mínimo único cuando hay dos
    monedas en la tanda: el de dólares deja fuera algo más barato en MN, el de
    MN se lee como dólares, y convertir por la tasa del día inventa un precio
@@ -9801,7 +9895,7 @@ function tmCatalogHTML(cat, lote){
   });
   const moreLink=extra>0?`<div class="tmcat-more">+ ${extra} referencia${extra!==1?'s':''} más en tienda →</div>`:'';
   return `<div class="tmcat-card">
-    <div class="tmcat-hd"><div class="tmcat-brand">TIENDAMAX</div><div class="tmcat-tag">${esc(pubCatGancho(cat))}</div><div class="tmcat-pill">${esc(String(cat).toUpperCase())}</div><div class="tmcat-envio">${esc(pubCatEnvioTxt()||'⚡ ENVÍO HOY EN LA HABANA')}</div></div>
+    <div class="tmcat-hd"><div class="tmcat-brand">TIENDAMAX</div><div class="tmcat-tag">${esc(pubCatGancho(cat))}</div><div class="tmcat-pill">${esc(String(cat).toUpperCase())}</div><div class="tmcat-envio">${esc(pubCatEnvioTxt()||'🚚 MENSAJERÍA EN LA HABANA')}</div></div>
     ${topBox}${sectionsHtml}${moreLink}
     <div class="tmcat-urg">⏰ Precios HOY — con la tasa de mañana suben</div>
     <div class="tmcat-trust"><span class="g">✅</span> ${esc(pubCatConfianza(prods).replace('✅ ',''))}</div>

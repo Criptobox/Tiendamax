@@ -203,7 +203,7 @@ ok(/tiempo de entrega|se coordina/i.test(en1),
    `preguntar cuándo llega se contesta sobre el tiempo: «${en1.slice(0,160)}»`);
 ok(!/\b(24|48|72)\s*(h|horas)\b|\b\d+\s*d[ií]as h[aá]biles\b/i.test(en1),
    `y sin inventarse un plazo que nadie prometió: «${en1.slice(0,200)}»`);
-ok(/Cobertura de env[ií]os|mensajer[ií]a directa/i.test(await preguntar('cuanto cuesta el envio')),
+ok(/Cobertura de (env[ií]os|mensajer[ií]a)|mensajer[ií]a directa/i.test(await preguntar('cuanto cuesta el envio')),
    'y la pregunta por la cobertura sigue dando la tabla de provincias');
 
 // ── 7) «¿Venden celulares?» → "no entendí tu pregunta" ────────────────

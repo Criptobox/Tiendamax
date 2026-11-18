@@ -981,10 +981,9 @@
 
   // ════════════════════════════════════════════════════════════
   //  ENVÍOS POR MUNICIPIO/PROVINCIA
-  //  IMPORTANTE (dueño, 18-nov-2026): la mensajería es SOLO en La Habana, y
-  //  siempre se paga al recibir el producto. Antes llegaba de Pinar del Río
-  //  a Matanzas; si vuelve a ampliarse, se mueve la provincia a
-  //  ENVIOS_PROVINCIAS y ya está.
+  //  Las zonas CON mensajería no viven aquí: las pone el dueño en ⚙️
+  //  Configuración → 🚚 Mensajería y llegan en config.json (ver _enviosCfg).
+  //  Esta tabla solo sirve para reconocer provincias y municipios en el texto.
   //  NO se publican precios de envío — se coordinan por WhatsApp.
   //  Para zonas fuera de este alcance, también coordinar por WhatsApp (envío por vía).
   // ════════════════════════════════════════════════════════════
@@ -1004,8 +1003,6 @@
     {municipio: 'San Miguel del Padrón', nota: ''},
     {municipio: 'Boyeros', nota: 'Aeropuerto, Santiago de las Vegas'},
   ];
-  // Provincias CON mensajería, además de La Habana. Ahora mismo, ninguna.
-  const ENVIOS_PROVINCIAS = [];
   // Provincias SIN cobertura directa — coordinar por WhatsApp (envío por vía)
   const ENVIOS_VIA_WHATSAPP = [
     {provincia: 'Pinar del Río', nota: 'Coordinar por WhatsApp — envío por vía'},
@@ -2177,105 +2174,75 @@
     siDigoSi: () => R.categorias()
   });
 
+  /* Las zonas de mensajería las pone el dueño en ⚙️ Configuración → 🚚
+     Mensajería y llegan en config.json (tmEnviosCfg, en el bundle de la
+     tienda). Max contesta con ESAS zonas, su precio y su tiempo: así nunca
+     dice una cobertura distinta de la de la ficha. Siempre se paga al recibir. */
+  function _enviosCfg(){
+    try { if (typeof tmEnviosCfg === 'function') return tmEnviosCfg(); } catch(e) {}
+    return { zonas: [{ nombre: 'La Habana', precio: '', tiempo: '' }],
+             resto: 'Al resto del país lo coordinamos por WhatsApp (encomienda o transportista).' };
+  }
+  function _zonaTxt(z){ return '<strong>' + escapeHtml(z.nombre) + '</strong>' + [z.precio, z.tiempo].filter(Boolean).map(v => ' · ' + escapeHtml(v)).join(''); }
+  function _zonasLista(c){ return c.zonas.map(z => '• ' + _zonaTxt(z)).join('\n'); }
+  function _zonasNombres(c){
+    const n = c.zonas.map(z => escapeHtml(z.nombre));
+    return n.length === 1 ? n[0] : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1];
+  }
+  // ¿El mensaje nombra una zona con mensajería? Por su nombre, o —si una zona
+  // es La Habana— por un municipio de La Habana.
+  function _zonaDe(t, c){
+    for (const z of c.zonas) {
+      const n = cleanForMatch(z.nombre);
+      if (n && (t.includes(n) || t.includes(n.replace(/\s+/g, '')))) return z;
+    }
+    const hab = c.zonas.find(z => /habana/.test(cleanForMatch(z.nombre)));
+    if (hab) {
+      for (const mun of ENVIOS_HABANA) {
+        const mc = cleanForMatch(mun.municipio);
+        if (t.includes(mc) || t.includes(mc.replace(/\s+/g, ''))) return Object.assign({}, hab, { municipio: mun.municipio, nota: mun.nota });
+      }
+    }
+    return null;
+  }
+
   R.envios = (text) => {
     const m = text.toLowerCase();
     const t = cleanForMatch(text);
+    const c = _enviosCfg();
+    const pago = 'Pagas <strong>al recibir el producto</strong>, en USD o en MN.';
 
-    // Detectar municipio de La Habana específico
-    let municipioEncontrado = null;
-    for(const mun of ENVIOS_HABANA){
-      const munClean = cleanForMatch(mun.municipio);
-      if(t.includes(munClean) || t.includes(munClean.replace(/\s+/g,''))){
-        municipioEncontrado = mun;
-        break;
-      }
-    }
-
-    // Detectar provincia CON mensajería (fuera de La Habana: ninguna ahora)
-    let provinciaEncontrada = null;
-    for(const prov of ENVIOS_PROVINCIAS){
-      const provClean = cleanForMatch(prov.provincia);
-      if(t.includes(provClean)){
-        provinciaEncontrada = prov;
-        break;
-      }
-    }
-
-    // Detectar provincia SIN cobertura directa (centro-oriente)
-    let provinciaSinCobertura = null;
-    for(const prov of ENVIOS_VIA_WHATSAPP){
-      const provClean = cleanForMatch(prov.provincia);
-      if(t.includes(provClean)){
-        provinciaSinCobertura = prov;
-        break;
-      }
-    }
-
-    // Detectar "habana" genérico
-    const esHabana = /\b(habana|havana|la habana)\b/.test(m);
-
-    if(municipioEncontrado){
+    const zona = _zonaDe(t, c);
+    if (zona) {
+      const donde = zona.municipio ? `${escapeHtml(zona.municipio)} (${escapeHtml(zona.nombre)})` : escapeHtml(zona.nombre);
       return {
-        response: `🚚 <strong>Envío a ${municipioEncontrado.municipio} (La Habana)</strong>\n\n✅ <strong>Tenemos mensajería en tu municipio</strong>.\n${municipioEncontrado.nota ? `• <em>Nota:</em> ${municipioEncontrado.nota}\n` : ''}\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario de entrega y confirmar.</em>\n\nPagas <strong>al recibir el producto</strong>, en USD o en MN.`,
+        response: `🚚 <strong>Envío a ${donde}</strong>\n\n✅ <strong>Tenemos mensajería ahí</strong>.\n${zona.precio ? `• <em>Precio del envío:</em> ${escapeHtml(zona.precio)}\n` : ''}${zona.tiempo ? `• <em>Tiempo:</em> ${escapeHtml(zona.tiempo)}\n` : ''}${zona.nota ? `• <em>Nota:</em> ${escapeHtml(zona.nota)}\n` : ''}\n⚠️ <em>Escríbenos por WhatsApp para coordinar la dirección exacta y el horario.</em>\n\n${pago}`,
         quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
       };
     }
 
-    if(provinciaEncontrada){
+    // Una provincia (o «la Habana» a secas) sin mensajería.
+    const prov = ENVIOS_VIA_WHATSAPP.find(p => t.includes(cleanForMatch(p.provincia)));
+    const esHabana = /\b(habana|havana)\b/.test(m);
+    if (prov || esHabana) {
+      const nombre = prov ? prov.provincia : 'La Habana';
       return {
-        response: `🚚 <strong>Envío a ${provinciaEncontrada.provincia}</strong>\n\n✅ <strong>Tenemos mensajería en tu provincia</strong>.\n• <em>Cobertura:</em> ${provinciaEncontrada.nota}\n\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario y detalles de la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`,
-        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
+        response: `🚚 <strong>Envío a ${escapeHtml(nombre)}</strong>\n\n⚠️ <strong>Ahora mismo nuestra mensajería es solo en ${_zonasNombres(c)}.</strong> A ${escapeHtml(nombre)} no llega directamente.\n\n${escapeHtml(c.resto)}\n\nEscríbenos por WhatsApp y armamos la entrega según tu caso.`,
+        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver zonas con mensajería']
       };
     }
 
-    if(provinciaSinCobertura){
-      return {
-        response: `🚚 <strong>Envío a ${provinciaSinCobertura.provincia}</strong>\n\n⚠️ <strong>Ahora mismo nuestra mensajería es solo en La Habana.</strong> A tu provincia no llega directamente.\n\nPero tranquilo, podemos coordinar el envío por vía alterna:\n• Encomienda por ómnibus nacional (desde La Habana)\n• Transporte privado contratado por ti\n• Acuerdo especial con mensajería de la zona\n\nPara eso necesitamos que escribas por WhatsApp y armamos la logística según tu caso.`,
-        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver zonas con cobertura']
-      };
+    /* Preguntó por el TIEMPO: se dice el de cada zona si el dueño lo puso, y
+       si no, que se coordina — inventarse un «24-48 h» es prometer algo que el
+       cliente viene a cobrar. */
+    let body = '';
+    if (/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)
+        && !c.zonas.some(z => z.tiempo)) {
+      body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla.\n\n`;
     }
-
-    if(esHabana && !municipioEncontrado){
-      let body = `🚚 <strong>Envíos en La Habana</strong>\n\n✅ Tenemos mensajería en todos los municipios:\n\n`;
-      ENVIOS_HABANA.slice(0,7).forEach(mun => {
-        body += `• <strong>${mun.municipio}</strong>${mun.nota ? ` — ${mun.nota}` : ''}\n`;
-      });
-      body += `\n…y los demás municipios similares. Dime tu municipio específico y te confirmo.\n\n⚠️ <em>Para cualquier municipio debes escribirnos por WhatsApp y coordinar la entrega.</em>\n\nPagas <strong>al recibir el producto</strong>.`;
-      return {
-        response: body,
-        quickReplies: ['💬 Coordinar por WhatsApp','🚚 Ver provincias','📦 Ver productos']
-      };
-    }
-
-    if(/\b(cu[aá]nto|tarda|demora|tiempo|cuando|llega|provincias|todas las provincias|cobertura|donde llevan|a donde llegan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a)\b/.test(m)){
-      /* Preguntó por el TIEMPO y la tabla de abajo solo dice el dónde. No hay
-         un plazo publicado —depende del municipio y del mensajero— y
-         inventarse un «24-48 h» es prometer algo que el cliente viene a
-         cobrar. Se dice lo que hay y se manda a coordinarlo. */
-      let body = '';
-      if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)){
-        body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero que cubra la ruta, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla. Escríbenos con tu dirección y te decimos el día.\n\n`;
-      }
-      body += `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\nAhora mismo la mensajería es <strong>solo en La Habana</strong>.\n\n`;
-      body += `📍 <strong>Con mensajería</strong> (pagas al recibir el producto):\n`;
-      body += `• <strong>La Habana</strong> — todos los municipios\n`;
-      ENVIOS_PROVINCIAS.forEach(p => {
-        body += `• <strong>${p.provincia}</strong> — ${p.nota}\n`;
-      });
-      body += `\n📍 <strong>Resto del país</strong> (coordinar por WhatsApp — envío por vía):\n`;
-      body += `• Pinar del Río, Artemisa, Mayabeque, Matanzas\n`;
-      body += `• Villa Clara, Cienfuegos, Sancti Spíritus, Ciego de Ávila, Camagüey\n`;
-      body += `• Las Tunas, Holguín, Granma, Santiago de Cuba, Guantánamo\n`;
-      body += `• Isla de la Juventud\n\n`;
-      body += `<strong>Para cualquier envío debes escribirnos por WhatsApp</strong> y coordinamos la entrega o el envío por vía según tu caso.\n\n<em>El costo del envío se informa por WhatsApp según tu ubicación exacta.</em>`;
-      return {
-        response: body,
-        quickReplies: ['💬 Coordinar por WhatsApp','🚚 Ver La Habana','📦 Ver productos']
-      };
-    }
-
+    body += `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nAhora mismo la mensajería es <strong>solo en ${_zonasNombres(c)}</strong>:\n${_zonasLista(c)}\n\n${pago}\n\n📦 <strong>Resto del país:</strong> ${escapeHtml(c.resto)}\n\nDime tu municipio o provincia y te confirmo.`;
     return {
-      response: `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nAhora mismo nuestra mensajería es <strong>solo en La Habana</strong>, en todos los municipios, y pagas <strong>al recibir el producto</strong>.\n\n📦 <strong>Para el resto del país</strong> no tenemos ruta directa: el envío se coordina por WhatsApp a través de agencias de encomiendas (VíaCar, ómnibus) o con el transportista de tu confianza.\n\n⚠️ <em>Para cualquier zona escríbenos por WhatsApp y lo coordinamos.</em>\n\nDime tu municipio o provincia y te confirmo.`,
+      response: body,
       quickReplies: ['🚚 Soy de La Habana','🚚 Soy de otra provincia','💬 Coordinar por WhatsApp']
     };
   };
