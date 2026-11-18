@@ -330,7 +330,7 @@ const tres = await pagina.evaluate(async ({ grupos, ids }) => {
 }, { grupos: GRUPOS3, ids: [PB[0].id] });
 ok(tres.conGrupos.cola && tres.conGrupos.nota, 'con grupos guardados, «3 redes» tiene que ofrecer la cola para Facebook');
 ok(tres.abierta, 'el botón de la cola en «3 redes» no abrió la cola');
-ok(!tres.sinGrupos.cola && /Compartir con la imagen/.test(tres.sinGrupos.html), 'sin grupos, «3 redes» tiene que compartir el texto de la plantilla con la imagen');
+ok(!tres.sinGrupos.cola && /abrir mis grupos/.test(tres.sinGrupos.html), 'sin grupos, «3 redes» tiene que guardar la foto, copiar el texto y abrir tus grupos');
 const bloqueDe = ic => tres.soloFb.secciones.find(b => b.startsWith(ic)) || '';
 ok(tres.soloFb.secciones.length === 3, `«3 redes» tenía que pintar 3 bloques y pintó ${tres.soloFb.secciones.length}`);
 ok(/PLANTILLA-DE-FACEBOOK/.test(bloqueDe('📘')), 'Facebook tiene que usar la plantilla propia');

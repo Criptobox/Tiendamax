@@ -41,7 +41,7 @@ const prod = PRODS.find(p => p.stock > 0 && !p.digital);
 const nav = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 const errores = [];
 
-async function escenario(modo) {
+async function escenario(modo, boton = '#btnAbrirFb') {
     const ctx = await nav.newContext({ viewport: { width: 412, height: 900 }, serviceWorkers: 'block', permissions: ['clipboard-read', 'clipboard-write'] });
     await ctx.route(u => !u.hostname.includes('localhost'), r => r.abort());
     await ctx.addInitScript(m => {
@@ -69,30 +69,37 @@ async function escenario(modo) {
         previsualizarFacebook(id); }, String(prod.id));
     // La imagen del anuncio tarda en dibujarse (foto bloqueada → icono).
     await p.waitForFunction(() => { const m = document.getElementById('fbPreviewModal'); return m && m._tmBlob; }, null, { timeout: 15000 }).catch(() => {});
-    const boton = await p.evaluate(() => (document.getElementById('btnAbrirFb') || {}).textContent || '');
-    await p.click('#btnAbrirFb');
+    const rotulo = await p.evaluate(() => (document.getElementById('btnAbrirFb') || {}).textContent || '');
+    await p.click(boton);
     await p.waitForTimeout(1200);
     const r = await p.evaluate(() => ({ comp: window.__comp, abiertos: window.__abiertos, copiado: window.__copiado,
         texto: (document.getElementById('fbPostTA') || {}).value || '',
         log: JSON.parse(localStorage.getItem('tm_publog_v1') || '[]') }));
     await ctx.close();
-    return Object.assign(r, { boton });
+    return Object.assign(r, { boton: rotulo });
 }
 
+// Botón principal: la app de Facebook, al recibir una imagen por «Compartir»,
+// abre una publicación en el MURO (no deja elegir grupo) y no acepta el texto
+// — lo comprobó el gestor. Así que el principal guarda la foto, copia el texto
+// y abre la LISTA DE GRUPOS; «Compartir» va en el botón de abajo.
 const a = await escenario('comparte');
-ok(/elegir el grupo/i.test(a.boton), 'sin grupos guardados, el botón tiene que decir que se elige el grupo: ' + a.boton);
-ok(a.comp.length === 1 && a.comp[0].n === 1 && a.comp[0].tipo === 'image/png', 'tenía que abrir «Compartir» con la imagen PNG del anuncio: ' + JSON.stringify(a.comp));
-ok(a.comp[0] && a.comp[0].texto && a.comp[0].texto === a.texto, 'el texto del post va dentro de lo que se comparte');
+ok(/abrir mis grupos/i.test(a.boton), 'sin grupos guardados, el botón tiene que decir que abre tus grupos: ' + a.boton);
+ok(a.comp.length === 0, 'el botón principal no puede ir por «Compartir» (Facebook lo manda al muro): ' + JSON.stringify(a.comp));
+ok(a.abiertos.length === 1 && /facebook\.com\/groups\/feed/.test(a.abiertos[0]), 'tiene que abrir la lista de grupos de Facebook: ' + a.abiertos.join(' '));
 ok(a.copiado && a.copiado === a.texto, 'el texto del post tiene que quedar copiado para pegarlo en el grupo');
-ok(a.abiertos.length === 0, 'compartiendo no hace falta abrir ninguna ventana: ' + a.abiertos.join(' '));
-ok(a.log.some(e => String(e.pid) === String(prod.id) && /compartido/i.test(JSON.stringify(e))), 'compartido, tenía que quedar en el registro de publicaciones: ' + JSON.stringify(a.log).slice(0, 200));
+ok(a.log.some(e => String(e.pid) === String(prod.id)), 'abierto, tenía que quedar en el registro de publicaciones');
 
-const b = await escenario('cancela');
-ok(b.comp.length === 1, 'tenía que intentar compartir');
-ok(b.log.length === 0, 'cancelar «Compartir» no puede marcar el producto como publicado: ' + JSON.stringify(b.log).slice(0, 200));
+// Botón secundario: «Compartir» del teléfono (muro u otra app).
+const b = await escenario('comparte', '#btnFbCompartir');
+ok(b.comp.length === 1 && b.comp[0].n === 1 && b.comp[0].tipo === 'image/png', '«Compartir» tenía que llevar la imagen PNG del anuncio: ' + JSON.stringify(b.comp));
+ok(b.copiado === b.texto && b.comp[0] && b.comp[0].texto === b.texto, 'con «Compartir» el texto va dentro y queda copiado');
+ok(b.log.some(e => /compartido/i.test(JSON.stringify(e))), 'compartido, tenía que quedar en el registro');
+const b2 = await escenario('cancela', '#btnFbCompartir');
+ok(b2.comp.length === 1 && b2.log.length === 0, 'cancelar «Compartir» no puede marcar el producto como publicado: ' + JSON.stringify(b2.log).slice(0, 200));
 
 const c = await escenario('pc');
-ok(c.abiertos.length === 1 && /facebook\.com\/groups\/feed/.test(c.abiertos[0]), 'sin compartir archivos, tiene que abrir la lista de grupos, no la portada: ' + c.abiertos.join(' '));
+ok(c.abiertos.length === 1 && /facebook\.com\/groups\/feed/.test(c.abiertos[0]), 'en PC también abre la lista de grupos: ' + c.abiertos.join(' '));
 ok(c.copiado === c.texto, 'en PC el texto también queda copiado');
 
 // ── «🪄 3 redes» sin grupos: la plantilla de Facebook sale CON las imágenes,
@@ -122,7 +129,7 @@ ok(c.copiado === c.texto, 'en PC el texto también queda copiado');
         ids.forEach(id => wzToggle(id, true));
         await new Promise(r => setTimeout(r, 6000));   // las imágenes se dibujan al pintar el bloque
         const hay = !!document.getElementById('wz-fb-share');
-        await wzCompartirFB();
+        await wzCompartirFB('compartir');
         const primerEnlace = t => (String(t).match(/https?:\/\/\S+/) || [''])[0];
         const prod = PRODUCTOS.find(x => String(x.id) === ids[0]);
         const textos = [0, 1, 2, 3].map(v => _textoFacebook(prod, { variante: v }));

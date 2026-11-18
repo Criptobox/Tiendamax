@@ -1552,9 +1552,10 @@ function previsualizarFacebook(productoId, grupoUrl) {
           <p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">Cada grupo recibe su propia versión del texto y de la imagen, con una pausa entre uno y otro.</p>` : ''}
           <button type="button" id="btnAbrirFb"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
-            📘 ${grupoUrl ? 'Copiar y abrir el grupo' : (_grupos.length ? 'Otro grupo: copiar y elegirlo en Facebook' : 'Copiar y elegir el grupo en Facebook')} →
+            📘 ${grupoUrl ? 'Copiar y abrir el grupo' : (_grupos.length ? 'Otro grupo: guardar foto, copiar y abrir mis grupos' : 'Guardar foto, copiar y abrir mis grupos')} →
           </button>
-          ${grupoUrl ? '' : `<p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">El texto queda copiado y se abre «Compartir» con la imagen: elige <b>Facebook</b> → <b>Grupo</b>, escoge el grupo y pega el texto.${_grupos.length ? '' : ' Si guardas tus grupos en 📣 Publicar, cada uno recibe su propia versión.'}</p>`}
+          ${grupoUrl ? '' : `<p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">La imagen se guarda en tu galería, el texto queda copiado y se abre <b>la lista de tus grupos</b>: entra al grupo, toca «Escribe algo…», pega el texto y añade la foto.${_grupos.length ? '' : ' Si guardas tus grupos en 📣 Publicar, cada uno se abre directo y recibe su propia versión.'}</p>
+          <button type="button" id="btnFbCompartir" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,.18);color:inherit;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;box-sizing:border-box;">📲 Compartir en mi muro u otra app</button>`}
         </div>
       </div>`;
 
@@ -1637,33 +1638,20 @@ function previsualizarFacebook(productoId, grupoUrl) {
     document.getElementById('btnAbrirFb')?.addEventListener('click', async function() {
         const texto = document.getElementById('fbPostTA').value;
         const _g = grupoUrl ? _grupos.find(x => x.url === grupoUrl) : null;
+        /* Sin un grupo concreto: imagen a la galería, texto copiado y la LISTA
+           DE GRUPOS de Facebook. Probamos «Compartir» del teléfono, pero la app
+           de Facebook abre la imagen como publicación en el MURO —no deja
+           elegir grupo— y tampoco acepta el texto (el gestor lo comprobó,
+           19-nov-2026). «Compartir» queda en el botón de abajo para el muro u
+           otra app. */
         if (!grupoUrl) {
-            const blob = modal._tmBlob;
-            const arch = blob ? new File([blob], `tiendamax-${producto.id}.png`, { type: 'image/png' }) : null;
-            const puede = arch && navigator.canShare && navigator.canShare({ files: [arch] });
-            if (puede) {
-                // El share primero, mientras el toque sigue «vivo»; el texto
-                // también va dentro por si la app lo acepta, y al portapapeles.
-                const copiado = _copiar(texto);
-                try {
-                    await navigator.share({ files: [arch], text: texto });
-                    await copiado;
-                    _marcarPublicado(producto.id, 'fb', 'Facebook (compartido)', null);
-                    mostrarNotificacion('✅ Texto copiado — en Facebook elige el grupo y pégalo', 'success');
-                    cerrarFbPreview();
-                } catch (e) {
-                    if (e && e.name === 'AbortError') mostrarNotificacion('Cancelado — no se marcó como publicado', 'info');
-                    else mostrarNotificacion('⚠️ No se pudo abrir «Compartir». Usa ⬇️ Descargar y abre el grupo', 'warning');
-                }
-                return;
-            }
             await _copiar(texto);
             try { document.getElementById('btnDlFbImg')?.click(); } catch (e) {}
             let w = null;
             try { w = window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); } catch (e) {}
             _marcarPublicado(producto.id, 'fb', 'Facebook', null);
-            if (w) { mostrarNotificacion('✅ Texto copiado e imagen descargada — elige el grupo y pega', 'success'); cerrarFbPreview(); }
-            else mostrarNotificacion('⚠️ El navegador bloqueó la ventana. Texto copiado e imagen descargada — abre tus grupos de Facebook y pega.', 'warning');
+            if (w) { mostrarNotificacion('✅ Imagen guardada y texto copiado — entra al grupo, pega el texto y añade la foto', 'success'); cerrarFbPreview(); }
+            else mostrarNotificacion('⚠️ El navegador bloqueó la ventana. Imagen guardada y texto copiado — abre tus grupos de Facebook y pega.', 'warning');
             return;
         }
         await _copiar(texto);
@@ -1682,6 +1670,27 @@ function previsualizarFacebook(productoId, grupoUrl) {
             return; // no cerrar el modal, para que pueda reintentar
         }
         cerrarFbPreview();
+    });
+    document.getElementById('btnFbCompartir')?.addEventListener('click', async function() {
+        const texto = document.getElementById('fbPostTA').value;
+        const blob = modal._tmBlob;
+        const arch = blob ? new File([blob], `tiendamax-${producto.id}.png`, { type: 'image/png' }) : null;
+        if (!(arch && navigator.canShare && navigator.canShare({ files: [arch] }))) {
+            mostrarNotificacion('⚠️ Este navegador no puede compartir la imagen — usa ⬇️ Descargar', 'warning');
+            return;
+        }
+        // El share primero, mientras el toque sigue «vivo»; el texto al portapapeles.
+        const copiado = _copiar(texto);
+        try {
+            await navigator.share({ files: [arch], text: texto });
+            await copiado;
+            _marcarPublicado(producto.id, 'fb', 'Facebook (compartido)', null);
+            mostrarNotificacion('✅ Texto copiado — pégalo en la publicación', 'success');
+            cerrarFbPreview();
+        } catch (e) {
+            if (e && e.name === 'AbortError') mostrarNotificacion('Cancelado — no se marcó como publicado', 'info');
+            else mostrarNotificacion('⚠️ No se pudo abrir «Compartir» — usa ⬇️ Descargar', 'warning');
+        }
     });
 }
 

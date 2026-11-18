@@ -2504,7 +2504,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=ae07da86"></script>
+<script src="js/revolico_integration.js?v=3236118f"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -8943,11 +8943,12 @@ function wzRenderSalida(){
         ${viaCola?`<button class="btn btn-primary" id="wz-fb-cola" onclick="wzColaFB()">📢 Publicar en mis grupos (${sel.length} producto${sel.length!==1?'s':''})</button>
         <button class="btn btn-ghost" onclick="wzCopiar('${r.id}')">📋 Copiar con mi plantilla</button>`
         :(r.id==='fb'
-          ?`<button class="btn btn-primary" id="wz-fb-share" onclick="wzCompartirFB()">📲 Compartir con ${sel.length>1?'las imágenes':'la imagen'} y elegir el grupo</button>
+          ?`<button class="btn btn-primary" id="wz-fb-share" onclick="wzCompartirFB('grupos')">📘 Guardar ${sel.length>1?'las fotos':'la foto'}, copiar y abrir mis grupos</button>
+            <button class="btn btn-ghost" onclick="wzCompartirFB('compartir')">📲 Compartir en mi muro u otra app</button>
             <button class="btn btn-ghost" onclick="wzCopiar('fb')">📋 Solo copiar el texto</button>`
           :`<button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>`)}
       </div>
-      ${(r.id==='fb' && !viaCola)?`<p class="radar-ayuda" id="wz-fb-nota" style="margin-top:8px">El texto queda copiado y se abre «Compartir» con la imagen de cada producto: elige <b>Facebook</b> → <b>Grupo</b> y pega el texto. Un post sin foto casi no se ve.</p>`:''}
+      ${(r.id==='fb' && !viaCola)?`<p class="radar-ayuda" id="wz-fb-nota" style="margin-top:8px">Las fotos se guardan en tu galería, el texto queda copiado y se abre la lista de tus grupos: entra al grupo, pega el texto y añade las fotos. Un post sin foto casi no se ve. («Compartir» de Facebook solo deja publicar en tu muro, no en un grupo.)</p>`:''}
     </div>`;
   }).join('');
   if(sel.length && !_wzTieneGrupos()) wzPrepararImagenesFB(sel);
@@ -8970,14 +8971,16 @@ async function wzPrepararImagenesFB(sel){
     }catch(e){}
   }
 }
-async function wzCompartirFB(){
+async function wzCompartirFB(modo){
   const t=_wzPlantilla('fb'); const sel=_wzSeleccionados();
   if(!t||!sel.length){ showToast('⚠️ Elige al menos un producto'); return; }
   const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,'fb')).join('\n\n———\n\n');
   const files=sel.slice(0,10).map(p=>WZ_FB_IMGS[String(p.id)]
     ? new File([WZ_FB_IMGS[String(p.id)]], 'tiendamax-'+p.id+'.png', {type:'image/png'}) : null).filter(Boolean);
   const copiado=navigator.clipboard ? navigator.clipboard.writeText(texto).catch(()=>{}) : Promise.resolve();
-  if(files.length && navigator.canShare && navigator.canShare({files})){
+  // «Compartir» de Facebook abre el MURO, no un grupo (comprobado por el
+  // gestor): por defecto se va a la lista de grupos; «compartir» es aparte.
+  if(modo==='compartir' && files.length && navigator.canShare && navigator.canShare({files})){
     try{
       await navigator.share({files, text:texto});
       await copiado;
