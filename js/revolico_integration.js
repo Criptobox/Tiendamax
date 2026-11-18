@@ -1408,9 +1408,12 @@ function _textoFacebook(producto, opciones) {
     if (confianza) t += confianza + '\n';
 
     t += '━━━━━━━━━━━━━━━━━━━━━\n';
+    /* La ficha PRIMERO: Facebook arma la vista previa del post con el primer
+       enlace del texto, y con wa.me delante salía una tarjeta gris «wa.me» en
+       vez de la foto, el nombre y el precio del producto (og: de /p/). */
     if (conEnlaces) {
-        t += `👉 ¿Te lo aparto? Escríbeme en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
-        t += `🔗 Fotos y detalles: ${_urlProducto(producto, 'facebook', o.grupo)}\n\n`;
+        t += `🔗 Fotos, precio y pedido: ${_urlProducto(producto, 'facebook', o.grupo)}\n`;
+        t += `👉 ¿Te lo aparto? Escríbeme en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n\n`;
     } else {
         t += `👉 ¿Te lo aparto? Escríbeme al WhatsApp: ${_numWaLegible()}\n\n`;
     }
@@ -1468,8 +1471,9 @@ function _textoFacebookOtra(producto, v, conEnlaces, grupo) {
                        ['👉 ¿Te lo reservo? Toca aquí:', '🌐 Ficha completa:'],
                        ['📩 ¿Alguna duda? Escríbeme:', '📷 Ver fotos:']][v];
     if (conEnlaces) {
-        L.push(cta[0], _waPedido(producto, 'facebook'),
-               `${cta[1]} ${_urlProducto(producto, 'facebook', grupo)}`);
+        // La ficha primero: de ella sale la vista previa con la foto (ver v0).
+        L.push(`${cta[1]} ${_urlProducto(producto, 'facebook', grupo)}`,
+               cta[0], _waPedido(producto, 'facebook'));
     } else {
         L.push(`💬 ¿Te lo aparto? Escríbeme al WhatsApp: ${_numWaLegible()}`);
     }

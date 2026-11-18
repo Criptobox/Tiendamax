@@ -122,13 +122,15 @@ function tmPlantillasPorDefecto() {
             id: 'def_fb', nombre: '📘 Facebook — completa', red: 'fb',
             texto: '🛍️ {nombre}\n\n{inicio_desc}\n\n{linea_precio}\n' +
                    '{linea_garantia}\n{linea_stock}\n\n' +
-                   '📲 Pídelo aquí:\n{wa_link}\n\n🔗 Fotos y detalles:\n{url_producto}\n\n{hashtags}'
+                   // La ficha primero: Facebook arma la vista previa con el
+                   // primer enlace, y con wa.me delante salía «wa.me» sin foto.
+                   '🔗 Fotos y detalles:\n{url_producto}\n\n📲 Pídelo aquí:\n{wa_link}\n\n{hashtags}'
         },
         {
             id: 'def_oferta', nombre: '🔥 Facebook — con descuento', red: 'fb',
             texto: '🔥 OFERTA — {nombre}\n\n{inicio_desc}\n\n' +
                    '{linea_precio}\n{linea_ahorro}\n{linea_garantia}\n{linea_stock}\n\n' +
-                   '📲 {wa_link}\n\n{hashtags}'
+                   '🔗 {url_producto}\n📲 {wa_link}\n\n{hashtags}'
         },
         {
             id: 'def_rev', nombre: '🟠 Revolico — anuncio', red: 'revolico',
