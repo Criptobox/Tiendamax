@@ -1548,8 +1548,9 @@ function previsualizarFacebook(productoId, grupoUrl) {
           <p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">Cada grupo recibe su propia versión del texto y de la imagen, con una pausa entre uno y otro.</p>` : ''}
           <button type="button" id="btnAbrirFb"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
-            📘 Copiar y Abrir ${_grupos.length ? 'un grupo' : 'Facebook'} →
+            📘 ${grupoUrl ? 'Copiar y abrir el grupo' : (_grupos.length ? 'Otro grupo: copiar y elegirlo en Facebook' : 'Copiar y elegir el grupo en Facebook')} →
           </button>
+          ${grupoUrl ? '' : `<p style="font-size:11px;opacity:.6;margin:-6px 0 0;text-align:center;line-height:1.4;">El texto queda copiado y se abre «Compartir» con la imagen: elige <b>Facebook</b> → <b>Grupo</b>, escoge el grupo y pega el texto.${_grupos.length ? '' : ' Si guardas tus grupos en 📣 Publicar, cada uno recibe su propia versión.'}</p>`}
         </div>
       </div>`;
 
@@ -1561,6 +1562,7 @@ function previsualizarFacebook(productoId, grupoUrl) {
         const _aviso = document.getElementById('fbImgAviso');
         _dibujarImagenAnuncio(fbCanvas, producto, { formato: 'cuadrado', texto: true }).then(hayFoto => {
             if (_aviso) _aviso.style.display = hayFoto ? 'none' : 'block';
+            try { fbCanvas.toBlob(b => { modal._tmBlob = b; }, 'image/png'); } catch (e) {}
         }).catch(() => {
             fbCanvas.style.display = 'none';
             if (_aviso) { _aviso.textContent = '⚠️ No se pudo generar la imagen del anuncio.'; _aviso.style.display = 'block'; }
@@ -1622,15 +1624,51 @@ function previsualizarFacebook(productoId, grupoUrl) {
         setTimeout(() => { this.textContent = '📋 Copiar'; }, 2000);
     });
 
+    /* Sin un grupo concreto, el botón abría la portada de Facebook y había
+       que buscar el grupo y pegar a mano. Ahora abre «Compartir» del teléfono
+       con la imagen: Facebook → Grupo → el que elijas, con el texto ya en el
+       portapapeles (Facebook no deja precargarlo; solo hay que pegarlo).
+       Donde no se puede compartir un archivo (PC), descarga la imagen y abre
+       la lista de tus grupos en vez de la portada. */
     document.getElementById('btnAbrirFb')?.addEventListener('click', async function() {
-        await _copiar(document.getElementById('fbPostTA').value);
+        const texto = document.getElementById('fbPostTA').value;
+        const _g = grupoUrl ? _grupos.find(x => x.url === grupoUrl) : null;
+        if (!grupoUrl) {
+            const blob = modal._tmBlob;
+            const arch = blob ? new File([blob], `tiendamax-${producto.id}.png`, { type: 'image/png' }) : null;
+            const puede = arch && navigator.canShare && navigator.canShare({ files: [arch] });
+            if (puede) {
+                // El share primero, mientras el toque sigue «vivo»; el texto
+                // también va dentro por si la app lo acepta, y al portapapeles.
+                const copiado = _copiar(texto);
+                try {
+                    await navigator.share({ files: [arch], text: texto });
+                    await copiado;
+                    _marcarPublicado(producto.id, 'fb', 'Facebook (compartido)', null);
+                    mostrarNotificacion('✅ Texto copiado — en Facebook elige el grupo y pégalo', 'success');
+                    cerrarFbPreview();
+                } catch (e) {
+                    if (e && e.name === 'AbortError') mostrarNotificacion('Cancelado — no se marcó como publicado', 'info');
+                    else mostrarNotificacion('⚠️ No se pudo abrir «Compartir». Usa ⬇️ Descargar y abre el grupo', 'warning');
+                }
+                return;
+            }
+            await _copiar(texto);
+            try { document.getElementById('btnDlFbImg')?.click(); } catch (e) {}
+            let w = null;
+            try { w = window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); } catch (e) {}
+            _marcarPublicado(producto.id, 'fb', 'Facebook', null);
+            if (w) { mostrarNotificacion('✅ Texto copiado e imagen descargada — elige el grupo y pega', 'success'); cerrarFbPreview(); }
+            else mostrarNotificacion('⚠️ El navegador bloqueó la ventana. Texto copiado e imagen descargada — abre tus grupos de Facebook y pega.', 'warning');
+            return;
+        }
+        await _copiar(texto);
         let w = null;
         try { w = window.open(fbUrl, '_blank', 'noopener,noreferrer'); } catch(e) {}
         // Se apunta al abrir, no al dibujar la vista previa: abrir la vista y
         // cerrarla no es publicar (la misma regla que el lote por categoría).
         // Con el nombre del grupo cuando es uno de los tuyos, para que su
         // registro y su tope diario lo cuenten.
-        const _g = grupoUrl ? _grupos.find(x => x.url === grupoUrl) : null;
         _marcarPublicado(producto.id, 'fb', _g ? _grupoDestino(_g) : 'Facebook', _g);
         if (w) {
             mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
