@@ -95,6 +95,50 @@ const c = await escenario('pc');
 ok(c.abiertos.length === 1 && /facebook\.com\/groups\/feed/.test(c.abiertos[0]), 'sin compartir archivos, tiene que abrir la lista de grupos, no la portada: ' + c.abiertos.join(' '));
 ok(c.copiado === c.texto, 'en PC el texto también queda copiado');
 
+// ── «🪄 3 redes» sin grupos: la plantilla de Facebook sale CON las imágenes,
+//    y en todos los textos de Facebook el enlace de la ficha va primero (de él
+//    saca Facebook la vista previa: con wa.me delante salía «wa.me» sin foto).
+{
+    const ctx = await nav.newContext({ viewport: { width: 412, height: 900 }, serviceWorkers: 'block' });
+    await ctx.route(u => !u.hostname.includes('localhost'), r => r.abort());
+    await ctx.addInitScript(() => {
+        localStorage.setItem('gruposFB', '[]'); localStorage.removeItem('tm_plantillas_v1');
+        window.__comp = []; window.__copiado = '';
+        try { Object.defineProperty(navigator, 'clipboard', { value: { writeText: async t => { window.__copiado = t; }, write: async () => {} }, configurable: true }); } catch (e) {}
+        Object.defineProperty(navigator, 'canShare', { value: d => !!(d && d.files && d.files.length), configurable: true });
+        Object.defineProperty(navigator, 'share', { value: async d => { window.__comp.push({ n: (d.files || []).length, texto: d.text || '' }); }, configurable: true });
+    });
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errores.push('3redes: ' + String(e).slice(0, 160)));
+    await p.goto(`http://localhost:${PUERTO}/admin.html`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await p.waitForTimeout(3500);
+    const ids = PRODS.filter(x => x.stock > 0 && !x.digital).slice(0, 2).map(x => String(x.id));
+    const r = await p.evaluate(async ids => {
+        document.getElementById('adminPanel')?.classList.remove('hidden');
+        document.querySelectorAll('#loginModal,.tm2-login').forEach(e => e.style.display = 'none');
+        localStorage.setItem('tm_publog_v1', '[]');
+        go('publicar'); pubSwitch('wizard');
+        await new Promise(r => setTimeout(r, 400));
+        ids.forEach(id => wzToggle(id, true));
+        await new Promise(r => setTimeout(r, 6000));   // las imágenes se dibujan al pintar el bloque
+        const hay = !!document.getElementById('wz-fb-share');
+        await wzCompartirFB();
+        const primerEnlace = t => (String(t).match(/https?:\/\/\S+/) || [''])[0];
+        const prod = PRODUCTOS.find(x => String(x.id) === ids[0]);
+        const textos = [0, 1, 2, 3].map(v => _textoFacebook(prod, { variante: v }));
+        return { hay, comp: window.__comp, copiado: window.__copiado,
+                 log: JSON.parse(localStorage.getItem('tm_publog_v1') || '[]'),
+                 primeros: textos.map(primerEnlace), plantilla: primerEnlace(window.__copiado) };
+    }, ids);
+    ok(r.hay, 'sin grupos, «3 redes» tiene que ofrecer compartir Facebook con la imagen');
+    ok(r.comp.length === 1 && r.comp[0].n === 2, 'tenía que compartir una imagen por producto: ' + JSON.stringify(r.comp));
+    ok(r.copiado && r.comp[0] && r.comp[0].texto === r.copiado, 'el texto de la plantilla tiene que quedar copiado y viajar con las imágenes');
+    ok(ids.every(id => r.log.some(e => String(e.pid) === id)), 'compartido, cada producto tiene que quedar en el registro');
+    ok(r.primeros.every(u => /tiendamax\.org\/p\//.test(u)), 'en los textos de Facebook el primer enlace tiene que ser la ficha (de él sale la foto de la vista previa): ' + r.primeros.join(' | '));
+    ok(/tiendamax\.org\/p\//.test(r.plantilla), 'en la plantilla de Facebook por defecto el primer enlace tiene que ser la ficha: ' + r.plantilla);
+    await ctx.close();
+}
+
 const propios = errores.filter(e => !/firebase is not defined/.test(e));
 ok(propios.length === 0, 'errores de JavaScript: ' + propios.join(' | '));
 await nav.close();

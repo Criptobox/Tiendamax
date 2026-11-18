@@ -75,13 +75,23 @@ for (const PALABRA_ of ['router', PALABRA].filter(Boolean)) {
     const PALABRA = PALABRA_;
     await pagina.evaluate(w => { const i = document.getElementById('heroSearchInput'); i.value = w; buscarDesdeHero(w); }, PALABRA);
     await pagina.waitForTimeout(900);
-    const sug = await pagina.evaluate(() => Array.from(document.querySelectorAll('#heroSearchSuggestions .hsb-sug-item'))
-        .map(x => /AGOTADO/.test(x.textContent)));
+    // Cada sugerencia: [agotada, lleva la palabra en el nombre]. La regla
+    // (tmBusquedaEnNombre, ventas_freno_check): lo NOMBRADO va primero aunque
+    // esté agotado —quien busca «router» quiere ver el router y su «Avísame»,
+    // no una antena porque su descripción menciona routers—; DENTRO de cada
+    // grupo, lo que se puede comprar va primero.
+    const sug = await pagina.evaluate(w => Array.from(document.querySelectorAll('#heroSearchSuggestions .hsb-sug-item'))
+        .map(x => { const n = (x.querySelector('.hsb-sug-name') || x).textContent.replace(/AGOTADO/g, '');
+                    return [/AGOTADO/.test(x.textContent), tmBusquedaEnNombre({ nombre: n }, w)]; }), PALABRA);
     ok(sug.length > 0, `buscar «${PALABRA}» no dio sugerencias`);
-    const primerAgotado = sug.indexOf(true);
-    ok(primerAgotado === -1 || !sug.slice(primerAgotado).includes(false),
-       `buscando «${PALABRA}» sale un AGOTADO antes que uno disponible: ${JSON.stringify(sug)}`);
-    ok(sug[0] === false, `la primera sugerencia de «${PALABRA}» está agotada aunque hay disponibles`);
+    for (const grupo of [true, false]) {
+        const ag = sug.filter(s => s[1] === grupo).map(s => s[0]);
+        const i = ag.indexOf(true);
+        ok(i === -1 || !ag.slice(i).includes(false),
+           `buscando «${PALABRA}», ${grupo ? 'entre lo nombrado' : 'entre el resto'} sale un AGOTADO antes que uno disponible: ${JSON.stringify(sug)}`);
+    }
+    const iResto = sug.findIndex(s => !s[1]);
+    ok(iResto === -1 || !sug.slice(iResto).some(s => s[1]), `buscando «${PALABRA}», lo que lleva la palabra en el nombre tiene que ir primero: ${JSON.stringify(sug)}`);
 }
 
 // 2) Conteo de la categoría.

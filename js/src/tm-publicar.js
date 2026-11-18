@@ -11,11 +11,11 @@ const TM_PLANTILLAS_KEY="tm_plantillas_v1",TM_PLANTILLA_VARS=[{v:"nombre",d:"Nom
 {linea_garantia}
 {linea_stock}
 
-\u{1F4F2} P\xEDdelo aqu\xED:
-{wa_link}
-
 \u{1F517} Fotos y detalles:
 {url_producto}
+
+\u{1F4F2} P\xEDdelo aqu\xED:
+{wa_link}
 
 {hashtags}`},{id:"def_oferta",nombre:"\u{1F525} Facebook \u2014 con descuento",red:"fb",texto:`\u{1F525} OFERTA \u2014 {nombre}
 
@@ -26,6 +26,7 @@ const TM_PLANTILLAS_KEY="tm_plantillas_v1",TM_PLANTILLA_VARS=[{v:"nombre",d:"Nom
 {linea_garantia}
 {linea_stock}
 
+\u{1F517} {url_producto}
 \u{1F4F2} {wa_link}
 
 {hashtags}`},{id:"def_rev",nombre:"\u{1F7E0} Revolico \u2014 anuncio",red:"revolico",texto:`{nombre}

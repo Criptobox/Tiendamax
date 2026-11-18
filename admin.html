@@ -2454,7 +2454,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=7a410706"></script>
+<script src="js/tm-bundle.js?v=f0684683"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -2504,7 +2504,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=2baa9adf"></script>
+<script src="js/revolico_integration.js?v=ae07da86"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -8942,11 +8942,69 @@ function wzRenderSalida(){
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         ${viaCola?`<button class="btn btn-primary" id="wz-fb-cola" onclick="wzColaFB()">📢 Publicar en mis grupos (${sel.length} producto${sel.length!==1?'s':''})</button>
         <button class="btn btn-ghost" onclick="wzCopiar('${r.id}')">📋 Copiar con mi plantilla</button>`
-        :`<button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>`}
+        :(r.id==='fb'
+          ?`<button class="btn btn-primary" id="wz-fb-share" onclick="wzCompartirFB()">📲 Compartir con ${sel.length>1?'las imágenes':'la imagen'} y elegir el grupo</button>
+            <button class="btn btn-ghost" onclick="wzCopiar('fb')">📋 Solo copiar el texto</button>`
+          :`<button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>`)}
       </div>
+      ${(r.id==='fb' && !viaCola)?`<p class="radar-ayuda" id="wz-fb-nota" style="margin-top:8px">El texto queda copiado y se abre «Compartir» con la imagen de cada producto: elige <b>Facebook</b> → <b>Grupo</b> y pega el texto. Un post sin foto casi no se ve.</p>`:''}
     </div>`;
   }).join('');
+  if(sel.length && !_wzTieneGrupos()) wzPrepararImagenesFB(sel);
 }
+
+/* Facebook sin grupos guardados: el post salía SOLO con texto (la plantilla
+   no lleva imagen), y un post sin foto en un grupo casi no se ve. Las
+   imágenes se dibujan al pintar el bloque —el mismo lienzo del anuncio— para
+   que «Compartir» salga en el mismo toque (si se dibujan dentro del clic, el
+   navegador da el gesto por gastado y no deja compartir). */
+const WZ_FB_IMGS = {};   // id → Blob PNG
+async function wzPrepararImagenesFB(sel){
+  if(typeof tmAnuncioImagen!=='function') return;
+  for(const p of sel.slice(0,10)){
+    const k=String(p.id); if(WZ_FB_IMGS[k]) continue;
+    try{
+      const cv=document.createElement('canvas');
+      await tmAnuncioImagen(cv, p, {formato:'cuadrado', texto:true});
+      WZ_FB_IMGS[k]=await new Promise(res=>cv.toBlob(res,'image/png'));
+    }catch(e){}
+  }
+}
+async function wzCompartirFB(){
+  const t=_wzPlantilla('fb'); const sel=_wzSeleccionados();
+  if(!t||!sel.length){ showToast('⚠️ Elige al menos un producto'); return; }
+  const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,'fb')).join('\n\n———\n\n');
+  const files=sel.slice(0,10).map(p=>WZ_FB_IMGS[String(p.id)]
+    ? new File([WZ_FB_IMGS[String(p.id)]], 'tiendamax-'+p.id+'.png', {type:'image/png'}) : null).filter(Boolean);
+  const copiado=navigator.clipboard ? navigator.clipboard.writeText(texto).catch(()=>{}) : Promise.resolve();
+  if(files.length && navigator.canShare && navigator.canShare({files})){
+    try{
+      await navigator.share({files, text:texto});
+      await copiado;
+      sel.forEach(p=>tmRegistrarPublicacion(p.id,'fb','Facebook (compartido)'));
+      tmContarUsoPlantilla(t.id);
+      showToast('✅ Texto copiado','En Facebook elige el grupo y pégalo');
+      wzRenderLista();
+    }catch(e){
+      if(e && e.name==='AbortError') showToast('Cancelado','No se marcó como publicado');
+      else showToast('⚠️ No se pudo abrir «Compartir»','Copia el texto y descarga las imágenes');
+    }
+    return;
+  }
+  // Sin compartir archivos (PC o imágenes aún sin dibujar): se descargan, el
+  // texto queda copiado y se abre la lista de grupos, no la portada.
+  await copiado;
+  files.forEach((f,i)=>setTimeout(()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; a.click(); }, i*300));
+  if(!files.length) showToast('⏳ Las imágenes aún se están preparando','Prueba otra vez en un momento');
+  else {
+    sel.forEach(p=>tmRegistrarPublicacion(p.id,'fb','Facebook'));
+    tmContarUsoPlantilla(t.id);
+    try{ window.open('https://www.facebook.com/groups/feed/','_blank','noopener,noreferrer'); }catch(e){}
+    showToast('📋 Texto copiado e imágenes descargadas','Elige el grupo y pega');
+    wzRenderLista();
+  }
+}
+window.wzCompartirFB=wzCompartirFB;
 
 async function wzCopiar(redId){
   const r=WZ_REDES.find(x=>x.id===redId); const t=_wzPlantilla(redId);
