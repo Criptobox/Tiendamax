@@ -1374,6 +1374,11 @@ renderizarProductos = function() {
             const bAgotado = b.stock === 0 ? 1 : 0;
             return aAgotado - bAgotado;
         });
+        // Buscando (y sin un orden elegido): lo nombrado primero, aunque esté
+        // agotado — ver tmBusquedaEnNombre (tm-data).
+        if (_heroSearchActivo && !_heroOrden && typeof tmOrdenBusqueda === 'function') {
+            productosFiltrados = tmOrdenBusqueda(productosFiltrados, _heroSearchActivo);
+        }
 
         window._tmFiltroCacheKey = _cacheKey;
         window._tmFiltroCacheVal = productosFiltrados.slice();

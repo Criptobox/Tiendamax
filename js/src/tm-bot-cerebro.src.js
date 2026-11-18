@@ -2382,11 +2382,29 @@
      ya se niegan a imprimir, en la única respuesta que va ENTERA sobre la
      tasa. Y pasa de verdad: la config llega por su cuenta y en Cuba puede no
      llegar. */
-  R.tasa = () => (!TASA_MN || TASA_MN <= 0) ? {
+  /* «¿Cuánto es en MN el aceite Mannol 5W30?» nombra un producto: se contesta
+     con SU precio en las dos monedas, no con la tasa genérica. Y la respuesta
+     al cliente ya no desglosa «margen operativo +20 MN»: suena a recargo y
+     resta confianza; el precio en MN que ve es el que paga. */
+  R.tasa = (text) => {
+    const nombrados = (TASA_MN > 0 && text) ? detectProductMentions(text).slice(0, 3) : [];
+    if (nombrados.length) {
+      const lineas = nombrados.map(p => (p.moneda === 'MN')
+        ? `• <strong>${escapeHtml(p.nombre)}</strong>: ${Math.round(Number(p.precio)||0).toLocaleString('es-ES')} MN`
+        : `• <strong>${escapeHtml(p.nombre)}</strong>: ${fmtUSD(p.precio).replace(/\.00$/, '')} USD = <strong>${fmtMN(p.precio)}</strong>`).join('\n');
+      return {
+        response: `💱 ${lineas}\n\n<em>A ${TASA_MN} MN el dólar, la tasa de hoy. Pagas al recibirlo, en USD o en MN.</em>`,
+        products: nombrados,
+        quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
+      };
+    }
+    return R._tasaGeneral();
+  };
+  R._tasaGeneral = () => (!TASA_MN || TASA_MN <= 0) ? {
     response: `💱 <strong>Tasa de cambio</strong>\n\nAhora mismo no tengo la tasa del día cargada, y prefiero no darte un número inventado. La tasa que aplicamos es la de <strong>elTOQUE</strong> más un margen operativo fijo, y el precio en MN que ves en el catálogo ya la lleva dentro.\n\nEscríbenos por WhatsApp (<code>+${WHATSAPP}</code>) y te decimos la de hoy.`,
     quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
   } : ({
-    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nDesglose:\n• <strong>Tasa base elTOQUE:</strong> ${TASA_BASE_MN} MN\n  <em>(elTOQUE es la referencia de tasa de cambio en Cuba, se actualiza a diario)</em>\n• <strong>Margen operativo:</strong> +${MARGEN_MN} MN\n• <strong>Total que pagas:</strong> ${TASA_MN} MN por USD\n\nEl precio en MN que ves en el catálogo <strong>ya incluye la tasa + el margen</strong>. No hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nSe basa en la tasa de <strong>elTOQUE</strong>, la referencia en Cuba, y se actualiza a diario.\n\nEl precio en MN que ves en el catálogo <strong>ya está calculado</strong>: no hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
     quickReplies: ['💳 Métodos de pago','📦 Ver productos','💬 WhatsApp']
   });
 
@@ -4798,7 +4816,11 @@ ${notasHTML}
       if(!_todos.length){
         const n = PRODUCTOS.filter(p => p.subcategoria === sub).length;
         const _qs = _expandirConsulta(cleanForMatch(text));
-        const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qs));
+        // Un «relacionado» tiene que compartir una PALABRA, no solo una cifra:
+        // «inversor de 3000w» ofrecía la moto eléctrica de 3000W ($1700) por
+        // el «3000w» y nada más.
+        const _qsPalabras = _qs.split(' ').filter(w => !/\d/.test(w)).join(' ');
+        const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qsPalabras));
         let body = `📂 <strong>${escapeHtml(sub)}</strong>: ahora mismo ${n > 1 ? `los ${n} modelos están` : 'está'} <em style="color:#ff8888">agotado${n > 1 ? 's' : ''}</em>.\n\nEscríbeme por WhatsApp y te aviso en cuanto entren.`;
         if(otros.length) body += `\n\nLo que sí tengo disponible relacionado:`;
         return {

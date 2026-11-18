@@ -115,7 +115,7 @@
          inyecta la primera vez que el cliente abre el chat. La URL va aquí
          (y no dentro del JS) para que bump_versions.py le ponga el hash del
          archivo y el navegador no sirva un cerebro viejo desde caché. -->
-    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=ea408243">
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=d0e0f73d">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -314,7 +314,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=ea07682d" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b37c85fb" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -451,7 +451,7 @@
             var fijoMN = p.moneda === 'MN';
             var enMN = fijoMN || (_monedaElegida() === 'MN' && _tasa() > 0);
             var fx = fijoMN ? 1 : (enMN ? _tasa() : 1);
-            function _mn(n){ return '$' + Math.round(n * fx).toLocaleString(); }
+            function _mn(n){ /* «80.750», sin $ delante (se leía como dólares) y punto de miles: misma regla que tmMN */ return String(Math.round(n * fx)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
             var txtHoy = enMN ? _mn(r.hoy) + ' MN' : '$' + r.hoy + ' USD';
             var txtAntes = enMN ? _mn(r.antes) : '$' + r.antes;
             var ahorro = r.antes > r.hoy ? (enMN ? _mn(r.antes - r.hoy) + ' MN' : '$' + Math.round(r.antes - r.hoy)) : '';
@@ -1783,7 +1783,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=ea07682d" defer></script>
+    <script src="js/tm-bundle.js?v=b37c85fb" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

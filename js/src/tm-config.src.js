@@ -9,6 +9,15 @@
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
+/* Un importe en MN: «80.750», punto de miles. toLocaleString('es-CU') da
+   «80,750» en Chrome, y en Cuba esa coma se lee como decimal: ochenta pesos.
+   Y nunca con «$» delante — «$19,000 MN» se lee como dólares. Una sola
+   función para la ficha, las tarjetas, las rebajas y el pedido. */
+function tmMN(n) {
+    const v = Math.round(Number(n) || 0);
+    return (v < 0 ? '-' : '') + String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
 function tmMonedaActual(){ return _monedaActual; }
 
 // ===== HELPER: JSON.parse SEGURO (anti-crash si localStorage se corrompe) =====
@@ -474,7 +483,7 @@ function renderizarCarrito() {
         a[i.moneda === 'MN' ? 'MN' : 'USD'] += i.precio * i.cantidad; return a;
     }, { USD: 0, MN: 0 });
     const fmtUSD = (usd) => typeof formatPrecio === 'function' ? formatPrecio(usd) : ('$' + usd.toFixed(2) + ' USD');
-    const fmtMN  = (mn)  => '$' + Math.round(mn).toLocaleString('es-CU') + ' MN';
+    const fmtMN  = (mn)  => tmMN(mn) + ' MN';
     const fmtItem = (item, valor) => item.moneda === 'MN' ? fmtMN(valor) : fmtUSD(valor);
     if (totalEl) {
         const partes = [];
@@ -612,7 +621,7 @@ function _mensajeOrdenWA(items, opts) {
         L.push(E.dot + ' *' + (i + 1) + '.* ' + it.nombre);
         const esMN = it.moneda === 'MN';
         const precioTxt = esMN
-            ? '$' + Math.round(precio).toLocaleString('es-CU') + ' MN'
+            ? tmMN(precio) + ' MN'
             : '$' + precio.toFixed(2) + ' USD';
         L.push(precio > 0
             ? '      \u25b8 Cant: *' + cant + '*  \u00b7  ' + precioTxt + ' c/u'
@@ -633,8 +642,8 @@ function _mensajeOrdenWA(items, opts) {
     // Sin productos en MN el mensaje sale exactamente igual que siempre.
     const lineaMN = () => {
         if (subtotalMN > 0) {
-            L.push(E.bill + ' *Productos con precio en MN:* *$'
-                   + Math.round(subtotalMN).toLocaleString('es-CU') + ' MN*');
+            L.push(E.bill + ' *Productos con precio en MN:* *'
+                   + tmMN(subtotalMN) + ' MN*');
         }
     };
 
@@ -644,17 +653,23 @@ function _mensajeOrdenWA(items, opts) {
         L.push(E.money + ' *Total:* $' + subtotal.toFixed(2) + ' USD');
         const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
         if (tasaFinal > 0) {
-            const totalMN = Math.round(subtotal * tasaFinal).toLocaleString('es-CU');
+            const totalMN = tmMN(subtotal * tasaFinal);
             L.push(E.bill + ' *Total MN:* ' + totalMN + ' MN');
         }
         lineaMN();
     } else if (subtotal > 0) {
-        L.push(E.money + ' *Subtotal:* $' + subtotal.toFixed(2) + ' USD');
+        // El total en la moneda que el cliente eligió, y la otra como
+        // referencia. Antes el «TOTAL» en negrita iba siempre en MN, aunque
+        // hubiera mirado la tienda en dólares.
         const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
-        if (tasaFinal > 0) {
-            const totalMN = Math.round(subtotal * tasaFinal).toLocaleString('es-CU');
-            L.push(E.chart + ' *Tasa:* 1 USD = ' + tasaFinal + ' MN');
-            L.push(E.bill  + ' *TOTAL:* *' + totalMN + ' MN*');
+        const usdTxt = '$' + (subtotal % 1 ? subtotal.toFixed(2) : String(subtotal)) + ' USD';
+        const enMN = (typeof _monedaActual !== 'undefined' && _monedaActual === 'MN') && tasaFinal > 0;
+        if (enMN) {
+            L.push(E.bill + ' *Total: ' + tmMN(subtotal * tasaFinal) + ' MN*');
+            L.push('      _(' + usdTxt + ' a ' + tasaFinal + ' MN el dólar)_');
+        } else {
+            L.push(E.money + ' *Total: ' + usdTxt + '*');
+            if (tasaFinal > 0) L.push('      _(o ' + tmMN(subtotal * tasaFinal) + ' MN a ' + tasaFinal + ' MN el dólar)_');
         }
         lineaMN();
     } else {
@@ -664,7 +679,7 @@ function _mensajeOrdenWA(items, opts) {
     L.push('');
     L.push(opts.ticket
         ? E.truck + ' _Tu pedido est\u00e1 confirmado. Coordinaremos la entrega por aqu\u00ed._'
-        : E.truck + ' _Env\u00edame los datos para coordinar la entrega, por favor._');
+        : E.truck + ' _Para coordinar la entrega:_ tu *nombre*, tu *municipio* y si pagas en *USD o MN*.');
     L.push('');
 
     if (opts.ticket && opts.pedidoId) {
@@ -673,7 +688,9 @@ function _mensajeOrdenWA(items, opts) {
         L.push('');
     }
 
-    L.push(E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart);
+    // «Gracias por tu compra» antes de que haya compra sonaba a mensaje
+    // automático; en el ticket sí es verdad.
+    L.push(opts.ticket ? E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart : E.pray + ' _\u00a1Gracias!_');
 
     if (!opts.ticket) {
         // Un solo producto con id -> link al producto (WhatsApp genera miniatura con og:image)

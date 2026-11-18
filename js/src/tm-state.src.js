@@ -271,7 +271,12 @@ function mostrarVistaCategoria(categoria) {
 
     // Mismo ícono de línea que la tarjeta de categoría (SVG de constantes
     // propias; el nombre de la categoría sí se escapa).
-    const titulo = categoria === 'Todas'
+    // Buscando, la cabecera dice qué se buscó: «Todos los Productos · 43
+    // disponibles» encima de los resultados de «inversor» no decía nada.
+    const _buscando = categoria === 'Todas' && typeof _heroSearchActivo !== 'undefined' && _heroSearchActivo;
+    const titulo = _buscando
+        ? '🔎 Resultados para «' + escapeHtml(_heroSearchActivo) + '»'
+        : categoria === 'Todas'
         ? obtenerIconoCategoriaSVG('Todas') + ' Todos los Productos'
         : obtenerIconoCategoriaSVG(categoria) + ' ' + escapeHtml(categoria);
     document.getElementById('tituloCategoriaActual').innerHTML = titulo;
@@ -345,8 +350,10 @@ function actualizarCategoriaStats() {
     // siguen en la rejilla a propósito (para el «avísame»), así que se
     // cuentan, pero por separado.
     const sub = (typeof subcategoriaSeleccionada !== 'undefined' && subcategoriaSeleccionada !== 'Todas') ? subcategoriaSeleccionada : null;
+    const _q = (categoriaSeleccionada === 'Todas' && typeof _heroSearchActivo !== 'undefined') ? _heroSearchActivo : '';
     const lista = productos.filter(p => (categoriaSeleccionada === 'Todas' || p.categoria === categoriaSeleccionada)
-        && (!sub || p.subcategoria === sub));
+        && (!sub || p.subcategoria === sub)
+        && (!_q || typeof tmCoincideBusqueda !== 'function' || tmCoincideBusqueda(p, _q)));
     const disp = lista.filter(p => Number(p.stock) > 0).length, agot = lista.length - disp;
     statsEl.textContent = `${disp} disponible${disp !== 1 ? 's' : ''}` + (agot ? ` · ${agot} agotado${agot !== 1 ? 's' : ''}` : '');
 }

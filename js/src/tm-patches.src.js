@@ -1009,7 +1009,7 @@ function tmMoneda(p) {
 /* El precio de un producto en SU moneda, ya formateado. */
 function tmPrecioTexto(p, valor) {
     const n = Number(valor != null ? valor : (p && p.precioActual) || 0);
-    if (tmEsMN(p)) return '$' + Math.round(n).toLocaleString('es-CU') + ' MN';
+    if (tmEsMN(p)) return tmMN(n) + ' MN';
     return formatPrecio(n);
 }
 
@@ -1022,13 +1022,13 @@ function formatPrecioCorto(usd) {
     const n = Number(usd) || 0;
     if (_monedaActual === 'MN') {
         const tasa = getTasaMN();
-        if (tasa > 0) return `$${Math.round(n * tasa).toLocaleString()} MN`;
+        if (tasa > 0) return `${tmMN(n * tasa)} MN`;
     }
     return '$' + Math.round(n);
 }
 function tmPrecioAntesTexto(p) {
     const n = Number(p && p.precioOriginal) || 0;
-    if (tmEsMN(p)) return '$' + Math.round(n).toLocaleString('es-CU') + ' MN';
+    if (tmEsMN(p)) return tmMN(n) + ' MN';
     return formatPrecioCorto(n);
 }
 /* Marca un elemento de precio anterior para que el conmutador USD/MN lo
@@ -1049,7 +1049,7 @@ function tmPrecioAntesAttrs(p) {
 function formatPrecio(usd) {
     if (_monedaActual === 'MN') {
         const tasa = getTasaMN();
-        if (tasa > 0) return `$${Math.round(usd * tasa).toLocaleString()} MN`;
+        if (tasa > 0) return `${tmMN(usd * tasa)} MN`;
     }
     return `$${parseFloat(usd).toFixed(2)} USD`;
 }
@@ -1115,7 +1115,7 @@ function actualizarPreciosMostrados() {
     if (mnEl && _detalleProductoActual) {
         const tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
         if (tasa > 0) {
-            mnEl.textContent = '≈ ' + Math.round(_detalleProductoActual.precioActual * tasa).toLocaleString('es-CU') + ' MN';
+            mnEl.textContent = '≈ ' + tmMN(_detalleProductoActual.precioActual * tasa) + ' MN';
             mnEl.style.display = 'block';
         } else {
             mnEl.style.display = 'none';

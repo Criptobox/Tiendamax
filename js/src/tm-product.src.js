@@ -500,7 +500,7 @@ if (_detailPrecioEl) {
     // En un producto de precio fijo en MN el número va sin decimales y con
     // separador de miles: "13,760" se lee, "13760.00" no.
     _detailPrecioEl.innerHTML = _esMN
-        ? `<span class="dp-sym">$</span><span class="dp-num">${Math.round(Number(p.precioActual||0)).toLocaleString('es-CU')}</span><span class="dp-cur">MN</span>`
+        ? `<span class="dp-num">${tmMN(Number(p.precioActual||0))}</span><span class="dp-cur">MN</span>`
         : `<span class="dp-sym">$</span><span class="dp-num">${Number(p.precioActual||0).toFixed(2)}</span><span class="dp-cur">USD</span>`;
 }
 const _hasPrecioOrigLinea = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
@@ -525,7 +525,7 @@ if (_detailPrecioMNEl) {
     if (_esMN) {
         _detailPrecioMNEl.style.display = 'none';
     } else if (_tasaModal > 0) {
-        const _mnTxt = `≈ ${Math.round(p.precioActual * _tasaModal).toLocaleString('es-CU')} MN`;
+        const _mnTxt = `≈ ${tmMN(p.precioActual * _tasaModal)} MN`;
         _detailPrecioMNEl.textContent = _hasPrecioOrigLinea ? `${_mnTxt} ·` : _mnTxt;
         _detailPrecioMNEl.style.display = 'inline';
     } else {
@@ -887,7 +887,7 @@ if (_detailPrecioMNEl) {
         if (stickyPrice) stickyPrice.textContent = `$${Number(p.precioActual || 0).toFixed(2)}`;
         if (stickyPriceSub) {
             const _tasaSticky = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-            stickyPriceSub.textContent = _tasaSticky > 0 ? `≈ ${Math.round(p.precioActual * _tasaSticky).toLocaleString('es-CU')} MN` : '';
+            stickyPriceSub.textContent = _tasaSticky > 0 ? `≈ ${tmMN(p.precioActual * _tasaSticky)} MN` : '';
         }
         if (stickyBuyText) { if (p.stock === 0) stickyBuyText.innerHTML = tmIcoUI('🔔') + ' Avísame'; else stickyBuyText.textContent = 'Pedir'; }
         if (stickyBuyBtn) {
