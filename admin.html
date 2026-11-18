@@ -2502,7 +2502,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=ebd890c0"></script>
+<script src="js/revolico_integration.js?v=35c3b60d"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -5344,6 +5344,16 @@ function renderProductos(){
 function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
 function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+/* Un campo de un producto, guardado por el mismo camino que cualquier edición
+   (marcado para «Actualizar tienda» y en local). Lo usa el editor del gancho de
+   la cola de Facebook (js/revolico_integration.js), que vive fuera de este bloque. */
+window.tmGuardarCampoProducto=function(id,campo,valor){
+  const p=apFind(id); if(!p) return false;
+  p[campo]=valor;
+  try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(id); }catch(e){}
+  apSaveProds();
+  return true;
+};
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){}
   // Las fotos del producto borrado quedarían en imagenes/ para siempre. Se
@@ -8686,7 +8696,24 @@ function _wzSeleccionados(){ return _wzProductos().filter(p=>WZ_SEL.has(String(p
 function _wzPlantilla(red){
   const todas=tmPlantillas();
   const dela=todas.filter(t=>t.red===red).sort((a,b)=>(Number(b.usos)||0)-(Number(a.usos)||0));
-  return dela[0] || todas[0] || null;
+  // Sin plantilla propia para esta red, la de ESTA red por defecto: antes caía
+  // en la primera de la lista, que podía ser la de otra (un texto de Revólico
+  // para el Estado de WhatsApp).
+  return dela[0] || tmPlantillasPorDefecto().find(t=>t.red===red) || null;
+}
+/* Facebook con grupos guardados se publica desde la cola (js/revolico_integration.js):
+   lleva el texto y la imagen de CADA grupo, respeta las pausas, el tope por hora y
+   el tema de cada grupo, y apunta cada publicación con su grupo. Esta pestaña
+   copiaba un solo texto de plantilla para todos y lo apuntaba con el nombre de la
+   plantilla como si fuera un grupo: se saltaba todo eso. La plantilla sigue ahí
+   para tu página u otro sitio. */
+function _wzTieneGrupos(){
+  try{ return JSON.parse(localStorage.getItem('gruposFB')||'[]').some(g=>g&&g.url&&String(g.url).includes('facebook.com')); }catch(e){ return false; }
+}
+function wzColaFB(){
+  const ids=_wzSeleccionados().map(p=>p.id);
+  if(!ids.length){ showToast('⚠️ Elige al menos un producto'); return; }
+  if(typeof tmColaPlan==='function') tmColaPlan(ids);
 }
 
 function wzRenderSalida(){
@@ -8696,6 +8723,7 @@ function wzRenderSalida(){
   cont.innerHTML=WZ_REDES.map(r=>{
     const t=_wzPlantilla(r.id);
     if(!t) return '';
+    const viaCola=(r.id==='fb' && _wzTieneGrupos() && typeof tmColaPlan==='function');
     const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,r.id)).join('\n\n———\n\n');
     return `<div class="section">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -8703,8 +8731,11 @@ function wzRenderSalida(){
         <span class="badge">${esc(t.nombre)}</span>
       </div>
       <pre id="wz-txt-${r.id}" style="white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;margin:10px 0;max-height:220px;overflow:auto">${esc(texto)}</pre>
+      ${viaCola?`<p class="radar-ayuda" id="wz-fb-cola-nota">Con tus grupos guardados, Facebook se publica desde la cola: cada grupo recibe su texto y su imagen, con las pausas y solo los productos de su tema, y queda apuntado con el grupo. La plantilla de arriba es para tu página u otro sitio.</p>`:''}
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>
+        ${viaCola?`<button class="btn btn-primary" id="wz-fb-cola" onclick="wzColaFB()">📢 Publicar en mis grupos (${sel.length} producto${sel.length!==1?'s':''})</button>
+        <button class="btn btn-ghost" onclick="wzCopiar('${r.id}')">📋 Copiar con mi plantilla</button>`
+        :`<button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>`}
       </div>
     </div>`;
   }).join('');
@@ -9310,6 +9341,9 @@ function pubCatProds(cat){ return PRODUCTOS.filter(p=>pubEnTienda(p)&&Number(p.s
 function pubCatEmoji(nombre,cat){
   const norm2=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const n=norm2(nombre), c=norm2(cat);
+  // Aparatos eléctricos primero: el Controlador MPPT salía con un mando de
+  // videojuegos (más abajo, «\bcontrol\b») y el disyuntor con una batería.
+  if(/mppt|transferencia|\bats\b|disyuntor|breaker|interruptor/.test(n))return'⚡';
   if(/wifi|router|enrutador|inalámb|inalamb|repetidor/.test(n))return'📡';
   if(/audif|auricular|earphone|headphone|tws|earbuds/.test(n))return'🎧';
   if(/parlant|altavoz|bocina|speaker/.test(n))return'🔊';
@@ -9328,7 +9362,7 @@ function pubCatEmoji(nombre,cat){
   if(/ventilador|fan |aire acondicionado/.test(n))return'🌀';
   if(/teclado|keyboard/.test(n))return'⌨️';
   if(/mouse|ratón|raton/.test(n))return'🖱️';
-  if(/gaming|game|joystick|control|mando/.test(n))return'🎮';
+  if(/gaming|\bgame|joystick|\bcontrol\b|\bmando\b|gamepad/.test(n))return'🎮';
   if(/drone|dron/.test(n))return'🚁';
   if(/lámpara|lampara|led|luz|foco|bombil/.test(n))return'💡';
   if(/ropa|camisa|pantalon|vestido|blusa/.test(c+' '+n))return'👗';
@@ -9356,8 +9390,33 @@ const PUB_GANCHOS = [
   [/gym|deporte|fitness/,             ['💪 EMPIEZA HOY, NO EL LUNES','🏋️ TU GIMNASIO EN CASA']],
   [/belleza|salud|cuidado/,           ['✨ LO QUE TE MERECES','✨ CUÍDATE COMO SE DEBE']],
 ];
-const PUB_GANCHOS_DEF = ['🔥 APROVECHA ANTES QUE SE ACABE','🔥 LO BUENO SE ACABA RÁPIDO','⭐ ESTO ESTÁ VOLANDO','🔥 QUEDAN POCOS'];
+/* Sin categoría conocida, nada de «QUEDAN POCOS» ni «ESTO ESTÁ VOLANDO»: con
+   300 unidades en stock son mentira, y la escasez real ya la dice cada línea. */
+const PUB_GANCHOS_DEF = ['🛍️ LO QUE HAY HOY, CON SU PRECIO','🤝 LO VES, LO PRUEBAS Y PAGAS AL RECIBIRLO'];
+/* POSTS POR PROBLEMA. Para estas categorías el post no vende «la categoría»:
+   pregunta por el problema que la gente ya tiene, cada producto dice para qué
+   sirve, y el cierre invita a contarlo — quien no sabe si necesita un inversor
+   o un generador sí sabe que se le va la luz, y esa conversación en WhatsApp
+   es la venta. Para las demás, el gancho de siempre. */
+const PUB_PROBLEMAS = [
+  [/energ|solar|inversor|bater|apag/, { pregunta:'🔌 ¿Cuánto quieres mantener encendido cuando se va la luz?', tags:['Apagones','EnergiaSolar'],
+      cierre:'Dime qué quieres mantener encendido y te digo qué te sirve.' }],
+  [/moto/,                            { pregunta:'🏍️ ¿La moto pide su mantenimiento?', tags:['Motos'],
+      cierre:'Dime qué moto tienes y te digo cuál le va.' }],
+  [/carro|auto|vehic/,                { pregunta:'🚗 ¿Al carro le toca su mantenimiento?', tags:['Carros','Autopartes'],
+      cierre:'Dime marca y modelo de tu carro y te digo cuál le va.' }],
+  [/wifi|router|internet|^red/,       { pregunta:'📶 ¿El WiFi no te llega a toda la casa o quieres compartir la conexión?', tags:['WiFi','Redes'],
+      cierre:'Dime dónde quieres señal y te digo qué equipo te sirve.' }],
+  [/segurid|camara|alarma/,           { pregunta:'🛡️ ¿Quieres saber quién llega a tu casa, aunque no estés?', tags:['Seguridad','Camaras'],
+      cierre:'Dime qué quieres vigilar y te digo qué te sirve.' }],
+];
+function pubCatProblema(cat){
+  const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const par=PUB_PROBLEMAS.find(([re])=>re.test(c));
+  return par?par[1]:null;
+}
 function pubCatGancho(cat){
+  const prob=pubCatProblema(cat); if(prob) return prob.pregunta;
   const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const par=PUB_GANCHOS.find(([re])=>re.test(c));
   const lista=par?par[1]:PUB_GANCHOS_DEF;
@@ -9386,6 +9445,14 @@ const PUB_TAG_VACIAS = new Set(['adaptador','cable','exterior','interior','inter
 function pubCatHashtags(cat,prods){
   const tags=['TiendaMax','Cuba'];
   const ct=pubCatTag(cat); if(ct) tags.push(ct);
+  // En un post por problema las etiquetas son del problema, no de los nombres:
+  // #Lubrim y #Automotriz en el post de Energía (dos baterías de carro en la
+  // tanda) se leían a etiqueta puesta sin mirar.
+  const prob=pubCatProblema(cat);
+  if(prob && prob.tags){
+    const f=new Set(tags.map(t=>t.toLowerCase()));
+    return tags.concat(prob.tags.filter(t=>!f.has(t.toLowerCase()))).map(t=>'#'+t).join(' ');
+  }
   const cuenta=new Map();
   (prods||[]).forEach(p=>{
     const vistos=new Set();
@@ -9413,7 +9480,10 @@ const PUB_CAT_LISTA_MAX = 14; // en el texto: pasada esa cifra ya nadie baja
 function pubCatConfianza(prods){
   const arr=prods||[];
   const con=arr.length && arr.every(p=>String(p.garantia||'').trim());
-  return '✅ '+(con?'Garantía · ':'')+'Pruébalo al recibir · Atención personalizada';
+  // Pagar al recibirlo es lo que más pesa y es verdad siempre — salvo en los
+  // códigos digitales, que se pagan antes de comprarlos.
+  const digital=arr.some(p=>p&&p.digital);
+  return '✅ '+(con?'Garantía · ':'')+(digital?'':'Pruébalo al recibir y paga en la entrega · ')+'Atención personalizada';
 }
 /* El texto de cobertura que el propio gestor configuró en ⚙️ Envíos. Sin él no
    se inventa ni una zona ni un plazo. */
@@ -9444,14 +9514,28 @@ function pubCatPrecio(p){
   const n=(v%1===0) ? String(Math.round(v)) : v.toFixed(2);
   return esMN(p) ? Number(n).toLocaleString('es-US')+' MN' : '$'+Number(n).toLocaleString('es-US',{maximumFractionDigits:2});
 }
+/* En la lista de un post, el nombre hasta el «|»: lo que viene detrás
+   («… | 63A 230V 2 Polos») es la ficha, y un renglón de 90 caracteres hace
+   el post interminable. La ficha completa está a un toque. */
+function pubCatNombreCorto(n){
+  let s=_catClean(n);
+  const i=s.indexOf('|'); if(i>=12) s=s.slice(0,i).trim();
+  return s.replace(/[\s,;:–—-]+$/,'');
+}
 function pubCatLinea(p,cat,plano){
   const pre=plano?'':_catEmojiPre(p.nombre,cat);
-  let l=`${pre?pre+' ':''}${_catClean(p.nombre)} — ${pubCatPrecio(p)}`;
+  let l=`${pre?pre+' ':''}${pubCatNombreCorto(p.nombre)} — ${pubCatPrecio(p)}`;
   const st=Number(p.stock||0);
   if(!plano){
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
   }else if(st>0&&st<=2){ l+=st===1?' (queda 1)':` (últimas ${st})`; }
   if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes ${pubCatPrecio({precioActual:p.precioOriginal,moneda:p.moneda})})`;
+  // En un post por problema, para qué sirve cada uno: es lo que deja elegir a
+  // quien no sabe de modelos. Sale del «Ideal para» del producto (nunca el
+  // genérico que comparten varios); sin él, la línea queda como estaba.
+  if(!plano && pubCatProblema(cat) && typeof _usosDe==='function'){
+    const u=_usosDe(p,1)[0]; if(u) l+=`\n   ↳ ${u}`;
+  }
   return l;
 }
 /* UN TEXTO POR RED. Era uno solo para las cuatro, y cada una lo castiga de una
@@ -9481,28 +9565,33 @@ function pubCatText(cat, red, prods){
   const envio=pubCatEnvioTxt();
   if(plano){
     return `${_catClean(cat)} — ${lista.length} disponibles${desde?', '+desde:''}\n\n${cuerpo}`
-      + `\n\nPrecios de HOY: mañana suben con la tasa.\n${confianza.replace('✅ ','')}`
+      + `\n\n${confianza.replace('✅ ','')}`
       + (envio?`\n${envio}`:'')
       + `\n\nEscríbeme por WhatsApp. Catálogo completo en tiendamax.org`;
   }
-  const urgencia='⏳ Precios de HOY — mañana suben con la tasa';
+  /* Aquí había una línea de urgencia que decía que los precios de hoy subían
+     mañana con la tasa. Los precios están en dólares (o fijos en MN) y no
+     cambian con la tasa: era urgencia inventada. La pregunta de cierre hace
+     mejor ese trabajo. */
+  const prob=pubCatProblema(cat);
+  const cierre=prob?`💬 ${prob.cierre}\n`:'';
   if(red==='fb'){
     const l2=`${_catClean(cat)}: ${lista.length} en stock${desde?' · '+desde:''}${(envio&&envio.length<=42)?' · '+envio:''}`;
     return `${pubCatGancho(cat)}\n${l2}\n${sep}\n\n${cuerpo}`
-      + `\n\n${urgencia}\n${confianza}`
-      + `\n\n📲 Comenta "QUIERO" o escríbeme por WhatsApp — te lo aparto 24 h\n🔗 tiendamax.org`
+      + `\n\n${confianza}`
+      + `\n\n${cierre}📲 ${prob?'Escríbeme por WhatsApp':'Comenta "QUIERO" o escríbeme por WhatsApp'} — te lo aparto 24 h\n🔗 tiendamax.org`
       + `\n\n${pubCatHashtags(cat,lista)}`;
   }
   if(red==='ig'){
     return `${pubCatGancho(cat)}\n${_catClean(cat)}${desde?' · '+desde:''}\n${sep}\n\n${cuerpo}`
-      + `\n\n${urgencia}\n${confianza}`
-      + `\n\n📲 Escríbeme por WhatsApp — el enlace está en la bio`
+      + `\n\n${confianza}`
+      + `\n\n${cierre}📲 Escríbeme por WhatsApp — el enlace está en la bio`
       + `\n\n${pubCatHashtags(cat,lista)}`;
   }
   return `🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n${cuerpo}`
-    + `\n\n${urgencia}\n${confianza}`
+    + `\n\n${confianza}`
     + (envio?`\n📦 ${envio}`:'')
-    + `\n\n📲 Responde a este mensaje y te lo aparto 24 h\n🔗 tiendamax.org`;
+    + `\n\n${cierre}📲 Responde a este mensaje y te lo aparto 24 h\n🔗 tiendamax.org`;
 }
 function pubCatWrapName(ctx,text,maxW,maxLines){
   const words=String(text).split(/\s+/).filter(Boolean);
@@ -10133,7 +10222,7 @@ window.ventaAdd=ventaAdd; window.ventaCat=ventaCat; window.ventaCartComision=ven
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
-window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar;
+window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar; window.wzColaFB=wzColaFB;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
 window.catRenombrar=catRenombrar; window.catApToggle=catApToggle; window.catApSubir=catApSubir; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;

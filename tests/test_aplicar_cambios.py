@@ -48,6 +48,18 @@ class AplicarTest(unittest.TestCase):
         out = ac.aplicar(base, [("a.json", cambio([P(1, descripcion="")]))])
         self.assertEqual(out[0]["descripcion"], "")
 
+    def test_conserva_el_gancho_si_no_viene(self):
+        """El gancho es trabajo aprobado por el gestor: un teléfono con el
+        catálogo de antes lo subiría sin él y se perdería."""
+        base = [P(1, gancho="🔌 ¿Se va la luz? Sigue con el refrigerador encendido")]
+        out = ac.aplicar(base, [("a.json", cambio([P(1, precioActual=12)]))])
+        self.assertEqual(out[0]["gancho"], "🔌 ¿Se va la luz? Sigue con el refrigerador encendido")
+
+    def test_quitar_el_gancho_a_proposito_se_respeta(self):
+        base = [P(1, gancho="viejo")]
+        out = ac.aplicar(base, [("a.json", cambio([P(1, gancho="")]))])
+        self.assertEqual(out[0]["gancho"], "")
+
     def test_nuevo_va_detras_del_que_tenia_delante(self):
         base = [P(1), P(2), P(3)]
         out = ac.aplicar(base, [("a.json", cambio([P(9)], posiciones={"9": "2"}))])

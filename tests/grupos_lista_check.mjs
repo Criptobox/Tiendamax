@@ -306,6 +306,38 @@ const cuentaBoton = await pagina.evaluate(async ({ grupos, pid }) => {
 }, { grupos: GRUPOS3, pid: String(PB[0].id) });
 ok(cuentaBoton === '2', `la vista previa cuenta los grupos a los que NO les toca este producto (${cuentaBoton} en vez de 2)`);
 
+// ── 7) «3 redes»: Facebook va por la cola cuando hay grupos ────────────────
+const tres = await pagina.evaluate(async ({ grupos, ids }) => {
+    const salida = async (gs, plantillas) => {
+        localStorage.setItem('gruposFB', JSON.stringify(gs));
+        if (plantillas) localStorage.setItem('tm_plantillas_v1', JSON.stringify(plantillas)); else localStorage.removeItem('tm_plantillas_v1');
+        go('publicar'); pubSwitch('wizard');
+        await new Promise(r => setTimeout(r, 400));
+        ids.forEach(id => wzToggle(String(id), true));
+        const html = document.getElementById('wz-salida').innerText;
+        const secciones = [...document.querySelectorAll('#wz-salida .section')].map(s => s.innerText);
+        return { html, secciones, cola: !!document.getElementById('wz-fb-cola'), nota: !!document.getElementById('wz-fb-cola-nota') };
+    };
+    const conGrupos = await salida(grupos);
+    document.getElementById('wz-fb-cola').click();
+    await new Promise(r => setTimeout(r, 800));
+    const abierta = !!document.getElementById('fbColaModal');
+    cerrarColaGrupos();
+    const sinGrupos = await salida([]);
+    // Plantillas propias solo de Facebook: Revólico y WhatsApp usan LAS SUYAS por defecto, no esa.
+    const soloFb = await salida([], [{ id: 'mia', nombre: 'MI PLANTILLA FB', red: 'fb', texto: 'PLANTILLA-DE-FACEBOOK {nombre}' }]);
+    return { conGrupos, abierta, sinGrupos, soloFb };
+}, { grupos: GRUPOS3, ids: [PB[0].id] });
+ok(tres.conGrupos.cola && tres.conGrupos.nota, 'con grupos guardados, «3 redes» tiene que ofrecer la cola para Facebook');
+ok(tres.abierta, 'el botón de la cola en «3 redes» no abrió la cola');
+ok(!tres.sinGrupos.cola && /Copiar y abrir/.test(tres.sinGrupos.html), 'sin grupos, «3 redes» tiene que seguir copiando con la plantilla');
+const bloqueDe = ic => tres.soloFb.secciones.find(b => b.startsWith(ic)) || '';
+ok(tres.soloFb.secciones.length === 3, `«3 redes» tenía que pintar 3 bloques y pintó ${tres.soloFb.secciones.length}`);
+ok(/PLANTILLA-DE-FACEBOOK/.test(bloqueDe('📘')), 'Facebook tiene que usar la plantilla propia');
+ok(!/PLANTILLA-DE-FACEBOOK/.test(bloqueDe('🟠')) && !/PLANTILLA-DE-FACEBOOK/.test(bloqueDe('🟢')),
+   'con plantillas propias solo de Facebook, Revólico y WhatsApp usaron la de Facebook en vez de la suya por defecto');
+ok(/Revolico — anuncio/.test(bloqueDe('🟠')), 'Revólico tiene que usar su plantilla por defecto');
+
 // El SDK de Firebase no se carga sin red (gstatic va a null): ese error es del entorno de prueba.
 const erroresPropios = erroresJs.filter(e => !/firebase is not defined/.test(e));
 ok(erroresPropios.length === 0, 'errores de JavaScript en la página: ' + erroresPropios.join(' | '));
