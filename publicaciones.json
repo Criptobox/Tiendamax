@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-18T22:36:43.934Z",
+  "actualizado": "2026-11-18T22:36:56.877Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -847,6 +847,14 @@
       "destino": "📘 Facebook — completa",
       "ts": 1795038251272,
       "precio": 10,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1794935278007",
+      "red": "fb",
+      "destino": "Facebook (compartido)",
+      "ts": 1795041412398,
+      "precio": 2,
       "moneda": "USD"
     }
   ]
