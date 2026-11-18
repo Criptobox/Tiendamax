@@ -2502,7 +2502,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 })();
 </script>
 <script src="js/biometric-auth.js?v=b4bef121"></script>
-<script src="js/revolico_integration.js?v=40d4b0a4"></script>
+<script src="js/revolico_integration.js?v=35c3b60d"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
      (tmLeerAnalytics, llamado desde abrirAdminPanel)
      dependía por completo de este archivo pero nunca corría en admin.html
@@ -9341,6 +9341,9 @@ function pubCatProds(cat){ return PRODUCTOS.filter(p=>pubEnTienda(p)&&Number(p.s
 function pubCatEmoji(nombre,cat){
   const norm2=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const n=norm2(nombre), c=norm2(cat);
+  // Aparatos eléctricos primero: el Controlador MPPT salía con un mando de
+  // videojuegos (más abajo, «\bcontrol\b») y el disyuntor con una batería.
+  if(/mppt|transferencia|\bats\b|disyuntor|breaker|interruptor/.test(n))return'⚡';
   if(/wifi|router|enrutador|inalámb|inalamb|repetidor/.test(n))return'📡';
   if(/audif|auricular|earphone|headphone|tws|earbuds/.test(n))return'🎧';
   if(/parlant|altavoz|bocina|speaker/.test(n))return'🔊';
@@ -9359,7 +9362,7 @@ function pubCatEmoji(nombre,cat){
   if(/ventilador|fan |aire acondicionado/.test(n))return'🌀';
   if(/teclado|keyboard/.test(n))return'⌨️';
   if(/mouse|ratón|raton/.test(n))return'🖱️';
-  if(/gaming|game|joystick|control|mando/.test(n))return'🎮';
+  if(/gaming|\bgame|joystick|\bcontrol\b|\bmando\b|gamepad/.test(n))return'🎮';
   if(/drone|dron/.test(n))return'🚁';
   if(/lámpara|lampara|led|luz|foco|bombil/.test(n))return'💡';
   if(/ropa|camisa|pantalon|vestido|blusa/.test(c+' '+n))return'👗';
@@ -9396,15 +9399,15 @@ const PUB_GANCHOS_DEF = ['🛍️ LO QUE HAY HOY, CON SU PRECIO','🤝 LO VES, L
    o un generador sí sabe que se le va la luz, y esa conversación en WhatsApp
    es la venta. Para las demás, el gancho de siempre. */
 const PUB_PROBLEMAS = [
-  [/energ|solar|inversor|bater|apag/, { pregunta:'🔌 ¿Cuánto quieres mantener encendido cuando se va la luz?',
+  [/energ|solar|inversor|bater|apag/, { pregunta:'🔌 ¿Cuánto quieres mantener encendido cuando se va la luz?', tags:['Apagones','EnergiaSolar'],
       cierre:'Dime qué quieres mantener encendido y te digo qué te sirve.' }],
-  [/moto/,                            { pregunta:'🏍️ ¿La moto pide su mantenimiento?',
+  [/moto/,                            { pregunta:'🏍️ ¿La moto pide su mantenimiento?', tags:['Motos'],
       cierre:'Dime qué moto tienes y te digo cuál le va.' }],
-  [/carro|auto|vehic/,                { pregunta:'🚗 ¿Al carro le toca su mantenimiento?',
+  [/carro|auto|vehic/,                { pregunta:'🚗 ¿Al carro le toca su mantenimiento?', tags:['Carros','Autopartes'],
       cierre:'Dime marca y modelo de tu carro y te digo cuál le va.' }],
-  [/wifi|router|internet|^red/,       { pregunta:'📶 ¿El WiFi no te llega a toda la casa o quieres compartir la conexión?',
+  [/wifi|router|internet|^red/,       { pregunta:'📶 ¿El WiFi no te llega a toda la casa o quieres compartir la conexión?', tags:['WiFi','Redes'],
       cierre:'Dime dónde quieres señal y te digo qué equipo te sirve.' }],
-  [/segurid|camara|alarma/,           { pregunta:'🛡️ ¿Quieres saber quién llega a tu casa, aunque no estés?',
+  [/segurid|camara|alarma/,           { pregunta:'🛡️ ¿Quieres saber quién llega a tu casa, aunque no estés?', tags:['Seguridad','Camaras'],
       cierre:'Dime qué quieres vigilar y te digo qué te sirve.' }],
 ];
 function pubCatProblema(cat){
@@ -9442,6 +9445,14 @@ const PUB_TAG_VACIAS = new Set(['adaptador','cable','exterior','interior','inter
 function pubCatHashtags(cat,prods){
   const tags=['TiendaMax','Cuba'];
   const ct=pubCatTag(cat); if(ct) tags.push(ct);
+  // En un post por problema las etiquetas son del problema, no de los nombres:
+  // #Lubrim y #Automotriz en el post de Energía (dos baterías de carro en la
+  // tanda) se leían a etiqueta puesta sin mirar.
+  const prob=pubCatProblema(cat);
+  if(prob && prob.tags){
+    const f=new Set(tags.map(t=>t.toLowerCase()));
+    return tags.concat(prob.tags.filter(t=>!f.has(t.toLowerCase()))).map(t=>'#'+t).join(' ');
+  }
   const cuenta=new Map();
   (prods||[]).forEach(p=>{
     const vistos=new Set();
@@ -9503,9 +9514,17 @@ function pubCatPrecio(p){
   const n=(v%1===0) ? String(Math.round(v)) : v.toFixed(2);
   return esMN(p) ? Number(n).toLocaleString('es-US')+' MN' : '$'+Number(n).toLocaleString('es-US',{maximumFractionDigits:2});
 }
+/* En la lista de un post, el nombre hasta el «|»: lo que viene detrás
+   («… | 63A 230V 2 Polos») es la ficha, y un renglón de 90 caracteres hace
+   el post interminable. La ficha completa está a un toque. */
+function pubCatNombreCorto(n){
+  let s=_catClean(n);
+  const i=s.indexOf('|'); if(i>=12) s=s.slice(0,i).trim();
+  return s.replace(/[\s,;:–—-]+$/,'');
+}
 function pubCatLinea(p,cat,plano){
   const pre=plano?'':_catEmojiPre(p.nombre,cat);
-  let l=`${pre?pre+' ':''}${_catClean(p.nombre)} — ${pubCatPrecio(p)}`;
+  let l=`${pre?pre+' ':''}${pubCatNombreCorto(p.nombre)} — ${pubCatPrecio(p)}`;
   const st=Number(p.stock||0);
   if(!plano){
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;

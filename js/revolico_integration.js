@@ -113,7 +113,10 @@ function _usoGenerico(t) {
     return c >= 3;
 }
 // Corta en el primer límite natural (dos puntos, paréntesis, punto y coma,
-// coma) sin pasar de `max`; nunca a media palabra.
+// coma) sin pasar de `max`; nunca a media palabra. Si no hay dónde cortar,
+// la frase entera hasta 140, y si ni así cabe, NADA: un renglón que termina
+// en «…» («planes de Internet de alta velocidad a…») se lee a descuido — los
+// cinco compradores del panel a ciegas lo señalaron sin que nadie preguntara.
 function _frase(t, max) {
     let s = String(t || '').replace(/\s+/g, ' ').trim();
     if (s.length <= max) return s.replace(/[.;:,]+$/, '');
@@ -121,8 +124,15 @@ function _frase(t, max) {
     if (corte >= 25) return s.slice(0, corte).replace(/[.;:,]+$/, '');
     const coma = s.slice(0, max).lastIndexOf(',');
     if (coma >= 25) return s.slice(0, coma);
-    return s.slice(0, s.lastIndexOf(' ', max)).replace(/[.;:,]+$/, '') + '…';
+    return s.length <= 140 ? s.replace(/[.;:,]+$/, '') : '';
 }
+// Usos copiados del catálogo de fuera que en Cuba no venden y sí delatan la
+// traducción (casas rodantes, botes, SUVs), o que prometen lo delicado
+// (equipos médicos). Fuera de «te sirve para» y del gancho.
+const _USO_AJENO = /casas? rodantes?|autocaravana|\brv\b|\bsuvs?\b|\bbotes?\b|\byates?\b|cpap|m[eé]dic|camping/i;
+// Una lista de 4 cosas o más separadas por comas no es un gancho, es un
+// inventario («Automóviles, camionetas, SUVs, camiones, botes…»).
+function _esLista(t) { return (String(t).match(/,/g) || []).length >= 3; }
 // Lo que el producto no declara no puede colarse por una frase del fabricante:
 // «tarjeta de garantía» se lee como una promesa, y «antes» como una rebaja.
 function _sinPromesas(p, t) {
@@ -133,7 +143,7 @@ function _sinPromesas(p, t) {
 }
 function _usosDe(p, n) {
     return (Array.isArray(p.idealPara) ? p.idealPara : [])
-        .filter(t => !_usoGenerico(t) && _sinPromesas(p, t))
+        .filter(t => !_usoGenerico(t) && _sinPromesas(p, t) && !_USO_AJENO.test(t))
         .map(t => _frase(t, 95)).filter(Boolean).slice(0, n || 3);
 }
 // Lo que lo hace bueno: el título de cada característica, o su primera frase.
@@ -157,7 +167,7 @@ function _pruebasDe(p, n) {
 function _ganchoDe(p) {
     const g = String(p.gancho || '').trim();
     if (g && !_ganchoProblema(p, g)) return g;
-    const u = _usosDe(p, 1)[0];
+    const u = _usosDe(p, 3).find(x => !_esLista(x));
     return u ? '🎯 ' + u.charAt(0).toUpperCase() + u.slice(1) : '';
 }
 /* ¿Puede salir este gancho? Nada que el producto no declare:

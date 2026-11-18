@@ -197,6 +197,47 @@ ok(editor.guardado === '🔌 ¿Se va la luz? Sigue con el refrigerador encendido
 ok(editor.texto.split('\n').slice(0, 2).join(' ').includes('Sigue con el refrigerador encendido'), 'guardar el gancho no rehízo el texto del grupo');
 ok(editor.marcado, 'el gancho guardado no quedó marcado para «Actualizar tienda»: no llegaría al otro teléfono');
 
+// ── 7) Lo que señaló el panel a ciegas de compradores ──────────────────────
+// Ningún renglón cortado con «…», ningún uso copiado de fuera (casas rodantes,
+// botes, CPAP), una lista de vehículos no es gancho, y el post de categoría con
+// emoji y etiquetas de lo que de verdad es.
+const panel = await pagina.evaluate(() => {
+    const largo = 'Antena cliente para proveedores que ofrecen planes de Internet de alta velocidad a usuarios residenciales, corporativos y de pequeños negocios en zonas rurales y apartadas del pueblo';
+    const x = { id: 'tv-panel', nombre: 'Cargador Panel XJ-35', categoria: 'ENERGIA', precioActual: 50, stock: 3,
+        idealPara: ['Automóviles, camionetas, SUVs, camiones, botes y plantas', 'Campamentos y viajes en casas rodantes',
+                    'Equipos médicos sensibles como máquinas CPAP', 'Cargar la batería del inversor cuando se va la luz'],
+        caracteristicas: [{ t: largo }, { t: 'Carga de 35A en 12V' }, { t: 'Pantalla LCD a color' }],
+        descripcion: 'Cargador de prueba.' };
+    PRODUCTOS.push(x);
+    const textos = [0, 1, 2, 3].map(v => _textoFacebook(x, { variante: v }));
+    const out = {
+        textos, gancho: _ganchoDe(x),
+        cat: (() => {
+            const f = (id, nombre) => ({ id, nombre, categoria: 'ENERGIATV', precioActual: 20, stock: 4 });
+            const fx = [f('tv-e1', 'Controlador MPPT Boost 1200W'), f('tv-e2', 'Disyuntor Termomagnético DC 2P 40A'),
+                        f('tv-e3', 'Interruptor de Transferencia Automática LSP | 63A 230V 2 Polos'),
+                        f('tv-e4', 'Batería Lubrim Automotriz 75A'), f('tv-e5', 'Batería Lubrim Automotriz 60Ah'),
+                        { id: 'tv-j1', nombre: 'Control para PS4 DualShock', categoria: 'JUEGOSTV', precioActual: 30, stock: 2 }];
+            PRODUCTOS.push(...fx);
+            const r = { energia: pubCatText('ENERGIATV', 'fb'), juegos: pubCatText('JUEGOSTV', 'fb') };
+            fx.forEach(y => PRODUCTOS.splice(PRODUCTOS.indexOf(y), 1));
+            return r;
+        })(),
+    };
+    PRODUCTOS.splice(PRODUCTOS.indexOf(x), 1);
+    return out;
+});
+const lineasPanel = panel.textos.join('\n').split('\n');
+ok(!lineasPanel.some(l => /…\s*$/.test(l)), 'un renglón cortado con «…» salió en el post: ' + lineasPanel.filter(l => /…\s*$/.test(l)).join(' | '));
+ok(!panel.textos.some(t => /casas? rodante|CPAP|\bbotes?\b|\bSUVs?\b/i.test(t.split('🔗')[0])), 'un uso copiado de fuera (casas rodantes, botes, CPAP) salió en el post');
+ok(panel.gancho === '🎯 Cargar la batería del inversor cuando se va la luz', `una lista de vehículos no es gancho; tenía que salir el uso real: «${panel.gancho}»`);
+const lin = n => (panel.cat.energia.split('\n').find(l => l.includes(n)) || '');
+ok(/^⚡/.test(lin('MPPT')) && /^⚡/.test(lin('Disyuntor')), `MPPT y disyuntor llevan ⚡: «${lin('MPPT')}» / «${lin('Disyuntor')}»`);
+ok(/🎮/.test(panel.cat.juegos), 'un control de videojuegos sigue llevando 🎮');
+ok(lin('Transferencia').includes('LSP — ') && !lin('Transferencia').includes('63A'), `el nombre en la lista se corta en el «|»: «${lin('Transferencia')}»`);
+const tagsE = panel.cat.energia.trim().split('\n').pop();
+ok(/#Apagones/.test(tagsE) && !/Lubrim|Automotriz/i.test(tagsE), `las etiquetas del post de Energía son del problema: ${tagsE}`);
+
 const erroresPropios = erroresJs.filter(e => !/firebase is not defined/.test(e));
 ok(erroresPropios.length === 0, 'errores de JavaScript en la página: ' + erroresPropios.join(' | '));
 
