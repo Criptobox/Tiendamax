@@ -68,6 +68,17 @@ const TASA = 950;
         const mn = String(Math.round(mannol.precioActual * TASA)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         ok(/mannol/i.test(t) && t.includes(mn + ' MN'), `Max tenía que dar el precio del Mannol en MN (${mn} MN): «${t.slice(0, 200)}»`);
     }
+    // Cobertura (dueño, 18-nov-2026): mensajería solo en La Habana, se paga al recibir.
+    for (const q of ['hacen envios a pinar del rio', 'hacen envios a matanzas', 'a donde hacen envios']) {
+        const t = limpio((await B.responder(q)).response);
+        ok(/solo en La Habana/i.test(t), `«${q}»: tiene que decir que la mensajería es solo en La Habana: «${t.slice(0, 160)}»`);
+        ok(!/(Pinar del R[ií]o|Matanzas)[^.]{0,30}(mensajer[ií]a directa|cobertura de mensajer)|corredor/i.test(t) && !/hasta Matanzas/i.test(t),
+           `«${q}»: todavía promete mensajería fuera de La Habana: «${t.slice(0, 200)}»`);
+    }
+    {
+        const t = limpio((await B.responder('hacen envios a playa')).response);
+        ok(/al recibir/i.test(t), 'en La Habana tiene que decir que se paga al recibir: ' + t.slice(0, 200));
+    }
     const r = await B.responder('/tasa');
     ok(!/margen/i.test(limpio(r.response)), 'la respuesta de la tasa al cliente no desglosa el margen: ' + limpio(r.response).slice(0, 200));
 }

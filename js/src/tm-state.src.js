@@ -55,9 +55,14 @@ function cargarNumeroWhatsApp() {
 // Texto real de cobertura/costo de envío — lo escribe el admin (⚙️ Configuración → 🚚 Envío).
 // Sin valor guardado, no se inventa "toda Cuba" ni ningún alcance: se muestra un texto
 // genérico honesto que no promete cobertura que no existe.
+// OJO: `envioTexto` vive en el localStorage del teléfono del gestor, así que en
+// el teléfono de un cliente siempre sale el texto por defecto. Por eso el
+// defecto es la cobertura real (dueño, 18-nov-2026: mensajería solo en La
+// Habana, se paga al recibir) y corto: «Según zona · costo aparte» se cortaba
+// a 320 px y no decía nada.
 function getEnvioTexto() {
     const saved = (localStorage.getItem('envioTexto') || '').trim();
-    return saved || 'Según zona · costo aparte';
+    return saved || 'Mensajería en La Habana';
 }
 
 function guardarEnvioTexto() {
@@ -67,7 +72,7 @@ function guardarEnvioTexto() {
     const val = input.value.trim();
     localStorage.setItem('envioTexto', val);
     if (status) {
-        status.textContent = val ? '✅ Guardado' : '✅ Guardado (se mostrará "Según zona")';
+        status.textContent = val ? '✅ Guardado' : '✅ Guardado (se mostrará "Mensajería en La Habana")';
         status.style.color = '#2ECC71';
     }
     mostrarNotificacion('✅ Texto de envío guardado');

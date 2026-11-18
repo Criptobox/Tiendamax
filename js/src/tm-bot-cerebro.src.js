@@ -981,7 +981,10 @@
 
   // ════════════════════════════════════════════════════════════
   //  ENVÍOS POR MUNICIPIO/PROVINCIA
-  //  IMPORTANTE: La mensajería llega desde Pinar del Río hasta Matanzas.
+  //  IMPORTANTE (dueño, 18-nov-2026): la mensajería es SOLO en La Habana, y
+  //  siempre se paga al recibir el producto. Antes llegaba de Pinar del Río
+  //  a Matanzas; si vuelve a ampliarse, se mueve la provincia a
+  //  ENVIOS_PROVINCIAS y ya está.
   //  NO se publican precios de envío — se coordinan por WhatsApp.
   //  Para zonas fuera de este alcance, también coordinar por WhatsApp (envío por vía).
   // ════════════════════════════════════════════════════════════
@@ -1001,15 +1004,14 @@
     {municipio: 'San Miguel del Padrón', nota: ''},
     {municipio: 'Boyeros', nota: 'Aeropuerto, Santiago de las Vegas'},
   ];
-  // Provincias CON cobertura de mensajería directa (Pinar del Río → Matanzas)
-  const ENVIOS_PROVINCIAS = [
-    {provincia: 'Pinar del Río', nota: 'Mensajería directa'},
-    {provincia: 'Artemisa', nota: 'Mensajería directa'},
-    {provincia: 'Mayabeque', nota: 'Mensajería directa'},
-    {provincia: 'Matanzas', nota: 'Mensajería directa, incluye Varadero'},
-  ];
+  // Provincias CON mensajería, además de La Habana. Ahora mismo, ninguna.
+  const ENVIOS_PROVINCIAS = [];
   // Provincias SIN cobertura directa — coordinar por WhatsApp (envío por vía)
   const ENVIOS_VIA_WHATSAPP = [
+    {provincia: 'Pinar del Río', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Artemisa', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Mayabeque', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Matanzas', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Villa Clara', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Cienfuegos', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Sancti Spíritus', nota: 'Coordinar por WhatsApp — envío por vía'},
@@ -1885,7 +1887,7 @@
        ) return 'envios';
     /* Recoger NO es envío y no se puede contestar con la tabla de cobertura,
        que fue lo que pasó: «¿se puede pasar a recogerlo?» devolvía el
-       corredor Matanzas–Pinar del Río, que no responde nada. Hay VARIOS
+       la tabla de cobertura de mensajería, que no responde nada. Hay VARIOS
        puntos de recogida y cuál toca depende del producto, así que el bot no
        lo puede saber: lo suyo es mandar a preguntar con el producto delante.
        Va antes que envíos porque «recoger» casa también con sus patrones. */
@@ -2189,7 +2191,7 @@
       }
     }
 
-    // Detectar provincia CON cobertura (Pinar del Río → Matanzas)
+    // Detectar provincia CON mensajería (fuera de La Habana: ninguna ahora)
     let provinciaEncontrada = null;
     for(const prov of ENVIOS_PROVINCIAS){
       const provClean = cleanForMatch(prov.provincia);
@@ -2214,31 +2216,31 @@
 
     if(municipioEncontrado){
       return {
-        response: `🚚 <strong>Envío a ${municipioEncontrado.municipio} (La Habana)</strong>\n\n✅ <strong>Zona con cobertura de mensajería directa</strong> (Pinar del Río → Matanzas).\n${municipioEncontrado.nota ? `• <em>Nota:</em> ${municipioEncontrado.nota}\n` : ''}\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario de entrega y confirmar.</em>\n\nEl pago es <strong>contra entrega</strong>: pagas cuando recibes el producto.`,
+        response: `🚚 <strong>Envío a ${municipioEncontrado.municipio} (La Habana)</strong>\n\n✅ <strong>Tenemos mensajería en tu municipio</strong>.\n${municipioEncontrado.nota ? `• <em>Nota:</em> ${municipioEncontrado.nota}\n` : ''}\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario de entrega y confirmar.</em>\n\nPagas <strong>al recibir el producto</strong>, en USD o en MN.`,
         quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
       };
     }
 
     if(provinciaEncontrada){
       return {
-        response: `🚚 <strong>Envío a ${provinciaEncontrada.provincia}</strong>\n\n✅ <strong>Zona con cobertura de mensajería directa</strong> (Pinar del Río → Matanzas).\n• <em>Cobertura:</em> ${provinciaEncontrada.nota}\n\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario y detalles de la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`,
+        response: `🚚 <strong>Envío a ${provinciaEncontrada.provincia}</strong>\n\n✅ <strong>Tenemos mensajería en tu provincia</strong>.\n• <em>Cobertura:</em> ${provinciaEncontrada.nota}\n\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario y detalles de la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`,
         quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
       };
     }
 
     if(provinciaSinCobertura){
       return {
-        response: `🚚 <strong>Envío a ${provinciaSinCobertura.provincia}</strong>\n\n⚠️ <strong>Nuestra mensajería directa llega desde Pinar del Río hasta Matanzas.</strong> Tu provincia está fuera de esa zona.\n\nPero tranquilo, podemos coordinar el envío por vía alterna:\n• Encomienda por ómnibus nacional (desde La Habana)\n• Transporte privado contratado por ti\n• Acuerdo especial con mensajería de la zona\n\nPara eso necesitamos que escribas por WhatsApp y armamos la logística según tu caso.`,
+        response: `🚚 <strong>Envío a ${provinciaSinCobertura.provincia}</strong>\n\n⚠️ <strong>Ahora mismo nuestra mensajería es solo en La Habana.</strong> A tu provincia no llega directamente.\n\nPero tranquilo, podemos coordinar el envío por vía alterna:\n• Encomienda por ómnibus nacional (desde La Habana)\n• Transporte privado contratado por ti\n• Acuerdo especial con mensajería de la zona\n\nPara eso necesitamos que escribas por WhatsApp y armamos la logística según tu caso.`,
         quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver zonas con cobertura']
       };
     }
 
     if(esHabana && !municipioEncontrado){
-      let body = `🚚 <strong>Envíos en La Habana</strong>\n\n✅ Cobertura de mensajería directa en todos los municipios:\n\n`;
+      let body = `🚚 <strong>Envíos en La Habana</strong>\n\n✅ Tenemos mensajería en todos los municipios:\n\n`;
       ENVIOS_HABANA.slice(0,7).forEach(mun => {
         body += `• <strong>${mun.municipio}</strong>${mun.nota ? ` — ${mun.nota}` : ''}\n`;
       });
-      body += `\n…y los demás municipios similares. Dime tu municipio específico y te confirmo.\n\n⚠️ <em>Para cualquier municipio debes escribirnos por WhatsApp y coordinar la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`;
+      body += `\n…y los demás municipios similares. Dime tu municipio específico y te confirmo.\n\n⚠️ <em>Para cualquier municipio debes escribirnos por WhatsApp y coordinar la entrega.</em>\n\nPagas <strong>al recibir el producto</strong>.`;
       return {
         response: body,
         quickReplies: ['💬 Coordinar por WhatsApp','🚚 Ver provincias','📦 Ver productos']
@@ -2254,13 +2256,14 @@
       if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)){
         body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero que cubra la ruta, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla. Escríbenos con tu dirección y te decimos el día.\n\n`;
       }
-      body += `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\n`;
-      body += `📍 <strong>Zona con mensajería directa</strong> (pago contra entrega):\n`;
+      body += `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\nAhora mismo la mensajería es <strong>solo en La Habana</strong>.\n\n`;
+      body += `📍 <strong>Con mensajería</strong> (pagas al recibir el producto):\n`;
       body += `• <strong>La Habana</strong> — todos los municipios\n`;
       ENVIOS_PROVINCIAS.forEach(p => {
         body += `• <strong>${p.provincia}</strong> — ${p.nota}\n`;
       });
-      body += `\n📍 <strong>Zona sin mensajería directa</strong> (coordinar por WhatsApp — envío por vía):\n`;
+      body += `\n📍 <strong>Resto del país</strong> (coordinar por WhatsApp — envío por vía):\n`;
+      body += `• Pinar del Río, Artemisa, Mayabeque, Matanzas\n`;
       body += `• Villa Clara, Cienfuegos, Sancti Spíritus, Ciego de Ávila, Camagüey\n`;
       body += `• Las Tunas, Holguín, Granma, Santiago de Cuba, Guantánamo\n`;
       body += `• Isla de la Juventud\n\n`;
@@ -2272,8 +2275,8 @@
     }
 
     return {
-      response: `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nNuestra mensajería directa con pago contra entrega opera <strong>únicamente en el corredor desde Matanzas hasta Pinar del Río</strong>, incluyendo:\n\n• <strong>La Habana</strong> — todos los municipios\n• <strong>Artemisa</strong>\n• <strong>Mayabeque</strong>\n\n🚫 <strong>Para el Centro y Oriente del país</strong> (Villa Clara, Cienfuegos, Camagüey, Las Tunas, Holguín, Santiago de Cuba, Guantánamo, Isla de la Juventud):\n\nNo contamos con ruta directa. El envío se coordina por WhatsApp a través de agencias de encomiendas externas (VíaCar, transporte por ómnibus) o con el transportista de tu confianza.\n\n⚠️ <em>Para cualquier zona debes escribir por WhatsApp y coordinar.</em>\n\nDime tu municipio o provincia y te confirmo.`,
-      quickReplies: ['🚚 Soy de Occidente (Matanzas-Pinar)','🚚 Soy del Centro/Oriente','💬 Coordinar por WhatsApp']
+      response: `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nAhora mismo nuestra mensajería es <strong>solo en La Habana</strong>, en todos los municipios, y pagas <strong>al recibir el producto</strong>.\n\n📦 <strong>Para el resto del país</strong> no tenemos ruta directa: el envío se coordina por WhatsApp a través de agencias de encomiendas (VíaCar, ómnibus) o con el transportista de tu confianza.\n\n⚠️ <em>Para cualquier zona escríbenos por WhatsApp y lo coordinamos.</em>\n\nDime tu municipio o provincia y te confirmo.`,
+      quickReplies: ['🚚 Soy de La Habana','🚚 Soy de otra provincia','💬 Coordinar por WhatsApp']
     };
   };
 
@@ -6534,7 +6537,7 @@ ${notasHTML}
     {ic:'🔧', title:'Diagnóstico de averías', desc:'Dime qué hace el aparato — pita, parpadea, se apaga — y te digo qué significa y qué hacer antes de moverlo.', try:'mi inversor pita y tiene la luz roja encendida'},
     {ic:'📄', title:'Propuesta técnica en PDF', desc:'Del sistema que te arme, un documento con componentes, precios y autonomía, listo para imprimir o mandar por correo.', try:'arma un sistema solar mediano'},
     {ic:'💰', title:'Filtrar por presupuesto', desc:'Dime "tengo $100" y te muestro solo opciones dentro de tu presupuesto.', try:'tengo $100, ¿qué cámara me recomiendas?'},
-    {ic:'🚚', title:'Envíos: Pinar del Río → Matanzas', desc:'Mensajería directa en occidente. Centro/Oriente: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
+    {ic:'🚚', title:'Envíos: mensajería en La Habana', desc:'Pagas al recibir. Resto del país: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
     {ic:'💵', title:'Métodos de pago detallados', desc:'Efectivo USD/MN, Zelle, EnZona, transferencia bancaria, crypto (próximamente).', try:'métodos de pago'},
     {ic:'👕', title:'Selector de talla/medida', desc:'Para ropa y llantas, te pregunta la talla exacta antes de armar el pedido de WhatsApp.', try:'muéstrame ropa disponible'},
     {ic:'📋', title:'Ficha de cualquier producto', desc:'Con ficha técnica, garantía, descripción y accesorios sugeridos automáticamente.', try:'háblame del inversor solar de 3.6kW'},

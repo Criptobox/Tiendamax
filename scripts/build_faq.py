@@ -87,11 +87,11 @@ BASE_FAQ = [
     },
     {
         "pregunta": "¿Hacen envíos a domicilio?",
-        "respuesta": "Sí, pero nuestra mensajería directa con pago contra entrega opera únicamente en el corredor desde Matanzas hasta Pinar del Río, incluyendo La Habana, Artemisa y Mayabeque. Si vives fuera de esta zona, escríbenos por WhatsApp para coordinar el envío a través de encomiendas externas.",
+        "respuesta": "Ahora mismo nuestra mensajería es solo en La Habana, en todos los municipios, y pagas al recibir el producto. Para el resto del país coordinamos el envío por WhatsApp (encomienda por VíaCar u ómnibus, o el transportista que tú elijas).",
     },
     {
         "pregunta": "¿Hacen envíos a Santiago de Cuba, Holguín o Camagüey?",
-        "respuesta": "Nuestra ruta de mensajería directa llega hasta Matanzas. Para las provincias del centro y oriente del país, coordinamos el envío por WhatsApp a través de agencias de encomiendas (como VíaCar o transporte por ómnibus) o con el transportista de tu confianza.",
+        "respuesta": "Nuestra mensajería es solo en La Habana. Para las demás provincias coordinamos el envío por WhatsApp a través de agencias de encomiendas o del transportista que prefieras.",
     },
     {
         "pregunta": "¿Los productos tienen garantía?",
