@@ -8686,7 +8686,24 @@ function _wzSeleccionados(){ return _wzProductos().filter(p=>WZ_SEL.has(String(p
 function _wzPlantilla(red){
   const todas=tmPlantillas();
   const dela=todas.filter(t=>t.red===red).sort((a,b)=>(Number(b.usos)||0)-(Number(a.usos)||0));
-  return dela[0] || todas[0] || null;
+  // Sin plantilla propia para esta red, la de ESTA red por defecto: antes caía
+  // en la primera de la lista, que podía ser la de otra (un texto de Revólico
+  // para el Estado de WhatsApp).
+  return dela[0] || tmPlantillasPorDefecto().find(t=>t.red===red) || null;
+}
+/* Facebook con grupos guardados se publica desde la cola (js/revolico_integration.js):
+   lleva el texto y la imagen de CADA grupo, respeta las pausas, el tope por hora y
+   el tema de cada grupo, y apunta cada publicación con su grupo. Esta pestaña
+   copiaba un solo texto de plantilla para todos y lo apuntaba con el nombre de la
+   plantilla como si fuera un grupo: se saltaba todo eso. La plantilla sigue ahí
+   para tu página u otro sitio. */
+function _wzTieneGrupos(){
+  try{ return JSON.parse(localStorage.getItem('gruposFB')||'[]').some(g=>g&&g.url&&String(g.url).includes('facebook.com')); }catch(e){ return false; }
+}
+function wzColaFB(){
+  const ids=_wzSeleccionados().map(p=>p.id);
+  if(!ids.length){ showToast('⚠️ Elige al menos un producto'); return; }
+  if(typeof tmColaPlan==='function') tmColaPlan(ids);
 }
 
 function wzRenderSalida(){
@@ -8696,6 +8713,7 @@ function wzRenderSalida(){
   cont.innerHTML=WZ_REDES.map(r=>{
     const t=_wzPlantilla(r.id);
     if(!t) return '';
+    const viaCola=(r.id==='fb' && _wzTieneGrupos() && typeof tmColaPlan==='function');
     const texto=sel.map(p=>tmAplicarPlantilla(t.texto,p,r.id)).join('\n\n———\n\n');
     return `<div class="section">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -8703,8 +8721,11 @@ function wzRenderSalida(){
         <span class="badge">${esc(t.nombre)}</span>
       </div>
       <pre id="wz-txt-${r.id}" style="white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;margin:10px 0;max-height:220px;overflow:auto">${esc(texto)}</pre>
+      ${viaCola?`<p class="radar-ayuda" id="wz-fb-cola-nota">Con tus grupos guardados, Facebook se publica desde la cola: cada grupo recibe su texto y su imagen, con las pausas y solo los productos de su tema, y queda apuntado con el grupo. La plantilla de arriba es para tu página u otro sitio.</p>`:''}
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>
+        ${viaCola?`<button class="btn btn-primary" id="wz-fb-cola" onclick="wzColaFB()">📢 Publicar en mis grupos (${sel.length} producto${sel.length!==1?'s':''})</button>
+        <button class="btn btn-ghost" onclick="wzCopiar('${r.id}')">📋 Copiar con mi plantilla</button>`
+        :`<button class="btn btn-primary" onclick="wzCopiar('${r.id}')">📋 Copiar${r.url?' y abrir':''}</button>`}
       </div>
     </div>`;
   }).join('');
@@ -10133,7 +10154,7 @@ window.ventaAdd=ventaAdd; window.ventaCat=ventaCat; window.ventaCartComision=ven
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
-window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar;
+window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar; window.wzColaFB=wzColaFB;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
 window.catRenombrar=catRenombrar; window.catApToggle=catApToggle; window.catApSubir=catApSubir; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
