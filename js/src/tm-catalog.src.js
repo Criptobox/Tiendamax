@@ -769,6 +769,8 @@ async function sincronizarTodoConGitHub() {
         // Tema de temporada: si se eligió en ⚙️ Configuración y aún no subió,
         // viaja aquí; si no, se queda el del repo (Object.assign de arriba).
         tema:                typeof window.tmTemaParaSubir === 'function' ? window.tmTemaParaSubir(_configBase.tema) : _configBase.tema,
+        // Zonas de mensajería (⚙️ Configuración): igual que el tema.
+        envios:              typeof window.tmEnviosParaSubir === 'function' ? window.tmEnviosParaSubir(_configBase.envios) : _configBase.envios,
         actualizado:         new Date().toISOString(),
     });
     // Preservar el margen MN configurado (puede ser 0). localStorage manda; si no, se

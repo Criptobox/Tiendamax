@@ -147,6 +147,9 @@ async function guardarTasaMNAdmin() {
 
         // Agotados al final — mismo orden que renderizarProductos
         lista.sort((a, b) => (a.stock === 0 ? 1 : 0) - (b.stock === 0 ? 1 : 0));
+        if (typeof _heroSearchActivo !== 'undefined' && _heroSearchActivo && !(typeof _heroOrden !== 'undefined' && _heroOrden) && typeof tmOrdenBusqueda === 'function') {
+            lista = tmOrdenBusqueda(lista, _heroSearchActivo);
+        }
 
         if (typeof productosVisibleCount === 'number' && Number.isFinite(productosVisibleCount)) {
             lista = lista.slice(0, productosVisibleCount);

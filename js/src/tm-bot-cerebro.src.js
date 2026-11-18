@@ -981,7 +981,9 @@
 
   // ════════════════════════════════════════════════════════════
   //  ENVÍOS POR MUNICIPIO/PROVINCIA
-  //  IMPORTANTE: La mensajería llega desde Pinar del Río hasta Matanzas.
+  //  Las zonas CON mensajería no viven aquí: las pone el dueño en ⚙️
+  //  Configuración → 🚚 Mensajería y llegan en config.json (ver _enviosCfg).
+  //  Esta tabla solo sirve para reconocer provincias y municipios en el texto.
   //  NO se publican precios de envío — se coordinan por WhatsApp.
   //  Para zonas fuera de este alcance, también coordinar por WhatsApp (envío por vía).
   // ════════════════════════════════════════════════════════════
@@ -1001,15 +1003,12 @@
     {municipio: 'San Miguel del Padrón', nota: ''},
     {municipio: 'Boyeros', nota: 'Aeropuerto, Santiago de las Vegas'},
   ];
-  // Provincias CON cobertura de mensajería directa (Pinar del Río → Matanzas)
-  const ENVIOS_PROVINCIAS = [
-    {provincia: 'Pinar del Río', nota: 'Mensajería directa'},
-    {provincia: 'Artemisa', nota: 'Mensajería directa'},
-    {provincia: 'Mayabeque', nota: 'Mensajería directa'},
-    {provincia: 'Matanzas', nota: 'Mensajería directa, incluye Varadero'},
-  ];
   // Provincias SIN cobertura directa — coordinar por WhatsApp (envío por vía)
   const ENVIOS_VIA_WHATSAPP = [
+    {provincia: 'Pinar del Río', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Artemisa', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Mayabeque', nota: 'Coordinar por WhatsApp — envío por vía'},
+    {provincia: 'Matanzas', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Villa Clara', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Cienfuegos', nota: 'Coordinar por WhatsApp — envío por vía'},
     {provincia: 'Sancti Spíritus', nota: 'Coordinar por WhatsApp — envío por vía'},
@@ -1885,7 +1884,7 @@
        ) return 'envios';
     /* Recoger NO es envío y no se puede contestar con la tabla de cobertura,
        que fue lo que pasó: «¿se puede pasar a recogerlo?» devolvía el
-       corredor Matanzas–Pinar del Río, que no responde nada. Hay VARIOS
+       la tabla de cobertura de mensajería, que no responde nada. Hay VARIOS
        puntos de recogida y cuál toca depende del producto, así que el bot no
        lo puede saber: lo suyo es mandar a preguntar con el producto delante.
        Va antes que envíos porque «recoger» casa también con sus patrones. */
@@ -2175,105 +2174,76 @@
     siDigoSi: () => R.categorias()
   });
 
+  /* Las zonas de mensajería las pone el dueño en ⚙️ Configuración → 🚚
+     Mensajería y llegan en config.json (tmEnviosCfg, en el bundle de la
+     tienda). Max contesta con ESAS zonas, su precio y su tiempo: así nunca
+     dice una cobertura distinta de la de la ficha. Siempre se paga al recibir. */
+  function _enviosCfg(){
+    try { if (typeof tmEnviosCfg === 'function') return tmEnviosCfg(); } catch(e) {}
+    return { zonas: [{ nombre: 'La Habana', precio: '', tiempo: '' }],
+             resto: 'Al resto del país lo coordinamos por WhatsApp (encomienda o transportista).' };
+  }
+  function _zonaTxt(z){ return '<strong>' + escapeHtml(z.nombre) + '</strong>' + [z.precio, z.tiempo].filter(Boolean).map(v => ' · ' + escapeHtml(v)).join(''); }
+  function _zonasLista(c){ return c.zonas.map(z => '• ' + _zonaTxt(z)).join('\n'); }
+  function _zonasNombres(c){
+    const n = c.zonas.map(z => escapeHtml(z.nombre));
+    return n.length === 1 ? n[0] : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1];
+  }
+  // ¿El mensaje nombra una zona con mensajería? Por su nombre, o —si una zona
+  // es La Habana— por un municipio de La Habana.
+  function _zonaDe(t, c){
+    for (const z of c.zonas) {
+      const n = cleanForMatch(z.nombre);
+      if (n && (t.includes(n) || t.includes(n.replace(/\s+/g, '')))) return z;
+    }
+    const hab = c.zonas.find(z => /habana/.test(cleanForMatch(z.nombre)));
+    if (hab) {
+      for (const mun of ENVIOS_HABANA) {
+        const mc = cleanForMatch(mun.municipio);
+        if (t.includes(mc) || t.includes(mc.replace(/\s+/g, ''))) return Object.assign({}, hab, { municipio: mun.municipio, nota: mun.nota });
+      }
+    }
+    return null;
+  }
+
   R.envios = (text) => {
     const m = text.toLowerCase();
     const t = cleanForMatch(text);
+    const c = _enviosCfg();
+    const pago = 'Pagas <strong>al recibir el producto</strong>, en USD o en MN.';
 
-    // Detectar municipio de La Habana específico
-    let municipioEncontrado = null;
-    for(const mun of ENVIOS_HABANA){
-      const munClean = cleanForMatch(mun.municipio);
-      if(t.includes(munClean) || t.includes(munClean.replace(/\s+/g,''))){
-        municipioEncontrado = mun;
-        break;
-      }
-    }
-
-    // Detectar provincia CON cobertura (Pinar del Río → Matanzas)
-    let provinciaEncontrada = null;
-    for(const prov of ENVIOS_PROVINCIAS){
-      const provClean = cleanForMatch(prov.provincia);
-      if(t.includes(provClean)){
-        provinciaEncontrada = prov;
-        break;
-      }
-    }
-
-    // Detectar provincia SIN cobertura directa (centro-oriente)
-    let provinciaSinCobertura = null;
-    for(const prov of ENVIOS_VIA_WHATSAPP){
-      const provClean = cleanForMatch(prov.provincia);
-      if(t.includes(provClean)){
-        provinciaSinCobertura = prov;
-        break;
-      }
-    }
-
-    // Detectar "habana" genérico
-    const esHabana = /\b(habana|havana|la habana)\b/.test(m);
-
-    if(municipioEncontrado){
+    const zona = _zonaDe(t, c);
+    if (zona) {
+      const donde = zona.municipio ? `${escapeHtml(zona.municipio)} (${escapeHtml(zona.nombre)})` : escapeHtml(zona.nombre);
       return {
-        response: `🚚 <strong>Envío a ${municipioEncontrado.municipio} (La Habana)</strong>\n\n✅ <strong>Zona con cobertura de mensajería directa</strong> (Pinar del Río → Matanzas).\n${municipioEncontrado.nota ? `• <em>Nota:</em> ${municipioEncontrado.nota}\n` : ''}\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario de entrega y confirmar.</em>\n\nEl pago es <strong>contra entrega</strong>: pagas cuando recibes el producto.`,
+        response: `🚚 <strong>Envío a ${donde}</strong>\n\n✅ <strong>Tenemos mensajería ahí</strong>.\n${zona.precio ? `• <em>Precio del envío:</em> ${escapeHtml(zona.precio)}\n` : ''}${zona.tiempo ? `• <em>Tiempo:</em> ${escapeHtml(zona.tiempo)}\n` : ''}${zona.nota ? `• <em>Nota:</em> ${escapeHtml(zona.nota)}\n` : ''}\n⚠️ <em>Escríbenos por WhatsApp para coordinar la dirección exacta y el horario.</em>\n\n${pago}`,
         quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
       };
     }
 
-    if(provinciaEncontrada){
+    // Una provincia (o «la Habana» a secas) sin mensajería.
+    const prov = ENVIOS_VIA_WHATSAPP.find(p => t.includes(cleanForMatch(p.provincia)));
+    const esHabana = /\b(habana|havana)\b/.test(m);
+    if (prov || esHabana) {
+      const nombre = prov ? prov.provincia : 'La Habana';
       return {
-        response: `🚚 <strong>Envío a ${provinciaEncontrada.provincia}</strong>\n\n✅ <strong>Zona con cobertura de mensajería directa</strong> (Pinar del Río → Matanzas).\n• <em>Cobertura:</em> ${provinciaEncontrada.nota}\n\n⚠️ <em>Debes escribirnos por WhatsApp para coordinar la dirección exacta, horario y detalles de la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`,
-        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver otra zona']
+        response: `🚚 <strong>Envío a ${escapeHtml(nombre)}</strong>\n\n⚠️ <strong>Ahora mismo nuestra mensajería es solo en ${_zonasNombres(c)}.</strong> A ${escapeHtml(nombre)} no llega directamente.\n\n${escapeHtml(c.resto)}\n\nEscríbenos por WhatsApp y armamos la entrega según tu caso.`,
+        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver zonas con mensajería']
       };
     }
 
-    if(provinciaSinCobertura){
-      return {
-        response: `🚚 <strong>Envío a ${provinciaSinCobertura.provincia}</strong>\n\n⚠️ <strong>Nuestra mensajería directa llega desde Pinar del Río hasta Matanzas.</strong> Tu provincia está fuera de esa zona.\n\nPero tranquilo, podemos coordinar el envío por vía alterna:\n• Encomienda por ómnibus nacional (desde La Habana)\n• Transporte privado contratado por ti\n• Acuerdo especial con mensajería de la zona\n\nPara eso necesitamos que escribas por WhatsApp y armamos la logística según tu caso.`,
-        quickReplies: ['💬 Coordinar por WhatsApp','📦 Ver productos','🚚 Ver zonas con cobertura']
-      };
+    /* Preguntó por el TIEMPO: se dice el de cada zona si el dueño lo puso, y
+       si no, que se coordina — inventarse un «24-48 h» es prometer algo que el
+       cliente viene a cobrar. */
+    let body = '';
+    if (/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)
+        && !c.zonas.some(z => z.tiempo)) {
+      body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla.\n\n`;
     }
-
-    if(esHabana && !municipioEncontrado){
-      let body = `🚚 <strong>Envíos en La Habana</strong>\n\n✅ Cobertura de mensajería directa en todos los municipios:\n\n`;
-      ENVIOS_HABANA.slice(0,7).forEach(mun => {
-        body += `• <strong>${mun.municipio}</strong>${mun.nota ? ` — ${mun.nota}` : ''}\n`;
-      });
-      body += `\n…y los demás municipios similares. Dime tu municipio específico y te confirmo.\n\n⚠️ <em>Para cualquier municipio debes escribirnos por WhatsApp y coordinar la entrega.</em>\n\nEl pago es <strong>contra entrega</strong>.`;
-      return {
-        response: body,
-        quickReplies: ['💬 Coordinar por WhatsApp','🚚 Ver provincias','📦 Ver productos']
-      };
-    }
-
-    if(/\b(cu[aá]nto|tarda|demora|tiempo|cuando|llega|provincias|todas las provincias|cobertura|donde llevan|a donde llegan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a)\b/.test(m)){
-      /* Preguntó por el TIEMPO y la tabla de abajo solo dice el dónde. No hay
-         un plazo publicado —depende del municipio y del mensajero— y
-         inventarse un «24-48 h» es prometer algo que el cliente viene a
-         cobrar. Se dice lo que hay y se manda a coordinarlo. */
-      let body = '';
-      if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora|tarda|demora)\b/.test(m)){
-        body += `⏱️ <strong>El tiempo de entrega se coordina por WhatsApp</strong>: depende de tu municipio y del mensajero que cubra la ruta, así que no te doy un plazo de antemano para no prometerte algo que no se cumpla. Escríbenos con tu dirección y te decimos el día.\n\n`;
-      }
-      body += `🚚 <strong>Cobertura de envíos TiendaMax</strong>\n\n`;
-      body += `📍 <strong>Zona con mensajería directa</strong> (pago contra entrega):\n`;
-      body += `• <strong>La Habana</strong> — todos los municipios\n`;
-      ENVIOS_PROVINCIAS.forEach(p => {
-        body += `• <strong>${p.provincia}</strong> — ${p.nota}\n`;
-      });
-      body += `\n📍 <strong>Zona sin mensajería directa</strong> (coordinar por WhatsApp — envío por vía):\n`;
-      body += `• Villa Clara, Cienfuegos, Sancti Spíritus, Ciego de Ávila, Camagüey\n`;
-      body += `• Las Tunas, Holguín, Granma, Santiago de Cuba, Guantánamo\n`;
-      body += `• Isla de la Juventud\n\n`;
-      body += `<strong>Para cualquier envío debes escribirnos por WhatsApp</strong> y coordinamos la entrega o el envío por vía según tu caso.\n\n<em>El costo del envío se informa por WhatsApp según tu ubicación exacta.</em>`;
-      return {
-        response: body,
-        quickReplies: ['💬 Coordinar por WhatsApp','🚚 Ver La Habana','📦 Ver productos']
-      };
-    }
-
+    body += `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nAhora mismo la mensajería es <strong>solo en ${_zonasNombres(c)}</strong>:\n${_zonasLista(c)}\n\n${pago}\n\n📦 <strong>Resto del país:</strong> ${escapeHtml(c.resto)}\n\nDime tu municipio o provincia y te confirmo.`;
     return {
-      response: `🚚 <strong>Cobertura de Mensajería TiendaMax</strong>\n\nNuestra mensajería directa con pago contra entrega opera <strong>únicamente en el corredor desde Matanzas hasta Pinar del Río</strong>, incluyendo:\n\n• <strong>La Habana</strong> — todos los municipios\n• <strong>Artemisa</strong>\n• <strong>Mayabeque</strong>\n\n🚫 <strong>Para el Centro y Oriente del país</strong> (Villa Clara, Cienfuegos, Camagüey, Las Tunas, Holguín, Santiago de Cuba, Guantánamo, Isla de la Juventud):\n\nNo contamos con ruta directa. El envío se coordina por WhatsApp a través de agencias de encomiendas externas (VíaCar, transporte por ómnibus) o con el transportista de tu confianza.\n\n⚠️ <em>Para cualquier zona debes escribir por WhatsApp y coordinar.</em>\n\nDime tu municipio o provincia y te confirmo.`,
-      quickReplies: ['🚚 Soy de Occidente (Matanzas-Pinar)','🚚 Soy del Centro/Oriente','💬 Coordinar por WhatsApp']
+      response: body,
+      quickReplies: ['🚚 Soy de La Habana','🚚 Soy de otra provincia','💬 Coordinar por WhatsApp']
     };
   };
 
@@ -2382,11 +2352,29 @@
      ya se niegan a imprimir, en la única respuesta que va ENTERA sobre la
      tasa. Y pasa de verdad: la config llega por su cuenta y en Cuba puede no
      llegar. */
-  R.tasa = () => (!TASA_MN || TASA_MN <= 0) ? {
+  /* «¿Cuánto es en MN el aceite Mannol 5W30?» nombra un producto: se contesta
+     con SU precio en las dos monedas, no con la tasa genérica. Y la respuesta
+     al cliente ya no desglosa «margen operativo +20 MN»: suena a recargo y
+     resta confianza; el precio en MN que ve es el que paga. */
+  R.tasa = (text) => {
+    const nombrados = (TASA_MN > 0 && text) ? detectProductMentions(text).slice(0, 3) : [];
+    if (nombrados.length) {
+      const lineas = nombrados.map(p => (p.moneda === 'MN')
+        ? `• <strong>${escapeHtml(p.nombre)}</strong>: ${Math.round(Number(p.precio)||0).toLocaleString('es-ES')} MN`
+        : `• <strong>${escapeHtml(p.nombre)}</strong>: ${fmtUSD(p.precio).replace(/\.00$/, '')} USD = <strong>${fmtMN(p.precio)}</strong>`).join('\n');
+      return {
+        response: `💱 ${lineas}\n\n<em>A ${TASA_MN} MN el dólar, la tasa de hoy. Pagas al recibirlo, en USD o en MN.</em>`,
+        products: nombrados,
+        quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
+      };
+    }
+    return R._tasaGeneral();
+  };
+  R._tasaGeneral = () => (!TASA_MN || TASA_MN <= 0) ? {
     response: `💱 <strong>Tasa de cambio</strong>\n\nAhora mismo no tengo la tasa del día cargada, y prefiero no darte un número inventado. La tasa que aplicamos es la de <strong>elTOQUE</strong> más un margen operativo fijo, y el precio en MN que ves en el catálogo ya la lleva dentro.\n\nEscríbenos por WhatsApp (<code>+${WHATSAPP}</code>) y te decimos la de hoy.`,
     quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
   } : ({
-    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nDesglose:\n• <strong>Tasa base elTOQUE:</strong> ${TASA_BASE_MN} MN\n  <em>(elTOQUE es la referencia de tasa de cambio en Cuba, se actualiza a diario)</em>\n• <strong>Margen operativo:</strong> +${MARGEN_MN} MN\n• <strong>Total que pagas:</strong> ${TASA_MN} MN por USD\n\nEl precio en MN que ves en el catálogo <strong>ya incluye la tasa + el margen</strong>. No hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nSe basa en la tasa de <strong>elTOQUE</strong>, la referencia en Cuba, y se actualiza a diario.\n\nEl precio en MN que ves en el catálogo <strong>ya está calculado</strong>: no hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
     quickReplies: ['💳 Métodos de pago','📦 Ver productos','💬 WhatsApp']
   });
 
@@ -4798,7 +4786,11 @@ ${notasHTML}
       if(!_todos.length){
         const n = PRODUCTOS.filter(p => p.subcategoria === sub).length;
         const _qs = _expandirConsulta(cleanForMatch(text));
-        const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qs));
+        // Un «relacionado» tiene que compartir una PALABRA, no solo una cifra:
+        // «inversor de 3000w» ofrecía la moto eléctrica de 3000W ($1700) por
+        // el «3000w» y nada más.
+        const _qsPalabras = _qs.split(' ').filter(w => !/\d/.test(w)).join(' ');
+        const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qsPalabras));
         let body = `📂 <strong>${escapeHtml(sub)}</strong>: ahora mismo ${n > 1 ? `los ${n} modelos están` : 'está'} <em style="color:#ff8888">agotado${n > 1 ? 's' : ''}</em>.\n\nEscríbeme por WhatsApp y te aviso en cuanto entren.`;
         if(otros.length) body += `\n\nLo que sí tengo disponible relacionado:`;
         return {
@@ -6512,7 +6504,7 @@ ${notasHTML}
     {ic:'🔧', title:'Diagnóstico de averías', desc:'Dime qué hace el aparato — pita, parpadea, se apaga — y te digo qué significa y qué hacer antes de moverlo.', try:'mi inversor pita y tiene la luz roja encendida'},
     {ic:'📄', title:'Propuesta técnica en PDF', desc:'Del sistema que te arme, un documento con componentes, precios y autonomía, listo para imprimir o mandar por correo.', try:'arma un sistema solar mediano'},
     {ic:'💰', title:'Filtrar por presupuesto', desc:'Dime "tengo $100" y te muestro solo opciones dentro de tu presupuesto.', try:'tengo $100, ¿qué cámara me recomiendas?'},
-    {ic:'🚚', title:'Envíos: Pinar del Río → Matanzas', desc:'Mensajería directa en occidente. Centro/Oriente: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
+    {ic:'🚚', title:'Envíos: mensajería en La Habana', desc:'Pagas al recibir. Resto del país: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
     {ic:'💵', title:'Métodos de pago detallados', desc:'Efectivo USD/MN, Zelle, EnZona, transferencia bancaria, crypto (próximamente).', try:'métodos de pago'},
     {ic:'👕', title:'Selector de talla/medida', desc:'Para ropa y llantas, te pregunta la talla exacta antes de armar el pedido de WhatsApp.', try:'muéstrame ropa disponible'},
     {ic:'📋', title:'Ficha de cualquier producto', desc:'Con ficha técnica, garantía, descripción y accesorios sugeridos automáticamente.', try:'háblame del inversor solar de 3.6kW'},

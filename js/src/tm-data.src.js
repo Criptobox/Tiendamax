@@ -503,7 +503,11 @@ async function busquedaConIA(q) {
         // Lo que se puede comprar va primero; dentro de cada grupo, lo más
         // relevante. El desempate era stock ASCENDENTE, así que a igualdad de
         // puntos ganaban los de stock 0: buscar «router» daba cinco AGOTADO.
-        .sort((a, b) => (Number(b.producto.stock) > 0) - (Number(a.producto.stock) > 0)
+        // Lo nombrado (la palabra está en el nombre) va primero, aunque esté
+        // agotado: ver tmBusquedaEnNombre. Dentro de cada grupo, lo que se
+        // puede comprar primero y luego lo más relevante.
+        .sort((a, b) => (tmBusquedaEnNombre(b.producto, q) - tmBusquedaEnNombre(a.producto, q))
+            || (Number(b.producto.stock) > 0) - (Number(a.producto.stock) > 0)
             || b.score - a.score || Number(b.producto.stock) - Number(a.producto.stock))
         .slice(0, 5)
         .map(x => x.producto);
@@ -546,7 +550,7 @@ function renderSugerencias(resultados, q) {
     sugBox.innerHTML = resultados.map(p => {
         // resaltarTexto ya genera HTML controlado a partir de p.nombre escapado
         const nombre = q ? resaltarTexto(escapeHtml(p.nombre), q) : escapeHtml(p.nombre);
-        const agotadoBadge = p.stock === 0 ? '<span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>' : '';
+        const agotadoBadge = p.stock === 0 ? ' <span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>' : '';
         return '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
             '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
             '<span class="hsb-sug-name">' + nombre + agotadoBadge + '</span>' +
@@ -1291,6 +1295,30 @@ function _tmTextoBuscable(p) {
 // en cuanto el orden no era idéntico ("antena cpe" no está dentro de "ANTENAS Y
 // CPE", aunque las dos palabras sí). Para una sola palabra se comporta igual
 // que antes.
+/* ¿El cliente nombró ESTE tipo de producto? Que la palabra buscada esté en el
+   nombre (también en plural: «inversores»). Buscar «inversor» sacaba primero
+   la soldadora —«Inverter IGBT» en su descripción— y los siete inversores
+   agotados al final, sin su «Avísame» a la vista: el cliente concluía que
+   aquí no se venden. Lo nombrado va primero aunque esté agotado; lo que solo
+   coincide en la descripción, después. */
+function tmBusquedaEnNombre(p, q) {
+    if (!q) return false;
+    const norm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    // Plural → singular, lo justo: «inversores» → «inversor», «baterias» → «bateria».
+    const sing = w => w.length > 4 && /es$/.test(w) && !/[aeiou]es$/.test(w) ? w.slice(0, -2)
+        : (w.length > 3 && /s$/.test(w) ? w.slice(0, -1) : w);
+    const n = norm(p && p.nombre);
+    const palabras = norm(q).split(/\s+/).filter(w => w.length >= 2);
+    if (!palabras.length) return false;
+    return palabras.every(w => n.includes(w) || n.includes(sing(w)));
+}
+// Orden de una búsqueda: lo nombrado con stock, lo nombrado agotado, el resto
+// con stock, el resto agotado. Estable dentro de cada grupo.
+function tmOrdenBusqueda(lista, q) {
+    const g = p => (tmBusquedaEnNombre(p, q) ? 0 : 2) + (Number(p.stock) > 0 ? 0 : 1);
+    return lista.map((p, i) => [g(p), i, p]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
+}
+
 function tmCoincideBusqueda(p, q) {
     if (!q) return true;
     const texto = _tmTextoBuscable(p);
