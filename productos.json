@@ -13104,7 +13104,7 @@
     "precioActual": 60,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 3,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -13198,9 +13198,10 @@
       }
     ],
     "idealPara": [
-      "WiFi en toda la casa con un router que gasta poco, bueno para el apagón con baterías",
-      "Usarlo como punto de acceso para llevar la señal a otro cuarto",
-      "Conectar a la vez teléfonos, computadoras y el televisor"
+      "Proveedores de internet (WISPs), redes domésticas y oficinas pequeñas que buscan un router confiable de doble banda.",
+      "Expandir cobertura en modo Punto de Acceso conectándolo por cable a un router principal de fibra o módem.",
+      "Instalaciones respaldadas por baterías de 12V o sistemas solares donde se requiere mantener el Wi-Fi activo sin gastar energía en exceso.",
+      "Streaming HD/4K y conexiones simultáneas de teléfonos, computadoras y televisores inteligentes."
     ],
     "incluye": [
       "1× Router Wi-Fi de Doble Banda TP-Link Archer C50",
@@ -13209,7 +13210,7 @@
       "1× Guía de instalación rápida"
     ],
     "slug": "tplink-c50-5-ac1200-3en1",
-    "rev": 1794448303489,
+    "rev": 1795037813031,
     "seoTitle": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble… | TiendaMax",
     "seoDescription": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y…"
   },
