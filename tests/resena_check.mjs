@@ -154,7 +154,8 @@ const nuevoCtx = async (vp) => {
     await p.fill('#rp-txt', 'Muy bueno, llegó en dos días');
     const antes = PUTS.length;
     await p.click('#rp-ok');
-    await p.waitForTimeout(1200);
+    // Primero intenta con la cuenta (tope de 3 s si el SDK no llega) y luego sin ella.
+    await p.waitForTimeout(4500);
     const put = PUTS.slice(antes).find(x => x.url.includes('/resenas/' + PID + '/'));
     ok(put && cumpleRegla(put.body), 'publicar desde el panel no subió una reseña válida: ' + JSON.stringify(put && put.body));
     if (put) ok(put.body.autor === 'Lucía' && put.body.comprador === true && put.body.origen === 'whatsapp' && put.body.estrellas === 5,

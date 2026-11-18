@@ -1024,6 +1024,17 @@ function tmResenasCache() {
     return _tmResenasCacheP;
 }
 
+// «Compra verificada» la pone el panel con la cuenta del dueño o el enlace con
+// token que el gestor manda tras la venta (`verificada`, regla en
+// firebase-rules.json). La casilla «compré este producto» del formulario es lo
+// que dice el cliente de sí mismo: cualquiera la marcaba. Las reseñas de antes
+// de esta regla conservan su marca.
+const TM_RESENA_CORTE_MS = 1795000000000;
+function tmResenaVerificada(r) {
+    if (!r) return false;
+    if (r.verificada === true) return true;
+    return !!r.comprador && Number(r.ts || r.id || 0) > 0 && Number(r.ts || r.id) < TM_RESENA_CORTE_MS;
+}
 async function renderizarResenas(productoId) {
     const el = document.getElementById('listaResenas');
     if (!el) return;
@@ -1116,7 +1127,7 @@ async function renderizarResenas(productoId) {
                 (r.imagen && /^data:image\//.test(String(r.imagen))
                     ? '<img class="resena-foto" src="' + escapeAttr(r.imagen) + '" alt="Foto de la reseña" loading="lazy">'
                     : '') +
-                (r.comprador ? '<span class="resena-verificada">✓ Compra verificada</span>' : '') +
+                (tmResenaVerificada(r) ? '<span class="resena-verificada">✓ Compra verificada</span>' : '') +
             '</div>';
         }).join('');
 }

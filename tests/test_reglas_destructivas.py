@@ -49,6 +49,10 @@ def _concede_sobrescritura(expr) -> bool:
         return True
     if not isinstance(expr, str):
         return False
+    # Solo el dueño (uid fijado en /admin_uid) puede reescribir: eso no es
+    # pisar lo de otro, es editar lo propio (p. ej. la dirección de un almacén).
+    if "auth.uid===root.child('admin_uid').val()" in expr.replace(" ", ""):
+        return False
     return "!data.exists()" not in expr.replace(" ", "")
 
 
@@ -60,7 +64,9 @@ class SinBorradoAnonimoTest(unittest.TestCase):
         # a secas dejaba pisar una venta entera leyendo antes su fecha, que es
         # publica. Solo alta.
         v = REGLAS["ventas"]["$ventaId"]
-        self.assertEqual("!data.exists()", v[".write"])
+        # Solo alta, y solo el dueño: abierta a cualquiera, una venta inventada
+        # (inmutable) se pintaba en el panel y descuadraba las comisiones.
+        self.assertEqual("!data.exists() && auth != null && auth.uid === root.child('admin_uid').val()", v[".write"])
         self.assertNotIn("anulada", v, "un flag anulada abierto vacia el panel")
 
     def test_ningun_flag_de_borrado_logico_es_publico(self):

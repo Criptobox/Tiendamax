@@ -92,25 +92,28 @@
       ".read": true,
       ".write": false,
       "$almId": {
-        ".write": "!data.exists()",
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
         ".validate": "newData.hasChildren(['nombre'])",
         "nombre": {
-          ".write": "newData.exists()",
+          ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"
         },
         "direccion": {
-          ".write": "newData.exists()",
+          ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
           ".validate": "newData.isString() && newData.val().length < 300"
         },
         "ubicacion": {
-          ".write": "newData.exists()",
-          ".validate": "newData.isString() && newData.val().length < 500"
+          ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
+          ".validate": "newData.isString() && newData.val().length < 500 && (newData.val() === '' || newData.val().beginsWith('https://'))"
         },
         "productos": {
           "$prodId": {
-            ".write": true,
+            ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
             ".validate": "newData.isBoolean()"
           }
+        },
+        "$otro": {
+          ".validate": false
         }
       }
     },
@@ -245,7 +248,7 @@
       "faq": {
         ".read": true,
         "$faqKey": {
-          ".write": "newData.exists() && (!data.exists() || newData.child('count').val() === data.child('count').val() + 1)",
+          ".write": "newData.exists() && ((!data.exists() && newData.child('count').val() === 1) || (data.exists() && newData.child('count').val() === data.child('count').val() + 1))",
           ".validate": "newData.hasChildren(['query','intent','count','lastUpdated'])",
           "query": {
             ".validate": "newData.isString() && newData.val().length <= 300"
@@ -305,7 +308,16 @@
       "$productoId": {
         "$resenaId": {
           ".write": "!data.exists()",
-          ".validate": "newData.hasChildren(['autor','texto','estrellas','fecha','ts']) && newData.child('estrellas').isNumber() && newData.child('estrellas').val() >= 1 && newData.child('estrellas').val() <= 5 && newData.child('texto').val().length >= 10 && newData.child('texto').val().length <= 400 && newData.child('autor').val().length >= 1 && newData.child('autor').val().length <= 50 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000"
+          ".validate": "newData.hasChildren(['autor','texto','estrellas','fecha','ts']) && newData.child('estrellas').isNumber() && newData.child('estrellas').val() >= 1 && newData.child('estrellas').val() <= 5 && newData.child('texto').val().length >= 10 && newData.child('texto').val().length <= 400 && newData.child('autor').val().length >= 1 && newData.child('autor').val().length <= 50 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
+          "verificada": {
+            ".validate": "newData.val() === true && (auth != null && auth.uid === root.child('admin_uid').val() || (newData.parent().child('tk').isString() && root.child('resena_tokens').child(newData.parent().child('tk').val()).child('p').val() === $productoId))"
+          },
+          "tk": {
+            ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 40"
+          },
+          "imagen": {
+            ".validate": "newData.isString() && newData.val().length <= 400000"
+          }
         }
       }
     },
@@ -394,7 +406,7 @@
       ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
       ".write": false,
       "$ventaId": {
-        ".write": "!data.exists()",
+        ".write": "!data.exists() && auth != null && auth.uid === root.child('admin_uid').val()",
         ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('producto').isString() && newData.child('producto').val().length > 0 && newData.child('producto').val().length <= 200 && newData.child('precio').isNumber() && newData.child('precio').val() >= 0 && newData.child('cantidad').isNumber() && newData.child('cantidad').val() >= 0 && newData.child('total').isNumber() && newData.child('total').val() >= 0"
       }
     },
@@ -527,6 +539,13 @@
     "admin_uid": {
       ".read": "auth != null",
       ".write": "!data.exists() && auth != null && newData.isString() && newData.val() === auth.uid"
+    },
+    "resena_tokens": {
+      ".read": false,
+      "$tk": {
+        ".write": "auth != null && auth.uid === root.child('admin_uid').val()",
+        ".validate": "newData.hasChildren(['p','ts']) && newData.child('p').isString() && newData.child('p').val().length <= 40 && newData.child('ts').isNumber()"
+      }
     }
   }
 }

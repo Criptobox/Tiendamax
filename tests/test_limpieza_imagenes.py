@@ -77,12 +77,16 @@ class BorradoDeImagenesTest(unittest.TestCase):
         # El borrado va tras apSaveProds() y sin await en el flujo principal:
         # un token vencido no puede impedir guardar el producto.
         i_guardar = self.admin.index("apSaveProds(); apEditClose();")
-        i_borrar = self.admin.index("borrarImagenDeGitHub === 'function'")
+        i_borrar = self.admin.index("fotosEncolar(_aBorrar, id);")
         self.assertLess(i_guardar, i_borrar,
                         "el borrado debe ir DESPUÉS de guardar")
 
     def test_al_borrar_un_producto_se_limpian_sus_fotos(self):
-        self.assertIn("del producto borrada", self.admin)
+        # Se limpian, pero no al momento: van a la cola y se borran cuando el
+        # catálogo publicado ya no las usa (tests/seguridad_check.mjs lo prueba
+        # en un navegador).
+        self.assertIn("fotosEncolar(_huerf, id);", self.admin)
+        self.assertIn("async function fotosColaProcesar()", self.admin)
 
 
 class ScriptDeLimpiezaTest(unittest.TestCase):

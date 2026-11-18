@@ -30,43 +30,63 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Revertir ofertas vencidas
-        run: python scripts/revertir_ofertas.py
+      # Sin ninguna oferta con fecha de fin no hay nada que hacer: sale antes
+      # de tocar nada (corre cada 30 min y casi nunca hay una).
+      - name: ¿Hay ofertas con fecha de fin?
+        id: hay
+        run: |
+          if grep -q '"ofertaFin"' productos.json; then echo "si=true" >> $GITHUB_OUTPUT; else echo "Ninguna oferta con fecha de fin."; echo "si=false" >> $GITHUB_OUTPUT; fi
 
+      - name: Revertir ofertas vencidas
+        if: steps.hay.outputs.si == 'true'
+        run: |
+          python scripts/revertir_ofertas.py
+          # La tienda lee productos-lite.json, no productos.json: revertir solo
+          # el completo dejaba la rebaja puesta para los clientes.
+          python scripts/build-productos-lite.py
+
+      # Si el push choca: reset a origin/main y volver a aplicar, nunca rebase.
+      # productos.json tiene otros escritores y un conflicto resuelto a mano es
+      # un cambio perdido (misma regla que aplicar_cambios.py). El rebase con «ours»
+      # además se quedaba con origin y tiraba el revertido.
       - name: Commit y push si hubo cambios
         id: commit
+        if: steps.hay.outputs.si == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add productos.json
-          if git diff --cached --quiet; then
-            echo "Sin ofertas vencidas."
-            echo "changed=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          git commit -m "chore: revertir ofertas vencidas [skip ci]"
           for i in 1 2 3 4 5; do
+            git add productos.json productos-lite.json
+            if git diff --cached --quiet; then
+              echo "Sin ofertas vencidas."
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            git commit -q -m "chore: revertir ofertas vencidas [skip ci]"
             if git push origin HEAD:main; then
-              echo "✅ precios revertidos y publicados."
+              echo "✅ precios revertidos."
               echo "changed=true" >> $GITHUB_OUTPUT
               exit 0
             fi
             git fetch origin main
-            git rebase -X ours origin/main || { git checkout --ours -- productos.json; git add productos.json; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            git reset --hard origin/main
+            python scripts/revertir_ofertas.py
+            python scripts/build-productos-lite.py
             sleep $((i * 2))
           done
           echo "❌ No se pudo subir el revertido." >&2
           exit 1
 
-      - name: Publicar en GitHub Pages
+      # regenerate-artifacts rehace las /p/ (que siguen mostrando la rebaja) y
+      # despacha Pages; un commit de GITHUB_TOKEN no lo dispara por sí solo.
+      - name: Regenerar fichas y publicar
         if: steps.commit.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
           curl -sS -X POST \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pages.yml/dispatches" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/regenerate-artifacts.yml/dispatches" \
             -d '{"ref":"main"}'
