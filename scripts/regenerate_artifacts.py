@@ -27,6 +27,16 @@ import categorias_apagadas
 from ficha_url import slug_valido
 from fill_seo import nombre_titulo, seo_title as _seo_title_de
 
+
+def _js_seguro(obj, **kw):
+    """json.dumps apto para ir DENTRO de un <script>: json.dumps no escapa
+    «<» ni «/», así que una reseña o una pregunta con «</script><script>…»
+    cerraba el bloque JSON-LD y ejecutaba lo que viniera detrás en
+    tiendamax.org — el mismo origen donde vive el token de GitHub del panel.
+    \u003c y compañía son JSON válido y el navegador los lee igual."""
+    return (json.dumps(obj, **kw).replace("<", "\\u003c").replace(">", "\\u003e")
+            .replace("&", "\\u0026").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029"))
+
 ROOT = Path(__file__).resolve().parents[1]
 PROD = ROOT / "productos.json"
 CONF = ROOT / "config.json"
@@ -979,7 +989,7 @@ def _breadcrumb(cat: str, slug: str, name: str, page_url: str) -> tuple[str, str
             {"@type": "ListItem", "position": 1, "name": "Inicio", "item": f"{SITE}/"},
             {"@type": "ListItem", "position": 2, "name": name, "item": page_url},
         ]
-    jsonld = json.dumps(
+    jsonld = _js_seguro(
         {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": items},
         ensure_ascii=False, indent=2,
     )
@@ -1111,8 +1121,8 @@ def _resenas_jsonld(resenas: list[dict]) -> str:
         })
     agregado = {"@type": "AggregateRating", "ratingValue": media,
                 "reviewCount": len(validas), "bestRating": 5, "worstRating": 1}
-    return (',\n  "aggregateRating": ' + json.dumps(agregado, ensure_ascii=False)
-            + ',\n  "review": ' + json.dumps(bloques, ensure_ascii=False))
+    return (',\n  "aggregateRating": ' + _js_seguro(agregado, ensure_ascii=False)
+            + ',\n  "review": ' + _js_seguro(bloques, ensure_ascii=False))
 
 
 def rtdb_url(config: dict) -> str:
@@ -1209,9 +1219,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         keywords  = escape(keywords_raw, quote=True)
 
         # JSON-LD: json.dumps produce strings correctamente escapadas para JSON
-        json_name = json.dumps(name)
-        json_desc = json.dumps(desc_short(p.get("descripcion") or "", 500))
-        json_img  = json.dumps(img)
+        json_name = _js_seguro(name)
+        json_desc = _js_seguro(desc_short(p.get("descripcion") or "", 500))
+        json_img  = _js_seguro(img)
         availability = (
             "https://schema.org/InStock"
             if stock > 0
@@ -1225,7 +1235,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         # ── Variables nuevas para la página de producto real ────────────────
         cat = (p.get("categoria") or "").strip()
         cat_html = f'<span class="tm-cat">{escape(cat)}</span>' if cat else ""
-        json_category = json.dumps(cat or "General")
+        json_category = _js_seguro(cat or "General")
         condition = "https://schema.org/UsedCondition" if p.get("usado") else "https://schema.org/NewCondition"
 
         desc_raw  = (p.get("descripcion") or "").strip()
@@ -1309,11 +1319,11 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
         # El formulario de aviso solo viaja en las fichas agotadas: es lo único
         # que necesitan y no tiene sentido en las que sí se pueden vender.
         aviso_js = "" if stock > 0 or es_digital(p) else AVISO_JS.format(
-            rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid)))
+            rtdb_json=_js_seguro(rtdb), pid_json=_js_seguro(str(pid)))
         # El contador, en cambio, va en todas: medir solo las agotadas sería
         # medir justo las que no venden.
         medir_js = MEDIR_JS.format(
-            rtdb_json=json.dumps(rtdb), pid_json=json.dumps(str(pid))) if rtdb else ""
+            rtdb_json=_js_seguro(rtdb), pid_json=_js_seguro(str(pid))) if rtdb else ""
 
         garantia_html = _garantia_html(p)
         # Confianza: lo que es verdad de todo pedido físico (se paga al recibir
@@ -1409,7 +1419,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             stub = REDIRECCION_TEMPLATE.format(
                 og_title=og_title, og_desc=og_desc, og_image=og_image,
                 og_image_type=og_image_type, url=escape(page_url, quote=True),
-                url_json=json.dumps(page_url))
+                url_json=_js_seguro(page_url))
             for nombre in [f"producto-{pid}"] + viejos.get(str(pid), []):
                 fv = P_DIR / f"{nombre}.html"
                 valid_files.add(fv.name)
@@ -1529,7 +1539,7 @@ def regenerate_category_pages(products: list[dict], wa_num: str = "5354320170") 
 
         items_jsonld = []
         for k, p in enumerate(p for p in prods if p.get("id")):
-            items_jsonld.append(json.dumps({
+            items_jsonld.append(_js_seguro({
                 "@type": "ListItem", "position": k + 1,
                 "url": url_producto(p),
                 "name": nombre_limpio(p.get("nombre") or ""),
@@ -1588,8 +1598,8 @@ def regenerate_category_pages(products: list[dict], wa_num: str = "5354320170") 
             title=title,
             desc=desc,
             page_url=page_url,
-            json_title=json.dumps(f"{cat} — TiendaMax"),
-            json_desc=json.dumps(desc),
+            json_title=_js_seguro(f"{cat} — TiendaMax"),
+            json_desc=_js_seguro(desc),
             items_jsonld=",\n    ".join(items_jsonld),
             site=SITE,
             html_name=html_name,

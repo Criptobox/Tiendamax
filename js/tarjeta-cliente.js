@@ -512,10 +512,14 @@
       '<button class="btn btn-ghost" onclick="tmTarjetaVer(\'' + t.c + '\')">Ver</button></div></div>';
   };
   // La tarjeta en el historial de ventas: la venta que la creó y la que la usó.
+  // Solo un código con forma de código se pinta: la venta puede venir de
+  // Firebase, y lo que se pinta con innerHTML no puede llevar marcado ajeno.
+  var COD_RE = /^TM[0-9A-Z]{6}$/;
   window.tmTarjetaDeVenta = function (venta) {
     if (!venta) return '';
+    if (venta.tarjeta && !COD_RE.test(String(venta.tarjeta))) venta = Object.assign({}, venta, { tarjeta: '' });
     var o = leer(), h = [];
-    Object.keys(o).forEach(function (c) { var t = o[c]; if (t && String(t.v) === String(venta.id)) h.push('<button class="tj-tag" onclick="tmTarjetaVer(\'' + c + '\')">🎁 Tarjeta ' + bonito(c) + ' creada</button>'); });
+    Object.keys(o).forEach(function (c) { var t = o[c]; if (COD_RE.test(c) && t && String(t.v) === String(venta.id)) h.push('<button class="tj-tag" onclick="tmTarjetaVer(\'' + c + '\')">🎁 Tarjeta ' + bonito(c) + ' creada</button>'); });
     if (venta.tarjeta && o[venta.tarjeta] && String(o[venta.tarjeta].v) !== String(venta.id)) h.push('<button class="tj-tag" onclick="tmTarjetaVer(\'' + venta.tarjeta + '\')">🎁 −' + (Number(venta.descTarjetaMN) || 0) + ' MN · ' + bonito(venta.tarjeta) + '</button>');
     else if (venta.tarjeta && !o[venta.tarjeta]) h.push('<span class="tj-tag">🎁 −' + (Number(venta.descTarjetaMN) || 0) + ' MN · ' + bonito(venta.tarjeta) + '</span>');
     return h.join('');

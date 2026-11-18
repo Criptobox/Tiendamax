@@ -1145,7 +1145,7 @@ function listaAlmacenes(){
   try{ borrados=JSON.parse(localStorage.getItem('tm_almacenes_borrados')||'[]')||[]; }catch(e){}
   return Object.entries(_almacenes||{})
     .filter(([id,a])=>a && a.nombre && borrados.indexOf(id)===-1)
-    .map(([id,a])=>({id, nombre:String(a.nombre), direccion:String(a.direccion||''), ubicacion:String(a.ubicacion||''), productos:a.productos||{}}))
+    .map(([id,a])=>({id, nombre:String(a.nombre), direccion:String(a.direccion||''), ubicacion:(/^https:\/\//i.test(String(a.ubicacion||''))?String(a.ubicacion):''), productos:a.productos||{}}))
     .sort((x,y)=>x.nombre.localeCompare(y.nombre,'es'));
 }
 /* El almacén donde están TODOS los productos elegidos del catálogo. Si están

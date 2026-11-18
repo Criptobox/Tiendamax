@@ -31,6 +31,23 @@ OUT_PATH = ROOT / "resenas-cache.json"
 TIMEOUT = 25  # segundos
 
 
+# «Compra verificada»: solo `verificada` (la pone el panel con la cuenta del
+# dueño o el enlace con token; regla en firebase-rules.json). `comprador` es lo
+# que el cliente marca de sí mismo y cualquiera podía marcarlo. Las reseñas de
+# antes de la regla conservan su marca. Mismo corte que tmResenaVerificada.
+RESENA_CORTE_MS = 1795000000000
+
+
+def verificada(r):
+    if r.get("verificada") is True:
+        return True
+    try:
+        ts = int(r.get("ts") or r.get("id") or 0)
+    except (TypeError, ValueError):
+        ts = 0
+    return bool(r.get("comprador")) and 0 < ts < RESENA_CORTE_MS
+
+
 def _database_url() -> str | None:
     try:
         cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
@@ -98,7 +115,7 @@ def main() -> int:
                 "fecha": r.get("fecha", ""),
                 "productoId": str(pid),
                 "productoNombre": r.get("productoNombre", ""),
-                "comprador": bool(r.get("comprador")),
+                "comprador": verificada(r),
                 # NO incluimos "imagen" (data URLs base64 son muy grandes y dispararían
                 # el tamaño del JSON de cache a varios MB). La imagen solo vive en Firebase.
             })

@@ -39,6 +39,16 @@ from pathlib import Path
 
 import requests
 
+
+def _js_seguro(obj, **kw):
+    """json.dumps apto para ir DENTRO de un <script>: json.dumps no escapa
+    «<» ni «/», así que una reseña o una pregunta con «</script><script>…»
+    cerraba el bloque JSON-LD y ejecutaba lo que viniera detrás en
+    tiendamax.org — el mismo origen donde vive el token de GitHub del panel.
+    \u003c y compañía son JSON válido y el navegador los lee igual."""
+    return (json.dumps(obj, **kw).replace("<", "\\u003c").replace(">", "\\u003e")
+            .replace("&", "\\u0026").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029"))
+
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config.json"
 JSON_OUT = ROOT / "faq.json"
@@ -326,7 +336,7 @@ def render_html(preguntas: list[dict]) -> str:
         for p in preguntas
     )
     items_jsonld = ",\n".join(
-        json.dumps({
+        _js_seguro({
             "@type": "Question",
             "name": p["pregunta"],
             "acceptedAnswer": {"@type": "Answer", "text": p["respuesta"]},

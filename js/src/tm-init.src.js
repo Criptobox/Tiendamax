@@ -166,22 +166,24 @@ if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
 }
 
 async function _sincronizarConfigGH() {
+    // Solo el contador. Antes armaba config.json desde cero con tres campos y
+    // lo subía entero: se llevaba firebaseConfig, margenMN, la tasa y el tema
+    // (un cliente nuevo calculaba el MN con margen 10, y sync_resenas/build_faq
+    // se quedaban sin databaseURL). Ahora lee el que hay, cambia
+    // activeCountdown y sube eso — como la Oferta del día. Si no lo puede leer,
+    // no escribe.
     try {
-        const user = localStorage.getItem('githubUser');
-        const repo = localStorage.getItem('githubRepo');
-        const token = localStorage.getItem('githubToken');
-        if (!user || !repo || !token) return;
-        const cfg = {
-            tasaMN: parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
-            ofertaDiaId: localStorage.getItem('ofertaDiaId') || undefined,
-            ofertaDiaTexto: localStorage.getItem('ofertaDiaTexto') || undefined,
-            ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
-            activeCountdown: (() => { try { return JSON.parse(localStorage.getItem('activeCountdown')); } catch(e) { return null; } })() || undefined,
-            actualizado: new Date().toISOString(),
-        };
-        Object.keys(cfg).forEach(k => cfg[k] === undefined && delete cfg[k]);
-        await subirArchivoAGitHub(user, repo, token, 'config.json', cfg);
-    } catch(e) {}
+        const u = localStorage.getItem('githubUser'), r = localStorage.getItem('githubRepo'), t = localStorage.getItem('githubToken');
+        if (!u || !r || !t) return;
+        const cfg = await _leerConfigActual();
+        let cd = null;
+        try { cd = JSON.parse(localStorage.getItem('activeCountdown')); } catch (e) {}
+        if (cd) cfg.activeCountdown = cd; else delete cfg.activeCountdown;
+        cfg.actualizado = new Date().toISOString();
+        await subirArchivoAGitHub(u, r, t, 'config.json', cfg);
+    } catch (e) {
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ No pude guardar el contador en la tienda: ' + (e.message || e), 'error');
+    }
 }
 
 function guardarCountdown() {

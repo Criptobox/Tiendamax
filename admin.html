@@ -3009,7 +3009,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/admin-copilot.js?v=4a19301b"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
-<script src="js/tarjeta-cliente.js?v=71e8c8b5"></script>
+<script src="js/tarjeta-cliente.js?v=7ad6f871"></script>
 
 <script>
 (function(){
@@ -3364,6 +3364,7 @@ async function cargarDatos(recargar){
   VENTAS = lsVentas();
   renderTodo();
   cargarVentasFirebase(); // combina con las ventas guardadas en Firebase (otros dispositivos)
+  setTimeout(()=>{ fotosColaProcesar().catch(()=>{}); }, 8000);
   cargarAlmacenes();
   if(recargar) showToast('🔄 Datos recargados', PRODUCTOS.length+' productos · '+VENTAS.length+' ventas');
 }
@@ -3378,7 +3379,11 @@ async function cargarVentasFirebase(){
     const data = await jget(base+'/ventas.json');
     if(!data || typeof data!=='object') return;
     const anuladas = (typeof ventasAnuladas==='function') ? ventasAnuladas() : [];
-    const fb = Object.values(data).filter(v=>v && v.id && anuladas.indexOf(String(v.id))===-1);
+    // Lo que llega de Firebase es dato ajeno hasta que se demuestre lo
+    // contrario: un id que no es un número o un código de tarjeta que no
+    // tiene forma de código se descartan antes de pintarse en el panel.
+    const fb = Object.values(data).filter(v=>v && /^\d{6,16}$/.test(String(v.id)) && anuladas.indexOf(String(v.id))===-1)
+      .map(v=>{ if(v.tarjeta && !/^TM[0-9A-Z]{6}$/.test(String(v.tarjeta))){ v=Object.assign({},v); delete v.tarjeta; delete v.descTarjetaMN; } return v; });
     // Ventas de prueba viejas en Firebase: bórralas y no las vuelvas a mostrar.
     // Las ventas de Firebase son inmutables a propósito: sin autenticación, el
     // permiso que se le diera al admin para borrarlas o marcarlas lo tendría
@@ -3393,6 +3398,26 @@ async function cargarVentasFirebase(){
     VENTAS = merged;
     renderVentas(); renderInicio(); renderClientes();
     comisSincronizar();
+    ventasSubirFaltantes(data);
+  }catch(e){}
+}
+/* /ventas solo admite altas firmadas por el dueño (antes las aceptaba de
+   cualquiera, y una venta inventada —inmutable— se pintaba aquí). Una alta
+   que salió sin sesión, o sin red, se pierde en silencio: _fbGuardarVenta no
+   espera respuesta. Así que en cada carga se sube lo local que Firebase no
+   tiene — la misma autocuración que /privado/clientes. Nunca pisa nada: la
+   regla solo deja crear. */
+async function ventasSubirFaltantes(remoto){
+  try{
+    if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado || typeof _ventaParaFirebase!=='function') return;
+    const hay = new Set(Object.keys(remoto||{}).map(String));
+    Object.values(remoto||{}).forEach(v=>{ if(v && v.id) hay.add(String(v.id)); });
+    const anuladas = (typeof ventasAnuladas==='function') ? ventasAnuladas() : [];
+    const faltan = lsVentas().filter(v=>v && /^\d{6,16}$/.test(String(v.id)) && !hay.has(String(v.id)) && anuladas.indexOf(String(v.id))===-1 && !_ventaEsPrueba(v)).slice(0,50);
+    for(const v of faltan){
+      const r = await TMAuth.fetchPrivado('/ventas/'+v.id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(_ventaParaFirebase(v))});
+      if(r && r.sinSesion) return;   // sin cuenta no hay nada que intentar
+    }
   }catch(e){}
 }
 
@@ -5347,6 +5372,51 @@ function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeo
 /* Un campo de un producto, guardado por el mismo camino que cualquier edición
    (marcado para «Actualizar tienda» y en local). Lo usa el editor del gancho de
    la cola de Facebook (js/revolico_integration.js), que vive fuera de este bloque. */
+/* El enlace de reseña lleva un token (&k=) que el panel registra en
+   /resena_tokens con la cuenta del dueño: con él, la reseña del cliente sale
+   como «✓ Compra verificada». Sin token la marca la ponía cualquiera con
+   ?v=1. Reemplaza al tmEnlaceResena del bundle (que se llama por su nombre). */
+/* Mismo arreglo que tm-init.src.js, aplicado ya en el panel (único que lo llama):
+   el bundle publicado aún tiene la versión que subía config.json con 3 campos. */
+window._sincronizarConfigGH=async function() {
+    // Solo el contador. Antes armaba config.json desde cero con tres campos y
+    // lo subía entero: se llevaba firebaseConfig, margenMN, la tasa y el tema
+    // (un cliente nuevo calculaba el MN con margen 10, y sync_resenas/build_faq
+    // se quedaban sin databaseURL). Ahora lee el que hay, cambia
+    // activeCountdown y sube eso — como la Oferta del día. Si no lo puede leer,
+    // no escribe.
+    try {
+        const u = localStorage.getItem('githubUser'), r = localStorage.getItem('githubRepo'), t = localStorage.getItem('githubToken');
+        if (!u || !r || !t) return;
+        const cfg = await _leerConfigActual();
+        let cd = null;
+        try { cd = JSON.parse(localStorage.getItem('activeCountdown')); } catch (e) {}
+        if (cd) cfg.activeCountdown = cd; else delete cfg.activeCountdown;
+        cfg.actualizado = new Date().toISOString();
+        await subirArchivoAGitHub(u, r, t, 'config.json', cfg);
+    } catch (e) {
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ No pude guardar el contador en la tienda: ' + (e.message || e), 'error');
+    }
+};
+const RESENA_TK_KEY='tm_resena_tk_v1';
+window.tmEnlaceResena=function(venta){
+  const pr=(typeof tmProductoResena==='function')?tmProductoResena(venta):null;
+  if(!pr) return '';
+  const nombre=(typeof tmNombreDe==='function'?tmNombreDe(venta):'').split(/\s+/)[0]||'';
+  let m={}; try{ m=JSON.parse(localStorage.getItem(RESENA_TK_KEY)||'{}')||{}; }catch(e){}
+  const k=String(venta.id)+'|'+pr.id;
+  let e=m[k];
+  if(!e){
+    const a=new Uint8Array(12); (window.crypto||{}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_,i)=>a[i]=Math.random()*256|0);
+    e={tk:Array.from(a,b=>'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%56]).join(''), subido:0};
+    m[k]=e; try{ localStorage.setItem(RESENA_TK_KEY,JSON.stringify(m)); }catch(_){}
+  }
+  if(!e.subido && typeof TMAuth!=='undefined' && TMAuth.fetchPrivado){
+    TMAuth.fetchPrivado('/resena_tokens/'+e.tk+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:String(pr.id),ts:Date.now()})})
+      .then(r=>{ if(r&&r.ok){ try{ const mm=JSON.parse(localStorage.getItem(RESENA_TK_KEY)||'{}'); if(mm[k]){ mm[k].subido=Date.now(); localStorage.setItem(RESENA_TK_KEY,JSON.stringify(mm)); } }catch(_){} } }).catch(()=>{});
+  }
+  return 'https://tiendamax.org/resena?p='+encodeURIComponent(pr.id)+(nombre?'&n='+encodeURIComponent(nombre):'')+'&v=1&k='+e.tk;
+};
 window.tmGuardarCampoProducto=function(id,campo,valor){
   const p=apFind(id); if(!p) return false;
   p[campo]=valor;
@@ -5361,10 +5431,41 @@ function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "
   const _fotos=[...new Set([].concat(Array.isArray(p.imagenes)?p.imagenes:[], p.imagen||[], p.imagenSecundaria||[]).filter(Boolean))];
   const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio');
   const _huerf=_fotos.filter(u=> typeof imagenEnUso!=='function' || !imagenEnUso(u, id));
-  if(_huerf.length && typeof borrarImagenDeGitHub==='function'){
-    (async()=>{ let n=0; for(const u of _huerf){ try{ if(await borrarImagenDeGitHub(u)) n++; }catch(e){} }
-      if(n) showToast('🧹 '+n+' foto'+(n>1?'s':'')+' del producto borrada'+(n>1?'s':'')+' del repo'); })();
-  } }
+  // No se borran ya: el producto sigue publicado hasta «Actualizar tienda», y
+  // borrar la foto antes dejaba su ficha con la foto rota — y sin foto si te
+  // arrepentías. Van a una cola que solo las borra cuando el catálogo
+  // publicado ya no las usa (fotosColaProcesar).
+  fotosEncolar(_huerf, id); }
+/* ── Fotos por borrar ───────────────────────────────────────────────────
+   Una foto quitada (producto borrado o foto cambiada en ✏️ Editar) se borra
+   del repo solo cuando: ningún producto del panel la usa (si deshiciste el
+   borrado, vuelve a estar en uso y sale de la cola) Y el catálogo publicado
+   tampoco. Así la ficha que sigue en la web no se queda con la foto rota. */
+const FOTOS_COLA_KEY='tm_fotos_por_borrar';
+function fotosCola(){ try{ const a=JSON.parse(localStorage.getItem(FOTOS_COLA_KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function fotosEncolar(urls, id){
+  if(!urls||!urls.length) return;
+  const c=fotosCola(); const ya=new Set(c.map(x=>x.u));
+  urls.forEach(u=>{ if(u && !ya.has(u)) c.push({u, id:String(id), ts:Date.now()}); });
+  try{ localStorage.setItem(FOTOS_COLA_KEY, JSON.stringify(c.slice(-300))); }catch(e){}
+}
+async function fotosColaProcesar(){
+  const c=fotosCola(); if(!c.length || typeof borrarImagenDeGitHub!=='function') return;
+  let repo=null;
+  try{ const r=await fetch('productos-lite.json?_='+Date.now(),{cache:'no-store'}); if(r.ok) repo=await r.json(); }catch(e){}
+  if(!Array.isArray(repo)) return;   // sin saber qué hay publicado, no se borra nada
+  const ruta=u=>(typeof _rutaImagenDesdeUrl==='function' && _rutaImagenDesdeUrl(u)) || u;
+  const publicadas=new Set();
+  repo.forEach(p=>[].concat(p.imagen||[], p.imagenSecundaria||[], Array.isArray(p.imagenes)?p.imagenes:[]).forEach(u=>{ if(typeof u==='string') publicadas.add(ruta(u)); }));
+  const quedan=[]; let n=0;
+  for(const it of c){
+    if(typeof imagenEnUso==='function' && imagenEnUso(it.u)) continue;      // vuelve a estar en uso: fuera de la cola
+    if(publicadas.has(ruta(it.u))){ quedan.push(it); continue; }             // aún publicada: esperar
+    try{ if(await borrarImagenDeGitHub(it.u)) n++; else quedan.push(it); }catch(e){ quedan.push(it); }
+  }
+  try{ localStorage.setItem(FOTOS_COLA_KEY, JSON.stringify(quedan)); }catch(e){}
+  if(n) showToast('🧹 '+n+' foto'+(n>1?'s':'')+' que ya no usa nadie, borrada'+(n>1?'s':'')+' del repo');
+}
 /* ── Enlace corto de cada producto: tiendamax.org/p/<slug> ──
    En Facebook la dirección se lee entera en el post: "producto-1784403677390
    .html" no dice nada y el nombre entero no cabe (la soldadora eran 71
@@ -5681,13 +5782,9 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
     u && !_peditFotos.includes(u) &&
     (typeof imagenEnUso !== 'function' || !imagenEnUso(u, id)));
   _peditFotosQuitadas = [];
-  if(_aBorrar.length && typeof borrarImagenDeGitHub === 'function'){
-    (async () => {
-      let n = 0;
-      for(const u of _aBorrar){ try { if(await borrarImagenDeGitHub(u)) n++; } catch(e){} }
-      if(n) showToast('🧹 ' + n + ' foto' + (n>1?'s':'') + ' sin uso borrada' + (n>1?'s':'') + ' del repo');
-    })();
-  }
+  // A la cola, no al momento: la ficha publicada sigue usando la foto vieja
+  // hasta «Actualizar tienda» (ver fotosColaProcesar).
+  fotosEncolar(_aBorrar, id);
 }
 
 /* ============ CATEGORIAS / SUBCATS ============ */
@@ -6100,7 +6197,7 @@ async function cargarAlmacenes(){
     try{ _almBorrados=JSON.parse(localStorage.getItem('tm_almacenes_borrados')||'[]')||[]; }catch(e){}
     ALMACENES = {};
     if(data && typeof data==='object'){
-      Object.entries(data).forEach(([k,v])=>{ if(v && _almBorrados.indexOf(k)===-1) ALMACENES[k]=v; });
+      Object.entries(data).forEach(([k,v])=>{ if(v && typeof v==='object' && ALM_ID_RE.test(k) && _almBorrados.indexOf(k)===-1) ALMACENES[k]=Object.assign({},v,{ubicacion:almUbicacionSegura(v.ubicacion)}); });
     }
     // Reaplicar a los productos la asignación que vino de Firebase (fuente de
     // verdad compartida) — por si localStorage la perdió o se abre desde otro
@@ -6121,16 +6218,27 @@ async function cargarAlmacenes(){
   }
   renderAlmacen();
 }
+/* /almacenes se escribe solo con la cuenta del dueño. Antes cualquiera podía
+   reescribir la dirección de un almacén que ya existía, y esa dirección es la
+   que va en el vale al cliente. Lectura sigue pública (el vale la lee). */
+async function almEscribir(ruta, opts){
+  if(typeof TMAuth==='undefined' || !TMAuth.fetchPrivado) return {ok:false, msg:'entra con tu cuenta (⚙️ Configuración)'};
+  return TMAuth.fetchPrivado(ruta, opts);
+}
+// Lo que viene de /almacenes se pinta en el panel: el id va dentro de onclick
+// y la ubicación en un href, así que solo pasan con forma conocida.
+const ALM_ID_RE=/^[A-Za-z0-9_-]{1,40}$/;
+function almUbicacionSegura(u){ u=String(u||'').trim(); return /^https:\/\//i.test(u) ? u : ''; }
 function almAgregar(){
   const nombre=($('#alm-nombre')&&$('#alm-nombre').value||'').trim();
   const direccion=($('#alm-direccion')&&$('#alm-direccion').value||'').trim();
-  const ubicacion=($('#alm-ubicacion')&&$('#alm-ubicacion').value||'').trim();
+  const ubicacion=almUbicacionSegura($('#alm-ubicacion')&&$('#alm-ubicacion').value||'');
   if(!nombre){ showToast('⚠️ Ponle un nombre al almacén'); return; }
   const base=rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero','En ⚙️ Configuración'); return; }
   const id='alm_'+Date.now();
   const payload=_almPayload(nombre,direccion,ubicacion);
-  fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]={nombre,direccion,ubicacion}; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
+  almEscribir('/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(r=>{ if(!r.ok) throw new Error(r.msg||'no se guardó'); ALMACENES[id]={nombre,direccion,ubicacion}; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
     .catch(e=>showToast('❌ No se pudo agregar', e.message||''));
 }
 function _almPayload(nombre,direccion,ubicacion){
@@ -6161,7 +6269,7 @@ function almRenombrar(id){
   const a=ALMACENES[id]; if(!a) return;
   const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
   const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
-  const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
+  const ubicacion=almUbicacionSegura(prompt('Ubicación (link de Maps, opcional, empieza por https://):', a.ubicacion||'')||'');
   // Campo a campo, no al nodo entero. Dos razones: un PUT al nodo se llevaba
   // por delante /productos (el respaldo de que producto esta en que almacen), y
   // la regla solo concede escritura en los campos — al nodo solo deja crearlo.
@@ -6169,7 +6277,7 @@ function almRenombrar(id){
   if(base){
     const campos={nombre:nombre, direccion:direccion, ubicacion:ubicacion};
     Promise.all(Object.entries(campos).map(([k,v]) =>
-      fetch(base+'/almacenes/'+id+'/'+k+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(v)})
+      almEscribir('/almacenes/'+id+'/'+k+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(v)})
         .then(r=>r.ok).catch(()=>false)
     )).then(oks=>{ if(oks.some(x=>!x)) showToast('⚠️ Algún campo no se guardó en Firebase'); });
   }
@@ -6210,8 +6318,8 @@ async function almCompartir(id, campo){
 // no depende solo del navegador donde se hizo la asignación.
 function almSyncFirebase(prodId, almIdAntes, almIdNuevo){
   const base=rtdbBase(); if(!base) return;
-  if(almIdAntes && almIdAntes!==almIdNuevo){ fetch(base+'/almacenes/'+almIdAntes+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'DELETE'}).catch(()=>{}); }
-  if(almIdNuevo){ fetch(base+'/almacenes/'+almIdNuevo+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'}).catch(()=>{}); }
+  if(almIdAntes && almIdAntes!==almIdNuevo){ almEscribir('/almacenes/'+almIdAntes+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'DELETE'}).catch(()=>{}); }
+  if(almIdNuevo){ almEscribir('/almacenes/'+almIdNuevo+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'}).catch(()=>{}); }
 }
 function almProductoToggle(almId, prodId, checked){
   const p=apFind(prodId); if(!p) return;
@@ -7430,7 +7538,7 @@ function renderVentas(){
       const tj=(typeof window.tmTarjetaDeVenta==='function')?window.tmTarjetaDeVenta(v):'';
       return `<div class="vh-item"><div class="vh-top"><b>${esc(v.cliente||v.nombre||'Sin nombre')}</b><span>${d?d.toLocaleDateString('es-CU'):'—'}</span></div>
         <div class="vh-prod">${items||'—'}</div>
-        <div class="vh-bot"><span class="vh-tot">${dosMonedas(ventaTotales(v))}</span>${tj}<button class="btn btn-ghost vh-del" title="Anular venta y devolver stock" aria-label="Anular venta" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></div></div>`;}).join('')}</div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
+        <div class="vh-bot"><span class="vh-tot">${dosMonedas(ventaTotales(v))}</span>${tj}<button class="btn btn-ghost vh-del" title="Anular venta y devolver stock" aria-label="Anular venta" onclick="ventaAnular('${escJsAttr(String(v.id))}')">🗑</button></div></div>`;}).join('')}</div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
 }
 // Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
 function ventaAnular(id){
@@ -8323,11 +8431,18 @@ function resenaPublicar(ventaId){
     const it=prods.find(i=>String(i.productoId)===pid)||{};
     const id=Date.now(), b=d.querySelector('#rp-ok'); b.disabled=true; b.textContent='Publicando…';
     try{
-      const r=await fetch(base+'/resenas/'+encodeURIComponent(pid)+'/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({id, ts:{'.sv':'timestamp'}, autor:autor.slice(0,50), texto:texto.slice(0,400), estrellas:n,
+      // Con la cuenta del dueño: es lo único que deja poner «verificada»
+      // (firebase-rules.json). Sin sesión se publica igual, sin la marca.
+      const cuerpo={id, ts:{'.sv':'timestamp'}, autor:autor.slice(0,50), texto:texto.slice(0,400), estrellas:n,
           fecha:new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}),
-          productoId:pid, productoNombre:it.producto||'', comprador:true, origen:'whatsapp'})});
-      if(!r.ok) throw new Error('HTTP '+r.status);
+          productoId:pid, productoNombre:it.producto||'', comprador:true, verificada:true, origen:'whatsapp'};
+      const ruta='/resenas/'+encodeURIComponent(pid)+'/'+id+'.json';
+      // Con tope: fetchPrivado espera al SDK de Firebase (gstatic), y sin
+      // red buena eso no puede dejar el botón colgado — mismo motivo que _firma.
+      const tope=new Promise(res=>setTimeout(()=>res({ok:false}),3000));
+      let r=(typeof TMAuth!=='undefined'&&TMAuth.fetchPrivado) ? await Promise.race([TMAuth.fetchPrivado(ruta,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(cuerpo)}), tope]) : {ok:false};
+      if(!r.ok){ delete cuerpo.verificada; r=await fetch(base+ruta,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(cuerpo)}); }
+      if(!r.ok) throw new Error(r.msg||('HTTP '+r.status));
       tmMarcarResenaHecha(ventaId);
       d.remove(); showToast('✅ Reseña publicada','Sale en la tienda en unos minutos'); renderClientes();
     }catch(e){ b.disabled=false; b.textContent='Publicar'; err.textContent='No se pudo publicar ('+e.message+'). Prueba otra vez.'; }

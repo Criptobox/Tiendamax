@@ -141,6 +141,10 @@ textarea:focus,input:focus{border-color:var(--accent)}
   var PID = (q.get('p') || '').replace(/[^0-9a-zA-Z_-]/g, '').slice(0, 40);
   var NOMBRE = (q.get('n') || '').trim().slice(0, 50);
   var DE_COMPRA = q.get('v') === '1';
+  // El token lo crea el panel al mandar el enlace (/resena_tokens): con él la
+  // regla deja poner «verificada». Sin token o con uno que no vale, la reseña
+  // se publica igual, sin la marca.
+  var TK = /^[A-Za-z0-9]{10,40}$/.test(q.get('k') || '') ? q.get('k') : '';
   var WA = '5354320170';
   var RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com';
   var ETIQUETAS = ['', 'Malo', 'Regular', 'Bien', 'Muy bien', '¡Excelente!'];
@@ -268,11 +272,21 @@ textarea:focus,input:focus{border-color:var(--accent)}
       comprador: DE_COMPRA,
       origen: 'enlace'
     };
-    baseRtdb().then(function (base) {
+    if (TK) { r.tk = TK; r.verificada = true; }
+    function poner(base, cuerpo) {
       var ctrl = new AbortController(), t = setTimeout(function () { ctrl.abort(); }, 10000);
       return fetch(base + '/resenas/' + encodeURIComponent(PID) + '/' + id + '.json', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(r), signal: ctrl.signal
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo), signal: ctrl.signal
       }).finally(function () { clearTimeout(t); });
+    }
+    baseRtdb().then(function (base) {
+      return poner(base, r).then(function (res) {
+        // Un token que no vale (caducado, de otro producto) no puede costar la
+        // reseña: se reintenta sin la marca.
+        if (res.ok || !TK) return res;
+        var sin = Object.assign({}, r); delete sin.tk; delete sin.verificada;
+        return poner(base, sin);
+      });
     }).then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       lsSet(HECHA, String(id));

@@ -99,9 +99,13 @@ class AuthTest(unittest.TestCase):
         son fire-and-forget: la venta no llegaría a Firebase y no se enteraría
         nadie. Y permitir sobrescribir no lo necesita nada del código — abrir
         una puerta que nadie usa solo añade superficie."""
+        # Ahora también pide la cuenta del dueño: abierta, cualquiera creaba
+        # ventas inmutables que se pintaban en el panel. Lo que se pierda sin
+        # sesión lo vuelve a subir ventasSubirFaltantes (admin.html).
         self.assertEqual(
-            "!data.exists()", REGLAS["ventas"]["$ventaId"].get(".write"),
-            "una venta escrita no se pisa: ver tests/test_reglas_destructivas.py",
+            "!data.exists() && auth != null && auth.uid === root.child('admin_uid').val()",
+            REGLAS["ventas"]["$ventaId"].get(".write"),
+            "una venta escrita no se pisa y solo la crea el dueño",
         )
 
     # ── Lo que NO se puede tocar ────────────────────────────────────────
@@ -111,6 +115,16 @@ class AuthTest(unittest.TestCase):
             if nodo is None:
                 continue
             with self.subTest(ruta=nombre):
+                # /almacenes: la web solo la LEE (el vale); escribe el panel.
+                # /resenas: la cuenta solo la pide la marca opcional
+                # «verificada»; la reseña del cliente sigue entrando sin cuenta.
+                if nombre == "almacenes":
+                    self.assertIs(True, nodo.get(".read"), "el vale lee los almacenes sin cuenta")
+                    continue
+                if nombre == "resenas":
+                    alta = nodo["$productoId"]["$resenaId"]
+                    self.assertNotIn("auth", str(alta.get(".write")) + str(alta.get(".validate")))
+                    continue
                 self.assertNotIn(
                     "auth != null", texto_reglas(nodo),
                     f"/{nombre} la usa la web pública sin cuenta: pedirle auth "
