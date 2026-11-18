@@ -1,16 +1,16 @@
 {
-  "actualizado": "2026-11-17T19:39:39.135842+00:00",
-  "fecha": "2026-11-17",
+  "actualizado": "2026-11-18T19:15:47.373639+00:00",
+  "fecha": "2026-11-18",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 925.0,
+  "tasa": 930.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -20,11 +20,11 @@
       "tuPrecio": 640.0,
       "convertidos": 0,
       "mercado": {
-        "min": 620.0,
+        "min": 600.0,
         "mediana": 700.0,
         "n": 21
       },
-      "deltaAyerMediana": 17.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -32,22 +32,24 @@
       "historial": [
         {
           "fecha": "2026-11-17",
-          "mediana": 682.5
+          "mediana": 700.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 700.0
+          "fecha": "2026-11-18",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "620 USD BLUETTI Estación de energía portátil AC180, batería de reserva LiFePO4 de 1152 Wh ",
-          "precio": 620.0,
+          "titulo": "600 USD BLUETTI Estación de energía portátil AC180, batería de reserva LiFePO4 de 1152 Wh ",
+          "precio": 600.0,
           "url": "https://www.revolico.com/item/bluetti-estacion-de-energia-portatil-ac180-bateria-de-reserva-lifepo4-de-1152-wh-con-2-salidas-de-ca-de-1800-w-57331265",
           "dias": null,
           "moneda": "USD",
-          "orig": 620.0
+          "orig": 600.0
         },
         {
           "fuente": "revolico",
@@ -204,12 +206,12 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "820 USD BLUETTI AC180P DE 1800W y 1440Wh.. ESTACIÓN DE ENERGÍA PORTÁTIL NUEVA EN SU CAJA",
-          "precio": 820.0,
+          "titulo": "800 USD BLUETTI AC180P DE 1800W y 1440Wh.. ESTACIÓN DE ENERGÍA PORTÁTIL NUEVA EN SU CAJA",
+          "precio": 800.0,
           "url": "https://www.revolico.com/item/bluetti-ac180p-de-1800w-y-1440wh-nueva-en-su-caja-58740505",
           "dias": null,
           "moneda": "USD",
-          "orig": 820.0
+          "orig": 800.0
         },
         {
           "fuente": "revolico",
@@ -222,6 +224,7 @@
         }
       ],
       "busqueda": "generador solar portátil bluetti ac180",
+      "firma": "981c7ce4dc",
       "descartados": 2
     },
     {
@@ -245,8 +248,10 @@
           "mediana": 125.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 125.0
+          "fecha": "2026-11-18",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -270,6 +275,7 @@
         }
       ],
       "busqueda": "cargador mantenedor baterías vevor 35a",
+      "firma": "981c7ce4dc",
       "descartados": 1
     },
     {
@@ -280,7 +286,7 @@
       "mercado": {
         "min": 85.0,
         "mediana": 135.0,
-        "n": 20
+        "n": 19
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -293,8 +299,10 @@
           "mediana": 135.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 135.0
+          "fecha": "2026-11-18",
+          "mediana": 135.0,
+          "min": 85.0,
+          "tu": 90.0
         }
       ],
       "muestras": [
@@ -390,15 +398,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  Potencia máxima: 1200W. Tecnología M",
-          "precio": 135.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt135-usdaqui-vendemos-57535984",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 135.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W. ✅ Tecnolog",
           "precio": 135.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt-para-mayor-eficiencia-de-carga-57250846",
@@ -480,6 +479,7 @@
         }
       ],
       "busqueda": "controlador mppt boost 1200w",
+      "firma": "981c7ce4dc",
       "descartados": 0
     },
     {
@@ -490,7 +490,7 @@
       "mercado": {
         "min": 85.0,
         "mediana": 115.0,
-        "n": 14
+        "n": 13
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -503,8 +503,10 @@
           "mediana": 115.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 115.0
+          "fecha": "2026-11-18",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
         }
       ],
       "muestras": [
@@ -624,19 +626,11 @@
           "dias": null,
           "moneda": "USD",
           "orig": 130.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "130 USD Cargador inteligente",
-          "precio": 130.0,
-          "url": "https://www.revolico.com/item/cargador-inteligente-57714278",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 130.0
         }
       ],
       "busqueda": "vevor cargador batería inteligente 30a",
-      "descartados": 10
+      "firma": "981c7ce4dc",
+      "descartados": 11
     },
     {
       "id": 1790961637329,
@@ -659,8 +653,10 @@
           "mediana": 60.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 60.0
+          "fecha": "2026-11-18",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -675,6 +671,7 @@
         }
       ],
       "busqueda": "base paneles",
+      "firma": "981c7ce4dc",
       "descartados": 0
     },
     {
@@ -698,8 +695,10 @@
           "mediana": 65.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 65.0
+          "fecha": "2026-11-18",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
         }
       ],
       "muestras": [
@@ -840,6 +839,7 @@
         }
       ],
       "busqueda": "interruptor transferencia automática ats lsp",
+      "firma": "981c7ce4dc",
       "descartados": 4
     },
     {
@@ -852,7 +852,7 @@
         "mediana": 100.59,
         "n": 9
       },
-      "deltaAyerMediana": -0.41,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -860,11 +860,13 @@
       "historial": [
         {
           "fecha": "2026-11-17",
-          "mediana": 101.0
+          "mediana": 100.59
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 100.59
+          "fecha": "2026-11-18",
+          "mediana": 100.59,
+          "min": 97.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
@@ -951,6 +953,7 @@
         }
       ],
       "busqueda": "smartphone itel a100c 64gb rom",
+      "firma": "981c7ce4dc",
       "descartados": 1
     },
     {
@@ -963,7 +966,7 @@
         "mediana": 120.0,
         "n": 4
       },
-      "deltaAyerMediana": 2.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -971,11 +974,13 @@
       "historial": [
         {
           "fecha": "2026-11-17",
-          "mediana": 117.5
+          "mediana": 120.0
         },
         {
-          "fecha": "2026-11-17",
-          "mediana": 120.0
+          "fecha": "2026-11-18",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
         }
       ],
       "muestras": [
@@ -1017,6 +1022,7 @@
         }
       ],
       "busqueda": "smartphone itel a100c 128gb rom",
+      "firma": "981c7ce4dc",
       "descartados": 2
     }
   ]
