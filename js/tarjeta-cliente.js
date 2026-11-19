@@ -237,7 +237,8 @@
       (t.x ? ', hasta el ' + fechaCorta(t.x) : '') + '.\n\n' +
       'Al pedir, solo dime tu código: *' + bonito(t.c) + '*\n' +
       '👉 ' + URL_T + t.c + '\n\n' +
-      'Y si se la recomiendas a un amigo y compra, te sumo un descuento más.';
+      'Si se la recomiendas a un amigo y compra, te sumo un descuento más. Mándale este enlace:\n' +
+      '👉 ' + URL_REF + t.c;
   }
   function textoAvisoReferido(ref, amigo) {
     var n = pila(ref.n), a = pila(amigo && amigo.n);

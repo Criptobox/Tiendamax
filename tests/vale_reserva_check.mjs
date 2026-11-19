@@ -245,10 +245,44 @@ for (const modo of ['comparte', 'cancela']) {
        `con mensajería, al cliente nuevo hay que contarle la Tarjeta con sus tramos: «${r.dom.slice(-600)}»`);
     ok(!/Tarjeta/.test(r.rec), 'en recogida la tarjeta la da el gestor en mano: el vale no la anuncia');
     ok(!/Tarjeta/.test(r.apagada), 'con la campaña apagada el vale no puede prometer la tarjeta');
-    ok(/avísanos antes de la entrega/.test(r.yaTiene) && !/recibes tu Tarjeta/.test(r.yaTiene), 'a quien ya tiene tarjeta no se le promete otra');
+    ok(/Tu Tarjeta TiendaMax: TM-ABCDEF/.test(r.yaTiene) && /\?ref=TMABCDEF/.test(r.yaTiene) && /t\?c=TMABCDEF/.test(r.yaTiene) && !/recibes tu Tarjeta/.test(r.yaTiene),
+       `a quien ya tiene tarjeta se le recuerda la suya, con su enlace y el de recomendar: «${r.yaTiene.slice(-500)}»`);
+    ok(/te mandamos tu tarjeta con su QR y tu enlace/.test(r.dom), 'al cliente nuevo hay que decirle cómo le llega la tarjeta');
     ok(!/Zelle|Promotor|Vuelto: —|Dirección Cliente/.test(r.dom + r.rec), 'el texto del cliente no puede llevar etiquetas internas (Zelle, Promotor, Vuelto vacío)');
     ok(!/Dirección:|Mensajería:/.test(r.rec), `en recogida no van la dirección del cliente ni la mensajería: «${r.rec.slice(0, 300)}»`);
     ok(/Lo revisas antes de pagar/.test(r.dom) && !/verificado/i.test(r.dom), 'el texto tiene que decir que se revisa antes de pagar, sin «verificado»');
+    await ctx.close();
+}
+
+// ── 2d) El descuento se refleja: el de la tarjeta se propone solo, uno escrito manda ──
+{
+    const ctx = await contexto(false, null);
+    const pg = await ctx.newPage();
+    pg.on('pageerror', e => errores.push('vale descuento: ' + String(e).slice(0, 200)));
+    await pg.goto(`http://localhost:${PUERTO}/vale.html`);
+    await pg.waitForFunction(() => typeof _valeDescuento === 'function', null, { timeout: 15000 });
+    const r = await pg.evaluate(() => {
+        localStorage.setItem('tm_tarjetas_v1', JSON.stringify({ TMABCDEF: { c: 'TMABCDEF', t: '5350008888', e: Date.now(), x: Date.now() + 864e5, usos: {}, extra: {} } }));
+        resetForm(); _valeAlm = null; tasa = 500; margenMN = 0;
+        document.getElementById('vCliente').value = 'Con Tarjeta';
+        document.getElementById('vTelefono').value = '53 5000 8888';
+        document.getElementById('vArticulo').value = '1x Cosa — $50.00 USD c/u';
+        document.getElementById('vUSD').value = '50'; calcular();
+        document.getElementById('vMensajeria').value = '500'; recalc(); drawValeImg();
+        const auto = { campo: document.getElementById('vDescuento').value, total: totalValeTexto(), form: document.getElementById('vTotal').textContent, texto: construirTextoVale() };
+        document.getElementById('vUSD').value = '20'; calcular(); drawValeImg();
+        const bajo = document.getElementById('vDescuento').value;
+        document.getElementById('vUSD').value = '50'; calcular();
+        document.getElementById('vDescuento').value = '$5'; _valeDescTocado(); drawValeImg();
+        const manual = { campo: document.getElementById('vDescuento').value, total: totalValeTexto() };
+        return { auto, bajo, manual };
+    });
+    ok(r.auto.campo === '1000 MN', `con tarjeta y compra de $50 tenía que proponer 1000 MN: «${r.auto.campo}»`);
+    ok(/^\$50 USD − 1\.000 MN de descuento \+ 500 MN de mensajería \(o 24\.500 MN todo incluido\)$/.test(r.auto.total), `el total no refleja el descuento: «${r.auto.total}»`);
+    ok(/24\.500/.test(r.auto.form), `el total del formulario no refleja el descuento: «${r.auto.form}»`);
+    ok(/🏷️ Descuento \(Tarjeta TM-ABCDEF\): −1\.000 MN/.test(r.auto.texto) && /En este pedido: −1\.000 MN/.test(r.auto.texto), 'el texto no dice el descuento ni que sale de la tarjeta');
+    ok(r.bajo === '', `por debajo de $25 la tarjeta no se gasta: «${r.bajo}»`);
+    ok(/^\$45 USD \+ 500 MN de mensajería \(o 23\.000 MN todo incluido\)$/.test(r.manual.total), `un descuento escrito en USD tiene que restarse de los dólares: «${r.manual.total}»`);
     await ctx.close();
 }
 

@@ -292,8 +292,9 @@ input:focus,textarea:focus{border-color:var(--o)}
         <div class="tasa-val"><span id="tasaDisp">—</span> CUP</div>
       </div>
       <div class="r2">
-        <div class="fld"><div class="lbl">🔸 Precio USD/Zelle<span class="la">✓ auto</span></div><input type="number" id="vUSD" class="auto" placeholder="0.00" step="0.01" oninput="calcular()"></div>
+        <div class="fld"><div class="lbl">🔸 Precio USD<span class="la">✓ auto</span></div><input type="number" id="vUSD" class="auto" placeholder="0.00" step="0.01" oninput="calcular()"></div>
         <div class="fld"><div class="lbl">🔸 Precio CUP<span class="la">✓ auto</span></div><input type="number" id="vCUP" class="auto" placeholder="0" oninput="recalc()"></div>
+        <div class="fld"><div class="lbl">🏷️ Descuento<span class="lf">✏️</span></div><input type="text" id="vDescuento" class="fill" placeholder="Ej: 1000 MN o $5" oninput="_valeDescTocado()"><div id="vDescInfo" style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45"></div></div>
       </div>
       <div class="r2">
         <div class="fld"><div class="lbl">💵 Recibido CUP</div><input type="number" id="vRecibido" placeholder="0" oninput="calcVuelto()"></div>
@@ -386,6 +387,7 @@ input:focus,textarea:focus{border-color:var(--o)}
 <script src="/js/auth.js?v=4c7b6472"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
+<script src="/js/qr-mini.js"></script>
 <script src="/js/reservas.js?v=789cac20"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
@@ -447,9 +449,10 @@ function calcular(){
   recalc();
 }
 function recalc(){
+  try{ _valeSugerirDesc(); }catch(e){}       // el descuento de la tarjeta, antes de sumar
   const cup=parseInt(document.getElementById('vCUP').value)||0;
   const mens=getMens();
-  const totalCup=cup+mens;
+  const totalCup=_valeTotalMN();
   document.getElementById('vTotal').textContent=cup?fmtMN(totalCup)+' CUP':'—';
   // Equivalente en USD de referencia (usando la tasa + margen)
   const usdRef=document.getElementById('vTotalUsd');
@@ -464,8 +467,7 @@ function recalc(){
 }
 function calcVuelto(){
   const rec=parseInt(document.getElementById('vRecibido').value)||0;
-  const cup=parseInt(document.getElementById('vCUP').value)||0;
-  const total=cup+getMens();
+  const total=_valeTotalMN();
   // Solo calcula automático si escribiste un "Recibido CUP".
   // Si no, respeta el vuelto que haya puesto el cliente desde el formulario.
   if(rec && total){
@@ -737,6 +739,8 @@ function construirTextoVale(){
   const rec=lineaRecogida(); if(rec) L.push(rec.replace(/^\n/,''));
   L.push('🔸 Productos:\n   '+(v('vArticulo')||'—').replace(/\n/g,'\n   '));
   L.push('');
+  const dsc=_valeDescuento();
+  if(dsc.mn||dsc.usd) L.push('🏷️ Descuento'+(dsc.tarjeta?' (Tarjeta '+dsc.tarjeta.slice(0,2)+'-'+dsc.tarjeta.slice(2)+')':'')+': −'+(dsc.mn?fmtMN(dsc.mn)+' MN':fmtUSD(dsc.usd)+' USD'));
   L.push('💰 *Total a pagar: '+totalValeTexto()+'*');
   const t=_valeTasa(); if(t) L.push('💱 Tasa del vale: 1 USD = '+fmtMN(t)+' MN');
   if(v('vVuelto')) L.push('🔸 Vuelto: '+v('vVuelto'));
@@ -929,7 +933,8 @@ function goStep(n){
   try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
 }
 function resetForm(){
-  ['vCliente','vTelefono','vDireccion','vMensajeria','vArticulo','vGarantia','vUSD','vCUP','vRecibido','vVuelto'].forEach(id=>{
+  _descAuto=true; _descTarjeta=null;
+  ['vCliente','vTelefono','vDireccion','vMensajeria','vArticulo','vGarantia','vUSD','vCUP','vRecibido','vVuelto','vDescuento'].forEach(id=>{
     document.getElementById(id).value='';
     document.getElementById(id).classList.remove('auto');
   });
@@ -997,14 +1002,59 @@ function fmtMN(n){ return String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})
 function fmtUSD(n){ n=Number(n)||0; return '$'+(n%1?n.toFixed(2):String(n)); }
 let _valeCodigo = _genCodigo();
 
-/* ¿Este WhatsApp tiene tarjeta TiendaMax viva? Solo para recordarle que la
-   traiga: el vale va ANTES de la compra, así que no promete ningún descuento
-   —eso se decide al registrar la venta, donde el panel comprueba el tramo, la
-   fecha y los usos—. Se lee lo que el panel guardó en este teléfono. */
-function _valeTieneTarjeta(){
-  const tl=String(g('vTelefono')).replace(/\D/g,''); if(tl.length<6) return false;
-  let o={}; try{ o=JSON.parse(localStorage.getItem('tm_tarjetas_v1')||'{}')||{}; }catch(e){}
-  return Object.keys(o).some(c=>{ const x=o[c]; return x && x.t && (tl.endsWith(x.t)||x.t.endsWith(tl)) && !(x.x && Date.now()>x.x); });
+/* La tarjeta TiendaMax viva de este WhatsApp (lo que el panel guardó en este
+   teléfono), con los descuentos que le quedan. Misma cuenta que
+   tarjeta-cliente.js: 3 usos + premios (máx. 2), menos los usados; las ventas
+   anuladas no cuentan. */
+function _valeTarjetaViva(){
+  const tl=String(g('vTelefono')).replace(/\D/g,''); if(tl.length<6) return null;
+  let o={}, an=[];
+  try{ o=JSON.parse(localStorage.getItem('tm_tarjetas_v1')||'{}')||{}; }catch(e){}
+  try{ an=JSON.parse(localStorage.getItem('tm_ventas_anuladas')||'[]').map(String); }catch(e){}
+  let t=null;
+  Object.keys(o).forEach(c=>{ const x=o[c]; if(x && x.t && (tl.endsWith(x.t)||x.t.endsWith(tl)) && (!t||(x.e||0)>(t.e||0))) t=x; });
+  if(!t || (t.x && Date.now()>t.x)) return null;
+  const n=set=>Object.keys(set||{}).filter(v=>an.indexOf(String(v))===-1).length;
+  return {c:t.c, x:t.x, quedan:Math.max(0, VALE_TARJETA.USOS+Math.min(VALE_TARJETA.EXTRA_MAX,n(t.extra))-n(t.usos))};
+}
+
+/* El descuento se REFLEJA en el vale (el dueño): campo libre «1000 MN» o
+   «$5». Si el cliente tiene tarjeta con descuentos y la compra llega al
+   tramo, se propone solo el del tramo; si el gestor lo cambia o lo borra,
+   manda lo suyo. La venta sigue pasando por el panel, que vuelve a
+   comprobar la tarjeta al registrarla (tmTarjetaPreguntar). */
+let _descAuto=true, _descTarjeta=null;
+function _valeDescTocado(){ _descAuto=false; _descTarjeta=null; recalc(); }
+function _valeTramo(usd){ for(const t of VALE_TARJETA.TRAMOS) if(usd>=t[0]) return t[1]; return 0; }
+function _valeSugerirDesc(){
+  const el=document.getElementById('vDescuento'); if(!el) return;
+  const info=document.getElementById('vDescInfo');
+  const tj=_valeTarjetaViva();
+  const usd=parseFloat(document.getElementById('vUSD')?.value)||0;
+  const tramo=(tj && tj.quedan>0) ? _valeTramo(usd) : 0;
+  if(_descAuto){
+    el.value = tramo ? tramo+' MN' : '';
+    _descTarjeta = tramo ? tj.c : null;
+  }
+  if(info){
+    if(tj && tj.quedan>0) info.textContent = 'Tarjeta '+tj.c.slice(0,2)+'-'+tj.c.slice(2)+': le quedan '+tj.quedan+'. '
+      + (tramo ? (_descTarjeta?'Se le aplica '+tramo+' MN (sale de tu comisión). Bórralo si no se lo das.':'Le tocarían '+tramo+' MN por la tarjeta.') : 'Esta compra no llega a $'+VALE_TARJETA.TRAMOS[VALE_TARJETA.TRAMOS.length-1][0]+': no se gasta la tarjeta.');
+    else info.textContent='';
+  }
+}
+function _valeDescuento(){
+  const txt=String(document.getElementById('vDescuento')?.value||'').trim();
+  const n=parseFloat(txt.replace(/[^\d.,]/g,'').replace(/\.(?=\d{3}\b)/g,'').replace(',','.'))||0;
+  if(!n) return {usd:0, mn:0, tarjeta:null};
+  return /\$|usd/i.test(txt) ? {usd:n, mn:0, tarjeta:_descTarjeta} : {usd:0, mn:Math.round(n), tarjeta:_descTarjeta};
+}
+/* Lo que se paga en MN, todo incluido: productos − descuento + mensajería.
+   Un descuento en USD pasa a MN a la tasa del propio vale. */
+function _valeTotalMN(){
+  const cup=parseInt(document.getElementById('vCUP')?.value)||0;
+  if(!cup) return 0;
+  const d=_valeDescuento(), t=_valeTasa();
+  return Math.max(0, cup - d.mn - Math.round(d.usd*(t||0)) + getMens());
 }
 
 /* La garantía es de cada producto, no del vale: la escribe el gestor en la
@@ -1032,8 +1082,10 @@ function totalValeTexto(){
   const usd=parseFloat(document.getElementById('vUSD')?.value)||0;
   const cup=parseInt(document.getElementById('vCUP')?.value)||0;
   const mens=getMens();
-  if(!usd) return cup ? fmtMN(cup+mens)+' MN' : '—';
-  return fmtUSD(usd)+' USD'+(mens?' + '+fmtMN(mens)+' MN de mensajería':'')+(cup?' (o '+fmtMN(cup+mens)+' MN todo incluido)':'');
+  const d=_valeDescuento(), tot=_valeTotalMN();
+  if(!usd) return cup ? fmtMN(tot)+' MN' : '—';
+  return fmtUSD(Math.max(0,usd-d.usd))+' USD'+(d.mn?' − '+fmtMN(d.mn)+' MN de descuento':'')+(mens?' + '+fmtMN(mens)+' MN de mensajería':'')
+    +(cup?' (o '+fmtMN(tot)+' MN todo incluido)':'');
 }
 /* La tasa a la que sale el vale: Yasmany y el mensajero la sacaban a mano
    (39.750 ÷ 75). Sale de los dos precios que ya están escritos, no de
@@ -1055,12 +1107,23 @@ function _valeProgramaTarjeta(){
   const tl=String(g('vTelefono')).replace(/\D/g,''); if(tl.length<6) return null;
   let cfg=null; try{ cfg=JSON.parse(localStorage.getItem('tm_tarjeta_cfg')||'null'); }catch(e){}
   if(cfg && cfg.on===false) return null;
-  if(_valeTieneTarjeta()) return {ya:true, texto:'🎁 Si tienes tu Tarjeta TiendaMax, avísanos antes de la entrega.'};
+  const tv=_valeTarjetaViva();
+  if(tv){
+    const d=_valeDescuento(), usada=!!(d.tarjeta && (d.mn||d.usd));
+    const quedan=Math.max(0, tv.quedan-(usada?1:0));
+    const cod=tv.c.slice(0,2)+'-'+tv.c.slice(2);
+    return {ya:true, c:tv.c, cod, quedan, usada, texto:'🎁 *Tu Tarjeta TiendaMax: '+cod+'*\n'
+      +(usada?'   En este pedido: −'+(d.mn?fmtMN(d.mn)+' MN':fmtUSD(d.usd)+' USD')+'.\n':'')
+      +'   '+(quedan===1?'Te queda 1 descuento':'Te quedan '+quedan+' descuentos')+' para tus próximas compras.\n'
+      +'   Tu tarjeta: https://tiendamax.org/t?c='+tv.c+'\n'
+      +'   Para recomendar, comparte: https://tiendamax.org/?ref='+tv.c};
+  }
   const T=VALE_TARJETA.TRAMOS, bajo=T[T.length-1], alto=T[0];
   const tramos='desde $'+bajo[0]+': −'+bajo[1]+' MN · desde $'+alto[0]+': −'+alto[1]+' MN';
   return {ya:false, tramos, texto:'🎁 *Con esta compra recibes tu Tarjeta TiendaMax*\n'
     +'   Descuento en tus próximas '+VALE_TARJETA.USOS+' compras ('+tramos+').\n'
-    +'   Recomienda a un amigo: cuando compre, ganas otro descuento (hasta '+VALE_TARJETA.EXTRA_MAX+' más).'};
+    +'   Recomienda a un amigo: cuando compre, ganas otro descuento (hasta '+VALE_TARJETA.EXTRA_MAX+' más).\n'
+    +'   Al recibir te mandamos tu tarjeta con su QR y tu enlace para recomendar.'};
 }
 function textoGarantias(){
   const gs=_garantiasVale();
@@ -1127,10 +1190,13 @@ function drawValeImg() {
   const vacio = !items.length;
   if(vacio) items=[{qty:'',nombre:'(Artículos aparecerán aquí)'}];
 
-  const usd  = parseFloat(document.getElementById('vUSD')?.value)||0;
+  _valeSugerirDesc();
+  const usd0 = parseFloat(document.getElementById('vUSD')?.value)||0;
   const cup  = parseInt(document.getElementById('vCUP')?.value)||0;
   const mens = getMens();
-  const totalCup = cup + mens;
+  const dsc  = _valeDescuento();
+  const usd  = Math.max(0, usd0 - dsc.usd);
+  const totalCup = _valeTotalMN();
   const alm = _valeAlm || null;                       // objeto = recoge; null/undefined = domicilio o sin decidir
   const recoge = !!alm;
   const domicilio = !recoge && !!direccion && direccion!=='—';
@@ -1163,12 +1229,14 @@ function drawValeImg() {
 
   const hHead=200, hCli=132;
   const hProd=58+filas.reduce((a,f)=>a+f.h,0);
-  const extraTot=[usd&&mens, usd&&totalCup].filter(Boolean).length;
-  const hTot=34+(mens?46+44+26:0)+(118+extraTot*38)+(tasaV?52:10);
+  const hayDesc=!!(dsc.mn||dsc.usd);
+  const extraTot=[usd&&dsc.mn, usd&&mens, usd&&totalCup].filter(Boolean).length;
+  const filasDesg=(mens||hayDesc) ? 1+(hayDesc?1:0)+(mens?1:0) : 0;
+  const hTot=34+(filasDesg?22+44*(filasDesg-1)+26:0)+(118+extraTot*38)+(tasaV?52:10);
   const hLugar=(recoge||domicilio) ? 30 + 54 + 40 + lugarL.length*38 + ((recoge&&alm.ubicacion)||domicilio?38:0) + 30 : 0;
   const hVence=vence ? 26+76 : 0;
   const hGar=conGar.length ? 26+92 : 0;
-  const hTj=prog ? (prog.ya ? 22+40 : 30+208) : 0;
+  const hTj=prog ? (prog.ya ? 30+262 : 30+246) : 0;
   const hAt=atL.length ? 40+50+atL.length*36 : 0;
   const hPie=34+120;
   const H = P + 48 + hHead + 26 + hCli + 40 + hProd + hTot + hLugar + hVence + hGar + hTj + hAt + hPie + 48 + P;
@@ -1235,9 +1303,14 @@ function drawValeImg() {
   y+=24;
   const fila=(a,b)=>{ ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(400,25); ctx.fillText(a, M+6, y); ctx.textAlign='right'; ctx.fillStyle='#e4e4e7'; ctx.font=F(500,25); ctx.fillText(b, W-M-6, y); };
   // Sin mensajería el subtotal repite el total: solo sale cuando la hay.
-  if(mens){
-    y+=22; fila('Productos', (usd?fmtUSD(usd)+' USD':'')+(usd&&cup?'  ·  ':'')+(cup?fmtMN(cup)+' MN':'')||'—');
-    y+=44; fila('Mensajería'+(domicilio?' (a domicilio)':''), fmtMN(mens)+' MN');
+  if(mens || hayDesc){
+    y+=22; fila('Productos', (usd0?fmtUSD(usd0)+' USD':'')+(usd0&&cup?'  ·  ':'')+(cup?fmtMN(cup)+' MN':'')||'—');
+    if(hayDesc){
+      y+=44; ctx.textAlign='left'; ctx.fillStyle='#6ee7b7'; ctx.font=F(500,25);
+      ctx.fillText('Descuento'+(dsc.tarjeta?' (Tarjeta '+dsc.tarjeta.slice(0,2)+'-'+dsc.tarjeta.slice(2)+')':''), M+6, y);
+      ctx.textAlign='right'; ctx.fillText('−'+(dsc.mn?fmtMN(dsc.mn)+' MN':fmtUSD(dsc.usd)+' USD'), W-M-6, y);
+    }
+    if(mens){ y+=44; fila('Mensajería'+(domicilio?' (a domicilio)':''), fmtMN(mens)+' MN'); }
     y+=26;
   }
   const tg=ctx.createLinearGradient(M,y,W-M,y);
@@ -1252,6 +1325,7 @@ function drawValeImg() {
   ctx.fillText(usd ? fmtUSD(usd)+' USD' : (totalCup ? fmtMN(totalCup)+' MN' : '—'), W-M-34, y+80);
   // Dentro de la caja y legible: quien paga en MN (la mayoría) busca esta cifra.
   let ly2=y+80;
+  if(usd && dsc.mn){ ly2+=38; ctx.fillStyle='#6ee7b7'; ctx.font=F(600,26); ctx.fillText('− '+fmtMN(dsc.mn)+' MN de descuento', W-M-34, ly2); }
   if(usd && mens){ ly2+=38; ctx.fillStyle='#fdba74'; ctx.font=F(600,26); ctx.fillText('+ '+fmtMN(mens)+' MN de mensajería', W-M-34, ly2); }
   if(usd && totalCup){ ly2+=38; ctx.fillStyle='#fff'; ctx.font=F(700,28); ctx.fillText('o '+fmtMN(totalCup)+' MN'+(mens?' todo incluido':''), W-M-34, ly2); }
   y+=bh;
@@ -1299,20 +1373,37 @@ function drawValeImg() {
 
   // ── 8. Si ya tiene tarjeta: que la traiga (sin cifras: el descuento se decide al vender) ──
   if(prog && prog.ya){
-    y+=22+30; ctx.textAlign='left'; ctx.fillStyle='#e7c99a'; ctx.font=F(500,24);
-    ctx.fillText('🎁 Si tienes tu Tarjeta TiendaMax, avísanos antes de la entrega.', M+6, y);
-    y+=10;
+    y+=30; const th=262;
+    const gr=ctx.createLinearGradient(M,y,W-M,y+th); gr.addColorStop(0,'#2a1d12'); gr.addColorStop(1,'#1a1612');
+    _vRR(ctx,M,y,IW,th,28); ctx.fillStyle=gr; ctx.fill(); ctx.strokeStyle='rgba(201,169,110,.45)'; ctx.lineWidth=2; ctx.stroke();
+    const qs=200, qx=W-M-28-qs, qy=y+31;
+    const q=(typeof tmQR==='function') ? tmQR('https://tiendamax.org/t?c='+prog.c) : null;
+    if(q){
+      ctx.fillStyle='#fff'; _vRR(ctx,qx,qy,qs,qs,14); ctx.fill();
+      const cel=(qs-24)/q.n; ctx.fillStyle='#111';
+      for(let r=0;r<q.n;r++) for(let c2=0;c2<q.n;c2++) if(q.get(r,c2)) ctx.fillRect(qx+12+c2*cel, qy+12+r*cel, Math.ceil(cel), Math.ceil(cel));
+    }
+    const tw=(q?qx-24:W-M-28)-(M+30);
+    ctx.textAlign='left'; ctx.fillStyle='#e7c99a'; ctx.font=F(800,22); ctx.fillText('🎁 TU TARJETA TIENDAMAX', M+30, y+46);
+    ctx.fillStyle='#fff'; ctx.font=F(800,40,'ui-monospace,Menlo,monospace'); ctx.fillText(prog.cod, M+30, y+96);
+    ctx.fillStyle=C.txt; ctx.font=F(600,24);
+    ctx.fillText(_vWrap(ctx, (prog.quedan===1?'Te queda 1 descuento':'Te quedan '+prog.quedan+' descuentos')+' para próximas compras', tw, 1)[0], M+30, y+138);
+    ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText('Para recomendar, comparte:', M+30, y+182);
+    ctx.fillStyle='#e7c99a'; ctx.font=F(700,23); ctx.fillText(_vWrap(ctx, 'tiendamax.org/?ref='+prog.c, tw, 1)[0], M+30, y+214);
+    ctx.fillStyle=C.sub; ctx.font=F(400,21); ctx.fillText('El QR abre tu tarjeta', M+30, y+244);
+    y+=th;
   } else if(prog){
-    y+=30;
-    const gr=ctx.createLinearGradient(M,y,W-M,y+208); gr.addColorStop(0,'#2a1d12'); gr.addColorStop(1,'#1a1612');
-    _vRR(ctx,M,y,IW,208,28); ctx.fillStyle=gr; ctx.fill(); ctx.strokeStyle='rgba(201,169,110,.45)'; ctx.lineWidth=2; ctx.stroke();
+    y+=30; const th=246;
+    const gr=ctx.createLinearGradient(M,y,W-M,y+th); gr.addColorStop(0,'#2a1d12'); gr.addColorStop(1,'#1a1612');
+    _vRR(ctx,M,y,IW,th,28); ctx.fillStyle=gr; ctx.fill(); ctx.strokeStyle='rgba(201,169,110,.45)'; ctx.lineWidth=2; ctx.stroke();
     ctx.textAlign='left'; ctx.fillStyle='#e7c99a'; ctx.font=F(800,22); ctx.fillText('🎁 CON ESTA COMPRA RECIBES TU TARJETA TIENDAMAX', M+30, y+46);
     ctx.fillStyle=C.txt; ctx.font=F(600,27); ctx.fillText('Descuento en tus próximas '+VALE_TARJETA.USOS+' compras', M+30, y+90);
     ctx.fillStyle='#e7c99a'; ctx.font=F(700,25); ctx.fillText(prog.tramos, M+30, y+128);
     ctx.fillStyle=C.sub; ctx.font=F(400,23);
-    ctx.fillText('Recomienda a un amigo: cuando compre, ganas otro', M+30, y+166);
-    ctx.fillText('descuento (hasta '+VALE_TARJETA.EXTRA_MAX+' más).', M+30, y+194);
-    y+=208;
+    ctx.fillText('Recomienda a un amigo: cuando compre, ganas otro descuento', M+30, y+166);
+    ctx.fillText('(hasta '+VALE_TARJETA.EXTRA_MAX+' más). Al recibir te mandamos tu tarjeta', M+30, y+196);
+    ctx.fillText('con su QR y tu enlace para recomendar.', M+30, y+226);
+    y+=th;
   }
 
   // ── 9. Condiciones del dueño ──
