@@ -141,6 +141,12 @@
     .tm-bot-product{display:flex;align-items:center;gap:10px;background:#1a1a1a;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;cursor:pointer;transition:all .2s;}
     .tm-bot-product:hover{background:#252525;border-color:rgba(232,80,30,.5);transform:translateX(2px);}
     .tm-bot-product-img{width:56px;height:56px;border-radius:10px;object-fit:contain;flex-shrink:0;background:#fff;}
+    /* Ficha de un producto: la foto primero, grande, con nombre y precio debajo. */
+    .tm-bot-product.grande{flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden;border-radius:16px;}
+    .tm-bot-product.grande .tm-bot-product-img{width:100%;height:210px;border-radius:0;object-fit:contain;}
+    .tm-bot-product.grande .tm-bot-product-info{padding:12px 14px 14px;}
+    .tm-bot-product.grande .tm-bot-product-name{font-size:16px;line-height:1.3;}
+    .tm-bot-product.grande .tm-bot-product-go{display:none;}
     .tm-bot-product-info{flex:1;min-width:0;}
     .tm-bot-product-name{font-size:13px;font-weight:600;color:#fff;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
     .tm-bot-product-price{font-size:13px;color:#fff;font-weight:800;margin-top:3px;}

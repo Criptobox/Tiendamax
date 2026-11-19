@@ -2076,6 +2076,40 @@
     return casan.length > 0 && casan.every(w => _PALABRAS_DE_USO.has(w));
   }
 
+  /* PRODUCTOS NOMBRADOS QUE LA TIENDA TIENE APAGADOS.
+     La tienda filtra `productos` en memoria (categoría o subcategoría apagada
+     en el panel) pero guarda el catálogo ENTERO en localStorage. Si el cliente
+     pide por su nombre algo que está ahí y no en la lista visible, la verdad es
+     «no está disponible ahora», no «no te entendí» ni otra cosa parecida: el
+     que pregunta por una NanoStation con WIFI apagada recibía un callejón. Solo
+     cuenta si lo visible no reconoce el mensaje, para no robarle consultas. */
+  let _ocultosFirma = '', _ocultosCache = [];
+  function _productosOcultos(){
+    let todos = [];
+    try { todos = JSON.parse(localStorage.getItem('productos') || '[]') || []; } catch(e){ return []; }
+    if(!Array.isArray(todos) || !todos.length) return [];
+    const vis = _productosVivos();
+    const firma = todos.length + ':' + vis.length + ':' + _catFirma;
+    if(firma === _ocultosFirma) return _ocultosCache;
+    const idsVisibles = new Set(vis.map(p => String(p.id)));
+    _ocultosCache = todos.filter(p => p && p.id != null && !idsVisibles.has(String(p.id))).map(_normalizar);
+    _ocultosFirma = firma;
+    return _ocultosCache;
+  }
+  function _mencionOculto(text){
+    const ocultos = _productosOcultos();
+    if(!ocultos.length) return null;
+    // Si lo que hay a la venta ya reconoce el mensaje, manda eso.
+    try { if(detectProductMentions(text).length) return null; } catch(e){ return null; }
+    const guardado = PRODUCTOS;
+    try {
+      PRODUCTOS = ocultos;
+      const m = detectProductMentions(text);
+      return (m && m.length) ? (m[0].p || m[0]) : null;
+    } catch(e){ return null; }
+    finally { PRODUCTOS = guardado; }
+  }
+
   function detectIntent(text){
     let t = normalize(text).trim();
     let m = text.toLowerCase().trim();
@@ -2106,6 +2140,9 @@
        Si trae una consulta, no entra aquí y gana la consulta. */
     const _ch = _charlaIntent(m);
     if(_ch) return _ch;
+
+    // Nombró algo que la tienda tiene apagado: se dice, no se inventa otra cosa.
+    if(_mencionOculto(text)) return 'noDisponible';
 
     // Actualizar contexto con presupuesto si lo menciona
     const presupuesto = detectPresupuesto(text);
@@ -2933,6 +2970,15 @@
 
   /* Quien pide una persona no quiere un producto: se le da el camino ya, con
      el horario real, y no se le sigue vendiendo. */
+  R.noDisponible = (text) => {
+    const p = _mencionOculto(text);
+    const nombre = p ? String(p.nombre).split('|')[0].trim() : 'Ese producto';
+    return {
+      response: `😕 <strong>${escapeHtml(nombre)}</strong> no está disponible ahora en la tienda.\n\nSi lo necesitas, escríbenos por WhatsApp y te decimos qué podemos hacer. También te puedo enseñar lo que sí tenemos.`,
+      quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+    };
+  };
+
   R.humano = () => ({
     response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba).`,
     quickReplies: ['💬 Abrir WhatsApp','📦 Categorías','🔥 Ofertas']
@@ -4718,7 +4764,7 @@ ${notasHTML}
     if(o.unidad) body += `🎮 Va directo a tu cuenta con tu ID de jugador.\n`;
     else if(String(o.region || '') === 'EE. UU.') body += `⚠️ Solo funciona en cuentas de EE. UU.\n`;
     body += `\nToca la tarjeta para elegir el importe y pedirla.`;
-    return { response: body, products: [p], quickReplies: ['💬 WhatsApp','📦 Categorías'] };
+    return { response: _sinTituloRepetido(body), products: [p], productosPrimero: true, quickReplies: ['💬 WhatsApp','📦 Categorías'] };
   }
 
   /* Lo que preguntaron de UN producto, contestado con su ficha.
@@ -4759,6 +4805,12 @@ ${notasHTML}
     }
     if(!filas.length && !extra) return '';
     return `🎯 <strong>Lo que preguntas:</strong>\n` + (extra ? extra + '\n' : '') + filas.map(fila).join('\n') + '\n\n';
+  }
+
+  /* Con la tarjeta grande encima (foto, nombre, precio, stock), el título del
+     texto repetía el nombre: se quita solo esa primera línea. */
+  function _sinTituloRepetido(b){
+    return String(b).replace(/^📦 <strong>[^\n]*<\/strong>\n\n/, '');
   }
 
   function buildDetalle(p, originalQuery){
@@ -4850,8 +4902,9 @@ ${notasHTML}
     if(subcat === 'BATERÍAS') qrs.splice(1, 0, '⏱️ Calcular autonomía');
     if(subcat === 'INVERSORES') qrs.splice(1, 0, '⏱️ Autonomía con nevera');
     return {
-      response: body,
+      response: _sinTituloRepetido(body),
       products: [p],
+      productosPrimero: true,
       quickReplies: qrs,
       // De las tres cosas que ofrece la frase, la única que siempre se puede
       // dar sin pedir nada más es ver alternativas: comparar necesita un
@@ -6562,9 +6615,20 @@ ${notasHTML}
   // termine de cargar cada imagen recién insertada (las tarjetas de
   // producto crecen después de pintarse y dejaban la respuesta a medias).
   let _scrollTimer = null;
+  /* Ficha de un producto: el chat se queda con la FOTO arriba de lo que se ve
+     (y los datos debajo, para bajar a leerlos), en vez de saltar al final del
+     texto largo y esconder la foto que va primero. Se suelta con el siguiente
+     mensaje del cliente. */
+  let _ancla = null;
   function _scrollAlFondo(){
     if(!bodyEl) return;
-    const bajar = () => { bodyEl.scrollTop = bodyEl['scrollHeight']; };
+    const bajar = () => {
+      if(_ancla && _ancla.isConnected){
+        bodyEl.scrollTop += _ancla.getBoundingClientRect().top - bodyEl.getBoundingClientRect().top - 8;
+      } else {
+        bodyEl.scrollTop = bodyEl['scrollHeight'];
+      }
+    };
     bajar();
     requestAnimationFrame(bajar);
     clearTimeout(_scrollTimer);
@@ -6682,8 +6746,7 @@ ${notasHTML}
     if(!rivales.length){
       addMessageTyped('No tengo otro <strong>' + escapeHtml(p.subcategoria || p.categoria) + '</strong> disponible para comparar con <strong>' + escapeHtml(p.nombre) + '</strong>. Te muestro su ficha completa:', 'bot');
       const d = buildDetalle(p);
-      if(d.response) addMessageTyped(d.response, 'bot');
-      if(d.products) addProducts(d.products);
+      _mostrarRespuestaProductos(d);
       if(d.quickReplies) renderQuickReplies(d.quickReplies);
       return;
     }
@@ -6810,7 +6873,7 @@ ${notasHTML}
         const b = ev.target.closest('button'); if(!b) return;
         if(b.dataset.acc != null) sendMessage(_ACCIONES[+b.dataset.acc].msg);
         else if(b.dataset.regalo) sendMessage('cómo funciona la tarjeta tiendamax');
-        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); if(r.response) addMessageTyped(r.response, 'bot'); if(r.products) addProducts(r.products); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
+        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); _mostrarRespuestaProductos(r); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
       });
       bodyEl.appendChild(box);
       _scrollAlFondo();
@@ -6825,13 +6888,24 @@ ${notasHTML}
     return `<span class="tmb-st ok">● ${n} disponibles</span>`;
   }
 
-  function addProducts(products){
+  /* Enseña lo que devolvió un detalle: si trae `productosPrimero`, la tarjeta
+     con la foto va ANTES del texto; si no, como siempre (texto y luego tarjetas). */
+  function _mostrarRespuestaProductos(r){
+    const primero = !!(r.productosPrimero && r.products && r.products.length);
+    if(primero) addProducts(r.products, { grande: true });
+    if(r.response) addMessageTyped(r.response, 'bot');
+    if(r.products && !primero) addProducts(r.products);
+  }
+
+  function addProducts(products, opts){
     if(!products || products.length === 0) return;
+    const grande = !!(opts && opts.grande) && products.length === 1;
     const wrap = document.createElement('div');
     wrap.className = 'tm-bot-products';
+    if(grande) _ancla = wrap;
     products.forEach(p => {
       const item = document.createElement('div');
-      item.className = 'tm-bot-product';
+      item.className = 'tm-bot-product' + (grande ? ' grande' : '');
       const agotado = p.stock === 0;
       // Imagen con fallback multinivel: original → thumbs/ → placeholder
       const imgInfo = imageUrl(p);
@@ -6846,6 +6920,8 @@ ${notasHTML}
         <div class="tm-bot-product-go">›</div>
       `;
       item.onclick = () => {
+        // La tarjeta grande ya ES la ficha: tocarla abre la de la tienda.
+        if(grande){ abrirFichaEnTienda(p.id); return; }
         // Si el producto es de ROPA o LLANTAS, mostrar selector de talla/medida primero
         const subcatUpper = (p.subcategoria||'').toUpperCase();
         const catUpper = (p.categoria||'').toUpperCase();
@@ -6858,8 +6934,7 @@ ${notasHTML}
           return;
         }
         const r = buildDetalle(p);
-        if(r.response) addMessageTyped(r.response, 'bot');
-        if(r.products) addProducts(r.products);
+        _mostrarRespuestaProductos(r);
         if(r.quickReplies) renderQuickReplies(r.quickReplies);
       };
       wrap.appendChild(item);
@@ -7163,8 +7238,7 @@ ${notasHTML}
              || _lastProductsShown.find(x => x.nombre.startsWith(name));
       if(p){
         const r2 = buildDetalle(p);
-        if(r2.response) addMessageTyped(r2.response, 'bot');
-        if(r2.products) addProducts(r2.products);
+        _mostrarRespuestaProductos(r2);
         if(r2.quickReplies) renderQuickReplies(r2.quickReplies);
         return;
       }
@@ -7248,6 +7322,7 @@ ${notasHTML}
     text = (text||'').trim();
     if(!text || _sending) return;
     _sending = true;
+    _ancla = null;                       // el cliente sigue la conversación: abajo otra vez
     inputEl.value = '';
     hideSuggestions();
     sendBtn.disabled = true;
@@ -7270,6 +7345,11 @@ ${notasHTML}
       // chat sigue igual. responder() acaba de dejar la intención en _context.
       // Este es el ÚNICO sitio que registra la pregunta: una por mensaje.
       _registrarPreguntaFAQ(text, data.sinRespuesta ? 'desconocido' : _context.lastIntent, data.response);
+      // Ficha de UN producto: primero la foto con el nombre y el precio, y debajo
+      // los datos. Verlo antes de leerlo es lo que hace falta para decidir.
+      const _primero = !!(data.productosPrimero && data.products && data.products.length &&
+                          !data.compare && !data.elegirComparar && !data.elegirRival);
+      if(_primero) addProducts(data.products, { grande: true });
       if(data.response) addMessageTyped(data.response, 'bot');
       // Señales del flujo de comparación: en vez de un texto, se pintan las
       // opciones para que el cliente elija tocando cuál va contra cuál.
@@ -7277,7 +7357,7 @@ ${notasHTML}
       if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
       if(data.bienvenida) _pintarBienvenida();
       if(data.compare) addCompareTable(data.compare);
-      else if(data.products) addProducts(data.products);
+      else if(data.products && !_primero) addProducts(data.products);
       _pedirOpinion(text, data);
       renderQuickReplies(data.quickReplies || defaultQuickReplies());
       saveHistory(); // guardar tras respuesta del bot
@@ -7395,8 +7475,7 @@ ${notasHTML}
           addTyping();
           setTimeout(() => {
             removeTyping();
-            if(r.response) addMessageTyped(r.response, 'bot');
-            if(r.products) addProducts(r.products);
+            _mostrarRespuestaProductos(r);
             if(r.quickReplies) renderQuickReplies(r.quickReplies);
           }, 500);
         } else if(it.isAction){

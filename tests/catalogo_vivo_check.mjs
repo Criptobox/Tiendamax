@@ -66,9 +66,14 @@ const preguntar = async (q) => {
   await pg.fill('#tmBotInput', q); await pg.click('#tmBotSend');
   await pg.waitForFunction(() => !document.querySelector('.tm-bot-typing'), null, { timeout: 8000 }).catch(() => {});
   await pg.waitForTimeout(2200);
+  // Todo lo que Max puso tras tu mensaje: la tarjeta con la foto (que lleva el
+  // nombre) y el texto de debajo.
   return pg.evaluate(() => {
-    const m = [...document.querySelectorAll('.tm-bot-msg.bot')].pop();
-    return (m ? m.innerText : '').replace(/\s+/g, ' ').trim();
+    const cuerpo = document.getElementById('tmBotBody');
+    const hijos = [...cuerpo.children];
+    let i = hijos.length - 1;
+    while (i >= 0 && !(hijos[i].classList.contains('tm-bot-msg') && hijos[i].classList.contains('user'))) i--;
+    return hijos.slice(i + 1).map(h => h.innerText || '').join(' ').replace(/\s+/g, ' ').trim();
   });
 };
 const tarjetas = () => pg.evaluate(() => document.querySelectorAll('#tmBotMessages .tm-bot-product, #tmBotMessages [data-pid]').length);
@@ -125,7 +130,10 @@ ok(c2 === true, 'apagar una categoría se detecta');
 const quedan = await pg.evaluate((cat) => productos.filter(p => p.categoria === cat).length, OBJ.categoria);
 ok(quedan === 0, `apagada la categoría, la tienda no debe tener sus productos (quedan ${quedan})`);
 let r5 = await preguntar('tienen estante prueba vivo');
-ok(!/Estante Prueba Vivo/i.test(r5) || /no (lo )?(tengo|manejo|encontr)/i.test(r5), `Max no debe ofrecer lo de una categoría apagada: ${r5.slice(0, 200)}`);
+// Apagada la categoría, Max lo nombra solo para decir que no está disponible: no enseña
+// su tarjeta ni ofrece avisarle al cliente cuando llegue.
+ok(/no est[aá] disponible/i.test(r5), `Max debe decir que lo de una categoría apagada no está disponible: ${r5.slice(0, 200)}`);
+ok(!/\$12|en stock|disponibles?\b(?!.*no est)|Avísame/i.test(r5.replace(/no est[aá] disponible/ig, '')), `Max no debe enseñar el producto apagado ni ofrecer avisar: ${r5.slice(0, 200)}`);
 
 ok(errores.length === 0, 'errores de página: ' + JSON.stringify(errores));
 await navegador.close(); servidor.close();
