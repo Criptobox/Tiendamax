@@ -115,7 +115,7 @@
          inyecta la primera vez que el cliente abre el chat. La URL va aquí
          (y no dentro del JS) para que bump_versions.py le ponga el hash del
          archivo y el navegador no sirva un cerebro viejo desde caché. -->
-    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=b183623e">
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=0d081371">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -642,6 +642,8 @@
                 try {
                     if (cfg && cfg.envios) localStorage.setItem('tm_envios_cfg', JSON.stringify(cfg.envios));
                     else if (cfg) localStorage.removeItem('tm_envios_cfg');
+                    // La campaña de la Tarjeta TiendaMax: Max solo la anuncia encendida.
+                    if (cfg && cfg.tarjeta) localStorage.setItem('tm_tarjeta_campana', JSON.stringify(cfg.tarjeta));
                 } catch(e) {}
                 // Se repinta siempre: aunque no haya oferta del día puede haber
                 // productos rebajados, que también entran en la rotación.
@@ -1975,7 +1977,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=3fbeb6ab" defer></script>
+    <script src="js/tm-bot.js?v=44ce927c" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

@@ -261,15 +261,21 @@
   // con longitudes topadas. Si falta uno, la regla rechaza el PATCH entero.
   // Se conserva la misma forma de clave que usaba TmAgent para no partir en
   // dos el histórico ya acumulado.
+  /* La clave de una pregunta en /agente/faq (y en /agente/opiniones, que
+     cuelga de la misma): una sola definición, o el voto del cliente acabaría
+     apuntado a una pregunta distinta de la que se registró. */
+  function _claveFAQ(texto){
+    const t = String(texto || '').trim();
+    if (t.length < 5 || t.length > 300 || t.charAt(0) === '/') return '';
+    // Firebase prohíbe . # $ / [ ] en las claves
+    return cleanForMatch(t).replace(/\s+/g, '_').substring(0, 50).replace(/[.#$/[\]]/g, '_');
+  }
   function _registrarPreguntaFAQ(texto, intent, respuestaHTML){
     try {
       const t = String(texto || '').trim();
-      if (t.length < 5 || t.length > 300) return;
-      if (t.charAt(0) === '/') return;              // comandos, no preguntas
       const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
       if (!base) return;
-      // Firebase prohíbe . # $ / [ ] en las claves
-      const clave = cleanForMatch(t).replace(/\s+/g, '_').substring(0, 50).replace(/[.#$/[\]]/g, '_');
+      const clave = _claveFAQ(t);
       if (!clave) return;
       // Cortar a 300 puede partir un emoji por la mitad (son 2 unidades UTF-16)
       // y dejar un � en faq.html, que es una página pública indexada.
@@ -1762,6 +1768,10 @@
     const hilo = _hiloDe(text);
     if(hilo) return hilo;
 
+    // La Tarjeta TiendaMax y los referidos. Estrecho a propósito: «pagar con
+    // tarjeta» es pago y «tarjeta de PlayStation» es un producto digital.
+    if(/\btarjeta\s+(de\s+)?(tienda\s*max|cliente|descuentos?|regalo)\b|\breferid[oa]s?\b|\breferir\b|recomi?e?nd\w*\s+(la\s+tienda\s+)?(a\s+)?(un\s+|mis?\s+)?amig|como\s+funciona\s+la\s+tarjeta|descuentos?\s+(en|para)\s+(las?\s+|mis\s+)?(proxima|siguiente)/.test(t)) return 'tarjeta';
+
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
     //          Y TAMBIÉN: "compara", "comparar", "compara X con Y", "contra", "cuál es mejor"
@@ -2152,10 +2162,55 @@
   // ════════════════════════════════════════════════════════════
   const R = {};
 
+  /* El saludo era un mensaje con nueve funciones listadas: había que bajar
+     para encontrar qué tocar. Ahora una línea, y debajo cuatro botones
+     grandes, la Tarjeta TiendaMax (si la campaña está encendida) y las
+     rebajas del día (_pintarBienvenida). Lo de siempre sigue en /ayuda. */
   R.saludo = (text) => ({
-    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, RJ11, ADSL...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Diagnosticar una avería</em>: "mi inversor pita y tiene la luz roja"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Nauta Hogar / ETECSA</em>: "¿venden módems para Nauta Hogar?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💝 Ver mi lista','📶 Nauta Hogar','🤖 /ayuda']
+    response: `Hola 👋 Soy <strong>Max</strong>. Dime qué buscas o toca una opción:`,
+    bienvenida: true,
+    quickReplies: ['💬 WhatsApp','💝 Ver mi lista','📦 Categorías']
   });
+
+  /* ── La Tarjeta TiendaMax, explicada ──
+     Mismas reglas que cobra el panel (js/tarjeta-cliente.js); un test cruza
+     los tramos. Solo con la campaña encendida: anunciar una promoción que
+     ya no existe es prometer un descuento que nadie va a dar. */
+  const _TARJETA = { TRAMOS: [[45, 1000], [25, 500]], USOS: 3, EXTRA_MAX: 2, DIAS: 90 };
+  // Cantidades que YA están en MN (fmtMN convierte desde USD): miles con punto.
+  const _mnFijo = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' MN';
+  function _campanaTarjeta(){
+    try { const c = JSON.parse(localStorage.getItem('tm_tarjeta_campana') || 'null'); return !(c && c.on === false); }
+    catch(e){ return true; }
+  }
+  const _ICO = {
+    regalo: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>',
+    tarjeta: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>',
+    etiqueta: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.41l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
+    amigos: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    qr: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1"/></svg>',
+    rayo: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+    calc: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M16 14v4"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"/></svg>',
+    llave: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    wifi: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.86a10 10 0 0 1 14 0"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/></svg>',
+  };
+  R.tarjeta = () => {
+    if(!_campanaTarjeta()) return {
+      response: 'Ahora mismo no tengo una promoción de tarjeta activa. Si ya tienes tu Tarjeta TiendaMax, vale hasta la fecha que dice: dinos tu código al pagar.',
+      quickReplies: ['💳 Ver mi tarjeta','💬 WhatsApp']
+    };
+    const T = _TARJETA.TRAMOS, bajo = T[T.length - 1], alto = T[0];
+    const paso = (cls, ico, tit, txt) => `<div class="tmb-paso"><div class="tmb-pi ${cls}">${ico}</div><div><b>${tit}</b><p>${txt}</p></div></div>`;
+    const html = `<div class="tmb-regalo-det">`
+      + `<div class="tmb-rg-cab"><div class="tmb-rg-ico">${_ICO.regalo}</div><div><b>Tarjeta TiendaMax</b><small>Gratis · sin registrarte · con tu WhatsApp</small></div></div>`
+      + paso('n', _ICO.tarjeta, '1. Te llega con tu primera compra', 'Al recibir tu pedido te la mandamos por WhatsApp, con su código y su QR.')
+      + paso('t', _ICO.etiqueta, `2. Descuento en tus próximas ${_TARJETA.USOS} compras`,
+          `<span class="tmb-tr"><span>Compra de menos de $${bajo[0]}</span><i>no se usa</i><span>Desde $${bajo[0]}</span><i class="d">−${_mnFijo(bajo[1])}</i><span>Desde $${alto[0]}</span><i class="d">−${_mnFijo(alto[1])}</i></span>`)
+      + paso('v', _ICO.amigos, '3. Recomienda y gana más', `Comparte tu enlace. Tu amigo estrena su descuento en su primera compra desde $${bajo[0]}, y tú sumas uno más (hasta ${_TARJETA.EXTRA_MAX}).`)
+      + paso('s', _ICO.qr, 'Al pagar', `Dinos tu código o enseña el QR. Vale ${_TARJETA.DIAS} días desde que te llega.`)
+      + `</div>`;
+    return { response: html, quickReplies: ['💳 Ver mi tarjeta','💬 WhatsApp'] };
+  };
 
   R.despedida = () => ({
     response: '¡Chao! 🙌 Vuelve cuando quieras. Si necesitas ayuda con un pedido, escríbenos por WhatsApp. Dale, que estés bien. 👋',
@@ -3097,7 +3152,12 @@
   function _armarSistema(sis){
     const grupos = (sis.componentes || []).map(comp => {
       const prods = PRODUCTOS.filter(p =>
-        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0
+        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0 &&
+        // Una batería de carro es de ARRANQUE (corriente alta unos segundos)
+        // y se muere en semanas descargándose a diario con un panel; y una
+        // estación de energía no es «una batería», es el sistema entero.
+        // Ninguna de las dos cabe en el hueco «Batería» de un sistema solar.
+        !(comp.subcat === 'BATERÍAS' && (_esBateriaArranque(p) || _estacionDatos(p)))
       ).slice(0, 2);
       // "Agotado" y "no lo vendemos" no son lo mismo, y decir lo primero
       // cuando pasa lo segundo promete que vuelve algo que nunca estuvo:
@@ -3116,6 +3176,80 @@
       };
     });
     return { nombre: sis.nombre, presupuesto: sis.presupuesto, grupos: grupos };
+  }
+
+  /* ── Estaciones de energía todo en uno (BLUETTI, EcoFlow…) ──
+     Traen dentro batería, inversor y controlador solar. Sumarles otra
+     batería y otro controlador —lo que Max hacía, porque el AC180 está en
+     la subcategoría BATERÍAS— es una propuesta que cualquier instalador
+     tacha. Se reconocen por sus DATOS (capacidad en Wh y salida AC en W en
+     la ficha), no por la marca: así una nueva entra sola. */
+  function _esBateriaArranque(p){
+    return /automotriz|arranque|\bcarro\b|\bauto\b|\bmoto\b/i.test(p && p.nombre || '');
+  }
+  function _num(t){ return parseFloat(String(t).replace(/\./g, '').replace(',', '.')); }
+  function _estacionDatos(p){
+    // La ficha viaja en el producto original (_orig): la copia normalizada no la lleva.
+    const ficha = p && (Array.isArray(p.ficha) ? p.ficha : (p._orig && Array.isArray(p._orig.ficha) ? p._orig.ficha : null));
+    if(!ficha) return null;
+    const val = re => { const f = ficha.find(x => x && re.test(String(x.k || ''))); return f ? String(f.v || '') : ''; };
+    const capT = val(/capacidad/i), salT = val(/potencia de salida|salida ac/i);
+    const mWh = capT.match(/(\d[\d.,]*)\s*wh\b/i), mW = salT.match(/(\d[\d.,]*)\s*w\b/i);
+    if(!mWh || !mW) return null;
+    const wh = _num(mWh[1]), w = _num(mW[1]);
+    if(!(wh > 0) || !(w > 0)) return null;
+    const entT = val(/entrada|carga/i);
+    const mSol = entT.match(/solar[^)]*?(\d[\d.,]*)\s*w\b/i);
+    const mRango = entT.match(/(\d+)\s*v\s*[-–]\s*(\d+)\s*v/i);
+    return { wh: wh, w: w, solarW: mSol ? _num(mSol[1]) : 0, rango: mRango ? mRango[1] + '–' + mRango[2] + ' V' : '' };
+  }
+  /** La estación en stock que da al menos `minW`, la más barata. */
+  function _estacionSolar(minW){
+    return PRODUCTOS.filter(p => p.stock > 0)
+      .map(p => ({ p: p, d: _estacionDatos(p) }))
+      .filter(x => x.d && x.d.w >= (minW || 0))
+      .sort((a, b) => (a.p.precio || 0) - (b.p.precio || 0))[0] || null;
+  }
+  function _miles(n){ return Math.round(n).toLocaleString('es-ES').replace(/,/g, '.'); }
+
+  /** Sistema solar con una estación: ella hace de batería + inversor +
+   *  controlador; lo único que falta son los paneles. Lo que no hay se dice. */
+  function _solarConEstacion(sis, est, text){
+    const d = est.d, p = est.p;
+    const paneles = PRODUCTOS.filter(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES' && x.stock > 0).slice(0, 2);
+    const panelesEnCatalogo = PRODUCTOS.some(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES');
+    const rolPaneles = 'Paneles solares' + (d.solarW ? ` (hasta ${_miles(d.solarW)} W en total${d.rango ? ', entrada ' + d.rango : ''})` : '');
+    const armado = {
+      nombre: sis.nombre, presupuesto: null,
+      grupos: [
+        { rol: 'Estación de energía (batería + inversor + controlador)', subcat: 'ESTACION', enCatalogo: true, cantidad: 1, opcional: false, prods: [p] },
+        { rol: rolPaneles, subcat: 'PANELES SOLARES', enCatalogo: panelesEnCatalogo, cantidad: 1, opcional: false, prods: paneles },
+      ]
+    };
+    let body = `☀️ <strong>${sis.nombre}</strong>\n\n`;
+    body += `El <strong>${escapeHtml(p.nombre)}</strong> lo resuelve en un solo equipo: guarda <strong>${_miles(d.wh)} Wh</strong> y da <strong>${_miles(d.w)} W</strong>`
+      + (d.solarW ? `, y trae el controlador solar dentro (hasta ${_miles(d.solarW)} W de paneles)` : '')
+      + `. <strong>No necesitas batería, inversor ni controlador aparte.</strong>\n\n`;
+    body += `📋 <strong>Tu sistema:</strong>\n\n`;
+    body += `<strong>Estación de energía:</strong>\n• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n\n`;
+    if(paneles.length){
+      body += `<strong>${rolPaneles}:</strong>\n`;
+      paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtUSD(x.precio)} · <em>${stockText(x)}</em>\n`; });
+      body += '\n';
+    } else {
+      body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+    }
+    // La autonomía no se inventa: depende de lo que el cliente conecte.
+    body += /\b(refri|refrigerador|nevera|frio)\b/i.test(text || '')
+      ? `⏱️ ¿Cuántos <strong>watts</strong> dice la etiqueta de tu refri? Con eso te digo cuántas horas te dura (${_miles(d.wh)} Wh de batería).`
+      : `⏱️ Dime qué vas a conectar y cuántos <strong>watts</strong> gasta cada cosa, y te digo cuántas horas te dura (${_miles(d.wh)} Wh de batería).`;
+    const notas = `La estación incluye batería (${_miles(d.wh)} Wh), inversor (${_miles(d.w)} W) y controlador solar${d.solarW ? ' (hasta ' + _miles(d.solarW) + ' W de paneles' + (d.rango ? ', ' + d.rango : '') + ')' : ''}: no hace falta batería, inversor ni controlador aparte.`;
+    _ULTIMO_SISTEMA = { armado: armado, notas: notas };
+    return {
+      response: body,
+      products: [p].concat(paneles).slice(0, 4),
+      quickReplies: ['📄 Descargar cotización', '⏱️ Calcular autonomía', '💬 WhatsApp']
+    };
   }
 
   /** El texto de componentes, idéntico al que pintaban los tres armadores. */
@@ -3363,7 +3497,7 @@
 </header>
 
 <h1>${esc(armado.nombre)}</h1>
-<p class="presu">Rango de presupuesto de referencia: <strong>${esc(armado.presupuesto)}</strong></p>
+${armado.presupuesto ? `<p class="presu">Rango de presupuesto de referencia: <strong>${esc(armado.presupuesto)}</strong></p>` : ''}
 
 <section class="bloque">
   <h2>Componentes</h2>
@@ -3454,9 +3588,17 @@ ${notasHTML}
     else if(/\bcompleto|grande|casa completa|aire acondicionado|todo|potente\b/.test(m)) tamano = 'solar completo';
 
     const sis = SISTEMAS[tamano];
+    // Básico y mediano caben en una estación todo en uno si hay alguna en
+    // stock (mediano pide 1000 W para la nevera). La casa completa no.
+    if(tamano !== 'solar completo'){
+      const est = _estacionSolar(tamano === 'solar mediano' ? 1000 : 0);
+      if(est) return _solarConEstacion(sis, est, text);
+    }
     let body = `☀️ <strong>${sis.nombre}</strong>\n`;
     body += `💰 <strong>Presupuesto estimado:</strong> ${sis.presupuesto}\n\n`;
-    body += `📋 <strong>Componentes necesarios</strong> (todos disponibles en TiendaMax):\n\n`;
+    // Antes decía «(todos disponibles en TiendaMax)» con piezas agotadas o
+    // que ni vendemos debajo.
+    body += `📋 <strong>Componentes necesarios:</strong>\n\n`;
 
     const armado = _armarSistema(sis);
     body += _sistemaCuerpo(armado, true);
@@ -3474,17 +3616,21 @@ ${notasHTML}
       tip = `Para casa completa necesitas inversor híbrido (carga batería con panel Y con red eléctrica). Sistema 48V es más eficiente que 12V a esta escala.`;
     }
     body += `💡 <strong>Tip de experto:</strong> ` + tip;
-    body += `\n\n¿Quieres que te arme la <em>comparativa</em> de los inversores disponibles, o prefieres que te calcule la <em>autonomía</em> exacta con tus equipos?`;
+    // Ofrecer comparar inversores con todos agotados lleva a una tabla vacía.
+    const hayInversores = PRODUCTOS.some(p => (p.subcategoria || '').toUpperCase() === 'INVERSORES' && p.stock > 0);
+    body += hayInversores
+      ? `\n\n¿Quieres que te arme la <em>comparativa</em> de los inversores disponibles, o prefieres que te calcule la <em>autonomía</em> exacta con tus equipos?`
+      : `\n\n¿Te calculo la <em>autonomía</em> con tus equipos?`;
 
     _ULTIMO_SISTEMA = { armado: armado, notas: tip };
 
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp'],
+      quickReplies: ['📄 Descargar cotización'].concat(hayInversores ? ['🆚 Comparar inversores'] : [], ['⏱️ Calcular autonomía','💬 WhatsApp']),
       // Un "sí" a una pregunta de dos no elige: Max toma la primera, la
       // comparativa, y lo dice — con la otra opción a un toque.
-      siDigoSi: () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores')
+      siDigoSi: hayInversores ? () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores') : () => R.autonomia('autonomia')
     };
   };
 
@@ -3986,6 +4132,9 @@ ${notasHTML}
     const enOferta = p.precioOriginal > 0 && p.precioOriginal > p.precio;
     const usado = p.usado;
     let body = `📦 <strong>${escapeHtml(p.nombre)}</strong>\n\n`;
+    // Agotado, lo primero: antes salía al final, detrás de la ficha y del
+    // glosario, y quien lo pedía leía todo para enterarse de que no hay.
+    if(agotado) body += `⚠️ <strong>Agotado ahora mismo.</strong> Toca «Avísame» y te escribimos en cuanto entre.\n\n`;
     body += _datosPreguntados(p, originalQuery);
     body += `💰 <strong>Precio:</strong> ${fmtUSD(p.precio)} USD · <em>${fmtMN(p.precio)}</em>\n`;
     if(enOferta){
@@ -4009,13 +4158,16 @@ ${notasHTML}
     // Detectar términos técnicos en specs del producto y explicarlos
     const techEnSpecs = detectTechTerms((p.specs||[]).join(' '));
     if(techEnSpecs.length > 0){
-      body += `\n📖 <strong>¿Qué significan estos términos?</strong>\n`;
+      // Plegado: es ayuda para quien la quiera, no algo que leer antes de
+      // saber si hay o cuánto cuesta.
+      body += `\n<details class="tmb-glos"><summary>📖 ¿Qué significan estos términos?</summary>`;
       techEnSpecs.slice(0,2).forEach(k => {
         const info = KNOWLEDGE[k];
         if(info){
           body += `• <strong>${info.term}:</strong> ${info.what.slice(0,120)}${info.what.length > 120 ? '…' : ''}\n`;
         }
       });
+      body += `</details>`;
     }
 
     // Sugerir accesorios automáticamente
@@ -4046,12 +4198,12 @@ ${notasHTML}
       // que se enseña es la SUYA (marcada agotada): preguntó por este.
       const alt = findAlternativas(p, 3);
       body += alt.length
-        ? `\n⚠️ <em>Este producto está agotado ahora mismo.</em> Pero tengo alternativas similares disponibles:`
-        : `\n⚠️ <em>Este producto está agotado ahora mismo</em> y no tengo nada parecido disponible. Escríbeme por WhatsApp y te aviso en cuanto entre.`;
+        ? `\nMientras, tengo estas alternativas parecidas disponibles:`
+        : `\nNo tengo nada parecido disponible ahora.`;
       return {
         response: body,
         products: alt.length ? alt : [p],
-        quickReplies: alt.length > 0 ? ['🆚 Comparar dos de estos','❤️ Añadir a deseos','💬 WhatsApp'] : ['❤️ Añadir a deseos','💬 WhatsApp','📦 Ver categorías']
+        quickReplies: alt.length > 0 ? ['🔔 Avísame cuando llegue','🆚 Comparar dos de estos','💬 WhatsApp'] : ['🔔 Avísame cuando llegue','❤️ Añadir a deseos','💬 WhatsApp']
       };
     }
 
@@ -5519,6 +5671,11 @@ ${notasHTML}
      todas en el orden en que se escribieron. */
   function _responderTodo(text, intent, data){
     if(!_esTextoPegable(data)) return data;
+    /* «Sistema solar para el refri y 2 ventiladores»: lo que va detrás del
+       «y» es la carga del sistema, no otra pregunta. Contestarlo aparte
+       pegaba la ficha de una lámpara-ventilador debajo del sistema, como si
+       Max la recomendara para él. */
+    if(/^sistema/.test(intent)) return data;
     const trozos = _trozosConIntencion(text);
     // El hueco de la principal: el trozo que pidió lo mismo que ella.
     const iPrincipal = trozos.findIndex(t => t.intent === intent);
@@ -5549,10 +5706,43 @@ ${notasHTML}
     return _componer(piezas.slice(0, _MULTI_MAX + 1).map(p => p.data));
   }
 
+  /* ── Lo que el dueño le enseña desde el panel (🤖 Max → «Enseñar») ──
+     max-aprendido.json: { ensenado: { "nano loco": {id, ts} | {borrado, ts} } }.
+     Si el mensaje contiene una frase enseñada (palabras enteras, sin tildes),
+     se cambia por el nombre del producto y Max sigue su camino de siempre:
+     «cuánto cuesta el nano loco» pasa a preguntar por la NanoStation M5 Loco.
+     Max no aprende solo; aprende esto, que alguien decidió. */
+  let _ENSENADO = [];
+  function _ponerEnsenado(datos){
+    const e = (datos && datos.ensenado) || {};
+    _ENSENADO = Object.keys(e).map(f => ({ f: cleanForMatch(f), id: e[f] && e[f].id, borrado: e[f] && e[f].borrado }))
+      .filter(x => x.f && x.id != null && !x.borrado)
+      .sort((a, b) => b.f.length - a.f.length);      // la frase más larga gana
+  }
+  function _cargarEnsenado(){
+    try {
+      fetch('/max-aprendido.json', { cache: 'no-cache' })
+        .then(r => r.ok ? r.json() : null).then(d => { if(d) _ponerEnsenado(d); }).catch(() => {});
+    } catch(e){}
+  }
+  _cargarEnsenado();
+  function _aplicarEnsenado(text){
+    if(!_ENSENADO.length) return text;
+    const t = ' ' + cleanForMatch(text) + ' ';
+    for(const x of _ENSENADO){
+      if(t.indexOf(' ' + x.f + ' ') === -1) continue;
+      const p = PRODUCTOS.find(q => String(q.id) === String(x.id));
+      if(!p) continue;                                   // borrado del catálogo: no se aplica
+      return t.replace(' ' + x.f + ' ', ' ' + p.nombre + ' ').trim();
+    }
+    return text;
+  }
+
   function responder(text){
     // El catálogo llega asincrónico y el admin puede cambiar precios o la
     // tasa mientras el chat está abierto: se releen en cada mensaje.
     _sincronizar();
+    text = _aplicarEnsenado(text);
     if(PRODUCTOS.length === 0){
       return {
         response: '⏳ Todavía estoy cargando el catálogo. Dame un segundo y vuelve a preguntarme, o escríbenos directo por WhatsApp y te atendemos al momento.',
@@ -5820,6 +6010,53 @@ ${notasHTML}
     return { items: c, total, unidades };
   }
 
+  /* La bienvenida: cuatro botones grandes, la Tarjeta (si hay campaña) y las
+     rebajas del día. Cada botón manda una pregunta de verdad, la misma que
+     escribiría el cliente: no hay un segundo camino que pueda contestar
+     distinto. */
+  const _ACCIONES = [
+    { cls: 'n', ico: 'rayo',  tit: 'Armar un sistema',   sub: 'Solar para los apagones', msg: 'arma un sistema solar para los apagones' },
+    { cls: 't', ico: 'calc',  tit: 'Calcular autonomía', sub: '¿Cuánto me dura la batería?', msg: 'cuánto me dura una batería' },
+    { cls: 'v', ico: 'llave', tit: 'Mi equipo falla',    sub: '«El inversor pita»', msg: 'mi equipo tiene una avería' },
+    { cls: 's', ico: 'wifi',  tit: 'Nauta Hogar',        sub: 'Módems y antenas ETECSA', msg: 'nauta hogar' },
+  ];
+  function _pintarBienvenida(){
+    try {
+      const box = document.createElement('div');
+      box.className = 'tmb-bienv';
+      let h = '<div class="tmb-grid">' + _ACCIONES.map((a, i) =>
+        `<button type="button" class="tmb-int" data-acc="${i}"><span class="tmb-ico ${a.cls}">${_ICO[a.ico]}</span><b>${a.tit}</b><small>${a.sub}</small></button>`).join('') + '</div>';
+      if(_campanaTarjeta()){
+        const alto = _TARJETA.TRAMOS[0];
+        h += `<button type="button" class="tmb-regalo" data-regalo="1"><span class="tmb-rg-ico">${_ICO.regalo}</span><span class="tmb-rg-txt"><b>Tarjeta TiendaMax</b><small>Hasta ${_mnFijo(alto[1])} menos en tus próximas compras</small></span><span class="tmb-rg-ver">Ver ›</span></button>`;
+      }
+      const reb = PRODUCTOS.filter(p => p.stock > 0 && p.precioOriginal > p.precio).slice(0, 3);
+      if(reb.length){
+        h += '<div class="tmb-tit">🔥 Rebajas de hoy</div><div class="tmb-reb">' + reb.map((p, i) => {
+          const img = imageUrl(p), pct = Math.round((1 - p.precio / p.precioOriginal) * 100);
+          return `<button type="button" class="tmb-mini" data-reb="${i}"><img src="${escapeAttr(img ? img.primary : PLACEHOLDER_IMG)}" alt="" loading="lazy"><span class="nm">${escapeHtml(p.nombre)}</span><span class="pr">${fmtUSD(p.precio)} <i>−${pct}%</i></span>${_insignia(p)}</button>`;
+        }).join('') + '</div>';
+      }
+      box.innerHTML = h;
+      box.addEventListener('click', ev => {
+        const b = ev.target.closest('button'); if(!b) return;
+        if(b.dataset.acc != null) sendMessage(_ACCIONES[+b.dataset.acc].msg);
+        else if(b.dataset.regalo) sendMessage('cómo funciona la tarjeta tiendamax');
+        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); if(r.response) addMessageTyped(r.response, 'bot'); if(r.products) addProducts(r.products); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
+      });
+      bodyEl.appendChild(box);
+      _scrollAlFondo();
+    } catch(e){}
+  }
+  /* El estado del stock, con el mismo color en todas partes: verde
+     disponible, ámbar quedan 5 o menos, rojo agotado. */
+  function _insignia(p){
+    const n = Number(p.stock) || 0;
+    if(n <= 0) return '<span class="tmb-st ag">● Agotado</span>';
+    if(n <= 5) return `<span class="tmb-st am">● Quedan ${n}</span>`;
+    return `<span class="tmb-st ok">● ${n} disponibles</span>`;
+  }
+
   function addProducts(products){
     if(!products || products.length === 0) return;
     const wrap = document.createElement('div');
@@ -5836,7 +6073,7 @@ ${notasHTML}
         <div class="tm-bot-product-info">
           <div class="tm-bot-product-name">${escapeHtml(p.nombre)}</div>
           <div class="tm-bot-product-price">${fmtUSD(p.precio)} USD <span class="mn">· ${fmtMN(p.precio)}</span></div>
-          <div class="tm-bot-product-stock ${agotado?'out':''}">${agotado ? '❌ Agotado' : '📦 ' + p.stock + ' en stock'}</div>
+          ${_insignia(p)}
         </div>
         <div class="tm-bot-product-go">›</div>
       `;
@@ -6023,6 +6260,15 @@ ${notasHTML}
       }
     }
     if(/whatsapp/i.test(r)){ window.open('https://wa.me/' + WHATSAPP, '_blank', 'noopener,noreferrer'); return; }
+    if(/ver mi tarjeta/i.test(r)){ window.open('/t', '_blank', 'noopener'); return; }
+    // «Avísame cuando llegue»: el mismo aviso de reposición que la ficha de
+    // la tienda (suscribirAvisoStock, en el bundle); sin él, por WhatsApp.
+    if(/av[ií]same cuando llegue/i.test(r)){
+      const p = _context.lastProduct;
+      if(p && typeof suscribirAvisoStock === 'function'){ try { suscribirAvisoStock(p.id, p.nombre); } catch(e){} return; }
+      window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('Hola, avísenme cuando entre ' + (p ? p.nombre : 'el producto')), '_blank', 'noopener,noreferrer');
+      return;
+    }
     // Lista de deseos
     if(/añadir a deseos|añade a deseos|agregar a deseos/i.test(r)){
       if(_context.lastProduct){
@@ -6249,8 +6495,10 @@ ${notasHTML}
       // opciones para que el cliente elija tocando cuál va contra cuál.
       if(data.elegirComparar){ pedirElegirPrimero(data.elegirComparar, data.tituloComparar); saveHistory(); return; }
       if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
+      if(data.bienvenida) _pintarBienvenida();
       if(data.compare) addCompareTable(data.compare);
       else if(data.products) addProducts(data.products);
+      _pedirOpinion(text, data);
       renderQuickReplies(data.quickReplies || defaultQuickReplies());
       saveHistory(); // guardar tras respuesta del bot
     } catch(e){
@@ -6262,6 +6510,60 @@ ${notasHTML}
       sendBtn.disabled = false;
       inputEl.focus();
     }
+  }
+
+  /* ── «¿Te sirvió?» ──────────────────────────────────────────────────────
+     Un toque debajo de cada respuesta que contesta algo (no en saludos ni
+     en «no te entendí», que ya se apunta solo como 'desconocido'). Solo la
+     ÚLTIMA respuesta lo lleva: una fila por mensaje llena el chat. El voto va
+     a /agente/opiniones/<clave>/<id> —la misma clave que la pregunta en
+     /agente/faq— con {v: 1|-1, m: motivo, ts}; nada del cliente. El panel
+     (🤖 Max) los junta para saber qué enseñarle o corregir. */
+  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback)$/;
+  const _MOTIVOS_NO = ['No era lo que buscaba', 'Información incorrecta', 'No entendió mi pregunta', 'Prefiero una persona'];
+  function _votar(clave, v, m){
+    try {
+      const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+      if(!base || !clave) return;
+      const cuerpo = { v: v, ts: { '.sv': 'timestamp' } };
+      if(m) cuerpo.m = String(m).slice(0, 40);
+      fetch(base + '/agente/opiniones/' + encodeURIComponent(clave) + '.json', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo)
+      }).catch(() => {});
+    } catch(e){}
+  }
+  function _pedirOpinion(text, data){
+    try {
+      document.querySelectorAll('.tm-bot-opina').forEach(e => e.remove());
+      const clave = _claveFAQ(text);
+      if(!clave || data.sinRespuesta || _SIN_OPINION.test(String(_context.lastIntent || ''))) return;
+      const row = document.createElement('div');
+      row.className = 'tm-bot-opina';
+      row.innerHTML = '<span>¿Te sirvió?</span>'
+        + '<button type="button" data-v="1" aria-label="Sí me sirvió">👍 Sí</button>'
+        + '<button type="button" data-v="-1" aria-label="No me sirvió">👎 No</button>';
+      row.addEventListener('click', function(ev){
+        const b = ev.target.closest('button'); if(!b) return;
+        if(b.dataset.v === '1'){
+          _votar(clave, 1);
+          row.innerHTML = '<span>¡Gracias! 🙌</span>';
+          return;
+        }
+        if(b.dataset.v === '-1'){
+          row.innerHTML = '<span>Gracias por decírmelo. ¿Qué falló?</span><div class="tm-bot-opina-mot">'
+            + _MOTIVOS_NO.map(mo => '<button type="button" data-m="' + escapeAttr(mo) + '">' + escapeHtml(mo) + '</button>').join('') + '</div>';
+          return;
+        }
+        if(b.dataset.m){
+          const mo = b.dataset.m;
+          _votar(clave, -1, mo);
+          row.innerHTML = '<span>Anotado ✅ Se lo paso a la tienda para mejorar.</span>';
+          if(/persona/i.test(mo)) window.open('https://wa.me/' + WHATSAPP, '_blank', 'noopener,noreferrer');
+        }
+      });
+      bodyEl.appendChild(row);
+      _scrollAlFondo();
+    } catch(e){}
   }
 
   function defaultQuickReplies(){
@@ -6467,6 +6769,7 @@ ${notasHTML}
         addDateSep();
         const saludo = R.saludo('hola');
         addMessageTyped(saludo.response, 'bot');
+        _pintarBienvenida();
         renderQuickReplies(saludo.quickReplies);
       }
     }
@@ -6487,6 +6790,7 @@ ${notasHTML}
     addDateSep();
     const saludo = R.saludo('hola');
     addMessageTyped(saludo.response, 'bot');
+    _pintarBienvenida();
     renderQuickReplies(saludo.quickReplies);
   }
 
@@ -6607,6 +6911,9 @@ ${notasHTML}
     armarSistemaSeguridad: R.sistemaSeguridad,
     armarSistemaInternet: R.sistemaInternet,
     armarSistema: _armarSistema,
+    claveFAQ: _claveFAQ,
+    TARJETA: _TARJETA,
+    ponerEnsenado: _ponerEnsenado,
     capacidadBateria: _capacidadBateria,
     diagnosticar: R.diagnostico,
     esAveria,

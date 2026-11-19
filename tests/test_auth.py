@@ -125,6 +125,16 @@ class AuthTest(unittest.TestCase):
                     alta = nodo["$productoId"]["$resenaId"]
                     self.assertNotIn("auth", str(alta.get(".write")) + str(alta.get(".validate")))
                     continue
+                # /agente/opiniones: el cliente VOTA sin cuenta (escribir no
+                # pide auth), pero la lista solo la lee el dueño: la web nunca
+                # la lee, así que cerrarla no rompe a ningún cliente.
+                if nombre == "agente" and "opiniones" in nodo:
+                    op = json.loads(json.dumps(nodo["opiniones"]))
+                    self.assertIn("root.child('admin_uid').val()", op.pop(".read", ""))
+                    self.assertNotIn("auth", texto_reglas(op), "votar no puede pedir cuenta")
+                    resto = {k: v for k, v in nodo.items() if k != "opiniones"}
+                    self.assertNotIn("auth != null", texto_reglas(resto))
+                    continue
                 self.assertNotIn(
                     "auth != null", texto_reglas(nodo),
                     f"/{nombre} la usa la web pública sin cuenta: pedirle auth "

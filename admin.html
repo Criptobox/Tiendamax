@@ -1729,6 +1729,7 @@ try{var _piel=localStorage.getItem('tm_piel');
       <button class="side-btn" data-view="reservas" title="Reservas de vales">🔒</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
       <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
+      <button class="side-btn" data-view="max" title="Max · lo que preguntan tus clientes y qué enseñarle">🤖</button>
       <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
     </aside>
 
@@ -1871,6 +1872,12 @@ try{var _piel=localStorage.getItem('tm_piel');
            o ❌ el cliente no vino (el producto vuelve). Nunca caduca sola: si
            el cliente pagó y el sistema devolviera el stock por su cuenta,
            venderías dos veces la misma unidad. -->
+      <!-- MAX: lo que preguntan los clientes, cómo les fue y qué enseñarle (js/max-panel.js) -->
+      <div id="view-max" class="view">
+        <div class="ph"><div><h2>🤖 Max</h2><p>Lo que preguntan tus clientes, si les sirvió y qué enseñarle</p></div></div>
+        <div class="section"><div id="max-cont"></div></div>
+      </div>
+
       <div id="view-reservas" class="view">
         <div class="ph"><div><h2>🔒 Reservas</h2><p id="reservas-sub">Vales enviados que aún no son venta</p></div>
           <div class="ph-actions"><label style="font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px">Se guarda
@@ -3102,10 +3109,11 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
 <script src="js/reservas.js?v=789cac20"></script>
-<script src="js/admin-copilot.js?v=bd3ebe26"></script>
+<script src="js/admin-copilot.js?v=405a8d9b"></script>
+<script src="js/max-panel.js?v=e078d97f"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
-<script src="js/tarjeta-cliente.js?v=07bb1153"></script>
+<script src="js/tarjeta-cliente.js?v=21955685"></script>
 
 <script>
 (function(){
@@ -3282,6 +3290,7 @@ function go(view, btn){
   if(view==='agregar' && typeof initPreviewFicha==='function'){ try{ initPreviewFicha(); }catch(e){} }
   if(view==='comparar' && typeof cmpCargar==='function'){ try{ cmpCargar(); }catch(e){} }
   if(view==='tarjetas'){ try{ tarRender(); tarSincronizar(); }catch(e){} }
+  if(view==='max' && typeof window.maxCargar==='function'){ try{ window.maxCargar(); }catch(e){} }
   if(view==='reservas'){ try{ renderReservas(); }catch(e){}
     // Traerse lo cerrado desde otro dispositivo antes de enseñar la lista.
     try{ if(typeof TMReservas!=='undefined'&&TMReservas.sincronizar) TMReservas.sincronizar().then(r=>{ if(r&&r.ok&&(r.nuevas||r.cerradas)) renderReservas(); }); }catch(e){}
