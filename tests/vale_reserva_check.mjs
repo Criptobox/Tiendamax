@@ -169,12 +169,15 @@ for (const modo of ['comparte', 'cancela']) {
         document.getElementById('vUSD').value = '100'; tasa = 500; margenMN = 0; calcular();
         reservarSiToca();
         const res = TMReservas.pendientes().find(r => r.cliente === 'Plazo');
-        return { texto: construirTextoVale(), vence: res && res.vence, ts: res && res.ts, cup: document.getElementById('vTotal').textContent,
+        document.getElementById('vMensajeria').value = '500 CUP'; recalc();
+        const total = totalValeTexto();
+        return { total, texto: construirTextoVale(), vence: res && res.vence, ts: res && res.ts, cup: document.getElementById('vTotal').textContent,
                  codigo: _valeCodigo, mn: fmtMN(80750) };
     }, [A]);
     ok(t.vence && Math.abs(t.vence - t.ts - 24 * 3600000) < 5000, `la reserva no tomó el plazo de 24 h: ${t.vence - t.ts}`);
     ok(/Te lo guardamos hasta el/.test(t.texto), 'el texto del vale no dice hasta cuándo se guarda');
-    ok(t.mn === '80.750' && /50\.000 CUP/.test(t.cup), `los MN tienen que llevar punto de miles: ${t.mn} / ${t.cup}`);
+    ok(/^\$100 USD \+ 500 CUP de mensajería \(o 50\.500 CUP en total\)$/.test(t.total), `el total tiene que ir en USD, con la mensajería aparte y los MN de referencia: «${t.total}»`);
+    ok(t.mn === '80.750' && /50\.500 CUP/.test(t.cup), `los MN tienen que llevar punto de miles: ${t.mn} / ${t.cup}`);
     ok(/^[2-9A-HJKMNP-Z]{6}$/.test(t.codigo), `el código del vale tiene letras que se confunden al dictarlo: ${t.codigo}`);
     await ctx.close();
 }

@@ -725,7 +725,7 @@ function construirTextoVale(){
 🔸Precio CUP: ${g('vCUP')!=='—'?fmtMN(parseInt(g('vCUP')))+' CUP':'—'}
 🔸 Vuelto: ${g('vVuelto')!=='—'?g('vVuelto'):'—'}
 
-🔸 Total a pagar: ${document.getElementById('vTotal').textContent}
+🔸 Total a pagar: ${totalValeTexto()}
 
 ${textoGarantias()}
 *Fecha y hora de Venta: ${g('vFecha')}${_valeVence()?'\n🔒 Te lo guardamos hasta el '+fmtVence(_valeVence()):''}
@@ -1006,6 +1006,16 @@ function _garantiasVale(){
     return {nombre:it.nombre, enCatalogo:!!p, garantia:gar};
   });
 }
+/* El total, con los dólares delante: es como se vende y la cifra en MN
+   (decenas de miles) asusta al leerla. Los MN van como referencia, y la
+   mensajería —que se cobra en MN— aparte, sin sumarla a los dólares. */
+function totalValeTexto(){
+  const usd=parseFloat(document.getElementById('vUSD')?.value)||0;
+  const cup=parseInt(document.getElementById('vCUP')?.value)||0;
+  const mens=getMens();
+  if(!usd) return cup ? fmtMN(cup+mens)+' CUP' : '—';
+  return fmtUSD(usd)+' USD'+(mens?' + '+fmtMN(mens)+' CUP de mensajería':'')+(cup?' (o '+fmtMN(cup+mens)+' CUP en total)':'');
+}
 function textoGarantias(){
   const gs=_garantiasVale();
   if(!gs.length || !gs.some(x=>x.garantia)) return '*Garantía: sin garantía';
@@ -1106,7 +1116,7 @@ function drawValeImg() {
 
   const hHead=200, hCli=132;
   const hProd=58+filas.reduce((a,f)=>a+f.h,0);
-  const hTot=34+46+(mens?44:0)+26+132+(usd&&totalCup?52:10);
+  const hTot=34+46+(mens?44:0)+26+(usd&&mens?150:132)+(usd&&totalCup?52:10);
   const hLugar=(recoge||domicilio) ? 30 + 54 + 40 + lugarL.length*38 + ((recoge&&alm.ubicacion)||domicilio?38:0) + 30 : 0;
   const hVence=vence ? 26+76 : 0;
   const hGar=conGar.length ? 26+92 : 0;
@@ -1181,13 +1191,17 @@ function drawValeImg() {
   y+=26;
   const tg=ctx.createLinearGradient(M,y,W-M,y);
   tg.addColorStop(0,'rgba(234,88,12,.22)'); tg.addColorStop(.5,'rgba(249,115,22,.15)'); tg.addColorStop(1,'rgba(234,88,12,.10)');
-  _vRR(ctx,M,y,IW,118,30); ctx.fillStyle=tg; ctx.fill(); ctx.strokeStyle='rgba(249,115,22,.45)'; ctx.lineWidth=2; ctx.stroke();
+  // En grande los dólares (como se vende; los MN en grande asustan). La
+  // mensajería se cobra en MN y va debajo, sin sumarla a los dólares.
+  const bh = (usd && mens) ? 136 : 118;
+  _vRR(ctx,M,y,IW,bh,30); ctx.fillStyle=tg; ctx.fill(); ctx.strokeStyle='rgba(249,115,22,.45)'; ctx.lineWidth=2; ctx.stroke();
   ctx.textAlign='left'; ctx.fillStyle=C.nar2; ctx.font=F(800,23); ctx.fillText('TOTAL A PAGAR', M+34, y+52);
   ctx.fillStyle='#d4d4d8'; ctx.font=F(500,24); ctx.fillText(recoge?'Pagar al recoger':'Pagar al recibir', M+34, y+86);
   ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font=F(800,58);
-  ctx.fillText(totalCup ? fmtMN(totalCup)+' MN' : (usd?fmtUSD(usd)+' USD':'—'), W-M-34, y+80);
-  y+=118;
-  if(usd && totalCup){ y+=40; ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,24); ctx.fillText('o '+fmtUSD(usd)+' USD'+(mens?' + '+fmtMN(mens)+' MN de mensajería':''), W-M-6, y); y+=12; }
+  ctx.fillText(usd ? fmtUSD(usd)+' USD' : (totalCup ? fmtMN(totalCup)+' MN' : '—'), W-M-34, y+(usd&&mens?72:80));
+  if(usd && mens){ ctx.fillStyle='#fdba74'; ctx.font=F(600,24); ctx.fillText('+ '+fmtMN(mens)+' MN de mensajería', W-M-34, y+112); }
+  y+=bh;
+  if(usd && totalCup){ y+=40; ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,24); ctx.fillText('o '+fmtMN(totalCup)+' MN en total'+(mens?' (con mensajería)':''), W-M-6, y); y+=12; }
   else y+=10;
 
   // ── 5. Dónde: recoge en el almacén o se le lleva ──
