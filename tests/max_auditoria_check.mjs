@@ -152,7 +152,7 @@ if(apagadas.has('JUEGOS') || apagadas.has('PC Y LAPTOPS')){
    cómo se paga, no es pedir una tarjeta de regalo. */
 for(const [q, debe] of [['aceptan tarjeta visa', /M[eé]todos de pago/i],
                         ['aceptan tarjeta de crédito', /M[eé]todos de pago/i],
-                        ['quiero un router para ver netflix', /WIFI|Archer|router/i]]){
+                        ['quiero un router para ver netflix', VISIBLES.some(p => /router/i.test(p.nombre)) ? /WIFI|Archer|router/i : /\S/]]){
     const r = await preguntarVisible(q);
     ok(debe.test(r.t + ' ' + r.tarjetas.join(' ')) && !/tarjetas de regalo/i.test(r.t),
        `«${q}» no es pedir una tarjeta de regalo: «${r.t.slice(0,110)}»`);

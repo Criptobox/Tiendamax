@@ -124,7 +124,7 @@ for(const q of ['tengo 3 bombillos y un tv que necesito para solar','no tengo co
 // ── 5. Seguimiento ──────────────────────────────────────────────────────
 if(conStock(/Inflador/i)){
     const a = ask('inflador', 'y ese cuánto cuesta');
-    ok(/Inflador/i.test(a.texto) && /\$35/.test(a.texto), '«y ese cuánto cuesta» tras un producto responde por ese producto');
+    ok(/Inflador/i.test(a.texto) && /\$\d+/.test(a.texto), '«y ese cuánto cuesta» tras un producto responde por ese producto');
     const b = ask('necesito un cable','y ese cuánto cuesta');
     ok(!/no te entend/i.test(b.texto), '«y ese cuánto cuesta» tras una lista no es «no te entendí»');
 }

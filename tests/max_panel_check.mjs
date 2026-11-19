@@ -75,7 +75,11 @@ const servidor = createServer(async (q, r) => {
   }
   try {
     const ruta = camino === '/' ? '/index.html' : camino;
-    const cuerpo = await readFile(normalize(join(RAIZ, ruta)));
+    let cuerpo = await readFile(normalize(join(RAIZ, ruta)));
+    // Sin `apagadas`: lo que se prueba es cómo Max aplica lo enseñado, no qué
+    // categoría tiene apagada hoy el dueño (el día que apagó WIFI la NanoStation
+    // desapareció de la tienda —bien hecho— y esta prueba se puso roja sin romperse nada).
+    if (ruta.endsWith('categorias.json')) { const c = JSON.parse(cuerpo); delete c.apagadas; cuerpo = JSON.stringify(c); }
     r.writeHead(200, { 'Content-Type': MIME[extname(ruta)] || 'application/octet-stream' }); r.end(cuerpo);
   } catch (e) { r.writeHead(404); r.end(); }
 }).listen(0);

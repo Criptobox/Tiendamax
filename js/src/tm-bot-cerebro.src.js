@@ -5054,6 +5054,21 @@ ${notasHTML}
           quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp']
         };
       }
+      /* Lo que pidió existe pero hoy está agotado: decirlo (y ofrecer el aviso)
+         es la respuesta; volver a preguntarle «¿para qué lo necesitas?» a quien
+         ya dijo que quiere un router lo manda a la puerta. */
+      const _agot = findProducts(text.replace(/^(necesito|busco|quiero|recomi[ée]ndame|sugi[ée]reme|para)/g,' ').trim(), 3, {includeAgotados:true});
+      /* Solo vale lo que comparte una palabra con lo pedido EN EL NOMBRE: «router
+         para ver netflix» casaba con un Smart TV por la palabra netflix. */
+      const _pal = cleanForMatch(text).split(' ').filter(w => w.length >= 4 && !/^(quiero|necesito|busco|para|tienen|tiene|comprar|algo|unos|unas|como|este|esta)$/.test(w));
+      const _agotRel = _agot.filter(p => _pal.some(w => cleanForMatch(p.nombre).split(' ').includes(w) || cleanForMatch(p.nombre).includes(w)));
+      if(_agotRel.length > 0 && _agotRel.every(p => !(p.stock > 0))){
+        return {
+          response: `📦 Eso lo manejo, pero hoy está <strong>agotado</strong>: ${_agotRel.map(p => '<strong>' + String(p.nombre).split('|')[0].trim() + '</strong>').join(', ')}. Toca «Avísame» y te escribimos en cuanto entre, o consúltanos por WhatsApp por alternativas:`,
+          products: _agotRel,
+          quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+        };
+      }
       return {
         response: `🎯 Cuéntame un poco más: ¿para qué lo necesitas? Por ejemplo:\n• <em>"para tener internet en una finca sin fibra"</em>\n• <em>"para vigilar mi casa de noche"</em>\n• <em>"para cargar mi celular cuando hay apagón"</em>\n\nCon eso te recomiendo el producto justo.`,
         quickReplies: ['📦 Ver categorías','🔥 Ofertas']
