@@ -116,7 +116,7 @@ Escr\xEDbenos por WhatsApp con fotos o video del problema.`,quickReplies:["\u{1F
 
 No cubre mal uso, golpes, quemaduras por voltaje ni instalaci\xF3n incorrecta. La garant\xEDa aplica solo a los productos que la declaran en su ficha.`,quickReplies:["\u{1F4AC} Abrir WhatsApp","\u21A9\uFE0F Pol\xEDtica de devoluci\xF3n","\u{1F6E1}\uFE0F Pol\xEDtica de garant\xEDa"]}),f.humano=()=>({response:`\u{1F464} Claro, te paso con una persona del equipo. Escr\xEDbenos por WhatsApp (<code>+${R}</code>): <a href="https://wa.me/${R}" target="_blank" rel="noopener">abrir WhatsApp</a>.
 
-\u{1F550} Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba). Fuera de ese horario puedes dejar tu mensaje y te respondemos cuando abramos.`,quickReplies:["\u{1F4AC} Abrir WhatsApp","\u{1F4E6} Categor\xEDas","\u{1F525} Ofertas"]}),f.wifiLento=()=>{const e=v.filter(a=>a.stock>0&&/^(ROUTERS|REPETIDORES)$/i.test(a.subcategoria||"")).sort((a,o)=>a.precio-o.precio).slice(0,3);return{response:`\u{1F4F6} Un wifi lento casi siempre tiene arreglo sencillo:
+\u{1F550} Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba).`,quickReplies:["\u{1F4AC} Abrir WhatsApp","\u{1F4E6} Categor\xEDas","\u{1F525} Ofertas"]}),f.wifiLento=()=>{const e=v.filter(a=>a.stock>0&&/^(ROUTERS|REPETIDORES)$/i.test(a.subcategoria||"")).sort((a,o)=>a.precio-o.precio).slice(0,3);return{response:`\u{1F4F6} Un wifi lento casi siempre tiene arreglo sencillo:
 \u2022 Reinicia el router (ap\xE1galo un minuto y enci\xE9ndelo).
 \u2022 Ponlo en el centro de la casa y alto, lejos de paredes gruesas y del microondas.
 \u2022 Mira cu\xE1ntos equipos est\xE1n conectados a la vez.
