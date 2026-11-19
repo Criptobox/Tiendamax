@@ -446,8 +446,25 @@
             _mensajeProvisional('👋 Un segundo, estoy despertando…', 'tmBotCargando');
         }
         cargarCerebro();
-        setTimeout(() => { try { inputEl.focus(); } catch (e) {} }, 300);
+        // En el teléfono no: el teclado saldría solo y taparía medio chat.
+        let tactil = false;
+        try { tactil = matchMedia('(hover: none), (pointer: coarse)').matches; } catch (e) {}
+        if (!tactil) setTimeout(() => { try { inputEl.focus(); } catch (e) {} }, 300);
     }
+
+    // Con el teclado abierto, la hoja termina encima de él: si no, la barra de
+    // escribir queda debajo del teclado y no se ve lo que se escribe.
+    (function () {
+        const vv = window.visualViewport;
+        if (!vv) return;
+        const ajustar = () => {
+            if (window.innerWidth > 479) { panel.style.bottom = ''; return; }
+            const tapado = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+            panel.style.bottom = tapado > 60 ? tapado + 'px' : '';
+        };
+        vv.addEventListener('resize', ajustar);
+        vv.addEventListener('scroll', ajustar);
+    })();
 
     function cerrarPanel() {
         panel.classList.remove('open');

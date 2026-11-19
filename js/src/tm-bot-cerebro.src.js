@@ -6471,7 +6471,11 @@ ${notasHTML}
     sendMessage(reply);
   }
 
+  // En el teléfono enfocar la barra saca el teclado y tapa medio chat: solo
+  // se enfoca sola en un PC, o tras enviar lo que el cliente escribió.
+  function _tactil(){ try { return matchMedia('(hover: none), (pointer: coarse)').matches; } catch(e){ return false; } }
   async function sendMessage(text){
+    const _escrito = !!text && text === inputEl.value;
     text = (text||'').trim();
     if(!text || _sending) return;
     _sending = true;
@@ -6508,7 +6512,7 @@ ${notasHTML}
     } finally {
       _sending = false;
       sendBtn.disabled = false;
-      inputEl.focus();
+      if(!_tactil() || _escrito) inputEl.focus();
     }
   }
 
@@ -6743,7 +6747,7 @@ ${notasHTML}
     const badge = bubble.querySelector('.tm-bot-badge');
     if(badge) badge.remove();
     welcome.classList.remove('visible');
-    setTimeout(() => inputEl.focus(), 300);
+    if(!_tactil()) setTimeout(() => inputEl.focus(), 300);
     if(_messages.length === 0){
       // Intentar cargar historial previo de localStorage
       const prev = loadHistory();
