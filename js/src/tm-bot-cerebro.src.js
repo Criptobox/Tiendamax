@@ -104,8 +104,16 @@
 
   function refrescarCatalogo(force){
     const fuente = _productosVivos();
-    // Firma barata para no re-normalizar 118 productos en cada mensaje.
-    const firma = fuente.length + ':' + (fuente[0] && fuente[0].id) + ':' + (fuente[fuente.length-1] && fuente[fuente.length-1].id) + ':' + _descVersion;
+    // Firma barata para no re-normalizar el catálogo en cada mensaje. Antes era
+    // «cuántos hay y el primero y el último»: un producto que se agotaba o cambiaba
+    // de precio no la movía, y Max seguía ofreciendo lo que ya no había. Ahora
+    // entra todo lo que él mismo lee de cada producto.
+    let firma = fuente.length + ':' + _descVersion + ':';
+    for(let i = 0; i < fuente.length; i++){
+      const p = fuente[i] || {};
+      firma += p.id + '~' + p.stock + '~' + p.precioActual + '~' + p.precioOriginal + '~' + p.nombre + '~' +
+               p.categoria + '~' + p.subcategoria + '~' + p.moneda + '|';
+    }
     if (!force && firma === _catFirma && PRODUCTOS.length) return PRODUCTOS;
     _catFirma = firma;
     PRODUCTOS = fuente.map(_normalizar);
@@ -202,6 +210,18 @@
   }
 
   // Punto único de refresco: se llama antes de cada respuesta.
+  /* Pone al día el catálogo de la tienda (no el del panel) antes de contestar.
+     Nunca falla ni se queda esperando: es una mejora de frescura, no un requisito. */
+  function _ponerAlDia(tope){
+    try {
+      if(typeof tmRefrescarCatalogoVivo !== 'function') return Promise.resolve(false);
+      return Promise.race([
+        tmRefrescarCatalogoVivo().catch(() => false),
+        new Promise(r => setTimeout(() => r(false), tope || 2500))
+      ]);
+    } catch(e){ return Promise.resolve(false); }
+  }
+
   function _sincronizar(){
     _refrescarConfig();
     refrescarCatalogo();
@@ -6757,7 +6777,14 @@ ${notasHTML}
     saveHistory(); // guardar tras mensaje del usuario
     addTyping();
     const delay = 350 + Math.random() * 500 + Math.min(text.length * 8, 600);
-    await new Promise(r => setTimeout(r, delay));
+    // Mientras «escribe», se confirma que el catálogo sigue siendo el de ahora
+    // (si pasaron más de ~90 s desde la última vez): lo agotado, lo nuevo, un
+    // precio, una categoría apagada. Con tope de 2,5 s: sin red, contesta con
+    // lo que tiene.
+    await Promise.all([
+      new Promise(r => setTimeout(r, delay)),
+      _ponerAlDia(2500)
+    ]);
     removeTyping();
     try {
       const data = responder(text);
@@ -7013,6 +7040,7 @@ ${notasHTML}
   }
 
   function openPanel(){
+    _ponerAlDia(2500);   // al abrir: que lo primero que se vea sea lo de hoy
     panel.classList.add('open');
     _panelOpen = true;
     bubble.classList.remove('has-new');
