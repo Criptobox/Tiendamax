@@ -598,6 +598,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Si ya tiene permiso concedido, no molestar
         if (Notification.permission === 'granted') return;
+        // Si ya las bloqueó, dijo que no: insistir con un cartel flotante que
+        // tapa el pie y las reseñas solo molesta. La campana de la cabecera ya
+        // explica cómo activarlas si cambia de idea.
+        if (Notification.permission === 'denied') return;
 
         // Si el usuario cerró el banner antes, esperar el tiempo configurado
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
@@ -675,6 +679,14 @@ body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
             document.head.appendChild(s);
         }
         document.body.appendChild(b);
+        // Sin respuesta en 12 s se retira solo y no vuelve en 3 días: un cartel
+        // que se queda fijo tapa lo que el cliente está leyendo.
+        setTimeout(() => {
+            if (!b.isConnected) return;
+            b.remove();
+            try { document.body.classList.remove('tm-push-banner-visible'); } catch (e) {}
+            try { localStorage.setItem('tm_push_pospuesto', String(Date.now() + 3 * 86400000)); } catch (e) {}
+        }, 12000);
         // El desplazamiento de la burbuja era un número fijo (116px) calculado
         // para el cartel de dos líneas. El de "notificaciones bloqueadas" tiene
         // tres y seguía tapando el botón. Ahora se sigue el alto REAL: medirlo

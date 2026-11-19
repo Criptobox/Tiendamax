@@ -596,7 +596,7 @@ if (_detailPrecioMNEl) {
         const _qtyVal = document.getElementById('detailQtyValue');
         if (_qtyVal) _qtyVal.textContent = '1';
         const _qtyStock = document.getElementById('detailQtyStock');
-        if (_qtyStock) _qtyStock.innerHTML = _stockN > 0 ? `${tmIcoUI('📦')} Solo quedan <b>${_stockN}</b> ${_stockN === 1 ? 'unidad' : 'unidades'}` : '';
+        if (_qtyStock) _qtyStock.innerHTML = (_stockN > 0 && _stockN <= 5) ? `${tmIcoUI('📦')} Solo quedan <b>${_stockN}</b> ${_stockN === 1 ? 'unidad' : 'unidades'}` : '';
         const _qtyMenos = _qtyRow.querySelector('.detail-qty-stepper button:first-child');
         const _qtyMas   = _qtyRow.querySelector('.detail-qty-stepper button:last-child');
         if (_qtyMenos) _qtyMenos.disabled = true;
@@ -884,10 +884,13 @@ if (_detailPrecioMNEl) {
         const stickyPriceSub = document.getElementById('detailStickyPriceSub');
         const stickyBuyBtn = document.getElementById('detailStickyBuyBtn');
         const stickyBuyText = document.getElementById('detailStickyBuyText');
-        if (stickyPrice) stickyPrice.textContent = `$${Number(p.precioActual || 0).toFixed(2)}`;
+        // Un producto con precio fijo en MN se muestra en MN: «$280.00 ≈ 267.400 MN»
+        // leía 267 mil pesos por un cable de 280.
+        const _stickyMN = p.moneda === 'MN';
+        if (stickyPrice) stickyPrice.textContent = _stickyMN ? `${tmMN(p.precioActual)} MN` : `$${Number(p.precioActual || 0).toFixed(2)}`;
         if (stickyPriceSub) {
             const _tasaSticky = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-            stickyPriceSub.textContent = _tasaSticky > 0 ? `≈ ${tmMN(p.precioActual * _tasaSticky)} MN` : '';
+            stickyPriceSub.textContent = (!_stickyMN && _tasaSticky > 0) ? `≈ ${tmMN(p.precioActual * _tasaSticky)} MN` : '';
         }
         if (stickyBuyText) { if (p.stock === 0) stickyBuyText.innerHTML = tmIcoUI('🔔') + ' Avísame'; else stickyBuyText.textContent = 'Pedir'; }
         if (stickyBuyBtn) {
@@ -1219,7 +1222,7 @@ function contactarProducto(nombre) {
     // Cantidad elegida en el modal (tope = stock); por defecto 1
     const cant = p ? Math.max(1, Math.min(safeNum(_detalleCantidad) || 1, safeNum(p.stock) || 1)) : 1;
     const item = p
-        ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, cantidad: cant }
+        ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, moneda: (typeof tmMoneda === 'function') ? tmMoneda(p) : 'USD', antes: parseFloat(p.precioOriginal) || 0, cantidad: cant }
         : { nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
     if (p) tmRegistrarInteresWhatsApp(p, 'detalle');
     // Generar vale/pedido para seguimiento

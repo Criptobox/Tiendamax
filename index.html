@@ -115,7 +115,7 @@
          inyecta la primera vez que el cliente abre el chat. La URL va aquí
          (y no dentro del JS) para que bump_versions.py le ponga el hash del
          archivo y el navegador no sirva un cerebro viejo desde caché. -->
-    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=1864027d">
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=4ac9f81d">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -156,7 +156,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="TiendaMax — Catálogo online con pedido por WhatsApp. Productos de calidad con envíos rápidos, precios increíbles y atención personalizada por WhatsApp.">
+    <meta name="description" content="TiendaMax — Catálogo online con pedido por WhatsApp. Pagas al recibir, mensajería en La Habana y atención personalizada de 10am a 6pm.">
     <meta name="keywords" content="TiendaMax, tienda Cuba, comprar online Cuba, productos Cuba, ofertas Cuba, electrónica Cuba, hogar Cuba, tiendamax.org">
     <meta name="author" content="TiendaMax">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -169,7 +169,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tiendamax.org/">
     <meta property="og:title" content="TiendaMax — Tu tienda online en Cuba">
-    <meta property="og:description" content="Encuentra los mejores productos al mejor precio. Envíos a toda Cuba.">
+    <meta property="og:description" content="Energía solar, carro, WiFi y más. Pagas al recibir. Mensajería en La Habana.">
     <meta property="og:image" content="https://tiendamax.org/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -181,7 +181,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TiendaMax — Tu tienda online en Cuba">
-    <meta name="twitter:description" content="Encuentra los mejores productos al mejor precio. Envíos a toda Cuba.">
+    <meta name="twitter:description" content="Energía solar, carro, WiFi y más. Pagas al recibir. Mensajería en La Habana.">
     <meta name="twitter:image" content="https://tiendamax.org/og-image.jpg">
     <meta name="twitter:image:alt" content="TiendaMax — Tu tienda online en Cuba">
 
@@ -212,7 +212,7 @@
           "priceRange": "$$",
           "currenciesAccepted": "USD, CUP",
           "paymentAccepted": "Cash, Pago contra entrega",
-          "openingHours": "Mo-Sa 09:00-20:00",
+          "openingHours": "Mo-Sa 10:00-18:00",
           "areaServed": {
             "@type": "Country",
             "name": "Cuba"
@@ -271,7 +271,7 @@
               "name": "¿Hacen entregas a domicilio?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Sí, contamos con mensajería. El costo y el tiempo de entrega se coordinan por WhatsApp según tu ubicación."
+                "text": "Sí, contamos con mensajería en La Habana. El precio depende de la zona y te lo confirmamos por WhatsApp antes de enviar."
               }
             },
             {
@@ -287,7 +287,7 @@
               "name": "¿Los productos tienen garantía?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Sí, todos los productos tienen garantía. Si algo no funciona, escríbenos por WhatsApp y lo resolvemos."
+                "text": "Solo los productos que lo indican en su ficha. Cubre defectos de fábrica. Todos se prueban al recibirlos, antes de pagar."
               }
             },
             {
@@ -314,7 +314,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=f0684683" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b383270c" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -325,7 +325,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=b42d79c1">
+    <link rel="stylesheet" href="css/bundle.css?v=d6687bba">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -793,9 +793,9 @@
                         <!-- Confianza real: producto/calificación se actualizan desde datos reales (ver renderizarCategoriasHome / _tmCargarRatingHero) -->
                         <div class="nd-hero-stats" id="ndHeroStats">
                             <div class="nd-stat"><strong id="ndStatProductos">77</strong><span>Disponibles</span></div>
-                            <div class="nd-stat"><strong id="ndStatRating">4.7<i>★</i></strong><span>Calificación</span></div>
+                            <div class="nd-stat"><strong id="ndStatRating">4.7<i>★</i></strong><span id="ndStatRatingN">Reseñas</span></div>
                             <div class="nd-stat"><strong>100%</strong><span>Pago al recibir</span></div>
-                            <div class="nd-stat"><strong>&lt;5<i>min</i></strong><span>Respuesta</span></div>
+                            <div class="nd-stat"><strong>10–6</strong><span>Atención</span></div>
                         </div>
                     </div>
                 </div>
@@ -1149,7 +1149,7 @@
                 <div class="footer-brand">
                     <div class="footer-gold-line"></div>
                     <h3>Tienda<em>Max</em></h3>
-                    <p>Tecnología y electrónica premium con envío rápido. Calidad garantizada en cada producto.</p>
+                    <p>Tecnología, energía y repuestos. Pagas al recibir y lo pruebas antes de pagar. Mensajería en La Habana.</p>
                 </div>
                 <div class="footer-col">
                     <h4>Tienda</h4>
@@ -1165,23 +1165,23 @@
                     <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank" rel="noopener noreferrer">👥 Grupo de WhatsApp</a>
                     <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer">✈️ Canal Telegram</a>
                     <a href="https://www.facebook.com/profile.php?id=100095406885506" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
-                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:8px 0 0;cursor:default;">🕐 Lun-Sáb: 9am - 8pm</p>
+                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:8px 0 0;cursor:default;">🕐 Lun-Sáb: 10am - 6pm</p>
                     <p style="color:rgba(255,255,255,.5);font-size:12px;margin:2px 0 0;cursor:default;">🛵 Tenemos mensajería</p>
                 </div>
                 <div class="footer-col">
                     <h4>Información</h4>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega por mensajería.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">🛒 Cómo comprar</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Aceptamos <strong>pago contra entrega</strong> en efectivo, en USD o MN según la tasa del día.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">💵 Métodos de pago</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('🛡️ Garantía','<p>Todos nuestros productos tienen <strong>garantía</strong>.</p><p>Si algo no funciona o llega en mal estado, escríbenos por WhatsApp y lo resolvemos sin complicaciones: cambio o reembolso.</p>');">🛡️ Garantía</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devoluciones dentro de las <strong>24 horas</strong> siguientes a la entrega.</p><p>El producto debe llegar dañado o no corresponder a lo descrito. Contáctanos por WhatsApp con fotos del problema.</p>');">↩️ Devoluciones</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('📄 Términos y condiciones','<p>Al usar este sitio aceptas los <strong>términos y condiciones</strong> de TiendaMax.</p><p>Los precios están en USD y pueden cambiar sin previo aviso. Los pedidos se confirman por WhatsApp. Nos reservamos el derecho de cancelar pedidos con información incorrecta.</p>');">📄 Términos</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega. La mensajería es en La Habana y su precio depende de la zona; te lo decimos antes de enviar.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">🛒 Cómo comprar</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Pagas <strong>al recibir</strong>, en efectivo: USD o MN según la tasa del día. Por ahora no aceptamos Zelle ni transferencias.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">💵 Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛡️ Garantía','<p>La <strong>garantía</strong> aplica a los productos que la indican en su ficha, y cubre defectos de fábrica.</p><p>Todos los productos los pruebas al recibirlos, antes de pagar. Si tu producto tiene garantía y presenta un desperfecto de fábrica, escríbenos por WhatsApp y te damos el mismo producto en buen estado.</p>');">🛡️ Garantía</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devolución dentro de las <strong>24 horas</strong> siguientes a la entrega, <strong>solo por desperfecto de fábrica</strong>. En ese caso te entregamos el mismo producto en buen estado.</p><p>Escríbenos por WhatsApp con fotos o un video del problema. No cubre mal uso, golpes ni instalación incorrecta.</p>');">↩️ Devoluciones</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('📄 Términos y condiciones','<p>Al usar este sitio aceptas los <strong>términos y condiciones</strong> de TiendaMax.</p><p>Los precios están en USD; en MN se calculan con la tasa del día y pueden cambiar sin previo aviso. Los pedidos se confirman por WhatsApp. Nos reservamos el derecho de cancelar pedidos con información incorrecta.</p>');">📄 Términos</a>
                     <a href="#" onclick="event.preventDefault();openLegalModal('🔒 Privacidad','<p>Tu <strong>privacidad</strong> es importante para nosotros.</p><p>No compartimos tus datos personales con terceros. La información que nos brindas (nombre, dirección) se usa únicamente para coordinar tu pedido por WhatsApp.</p>');">🔒 Privacidad</a>
                 </div>
             </div>
             <!-- Móvil: franja compacta -->
             <div class="footer-mobile-brand">
                 <h3>Tienda<em>Max</em></h3>
-                <p>Tecnología premium · Mensajería · Garantía</p>
+                <p>Pagas al recibir · Mensajería en La Habana</p>
                 <div class="footer-social" style="display:flex;gap:8px;margin-top:10px;justify-content:center;">
                     <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
                     <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank" rel="noopener noreferrer" aria-label="Grupo de WhatsApp" style="width:44px;height:44px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
@@ -1226,9 +1226,9 @@
                 <h4 class="footer-nav-tit">Ayuda</h4>
                 <div class="footer-nav-links">
                     <a href="/faq.html">Preguntas frecuentes</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega por mensajería.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">Cómo comprar</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Aceptamos <strong>pago contra entrega</strong> en efectivo, en USD o MN según la tasa del día.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">Métodos de pago</a>
-                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devoluciones dentro de las <strong>24 horas</strong> siguientes a la entrega.</p><p>El producto debe llegar dañado o no corresponder a lo descrito. Contáctanos por WhatsApp con fotos del problema.</p>');">Devoluciones</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega. La mensajería es en La Habana y su precio depende de la zona; te lo decimos antes de enviar.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">Cómo comprar</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Pagas <strong>al recibir</strong>, en efectivo: USD o MN según la tasa del día. Por ahora no aceptamos Zelle ni transferencias.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devolución dentro de las <strong>24 horas</strong> siguientes a la entrega, <strong>solo por desperfecto de fábrica</strong>. En ese caso te entregamos el mismo producto en buen estado.</p><p>Escríbenos por WhatsApp con fotos o un video del problema. No cubre mal uso, golpes ni instalación incorrecta.</p>');">Devoluciones</a>
                 </div>
             </nav>
             <div class="footer-bottom">
@@ -1789,7 +1789,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=f0684683" defer></script>
+    <script src="js/tm-bundle.js?v=b383270c" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1976,7 +1976,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=86f5ff08" defer></script>
+    <script src="js/tm-bot.js?v=9bbf8edb" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

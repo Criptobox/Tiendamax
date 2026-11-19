@@ -478,7 +478,11 @@ async function _tmCargarRatingHero() {
         Object.values(porProducto).forEach(arr => {
             if (Array.isArray(arr)) arr.forEach(r => { suma += Number(r.estrellas) || 0; total++; });
         });
-        if (total > 0) el.innerHTML = (suma / total).toFixed(1) + '<i>★</i>';
+        if (total > 0) {
+            el.innerHTML = (suma / total).toFixed(1) + '<i>★</i>';
+            const n = document.getElementById('ndStatRatingN');
+            if (n) n.textContent = total + (total === 1 ? ' reseña' : ' reseñas');
+        }
     } catch (e) { /* deja el valor por defecto del HTML */ }
 }
 

@@ -630,6 +630,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   .tm-btn-s{{background:transparent;color:var(--gold);border:1px solid rgba(242,182,50,.35);font-size:14px;padding:13px 18px}}
   .tm-conf{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}}
   .tm-conf > div{{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:14px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line)}}
+  .tm-conf > div:last-child:nth-child(odd){{grid-column:1/-1}}
   .tm-conf .ic{{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center}}
   .tm-conf .ic .tm-i{{width:21px;height:21px}}
   .tm-conf .o{{background:rgba(255,106,31,.16);color:var(--o)}}.tm-conf .g{{background:rgba(37,211,102,.14);color:#4ade80}}
@@ -1279,7 +1280,17 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
                 f'rel="noopener noreferrer">{_ico("wa")} Preguntar por WhatsApp</a>'
             )
         elif stock > 0:
-            wa_msg = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
+            # El pedido sale completo —producto, cantidad, precio en SU moneda y
+            # lo que hace falta para coordinar—: las páginas /p/ son la entrada
+            # de todo lo que se publica en Facebook y Revólico, y con un simple
+            # «me interesa» el gestor tenía que volver a preguntar lo básico.
+            _precio_msg = precio_corto(p.get("precioActual"), p)
+            _antes = float(p.get("precioOriginal") or 0)
+            if _antes > float(p.get("precioActual") or 0) > 0:
+                _precio_msg += f" (rebajado, antes {precio_corto(_antes, p)})"
+            wa_msg = urllib.parse.quote(
+                f"Hola, quiero pedir:\n▸ {name}\n▸ Cantidad: 1\n▸ Precio: {_precio_msg}\n"
+                f"{page_url}\n\nMi nombre:\nMunicipio:")
             wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
             # WhatsApp va primero y es el botón principal: aquí no hay carrito
             # ni pago, el pedido ES el mensaje. "Ver en TiendaMax" mandaba al
@@ -1333,7 +1344,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170",
             f'<div><span class="ic o">{_ico("hand")}</span><b>Pagas al recibirlo</b>'
             f'<small>Lo pruebas antes de pagar</small></div>',
             f'<div><span class="ic g">{_ico("wa")}</span><b>Pides por WhatsApp</b>'
-            f'<small>Te responde una persona</small></div>']
+            f'<small>Te responde una persona</small></div>',
+            f'<div><span class="ic g">{_ico("box")}</span><b>Mensajería en La Habana</b>'
+            f'<small>El precio depende de la zona: te lo confirmamos antes</small></div>']
         if garantia_html:
             tarjetas.append(garantia_html)
         confianza_html = f'<div class="tm-conf">{"".join(tarjetas)}</div>' if tarjetas else ""
@@ -1531,11 +1544,21 @@ def regenerate_category_pages(products: list[dict], wa_num: str = "5354320170") 
         page_url = f"{SITE}/c/{slug}.html"
         app_url = f"{SITE}/?categoria={urllib.parse.quote(cat)}"
 
-        title = escape(f"{nombre} en Cuba — Pago al recibir | TiendaMax")
-        desc = escape(
-            f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
-            f"Pides por WhatsApp y pagas al recibirlo, en USD o MN."
-        )
+        # Sin nada en stock el título no puede prometer «pago al recibir» ni la
+        # descripción decir «0 productos disponibles»: quien llega desde Google
+        # buscando eso encontraría una tienda vacía con un título que miente.
+        if en_stock > 0:
+            title = escape(f"{nombre} en Cuba — Pago al recibir | TiendaMax")
+            desc = escape(
+                f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
+                f"Pides por WhatsApp y pagas al recibirlo, en USD o MN."
+            )
+        else:
+            title = escape(f"{nombre} en Cuba — agotado hoy, te avisamos | TiendaMax")
+            desc = escape(
+                f"Ahora mismo no hay {cat.lower()} disponibles en TiendaMax. "
+                f"Deja tu WhatsApp y te avisamos cuando lleguen."
+            )
 
         items_jsonld = []
         for k, p in enumerate(p for p in prods if p.get("id")):

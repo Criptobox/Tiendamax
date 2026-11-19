@@ -123,6 +123,8 @@
     .tm-bot-msg.user{background:linear-gradient(135deg,#E8501E,#ff6b35);color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-end;box-shadow:0 2px 8px rgba(232,80,30,.3);}
     .tm-bot-msg.bot strong,.tm-bot-msg.bot b{color:#fff;font-weight:700;}
     .tm-bot-msg.bot em{color:inherit;font-style:normal;font-weight:600;}
+    .tm-bot-msg.bot a{color:#fb923c;font-weight:700;text-decoration:underline;text-underline-offset:2px;}
+    body.light-mode .tm-bot-msg.bot a{color:#c2410c;}
     .tm-bot-msg.bot code{background:rgba(232,80,30,.15);color:#ff6b35;padding:1px 5px;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;}
     .tm-bot-msg.bot .meta{display:block;font-size:10px;color:#666;margin-top:4px;text-align:right;font-weight:400;}
     .tm-bot-msg.user .meta{display:block;font-size:10px;color:rgba(255,255,255,.7);margin-top:3px;text-align:right;}
