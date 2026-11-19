@@ -82,6 +82,9 @@
       masVendido: !!p.masVendido,
       garantia: p.garantia || '',
       devolucion: !!p.devolucion,
+      // Un producto con precio fijo en MN (p. ej. el cable de red) es MN: su
+      // «precio» ya son pesos y convertirlo con la tasa inventa un número.
+      moneda: String(p.moneda || '').toUpperCase() === 'MN' ? 'MN' : 'USD',
       specs: Array.isArray(p.specs) ? p.specs : [],
       descripcion: p.descripcion || _descCache[p.id] || '',
       slug: p.slug || '',
@@ -1042,8 +1045,7 @@
     // después (_sincronizar). Con la plantilla, la respuesta de pagos —la más
     // consultada— decía "0 MN = 1 USD" siempre, en producción.
     {metodo: 'Efectivo MN', detalle: () => `Pesos cubanos (MN) al recibir, a la tasa del día${TASA_MN > 0 ? ` (${TASA_MN} MN = 1 USD, margen ya incluido)` : ''}.`, disponible: true, comision: 0},
-    {metodo: 'Efectivo mixto', detalle: 'Combinación USD + MN para completar el monto. El repartidor calcula al recibir.', disponible: true, comision: 0},
-    {metodo: 'Zelle (familiares en USA)', detalle: 'Pago vía Zelle desde familiar en el extranjero. Coordinar con el equipo por WhatsApp.', disponible: true, comision: 0, nota: 'Solo para pedidos prepagados'},
+    {metodo: 'Zelle', detalle: 'Por ahora no se acepta.', disponible: false, comision: 0},
     {metodo: 'EnZona / Transfermóvil', detalle: 'No se aceptan.', disponible: false, comision: 0},
     {metodo: 'Transferencia bancaria (BPA, BANMET, Bandec)', detalle: 'No se acepta.', disponible: false, comision: 0},
     {metodo: 'Crypto (USDT, BTC)', detalle: 'Pago en criptomonedas estables. Confirmar wallet y monto con anticipación.', disponible: false, comision: 0, nota: 'Próximamente disponible'},
@@ -1081,8 +1083,14 @@
   function normalize(s){
     return String(s||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
   }
+  /* Las viscosidades SAE se escriben de tres formas —«10w40», «10W-40»,
+     «10W - 40»— y el catálogo usa las dos últimas, así que quien escribía
+     «aceite 10w40» no encontraba el «Defender 10W-40» que sí estaba. Se
+     escriben igual en los dos lados de la comparación: 10w40. Solo los
+     grados que existen, para no tocar «10 W 40 cm». */
+  const _SAE = /\b(0|5|10|15|20|25)\s*w\s*-?\s*(20|30|40|50|60)\b/g;
   function cleanForMatch(s){
-    let n = normalize(s).replace(/[^a-z0-9\s.]/g,' ').replace(/\s+/g,' ').trim();
+    let n = normalize(s).replace(_SAE, '$1w$2').replace(/[^a-z0-9\s.]/g,' ').replace(/\s+/g,' ').trim();
     return n;
   }
   function escapeHtml(s){
@@ -1092,6 +1100,19 @@
     return String(s||'').replace(/["'<>&]/g, c => ({'"':'&quot;',"'":'&#39;','<':'&lt;','>':'&gt;','&':'&amp;'})[c]);
   }
   function fmtUSD(n){ return '$' + (Number(n)||0).toFixed(2); }
+  /* El precio de UN PRODUCTO, en la moneda en que se vende: «280 MN» si es de
+     precio fijo en pesos (moneda:'MN'), «$30.00» si no. Pasar un producto de
+     MN por fmtUSD decía «$280.00 USD · 267.400 MN»: la misma mentira que ya
+     se corrigió en la tienda. */
+  const _esMN = p => !!p && p.moneda === 'MN';
+  function _mnTxt(n){ return String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' MN'; }
+  function fmtP(p, valor){
+    const v = (valor === undefined) ? (p && p.precio) : valor;
+    return _esMN(p) ? _mnTxt(v) : fmtUSD(v);
+  }
+  // Lo que va detrás del precio como referencia en la otra moneda; un
+  // producto en MN no tiene otra: ya está en pesos.
+  function fmtMNde(p){ return _esMN(p) ? '' : fmtMN(p.precio); }
   function fmtMN(usd){
     // Sin tasa configurada devuelve vacío: mejor no decir nada que
     // anunciar "0 MN" y que parezca que el producto es gratis.
@@ -1710,8 +1731,8 @@
   }
 
   function _precioLinea(p){
-    const mn = fmtMN(p.precio);
-    return fmtUSD(p.precio) + (mn ? ` · <em>${mn}</em>` : '');
+    const mn = fmtMNde(p);
+    return fmtP(p) + (mn ? ` · <em>${mn}</em>` : '');
   }
 
   // ════════════════════════════════════════════════════════════
@@ -1771,6 +1792,16 @@
     // La Tarjeta TiendaMax y los referidos. Estrecho a propósito: «pagar con
     // tarjeta» es pago y «tarjeta de PlayStation» es un producto digital.
     if(/\btarjeta\s+(de\s+)?(tienda\s*max|cliente|descuentos?|regalo)\b|\breferid[oa]s?\b|\breferir\b|recomi?e?nd\w*\s+(la\s+tienda\s+)?(a\s+)?(un\s+|mis?\s+)?amig|como\s+funciona\s+la\s+tarjeta|descuentos?\s+(en|para)\s+(las?\s+|mis\s+)?(proxima|siguiente)/.test(t)) return 'tarjeta';
+
+    /* Atajos de una palabra, y pedir una persona. Van antes de todo lo que
+       busca productos: «quiero hablar con una persona» llevaba «quiero» y se
+       iba a una lista de timbres y binoculares; «agente», «humano» y «menú»
+       caían en «no te entendí». Anclados al mensaje ENTERO cuando es una
+       palabra suelta, para no robarle «reiniciar el router» al diagnóstico. */
+    if(/^(men[uú]|inicio|opciones|volver al men[uú]|ver men[uú]|el men[uú])[\s!?.¿¡]*$/.test(m)) return 'menu';
+    if(/^(reiniciar|reinicia|reiniciar (el )?(chat|conversaci[oó]n)|empezar (de nuevo|otra vez)|nueva conversaci[oó]n|borrar (el )?(chat|conversaci[oó]n)|limpiar( el)? chat)[\s!?.¿¡]*$/.test(m)) return 'resetCmd';
+    if(/\b(hablar|conversar|comunicar\w*|contactar\w*|comun[ií]came|p[aá]same|pasame|ponme|atiend[ae]\w*)\b[^.?]{0,30}\b(persona|humano|alguien|agente|asesor|vendedor|encargado|representante|operador|gente|real)\b|^(un |una )?(humano|agente|asesor|operador|persona|vendedor|encargado|representante)[\s!?.¿¡]*$|atenci[oó]n al cliente|servicio al cliente|servicio t[eé]cnico|soporte t[eé]cnico|\b(quiero|necesito|prefiero)\s+(un|una|el|la)?\s*(persona|humano|agente|asesor|vendedor)\b/.test(m)) return 'humano';
+    if(/\b(reclam\w+|quej[ao]s?|quejarme|quejarse|denunci\w+|me estafaron|me enga[ñn]aron|mal servicio|pesimo servicio|insatisfech\w+)\b/.test(m)) return 'reclamo';
 
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
@@ -1863,7 +1894,7 @@
 
     // Quién es Max. Va antes del saludo porque "¿tú quién eres?" no lleva
     // ninguna palabra de saludo y terminaba buscando productos.
-    if(/\b(qui[eé]n eres|qui[eé]n sos|c[oó]mo te llamas|eres (un |una )?(bot|robot|humano|persona|ia|m[aá]quina)|eres real|hablo con (un |una )?(bot|persona|humano|robot))\b/i.test(m)) return 'quienEres';
+    if(/\b(qui[eé]n eres|qui[eé]n sos|c[oó]mo te llamas|eres (un |una )?(bot|robot|humano|persona|ia|m[aá]quina)|eres real|hablo con (un |una )?(bot|persona|humano|robot)|qu[eé] eres|qu[eé] sos|con qui[eé]n hablo|eres (t[uú] )?max)\b/i.test(m)) return 'quienEres';
 
     if(/\b(hola|buenas|saludos|hey|que bol[aá]|asere|compay|dime|buenos d[ií]as|buenas tardes|buenas noches|qu[eé] tal|que tal|buen d[ií]a|buen dia|hola max|holi)\b/i.test(m)) return 'saludo';
     if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
@@ -2029,6 +2060,12 @@
     const mencionaCategoria = /\b(ropa|wifi|energ[ií]a|seguridad|carros|motos|hogar|celulares|audio|juegos|gym|u[ú]tiles|computadora|laptop|gaming)\b/i.test(m);
     // Detectar si menciona presupuesto ("tengo $X", "presupuesto de X")
     const mencionaPresupuesto = detectPresupuesto(text) !== null;
+
+    // Una palabra que el catálogo reparte en varias subcategorías («aceite»,
+    // «anticongelante»): se enseña la familia entera, no la primera ficha.
+    // Va antes que DETALLE porque «aceite de motor» casaba con UN aceite de
+    // moto agotado y era la respuesta entera.
+    if(!_pideDefinicion && _familiaDe(text)) return 'familia';
 
     // ─── DETALLE: si el usuario menciona un producto específico por nombre,
     //priorizar DETALLE sobre recomendación (ej: "quiero el router Tenda", "dame el cargador Ntrc")
@@ -2224,7 +2261,7 @@
   });
 
   R.comprar = () => ({
-    response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Aceptamos:\n• Efectivo USD (dólares)\n• Efectivo MN (pesos cubanos a la tasa del día)\n• Zelle (si un familiar paga desde USA)\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
+    response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Pagas en efectivo:\n• USD (dólares)\n• MN (pesos cubanos a la tasa del día)\nPor ahora no aceptamos Zelle ni transferencias.\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
     quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp'],
     siDigoSi: () => R.categorias()
   });
@@ -2312,23 +2349,30 @@
       };
     }
 
+    /* Política real del dueño: se paga AL RECIBIR, en efectivo, USD o MN. Zelle,
+       transferencias, EnZona y Transfermóvil no se aceptan por ahora. Lo que
+       no esté declarado aquí no se inventa: se consulta por WhatsApp. */
+    const _soloEfectivo = `Pagas <strong>al recibir el producto, en efectivo</strong>: <strong>USD</strong> o <strong>MN</strong> a la tasa del día.`;
+    const _otraForma = `Si necesitas otra forma de pago, consúltalo por WhatsApp.`;
     if(/\bzelle|familiares en usa|desde el extranjero|pago desde usa\b/.test(m)){
       return {
-        response: `💸 <strong>Pago vía Zelle (familiares en USA)</strong>\n\nSi un familiar en el extranjero va a pagar tu pedido:\n\n1. Coordinamos el monto y los datos de la cuenta por WhatsApp\n2. Tu familiar envía el pago desde su cuenta bancaria en USA\n3. Confirmamos la recepción del pago\n4. Te enviamos el producto y tú no pagas nada al recibirlo\n\nIdeal para regalos o cuando el comprador no está en Cuba.`,
-        quickReplies: ['💬 WhatsApp','💵 Ver otros métodos','📦 Ver productos']
+        response: `💸 <strong>Zelle: por ahora no lo aceptamos.</strong>\n\n${_soloEfectivo}\n\n${_otraForma}`,
+        quickReplies: ['💬 WhatsApp','💵 Ver métodos aceptados','📦 Ver productos']
       };
     }
 
     if(/\benzona|aisml|transfermovil\b/.test(m)){
       return {
-        response: `🚫 <strong>No trabajamos con EnZona ni Transfermóvil.</strong>\n\nPara mantener nuestros procesos ágiles y seguros, aceptamos únicamente:\n\n• <strong>Efectivo USD</strong> (dólares)\n• <strong>Efectivo MN</strong> (pesos cubanos, a la tasa del día)\n• <strong>Zelle</strong> (para pagos desde USA)\n\n¿Quieres coordinar tu pedido por WhatsApp con alguno de estos métodos?`,
+        response: `🚫 <strong>No trabajamos con EnZona ni Transfermóvil.</strong>\n\n${_soloEfectivo}\n\n${_otraForma}`,
         quickReplies: ['💬 WhatsApp','💵 Ver métodos aceptados','📦 Ver productos']
       };
     }
 
-    if(/\btransferencia bancaria|bancario|bpa|banmet|bandec|bicsa\b/.test(m)){
+    // «¿Aceptan transferencia?» es una pregunta de sí o no: la respuesta va
+    // primero y es no. Banco o no banco, el pago es en efectivo al recibir.
+    if(/transferencia|transferir|bancari|\bbpa\b|banmet|bandec|bicsa|\bbanco\b/.test(m)){
       return {
-        response: `🏦 <strong>No aceptamos transferencias bancarias</strong> (BPA, BANMET, Bandec, BICSA).\n\nNuestros únicos métodos aceptados son:\n\n• <strong>Efectivo USD</strong> (dólares)\n• <strong>Efectivo MN</strong> (pesos cubanos, a la tasa del día)\n• <strong>Zelle</strong> (desde el extranjero)\n\n¿Deseas coordinar tu pedido por WhatsApp con alguno de estos métodos?`,
+        response: `🏦 <strong>No, por ahora no aceptamos transferencias</strong> (ni bancarias ni de otro tipo).\n\n${_soloEfectivo}\n\n${_otraForma}`,
         quickReplies: ['💬 WhatsApp','💵 Ver métodos aceptados','📦 Ver productos']
       };
     }
@@ -2351,11 +2395,11 @@
       body += `\n🚫 <strong>No aceptamos:</strong>\n`;
       _no.forEach(x => { body += `   • ${x.metodo}\n`; });
     }
-    body += `\n¿Te interesa un método en específico?`;
+    body += `\nSiempre se paga <strong>al recibir</strong>. Si necesitas otra forma de pago, consúltalo por WhatsApp.`;
 
     return {
       response: body,
-      quickReplies: ['💵 Pago en MN','💸 Pago con Zelle','💬 WhatsApp']
+      quickReplies: ['💵 Pago en MN','💬 WhatsApp','🚚 Envíos']
     };
   };
 
@@ -2384,7 +2428,7 @@
       // Mención sin garantía anotada
       const nom = mentions.length === 1 ? escapeHtml(mentions[0].nombre) : 'ese producto';
       return {
-        response: `🛡️ De <strong>${nom}</strong> no tengo el plazo de garantía anotado en la ficha. Prefiero no inventar uno.${POLICY}\n\nEscríbenos por WhatsApp y te confirmamos si tiene garantía y su plazo exacto.`,
+        response: `🛡️ La ficha de <strong>${nom}</strong> no declara garantía. La garantía aplica <strong>solo a los productos que la indican</strong> en su ficha, así que no puedo prometerte una que no está escrita.${POLICY}\n\nSi tienes dudas de este producto, escríbenos por WhatsApp.`,
         products: mentions.slice(0,3),
         quickReplies: ['💬 Contactar Soporte','📦 Ver más productos']
       };
@@ -2398,8 +2442,29 @@
   };
 
   R.devolucion = () => ({
-    response: `↩️ <strong>Política de Devolución TiendaMax</strong>\n\nAceptamos devoluciones dentro de <strong>24 horas</strong> tras la entrega si:\n• El producto llega dañado o con <strong>defecto de fábrica</strong>\n• No corresponde a lo que pediste\n\n<strong>No procede devolución</strong> por:\n• Daños por mal uso, golpes o caídas\n• Quemaduras por variaciones de voltaje\n• Instalación incorrecta\n\nPara iniciar una devolución, escríbenos por WhatsApp con fotos del estado y descripción del problema. Coordinamos recogida y reemplazo o devolución del dinero.`,
+    response: `↩️ <strong>Devoluciones en TiendaMax</strong>\n\nSolo por <strong>desperfecto de fábrica</strong>, y escribiéndonos dentro de las <strong>primeras 24 horas</strong> tras la entrega. En ese caso te entregamos <strong>el mismo producto en buen estado</strong>.\n\nAntes de pagar puedes <strong>revisar y probar</strong> el producto con el mensajero.\n\n<strong>No procede</strong> por:\n• Daños por mal uso, golpes o caídas\n• Quemaduras por variaciones de voltaje\n• Instalación incorrecta\n\nEscríbenos por WhatsApp con fotos o video del problema.`,
     quickReplies: ['💬 Contactar Soporte','🛡️ Política de garantía','📦 Ver productos']
+  });
+
+  /* Un reclamo no se contesta con el catálogo: primero se dice a dónde ir y
+     después lo que cubre la política, sin prometer más de lo que hay. */
+  R.reclamo = () => ({
+    response: `😟 Lamento el problema. Para reclamar, escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>. Cuéntanos qué pasó y manda fotos o video si puedes.\n\n<strong>Lo que cubrimos:</strong> el desperfecto de fábrica, avisándonos dentro de las primeras 24 horas tras la entrega; en ese caso te entregamos el mismo producto en buen estado. Antes de pagar puedes revisar y probar el producto con el mensajero.\n\nNo cubre mal uso, golpes, quemaduras por voltaje ni instalación incorrecta. La garantía aplica solo a los productos que la declaran en su ficha.`,
+    quickReplies: ['💬 Abrir WhatsApp','↩️ Política de devolución','🛡️ Política de garantía']
+  });
+
+  /* Quien pide una persona no quiere un producto: se le da el camino ya, con
+     el horario real, y no se le sigue vendiendo. */
+  R.humano = () => ({
+    response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba). Fuera de ese horario puedes dejar tu mensaje y te respondemos cuando abramos.`,
+    quickReplies: ['💬 Abrir WhatsApp','📦 Categorías','🔥 Ofertas']
+  });
+
+  // «menú»: lo mismo que ve quien abre el chat, con los cuatro botones.
+  R.menu = () => ({
+    response: `📋 Esto es lo que puedo hacer. Toca una opción o escríbeme qué buscas:`,
+    bienvenida: true,
+    quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp','🤖 /ayuda']
   });
 
   /* Sin tasa cargada esto anunciaba «1 USD = 0 MN», «tasa base 0 MN» y «un
@@ -2414,9 +2479,9 @@
   R.tasa = (text) => {
     const nombrados = (TASA_MN > 0 && text) ? detectProductMentions(text).slice(0, 3) : [];
     if (nombrados.length) {
-      const lineas = nombrados.map(p => (p.moneda === 'MN')
-        ? `• <strong>${escapeHtml(p.nombre)}</strong>: ${Math.round(Number(p.precio)||0).toLocaleString('es-ES')} MN`
-        : `• <strong>${escapeHtml(p.nombre)}</strong>: ${fmtUSD(p.precio).replace(/\.00$/, '')} USD = <strong>${fmtMN(p.precio)}</strong>`).join('\n');
+      const lineas = nombrados.map(p => _esMN(p)
+        ? `• <strong>${escapeHtml(p.nombre)}</strong>: <strong>${fmtP(p)}</strong> (precio fijo en pesos, sin conversión)`
+        : `• <strong>${escapeHtml(p.nombre)}</strong>: ${fmtP(p).replace(/\.00$/, '')} USD = <strong>${fmtMN(p.precio)}</strong>`).join('\n');
       return {
         response: `💱 ${lineas}\n\n<em>A ${TASA_MN} MN el dólar, la tasa de hoy. Pagas al recibirlo, en USD o en MN.</em>`,
         products: nombrados,
@@ -2463,7 +2528,7 @@
   });
 
   R.horario = () => ({
-    response: `🕐 Atendemos de <strong>Lunes a Sábado, de 9:00am a 8:00pm</strong> (hora de Cuba). Los pedidos online se pueden hacer 24/7, pero las respuestas por WhatsApp son en horario de atención.`,
+    response: `🕐 Atendemos de <strong>Lunes a Sábado, de 10:00 am a 6:00 pm</strong> (hora de Cuba). Los pedidos online se pueden hacer 24/7, pero las respuestas por WhatsApp son en horario de atención.`,
     quickReplies: ['📦 Ver productos','💬 WhatsApp']
   });
 
@@ -2489,13 +2554,13 @@
       body += '<em>Con precio anterior marcado:</em>\n';
       ofertas.forEach(p => {
         const off = Math.round((1 - p.precio/p.precioOriginal) * 100);
-        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)} (era ${fmtUSD(p.precioOriginal)}, -${off}%)\n`;
+        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)} (era ${fmtP(p, p.precioOriginal)}, -${off}%)\n`;
       });
     }
     if(descuento.length > 0){
       body += '\n<em>Con descuento activo:</em>\n';
       descuento.forEach(p => {
-        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)} (-${p.descuento}%)\n`;
+        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)} (-${p.descuento}%)\n`;
       });
     }
     body += '\nToca cualquiera para ver la ficha completa y pedirlo.';
@@ -2593,6 +2658,43 @@
     }
     return extra ? (q + extra) : q;
   }
+  /* ── FAMILIAS DE PRODUCTO ──────────────────────────────────────────────
+     Lo que el cliente pide con una palabra («aceite», «anticongelante») el
+     catálogo lo reparte en varias subcategorías de varias categorías: los
+     aceites de carro están en CARROS › LUBRICANTES y el de moto en MOTOS ›
+     ACEITES Y LUBRICANTES; el anticongelante, en CARROS › REFRIGERANTES y
+     ninguna ficha dice «anticongelante» (dice «Antifreeze»). La búsqueda por
+     subcategoría solo conocía UNA, y la difusa no ve sinónimos: «aceite
+     10w40 para carro» enseñaba un aceite 2T de moto y «anticongelante»
+     contestaba «eso exacto no lo tengo» con los tres Antifreeze debajo.
+     Si el cliente nombra una marca o un código de producto, no es una
+     familia: es ese producto, y sigue su camino. */
+  const _FAMILIAS = [
+    { id: 'aceite', icono: '🛢️', titulo: 'Aceites de motor y lubricantes', pide: 'la viscosidad que pide tu motor (10W-40, 5W-30…)',
+      re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2}\b/,
+      no: /transmisi|caja|cvt|atf|diferencial|hidraul|freno|\b2t\b|dos tiempos|compresor|comestible|vegetal|oliva|girasol|cocina|masaje|esencial/,
+      subs: ['LUBRICANTES', 'ACEITES Y LUBRICANTES'] },
+    { id: 'anticongelante', icono: '🧊', titulo: 'Anticongelante / refrigerante', pide: '',
+      re: /\b(anticongelantes?|antifreeze|refrigerantes?|coolant)\b/,
+      no: /\b(nevera|refrigerador|aire|freezer)\b/,
+      subs: ['REFRIGERANTES'] },
+  ];
+  const _FAMILIA_GENERICA = new Set(['aceite','aceites','motor','mineral','sintetico','semisintetico','transmision','automatica','manual','litro','litros','garrafa','liquido','frenos','lubricante','lubricantes','antifreeze','anticongelante','refrigerante','coolant','mecanica','caja','carro','carros','moto','motos']);
+  function _familiaDe(text){
+    const m = cleanForMatch(text);
+    const f = _FAMILIAS.find(x => x.re.test(m) && !x.no.test(m));
+    if(!f) return null;
+    const palabras = new Set(m.split(' '));
+    const prods = PRODUCTOS.filter(p => f.subs.includes(String(p.subcategoria || '').toUpperCase()));
+    if(!prods.length) return null;
+    for(const p of prods){
+      const toks = cleanForMatch(p.nombre).split(' ');
+      // Lo que identifica al producto: una marca o un nombre propio (palabra
+      // de 5+ letras que no sea genérica) o un código de 4 cifras.
+      if(toks.some(w => (/^[a-z]{5,}$/.test(w) && !_FAMILIA_GENERICA.has(w) && palabras.has(w)) || (/^\d{4}$/.test(w) && palabras.has(w)))) return null;
+    }
+    return f;
+  }
   function _detectarSubcategoria(text){
     const t = ' ' + cleanForMatch(text) + ' ';
     const subs = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean))];
@@ -2639,7 +2741,7 @@
     let body = `${info.icono} <strong>${cat}</strong>${info.desc ? ` — ${info.desc}` : ''}\n\n`;
     body += `Tengo <em>${disp.length} producto${disp.length>1?'s':''} disponible${disp.length>1?'s':''}</em>`;
     if(agotados) body += ` (y ${agotados} agotado${agotados>1?'s':''})`;
-    body += `, desde ${fmtUSD(disp[0].precio)} hasta ${fmtUSD(disp[disp.length-1].precio)}.\n\n`;
+    body += `, desde ${fmtP(disp[0])} hasta ${fmtP(disp[disp.length-1])}.\n\n`;
 
     if(subs.length > 1){
       body += `<strong>Por tipo:</strong>\n`;
@@ -2650,7 +2752,7 @@
     const listados = disp.slice(0, 10);
     body += `<strong>Disponibles ahora</strong> (de más barato a más caro):\n`;
     listados.forEach((p, i) => {
-      body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+      body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>\n`;
     });
     if(disp.length > listados.length){
       body += `\n…y ${disp.length - listados.length} más. Dime qué tipo buscas (${subs.slice(0,2).join(', ')}…) o tu presupuesto y afino.\n`;
@@ -2687,7 +2789,7 @@
     if(disponibles.length > 0){
       body += 'Algunos disponibles ahora mismo:\n';
       disponibles.slice(0,3).forEach(p => {
-        body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)}\n`;
+        body += `• ${escapeHtml(p.nombre)} — ${fmtP(p)}\n`;
       });
     }
     body += '\nToca "Avisarme cuando vuelva" en cualquier producto agotado y te notificamos.';
@@ -3231,10 +3333,10 @@
       + (d.solarW ? `, y trae el controlador solar dentro (hasta ${_miles(d.solarW)} W de paneles)` : '')
       + `. <strong>No necesitas batería, inversor ni controlador aparte.</strong>\n\n`;
     body += `📋 <strong>Tu sistema:</strong>\n\n`;
-    body += `<strong>Estación de energía:</strong>\n• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n\n`;
+    body += `<strong>Estación de energía:</strong>\n• ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>\n\n`;
     if(paneles.length){
       body += `<strong>${rolPaneles}:</strong>\n`;
-      paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtUSD(x.precio)} · <em>${stockText(x)}</em>\n`; });
+      paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtP(x)} · <em>${stockText(x)}</em>\n`; });
       body += '\n';
     } else {
       body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
@@ -3259,7 +3361,7 @@
       if(g.prods.length > 0){
         body += `<strong>${g.rol}:</strong>\n`;
         g.prods.forEach(p => {
-          body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+          body += `• ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>\n`;
         });
         body += '\n';
       } else if(mostrarAgotados){
@@ -3348,7 +3450,7 @@
       const subtotal = (Number(p.precio) || 0) * g.cantidad;
       if(!g.opcional) total += subtotal;
       const alt = g.prods[1]
-        ? `<div class="alt">Alternativa: ${esc(g.prods[1].nombre)} — ${fmtUSD(g.prods[1].precio)}</div>`
+        ? `<div class="alt">Alternativa: ${esc(g.prods[1].nombre)} — ${fmtP(g.prods[1])}</div>`
         : '';
       const faltaStock = p.stock < g.cantidad
         ? `<div class="aviso">Quedan ${p.stock} en existencia de ${g.cantidad === 1 ? 'la unidad necesaria' : 'las ' + g.cantidad + ' necesarias'}</div>`
@@ -3357,7 +3459,7 @@
         <td>${esc(g.rol)}${g.opcional ? '<span class="tag">opcional</span>' : ''}</td>
         <td><a href="${esc(productUrl(p))}">${esc(p.nombre)}</a>${alt}${faltaStock}</td>
         <td class="num">${g.cantidad}</td>
-        <td class="num">${fmtUSD(p.precio)}</td>
+        <td class="num">${fmtP(p)}</td>
         <td class="num">${g.opcional ? '—' : fmtUSD(subtotal)}</td>
       </tr>`;
     }).join('\n');
@@ -3801,7 +3903,7 @@ ${notasHTML}
       body += `Para conectar un router a la fibra de ETECSA necesitas:\n• Puerto <strong>WAN</strong> en el router (todos los routers domésticos lo tienen)\n• Idealmente <strong>Gigabit</strong> (1000 Mbps) para aprovechar la velocidad de fibra\n• El cable RJ45 va de la ONT (caja de ETECSA) al puerto WAN del router\n\nRouters compatibles con fibra ETECSA:\n`;
       routers.forEach(p => {
         const hasGig = (p.specs||[]).some(s => /gigabit/i.test(s));
-        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)} ${hasGig ? '✅ Gigabit' : '⚠️ Fast Ethernet'}\n`;
+        body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)} ${hasGig ? '✅ Gigabit' : '⚠️ Fast Ethernet'}\n`;
       });
       return {
         response: body,
@@ -3846,7 +3948,7 @@ ${notasHTML}
         body += `<strong>Inversores disponibles que soportan tu carga:</strong>\n`;
         if(inversoresQueSirven.length > 0){
           inversoresQueSirven.forEach(p => {
-            body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}\n`;
+            body += `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)}\n`;
           });
         } else {
           body += `⚠️ Ninguno de los inversores disponibles aguanta el pico de ${picoMax}W. Coordinemos por WhatsApp para conseguirte uno más potente.\n`;
@@ -3982,7 +4084,7 @@ ${notasHTML}
         let body = `📦 <strong>${subcatDetectada}</strong> — Tenemos <em>${disp.length} disponible(s)</em>${agotados.length > 0 ? ` y ${agotados.length} agotado(s)` : ''}:\n\n`;
         if(dispMostrar.length > 0){
           dispMostrar.forEach((prod, i) => {
-            body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtUSD(prod.precio)} · <em>${stockText(prod)}</em>\n`;
+            body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtP(prod)} · <em>${stockText(prod)}</em>\n`;
           });
         }
         if(accesorios){
@@ -3991,7 +4093,7 @@ ${notasHTML}
             if(a.subcat){
               const dispAcc = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === a.subcat && x.stock > 0).slice(0,1);
               if(dispAcc.length > 0){
-                body += `• <strong>${a.que}</strong> (${a.por}) — desde ${fmtUSD(dispAcc[0].precio)}\n`;
+                body += `• <strong>${a.que}</strong> (${a.por}) — desde ${fmtP(dispAcc[0])}\n`;
               } else {
                 body += `• <strong>${a.que}</strong> (${a.por}) — <em>agotado</em>\n`;
               }
@@ -4012,7 +4114,7 @@ ${notasHTML}
         const relacionados = PRODUCTOS.filter(x => x.categoria === 'ENERGIA' && x.stock > 0).slice(0,4);
         let body = `☀️ <strong>Paneles solares</strong>\n\nEn este momento no tenemos paneles solares en catálogo. Pero para armar un sistema solar te puedo ofrecer los demás componentes disponibles:\n\n`;
         relacionados.forEach((p,i) => {
-          body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+          body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>\n`;
         });
         body += `\n💡 <em>Tip:</em> Para un sistema solar necesitas panel (externo) + controlador MPPT + batería + inversor. Si tienes un panel de otro lado, te armo el resto del sistema.\n\n¿Quieres que te <em>arme un sistema completo</em> con lo disponible, o te <em>explico cómo funciona cada componente</em>?`;
         return {
@@ -4038,7 +4140,7 @@ ${notasHTML}
       const muestra = lista.slice(0,4);
       let body = `📦 Encontré <em>${lista.length} producto${lista.length>1?'s':''}</em> que coinciden. Dime cuál te interesa:\n\n`;
       muestra.forEach((prod, i) => {
-        body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtUSD(prod.precio)} · <em>${stockText(prod)}</em>\n`;
+        body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtP(prod)} · <em>${stockText(prod)}</em>\n`;
       });
       if(lista.length > muestra.length) body += `\n<em>…y ${lista.length - muestra.length} más. Afina el nombre y te los saco todos.</em>\n`;
       body += `\nToca cualquiera para ver la ficha completa, o dime el nombre específico.`;
@@ -4136,10 +4238,10 @@ ${notasHTML}
     // glosario, y quien lo pedía leía todo para enterarse de que no hay.
     if(agotado) body += `⚠️ <strong>Agotado ahora mismo.</strong> Toca «Avísame» y te escribimos en cuanto entre.\n\n`;
     body += _datosPreguntados(p, originalQuery);
-    body += `💰 <strong>Precio:</strong> ${fmtUSD(p.precio)} USD · <em>${fmtMN(p.precio)}</em>\n`;
+    body += `💰 <strong>Precio:</strong> ${fmtP(p)}${_esMN(p) ? '' : ' USD · <em>' + fmtMN(p.precio) + '</em>'}\n`;
     if(enOferta){
       const off = Math.round((1 - p.precio/p.precioOriginal)*100);
-      body += `🔥 <em>Oferta:</em> antes ${fmtUSD(p.precioOriginal)} (-${off}%)\n`;
+      body += `🔥 <em>Oferta:</em> antes ${fmtP(p, p.precioOriginal)} (-${off}%)\n`;
     }
     body += `📂 <strong>Categoría:</strong> ${catIcon(p.categoria)} ${p.categoria}` + (p.subcategoria ? ` › ${p.subcategoria}` : '') + '\n';
     body += `📦 <strong>Stock:</strong> ${stockText(p)}\n`;
@@ -4179,7 +4281,7 @@ ${notasHTML}
         if(a.subcat){
           const dispAcc = PRODUCTOS.filter(x => (x.subcategoria||'').toUpperCase() === a.subcat && x.stock > 0).slice(0,1);
           if(dispAcc.length > 0){
-            body += `• <strong>${a.que}</strong> (${a.por}) — desde ${fmtUSD(dispAcc[0].precio)}\n`;
+            body += `• <strong>${a.que}</strong> (${a.por}) — desde ${fmtP(dispAcc[0])}\n`;
           } else {
             body += `• <strong>${a.que}</strong> (${a.por}) — <em>agotado</em>\n`;
           }
@@ -4383,11 +4485,11 @@ ${notasHTML}
 
       if(alt1.length > 0){
         body += `<strong>Si te interesa ${sub1}:</strong>\n`;
-        alt1.forEach(p => { body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)}\n`; });
+        alt1.forEach(p => { body += `• ${escapeHtml(p.nombre)} — ${fmtP(p)}\n`; });
       }
       if(alt2.length > 0){
         body += `\n<strong>Si te interesa ${sub2}:</strong>\n`;
-        alt2.forEach(p => { body += `• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)}\n`; });
+        alt2.forEach(p => { body += `• ${escapeHtml(p.nombre)} — ${fmtP(p)}\n`; });
       }
       body += `\n¿Cuál de los dos tipos te sirve? Te armo la comparativa con dos del mismo tipo.`;
       return {
@@ -4491,12 +4593,13 @@ ${notasHTML}
 
     // ─── FILA 1: Precio ───
     const precioGanador = p1.precio < p2.precio ? 1 : (p2.precio < p1.precio ? 2 : 0);
-    rows.push({label:'Precio USD', v1:fmtUSD(p1.precio), v2:fmtUSD(p2.precio), v1MN:fmtMN(p1.precio), v2MN:fmtMN(p2.precio), winner:precioGanador, lowerBetter:true});
+    const _mixto = _esMN(p1) !== _esMN(p2);
+    rows.push({label:(_esMN(p1) && _esMN(p2)) ? 'Precio MN' : 'Precio USD', v1:fmtP(p1), v2:fmtP(p2), v1MN:fmtMNde(p1), v2MN:fmtMNde(p2), winner:_mixto ? 0 : precioGanador, lowerBetter:true});
 
     // ─── FILA 2: Diferencia de precio ───
     const diff = Math.abs(p1.precio - p2.precio);
     const diffPct = Math.round((diff / Math.max(p1.precio, p2.precio)) * 100);
-    if(diff > 0){
+    if(diff > 0 && !_mixto){   // USD contra MN no se resta: son monedas distintas
       rows.push({
         label:'Diferencia',
         v1: p1.precio < p2.precio ? `${diffPct}% más barato` : `${diffPct}% más caro`,
@@ -4514,8 +4617,8 @@ ${notasHTML}
       const off2 = enOferta2 ? Math.round((1 - p2.precio/p2.precioOriginal)*100) : 0;
       rows.push({
         label:'Oferta',
-        v1: enOferta1 ? `-${off1}% (era ${fmtUSD(p1.precioOriginal)})` : 'Sin oferta',
-        v2: enOferta2 ? `-${off2}% (era ${fmtUSD(p2.precioOriginal)})` : 'Sin oferta',
+        v1: enOferta1 ? `-${off1}% (era ${fmtP(p1, p1.precioOriginal)})` : 'Sin oferta',
+        v2: enOferta2 ? `-${off2}% (era ${fmtP(p2, p2.precioOriginal)})` : 'Sin oferta',
         winner: off1 > off2 ? 1 : (off2 > off1 ? 2 : 0)
       });
     }
@@ -4596,10 +4699,12 @@ ${notasHTML}
       const puntos1 = [];
       const puntos2 = [];
       // Precio
-      if(p1.precio < p2.precio){
-        puntos1.push(`más accesible por ${fmtUSD(diff)} (${diffPct}% menos)`);
+      if(_mixto){
+        // una en USD y otra en MN no se restan: sin punto de precio
+      } else if(p1.precio < p2.precio){
+        puntos1.push(`más accesible por ${fmtP(p1, diff)} (${diffPct}% menos)`);
       } else if(p2.precio < p1.precio){
-        puntos2.push(`más accesible por ${fmtUSD(diff)} (${diffPct}% menos)`);
+        puntos2.push(`más accesible por ${fmtP(p1, diff)} (${diffPct}% menos)`);
       }
       // Características medibles en las que uno gana al otro (potencia,
       // capacidad, resolución…), no cuántas viñetas tiene la ficha.
@@ -4756,7 +4861,7 @@ ${notasHTML}
           return kSyns.some(syn => _matchTermino(sClean, syn));
         });
       });
-      body += `<strong>${i+1}.</strong> <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}\n`;
+      body += `<strong>${i+1}.</strong> <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)}\n`;
       if(matchingSpecs.length > 0){
         body += `   ✅ ${matchingSpecs.slice(0,2).map(s => escapeHtml(s)).join(' · ')}\n`;
       }
@@ -4887,7 +4992,7 @@ ${notasHTML}
       if(!_dentro.length && _porSub.length){
         const _barato = _porSub.slice().sort((a,b) => a.precio - b.precio)[0];
         return {
-          response: `📂 No tengo nada en <strong>${escapeHtml(String(_subPedida))}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtUSD(_barato.precio)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
+          response: `📂 No tengo nada en <strong>${escapeHtml(String(_subPedida))}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtP(_barato)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
           products: _porSub.slice().sort((a,b) => a.precio - b.precio).slice(0, 3),
           quickReplies: ['📦 Otras categorías','🔥 Ofertas','💬 WhatsApp']
         };
@@ -4953,7 +5058,7 @@ ${notasHTML}
       }
       if(!lista.length && _todos.length){
         return {
-          response: `📂 No tengo nada en <strong>${escapeHtml(sub)}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtUSD(_todos[0].precio)}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
+          response: `📂 No tengo nada en <strong>${escapeHtml(sub)}</strong> por debajo de ${fmtUSD(_context.presupuesto)}. Lo más barato que tengo disponible es de <strong>${fmtP(_todos[0])}</strong>.\n\nSi quieres te lo enseño igual, o dime otro presupuesto y busco de nuevo.`,
           products: _todos.slice(0, 3),
           quickReplies: ['📦 Otras categorías','🔥 Ofertas','💬 WhatsApp']
         };
@@ -4963,7 +5068,7 @@ ${notasHTML}
         if(_context.presupuesto) body += ` dentro de tu presupuesto de ${fmtUSD(_context.presupuesto)}`;
         body += `, de más barato a más caro:\n\n`;
         lista.slice(0, 10).forEach((p, i) => {
-          body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+          body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>\n`;
         });
         body += `\nToca cualquiera para ver la ficha completa.`;
         return {
@@ -5037,6 +5142,43 @@ ${notasHTML}
     };
   };
 
+  R.familia = (text) => {
+    const f = _familiaDe(text) || _FAMILIAS[0];
+    const m = cleanForMatch(text);
+    const visc = (m.match(/\b\d{1,2}w\d{2}\b/) || [])[0] || '';
+    const pideMoto = /\b(motos?|motocicleta|scooter)\b/.test(m);
+    const pool = PRODUCTOS.filter(p => f.subs.includes(String(p.subcategoria || '').toUpperCase()));
+    // Lo de carro primero salvo que hablen de moto: «aceite de motor» es el
+    // motor del carro para quien no dice más, y un aceite de moto agotado no
+    // puede ser lo primero que ve.
+    const orden = (a, b) => (pideMoto ? (b.categoria === 'MOTOS') - (a.categoria === 'MOTOS')
+                                      : (a.categoria === 'MOTOS') - (b.categoria === 'MOTOS')) || a.precio - b.precio;
+    const disp = pool.filter(p => p.stock > 0).sort(orden);
+    const tieneVisc = p => cleanForMatch(p.nombre).split(' ').includes(visc);
+    const lineas = l => l.map((p, i) => `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtP(p)} · <em>${stockText(p)}</em>`).join('\n');
+    const botones = l => l.length >= 2 ? ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Categorías'] : ['💬 WhatsApp','📦 Categorías'];
+    if(!disp.length){
+      return { response: `${f.icono} <strong>${f.titulo}</strong>: ahora mismo no tengo ninguno disponible. Escríbeme por WhatsApp y te aviso en cuanto entren.`,
+               quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas'] };
+    }
+    if(visc){
+      const justo = disp.filter(tieneVisc);
+      const label = visc.toUpperCase().replace(/^(\d+W)(\d+)$/, '$1-$2');
+      if(justo.length){
+        return { response: `${f.icono} <strong>Aceite ${label}</strong> — tengo <em>${justo.length} disponible${justo.length>1?'s':''}</em>:\n\n${lineas(justo)}\n\nToca cualquiera para ver la ficha completa.`,
+                 products: justo.slice(0, TM_MAX_TARJETAS_CAT), quickReplies: botones(justo) };
+      }
+      const agot = pool.find(p => !(p.stock > 0) && tieneVisc(p));
+      const otros = disp.slice(0, 4);
+      return { response: `${f.icono} <strong>${label}</strong> ahora mismo no lo tengo${agot ? ` (el ${escapeHtml(agot.nombre)} está agotado)` : ''}. Esto es lo que sí tengo disponible en aceites:\n\n${lineas(otros)}\n\nSi tu motor pide justo ${label}, escríbeme por WhatsApp y te aviso cuando entre.`,
+               products: otros, quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas'] };
+    }
+    const lista = disp.slice(0, 6);
+    let body = `${f.icono} <strong>${f.titulo}</strong> — tengo <em>${disp.length} disponible${disp.length>1?'s':''}</em>:\n\n${lineas(lista)}\n\n`;
+    body += f.pide ? `Dime ${f.pide} y te enseño solo ese.` : `Toca cualquiera para ver la ficha completa.`;
+    return { response: body, products: lista, quickReplies: botones(lista) };
+  };
+
   /* ── NAUTA HOGAR / ETECSA ──────────────────────────────────────────────
      Aquí Nauta Hogar es *el* internet de casa, y la pregunta que llega es
      siempre la misma: "¿venden módems para Nauta Hogar?". La respuesta honesta
@@ -5080,11 +5222,11 @@ ${notasHTML}
     });
     const _repetidores = () => PRODUCTOS.filter(p => Number(p.stock) > 0 &&
         /repetidor|extensor|amplificador/i.test((p.nombre || '') + ' ' + (p.subcategoria || '')));
-    // fmtUSD(r.precio): dentro del cerebro el precio ya viene normalizado a
+    // fmtP(r): dentro del cerebro el precio ya viene normalizado a
     // `precio` (ver _sincronizar); `precioActual` solo existe en el JSON crudo
     // y aquí saldría $0.00 en cada línea.
     const _lista = (arr) => arr.map(r =>
-        `• <strong>${escapeHtml(r.nombre)}</strong> — ${fmtUSD(r.precio)}\n`).join('');
+        `• <strong>${escapeHtml(r.nombre)}</strong> — ${fmtP(r)}\n`).join('');
     const _COMO = `\n\n<strong>¿Cómo se conecta?</strong>\n1. Toma un cable de red (RJ45)\n2. Un extremo a un puerto <strong>LAN</strong> del módem-router de ETECSA\n3. El otro al puerto <strong>WAN</strong> de tu router nuevo\n4. Configura el router nuevo (nombre de red y contraseña)`;
 
     // Enseñar los routers es la salida de varias ramas y también lo que
@@ -5234,7 +5376,7 @@ ${notasHTML}
     if(uno){
       let body = `💰 <strong>${escapeHtml(uno.nombre)}</strong> cuesta <strong>${_precioLinea(uno)}</strong>\n`;
       if(uno.precioOriginal > 0 && uno.precioOriginal > uno.precio){
-        body += `🔥 <em>En oferta:</em> antes ${fmtUSD(uno.precioOriginal)} (-${Math.round((1 - uno.precio/uno.precioOriginal)*100)}%)\n`;
+        body += `🔥 <em>En oferta:</em> antes ${fmtP(uno, uno.precioOriginal)} (-${Math.round((1 - uno.precio/uno.precioOriginal)*100)}%)\n`;
       }
       body += `📦 ${uno.stock > 0 ? (uno.stock <= 3 ? `Quedan <strong>solo ${uno.stock}</strong>` : `<strong>${uno.stock}</strong> disponibles`) : '<em>Agotado ahora mismo</em>'}\n`;
       body += `\nPagas contra entrega, cuando lo tienes en la mano.`;
@@ -5267,8 +5409,8 @@ ${notasHTML}
     // digan el uso es cuál cuesta menos y cuál cuesta más. El veredicto sale
     // de la comparación lado a lado, que sí mira ficha contra ficha.
     let body = '🤔 Para decirte cuál con fundamento necesito saber una cosa, pero te adelanto lo que sí puedo afirmar:\n\n';
-    body += `💵 <strong>El más barato:</strong> ${escapeHtml(barato.nombre)} — ${fmtUSD(barato.precio)}\n`;
-    body += `💎 <strong>El más caro:</strong> ${escapeHtml(caro.nombre)} — ${fmtUSD(caro.precio)}\n`;
+    body += `💵 <strong>El más barato:</strong> ${escapeHtml(barato.nombre)} — ${fmtP(barato)}\n`;
+    body += `💎 <strong>El más caro:</strong> ${escapeHtml(caro.nombre)} — ${fmtP(caro)}\n`;
     const pocos = pool.filter(p => p.stock > 0 && p.stock <= 3);
     if(pocos.length) body += `⏳ <em>Quedan pocos de:</em> ${pocos.map(p => escapeHtml(p.nombre)).join(', ')}\n`;
     if(disp.length < lista.length) body += `⚠️ Dejé fuera ${lista.length - disp.length} que está(n) agotado(s).\n`;
@@ -5288,7 +5430,7 @@ ${notasHTML}
       (disp.length ? (disp.length === lista.length ? ', y los dos están disponibles' : `, y ${disp.length === 1 ? 'uno está disponible' : `${disp.length} están disponibles`}`) : ', pero ahora mismo están agotados') + ':\n\n';
     if(lista.length > 2 && disp.length === lista.length) body = body.replace('los dos', 'todos');
     lista.forEach(p => {
-      body += `• ${escapeHtml(p.nombre)} — ${p.stock > 0 ? `<strong>${p.stock}</strong> en stock · ${fmtUSD(p.precio)}` : '<em>agotado</em>'}\n`;
+      body += `• ${escapeHtml(p.nombre)} — ${p.stock > 0 ? `<strong>${p.stock}</strong> en stock · ${fmtP(p)}` : '<em>agotado</em>'}\n`;
     });
     body += disp.length ? '\nDime cuál quieres y te armo el pedido por WhatsApp.'
                         : '\nToca «Avisarme cuando vuelva» en la ficha y te escribo en cuanto entre.';
@@ -5354,7 +5496,7 @@ ${notasHTML}
       }
       return {
         response: `🛒 ¡Perfecto! <strong>${escapeHtml(uno.nombre)}</strong> — ${_precioLinea(uno)}\n\n` +
-          `Toca <strong>Pedir</strong> aquí abajo y se abre WhatsApp con el pedido ya escrito. Coordinas la entrega y <strong>pagas cuando lo recibes</strong>: efectivo USD, efectivo MN a la tasa del día, o Zelle.`,
+          `Toca <strong>Pedir</strong> aquí abajo y se abre WhatsApp con el pedido ya escrito. Coordinas la entrega y <strong>pagas cuando lo recibes</strong>: en efectivo, USD o MN a la tasa del día.`,
         products: [uno],
         quickReplies: ['🛒 Pedir por WhatsApp','🛍️ Añadir al carrito','🚚 Envíos']
       };
@@ -5476,15 +5618,17 @@ ${notasHTML}
       if(list.length === 0){
         return { response: '💝 Tu lista de deseos está vacía. Añade productos primero.', quickReplies: ['📦 Ver productos'] };
       }
-      const total = list.reduce((s, p) => s + p.precio, 0);
+      const total = list.filter(p => !_esMN(p)).reduce((s, p) => s + p.precio, 0);
+      const totalMNfijo = list.filter(_esMN).reduce((s, p) => s + p.precio, 0);
+      const _totTxt = fmtUSD(total) + (fmtMN(total) ? ` (${fmtMN(total)})` : '') + (totalMNfijo ? ` + ${_mnTxt(totalMNfijo)}` : '');
       let msg = '¡Hola TiendaMax! Quiero pedir los siguientes productos de mi lista de deseos:\n\n';
       list.forEach((p, i) => {
-        msg += `${i+1}. ${p.nombre} — ${fmtUSD(p.precio)}\n`;
+        msg += `${i+1}. ${p.nombre} — ${fmtP(p)}\n`;
       });
-      msg += `\nTotal estimado: ${fmtUSD(total)} (${fmtMN(total)})`;
+      msg += `\nTotal estimado: ${_totTxt}`;
       const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
       let body = `💬 ¡Listo! Tu lista de <em>${list.length} producto${list.length>1?'s':''}</em> está armada para enviar por WhatsApp:\n\n`;
-      body += `💰 <strong>Total:</strong> ${fmtUSD(total)} · <em>${fmtMN(total)}</em>\n\n`;
+      body += `💰 <strong>Total:</strong> ${_totTxt}\n\n`;
       body += `Toca aquí para abrir WhatsApp con el pedido completo:\n${url}`;
       return { response: body, quickReplies: ['💝 Ver mi lista','💬 Abrir WhatsApp'] };
     }
@@ -5531,7 +5675,7 @@ ${notasHTML}
       ? '\n\nToca cualquiera para su ficha, o dime "compara el A vs el B" y te los pongo lado a lado.'
       : '\n\nToca la tarjeta para ver su ficha completa.';
     return {
-      response: intro + '\n\n' + ps.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}`).join('\n') + extra,
+      response: intro + '\n\n' + ps.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)}`).join('\n') + extra,
       products: ps,
       quickReplies: ps.length > 1 ? ['🆚 Comparar dos de estos','💬 WhatsApp'] : ['💬 WhatsApp']
     };
@@ -5562,7 +5706,7 @@ ${notasHTML}
     if(lista.length > 1){
       return {
         response: '👍 Dime cuál de estos y te doy la ficha completa:\n\n' +
-          lista.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtUSD(p.precio)}`).join('\n') +
+          lista.map(p => `• <strong>${escapeHtml(p.nombre)}</strong> — ${fmtP(p)}`).join('\n') +
           '\n\nO si buscabas otra cosa, pídemela y te la busco.',
         products: lista.slice(0, 4),
         quickReplies: ['🆚 Comparar dos de estos','📦 Categorías','💬 WhatsApp']
@@ -5605,7 +5749,7 @@ ${notasHTML}
      la política y nadie se entera. */
   const _INTENT_PEGABLE = [
     // lo que se compra
-    'detalle','busqueda','recomendacion','categoria','categorias','stock',
+    'detalle','busqueda','familia','recomendacion','categoria','categorias','stock',
     'ofertas','masVendidos','usados','noVendemos',
     // las condiciones
     'envios','pago','garantia','devolucion','tasa','horario','recogida',
@@ -5872,7 +6016,7 @@ ${notasHTML}
         'onerror="this.src=\'' + PLACEHOLDER_IMG + '\';this.onerror=null;">' +
       '<div class="tm-bot-product-info">' +
         '<div class="tm-bot-product-name">' + escapeHtml(p.nombre) + '</div>' +
-        '<div class="tm-bot-product-price">' + fmtUSD(p.precio) + ' USD</div>' +
+        '<div class="tm-bot-product-price">' + fmtP(p) + (_esMN(p) ? '' : ' USD') + '</div>' +
         '<div class="tm-bot-product-stock">' + escapeHtml(String(p.subcategoria || p.categoria || '')) + ' · ' + (p.stock > 0 ? p.stock + ' en stock' : 'agotado') + '</div>' +
       '</div>' +
       '<div class="tm-bot-product-go">' + etiqueta + '</div>';
@@ -6034,7 +6178,7 @@ ${notasHTML}
       if(reb.length){
         h += '<div class="tmb-tit">🔥 Rebajas de hoy</div><div class="tmb-reb">' + reb.map((p, i) => {
           const img = imageUrl(p), pct = Math.round((1 - p.precio / p.precioOriginal) * 100);
-          return `<button type="button" class="tmb-mini" data-reb="${i}"><img src="${escapeAttr(img ? img.primary : PLACEHOLDER_IMG)}" alt="" loading="lazy"><span class="nm">${escapeHtml(p.nombre)}</span><span class="pr">${fmtUSD(p.precio)} <i>−${pct}%</i></span>${_insignia(p)}</button>`;
+          return `<button type="button" class="tmb-mini" data-reb="${i}"><img src="${escapeAttr(img ? img.primary : PLACEHOLDER_IMG)}" alt="" loading="lazy"><span class="nm">${escapeHtml(p.nombre)}</span><span class="pr">${fmtP(p)} <i>−${pct}%</i></span>${_insignia(p)}</button>`;
         }).join('') + '</div>';
       }
       box.innerHTML = h;
@@ -6072,7 +6216,7 @@ ${notasHTML}
         <img class="tm-bot-product-img" src="${escapeAttr(imgSrc)}" alt="" loading="lazy" onerror="if(this.src!=='${escapeAttr(imgInfo?imgInfo.thumb:PLACEHOLDER_IMG)}'){this.src='${escapeAttr(imgInfo?imgInfo.thumb:PLACEHOLDER_IMG)}';}else{this.src='${PLACEHOLDER_IMG}';this.onerror=null;}">
         <div class="tm-bot-product-info">
           <div class="tm-bot-product-name">${escapeHtml(p.nombre)}</div>
-          <div class="tm-bot-product-price">${fmtUSD(p.precio)} USD <span class="mn">· ${fmtMN(p.precio)}</span></div>
+          <div class="tm-bot-product-price">${fmtP(p)}${_esMN(p) ? '' : ' USD <span class="mn">· ' + fmtMN(p.precio) + '</span>'}</div>
           ${_insignia(p)}
         </div>
         <div class="tm-bot-product-go">›</div>
@@ -6131,11 +6275,11 @@ ${notasHTML}
         <div class="tm-bot-product-go">›</div>
       `;
       item.onclick = () => {
-        const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('¡Hola TiendaMax! Quiero pedir: ' + p.nombre + ' — Talla/medida: ' + opcion + ' — Precio: ' + fmtUSD(p.precio) + ' (' + fmtMN(p.precio) + ')')}`;
+        const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('¡Hola TiendaMax! Quiero pedir: ' + p.nombre + ' — Talla/medida: ' + opcion + ' — Precio: ' + fmtP(p) + (fmtMNde(p) ? ' (' + fmtMNde(p) + ')' : ''))}`;
         let msg = `✅ ¡Listo! Tu pedido con talla <strong>${escapeHtml(opcion)}</strong>:\n\n`;
         msg += `📦 <strong>${escapeHtml(p.nombre)}</strong>\n`;
         msg += `📏 Talla/medida: <strong>${escapeHtml(opcion)}</strong>\n`;
-        msg += `💰 Precio: ${fmtUSD(p.precio)} (${fmtMN(p.precio)})\n\n`;
+        msg += `💰 Precio: ${fmtP(p)}${fmtMNde(p) ? ' (' + fmtMNde(p) + ')' : ''}\n\n`;
         msg += `Toca aquí para abrir WhatsApp con tu pedido ya armado:\n${url}`;
         addMessageTyped(msg, 'bot');
         renderQuickReplies(['💬 Abrir WhatsApp','📦 Ver más productos']);
@@ -6523,7 +6667,7 @@ ${notasHTML}
      a /agente/opiniones/<clave>/<id> —la misma clave que la pregunta en
      /agente/faq— con {v: 1|-1, m: motivo, ts}; nada del cliente. El panel
      (🤖 Max) los junta para saber qué enseñarle o corregir. */
-  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback)$/;
+  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback|humano|menu|reclamo)$/;
   const _MOTIVOS_NO = ['No era lo que buscaba', 'Información incorrecta', 'No entendió mi pregunta', 'Prefiero una persona'];
   function _votar(clave, v, m){
     try {
@@ -6593,7 +6737,7 @@ ${notasHTML}
       return;
     }
     _currentSuggestions = prods.map(p => ({
-      id: p.id, img: p.imagen, name: p.nombre, meta: `${fmtUSD(p.precio)} · ${p.categoria}` + (p.stock===0?' · AGOTADO':''), isProduct:true, p
+      id: p.id, img: p.imagen, name: p.nombre, meta: `${fmtP(p)} · ${p.categoria}` + (p.stock===0?' · AGOTADO':''), isProduct:true, p
     }));
     renderSuggestions(_currentSuggestions);
   }
@@ -6665,7 +6809,7 @@ ${notasHTML}
     const ids = _favIds();
     return ids.map(id => {
       const p = PRODUCTOS.find(x => String(x.id) === String(id));
-      return p ? {id: p.id, nombre: p.nombre, precio: p.precio, imagen: p.imagen, categoria: p.categoria} : null;
+      return p ? {id: p.id, nombre: p.nombre, precio: p.precio, moneda: p.moneda, imagen: p.imagen, categoria: p.categoria} : null;
     }).filter(Boolean);
   }
   function saveWishlist(list){
@@ -6694,12 +6838,13 @@ ${notasHTML}
         quickReplies: ['📦 Ver productos','🔥 Ofertas','💬 WhatsApp']
       };
     }
-    const total = list.reduce((s, p) => s + p.precio, 0);
+    const total = list.filter(p => !_esMN(p)).reduce((s, p) => s + p.precio, 0);
+    const totalMNfijo = list.filter(_esMN).reduce((s, p) => s + p.precio, 0);
     let body = `💝 <strong>Tu lista de deseos</strong> (${list.length} producto${list.length>1?'s':''}):\n\n`;
     list.forEach((p, i) => {
-      body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)}\n`;
+      body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtP(p)}\n`;
     });
-    body += `\n💰 <strong>Total estimado:</strong> ${fmtUSD(total)} · <em>${fmtMN(total)}</em>\n\n`;
+    body += `\n💰 <strong>Total estimado:</strong> ${total > 0 || !totalMNfijo ? fmtUSD(total) + (fmtMN(total) ? ' · <em>' + fmtMN(total) + '</em>' : '') : ''}${totalMNfijo ? (total > 0 ? ' + ' : '') + _mnTxt(totalMNfijo) : ''}\n\n`;
     body += `Para pedir todos, escríbenos por WhatsApp con la lista. Para quitar uno, dime "quita de deseos [nombre]".`;
     return {
       response: body,
@@ -6813,7 +6958,7 @@ ${notasHTML}
     {ic:'📄', title:'Propuesta técnica en PDF', desc:'Del sistema que te arme, un documento con componentes, precios y autonomía, listo para imprimir o mandar por correo.', try:'arma un sistema solar mediano'},
     {ic:'💰', title:'Filtrar por presupuesto', desc:'Dime "tengo $100" y te muestro solo opciones dentro de tu presupuesto.', try:'tengo $100, ¿qué cámara me recomiendas?'},
     {ic:'🚚', title:'Envíos: mensajería en La Habana', desc:'Pagas al recibir. Resto del país: coordinar por WhatsApp.', try:'hacen envíos a santiago de cuba'},
-    {ic:'💵', title:'Métodos de pago detallados', desc:'Efectivo USD/MN, Zelle, EnZona, transferencia bancaria, crypto (próximamente).', try:'métodos de pago'},
+    {ic:'💵', title:'Métodos de pago detallados', desc:'Cómo se paga: efectivo USD o MN al recibir. Qué no se acepta: Zelle, EnZona, transferencias.', try:'métodos de pago'},
     {ic:'👕', title:'Selector de talla/medida', desc:'Para ropa y llantas, te pregunta la talla exacta antes de armar el pedido de WhatsApp.', try:'muéstrame ropa disponible'},
     {ic:'📋', title:'Ficha de cualquier producto', desc:'Con ficha técnica, garantía, descripción y accesorios sugeridos automáticamente.', try:'háblame del inversor solar de 3.6kW'},
     {ic:'🎯', title:'Recomendar por necesidad', desc:'Dime para qué lo necesitas y te recomiendo el producto justo (solo disponibles).', try:'necesito algo para vigilar mi casa de noche'},
@@ -6878,8 +7023,8 @@ ${notasHTML}
 
   // ── Pedido por WhatsApp con el producto ya escrito ──
   function pedirProductoPorWhatsApp(p){
-    const mn = fmtMN(p.precio);
-    const msg = `¡Hola TiendaMax! Quiero pedir: ${p.nombre} — ${fmtUSD(p.precio)} USD${mn ? ' (' + mn + ')' : ''}`;
+    const mn = fmtMNde(p);
+    const msg = `¡Hola TiendaMax! Quiero pedir: ${p.nombre} — ${fmtP(p)}${_esMN(p) ? '' : ' USD'}${mn ? ' (' + mn + ')' : ''}`;
     window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
     if(typeof tmTrackWhatsApp === 'function'){ try { tmTrackWhatsApp(p.id); } catch(e){} }
     // Queda como lead en el admin ("N interesados sin atender"), igual que
