@@ -104,8 +104,16 @@
 
   function refrescarCatalogo(force){
     const fuente = _productosVivos();
-    // Firma barata para no re-normalizar 118 productos en cada mensaje.
-    const firma = fuente.length + ':' + (fuente[0] && fuente[0].id) + ':' + (fuente[fuente.length-1] && fuente[fuente.length-1].id) + ':' + _descVersion;
+    // Firma barata para no re-normalizar el catálogo en cada mensaje. Antes era
+    // «cuántos hay y el primero y el último»: un producto que se agotaba o cambiaba
+    // de precio no la movía, y Max seguía ofreciendo lo que ya no había. Ahora
+    // entra todo lo que él mismo lee de cada producto.
+    let firma = fuente.length + ':' + _descVersion + ':';
+    for(let i = 0; i < fuente.length; i++){
+      const p = fuente[i] || {};
+      firma += p.id + '~' + p.stock + '~' + p.precioActual + '~' + p.precioOriginal + '~' + p.nombre + '~' +
+               p.categoria + '~' + p.subcategoria + '~' + p.moneda + '|';
+    }
     if (!force && firma === _catFirma && PRODUCTOS.length) return PRODUCTOS;
     _catFirma = firma;
     PRODUCTOS = fuente.map(_normalizar);
@@ -202,6 +210,18 @@
   }
 
   // Punto único de refresco: se llama antes de cada respuesta.
+  /* Pone al día el catálogo de la tienda (no el del panel) antes de contestar.
+     Nunca falla ni se queda esperando: es una mejora de frescura, no un requisito. */
+  function _ponerAlDia(tope){
+    try {
+      if(typeof tmRefrescarCatalogoVivo !== 'function') return Promise.resolve(false);
+      return Promise.race([
+        tmRefrescarCatalogoVivo().catch(() => false),
+        new Promise(r => setTimeout(() => r(false), tope || 2500))
+      ]);
+    } catch(e){ return Promise.resolve(false); }
+  }
+
   function _sincronizar(){
     _refrescarConfig();
     refrescarCatalogo();
@@ -1198,8 +1218,78 @@
     if(w.length > 3 && w.endsWith('s') && _casaPalabra(texto, w.slice(0, -1))) return true;
     return false;
   }
+  /* ── SINÓNIMOS: cómo LLAMA la gente a lo que vendes ───────────────────
+     max-sinonimos.json = { productos: { "<id>": ["frase", …] },
+                            categorias: { "<CATEGORIA>": ["palabra", …] } }.
+     «Estación de carga», «power station» y «planta portátil» son la misma
+     BLUETTI AC180, y ninguna de las tres está en su nombre: la búsqueda por
+     palabras sacaba cargadores y un MPPT. Los sinónimos solo SUMAN puntos:
+     una frase de producto que aparece en el mensaje (todas sus palabras,
+     sin tildes, singular o plural) cuenta como coincidencia de NOMBRE; una de
+     categoría sesga hacia ella, con menos peso, y solo a lo que ya puntuaba.
+     Nunca quitan un resultado, ni tocan la regla del modelo (m5 no es m2) ni
+     la de «lo agotado por nombre devuelve su ficha». Sin el archivo, o con un
+     error, Max funciona exactamente igual que sin ellos. */
+  let _SIN = { prod: new Map(), cat: [] };
+  function _prepSin(f){
+    const t = cleanForMatch(f);
+    const pal = t.split(' ').filter(w => w && !_VACIAS.has(w));
+    return pal.length ? { t, pal } : null;
+  }
+  function _ponerSinonimos(datos){
+    const nuevo = { prod: new Map(), cat: [] };
+    try {
+      const P = datos && datos.productos, C = datos && datos.categorias;
+      if(P && typeof P === 'object') Object.keys(P).forEach(id => {
+        const fr = (Array.isArray(P[id]) ? P[id] : []).map(_prepSin).filter(Boolean);
+        if(fr.length) nuevo.prod.set(String(id), fr);
+      });
+      if(C && typeof C === 'object') Object.keys(C).forEach(cat => {
+        const fr = (Array.isArray(C[cat]) ? C[cat] : []).map(_prepSin).filter(Boolean);
+        if(fr.length) nuevo.cat.push({ cat: cleanForMatch(cat), fr });
+      });
+    } catch(e){ return; }
+    _SIN = nuevo;
+  }
+  function _cargarSinonimos(){
+    try {
+      fetch('/max-sinonimos.json', { cache: 'no-cache' })
+        .then(r => r.ok ? r.json() : null).then(d => { if(d) _ponerSinonimos(d); }).catch(() => {});
+    } catch(e){}
+  }
+  _cargarSinonimos();
+  /* La mejor frase que casa: {n: cuántas palabras tiene, cob: qué parte de lo
+     que dijo el cliente cubre}. La cobertura importa: «celular» es sinónimo de
+     un smartphone, pero en «para cargar el celular» solo cubre la mitad de lo
+     que dijo (lo otro es cargar): ahí no es el producto, es para qué lo quiere. */
+  function _frasesCasan(frases, q){
+    if(!frases || !q) return null;
+    const toks = q.split(' ');
+    const set = new Set(toks);
+    const esta = w => set.has(w) || set.has(w + 's') || set.has(w + 'es')
+      || (w.length > 3 && w.endsWith('s') && set.has(w.slice(0, -1)))
+      || (w.length > 4 && w.endsWith('es') && set.has(w.slice(0, -2)));
+    let mejor = 0;
+    for(const f of frases) if(f.pal.length > mejor && f.pal.every(esta)) mejor = f.pal.length;
+    if(!mejor) return null;
+    const contenido = toks.filter(w => w.length > 1 && !_VACIAS.has(w)).length || 1;
+    return { n: mejor, cob: Math.min(1, mejor / contenido) };
+  }
+  const _SIN_COB = 0.6;       // desde aquí el sinónimo cuenta como el NOMBRE del producto
+  function _sinInfo(p, q){
+    return (_SIN.prod.size && p) ? _frasesCasan(_SIN.prod.get(String(p.id)), q) : null;
+  }
+  const _sinonimoProducto = (p, q) => { const i = _sinInfo(p, q); return i ? i.n : 0; };
+  function _sinonimoCategoria(p, q){
+    if(!_SIN.cat.length || !p) return false;
+    const c = cleanForMatch(p.categoria || '');
+    return _SIN.cat.some(x => x.cat === c && _frasesCasan(x.fr, q));
+  }
+
   function scoreProduct(p, q){
     if(!q) return 0;
+    const _si = _sinInfo(p, q);
+    const extra = !_si ? 0 : (_si.cob >= _SIN_COB ? 80 + 6 * Math.min(_si.n, 4) : 25);
     const nombre = cleanForMatch(p.nombre);
     const desc = cleanForMatch(p.descripcion || '');
     const cat = cleanForMatch(p.categoria || '');
@@ -1211,7 +1301,7 @@
     // Si la pregunta era TODA palabras vacías no queda nada que puntuar; se
     // vuelve a las de antes para no dejar de encontrar lo que sí se pedía.
     if(!qWords.length) qWords = q.split(' ').filter(w => w.length > 2);
-    if(!qWords.length) return 0;
+    if(!qWords.length) return extra;
     const allInName = qWords.every(w => _casaConPlural(nombre, w));
     if(allInName) score += 50;
     const someInName = qWords.filter(w => _casaConPlural(nombre, w)).length;
@@ -1226,7 +1316,8 @@
     const someInDesc = qWords.filter(w => _casaConPlural(desc, w)).length;
     score += someInDesc * 3;
     if(cat.includes(q)) score += 8;
-    return score;
+    if(score > 0 && _sinonimoCategoria(p, q)) score += 10;
+    return score + extra;
   }
 
   /* ¿El producto casa con lo que pidieron en algo IDENTIFICATIVO —el nombre,
@@ -1236,6 +1327,7 @@
      verdad que está relacionado; no es verdad que sea un panel. La respuesta
      tiene que decir cuál de las dos cosas es. */
   function _matchFuerte(p, q){
+    if(_sinonimoProducto(p, q)) return true;
     const qWords = String(q || '').split(' ').filter(w => w.length > 1 && !_VACIAS.has(w));
     if(!qWords.length) return false;
     const donde = cleanForMatch(p.nombre) + ' ' +
@@ -1355,12 +1447,12 @@
     return loTengo ? null : hit;
   }
 
-  function findProducts(query, n=4, opts={}){
+  function _buscarPuntuados(query, opts={}){
     const { includeAgotados=false, filterFn=null, presupuesto=null } = opts;
     const q = _expandirConsulta(cleanForMatch(query));
     if(!q || q.length < 2) return [];
     let list = PRODUCTOS
-      .map(p => ({p, s: scoreProduct(p, q)}))
+      .map(p => ({p, s: scoreProduct(p, q), sin: _sinonimoProducto(p, q) > 0}))
       .filter(x => x.s > 0);
     if(filterFn) list = list.filter(x => filterFn(x.p));
     if(!includeAgotados) list = list.filter(x => x.p.stock > 0);
@@ -1385,14 +1477,16 @@
         return !ms.length || _pedidos.some(m => ms.includes(m)); });
       if(_limpio.length) list = _limpio;
     }
+    /* El corte se mide SIN los puntos del sinónimo: el sinónimo añade, no
+       decide quién más se queda. Lo que ya se cortaba, se sigue cortando. */
     if(list.length > 1){
-      const _tope = Math.max(...list.map(x => x.s));
-      list = list.filter(x => x.s * 3 >= _tope);
+      const _tope = Math.max(...list.map(x => x.sin ? 0 : x.s));
+      list = list.filter(x => x.sin || x.s * 3 >= _tope);
     }
-    return list
-      .sort((a,b) => b.s - a.s)
-      .slice(0, n)
-      .map(x => x.p);
+    return list.sort((a,b) => b.s - a.s);
+  }
+  function findProducts(query, n=4, opts={}){
+    return _buscarPuntuados(query, opts).slice(0, n).map(x => x.p);
   }
 
   function findProduct(query, opts={}){
@@ -1495,6 +1589,20 @@
           mentions.push({p, exactMatch:false, modelos, modelosCasan,
             score: foundDistintivas * 8 + foundTotal * 2 + modelosCasan * 6});
         }
+      }
+    }
+    /* Cómo LLAMA la gente al producto (max-sinonimos.json): suma una mención
+       aunque el nombre no se parezca en nada, y sube la que ya había. Pasa
+       por los mismos filtros de modelo de abajo; no descarta ninguna. */
+    if(_SIN.prod.size){
+      for(const p of PRODUCTOS){
+        const _si = _sinInfo(p, t);
+        if(!_si || _si.cob < _SIN_COB) continue;   // cubre poco de lo dicho: no nombró el producto
+        const n = _si.n;
+        const ya = mentions.find(m => m.p === p);
+        if(ya){ ya.score += 40; continue; }
+        const modelos = cleanForMatch(p.nombre).split(' ').filter(w => esModelo(w) || esCifra(w));
+        mentions.push({p, exactMatch:false, modelos, modelosCasan: 0, score: 60 + 4 * n, porSinonimo: true});
       }
     }
     /* Un título abreviado cuenta como nombre exacto solo si es de UN producto.
@@ -1747,8 +1855,227 @@
   }
 
   // ════════════════════════════════════════════════════════════
+  //  CONVERSACIÓN Y DUDA (capas 2 y 3)
+  // ════════════════════════════════════════════════════════════
+  /* ── Charla: saludar, dar las gracias, despedirse ──────────────────────
+     Max sonaba a buscador porque «hola», «qué tal» o «gracias» solo tenían
+     UNA respuesta fija. Aquí se reconocen por ESTRUCTURA, no por palabra
+     suelta: el mensaje entero tiene que ser charla (todas sus palabras son
+     de saludo o cortesía y trae una que dispara el tipo). «Hola, tienen
+     routers» trae «routers»: no es charla, gana la consulta y solo se le
+     antepone un saludo corto (_saludoPrefijo). Las letras repetidas se
+     colapsan («holaaa», «graciaaas») también en el vocabulario, así que
+     ambos lados se comparan igual. */
+  const _C = s => String(s).replace(/(.)\1+/g, '$1');
+  const _alt = lista => new RegExp('(^| )(' + lista.map(_C).join('|') + ')( |$)');
+  const _SOC = new Set(('hola holi ola hey ey epa wenas buenas buenos buen dias dia tardes noches saludos hello hi ' +
+    'max amigo amiga hermano hermana socio jefe asere compay mi tu y todo bien como estas esta andas te va vas que tal hay bola ' +
+    'gracias muchas mil millon de verdad antemano ayuda agradezco mucho igual por favor porfa lo la el un una se ' +
+    'ok oki vale genial perfecto super excelente buenisimo muy eso chevere cool wow increible bravo ' +
+    'chao adios hasta luego nos vemos bye manana cuidate pronto me voy thanks thx agradecido agradecida ' +
+    'eres crack trabajo me gusta xd lol').split(' ').map(_C));
+  const _RE_JAJA = /^(ja|je|ji|jo|ju|js|ha){2,}[jsh]?$|^(lol|xd|jajaja)$/;
+  const _T_DESP = _alt(['chao','adios','hasta luego','nos vemos','bye','hasta manana','cuidate','hasta pronto','me voy']);
+  const _T_GRAC = _alt(['gracias','agradezco','agradecido','agradecida','thanks','thx','se agradece']);
+  const _T_HOLA = _alt(['hola','holi','ola','hey','ey','epa','wenas','buenas','buenos dias','buen dia','saludos','hello','hi','asere','compay','que bola']);
+  const _T_COMO = _alt(['que tal','como estas','como andas','como te va','como vas','que hay','como tu estas','como va todo','que bola']);
+  const _T_CUMP = _alt(['genial','excelente','buenisimo','bravo','wow','increible','chevere','cool','super','bien','muy bien','esta bien','que bien','buen trabajo','me gusta','eres genial','eres crack','eres muy bueno','todo bien','que bueno']);
+  const _RE_NOSE = new RegExp('^(es que )?(no se|nose|ni idea|no tengo idea|no estoy seguro|no estoy segura)( (que|cual) (comprar|llevar|elegir|buscar|busco|escoger|necesito|pedir|quiero))?( bien| todavia| aun)?$' +
+    '|^(solo |ahora |ando |estoy )*(viendo|mirando|curioseando|echando un vistazo)( nada mas| un poco| que hay| que tienen)?$|^dejame (ver|mirar)( un momento| un rato)?$|^nada( mas)?$');
+  const _INSULTO = _alt(['idiota','estupido','estupida','imbecil','pendejo','pendeja','comemierda','mierda','puta','puto','cabron','gilipollas','mamaguevo','malparido','inutil','basura','jodete','maricon','asco','tonto','tonta','bobo','boba','no sirves','eres malo','eres un asco','que porqueria','porqueria','pesimo bot']);
+
+  /* El tipo de charla de un mensaje, o null si trae otra cosa. */
+  function _charlaTipo(text){
+    const s = _C(cleanForMatch(text).replace(/\./g, ' ').replace(/\s+/g, ' ').trim());
+    if(!s || s.split(' ').length > 8) return null;
+    if(_RE_NOSE.test(s)) return 'noSe';
+    const toks = s.split(' ');
+    if(!toks.every(w => _SOC.has(w) || _RE_JAJA.test(w))) return null;
+    if(_T_DESP.test(s)) return 'despedida';
+    if(_T_GRAC.test(s)) return 'gracias';
+    const hola = _T_HOLA.test(s), como = _T_COMO.test(s);
+    if(hola && como) return 'saludoComo';
+    if(como) return 'comoEstas';
+    if(hola) return 'saludo';
+    if(toks.some(w => _RE_JAJA.test(w)) || _T_CUMP.test(s)) return 'cumplido';
+    return null;
+  }
+  /* Una grosería sin consulta de producto: respuesta serena. Si el mensaje
+     nombra algo del catálogo («bolsa de basura», «coño, tienen routers») es
+     una consulta y gana la consulta. */
+  function _esGroseria(text){
+    const s = _C(cleanForMatch(text));
+    if(!_INSULTO.test(s)) return false;
+    if(detectProductMentions(text).length || _detectarSubcategoria(text)) return false;
+    const q = _expandirConsulta(cleanForMatch(text));
+    return !findProducts(text, 3, {includeAgotados:true}).some(p => _matchFuerte(p, q));
+  }
+  /* «Ver más» solo cuando hay algo que seguir enseñando (o lo pide con todas
+     las letras): un «más» suelto sin lista detrás no significa nada. */
+  function _esVerMas(text){
+    const s = cleanForMatch(text);
+    if(/^(ver )?(mas|otras?|otros)( opciones| productos| resultados)?$|^muestrame mas( opciones)?$|^dame mas opciones$|^ver mas opciones$/.test(s)){
+      return !!_context.verMas || /opciones$|^ver mas$/.test(s);
+    }
+    return false;
+  }
+  // «🔎 Cargadores»: el botón de una pregunta aclaratoria. Va directo a ese tipo,
+  // sin pasar por lo que busca por palabras (que mandaba «Lubricantes» a la
+  // familia de aceites y «Juegos» a la categoría).
+  function _subDeBoton(text){
+    const m = String(text || '').trim().match(/^🔎\s*(.+)$/);
+    if(!m) return null;
+    const q = cleanForMatch(m[1]);
+    const sub = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean))].find(x => cleanForMatch(x) === q);
+    return sub || null;
+  }
+  function _charlaIntent(text){
+    if(_subDeBoton(text)) return 'subBoton';
+    const t = _charlaTipo(text);
+    if(t === 'noSe') return 'noSe';
+    if(t === 'despedida' || t === 'gracias') return t;
+    if(t === 'cumplido') return 'cumplido';
+    if(t) return 'saludo';
+    if(_esVerMas(text)) return 'verMas';
+    if(_esGroseria(text)) return 'groseria';
+    return null;
+  }
+
+  // Elige una variante por contador (no al azar): la misma conversación da
+  // siempre lo mismo, y dos «gracias» seguidos no repiten frase.
+  function _variante(clave, total){
+    const c = _context.charlaN || (_context.charlaN = {});
+    const i = c[clave] || 0;
+    c[clave] = i + 1;
+    return i % total;
+  }
+  // El saludo de la hora del teléfono; si el cliente dijo el suyo, el suyo.
+  function _horaSaludo(text){
+    const s = cleanForMatch(text || '');
+    if(/buenos dias|buen dia/.test(s)) return 'Buenos días';
+    if(/buenas tardes/.test(s)) return 'Buenas tardes';
+    if(/buenas noches/.test(s)) return 'Buenas noches';
+    let h = 12;
+    try { h = new Date().getHours(); } catch(e){}
+    return h < 12 ? 'Buenos días' : (h < 19 ? 'Buenas tardes' : 'Buenas noches');
+  }
+  /* «Hola, ¿tienen routers?»: gana la consulta; el saludo va delante, corto. */
+  const _RE_PREFIJO = /^\s*(hola+|holi+|buenas+(?:\s+(?:tardes|noches))?|buenos\s+d[ií]as|buen\s+d[ií]a|wenas+|saludos|hey+|epa)(?:\s+max)?\s*[,.!;:\-]*\s+(\S.{5,})$/i;
+  function _saludoPrefijo(text, intent){
+    if(/^(saludo|despedida|gracias|cumplido|noSe|groseria|confirmacion|resetCmd)$/.test(intent)) return '';
+    const m = String(text || '').match(_RE_PREFIJO);
+    return m ? `¡${_horaSaludo(m[1])}! 👋\n\n` : '';
+  }
+  // Los botones de la bienvenida, para no dejar un saludo sin puerta de salida.
+  function _botonesInicio(){
+    const wifi = PRODUCTOS.some(p => p.stock > 0 && /^WIFI$/i.test(p.categoria || ''));
+    return ['☀️ Sistema solar', '🛠️ Mi equipo falla', '🔥 Rebajas', wifi ? '📶 Wi-Fi' : '📦 Categorías'];
+  }
+
+  /* ── Preguntar antes de volcar la lista ────────────────────────────────
+     Cuando Max duda NO enseña todo lo que vende: si el mejor candidato no
+     destaca (puntaje flojo, o varios casi empatados de tipos distintos) hace
+     UNA pregunta corta con 2-3 botones sacados de los candidatos reales; si
+     hay un ganador claro lo enseña primero; y una respuesta genérica nunca
+     lleva más de 3 productos: el resto va detrás de «➕ Ver más». Lo que el
+     cliente pidió como familia o categoría («aceite 5w30», «ver cámaras»)
+     NO pasa por aquí. */
+  const _GLOSA_SUB = {
+    'CARGADORES': 'para cargar baterías', 'BATERÍAS': 'baterías y estaciones de energía portátiles',
+    'INVERSORES': 'para dar corriente de casa a tus equipos', 'CONTROLADORES SOLARES': 'para cargar baterías desde paneles',
+    'CÁMARAS': 'para vigilar', 'CERRADURAS': 'para tu puerta', 'ROUTERS': 'para tener internet en casa',
+    'REPETIDORES': 'para llevar la señal más lejos', 'ANTENAS': 'para llevar internet lejos',
+  };
+  const _tituloSub = sub => { const s = String(sub || '').toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1); };
+  const _VER_MAS = '➕ Ver más';
+  // Los grupos (por subcategoría) de una lista puntuada, en orden de mejor puntaje.
+  function _gruposDe(puntuados){
+    const g = new Map();
+    for(const x of puntuados){
+      const k = String(x.p.subcategoria || x.p.categoria || '').toUpperCase();
+      if(!k) continue;
+      if(!g.has(k)) g.set(k, { sub: k, mejor: x.s, n: 0 });
+      g.get(k).n++;
+    }
+    return [...g.values()];
+  }
+  // «Accesorios» no le dice nada a quien pregunta: solo se ofrece si no hay otra cosa.
+  const _SUB_VAGA = /^(ACCESORIOS|ACCESORIOS DE RED|OTROS|VARIOS|GENERAL)$/;
+  function _preguntaAclaratoria(grupos, intro){
+    const concretos = grupos.filter(x => !_SUB_VAGA.test(x.sub));
+    const g = (concretos.length >= 2 ? concretos : grupos).slice(0, 3);
+    const nom = g.map(x => '<strong>' + escapeHtml(_tituloSub(x.sub)) + '</strong>' + (_GLOSA_SUB[x.sub] ? ' (' + _GLOSA_SUB[x.sub] + ')' : ''));
+    const lista = nom.length === 2 ? nom.join(' o ') : nom.slice(0, -1).join(', ') + ' o ' + nom[nom.length - 1];
+    return {
+      response: `${intro}¿Qué estás buscando: ${lista}?\n\nTócalo y te enseño solo eso, sin enredarte con lo demás.`,
+      quickReplies: g.map(x => '🔎 ' + _tituloSub(x.sub)).concat(['💬 WhatsApp']).slice(0, 4),
+      aclaracion: true
+    };
+  }
+  /* Qué hacer con una lista puntuada y en stock: 'ganador', 'pregunta' o 'lista'. */
+  function _decidirGenerico(puntuados){
+    if(!puntuados.length) return { tipo: 'nada' };
+    const top = puntuados[0], seg = puntuados[1];
+    if(!seg || (top.s >= 50 && top.s >= seg.s * 1.5)) return { tipo: 'ganador' };
+    const cerca = puntuados.filter(x => x.s * 2 >= top.s);
+    const grupos = _gruposDe(cerca);
+    if(grupos.length >= 2) return { tipo: 'pregunta', grupos };
+    return { tipo: 'lista' };
+  }
+  /* Enseña como mucho 3 (el ganador primero) y deja el resto para «Ver más». */
+  function _enseñarTres(puntuados, cab, botones){
+    const todos = puntuados.map(x => x.p);
+    const ver = todos.slice(0, 3), resto = todos.slice(3);
+    const qr = (resto.length ? [_VER_MAS] : []).concat(botones || ['💬 WhatsApp', '📦 Categorías']);
+    return { response: cab, products: ver, quickReplies: qr.slice(0, 4),
+             verMas: resto.length ? { lista: resto } : null };
+  }
+  /* La respuesta genérica entera: ganador → su ficha primero; duda entre tipos
+     distintos → una pregunta; resto → ≤3 con «Ver más». */
+  function _respuestaGenerica(puntuados, cab, intro, botones){
+    const d = _decidirGenerico(puntuados);
+    if(d.tipo === 'pregunta') return _preguntaAclaratoria(d.grupos, intro || '');
+    return _enseñarTres(puntuados, cab, botones);
+  }
+  // Lo que el cliente dijo con palabras de CATEGORÍA (max-sinonimos.json) y
+  // nada más concreto: se pregunta por los tipos de esa categoría.
+  function _preguntaPorCategoria(categoria, text, intro){
+    const q = _expandirConsulta(cleanForMatch(text));
+    const grupos = _gruposDe(PRODUCTOS.filter(p => p.categoria === categoria && p.stock > 0)
+      .map(p => ({ p, s: scoreProduct(p, q) })).sort((a, b) => b.s - a.s));
+    if(grupos.length < 2) return null;
+    grupos.sort((a, b) => (b.mejor - a.mejor) || (b.n - a.n));
+    return _preguntaAclaratoria(grupos, intro || '');
+  }
+  function _categoriaPorSinonimo(text){
+    if(!_SIN.cat.length) return null;
+    const q = cleanForMatch(text);
+    for(const x of _SIN.cat){
+      const _i = _frasesCasan(x.fr, q);
+      if(!_i || _i.cob <= 0.5) continue;      // «cuchillos de cocina» no es «cocina»
+      const c = PRODUCTOS.find(p => p.stock > 0 && cleanForMatch(p.categoria || '') === x.cat);
+      if(c) return c.categoria;
+    }
+    return null;
+  }
+  /* ENGANCHE PARA LA IA — todavía SIN conectar a nada. Cuando ni los sinónimos
+     ni las reglas dan una respuesta confiable, aquí se le preguntará a un
+     modelo (con SOLO el texto del cliente y los candidatos del catálogo).
+     Hoy devuelve null y nadie lo llama: Max sigue siendo determinista y sin
+     red en la tienda. */
+  function _preguntarIA(texto, candidatos){ return null; }
+
+  // ════════════════════════════════════════════════════════════
   //  DETECCIÓN DE INTENCIÓN
   // ════════════════════════════════════════════════════════════
+  // Palabras que dicen PARA QUÉ se quiere algo, no qué producto es.
+  const _PALABRAS_DE_USO = new Set(['carro','carros','auto','autos','coche','coches','moto','motos','celular','celulares','casa','casas','hogar','negocio']);
+  function _soloPalabraDeUso(q, p){
+    const nombre = cleanForMatch(p.nombre);
+    const casan = String(q || '').split(' ').filter(w => w.length > 1 && !_VACIAS.has(w) && _casaConPlural(nombre, w));
+    return casan.length > 0 && casan.every(w => _PALABRAS_DE_USO.has(w));
+  }
+
   function detectIntent(text){
     let t = normalize(text).trim();
     let m = text.toLowerCase().trim();
@@ -1773,6 +2100,12 @@
          .replace(/\bpa\b/g, 'para').replace(/\bxq\b|\bpq\b/g, 'porque')
          .replace(/\btmb\b/g, 'tambien').replace(/\bkiero\b/g, 'quiero');
     t = normalize(m);
+
+    /* Charla (saludos, gracias, «no sé», «ver más», groserías): va ANTES de
+       todo lo que busca productos y solo cuando el mensaje ENTERO es charla.
+       Si trae una consulta, no entra aquí y gana la consulta. */
+    const _ch = _charlaIntent(m);
+    if(_ch) return _ch;
 
     // Actualizar contexto con presupuesto si lo menciona
     const presupuesto = detectPresupuesto(text);
@@ -1889,7 +2222,7 @@
     // ayudar?" —la forma normal de pedirlo— caía en búsqueda de productos.
     if(/^(me (puedes|podr[ií]as) ayudar|puedes ayudarme|podr[ií]as ayudarme|me ayudas|ay[uú]dame|necesito ayuda)[\s!?.¿¡]*$/i.test(mCmd)) return 'ayuda';
     // Preguntar qué sabe hacer es pedir exactamente el menú de ayuda.
-    if(/\b(qu[eé] (puedes|sabes) hacer|en qu[eé] (me )?puedes ayudar|para qu[eé] sirves|qu[eé] cosas puedes hacer)\b/i.test(m)) return 'ayuda';
+    if(/\b(qu[eé] (puedes|sabes) hacer|en qu[eé] (me )?(puedes ayudar|ayudas)|para qu[eé] sirves|qu[eé] cosas puedes hacer)\b/i.test(m)) return 'ayuda';
     // Un "sí", "ok" o "dale" suelto no es una búsqueda: la palabra puntuaba
     // dentro de algún nombre de producto y Max devolvía resultados al azar.
     // Nadie contesta solo "sí" o solo "no": contesta "dale pues", "mejor no",
@@ -1923,9 +2256,9 @@
     // ninguna palabra de saludo y terminaba buscando productos.
     if(/\b(qui[eé]n eres|qui[eé]n sos|c[oó]mo te llamas|eres (un |una )?(bot|robot|humano|persona|ia|m[aá]quina)|eres real|hablo con (un |una )?(bot|persona|humano|robot)|qu[eé] eres|qu[eé] sos|con qui[eé]n hablo|eres (t[uú] )?max)\b/i.test(m)) return 'quienEres';
 
-    if(/\b(hola|buenas|saludos|hey|que bol[aá]|asere|compay|dime|buenos d[ií]as|buenas tardes|buenas noches|qu[eé] tal|que tal|buen d[ií]a|buen dia|hola max|holi)\b/i.test(m)) return 'saludo';
-    if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
-    if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
+    /* (saludo, despedida y gracias a secas ya los resuelve _charlaIntent al
+       principio; las palabras sueltas dentro de una consulta se miran al
+       final, para que «gracias, ¿y tienen inversores?» sea la consulta.) */
 
     if(/\b(c[oó]mo compro|c[oó]mo pedir|c[oó]mo hago.*pedido|c[oó]mo comprar|quiero comprar|quiero pedir|hacer.*pedido|proceso.*compra)\b/.test(m)){
       // Querer comprar algo que no se vende no se contesta con el
@@ -2088,6 +2421,11 @@
     // Detectar si menciona presupuesto ("tengo $X", "presupuesto de X")
     const mencionaPresupuesto = detectPresupuesto(text) !== null;
 
+    /* «Algo para el carro», «cosas para la casa»: pide que le recomienden, no
+       nombra ningún producto. Sin esto caía en lo primero cuyo nombre llevara
+       la palabra («Ventilador Para Carro»). */
+    if(!_pideDefinicion && /\b(algo|alguna cosa|cosas|un producto|productos|accesorios?)\s+para\s+(el|la|mi|los|las|tu)?\s*(carro|auto|coche|moto|casa|hogar|celular|tel[eé]fono|cocina|negocio|trabajo|gym|gimnasio)\b/.test(m)) return 'recomendacion';
+
     // Una palabra que el catálogo reparte en varias subcategorías («aceite»,
     // «anticongelante»): se enseña la familia entera, no la primera ficha.
     // Va antes que DETALLE porque «aceite de motor» casaba con UN aceite de
@@ -2218,10 +2556,22 @@
        «el wifi está lento» sacaba un timbre y «recargas de nauta» un
        inflador (recargable). Sin ninguna palabra en el nombre, la
        subcategoría o la ficha, no se recomienda nada. */
-    if(scored.length === 0) return 'fallback';
+    if(scored.length === 0){
+      // Último recurso: una palabra de cortesía en una frase que no pide nada.
+      if(/\b(hola|buenas|saludos|hey|que bol[aá]|asere|compay|dime|buenos d[ií]as|buenas tardes|buenas noches|qu[eé] tal|que tal|buen d[ií]a|buen dia|hola max|holi)\b/i.test(m)) return 'saludo';
+      if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
+      if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
+      return 'fallback';
+    }
     const top = scored[0];
     const second = scored[1];
-    if(top.s >= 50 && (!second || top.s >= second.s * 1.5)) return 'detalle';
+    if(top.s >= 50 && (!second || top.s >= second.s * 1.5)){
+      /* Que SOLO case «carro» con «Ventilador Para Carro» no es nombrar ese
+         ventilador: es decir para qué lo quiere. «Algo para el carro» daba su
+         ficha (agotada) como si fuera lo que pidió. */
+      if(_soloPalabraDeUso(q, top.p)) return 'busqueda';
+      return 'detalle';
+    }
     return 'busqueda';
   }
 
@@ -2234,11 +2584,36 @@
      para encontrar qué tocar. Ahora una línea, y debajo cuatro botones
      grandes, la Tarjeta TiendaMax (si la campaña está encendida) y las
      rebajas del día (_pintarBienvenida). Lo de siempre sigue en /ayuda. */
-  R.saludo = (text) => ({
-    response: `Hola 👋 Soy <strong>Max</strong>. Dime qué buscas o toca una opción:`,
-    bienvenida: true,
-    quickReplies: ['💬 WhatsApp','💝 Ver mi lista','📦 Categorías']
-  });
+  R.saludo = (text) => {
+    /* Al abrir el chat (aún sin mensajes) va la bienvenida de siempre. Un
+       «hola» ESCRITO dentro de la conversación ya no repite el panel entero:
+       una línea corta, con la hora y su propia variante, y los botones. */
+    if(!_context.conversationStep){
+      return {
+        response: `Hola 👋 Soy <strong>Max</strong>. Dime qué buscas o toca una opción:`,
+        bienvenida: true,
+        quickReplies: ['💬 WhatsApp','💝 Ver mi lista','📦 Categorías']
+      };
+    }
+    const tipo = _charlaTipo(text) || 'saludo';
+    const h = _horaSaludo(text);
+    const hl = h.charAt(0).toLowerCase() + h.slice(1);
+    const SOLO = [
+      `¡${h}! 😊 Aquí estoy. ¿En qué te puedo ayudar hoy?`,
+      `¡${h}! ¿Qué se te ofrece? Dime qué buscas o toca una opción.`,
+      `¡Epa, ${hl}! 👋 Cuéntame, ¿qué necesitas?`,
+      `${h} 🙌 Soy Max, para lo que necesites del catálogo. ¿Por dónde empezamos?`,
+    ];
+    const COMO = [
+      `¡Muy bien, gracias por preguntar! 😊 Soy Max, el asistente de la tienda, y estoy aquí para lo que necesites. ¿En qué te puedo ayudar hoy?`,
+      `Todo bien por aquí, gracias 🙌 ¿Y tú? Cuéntame qué andas buscando y lo vemos juntos.`,
+      `¡De lo mejor! 😄 Listo para ayudarte. ¿Qué necesitas hoy?`,
+      `Aquí, al pie del cañón 💪 ¿En qué te puedo ayudar hoy?`,
+    ];
+    const i = _variante(tipo === 'saludo' ? 'saludo' : 'como', 4);
+    const txt = tipo === 'saludo' ? SOLO[i] : (tipo === 'saludoComo' ? `¡${h}! ` + COMO[i] : COMO[i]);
+    return { response: txt, quickReplies: _botonesInicio() };
+  };
 
   /* ── La Tarjeta TiendaMax, explicada ──
      Mismas reglas que cobra el panel (js/tarjeta-cliente.js); un test cruza
@@ -2280,16 +2655,88 @@
     return { response: html, quickReplies: ['💳 Ver mi tarjeta','💬 WhatsApp'] };
   };
 
-  R.despedida = () => ({
-    response: '¡Chao! 🙌 Vuelve cuando quieras. Si necesitas ayuda con un pedido, escríbenos por WhatsApp. Dale, que estés bien. 👋',
-    quickReplies: ['💬 WhatsApp']
-  });
+  R.despedida = () => {
+    const V = [
+      '¡Chao! 🙌 Vuelve cuando quieras. Si necesitas ayuda con un pedido, el equipo te atiende por WhatsApp de 10:00 am a 6:00 pm.',
+      '¡Hasta luego! 👋 Aquí estaré cuando me necesites. Que te vaya muy bien.',
+      'Dale, que estés bien 🙌 Cuando quieras ver algo más, me escribes. Y por WhatsApp te atienden de 10:00 am a 6:00 pm.',
+      '¡Nos vemos! 😊 Gracias por pasar por TiendaMax.',
+    ];
+    return { response: V[_variante('despedida', V.length)], quickReplies: ['💬 WhatsApp'] };
+  };
 
-  R.gracias = () => ({
-    response: '¡De nada! 🙌 Para eso estoy. Si necesitas algo más, aquí sigo. ¿Quieres que te muestre algo más del catálogo?',
-    quickReplies: ['🔥 Ofertas','📦 Categorías','💬 WhatsApp'],
-    siDigoSi: () => R.categorias()
-  });
+  R.gracias = () => {
+    const V = [
+      '¡De nada! 🙌 Para eso estoy. Si necesitas algo más, aquí sigo. ¿Quieres que te muestre algo más del catálogo?',
+      '¡Con gusto! 😊 Cualquier otra cosa que quieras ver, me dices.',
+      'Un placer ayudarte 🤝 Si te queda alguna duda o quieres ver algo más, aquí estoy.',
+      '¡Para eso estamos! Que te sirva mucho. ¿Te enseño algo más?',
+    ];
+    return {
+      response: V[_variante('gracias', V.length)],
+      quickReplies: ['🔥 Rebajas','📦 Categorías','💬 WhatsApp'],
+      siDigoSi: () => R.categorias()
+    };
+  };
+
+  // Un cumplido o una risa: se agradece y se deja la puerta abierta.
+  R.cumplido = () => {
+    const V = [
+      '¡Me alegra! 😊 ¿Algo más en lo que te pueda ayudar?',
+      '¡Qué bien! 🙌 Aquí sigo por si quieres ver otra cosa.',
+      '😄 ¡Gracias! Si se te ocurre algo más del catálogo, dime.',
+      'Perfecto 👍 Cuando quieras seguimos: dime qué necesitas.',
+    ];
+    return { response: V[_variante('cumplido', V.length)], quickReplies: _botonesInicio() };
+  };
+
+  // «No sé qué comprar», «estoy viendo»: sin prisa, y una pregunta fácil.
+  R.noSe = () => {
+    const V = [
+      '¡Tranquilo, sin prisa! 😊 Si me cuentas para qué lo quieres (los apagones, internet, vigilar la casa, el carro…) te digo qué te conviene. O mira por aquí:',
+      'Sin problema, mira con calma 👀 Dime qué problema quieres resolver y yo te busco lo que sirve, no una lista interminable.',
+      'Normal, a veces no se sabe por dónde empezar 🙂 Cuéntame qué necesitas en casa y te oriento. Aquí abajo van algunas ideas:',
+    ];
+    return { response: V[_variante('nose', V.length)], quickReplies: _botonesInicio().concat(['💬 WhatsApp']).slice(0, 4) };
+  };
+
+  // Una grosería: calma, sin devolverla, y la salida que sirve.
+  R.groseria = () => {
+    const V = [
+      'Entiendo que algo no salió como esperabas, y siento la molestia. 🙏 Quiero ayudarte: dime qué necesitas y lo busco. Si prefieres hablar con una persona, el equipo atiende por WhatsApp de 10:00 am a 6:00 pm.',
+      'Perdona si no te estoy siendo útil. Dime con calma qué buscas y lo intento de nuevo; o escríbele al equipo por WhatsApp (de 10:00 am a 6:00 pm), que ellos te resuelven.',
+      'Lamento que te hayas molestado. Estoy aquí para ayudarte: cuéntame qué necesitas, o si lo prefieres te paso con una persona por WhatsApp.',
+    ];
+    return { response: V[_variante('groseria', V.length)], quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Rebajas'] };
+  };
+
+  R.subBoton = (text) => {
+    const sub = _subDeBoton(text);
+    const lista = PRODUCTOS.filter(p => p.subcategoria === sub && p.stock > 0).sort((a,b) => a.precio - b.precio);
+    if(!lista.length) return R.fallback(text);
+    const ver = lista.slice(0, 3), resto = lista.slice(3);
+    return {
+      response: `📂 <strong>${escapeHtml(sub)}</strong> — tengo <em>${lista.length} disponible${lista.length > 1 ? 's' : ''}</em>, de más barato a más caro. Toca cualquiera para ver la ficha completa:`,
+      products: ver,
+      verMas: resto.length ? { lista: resto } : null,
+      quickReplies: (resto.length ? [_VER_MAS] : []).concat(lista.length >= 2 ? ['🆚 Comparar dos de estos'] : [], ['💬 WhatsApp','📦 Otras categorías']).slice(0, 4)
+    };
+  };
+
+  // «Ver más»: los siguientes de la última lista, de 3 en 3.
+  R.verMas = () => {
+    const v = _context.verMas;
+    if(!v || !v.lista || !v.lista.length){
+      return { response: '¿Más de qué? Dime qué buscas (un router, una cámara, algo para los apagones…) y te lo enseño.', quickReplies: _botonesInicio() };
+    }
+    const ver = v.lista.slice(0, 3), resto = v.lista.slice(3);
+    return {
+      response: 'Aquí van más opciones:',
+      products: ver,
+      quickReplies: (resto.length ? [_VER_MAS] : []).concat(['💬 WhatsApp','📦 Categorías']).slice(0, 4),
+      verMas: resto.length ? { lista: resto } : null
+    };
+  };
 
   R.comprar = () => ({
     response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Pagas en efectivo:\n• USD (dólares)\n• MN (pesos cubanos a la tasa del día)\nPor ahora no aceptamos Zelle ni transferencias.\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
@@ -4219,21 +4666,24 @@ ${notasHTML}
       // listarlos y preguntar cuál quiere ver
       const disponibles = mentions.filter(x => x.stock > 0);
       const lista = disponibles.length > 0 ? disponibles : mentions;
+      // Uno solo con stock entre los que casan: es ese, no «1 producto que coinciden».
+      if(disponibles.length === 1) return buildDetalle(disponibles[0], text);
       // El contador iba sobre `mentions` pero la lista pintada es `lista`
       // (solo los disponibles): decía "3 productos" y enseñaba 2.
-      const muestra = lista.slice(0,4);
+      const muestra = lista.slice(0,3);
       let body = `📦 Encontré <em>${lista.length} producto${lista.length>1?'s':''}</em> que coinciden. Dime cuál te interesa:\n\n`;
       muestra.forEach((prod, i) => {
         body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtP(prod)} · <em>${stockText(prod)}</em>\n`;
       });
-      if(lista.length > muestra.length) body += `\n<em>…y ${lista.length - muestra.length} más. Afina el nombre y te los saco todos.</em>\n`;
+      if(lista.length > muestra.length) body += `\n<em>…y ${lista.length - muestra.length} más: toca «Ver más» o afina el nombre.</em>\n`;
       body += `\nToca cualquiera para ver la ficha completa, o dime el nombre específico.`;
       return {
         response: body,
         products: muestra,
+        verMas: lista.length > muestra.length ? { lista: lista.slice(muestra.length, muestra.length + 12) } : null,
         // Con el prefijo "Ver ficha" el chip cae en el caso que abre la ficha;
         // sin él acababa en una búsqueda difusa por texto.
-        quickReplies: muestra.slice(0,3).map(x => '📦 Ver ficha ' + (x.nombre.length > 28 ? x.nombre.slice(0,28) + '…' : x.nombre))
+        quickReplies: (lista.length > muestra.length ? [_VER_MAS] : []).concat(muestra.slice(0,3).map(x => '📦 Ver ficha ' + (x.nombre.length > 28 ? x.nombre.slice(0,28) + '…' : x.nombre)))
       };
     }
     if(!p){
@@ -5026,12 +5476,15 @@ ${notasHTML}
       // Si hay presupuesto pero no categoría, buscar con el presupuesto
       if(_context.presupuesto){
         const prods = PRODUCTOS.filter(p => p.stock > 0 && p.precio <= _context.presupuesto)
-          .sort((a,b) => b.precio - a.precio).slice(0,4);
+          .sort((a,b) => b.precio - a.precio).slice(0,3);
         if(prods.length > 0){
+          const _vm = PRODUCTOS.filter(p => p.stock > 0 && p.precio <= _context.presupuesto)
+            .sort((a,b) => b.precio - a.precio).slice(3);
           return {
             response: `💰 Con tu presupuesto de <strong>${fmtUSD(_context.presupuesto)}</strong> tienes estas opciones disponibles (las más caras primero, que dan más valor):\n\nDime qué tipo de producto te interesa para afinar la recomendación.`,
-            products: prods,
-            quickReplies: ['📦 Categorías','🆚 Comparar dos de estos','💬 WhatsApp']
+            products: prods.slice(0, 3),
+            verMas: _vm.length ? { lista: _vm.slice(0, 12) } : null,
+            quickReplies: (_vm.length ? [_VER_MAS] : []).concat(['📦 Categorías','🆚 Comparar dos de estos','💬 WhatsApp']).slice(0, 4)
           };
         }
       }
@@ -5046,14 +5499,18 @@ ${notasHTML}
           quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
         };
       }
-      const prods = findProducts(text.replace(/^(necesito|busco|quiero|recomi[ée]ndame|sugi[ée]reme|para)/g,' ').trim(), 4);
-      if(prods.length > 0){
-        return {
-          response: `🎯 Según lo que me dices, te puedo recomendar esto del catálogo (todos disponibles). Mira cuál te encaja:`,
-          products: prods,
-          quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp']
-        };
+      const _pun = _buscarPuntuados(text.replace(/^(necesito|busco|quiero|recomi[ée]ndame|sugi[ée]reme|para)/g,' ').trim());
+      if(_pun.length > 0){
+        const d = _respuestaGenerica(_pun,
+          `🎯 Según lo que me dices, esto es lo que mejor encaja del catálogo (disponible ahora). Mira cuál te sirve:`,
+          '🎯 Para recomendarte bien necesito afinar un poco. ',
+          ['🆚 Comparar dos de estos','💬 WhatsApp']);
+        return d;
       }
+      // Palabras de categoría sin nada más concreto: se pregunta por tipos.
+      { const _cs = _categoriaPorSinonimo(text);
+        const _pc = _cs && _preguntaPorCategoria(_cs, text, '🎯 Para eso tengo varias cosas distintas. ');
+        if(_pc) return _pc; }
       /* Lo que pidió existe pero hoy está agotado: decirlo (y ofrecer el aviso)
          es la respuesta; volver a preguntarle «¿para qué lo necesitas?» a quien
          ya dijo que quiere un router lo manda a la puerta. */
@@ -5107,17 +5564,28 @@ ${notasHTML}
     }
 
     const cat = CATEGORIAS.find(c => c.nombre === categoria);
+    /* Dijo qué necesita pero no el tipo de producto, ni presupuesto: en vez de
+       soltar los cuatro más baratos de la categoría, se pregunta por los
+       tipos que hay de verdad. */
+    if(!_porSub.length && !_context.presupuesto && !_caro && !_barato){
+      const _pq = _preguntaPorCategoria(categoria, text,
+        `🎯 Para eso lo tuyo es <strong>${cat.icono} ${categoria}</strong>, pero hay de varios tipos. `);
+      if(_pq) return _pq;
+    }
     let body = `🎯 Para lo que me pides, la categoría ideal es <strong>${cat.icono} ${categoria}</strong> (${cat.desc}).\n\n`;
     if(_context.presupuesto){
       body += `💰 Filtrando por tu presupuesto de <strong>${fmtUSD(_context.presupuesto)}</strong>:\n\n`;
     }
-    const _n = Math.min(4, prods.length);
+    const _tope = _porSub.length ? 4 : 3;      // una respuesta genérica no pasa de 3
+    const _n = Math.min(_tope, prods.length);
     body += `Te muestro <em>${_n}</em> ${_n === 1 ? 'opción disponible' : 'opciones disponibles'}, ordenada${_n === 1 ? '' : 's'} por precio (de ${_caro ? 'mayor a menor' : 'menor a mayor'}). ¿Cuál te llama la atención?\n\n`;
     body += `<strong>Tip:</strong> Si quieres, me dices <em>"compara el A vs el B"</em> y te armo la tabla lado a lado.`;
+    const _resto = prods.slice(_tope);
     return {
       response: body,
-      products: prods.slice(0,4),
-      quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Otras categorías']
+      products: prods.slice(0, _tope),
+      verMas: (!_porSub.length && _resto.length) ? { lista: _resto.slice(0, 12) } : null,
+      quickReplies: ((!_porSub.length && _resto.length) ? [_VER_MAS] : []).concat(['🆚 Comparar dos de estos','💬 WhatsApp','📦 Otras categorías']).slice(0, 4)
     };
   };
 
@@ -5193,13 +5661,17 @@ ${notasHTML}
     if(mentions.length >= 2){
       const disponibles = mentions.filter(m => m.stock > 0);
       const lista = disponibles.length > 0 ? disponibles : mentions;
+      // Uno solo con stock entre los que nombró: es ese, no «varios».
+      if(disponibles.length === 1 && lista.length === 1 && mentions.length > 1) return buildDetalle(disponibles[0], text);
       return {
         response: `🔍 Encontré varios productos relacionados. ${disponibles.length > 0 ? `<em>Solo te muestro los disponibles</em>` : `<em style="color:#ff8888">Ojo: algunos están agotados</em>`}. Toca cualquiera para ver la ficha, o dime <em>"compara el A vs el B"</em>.`,
-        products: lista.slice(0,4),
-        quickReplies: ['🆚 Comparar dos de estos','💬 WhatsApp']
+        products: lista.slice(0,3),
+        verMas: lista.length > 3 ? { lista: lista.slice(3, 15) } : null,
+        quickReplies: (lista.length > 3 ? [_VER_MAS] : []).concat(['🆚 Comparar dos de estos','💬 WhatsApp']).slice(0, 4)
       };
     }
-    const prods = findProducts(text, 4, {presupuesto: _context.presupuesto});
+    const _punt = _buscarPuntuados(text, {presupuesto: _context.presupuesto});
+    const prods = _punt.slice(0, 4).map(x => x.p);
     if(prods.length === 0){
       const agotados = findProducts(text, 2, {includeAgotados:true});
       // "Ese producto lo tenemos" solo si de verdad casa con lo que pidieron
@@ -5208,7 +5680,7 @@ ${notasHTML}
       // no existe en el catálogo— contestaba "ese producto lo tenemos pero
       // está agotado", y el vendedor quedaba desmentido por WhatsApp.
       const _qa = _expandirConsulta(cleanForMatch(text));
-      const agotadoReal = agotados.find(p => _matchFuerte(p, _qa));
+      const agotadoReal = agotados.find(p => _matchFuerte(p, _qa) && !_soloPalabraDeUso(_qa, p));
       if(agotadoReal) return buildDetalle(agotadoReal, text);
       return R.fallback(text);
     }
@@ -5216,7 +5688,7 @@ ${notasHTML}
     // parecido» sería enseñar lo que solo comparte una palabra de la
     // descripción. Se dice que no, con salida.
     if(!prods.some(p => _matchFuerte(p, _expandirConsulta(cleanForMatch(text))))){
-      const _ag = findProducts(text, 3, {includeAgotados:true}).find(p => _matchFuerte(p, _expandirConsulta(cleanForMatch(text))));
+      const _ag = findProducts(text, 3, {includeAgotados:true}).find(p => _matchFuerte(p, _expandirConsulta(cleanForMatch(text))) && !_soloPalabraDeUso(_expandirConsulta(cleanForMatch(text)), p));
       if(_ag) return buildDetalle(_ag, text);
       return R.fallback(text);
     }
@@ -5233,7 +5705,7 @@ ${notasHTML}
        puntuaba algo. */
     if(!_fuerte){
       const agotadoReal = findProducts(text, 3, {includeAgotados:true})
-        .find(p => !(p.stock > 0) && _matchFuerte(p, _q));
+        .find(p => !(p.stock > 0) && _matchFuerte(p, _q) && !_soloPalabraDeUso(_q, p));
       if(agotadoReal) return buildDetalle(agotadoReal, text);
     }
     /* Uno solo, y casa por nombre: eso es una ficha, no una lista de uno.
@@ -5245,15 +5717,14 @@ ${notasHTML}
        respuesta honesta y no debe convertirse en una ficha segura. */
     if(prods.length === 1 && _fuerte) return buildDetalle(prods[0], text);
     const _tope = _context.presupuesto ? ` (hasta ${fmtUSD(_context.presupuesto)})` : '';
-    return {
-      response: _fuerte
+    /* Duda entre tipos distintos → una pregunta con botones; si no, como mucho
+       3 y «Ver más»: antes soltaba hasta 4 «relacionados» sin preguntar. */
+    return _respuestaGenerica(_punt,
+      _fuerte
         ? `🔍 Esto es lo que tengo <em>disponible</em> relacionado con tu búsqueda${_tope}. Toca cualquiera para ver la ficha completa:`
         : `🤔 <strong>Eso exacto no lo tengo</strong>${_tope}. Lo más parecido que manejo es esto — míralo por si te sirve, y si no, escríbeme por WhatsApp y te digo si puedo conseguirlo:`,
-      products: prods,
-      quickReplies: _fuerte
-        ? ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Categorías']
-        : ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
-    };
+      _fuerte ? '🔍 Tengo varias cosas con esa palabra. ' : '🤔 Eso exacto no lo tengo, pero hay cosas cercanas. ',
+      _fuerte ? ['🆚 Comparar dos de estos','💬 WhatsApp','📦 Categorías'] : ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']);
   };
 
   R.familia = (text) => {
@@ -5459,17 +5930,23 @@ ${notasHTML}
 
   R.fallback = (text) => {
     const _qf = _expandirConsulta(cleanForMatch(text));
-    const _cand = findProducts(text, 3);
     // sin ninguna palabra en nombre/subcategoría/ficha no es «relacionado»
-    const prods = _cand.filter(p => _matchFuerte(p, _qf));
-    if(prods.length > 0){
-      return {
-        response: `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese algo de esto (todos disponibles). Si no es lo que buscas, dime más detalles: para qué lo necesitas, presupuesto, marca preferida…`,
-        products: prods,
-        sinRespuesta: true,
-        quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
-      };
+    const _puntuados = _buscarPuntuados(text).filter(x => _matchFuerte(x.p, _qf));
+    if(_puntuados.length > 0){
+      /* Max duda: no suelta lo que vende. Si lo candidatos son de tipos
+         distintos pregunta cuál; si no, enseña como mucho 3 y deja «Ver más». */
+      const d = _respuestaGenerica(_puntuados,
+        `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese esto (disponible ahora). Si no es lo que buscas, dime para qué lo necesitas, tu presupuesto o la marca que prefieres.`,
+        '🤔 Quiero acertar y no llenarte de cosas que no son. ',
+        ['📦 Categorías','💬 WhatsApp']);
+      d.sinRespuesta = true;
+      return d;
     }
+    // Solo habló en palabras de categoría («apagón», «corriente»): se
+    // pregunta por los tipos de esa categoría en vez de decir «no entendí».
+    { const _cs = _categoriaPorSinonimo(text);
+      const _pc = _cs && _preguntaPorCategoria(_cs, text, '🤔 Para eso tengo varias cosas distintas. ');
+      if(_pc) return _pc; }
     /* "¿Venden celulares?", "¿tienen comida?", "¿venden medicamentos?"
        caían aquí y recibían "no entendí tu pregunta", que suena a bot roto
        cuando la pregunta se entendió perfectamente: la respuesta es que no.
@@ -5484,9 +5961,9 @@ ${notasHTML}
       };
     }
     return {
-      response: `🤔 No te entendí bien. Prueba con el nombre de un producto o una categoría, o escribe <code>menú</code>.`,
+      response: `🤔 No te entendí del todo. Cuéntame qué necesitas con tus palabras, o toca una opción:`,
       sinRespuesta: true,
-      quickReplies: ['📦 Categorías','🔥 Ofertas','💬 Hablar con un humano']
+      quickReplies: _botonesInicio().slice(0, 3).concat(['💬 Hablar con un humano'])
     };
   };
 
@@ -5761,7 +6238,13 @@ ${notasHTML}
   // ════════════════════════════════════════════════════════════
   //  AYUDA — menú de comandos
   // ════════════════════════════════════════════════════════════
-  R.ayuda = () => ({
+  R.ayuda = (text) => /\/(ayuda|help|comandos)/i.test(String(text || '')) ? R.comandos() : R.quePuedo();
+  // «Qué puedes hacer», «ayuda», «en qué me ayudas»: en persona, sin lista de comandos.
+  R.quePuedo = () => ({
+    response: `Soy <strong>Max</strong>, el asistente de TiendaMax 🤖 Te puedo ayudar a:\n\n• buscar un producto y decirte precio y si hay\n• comparar dos y decirte cuál te conviene\n• armar un sistema solar o de seguridad\n• calcular cuánto te dura una batería\n• orientarte si un equipo falla\n• explicarte términos técnicos\n\nY si prefieres una persona, el equipo atiende por WhatsApp de 10:00 am a 6:00 pm. ¿Por dónde empezamos?`,
+    quickReplies: _botonesInicio().slice(0, 3).concat(['🤖 /ayuda'])
+  });
+  R.comandos = () => ({
     response: `🤖 <strong>Comandos de Max Bot</strong>\n\nPuedes escribir directamente o usar estos comandos:\n\n<em>Comandos con /:</em>\n• <code>/deseos</code> — ver tu lista de deseos\n• <code>/ofertas</code> — ver productos en oferta\n• <code>/categorias</code> — ver categorías del catálogo\n• <code>/envios</code> — cobertura de mensajería\n• <code>/pago</code> — métodos de pago\n• <code>/tasa</code> — tasa del día (USD → MN)\n• <code>/whatsapp</code> — contacto directo\n• <code>/limpiar</code> — reiniciar conversación\n\n<em>Frases útiles:</em>\n• <em>"compara el router A vs el router B"</em>\n• <em>"qué cámara tiene visión nocturna"</em>\n• <em>"arma un sistema solar básico"</em>\n• <em>"cuánto dura una batería con mi nevera"</em>\n• <em>"mi inversor pita y tiene la luz roja"</em>\n• <em>"tengo $100, ¿qué cámara me recomiendas?"</em>\n• <em>"añade el router Tenda a mi lista"</em>\n• <em>"háblame del inversor solar"</em>\n• <em>"este inversor sirve para mi nevera"</em>\n• <em>"¿venden módems para Nauta Hogar?"</em>\n\n¿Qué necesitas hacer?`,
     quickReplies: ['💝 Ver mi lista','🔥 Ofertas','📦 Categorías','💬 WhatsApp']
   });
@@ -5834,16 +6317,25 @@ ${notasHTML}
         quickReplies: ['🆚 Comparar dos de estos','📦 Categorías','💬 WhatsApp']
       };
     }
+    const V = [
+      `👍 Dime qué necesitas y te ayudo: puedo buscarte un producto, comparar dos, explicarte un término técnico o armarte un sistema completo.\n\nSi prefieres verlo todo, escribe <code>/ayuda</code>.`,
+      `Perfecto 🙌 ¿Qué estás buscando? Dime para qué lo quieres y te digo qué te sirve.`,
+      `Vale 👍 Cuando quieras, cuéntame qué necesitas.`,
+    ];
     return {
-      response: `👍 Dime qué necesitas y te ayudo: puedo buscarte un producto, comparar dos, explicarte un término técnico o armarte un sistema completo.\n\nSi prefieres verlo todo, escribe <code>/ayuda</code>.`,
+      response: V[_variante('confirma', V.length)],
       quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
     };
   };
 
-  R.quienEres = () => ({
-    response: `🤖 Soy <strong>Max</strong>, el asistente de TiendaMax. No soy una persona: soy un programa que corre aquí mismo, en tu navegador, con el catálogo de la tienda delante.\n\nPor eso te puedo decir precios, disponibilidad y fichas al momento. Y si necesitas hablar con alguien de verdad, te paso con el equipo por WhatsApp.\n\n¿Qué estás buscando?`,
-    quickReplies: ['📦 Categorías','🔥 Ofertas','🤖 /ayuda','💬 WhatsApp']
-  });
+  R.quienEres = () => {
+    const V = [
+      `🤖 Soy <strong>Max</strong>, el asistente de TiendaMax. No soy una persona: soy un programa que corre aquí mismo, en tu navegador, con el catálogo de la tienda delante.\n\nPor eso te puedo decir precios, disponibilidad y fichas al momento. Y si prefieres hablar con alguien de verdad, el equipo te atiende por WhatsApp de 10:00 am a 6:00 pm.\n\n¿Qué estás buscando?`,
+      `Me llamo <strong>Max</strong> 😊 Soy un asistente virtual y no soy una persona, pero conozco el catálogo de arriba abajo: precios, stock, fichas y cómo se arma un sistema solar. Si quieres una persona, te paso por WhatsApp (10:00 am a 6:00 pm). ¿En qué te ayudo?`,
+      `Soy <strong>Max</strong>, un robot amable de TiendaMax (no soy una persona) 🤖 Te ayudo a encontrar lo que necesitas y a decidir. Para cosas de pedidos con una persona, está el WhatsApp de 10:00 am a 6:00 pm. ¿Qué necesitas hoy?`,
+    ];
+    return { response: V[_variante('quien', V.length)], quickReplies: _botonesInicio().slice(0, 3).concat(['💬 WhatsApp']) };
+  };
 
   R.resetCmd = () => {
     resetChat();
@@ -5915,7 +6407,7 @@ ${notasHTML}
   /* ¿Se le puede pegar texto detrás? Una tabla comparativa o un selector los
      pinta la pantalla con su propio widget y no hay dónde meterlo. */
   function _esTextoPegable(d){
-    return !!(d && d.response && !d.compare && !d.elegirRival && !d.elegirComparar);
+    return !!(d && d.response && !d.compare && !d.elegirRival && !d.elegirComparar && !d.aclaracion);
   }
 
   function _componer(partes){
@@ -5941,7 +6433,7 @@ ${notasHTML}
        «y» es la carga del sistema, no otra pregunta. Contestarlo aparte
        pegaba la ficha de una lámpara-ventilador debajo del sistema, como si
        Max la recomendara para él. */
-    if(/^(sistema|solarEntrada)/.test(intent)) return data;
+    if(/^(sistema|solarEntrada|subBoton|verMas)/.test(intent)) return data;
     const trozos = _trozosConIntencion(text);
     // El hueco de la principal: el trozo que pidió lo mismo que ella.
     const iPrincipal = trozos.findIndex(t => t.intent === intent);
@@ -6028,6 +6520,11 @@ ${notasHTML}
     // turno anterior — es justo lo que R.confirmacion necesita para saber a
     // qué dijo "sí" el cliente.
     const data = _responderTodo(text, intent, handler(text) || {});
+    // «Hola, ¿tienen routers?»: gana la consulta, con un saludo corto delante.
+    { const _pre = _saludoPrefijo(text, intent);
+      if(_pre && data.response) data.response = _pre + data.response; }
+    // «Ver más»: la lista que quedó por enseñar (solo la de la última respuesta).
+    _context.verMas = data.verMas || null;
     // Y aquí se renueva con lo que Max acaba de ofrecer. Si no ofreció nada se
     // borra, a propósito: un "sí" cuatro turnos más tarde no puede disparar
     // una oferta que ya nadie recuerda haber recibido.
@@ -6656,6 +7153,7 @@ ${notasHTML}
     if(/comparar dos/.test(r)){ sendMessage('quiero comparar dos productos'); return; }
     if(/arma.*sistema solar|sistema solar/.test(r)){ sendMessage('arma un sistema solar básico'); return; }
     if(/kit.*seguridad/.test(r)){ sendMessage('arma un kit de seguridad para casa'); return; }
+    if(/mi equipo falla/.test(r)){ sendMessage('mi equipo tiene una avería'); return; }
     if(/calcular autonom/.test(r)){ sendMessage('cuánto dura una batería de 100Ah con mi nevera'); return; }
     if(/autonom.*nevera/.test(r)){ sendMessage('cuánto dura una batería de 100Ah con mi nevera'); return; }
     if(/ver ficha/.test(r)){
@@ -6757,7 +7255,14 @@ ${notasHTML}
     saveHistory(); // guardar tras mensaje del usuario
     addTyping();
     const delay = 350 + Math.random() * 500 + Math.min(text.length * 8, 600);
-    await new Promise(r => setTimeout(r, delay));
+    // Mientras «escribe», se confirma que el catálogo sigue siendo el de ahora
+    // (si pasaron más de ~90 s desde la última vez): lo agotado, lo nuevo, un
+    // precio, una categoría apagada. Con tope de 2,5 s: sin red, contesta con
+    // lo que tiene.
+    await Promise.all([
+      new Promise(r => setTimeout(r, delay)),
+      _ponerAlDia(2500)
+    ]);
     removeTyping();
     try {
       const data = responder(text);
@@ -6794,7 +7299,7 @@ ${notasHTML}
      a /agente/opiniones/<clave>/<id> —la misma clave que la pregunta en
      /agente/faq— con {v: 1|-1, m: motivo, ts}; nada del cliente. El panel
      (🤖 Max) los junta para saber qué enseñarle o corregir. */
-  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback|humano|menu|reclamo)$/;
+  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback|humano|menu|reclamo|cumplido|noSe|groseria|verMas|subBoton)$/;
   const _MOTIVOS_NO = ['No era lo que buscaba', 'Información incorrecta', 'No entendió mi pregunta', 'Prefiero una persona'];
   function _votar(clave, v, m){
     try {
@@ -7013,6 +7518,7 @@ ${notasHTML}
   }
 
   function openPanel(){
+    _ponerAlDia(2500);   // al abrir: que lo primero que se vea sea lo de hoy
     panel.classList.add('open');
     _panelOpen = true;
     bubble.classList.remove('has-new');
@@ -7190,6 +7696,9 @@ ${notasHTML}
     claveFAQ: _claveFAQ,
     TARJETA: _TARJETA,
     ponerEnsenado: _ponerEnsenado,
+    ponerSinonimos: _ponerSinonimos,
+    // Enganche para la IA (hoy null, sin conectar a nada): ver _preguntarIA.
+    preguntarIA: _preguntarIA,
     capacidadBateria: _capacidadBateria,
     diagnosticar: R.diagnostico,
     esAveria,

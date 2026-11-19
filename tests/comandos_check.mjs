@@ -363,7 +363,9 @@ for (const [q, esperado] of ENCAMINADAS) {
     // del agotado. Si el filtro se quita, vuelve el "ese producto lo tenemos"
     // ante cualquier coincidencia difusa, y eso no se vería aquí.
     const src = readFileSync(join(RAIZ, 'js/src/tm-bot-cerebro.src.js'), 'utf8');
-    ok(/const agotadoReal = agotados\.find\(p => _matchFuerte\(p, _qa\)\)/.test(src),
+    // (el filtro puede llevar condiciones de más —p. ej. no vale una palabra de uso
+    //  como «carro»—, pero tiene que seguir exigiendo el match fuerte)
+    ok(/const agotadoReal = agotados\.find\(p => _matchFuerte\(p, _qa\)/.test(src),
         'el agotado que se anuncia tiene que casar de verdad con lo que pidieron');
     // Y no se promete una lista de alternativas que luego no llega.
     // Solo la frase que PROMETE una lista a continuación; la ficha de un

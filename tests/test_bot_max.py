@@ -110,8 +110,10 @@ class BotPulidoTest(unittest.TestCase):
         """
         txt = CEREBRO.read_text(encoding="utf-8")
         i_fb = txt.index("R.fallback = (text) => {")
-        cuerpo = txt[i_fb:i_fb + 3000]
-        i_prods = cuerpo.index("const _cand = findProducts(text, 3);")
+        cuerpo = txt[i_fb:i_fb + 6000]
+        # (antes «findProducts(text, 3)»; ahora la búsqueda puntuada que alimenta
+        # la pregunta aclaratoria — misma comprobación: buscar antes de negar)
+        i_prods = cuerpo.index("const _puntuados = _buscarPuntuados(text)")
         i_niego = cuerpo.index("no lo manejo")
         self.assertLess(
             i_prods, i_niego,

@@ -977,6 +977,124 @@ function _tmConservarStockLocal(remotos) {
     return remotos;
 }
 
+/* Lo que se hace con cada producto que llega del sitio antes de guardarlo:
+   fotos a tiendamax.org, y comisión/reseñas locales que el remoto no trae.
+   Lo usan el cargador de la visita y la revisión en vivo de más abajo; con
+   dos copias, una de las dos acabaría guardando productos distintos. */
+function _tmPrepararProductos(dataProd, mapaLocal) {
+    const _todos = dataProd.map(p => {
+        const fix = url => url && url.includes('raw.githubusercontent.com')
+            ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
+            : url;
+        if (p.imagen) p.imagen = fix(p.imagen);
+        if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
+        if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
+
+        // comision viene directamente del producto en productos.json
+        const local = mapaLocal && mapaLocal[p.id];
+        if (local && local.comision !== undefined && p.comision === undefined) {
+            p.comision = local.comision;
+        }
+        if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
+        return p;
+    });
+    _tmConservarStockLocal(_todos);
+    return _todos;
+}
+
+/* ── El catálogo en vivo ──────────────────────────────────────────────────
+   La tienda lee productos-lite.json UNA vez, al abrir. Con la pestaña abierta
+   (o el teléfono con la tienda en segundo plano) lo que el dueño cambiaba —un
+   producto que se agota, un precio, una categoría apagada, uno nuevo— no
+   llegaba nunca, y Max contestaba con la foto vieja: ofrecía lo que ya no
+   había. Aquí se vuelve a pedir, sin recargar, cuando alguien lo necesita:
+   al abrir Max, antes de cada respuesta si pasaron `min` ms, y al volver a la
+   pestaña. `no-cache` = petición condicional: el navegador pregunta, no asume.
+   Nunca en el panel: allí `productos` es el catálogo que se PUBLICA. */
+let _tmVivoUltima = 0, _tmVivoEnCurso = null;
+function tmCatalogoHuella(arr) {
+    if (!Array.isArray(arr)) return '';
+    let h = arr.length + '#';
+    for (let i = 0; i < arr.length; i++) {
+        const p = arr[i] || {};
+        h += p.id + '~' + p.stock + '~' + p.precioActual + '~' + p.precioOriginal + '~' + p.nombre + '~' +
+             p.categoria + '~' + p.subcategoria + '~' + p.moneda + '~' + (p.oculto ? 1 : 0) + '~' +
+             (p.activo === false ? 0 : 1) + '~' + (p.rev || '') + '|';
+    }
+    return h;
+}
+function tmRefrescarCatalogoVivo(opts) {
+    opts = opts || {};
+    if (_tmEsPanel()) return Promise.resolve(false);
+    if (_tmVivoEnCurso) return _tmVivoEnCurso;
+    const min = opts.min == null ? 90000 : opts.min;
+    if (Date.now() - _tmVivoUltima < min) return Promise.resolve(false);
+    const pedir = async (f) => {
+        const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+        const t = setTimeout(() => { try { ctl && ctl.abort(); } catch (e) {} }, opts.espera || 4000);
+        try {
+            const r = await fetch(f, ctl ? { cache: 'no-cache', signal: ctl.signal } : { cache: 'no-cache' });
+            return r.ok ? await r.json() : null;
+        } catch (e) { return null; }
+        finally { clearTimeout(t); }
+    };
+    _tmVivoEnCurso = (async () => {
+        let cambio = false;
+        try {
+            const [dataCat, dataProd] = await Promise.all([pedir('categorias.json'), pedir('productos-lite.json')]);
+            // Una descarga que falló no cuenta como «no cambió»: se reintenta pronto.
+            if (!dataCat && !dataProd) return false;
+            let apagadasCambiaron = false;
+            if (dataCat) {
+                apagadasCambiaron = !!tmAplicarApagadas(Array.isArray(dataCat) ? null : dataCat.apagadas);
+                const nombres = Array.isArray(dataCat) ? dataCat : (dataCat.nombres || []);
+                if (nombres.length) {
+                    const antes = JSON.stringify(tmParseArray(localStorage.getItem('categorias')));
+                    if (antes !== JSON.stringify(nombres)) {
+                        localStorage.setItem('categorias', JSON.stringify(nombres));
+                        cambio = true;
+                    }
+                    categorias = tmCatsVisibles(nombres);
+                }
+            }
+            const viejos = tmParse(localStorage.getItem('productos'), []) || [];
+            let todos = viejos;
+            if (Array.isArray(dataProd) && dataProd.length) {
+                const mapaLocal = {}; viejos.forEach(p => { mapaLocal[p.id] = p; });
+                todos = _tmPrepararProductos(dataProd, mapaLocal);
+                if (tmCatalogoHuella(todos) !== tmCatalogoHuella(viejos)) {
+                    localStorage.setItem('productos', JSON.stringify(todos));
+                    cambio = true;
+                }
+            }
+            if (cambio || apagadasCambiaron) {
+                productos = tmSoloVisibles(todos);
+                window._tmFiltroCacheKey = null;      // la memoria del filtro mira solo cuántos hay y el primero
+                try { renderizarCategoriasHomeInstant(); } catch (e) {}
+                try { renderizarCategoriasHome(); } catch (e) {}
+                try { renderizarMasVendidos(); } catch (e) {}
+                try { verificarOfertasYMostrarBanner(); } catch (e) {}
+                try { if (typeof window.tmBannerOfertasRepintar === 'function') window.tmBannerOfertasRepintar(); } catch (e) {}
+                try {
+                    const vc = document.getElementById('vistaCategoria');
+                    if (vc && vc.style.display !== 'none') renderizarProductos();
+                } catch (e) {}
+                try { window.dispatchEvent(new CustomEvent('tm-catalogo-actualizado')); } catch (e) {}
+                return true;
+            }
+            return false;
+        } catch (e) { return false; }
+        finally { _tmVivoUltima = Date.now(); _tmVivoEnCurso = null; }
+    })();
+    return _tmVivoEnCurso;
+}
+// Volver a la tienda tras un rato (pestaña en segundo plano, teléfono guardado).
+try {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') tmRefrescarCatalogoVivo({ min: 300000 });
+    });
+} catch (e) {}
+
 async function cargarDatosDesdeGitHub() {
     // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
     const ghUser = localStorage.getItem('githubUser');
@@ -1135,23 +1253,7 @@ async function cargarDatosDesdeGitHub() {
             const mapaLocal = {};
             productosLocales.forEach(p => { mapaLocal[p.id] = p; });
 
-            const _todos = dataProd.map(p => {
-                const fix = url => url && url.includes('raw.githubusercontent.com')
-                    ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
-                    : url;
-                if (p.imagen) p.imagen = fix(p.imagen);
-                if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
-                if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
-
-                // comision viene directamente del producto en productos.json
-                const local = mapaLocal[p.id];
-                if (local && local.comision !== undefined && p.comision === undefined) {
-                    p.comision = local.comision;
-                }
-                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
-                return p;
-            });
-            _tmConservarStockLocal(_todos);
+            const _todos = _tmPrepararProductos(dataProd, mapaLocal);
             localStorage.setItem('productos', JSON.stringify(_todos));
             productos = tmSoloVisibles(_todos);
             // Refrescar categorías con conteos reales ahora que productos está listo
