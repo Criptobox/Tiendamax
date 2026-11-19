@@ -1,12 +1,12 @@
 {
-  "actualizado": "2026-11-18T19:15:47.373639+00:00",
-  "fecha": "2026-11-18",
+  "actualizado": "2026-11-19T19:22:20.324732+00:00",
+  "fecha": "2026-11-19",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 930.0,
+  "tasa": 935.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
@@ -36,6 +36,12 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-19",
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
@@ -252,6 +258,12 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -286,7 +298,7 @@
       "mercado": {
         "min": 85.0,
         "mediana": 135.0,
-        "n": 19
+        "n": 18
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -300,6 +312,12 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 135.0,
+          "min": 85.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-19",
           "mediana": 135.0,
           "min": 85.0,
           "tu": 90.0
@@ -434,15 +452,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "145 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 145.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58825067",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 145.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "145 USD Controlador Solar MPPT 1200W Lumina Q7 Boost – Panel hasta 1200W – Transporte incl",
           "precio": 145.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-1200w-lumina-q7-boost-panel-hasta-1200w-transporte-incluido-diez-de-octubre-58807064",
@@ -461,12 +470,12 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "145 USD 👑 Controlador Solar Boost Q7-LUMINA MPPT 1200W PRECIO: 145 USD Garantía 7 días 🚗",
-          "precio": 145.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-precio-145-usd-garantia-7-dias-58649173",
+          "titulo": "150 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 150.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58934971",
           "dias": null,
           "moneda": "USD",
-          "orig": 145.0
+          "orig": 150.0
         },
         {
           "fuente": "revolico",
@@ -504,6 +513,12 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-19",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -657,6 +672,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -696,6 +717,12 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-19",
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
@@ -848,11 +875,11 @@
       "tuPrecio": 110.0,
       "convertidos": 0,
       "mercado": {
-        "min": 97.0,
-        "mediana": 100.59,
-        "n": 9
+        "min": 100.0,
+        "mediana": 100.8,
+        "n": 8
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": 0.21,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -867,18 +894,15 @@
           "mediana": 100.59,
           "min": 97.0,
           "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 100.8,
+          "min": 100.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "97 USD Celular nuevo iTel Acity A100C",
-          "precio": 97.0,
-          "url": "https://www.revolico.com/item/celular-nuevo-itel-acity-a100c-58896187",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 97.0
-        },
         {
           "fuente": "revolico",
           "titulo": "100 USD iTel Acity A100C",
@@ -978,6 +1002,12 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-19",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
