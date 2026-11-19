@@ -71,23 +71,23 @@ BASE_FAQ = [
     },
     {
         "pregunta": "¿Qué métodos de pago aceptan?",
-        "respuesta": "Aceptamos únicamente tres métodos de pago: efectivo en dólares (USD), efectivo en pesos cubanos (MN) y Zelle para pagos desde el extranjero. No aceptamos transferencias bancarias nacionales (BPA, BANMET, Bandec) ni pagos por EnZona o Transfermóvil.",
+        "respuesta": "Pagas al recibir el producto, en efectivo: dólares (USD) o pesos cubanos (MN). Por ahora no aceptamos Zelle, transferencias bancarias (BPA, BANMET, Bandec) ni pagos por EnZona o Transfermóvil.",
     },
     {
         "pregunta": "¿Cómo calculan el precio en MN?",
-        "respuesta": "El precio en MN que ves en el catálogo ya está calculado con la tasa de cambio del día (elTOQUE) más un pequeño margen operativo. Ese es el monto exacto que pagarás contra entrega. No hay sorpresas ni cálculo adicional. El precio que ves es el precio que pagas.",
+        "respuesta": "El precio en MN que ves en el catálogo ya está calculado con la tasa del día (referencia elTOQUE). Ese es el monto exacto que pagas al recibir. No hay sorpresas ni cálculo adicional.",
     },
     {
         "pregunta": "¿Puedo pagar con Zelle si estoy en Cuba?",
-        "respuesta": "Sí, si tienes un familiar en Estados Unidos, puede pagar tu pedido por Zelle. Coordinamos el monto y los datos de la cuenta por WhatsApp. Una vez confirmado el pago, te enviamos el producto y tú no pagas nada al recibirlo.",
+        "respuesta": "Por ahora no aceptamos Zelle. El pago es en efectivo (USD o MN) al recibir el producto.",
     },
     {
         "pregunta": "¿Aceptan EnZona o Transfermóvil?",
-        "respuesta": "No, no trabajamos con EnZona ni Transfermóvil. Para mantener nuestros procesos ágiles y seguros, aceptamos únicamente efectivo USD, efectivo MN y Zelle desde el extranjero.",
+        "respuesta": "No, no trabajamos con EnZona ni Transfermóvil. Aceptamos únicamente efectivo USD o MN al recibir el producto.",
     },
     {
         "pregunta": "¿Hacen envíos a domicilio?",
-        "respuesta": "Ahora mismo nuestra mensajería es solo en La Habana, en todos los municipios, y pagas al recibir el producto. Para el resto del país coordinamos el envío por WhatsApp (encomienda por VíaCar u ómnibus, o el transportista que tú elijas).",
+        "respuesta": "Ahora mismo nuestra mensajería es solo en La Habana, en todos los municipios. El precio varía según la zona y te lo confirmamos antes de enviar. Pagas al recibir el producto. Para el resto del país coordinamos el envío por WhatsApp (encomienda por VíaCar u ómnibus, o el transportista que tú elijas).",
     },
     {
         "pregunta": "¿Hacen envíos a Santiago de Cuba, Holguín o Camagüey?",
@@ -99,11 +99,11 @@ BASE_FAQ = [
     },
     {
         "pregunta": "¿Qué hago si mi producto tiene un defecto de fábrica?",
-        "respuesta": "Si tu producto cuenta con garantía y presenta un defecto técnico de fábrica, escríbenos por WhatsApp dentro de las primeras 24 horas. Te pediremos que describas el problema y, si es posible, que nos envíes una foto o video. Evaluamos tu caso y coordinamos la solución más rápida.",
+        "respuesta": "Escríbenos por WhatsApp dentro de las primeras 24 horas. Te pediremos que describas el problema y, si es posible, que nos envíes una foto o video. Si es un desperfecto de fábrica, te entregamos el mismo producto en buen estado.",
     },
     {
         "pregunta": "¿Puedo devolver un producto?",
-        "respuesta": "Aceptamos devoluciones dentro de las 24 horas tras la entrega si el producto llega dañado, con defecto de fábrica, o no corresponde a lo pedido. No procede devolución por mal uso, golpes, quemaduras por voltaje o instalación incorrecta. Escríbenos por WhatsApp con fotos del estado.",
+        "respuesta": "Solo por desperfecto de fábrica, dentro de las 24 horas tras la entrega: en ese caso te entregamos el mismo producto en buen estado. Antes de pagar puedes revisar y probar el producto con el mensajero. No procede por mal uso, golpes, quemaduras por voltaje o instalación incorrecta. Escríbenos por WhatsApp con fotos o video.",
     },
     {
         "pregunta": "¿Venden módems para Nauta Hogar (ETECSA)?",
@@ -123,19 +123,19 @@ BASE_FAQ = [
     },
     {
         "pregunta": "¿Cuál es la tasa de cambio USD a MN?",
-        "respuesta": "La tasa se actualiza diariamente desde elTOQUE (la referencia de tasa de cambio en Cuba) más un pequeño margen operativo. El precio en MN que ves en el catálogo ya incluye todo. Visita tiendamax.org para ver la tasa actual.",
+        "respuesta": "La tasa se actualiza diariamente tomando como referencia elTOQUE (la referencia de tasa de cambio en Cuba). El precio en MN que ves en el catálogo ya está calculado con ella. Visita tiendamax.org para ver la tasa actual.",
     },
     {
         "pregunta": "¿Qué es elTOQUE?",
-        "respuesta": "elTOQUE es la plataforma de referencia en Cuba para la tasa de cambio informal entre USD y MN (pesos cubanos). TiendaMax usa la tasa de elTOQUE como base para calcular los precios en MN, sumando un pequeño margen operativo.",
+        "respuesta": "elTOQUE es la plataforma de referencia en Cuba para la tasa de cambio informal entre USD y MN (pesos cubanos). TiendaMax usa la tasa de elTOQUE como referencia para calcular los precios en MN.",
     },
     {
         "pregunta": "¿Tienen tienda física?",
-        "respuesta": "No, TiendaMax es una tienda 100% online. No tenemos local físico abierto al público. Todo se gestiona por WhatsApp y te enviamos a la puerta de tu casa con mensajería.",
+        "respuesta": "No, TiendaMax es una tienda 100% online. No tenemos local abierto al público. Todo se gestiona por WhatsApp: dónde se entrega o se recoge depende de dónde esté el producto, y lo coordinamos contigo antes. En La Habana también hay mensajería a domicilio.",
     },
     {
         "pregunta": "¿Cuál es el horario de atención?",
-        "respuesta": "Atendemos de Lunes a Sábado, de 9:00am a 8:00pm (hora de Cuba). Los pedidos online se pueden hacer 24/7, pero las respuestas por WhatsApp son en horario de atención.",
+        "respuesta": "Atendemos de Lunes a Sábado, de 10:00am a 6:00pm (hora de Cuba). Los pedidos online se pueden hacer 24/7, pero las respuestas por WhatsApp son en horario de atención.",
     },
 ]
 

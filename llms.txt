@@ -1,6 +1,6 @@
 # TiendaMax
 
-> Tienda online cubana de tecnología, electrónica, energía, redes, motos y más. Catálogo con precios en USD y MN, pedido por WhatsApp, envío a toda Cuba y pago contra entrega.
+> Tienda online cubana de tecnología, electrónica, energía, redes, motos y más. Catálogo con precios en USD y MN, pedido por WhatsApp, mensajería en La Habana y pago contra entrega.
 
 ## Sobre TiendaMax
 TiendaMax es una tienda online gestora que vende productos de terceros en Cuba. Ofrece tecnología, electrónica, energía solar, routers WiFi, carros, motos, celulares, seguridad, hogar y más. Los pedidos se hacen por WhatsApp y el pago es contra entrega.
@@ -12,11 +12,11 @@ TiendaMax es una tienda online gestora que vende productos de terceros en Cuba. 
 4. Coordinas pago contra entrega y envío
 
 ## Información importante
-- **Envíos**: A toda Cuba, costo coordinado por WhatsApp
+- **Envíos**: Mensajería en La Habana (el precio depende de la zona); el resto del país se coordina por WhatsApp
 - **Pago**: Contra entrega en USD o MN (pesos cubanos)
 - **Tasa de cambio**: Se actualiza diariamente (ver sitio)
-- **Garantía**: Todos los productos tienen garantía
-- **Horario**: Lunes a Sábado, 9am - 8pm (hora de Cuba)
+- **Garantía**: La garantía aplica solo a los productos que la indican en su ficha.
+- **Horario**: Lunes a Sábado, 10am - 6pm (hora de Cuba)
 - **WhatsApp**: +53 5432 0170
 - **Telegram**: https://t.me/TiendaMaxWeb
 

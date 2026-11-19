@@ -381,3 +381,18 @@ html:root body .section-eyebrow { font-size: 12px !important; }
   html:root body #catVerMasBtn { padding-top: 9px !important; padding-bottom: 9px !important; margin-bottom: 4px !important; }
   html:root body #rebajasHome { padding-top: 0 !important; }
 }
+
+/* Zonas táctiles: varios controles de la portada medían 30×31 px o menos (los
+   iconos de la cabecera, «Buscar», el selector USD/MN, los puntitos de las
+   rebajas). Se agranda el área que responde al dedo con un pseudo-elemento
+   invisible, sin cambiar el tamaño que se ve ni empujar nada del diseño. */
+@media (max-width: 768px) {
+  html body .header-right > button,
+  html body .hsb-buscar-pill,
+  html body .currency-bar .cur-btn,
+  html body #rebajasHomeDots button { position: relative; }
+  html body .header-right > button::before,
+  html body .hsb-buscar-pill::before,
+  html body .currency-bar .cur-btn::before { content: ''; position: absolute; inset: -7px -3px; }
+  html body #rebajasHomeDots button::before { content: ''; position: absolute; inset: -18px -7px; }
+}

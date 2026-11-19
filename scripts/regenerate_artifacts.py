@@ -1544,11 +1544,21 @@ def regenerate_category_pages(products: list[dict], wa_num: str = "5354320170") 
         page_url = f"{SITE}/c/{slug}.html"
         app_url = f"{SITE}/?categoria={urllib.parse.quote(cat)}"
 
-        title = escape(f"{nombre} en Cuba — Pago al recibir | TiendaMax")
-        desc = escape(
-            f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
-            f"Pides por WhatsApp y pagas al recibirlo, en USD o MN."
-        )
+        # Sin nada en stock el título no puede prometer «pago al recibir» ni la
+        # descripción decir «0 productos disponibles»: quien llega desde Google
+        # buscando eso encontraría una tienda vacía con un título que miente.
+        if en_stock > 0:
+            title = escape(f"{nombre} en Cuba — Pago al recibir | TiendaMax")
+            desc = escape(
+                f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
+                f"Pides por WhatsApp y pagas al recibirlo, en USD o MN."
+            )
+        else:
+            title = escape(f"{nombre} en Cuba — agotado hoy, te avisamos | TiendaMax")
+            desc = escape(
+                f"Ahora mismo no hay {cat.lower()} disponibles en TiendaMax. "
+                f"Deja tu WhatsApp y te avisamos cuando lleguen."
+            )
 
         items_jsonld = []
         for k, p in enumerate(p for p in prods if p.get("id")):
