@@ -280,7 +280,7 @@ input:focus,textarea:focus{border-color:var(--o)}
       <div class="fld"><div class="lbl">🔸 Artículo y cantidad<span class="la">✓ auto</span></div><textarea id="vArticulo" class="auto" rows="2" placeholder="—"></textarea></div>
       <button class="btn-act" onclick="abrirCatalogo()">🛍️ Elegir del catálogo</button>
       <div id="reservaPanel" style="display:none;margin-top:12px;padding:11px;border:1px solid rgba(255,107,53,.35);background:rgba(255,107,53,.07);border-radius:10px"></div>
-      <div class="fld" style="margin-top:12px"><div class="lbl">🔸 Garantía<span class="lf">✏️</span></div><input type="text" id="vGarantia" class="fill" placeholder="Ej: 3 meses"></div>
+      <div class="fld" style="margin-top:12px"><div class="lbl">🔸 Garantía de lo escrito a mano<span class="lf">✏️</span></div><input type="text" id="vGarantia" class="fill" placeholder="Ej: 3 meses"><div id="vGarantiaInfo" style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45">Lo elegido del catálogo lleva la garantía de su ficha; este campo es solo para lo que escribas a mano.</div></div>
     </div>
   </div>
 
@@ -727,7 +727,7 @@ function construirTextoVale(){
 
 🔸 Total a pagar: ${document.getElementById('vTotal').textContent}
 
-*Garantía: ${g('vGarantia')}
+${textoGarantias()}
 *Fecha y hora de Venta: ${g('vFecha')}${_valeVence()?'\n🔒 Te lo guardamos hasta el '+fmtVence(_valeVence()):''}
 
 ${textoAtencion()}`;
@@ -988,6 +988,39 @@ function _valeTieneTarjeta(){
   return Object.keys(o).some(c=>{ const x=o[c]; return x && x.t && (tl.endsWith(x.t)||x.t.endsWith(tl)) && !(x.x && Date.now()>x.x); });
 }
 
+/* La garantía es de cada producto, no del vale: la escribe el gestor en la
+   ficha (`garantia`) y solo la tienen algunos. Un campo único aplicado a todo
+   prometía garantía a lo que no la tiene — y el cliente vuelve a cobrarla.
+   Lo elegido del catálogo (o escrito con su nombre exacto) lleva la de su
+   ficha, o ninguna; el campo «Garantía» solo vale para lo escrito a mano que
+   no está en el catálogo. */
+function _garantiasVale(){
+  const txt=(document.getElementById('vArticulo')?.value||'').trim(); if(!txt) return [];
+  let ps=[]; try{ ps=JSON.parse(localStorage.getItem('productos')||'[]')||[]; }catch(e){}
+  const manual=(document.getElementById('vGarantia')?.value||'').trim();
+  return _parseItems(txt).map(it=>{
+    const n=_nNombre(it.nombre);
+    const sel=_valeItems.find(x=>_nNombre(x.nombre)===n);
+    const p=(sel && ps.find(x=>String(x.id)===String(sel.id))) || ps.find(x=>_nNombre(x.nombre)===n) || null;
+    const gar = p ? String(p.garantia||'').trim() : manual;
+    return {nombre:it.nombre, enCatalogo:!!p, garantia:gar};
+  });
+}
+function textoGarantias(){
+  const gs=_garantiasVale();
+  if(!gs.length || !gs.some(x=>x.garantia)) return '*Garantía: sin garantía';
+  const uno=gs.every(x=>x.garantia && x.garantia===gs[0].garantia);
+  if(uno) return '*Garantía: '+gs[0].garantia;
+  return '*Garantía:\n'+gs.map(x=>'   • '+x.nombre+': '+(x.garantia||'sin garantía')).join('\n');
+}
+function _pintarGarantiaInfo(gs){
+  const el=document.getElementById('vGarantiaInfo'); if(!el) return;
+  const cat=gs.filter(x=>x.enCatalogo);
+  if(!cat.length){ el.textContent='Lo elegido del catálogo lleva la garantía de su ficha; este campo es solo para lo que escribas a mano.'; return; }
+  el.textContent='Del catálogo: '+cat.map(x=>x.nombre.split(' ').slice(0,3).join(' ')+' → '+(x.garantia||'sin garantía')).join(' · ')
+    +(gs.some(x=>!x.enCatalogo)?' · El campo vale para lo escrito a mano.':'');
+}
+
 /* Hasta cuándo se guarda: el de la reserva si ya se hizo, si no el que tendrá. */
 function _valeVence(){
   if(typeof TMReservas==='undefined') return 0;
@@ -1022,7 +1055,6 @@ function drawValeImg() {
   const promotor = (document.getElementById('vPromotor')?.value||'').trim();
   const cliente  = (document.getElementById('vCliente')?.value||'').trim()  || '—';
   const direccion= (document.getElementById('vDireccion')?.value||'').trim();
-  const garantia = (document.getElementById('vGarantia')?.value||'').trim();
   const fecha    = (document.getElementById('vFecha')?.value||'').trim();
   const artTxt   = (document.getElementById('vArticulo')?.value||'').trim();
   let items = artTxt ? artTxt.split('\n').map(l=>{
@@ -1031,6 +1063,11 @@ function drawValeImg() {
     it.precio = m ? parseFloat(m[1].replace(/,/g,'')) : null;
     return it;
   }).filter(Boolean) : [];
+  const gars=_garantiasVale();
+  _pintarGarantiaInfo(gars);
+  items.forEach((it,k)=>{ it.garantia=(gars[k]&&gars[k].garantia)||''; });
+  const conGar=items.filter(it=>it.garantia);
+  const garUnica=conGar.length && conGar.length===items.length && conGar.every(it=>it.garantia===conGar[0].garantia) ? conGar[0].garantia : '';
   const vacio = !items.length;
   if(vacio) items=[{qty:'',nombre:'(Artículos aparecerán aquí)'}];
 
@@ -1057,7 +1094,7 @@ function drawValeImg() {
     ctx.font=F(700,30,'ui-monospace,Menlo,monospace'); const pw=it.precio!=null ? ctx.measureText(fmtUSD(it.precio*it.qty)).width+28 : 0;
     const nm=_vNombre(ctx, String(it.nombre||''), IW-qw-22-pw);
     const sub = it.precio!=null && it.qty>1;
-    return {it, qw, nm, sub, h: nm.lineas.length*(nm.f+10) + (sub?34:0) + 30};
+    return {it, qw, nm, sub, h: nm.lineas.length*(nm.f+10) + (sub?34:0) + (it.garantia?34:0) + 30};
   });
   let lugarL=[];
   if(recoge || domicilio){
@@ -1072,7 +1109,7 @@ function drawValeImg() {
   const hTot=34+46+(mens?44:0)+26+132+(usd&&totalCup?52:10);
   const hLugar=(recoge||domicilio) ? 30 + 54 + 40 + lugarL.length*38 + ((recoge&&alm.ubicacion)||domicilio?38:0) + 30 : 0;
   const hVence=vence ? 26+76 : 0;
-  const hGar=26+92;
+  const hGar=conGar.length ? 26+92 : 0;
   const hTj=conTarjeta ? 22+40 : 0;
   const hAt=atL.length ? 40+50+atL.length*36 : 0;
   const hPie=34+112;
@@ -1127,7 +1164,9 @@ function drawValeImg() {
     ctx.fillStyle='#e4e4e7'; ctx.font=F(700,26,'ui-monospace,Menlo,monospace'); ctx.textAlign='center'; ctx.fillText(it.qty+'x', M+f.qw/2, y+28);
     ctx.textAlign='left'; ctx.fillStyle=C.txt; ctx.font=F(500,f.nm.f);
     f.nm.lineas.forEach((l,k)=>ctx.fillText(l, M+f.qw+22, base+k*(f.nm.f+10)));
-    if(f.sub){ ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText(fmtUSD(it.precio)+' c/u', M+f.qw+22, base+f.nm.lineas.length*(f.nm.f+10)+6); }
+    let ey=base+f.nm.lineas.length*(f.nm.f+10)+6;
+    if(f.sub){ ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText(fmtUSD(it.precio)+' c/u', M+f.qw+22, ey); ey+=34; }
+    if(it.garantia){ ctx.fillStyle='#6ee7b7'; ctx.font=F(500,22); ctx.fillText('🛡️ Garantía: '+it.garantia, M+f.qw+22, ey); }
     if(it.precio!=null){ ctx.textAlign='right'; ctx.fillStyle=C.txt; ctx.font=F(700,30,'ui-monospace,Menlo,monospace'); ctx.fillText(fmtUSD(it.precio*it.qty), W-M, y+28); }
     y+=f.h;
   });
@@ -1180,12 +1219,15 @@ function drawValeImg() {
   }
 
   // ── 7. Garantía ──
-  y+=26;
-  _vRR(ctx,M,y,IW,92,26); ctx.fillStyle=C.card; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
-  ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(600,20); ctx.fillText('GARANTÍA', M+34, y+38);
-  ctx.fillStyle=C.txt; ctx.font=F(700,26); ctx.fillText(garantia||'Sin garantía', M+34, y+72);
-  ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText('Guarda este vale como comprobante', W-M-34, y+56);
-  y+=92;
+  // Solo si algún producto la tiene; cuál, va en su propia línea arriba.
+  if(conGar.length){
+    y+=26;
+    _vRR(ctx,M,y,IW,92,26); ctx.fillStyle=C.card; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
+    ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(600,20); ctx.fillText('GARANTÍA', M+34, y+38);
+    ctx.fillStyle=C.txt; ctx.font=F(700,26); ctx.fillText(garUnica || 'Solo en lo marcado con 🛡️', M+34, y+72);
+    ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText('Guarda este vale como comprobante', W-M-34, y+56);
+    y+=92;
+  }
 
   // ── 8. Si ya tiene tarjeta: que la traiga (sin cifras: el descuento se decide al vender) ──
   if(conTarjeta){

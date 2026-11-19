@@ -179,6 +179,35 @@ for (const modo of ['comparte', 'cancela']) {
     await ctx.close();
 }
 
+// ── 2b) La garantía es de cada producto, no del vale ──
+{
+    const ctx = await contexto(false, null);
+    const pg = await ctx.newPage();
+    pg.on('pageerror', e => errores.push('vale garantía: ' + String(e).slice(0, 200)));
+    await pg.goto(`http://localhost:${PUERTO}/vale.html`);
+    await pg.waitForFunction(() => typeof textoGarantias === 'function', null, { timeout: 15000 });
+    const g = await pg.evaluate(([a, b]) => {
+        const ps = JSON.parse(localStorage.getItem('productos'));
+        ps.forEach(p => { if (String(p.id) === String(a.id)) p.garantia = '3 meses'; if (String(p.id) === String(b.id)) p.garantia = ''; });
+        localStorage.setItem('productos', JSON.stringify(ps));
+        resetForm();
+        document.getElementById('vGarantia').value = '1 año';      // escrito para todo: no puede pegarse a lo del catálogo
+        agregarProductoVale(a.nombre, Number(a.precioActual) || 0, String(a.id));
+        agregarProductoVale(b.nombre, Number(b.precioActual) || 0, String(b.id));
+        const mixto = textoGarantias();
+        document.getElementById('vArticulo').value += '\n1x Cable escrito a mano';
+        const conMano = _garantiasVale();
+        resetForm(); agregarProductoVale(b.nombre, Number(b.precioActual) || 0, String(b.id));
+        document.getElementById('vGarantia').value = '';
+        return { mixto, conMano, ninguna: textoGarantias() };
+    }, [A, B]);
+    ok(g.mixto.includes(A.nombre + ': 3 meses') && g.mixto.includes(B.nombre + ': sin garantía') && !g.mixto.includes('1 año'),
+       `la garantía tiene que ser la de cada producto: «${g.mixto}»`);
+    ok(g.conMano.find(x => /Cable escrito/.test(x.nombre)).garantia === '1 año', 'el campo de garantía tiene que valer para lo escrito a mano');
+    ok(/sin garantía/.test(g.ninguna), `un vale sin productos con garantía no puede prometerla: «${g.ninguna}»`);
+    await ctx.close();
+}
+
 // ── 3) El panel: entra solo con la sesión, pide login sin ella ──
 for (const sesion of [true, false]) {
     const ctx = await contexto(sesion, null);
