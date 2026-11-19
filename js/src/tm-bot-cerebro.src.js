@@ -2076,6 +2076,40 @@
     return casan.length > 0 && casan.every(w => _PALABRAS_DE_USO.has(w));
   }
 
+  /* PRODUCTOS NOMBRADOS QUE LA TIENDA TIENE APAGADOS.
+     La tienda filtra `productos` en memoria (categoría o subcategoría apagada
+     en el panel) pero guarda el catálogo ENTERO en localStorage. Si el cliente
+     pide por su nombre algo que está ahí y no en la lista visible, la verdad es
+     «no está disponible ahora», no «no te entendí» ni otra cosa parecida: el
+     que pregunta por una NanoStation con WIFI apagada recibía un callejón. Solo
+     cuenta si lo visible no reconoce el mensaje, para no robarle consultas. */
+  let _ocultosFirma = '', _ocultosCache = [];
+  function _productosOcultos(){
+    let todos = [];
+    try { todos = JSON.parse(localStorage.getItem('productos') || '[]') || []; } catch(e){ return []; }
+    if(!Array.isArray(todos) || !todos.length) return [];
+    const vis = _productosVivos();
+    const firma = todos.length + ':' + vis.length + ':' + _catFirma;
+    if(firma === _ocultosFirma) return _ocultosCache;
+    const idsVisibles = new Set(vis.map(p => String(p.id)));
+    _ocultosCache = todos.filter(p => p && p.id != null && !idsVisibles.has(String(p.id))).map(_normalizar);
+    _ocultosFirma = firma;
+    return _ocultosCache;
+  }
+  function _mencionOculto(text){
+    const ocultos = _productosOcultos();
+    if(!ocultos.length) return null;
+    // Si lo que hay a la venta ya reconoce el mensaje, manda eso.
+    try { if(detectProductMentions(text).length) return null; } catch(e){ return null; }
+    const guardado = PRODUCTOS;
+    try {
+      PRODUCTOS = ocultos;
+      const m = detectProductMentions(text);
+      return (m && m.length) ? (m[0].p || m[0]) : null;
+    } catch(e){ return null; }
+    finally { PRODUCTOS = guardado; }
+  }
+
   function detectIntent(text){
     let t = normalize(text).trim();
     let m = text.toLowerCase().trim();
@@ -2106,6 +2140,9 @@
        Si trae una consulta, no entra aquí y gana la consulta. */
     const _ch = _charlaIntent(m);
     if(_ch) return _ch;
+
+    // Nombró algo que la tienda tiene apagado: se dice, no se inventa otra cosa.
+    if(_mencionOculto(text)) return 'noDisponible';
 
     // Actualizar contexto con presupuesto si lo menciona
     const presupuesto = detectPresupuesto(text);
@@ -2933,6 +2970,15 @@
 
   /* Quien pide una persona no quiere un producto: se le da el camino ya, con
      el horario real, y no se le sigue vendiendo. */
+  R.noDisponible = (text) => {
+    const p = _mencionOculto(text);
+    const nombre = p ? String(p.nombre).split('|')[0].trim() : 'Ese producto';
+    return {
+      response: `😕 <strong>${escapeHtml(nombre)}</strong> no está disponible ahora en la tienda.\n\nSi lo necesitas, escríbenos por WhatsApp y te decimos qué podemos hacer. También te puedo enseñar lo que sí tenemos.`,
+      quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+    };
+  };
+
   R.humano = () => ({
     response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba).`,
     quickReplies: ['💬 Abrir WhatsApp','📦 Categorías','🔥 Ofertas']
@@ -4718,7 +4764,7 @@ ${notasHTML}
     if(o.unidad) body += `🎮 Va directo a tu cuenta con tu ID de jugador.\n`;
     else if(String(o.region || '') === 'EE. UU.') body += `⚠️ Solo funciona en cuentas de EE. UU.\n`;
     body += `\nToca la tarjeta para elegir el importe y pedirla.`;
-    return { response: body, products: [p], productosPrimero: true, quickReplies: ['💬 WhatsApp','📦 Categorías'] };
+    return { response: _sinTituloRepetido(body), products: [p], productosPrimero: true, quickReplies: ['💬 WhatsApp','📦 Categorías'] };
   }
 
   /* Lo que preguntaron de UN producto, contestado con su ficha.
@@ -4759,6 +4805,12 @@ ${notasHTML}
     }
     if(!filas.length && !extra) return '';
     return `🎯 <strong>Lo que preguntas:</strong>\n` + (extra ? extra + '\n' : '') + filas.map(fila).join('\n') + '\n\n';
+  }
+
+  /* Con la tarjeta grande encima (foto, nombre, precio, stock), el título del
+     texto repetía el nombre: se quita solo esa primera línea. */
+  function _sinTituloRepetido(b){
+    return String(b).replace(/^📦 <strong>[^\n]*<\/strong>\n\n/, '');
   }
 
   function buildDetalle(p, originalQuery){
@@ -4850,7 +4902,7 @@ ${notasHTML}
     if(subcat === 'BATERÍAS') qrs.splice(1, 0, '⏱️ Calcular autonomía');
     if(subcat === 'INVERSORES') qrs.splice(1, 0, '⏱️ Autonomía con nevera');
     return {
-      response: body,
+      response: _sinTituloRepetido(body),
       products: [p],
       productosPrimero: true,
       quickReplies: qrs,

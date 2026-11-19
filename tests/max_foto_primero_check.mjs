@@ -82,6 +82,16 @@ const vista = await pg.evaluate(() => {
 ok(vista && vista.dentro, `la tarjeta tiene que verse sin desplazarse (${vista ? Math.round(vista.arriba) + 'px' : 'no hay tarjeta grande'})`);
 ok(vista && vista.alto >= 150, `la foto es grande (${vista ? Math.round(vista.alto) + 'px' : 'no hay tarjeta grande'} de alto)`);
 
+// El texto de debajo no repite el nombre que la tarjeta ya trae arriba.
+const textoDebajo = await pg.evaluate(() => {
+  const cuerpo = document.getElementById('tmBotBody');
+  const m = [...cuerpo.querySelectorAll('.tm-bot-msg.bot')].pop();
+  return m ? m.innerText.replace(/\s+/g, ' ').trim() : '';
+});
+const nombreCorto = PROD.nombre.split('|')[0].trim();
+ok(!textoDebajo.startsWith(nombreCorto) && !textoDebajo.startsWith('📦 ' + nombreCorto),
+   `el texto no debe volver a empezar por el nombre (ya está en la tarjeta): ${textoDebajo.slice(0, 80)}`);
+
 // ── 2. Una lista: el texto sigue ANTES de las tarjetas ───────────────────
 await preguntar('aceite 5w30');
 sec = await secuencia();
