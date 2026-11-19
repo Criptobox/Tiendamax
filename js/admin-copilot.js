@@ -644,6 +644,21 @@ async function buildTasks(){
     });
   }
 
+  /* Vales que pasaron su plazo sin que el cliente viniera: la unidad sigue
+     apartada y nadie más la puede comprar. Es del gestor —él mandó el vale—,
+     así que no va en AGENDA_NO_MIAS. */
+  try {
+    if (window.TMReservas && typeof TMReservas.pendientesVencidas === 'function') {
+      const venc = TMReservas.pendientesVencidas();
+      if (venc.length) addTask(tasks, {
+        kind: 'reserva-vencida', urgency: 3, icon: '⏰',
+        title: `${venc.length} vale${venc.length !== 1 ? 's' : ''} vencido${venc.length !== 1 ? 's' : ''} sin recoger`,
+        detail: venc.slice(0, 3).map(r => (r.cliente || 'Sin nombre') + ': ' + (r.items || []).map(i => i.nombre).join(', ')).join(' · ') + '. Esas unidades siguen apartadas.',
+        action: 'Recordar o liberar', tab: 'reservas'
+      });
+    }
+  } catch (e) {}
+
   const sinCom = ps.filter(sinComision);
   if (sinCom.length){
     const uds = sinCom.reduce((t,p)=>t+num(p.stock),0);
