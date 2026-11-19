@@ -157,8 +157,15 @@ const CATALOGO = [
 {
     ok(/function _tmConservarStockLocal\(remotos\)/.test(TM_DATA),
         'falta la protección del stock local sin publicar');
-    ok(/_tmConservarStockLocal\((productos|_todos)\);\s*\n\s*localStorage\.setItem\('productos'/.test(TM_DATA),
+    // La protección vive en _tmPrepararProductos (un solo sitio) y todo lo que baja de la
+    // red pasa por ella ANTES de guardarse: tanto la carga de la visita como la
+    // revisión en vivo del catálogo.
+    ok(/_tmConservarStockLocal\(_todos\);\s*\n\s*return _todos;/.test(TM_DATA),
         'hay que aplicarla ANTES de guardar el catálogo bajado de la red');
+    ok(/_todos = _tmPrepararProductos\(dataProd, mapaLocal\);[\s\S]{0,200}localStorage\.setItem\('productos'/.test(TM_DATA),
+        'la carga de la visita debe pasar por ella antes de guardar');
+    ok(/todos = _tmPrepararProductos\(dataProd, mapaLocal\);[\s\S]{0,400}localStorage\.setItem\('productos'/.test(TM_DATA),
+        'la revisión en vivo también debe pasar por ella antes de guardar');
     ok(/productosModificados/.test(TM_DATA.slice(TM_DATA.indexOf('function _tmConservarStockLocal'),
                                                  TM_DATA.indexOf('function _tmConservarStockLocal') + 1400)),
         'se decide por productosModificados: es la lista de cambios sin subir');
