@@ -111,7 +111,7 @@ ok(intent('cual es mejor wifi 5 o wifi 6') !== 'recomendacion',
 // contesta con el texto general —que invita a preguntar justo lo que acaba de
 // dejar sin responder.
 const gar = B.responder('el inversor tataliken tiene garantia').response;
-ok(/no tengo el plazo|no lo tengo anotado/i.test(gar),
+ok(/no tengo el plazo|no lo tengo anotado|no declara garant[ií]a/i.test(gar),
     'sin garantía en la ficha, Max debe decirlo en vez de soltar el texto general');
 ok(!/\b(\d+)\s*(mes|a[ñn]o)/i.test(gar),
     'no debe inventarse un plazo de garantía que la ficha no trae');

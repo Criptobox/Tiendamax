@@ -111,7 +111,7 @@ class BotPulidoTest(unittest.TestCase):
         txt = CEREBRO.read_text(encoding="utf-8")
         i_fb = txt.index("R.fallback = (text) => {")
         cuerpo = txt[i_fb:i_fb + 3000]
-        i_prods = cuerpo.index("const prods = findProducts(text, 3);")
+        i_prods = cuerpo.index("const _cand = findProducts(text, 3);")
         i_niego = cuerpo.index("no lo manejo")
         self.assertLess(
             i_prods, i_niego,

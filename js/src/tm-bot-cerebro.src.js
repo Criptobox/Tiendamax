@@ -1280,6 +1280,17 @@
       nota: 'Plantas eléctricas y generadores de combustible no vendo.',
       ofrecer: 'Para el apagón sí tengo inversores con batería y estaciones de energía, que es la otra forma de resolverlo.',
       botones: ['⚡ Ver inversores','💬 WhatsApp'] },
+    { re: /\b(bicicletas?|bici|bicis|patinetes?)\b/i,
+      que: 'bicicletas',
+      nota: 'Bicicletas no tengo (ni eléctricas ni normales).',
+      ofrecer: 'Lo que sí tengo es una <strong>moto eléctrica</strong>: no es una bicicleta, pero resuelve el transporte.',
+      mostrar: /moto el[eé]ctrica/i,
+      botones: ['🛵 MOTOS','💬 WhatsApp'] },
+    { re: /\b(recargas?|saldo)\b[^.?]{0,14}\b(nauta|etecsa|cubacel|m[oó]vil|celular|telef\w*)\b|\b(nauta|etecsa|cubacel)\b[^.?]{0,14}\b(recargas?|saldo)\b/i,
+      que: 'recargas de saldo',
+      nota: 'Recargas de Nauta o de saldo móvil no las manejo.',
+      ofrecer: '',
+      botones: ['📦 Categorías','💬 WhatsApp'] },
     { re: /\b(tarjeta\w*\s+sim|sim card|chip de datos)\b/i,
       que: 'tarjetas SIM',
       nota: 'Tarjetas SIM no vendo — esas las da ETECSA.',
@@ -1698,7 +1709,7 @@
   //    y "qué me recomiendas para los apagones" perdía los apagones. Detrás
   //    solo se admite un pronombre suelto o una muletilla.
   const _HILO_COLA = '(\\s+(eso|ese|esa|esto|este|esta|estos|estas|el|la|lo|los|las|aqui|ahi|ahora|entonces|max|porfa|por\\s+favor))*\\s*\\.*$';
-  const _HILO_CABEZA = '^(y|ok|pero|entonces|bueno)?\\s*';
+  const _HILO_CABEZA = '^(y|ok|pero|entonces|bueno)?\\s*((ese|esa|este|esta|eso|esos|esas|estos|estas)\\s+)?';
   const _HILO = [
     ['hiloPrecio', '(cuanto\\s+(cuesta|cuestan|vale|valen|sale|salen|es|son|seria|serian|me\\s+cuesta|me\\s+sale)|que\\s+(precio|valor)(\\s+tienen?)?|a\\s+como\\s+(esta|estan|lo\\s+dan|la\\s+dan|los\\s+dan)|(el\\s+|los\\s+)?precios?|cual\\s+es\\s+el\\s+precio)'],
     ['hiloCual', '(cual(es)?\\s+(me\\s+)?(recomiendas|aconsejas|conviene|me\\s+conviene|es\\s+mejor|son\\s+mejores|cojo|llevo|compro|escojo|elijo|sirve|seria\\s+mejor)|que\\s+me\\s+(recomiendas|aconsejas)|cual(es)?)'],
@@ -1802,6 +1813,22 @@
     if(/^(reiniciar|reinicia|reiniciar (el )?(chat|conversaci[oó]n)|empezar (de nuevo|otra vez)|nueva conversaci[oó]n|borrar (el )?(chat|conversaci[oó]n)|limpiar( el)? chat)[\s!?.¿¡]*$/.test(m)) return 'resetCmd';
     if(/\b(hablar|conversar|comunicar\w*|contactar\w*|comun[ií]came|p[aá]same|pasame|ponme|atiend[ae]\w*)\b[^.?]{0,30}\b(persona|humano|alguien|agente|asesor|vendedor|encargado|representante|operador|gente|real)\b|^(un |una )?(humano|agente|asesor|operador|persona|vendedor|encargado|representante)[\s!?.¿¡]*$|atenci[oó]n al cliente|servicio al cliente|servicio t[eé]cnico|soporte t[eé]cnico|\b(quiero|necesito|prefiero)\s+(un|una|el|la)?\s*(persona|humano|agente|asesor|vendedor)\b/.test(m)) return 'humano';
     if(/\b(reclam\w+|quej[ao]s?|quejarme|quejarse|denunci\w+|me estafaron|me enga[ñn]aron|mal servicio|pesimo servicio|insatisfech\w+)\b/.test(m)) return 'reclamo';
+
+    /* Lo que no es del catálogo ni de la tienda: se dice, en vez de enseñar
+       el producto que comparta una palabra («quién ganó el juego de beisbol»
+       enseñaba fundas de asiento). */
+    if(/\b(qui[eé]n gan[oó]|resultado\w* d(el|e la) (juego|partido)|b[eé]isbol|f[uú]tbol|baloncesto|marcador|chistes?|noticias|el clima|pron[oó]stico)\b/.test(m)) return 'fueraDeTema';
+    // «el wifi está lento» es un problema, no un producto: consejo corto y salida.
+    if(/\b(wi ?fi|internet|se[ñn]al|la red)\b[^.?]{0,25}\b(lent[oa]s?|despacio|se cae|se corta|d[eé]bil|mala|no llega|satura\w*)\b|\b(lent[oa]s?)\b[^.?]{0,15}\b(wi ?fi|internet)\b/.test(m)) return 'wifiLento';
+    /* Sin corriente, apagón, ahorrar corriente, «algo para la luz»: es el
+       sistema solar, y se entra por él pidiendo lo que falta (vatios y horas)
+       en vez de enseñar una lámpara-ventilador. */
+    if(/\b(no (tengo|hay) (corriente|luz|electricidad|energ[ií]a)|sin (corriente|luz|electricidad)|(se (fue|va|me fue)|falta) la (luz|corriente)|ahorrar (corriente|luz|energ[ií]a|electricidad)|(algo|cosa|equipo|producto)s? para (la )?(luz|corriente|apag\w+|energ[ií]a))\b/.test(m)
+       || (/\b(para|con|a)\s+(la\s+)?(solar|energ[ií]a solar|placas?)\b|\bnecesito\b[^.?]{0,40}\bsolar\b/.test(m)
+           && /\b(bombill\w*|focos?|luces|tv|televisor\w*|nevera|refri\w*|ventilador\w*|celular\w*|laptop|router|equipos?|aparatos?|casa)\b/.test(m))) return 'solarEntrada';
+    // «cuánto cuesta» a secas, sin nada que lo anteceda: se pregunta de cuál.
+    if(!_context.lastProduct && !(_lastProductsShown || []).length
+       && /^(y\s+)?((ese|esa|este|esta|eso)\s+)?(cu[aá]nto\s+(cuesta|vale|sale|es)|qu[eé] precio|a c[oó]mo)[\s?!.¿¡]*$/.test(m)) return 'precioSolo';
 
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
@@ -1920,7 +1947,7 @@
        solo contaba seguido de «a» o «hasta»— y se iba a la búsqueda difusa,
        que contestaba con un timbre y un bidón de aceite. */
     if(/\b(cu[aá]nto (tiempo )?(tarda|demora|se demora)|en cu[aá]nto (tiempo|llega)|cu[aá]ndo (me )?(llega|lo tengo|lo recibo)|tiempo de entrega|d[ií]as? (tarda|demora)|se demora)\b/.test(m)) return 'envios';
-    if(/\b(env[ií]o|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
+    if(/\b(env[ií]os?|env[ií]an|entrega|domicilio|delivery|llevan.*casa|a domicilio|a d[oó]nde llevan|donde llevan|a d[oó]nde hacen|hacen env[ií]os|env[ií]an a|llegan (hasta|a)|llega (hasta|a)|reparten|mensajer[ií]a|mandan|manda)\b/.test(m)
        || /\b(oriente|occidente|centro del pa[ií]s|toda la isla|todo el pa[ií]s)\b/.test(m)
        ) return 'envios';
     /* Recoger NO es envío y no se puede contestar con la tabla de cobertura,
@@ -2185,8 +2212,12 @@
     const q = _expandirConsulta(cleanForMatch(text));
     const scored = PRODUCTOS
       .map(p => ({p, s: scoreProduct(p, q)}))
-      .filter(x => x.s > 0)
+      .filter(x => x.s > 0 && _matchFuerte(x.p, q))
       .sort((a,b) => b.s - a.s);
+    /* Que comparta una palabra suelta con la DESCRIPCIÓN no es relacionado:
+       «el wifi está lento» sacaba un timbre y «recargas de nauta» un
+       inflador (recargable). Sin ninguna palabra en el nombre, la
+       subcategoría o la ficha, no se recomienda nada. */
     if(scored.length === 0) return 'fallback';
     const top = scored[0];
     const second = scored[1];
@@ -2456,9 +2487,49 @@
   /* Quien pide una persona no quiere un producto: se le da el camino ya, con
      el horario real, y no se le sigue vendiendo. */
   R.humano = () => ({
-    response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba). Fuera de ese horario puedes dejar tu mensaje y te respondemos cuando abramos.`,
+    response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba).`,
     quickReplies: ['💬 Abrir WhatsApp','📦 Categorías','🔥 Ofertas']
   });
+
+  R.wifiLento = () => {
+    const ps = PRODUCTOS.filter(p => p.stock > 0 && /^(ROUTERS|REPETIDORES)$/i.test(p.subcategoria || '')).sort((a, b) => a.precio - b.precio).slice(0, 3);
+    return {
+      response: `📶 Un wifi lento casi siempre tiene arreglo sencillo:\n• Reinicia el router (apágalo un minuto y enciéndelo).\n• Ponlo en el centro de la casa y alto, lejos de paredes gruesas y del microondas.\n• Mira cuántos equipos están conectados a la vez.\n• Si el internet es lento en todos los equipos, el problema puede ser el servicio y no el router.\n\n${ps.length ? 'Si tu router ya no da más, esto es lo que tengo disponible:' : 'Si necesitas cambiar el router o ampliar la señal, escríbenos por WhatsApp y te decimos qué hay.'}`,
+      products: ps.length ? ps : undefined,
+      quickReplies: ['💬 WhatsApp','📦 Categorías']
+    };
+  };
+
+  R.fueraDeTema = () => ({
+    response: `🙅 Eso no lo manejo: soy el asistente del catálogo de TiendaMax y solo sé de nuestros productos, precios y entregas.\n\nSi buscas algo de la tienda, dime qué necesitas o mira las categorías. Para cualquier otra cosa, escríbenos por WhatsApp.`,
+    sinRespuesta: true,
+    quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+  });
+
+  R.precioSolo = () => {
+    const ps = PRODUCTOS.filter(p => p.stock > 0).sort((a, b) => (b.masVendido === true) - (a.masVendido === true) || a.precio - b.precio).slice(0, 3);
+    return {
+      response: `💰 ¿El precio de cuál? Dime el nombre del producto (por ejemplo <em>«precio del inflador»</em>) o toca uno de estos:`,
+      products: ps,
+      quickReplies: ['📦 Categorías','🔥 Ofertas','💬 WhatsApp']
+    };
+  };
+
+  /* Entrada al sistema solar desde cómo habla la gente («tengo 3 bombillos y
+     un tv», «no tengo corriente»). No se inventa ninguna autonomía: se piden
+     los vatios y las horas, que es lo que falta para calcularla. */
+  R.solarEntrada = (text) => {
+    const t = cleanForMatch(text);
+    const vistos = [];
+    [['bombill|foco|luces?|luz', 'bombillos'], ['tv|televisor', 'tv'], ['nevera|refri', 'nevera'], ['ventilador', 'ventilador'],
+     ['celular', 'celulares'], ['laptop', 'laptop'], ['router', 'router']].forEach(([re, n]) => { if(new RegExp('\\b(' + re + ')').test(t)) vistos.push(n); });
+    const tengo = vistos.length ? `Con ${vistos.join(', ')} ` : '';
+    return {
+      response: `☀️ Eso se resuelve con un <strong>sistema solar</strong> (panel, batería e inversor). ${tengo ? tengo + 'se' : 'Se'} puede armar, pero antes necesito dos datos para no inventarte nada:\n\n1️⃣ Los <strong>vatios (W)</strong> de cada equipo: vienen en la etiqueta.\n2️⃣ Cuántas <strong>horas</strong> al día lo usas.\n\nCon eso te calculo cuánto aguanta la batería. Si prefieres empezar por algo, te enseño el sistema básico (luz y carga de celular).`,
+      quickReplies: ['☀️ Arma un sistema solar','⏱️ Calcular autonomía','💬 WhatsApp'],
+      siDigoSi: () => R.sistemaSolar('sistema solar basico')
+    };
+  };
 
   // «menú»: lo mismo que ve quien abre el chat, con los cuatro botones.
   R.menu = () => ({
@@ -2674,6 +2745,10 @@
       re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2}\b/,
       no: /transmisi|caja|cvt|atf|diferencial|hidraul|freno|\b2t\b|dos tiempos|compresor|comestible|vegetal|oliva|girasol|cocina|masaje|esencial/,
       subs: ['LUBRICANTES', 'ACEITES Y LUBRICANTES'] },
+    { id: 'transmision', icono: '⚙️', titulo: 'Aceites de transmisión', pide: '',
+      re: /\b(aceites?|lubricantes?)\b[^.?]{0,25}\b(transmisi\w*|caja|cvt|atf|diferencial)\b|\b(transmisi\w*|caja)\b[^.?]{0,25}\b(aceites?|lubricantes?)\b/,
+      no: /^$/,
+      subs: ['CAJA MECÁNICA Y AUTOMÁTICA'] },
     { id: 'anticongelante', icono: '🧊', titulo: 'Anticongelante / refrigerante', pide: '',
       re: /\b(anticongelantes?|antifreeze|refrigerantes?|coolant)\b/,
       no: /\b(nevera|refrigerador|aire|freezer)\b/,
@@ -2682,7 +2757,8 @@
   const _FAMILIA_GENERICA = new Set(['aceite','aceites','motor','mineral','sintetico','semisintetico','transmision','automatica','manual','litro','litros','garrafa','liquido','frenos','lubricante','lubricantes','antifreeze','anticongelante','refrigerante','coolant','mecanica','caja','carro','carros','moto','motos']);
   function _familiaDe(text){
     const m = cleanForMatch(text);
-    const f = _FAMILIAS.find(x => x.re.test(m) && !x.no.test(m));
+    const f = _FAMILIAS.slice().sort((a, b) => (b.id === 'transmision') - (a.id === 'transmision'))
+      .find(x => x.re.test(m) && !x.no.test(m));
     if(!f) return null;
     const palabras = new Set(m.split(' '));
     const prods = PRODUCTOS.filter(p => f.subs.includes(String(p.subcategoria || '').toUpperCase()));
@@ -3821,6 +3897,11 @@ ${notasHTML}
         equiposDetectados.push({nombre, w});
       }
     }
+    /* «100Ah con 500W»: el cliente ya dio la carga. Manda la suya y no una
+       tabla de consumos típicos. */
+    const _mW = text.match(/(\d+(?:[.,]\d+)?)\s*(?:w|watts?|vatios?)\b/i);
+    const _wExpl = _mW ? parseFloat(_mW[1].replace(',', '.')) : 0;
+    if(_wExpl > 0) equiposDetectados = [{ nombre: 'Carga que indicas', w: _wExpl, explicito: true }];
     // Si no detecta equipos, sugerir escenarios
     if(equiposDetectados.length === 0){
       return {
@@ -3864,7 +3945,8 @@ ${notasHTML}
       batInfo = `<strong>Batería típica de 100Ah a 12V</strong> (= 1.200Wh)\n\n`;
     }
     const totalW = equiposDetectados.reduce((s, e) => s + e.w, 0);
-    const horas = capWh / totalW;
+    const _util = equiposDetectados.some(e => e.explicito) ? 0.8 : 1;
+    const horas = capWh * _util / totalW;
     const horasStr = horas < 1 ? `${Math.round(horas*60)} minutos` : `${horas.toFixed(1)} horas`;
     let body = `⏱️ <strong>Cálculo de autonomía</strong>\n\n`;
     body += batInfo;
@@ -3873,7 +3955,9 @@ ${notasHTML}
       body += `• ${escapeHtml(e.nombre)}: ~${e.w}W\n`;
     });
     body += `\n<strong>Consumo total:</strong> ${totalW}W\n`;
-    body += `<strong>Autonomía estimada:</strong> <em style="color:#2ECC71;font-weight:700">${horasStr}</em>\n\n`;
+    body += `<strong>Autonomía estimada:</strong> <em style="color:#2ECC71;font-weight:700">${horasStr}</em>\n`;
+    if(_util < 1) body += `<em>Cálculo: Ah × V × 0,8 ÷ W = ${cap ? cap.ah : 100} × ${cap ? cap.v : 12} × 0,8 ÷ ${totalW}. Es un estimado: el 0,8 descuenta la descarga útil de la batería y las pérdidas del inversor; el resultado real varía con el estado de la batería.</em>\n`;
+    body += `\n`;
     body += `⚠️ <em>Ojo:</em> Las neveras y aires tienen pico de arranque (3-4x su consumo). El inversor debe soportar ese pico. Para nevera necesitas inversor onda pura de mínimo 1000W continuo (2000W pico).\n\n`;
     if(bat){
       body += `¿Quieres ver <em>inversores compatibles</em> o que te <em>compare baterías</em>?`;
@@ -5049,7 +5133,14 @@ ${notasHTML}
         const _qsPalabras = _qs.split(' ').filter(w => !/\d/.test(w)).join(' ');
         const otros = findProducts(text, 3).filter(p => p.subcategoria !== sub && _matchFuerte(p, _qsPalabras));
         let body = `📂 <strong>${escapeHtml(sub)}</strong>: ahora mismo ${n > 1 ? `los ${n} modelos están` : 'está'} <em style="color:#ff8888">agotado${n > 1 ? 's' : ''}</em>.\n\nEscríbeme por WhatsApp y te aviso en cuanto entren.`;
-        if(otros.length) body += `\n\nLo que sí tengo disponible relacionado:`;
+        if(otros.length){
+          // Cada uno con su categoría: «cámaras» sin más mezclaba la de
+          // reversa de un carro con las de seguridad y parecía lo mismo.
+          body += `\n\nOjo, lo que sí tengo disponible con esa palabra <strong>no es lo mismo</strong>:\n`
+            + otros.map(p => `• ${escapeHtml(p.nombre)} — <em>${escapeHtml(p.categoria)}${p.subcategoria ? ' › ' + escapeHtml(p.subcategoria) : ''}</em>`).join('\n');
+          if(/c[aá]mara/i.test(sub) && otros.some(p => /reversa|carro/i.test(p.nombre + ' ' + p.categoria)))
+            body += `\n\nLas de <strong>seguridad</strong> (para casa o negocio) están agotadas; la de <strong>reversa</strong> es para carro. ¿Cuál buscabas?`;
+        }
         return {
           response: body,
           products: otros,
@@ -5104,6 +5195,14 @@ ${notasHTML}
       const _qa = _expandirConsulta(cleanForMatch(text));
       const agotadoReal = agotados.find(p => _matchFuerte(p, _qa));
       if(agotadoReal) return buildDetalle(agotadoReal, text);
+      return R.fallback(text);
+    }
+    // Nada disponible casa por nombre, subcategoría o ficha: «lo más
+    // parecido» sería enseñar lo que solo comparte una palabra de la
+    // descripción. Se dice que no, con salida.
+    if(!prods.some(p => _matchFuerte(p, _expandirConsulta(cleanForMatch(text))))){
+      const _ag = findProducts(text, 3, {includeAgotados:true}).find(p => _matchFuerte(p, _expandirConsulta(cleanForMatch(text))));
+      if(_ag) return buildDetalle(_ag, text);
       return R.fallback(text);
     }
     // Si NINGUNO casa por nombre, subcategoría o ficha, esto no es "lo que
@@ -5195,7 +5294,12 @@ ${notasHTML}
     let body = `🙅 <strong>${hit.nota}</strong>`;
     if(hit.ofrecer) body += `\n\n✅ ${hit.ofrecer}`;
     body += `\n\nSi lo necesitas igual, escríbeme por WhatsApp y te digo si puedo conseguírtelo.`;
-    return { response: body, quickReplies: hit.botones };
+    const out = { response: body, quickReplies: hit.botones };
+    if(hit.mostrar){
+      const ps = PRODUCTOS.filter(p => p.stock > 0 && hit.mostrar.test(p.nombre)).slice(0, 3);
+      if(ps.length) out.products = ps;
+    }
+    return out;
   };
 
   R.nautaHogar = (text) => {
@@ -5339,7 +5443,10 @@ ${notasHTML}
   }
 
   R.fallback = (text) => {
-    const prods = findProducts(text, 3);
+    const _qf = _expandirConsulta(cleanForMatch(text));
+    const _cand = findProducts(text, 3);
+    // sin ninguna palabra en nombre/subcategoría/ficha no es «relacionado»
+    const prods = _cand.filter(p => _matchFuerte(p, _qf));
     if(prods.length > 0){
       return {
         response: `🤔 No estoy seguro de qué necesitas exactamente, pero por lo que escribes puede que te interese algo de esto (todos disponibles). Si no es lo que buscas, dime más detalles: para qué lo necesitas, presupuesto, marca preferida…`,
@@ -5362,9 +5469,9 @@ ${notasHTML}
       };
     }
     return {
-      response: `🤔 Disculpa, no estoy seguro de haber entendido tu pregunta.\n\nPuedo ayudarte con:\n\n• <em>Buscar productos</em> en el catálogo\n• <em>Calcular sistemas solares</em> y autonomía\n• <em>Comparar productos</em> lado a lado\n• <em>Resolver dudas técnicas</em> (códigos de error, glosario)\n• <em>Pagos, envíos y garantía</em>\n• <em>Nauta Hogar y equipos de red</em>\n\n¿Puedes reformular tu pregunta? O escribe <code>/ayuda</code> para ver todo lo que sé hacer.`,
+      response: `🤔 No te entendí bien. Prueba con el nombre de un producto o una categoría, o escribe <code>menú</code>.`,
       sinRespuesta: true,
-      quickReplies: ['🤖 /ayuda','📦 Categorías','🔥 Ofertas','💬 Hablar con un humano']
+      quickReplies: ['📦 Categorías','🔥 Ofertas','💬 Hablar con un humano']
     };
   };
 
@@ -5819,7 +5926,7 @@ ${notasHTML}
        «y» es la carga del sistema, no otra pregunta. Contestarlo aparte
        pegaba la ficha de una lámpara-ventilador debajo del sistema, como si
        Max la recomendara para él. */
-    if(/^sistema/.test(intent)) return data;
+    if(/^(sistema|solarEntrada)/.test(intent)) return data;
     const trozos = _trozosConIntencion(text);
     // El hueco de la principal: el trozo que pidió lo mismo que ella.
     const iPrincipal = trozos.findIndex(t => t.intent === intent);
@@ -5887,6 +5994,11 @@ ${notasHTML}
     // tasa mientras el chat está abierto: se releen en cada mensaje.
     _sincronizar();
     text = _aplicarEnsenado(text);
+    // «aire acondicionado» es el Split del catálogo (y no el compresor de
+    // AIRE), salvo que hable de la batería que lo alimenta.
+    if(/aire acondicionado|minisplit|climatizador/i.test(text) && !/dura|aguanta|autonom|bater|consum|inversor|planta|solar|apag/i.test(text)){
+      text = text.replace(/aire acondicionado|minisplit|climatizador/ig, 'split');
+    }
     if(PRODUCTOS.length === 0){
       return {
         response: '⏳ Todavía estoy cargando el catálogo. Dame un segundo y vuelve a preguntarme, o escríbenos directo por WhatsApp y te atendemos al momento.',
