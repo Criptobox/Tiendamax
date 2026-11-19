@@ -1,0 +1,1100 @@
+{
+  "version": 1,
+  "productos": {
+    "1778104924836": [
+      "estación de carga",
+      "power station",
+      "planta portátil",
+      "generador portátil",
+      "batería grande para la casa",
+      "estación de energía",
+      "para el apagón",
+      "planta eléctrica sin ruido"
+    ],
+    "1778104985977": [
+      "estación de carga",
+      "power station",
+      "planta portátil",
+      "generador portátil",
+      "batería grande para la casa",
+      "estación de energía",
+      "para el apagón"
+    ],
+    "1777924118004": [
+      "inbersor",
+      "convertidor de corriente",
+      "inversor para el apagón",
+      "inversor para la batería"
+    ],
+    "1783179800783": [
+      "inbersor",
+      "convertidor de corriente",
+      "inversor para banco de baterías",
+      "inversor para el apagón"
+    ],
+    "1788626436047": [
+      "inbersor",
+      "convertidor de corriente",
+      "onda pura",
+      "inversor para el apagón"
+    ],
+    "1778104599386": [
+      "inversor híbrido",
+      "inversor para paneles solares",
+      "inversor con regulador",
+      "sistema solar para la casa"
+    ],
+    "1778104662477": [
+      "inversor híbrido",
+      "inversor para paneles solares",
+      "inversor para toda la casa",
+      "sistema solar para negocio"
+    ],
+    "1781899206341": [
+      "inversor para paneles solares",
+      "inversor con regulador",
+      "inversor solar pequeño",
+      "sistema solar para apartamento"
+    ],
+    "1778104512761": [
+      "regulador solar",
+      "regulador de carga solar",
+      "controlador de paneles solares"
+    ],
+    "1778104850733": [
+      "regulador de paneles",
+      "controlador de carga",
+      "regulador para panel solar"
+    ],
+    "1779208523952": [
+      "regulador de carga",
+      "regulador solar",
+      "regulador de carga solar"
+    ],
+    "1779562612951": [
+      "controlador de paneles solares",
+      "regulador de paneles",
+      "controlador de carga"
+    ],
+    "1784569498967": [
+      "regulador para panel solar",
+      "regulador de carga",
+      "regulador solar"
+    ],
+    "1784823616101": [
+      "regulador de carga solar",
+      "controlador de paneles solares",
+      "regulador de paneles"
+    ],
+    "1786633899405": [
+      "controlador de carga",
+      "regulador para panel solar",
+      "regulador de carga"
+    ],
+    "1787079480177": [
+      "regulador solar para moto eléctrica",
+      "elevador de voltaje solar",
+      "cargar la moto con paneles solares",
+      "regulador solar para triciclo eléctrico"
+    ],
+    "1782439688529": [
+      "transfer automático",
+      "cambio de la calle al inversor",
+      "transfer para la planta",
+      "ats",
+      "interruptor de transferencia"
+    ],
+    "1792172735426": [
+      "transfer automático",
+      "cambio de la calle al inversor",
+      "transfer para la planta",
+      "ats"
+    ],
+    "1782791345628": [
+      "transfer automático",
+      "cambio de la calle al inversor",
+      "interruptor de transferencia",
+      "ats"
+    ],
+    "1791502917024": [
+      "batería de litio para el inversor",
+      "batería para paneles solares",
+      "batería para el apagón",
+      "batería de ciclo profundo",
+      "batería solar"
+    ],
+    "1778103783319": [
+      "batería de carro",
+      "acumulador de carro",
+      "batería para arrancar el carro",
+      "batería sellada"
+    ],
+    "1793392791910": [
+      "batería de carro",
+      "acumulador de carro",
+      "batería para arrancar el carro",
+      "batería sin mantenimiento"
+    ],
+    "1778104191957": [
+      "revivir batería",
+      "cargador con pinzas",
+      "cargador para batería del inversor"
+    ],
+    "1778104423316": [
+      "cargador para banco de baterías",
+      "cargador inteligente de baterías",
+      "cargador de pulsos"
+    ],
+    "1779205929131": [
+      "cargador de batería de carro",
+      "cargador automático de batería",
+      "reparar baterías"
+    ],
+    "1783473894756": [
+      "cargador de batería de carro",
+      "cargador automático de batería",
+      "reparar baterías"
+    ],
+    "1783474199534": [
+      "revivir batería",
+      "cargador con pinzas",
+      "cargador para batería del inversor"
+    ],
+    "1783474440848": [
+      "cargador para banco de baterías",
+      "cargador inteligente de baterías",
+      "cargador de pulsos"
+    ],
+    "1787071784077": [
+      "mantenedor de batería",
+      "cargador de mantenimiento",
+      "cargador y mantenedor"
+    ],
+    "1788627372873": [
+      "mantenedor de batería",
+      "cargador de mantenimiento",
+      "cargador y mantenedor"
+    ],
+    "1792173216703": [
+      "cargador de batería de carro",
+      "cargador automático de batería",
+      "reparar baterías"
+    ],
+    "1792173470469": [
+      "revivir batería",
+      "cargador con pinzas",
+      "cargador para batería del inversor"
+    ],
+    "1778384976624": [
+      "power bank solar",
+      "batería portátil solar",
+      "para cargar el celular en el apagón",
+      "cargador de celular solar"
+    ],
+    "1786633494382": [
+      "protector de voltaje",
+      "protector contra subidas de corriente",
+      "proteger los equipos de la corriente",
+      "protector para la casa"
+    ],
+    "1793663513608": [
+      "protector de voltaje",
+      "protector contra subidas de corriente",
+      "proteger el refrigerador de la corriente",
+      "protector para la casa"
+    ],
+    "1781365019871": [
+      "probador de batería",
+      "tester de batería",
+      "medir batería de carro",
+      "saber si la batería está buena"
+    ],
+    "1788368389009": [
+      "conectores para paneles solares",
+      "conectores solares",
+      "empatar paneles solares"
+    ],
+    "1794935278007": [
+      "conectores para paneles solares",
+      "conectores solares",
+      "empatar paneles solares"
+    ],
+    "1790961637329": [
+      "soporte para paneles solares",
+      "estructura para paneles",
+      "poner paneles en el techo",
+      "soporte inclinable"
+    ],
+    "1792173999747": [
+      "breaker para paneles solares",
+      "breaker de corriente directa",
+      "protección para paneles solares",
+      "disyuntor solar"
+    ],
+    "1778102214012": [
+      "switch de red",
+      "multiplicador de internet",
+      "para conectar varios equipos por cable",
+      "ampliar puertos de red"
+    ],
+    "1778336689684": [
+      "switch de red",
+      "multiplicador de internet",
+      "para conectar varios equipos por cable",
+      "ampliar puertos de red"
+    ],
+    "1778336789459": [
+      "router wifi",
+      "router doble banda",
+      "router económico"
+    ],
+    "1780510681519": [
+      "router wifi seis",
+      "wifi seis",
+      "router rápido"
+    ],
+    "1781711424820": [
+      "router para la casa",
+      "router wifi cinco",
+      "router para internet del hogar"
+    ],
+    "1793571822463": [
+      "router wifi",
+      "router doble banda",
+      "router económico"
+    ],
+    "1782438922547": [
+      "router para streaming",
+      "router para juegos",
+      "router para muchos dispositivos"
+    ],
+    "1783453597496": [
+      "router para la casa",
+      "router wifi cinco",
+      "router para internet del hogar"
+    ],
+    "1783453857635": [
+      "router de última generación",
+      "router wifi seis",
+      "wifi seis"
+    ],
+    "1783543451116": [
+      "router rápido",
+      "router para streaming",
+      "router para juegos"
+    ],
+    "1784569265085": [
+      "router wifi",
+      "router doble banda",
+      "router económico"
+    ],
+    "1784732614444": [
+      "router para muchos dispositivos",
+      "router de última generación",
+      "router wifi seis"
+    ],
+    "1784732715417": [
+      "wifi seis",
+      "router rápido",
+      "router para streaming"
+    ],
+    "1788625483027": [
+      "router wifi siete",
+      "router último modelo",
+      "wifi siete"
+    ],
+    "1783474747296": [
+      "router cableado",
+      "router sin wifi",
+      "enrutador",
+      "router gigabit"
+    ],
+    "1787888877372": [
+      "router cableado",
+      "router sin wifi",
+      "enrutador",
+      "router con puerto sfp"
+    ],
+    "1790105284345": [
+      "router cableado",
+      "router sin wifi",
+      "enrutador",
+      "router poe"
+    ],
+    "1786631968221": [
+      "router para la casa",
+      "router wifi cinco",
+      "router para internet del hogar",
+      "router mikrotik"
+    ],
+    "1790104955752": [
+      "router para juegos",
+      "router para muchos dispositivos",
+      "router de última generación"
+    ],
+    "1781711154462": [
+      "repetidor de wifi",
+      "extensor de wifi",
+      "amplificador de wifi",
+      "para que llegue el wifi al cuarto"
+    ],
+    "1790963254986": [
+      "repetidor de wifi",
+      "extensor de wifi",
+      "amplificador de wifi",
+      "para que llegue el wifi al cuarto"
+    ],
+    "1784403677390": [
+      "antena para internet",
+      "antena wifi exterior",
+      "antena para enlace"
+    ],
+    "1785286289086": [
+      "cpe exterior",
+      "antena para wisp",
+      "antena de largo alcance"
+    ],
+    "1786632255672": [
+      "radio para enlace",
+      "enlace punto a punto",
+      "internet a otra casa por antena"
+    ],
+    "1787157254207": [
+      "antena para fincas",
+      "antena cliente wisp",
+      "antena direccional"
+    ],
+    "1788389384026": [
+      "antena para internet",
+      "antena wifi exterior",
+      "antena para enlace"
+    ],
+    "1785285424837": [
+      "cpe exterior",
+      "antena para wisp",
+      "antena de largo alcance"
+    ],
+    "1786631549331": [
+      "radio para enlace",
+      "enlace punto a punto",
+      "internet a otra casa por antena"
+    ],
+    "1787698473597": [
+      "antena para fincas",
+      "antena cliente wisp",
+      "antena direccional"
+    ],
+    "1789569593128": [
+      "antena para internet",
+      "antena wifi exterior",
+      "antena para enlace"
+    ],
+    "1787933033934": [
+      "cpe exterior",
+      "antena para wisp",
+      "antena de largo alcance"
+    ],
+    "1790104688838": [
+      "radio para enlace",
+      "enlace punto a punto",
+      "internet a otra casa por antena"
+    ],
+    "1788797590930": [
+      "antena para fincas",
+      "antena cliente wisp",
+      "antena direccional"
+    ],
+    "1788797303584": [
+      "antena sectorial",
+      "antena para dar internet a varios",
+      "punto de acceso exterior",
+      "estación base wifi"
+    ],
+    "1778104287395": [
+      "router con sim",
+      "internet con chip",
+      "wifi con tarjeta sim",
+      "cpe con datos móviles",
+      "antena con sim"
+    ],
+    "1778384646214": [
+      "inyector poe",
+      "poe ubiquiti",
+      "fuente para antena",
+      "alimentar la antena por el cable de red"
+    ],
+    "1787604262771": [
+      "cable de red",
+      "cable de internet",
+      "cable ethernet",
+      "cable para el router",
+      "patch cord"
+    ],
+    "1778384078432": [
+      "cámara wifi",
+      "cámara bombillo",
+      "cámara que gira",
+      "cámara para ver desde el celular",
+      "cámara de vigilancia para la casa"
+    ],
+    "1778384158283": [
+      "cerradura con huella",
+      "cerradura digital",
+      "cerradura con clave",
+      "cerradura con teclado",
+      "chapa inteligente"
+    ],
+    "1778384314795": [
+      "sistema de cámaras",
+      "kit de vigilancia",
+      "cámaras con grabadora"
+    ],
+    "1778636088295": [
+      "cctv",
+      "cámaras para negocio",
+      "dvr con cámaras"
+    ],
+    "1780542909435": [
+      "kit de cámaras de seguridad",
+      "sistema de cámaras",
+      "kit de vigilancia"
+    ],
+    "1784571782777": [
+      "cámaras con grabadora",
+      "cctv",
+      "cámaras para negocio"
+    ],
+    "1780344659047": [
+      "cámara de vigilancia exterior",
+      "cámara para la calle",
+      "cámara cctv",
+      "cámara para el portal"
+    ],
+    "1784405087402": [
+      "cámara que gira",
+      "cámara de vigilancia exterior",
+      "cámara wifi para el portal",
+      "cámara para ver desde el celular"
+    ],
+    "1784825579392": [
+      "cámara con panel solar",
+      "cámara sin cable",
+      "cámara para el portal",
+      "cámara de vigilancia exterior",
+      "cámara wifi"
+    ],
+    "1778384840618": [
+      "timbre con cámara",
+      "video timbre",
+      "ver quién toca a la puerta",
+      "timbre wifi",
+      "videoportero"
+    ],
+    "1778212195565": [
+      "aceite sintético para carro",
+      "aceite de motor",
+      "cambio de aceite"
+    ],
+    "1793722641800": [
+      "aceite sintético para carro",
+      "aceite de motor",
+      "cambio de aceite"
+    ],
+    "1778213940333": [
+      "aceite para carro viejo",
+      "aceite para el carro",
+      "cambio de aceite"
+    ],
+    "1778214089400": [
+      "aceite para el carro",
+      "aceite mineral para carro"
+    ],
+    "1778547461235": [
+      "aceite para motor diésel",
+      "aceite para camión",
+      "aceite de motor"
+    ],
+    "1778547753925": [
+      "aceite para el carro",
+      "aceite de motor para carro y camioneta"
+    ],
+    "1778212384991": [
+      "anticongelante",
+      "refrigerante",
+      "líquido del radiador",
+      "agua del radiador",
+      "coolant"
+    ],
+    "1778212462723": [
+      "anticongelante",
+      "refrigerante",
+      "líquido del radiador",
+      "agua del radiador",
+      "coolant"
+    ],
+    "1778212537706": [
+      "anticongelante",
+      "refrigerante",
+      "líquido del radiador",
+      "agua del radiador",
+      "coolant"
+    ],
+    "1793722839535": [
+      "líquido de frenos",
+      "liquido de freno",
+      "aceite de frenos",
+      "para los frenos del carro"
+    ],
+    "1793723350923": [
+      "líquido de frenos",
+      "liquido de freno",
+      "aceite de frenos",
+      "para los frenos del carro"
+    ],
+    "1793980162525": [
+      "aceite de caja",
+      "aceite de transmisión",
+      "aceite para la caja mecánica",
+      "aceite de diferencial",
+      "valvulina"
+    ],
+    "1793980370363": [
+      "aceite de caja",
+      "aceite de transmisión",
+      "aceite para la caja mecánica",
+      "aceite de diferencial",
+      "valvulina"
+    ],
+    "1793980583146": [
+      "aceite de caja automática",
+      "aceite de transmisión automática",
+      "aceite para la caja automática",
+      "aceite cvt"
+    ],
+    "1778213413973": [
+      "forros de asientos",
+      "cubre asientos",
+      "fundas para el carro"
+    ],
+    "1778384769262": [
+      "ventilador de carro",
+      "ventilador de mechero",
+      "para el calor del carro",
+      "ventilador que se conecta al encendedor"
+    ],
+    "1778546645170": [
+      "rines",
+      "aros",
+      "aros deportivos"
+    ],
+    "1778546731028": [
+      "juego de aros",
+      "rines deportivos",
+      "rines"
+    ],
+    "1778546857180": [
+      "aros",
+      "aros deportivos",
+      "juego de aros"
+    ],
+    "1778546922840": [
+      "rines deportivos",
+      "rines",
+      "aros"
+    ],
+    "1793391707181": [
+      "cámara de reversa",
+      "cámara para parquear",
+      "cámara trasera de carro",
+      "cámara de retroceso",
+      "pantalla para dar marcha atrás"
+    ],
+    "1793571457168": [
+      "inflador de gomas",
+      "bomba de aire portátil",
+      "inflador eléctrico",
+      "para inflar las gomas del carro"
+    ],
+    "1793740398660": [
+      "inflador de gomas",
+      "bomba de aire portátil",
+      "inflador eléctrico",
+      "para inflar las gomas del carro"
+    ],
+    "1793662537113": [
+      "moto eléctrica",
+      "scooter eléctrica",
+      "moto sin gasolina",
+      "moto para mensajería",
+      "moto eléctrica de litio"
+    ],
+    "1778602314518": [
+      "aceite de moto",
+      "aceite para moto de dos tiempos",
+      "mezcla para la gasolina de la moto"
+    ],
+    "1778601740203": [
+      "aceite de moto",
+      "aceite para moto de cuatro tiempos"
+    ],
+    "1778634719053": [
+      "forro de moto",
+      "cubierta para moto",
+      "tapa para la moto",
+      "proteger la moto del sol y la lluvia"
+    ],
+    "1778906281677": [
+      "cargador de moto eléctrica",
+      "cargador de batería de litio",
+      "cargador para moto de litio"
+    ],
+    "1778906455757": [
+      "cargador de moto eléctrica",
+      "cargador de batería de litio",
+      "cargador para moto de litio"
+    ],
+    "1785866159148": [
+      "cargador de moto eléctrica",
+      "cargador de batería de litio",
+      "cargador para moto de litio"
+    ],
+    "1778906733513": [
+      "retrovisores de moto",
+      "espejos de moto",
+      "espejos para moto",
+      "espejitos deportivos"
+    ],
+    "1778906905279": [
+      "retrovisores de moto",
+      "espejos de moto",
+      "espejos para moto",
+      "espejitos deportivos"
+    ],
+    "1778907072353": [
+      "retrovisores de moto",
+      "espejos de moto",
+      "espejos para moto",
+      "espejitos deportivos"
+    ],
+    "1778102507659": [
+      "pesa de baño",
+      "pesa digital",
+      "pesa para pesarse",
+      "balanza de baño"
+    ],
+    "1778102582909": [
+      "soplete tig",
+      "antorcha para soldar",
+      "soplete de soldar aluminio",
+      "torcha tig"
+    ],
+    "1778103856933": [
+      "pistola de masaje",
+      "masajeador muscular",
+      "masajeador de percusión",
+      "para el dolor muscular"
+    ],
+    "1778336613589": [
+      "pistola de masaje",
+      "masajeador muscular",
+      "masajeador de percusión",
+      "para el dolor muscular"
+    ],
+    "1778336859697": [
+      "toldo para el patio",
+      "sombra para el patio",
+      "para el sol del portal",
+      "carpa de sombra"
+    ],
+    "1789066847523": [
+      "toldo para el patio",
+      "sombra para el patio",
+      "para el sol del portal",
+      "malla sombra"
+    ],
+    "1778384428890": [
+      "portacelular para bicicleta",
+      "soporte de celular para bici",
+      "bolso para el celular en la bici"
+    ],
+    "1778384507302": [
+      "linterna frontal",
+      "linterna para la cabeza",
+      "linterna con correa",
+      "para trabajar con las manos libres"
+    ],
+    "1778820983383": [
+      "linterna de buceo",
+      "linterna sumergible",
+      "linterna recargable",
+      "linterna resistente al agua"
+    ],
+    "1778820912552": [
+      "carpa",
+      "casa de campaña",
+      "carpa automática",
+      "para acampar",
+      "tienda para acampar"
+    ],
+    "1793392327732": [
+      "hamaca",
+      "hamaca con mosquitero",
+      "para acampar",
+      "para dormir en el campo"
+    ],
+    "1780887557334": [
+      "gorro de neopreno",
+      "gorro para el agua fría",
+      "gorro para bucear",
+      "para pescar y bucear"
+    ],
+    "1780079294429": [
+      "raqueta mata mosquitos",
+      "paleta para mosquitos",
+      "mata moscas eléctrico",
+      "para los mosquitos"
+    ],
+    "1790963608288": [
+      "binoculares para la noche",
+      "visión nocturna",
+      "prismáticos con cámara",
+      "para ver de noche"
+    ],
+    "1784570100968": [
+      "máquina de soldar",
+      "soldadora eléctrica",
+      "soldadora de electrodo",
+      "soldadora para soldar hierro"
+    ],
+    "1787072040177": [
+      "máquina de soldar",
+      "soldadora eléctrica",
+      "soldadora sin gas",
+      "soldadora para soldar hierro"
+    ],
+    "1789068808568": [
+      "máquina de soldar",
+      "soldadora eléctrica",
+      "soldadora sin gas",
+      "soldadora multiproceso"
+    ],
+    "1789067953023": [
+      "inflador de gomas",
+      "bomba de aire portátil",
+      "inflador eléctrico",
+      "compresor portátil",
+      "para inflar las gomas del carro"
+    ],
+    "1793662856382": [
+      "perlas de perfume para ropa",
+      "aromatizante de ropa",
+      "perfume para la ropa lavada"
+    ],
+    "1782439525089": [
+      "hojas artificiales para la pared",
+      "decorar la pared",
+      "decoración con plantas",
+      "panel de plantas falsas"
+    ],
+    "1778907260915": [
+      "calentador de agua instantáneo",
+      "calentador sin tanque",
+      "ducha eléctrica",
+      "agua caliente al instante"
+    ],
+    "1782535594832": [
+      "licuadora",
+      "batidora de jarra",
+      "para hacer batidos",
+      "para hacer jugos"
+    ],
+    "1782535836192": [
+      "televisor",
+      "tv inteligente",
+      "tv con netflix",
+      "televisor smart",
+      "televisor de 43"
+    ],
+    "1782536078989": [
+      "lavadora",
+      "lavadora de dos tinas",
+      "lavadora de ropa",
+      "lavadora para la casa"
+    ],
+    "1782536259878": [
+      "aire acondicionado",
+      "split",
+      "aire para el cuarto",
+      "climatizador"
+    ],
+    "1782536637390": [
+      "refrigerador comercial",
+      "nevera comercial",
+      "nevera para negocio",
+      "vitrina refrigerada",
+      "exhibidor de bebidas"
+    ],
+    "1782537024284": [
+      "refrigerador comercial",
+      "nevera comercial",
+      "nevera para negocio",
+      "vitrina refrigerada",
+      "exhibidor de bebidas"
+    ],
+    "1782537341725": [
+      "congelador",
+      "nevera para el negocio",
+      "freezer"
+    ],
+    "1781365135486": [
+      "ventilador de techo",
+      "ventilador de techo con luz",
+      "abanico de techo",
+      "para el calor"
+    ],
+    "1793740692702": [
+      "ventilador de bombillo",
+      "abanico con luz",
+      "ventilador que se enrosca",
+      "ventilador y lámpara en uno"
+    ],
+    "1780017975657": [
+      "bocina bluetooth",
+      "bocina para exteriores",
+      "corneta bluetooth",
+      "altavoz inalámbrico"
+    ],
+    "1780887971522": [
+      "bocina bluetooth",
+      "corneta bluetooth",
+      "bocina con luces",
+      "altavoz inalámbrico"
+    ],
+    "1789065257613": [
+      "bocina bluetooth",
+      "corneta bluetooth",
+      "altavoz inalámbrico",
+      "bocina portátil"
+    ],
+    "1782439428159": [
+      "audífonos para jugar",
+      "audífonos gamer",
+      "audífonos inalámbricos con micrófono",
+      "cascos para juegos"
+    ],
+    "1778547214210": [
+      "mando de juegos",
+      "control para jugar",
+      "joystick",
+      "gamepad"
+    ],
+    "1793733652655": [
+      "teléfono",
+      "celular",
+      "móvil android",
+      "celular barato"
+    ],
+    "1793733803341": [
+      "teléfono",
+      "celular",
+      "móvil android",
+      "celular barato"
+    ],
+    "1781377297283": [
+      "suplemento para el gym",
+      "creatina para el gimnasio",
+      "para ganar masa muscular"
+    ],
+    "1786807706672": [
+      "suplemento para el gym",
+      "creatina para el gimnasio",
+      "para ganar masa muscular"
+    ],
+    "1786807859244": [
+      "suplemento para el gym",
+      "creatina para el gimnasio",
+      "para ganar masa muscular"
+    ],
+    "1786808152310": [
+      "proteína para el gimnasio",
+      "batido de proteína",
+      "suplemento para ganar músculo",
+      "whey"
+    ],
+    "1778717147247": [
+      "short deportivo",
+      "pantalón corto",
+      "short para hacer ejercicio",
+      "ropa para el gym"
+    ],
+    "1793400000001": [
+      "recargar free fire",
+      "diamantes ff",
+      "recarga de diamantes"
+    ],
+    "1793400000002": [
+      "recargar pubg",
+      "uc pubg",
+      "recarga de uc"
+    ],
+    "1793400000003": [
+      "recarga playstation",
+      "saldo playstation",
+      "gift card ps"
+    ],
+    "1793400000004": [
+      "recarga xbox",
+      "saldo xbox",
+      "gift card xbox"
+    ],
+    "1793400000005": [
+      "recarga steam",
+      "saldo steam",
+      "gift card steam"
+    ],
+    "1793400000006": [
+      "robux",
+      "recarga roblox",
+      "gift card roblox"
+    ],
+    "1793400000007": [
+      "tarjeta virtual",
+      "tarjeta prepago",
+      "tarjeta para compras por internet"
+    ],
+    "1793400000008": [
+      "tarjeta virtual",
+      "tarjeta prepago",
+      "tarjeta para compras por internet"
+    ],
+    "1793400000009": [
+      "cuenta de netflix",
+      "recarga netflix",
+      "gift card netflix"
+    ],
+    "1793400000010": [
+      "cuenta de spotify",
+      "música sin anuncios",
+      "spotify premium"
+    ],
+    "1793400000011": [
+      "gift card amazon",
+      "saldo para amazon",
+      "compras en amazon"
+    ],
+    "1793400000012": [
+      "gift card google play",
+      "saldo para google play",
+      "comprar apps en android"
+    ],
+    "1793400000013": [
+      "gift card apple",
+      "saldo para app store",
+      "comprar apps en iphone"
+    ]
+  },
+  "categorias": {
+    "ENERGIA": [
+      "corriente",
+      "luz",
+      "apagón",
+      "apagones",
+      "solar",
+      "paneles solares",
+      "plantas",
+      "baterías",
+      "sistema solar"
+    ],
+    "WIFI": [
+      "internet",
+      "wifi",
+      "red",
+      "conexión",
+      "señal",
+      "antenas",
+      "routers",
+      "datos"
+    ],
+    "CARROS": [
+      "auto",
+      "carro",
+      "repuestos",
+      "motor",
+      "gomas",
+      "lubricantes",
+      "accesorios de carro",
+      "coche"
+    ],
+    "MOTOS": [
+      "moto",
+      "motorina",
+      "scooter",
+      "motocicleta",
+      "repuestos de moto",
+      "motos eléctricas"
+    ],
+    "SEGURIDAD": [
+      "vigilancia",
+      "cámaras",
+      "alarmas",
+      "seguridad",
+      "proteger la casa",
+      "cerraduras"
+    ],
+    "HOGAR": [
+      "casa",
+      "electrodomésticos",
+      "cocina",
+      "confort",
+      "para la casa"
+    ],
+    "UTILES": [
+      "herramientas",
+      "útiles",
+      "camping",
+      "varios",
+      "para el hogar"
+    ],
+    "CELULARES": [
+      "teléfono",
+      "celular",
+      "móvil",
+      "smartphone",
+      "accesorios de celular"
+    ],
+    "AUDIO": [
+      "sonido",
+      "bocina",
+      "corneta",
+      "audífonos",
+      "música"
+    ],
+    "GYM": [
+      "gimnasio",
+      "suplementos",
+      "proteína",
+      "músculo",
+      "ejercicio"
+    ],
+    "JUEGOS": [
+      "gamer",
+      "videojuegos",
+      "jugar",
+      "mandos",
+      "consola"
+    ],
+    "ROPA": [
+      "ropa",
+      "vestir",
+      "prendas",
+      "deporte"
+    ],
+    "TARJETAS": [
+      "recargas",
+      "gift card",
+      "saldo",
+      "tarjetas digitales",
+      "pagos por internet"
+    ]
+  }
+}
