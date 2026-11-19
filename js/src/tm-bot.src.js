@@ -71,8 +71,22 @@
     @media(min-width:480px){.tm-bot-panel{left:auto;bottom:84px;right:16px;max-width:380px;margin:0;}}
     /* En el teléfono, pantalla completa: el chat ocupaba dos tercios y la
        conversación se leía por una rendija. */
-    @media(max-width:479px){.tm-bot-panel{inset:0;left:0;right:0;bottom:0;top:0;max-width:none;width:100%;height:100%;height:100dvh;border-radius:0;border:0;}
-      .tm-bot-header{padding:10px 14px;}}
+    @media(max-width:479px){.tm-bot-panel{left:0;right:0;bottom:0;top:calc(10px + env(safe-area-inset-top,0px));max-width:none;width:100%;height:auto;border-radius:22px 22px 0 0;border:1px solid rgba(255,255,255,.08);border-bottom:0;box-shadow:0 -10px 40px rgba(0,0,0,.55);}
+      .tm-bot-header{padding:12px 14px 11px;}}
+    /* Cabecera oscura y baja, con el asa de la hoja arriba. */
+    .tm-bot-header{background:#141417!important;border-bottom:1px solid rgba(255,255,255,.07);}
+    .tm-bot-header::before{display:none;}
+    .tm-bot-header::after{content:'';position:absolute;top:5px;left:50%;width:36px;height:4px;margin-left:-18px;border-radius:4px;background:rgba(255,255,255,.18);}
+    .tm-bot-avatar{background:linear-gradient(135deg,#f97316,#ea580c)!important;border-radius:13px!important;box-shadow:0 4px 12px rgba(234,88,12,.35);}
+    .tm-bot-header-name .verified{background:#f97316!important;color:#fff!important;}
+    .tm-bot-header-status{color:#a1a1aa;opacity:1!important;}
+    .tm-bot-header-status::before{background:#22c55e!important;box-shadow:0 0 6px rgba(34,197,94,.7)!important;}
+    .tm-bot-header-btn{background:rgba(255,255,255,.07)!important;border-radius:11px!important;color:#d4d4d8!important;}
+    .tm-bot-header-btn:hover{background:rgba(255,255,255,.14)!important;}
+    body.light-mode .tm-bot-header{background:#fff!important;border-bottom-color:rgba(0,0,0,.08);}
+    body.light-mode .tm-bot-header,body.light-mode .tm-bot-header-name{color:#1a1a1a;}
+    body.light-mode .tm-bot-header::after{background:rgba(0,0,0,.15);}
+    body.light-mode .tm-bot-header-btn{background:rgba(0,0,0,.05)!important;color:#444!important;}
     .tm-bot-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
     .tm-bot-header{background:linear-gradient(135deg,#E8501E 0%,#ff6b35 100%);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;overflow:hidden;}
     .tm-bot-header::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.15) 0%,transparent 60%);pointer-events:none;}
@@ -207,15 +221,19 @@
     .tm-bot-quickreply.wa:hover{background:#25D366;color:#fff;}
     .tm-bot-quickreply.compare{background:rgba(120,140,255,.12);color:#90a8ff;border-color:rgba(120,140,255,.3);}
     /* ── Input ── */
-    .tm-bot-input{display:flex;gap:8px;padding:10px 14px 14px;background:#0D0D0D;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;align-items:flex-end;}
+    .tm-bot-input{display:flex;gap:6px;align-items:center;margin:4px 12px calc(12px + env(safe-area-inset-bottom,0px));padding:5px 5px 5px 4px;background:#1a1a1f;border:1px solid rgba(255,255,255,.1);border-radius:999px;flex-shrink:0;transition:border-color .2s,box-shadow .2s;}
+    .tm-bot-input:focus-within{border-color:rgba(249,115,22,.55);box-shadow:0 0 0 3px rgba(249,115,22,.12);}
     .tm-bot-input-wrap{flex:1;position:relative;min-width:0;}
-    .tm-bot-input input{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,.1);color:#fff;padding:11px 14px;border-radius:22px;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;}
-    .tm-bot-input input:focus{border-color:#E8501E;box-shadow:0 0 0 3px rgba(232,80,30,.15);}
-    .tm-bot-input input::placeholder{color:#666;}
-    .tm-bot-send{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#E8501E,#ff6b35);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s,opacity .2s;box-shadow:0 3px 10px rgba(232,80,30,.4);}
-    .tm-bot-send:hover:not(:disabled){transform:scale(1.08);}
-    .tm-bot-send:disabled{opacity:.4;cursor:not-allowed;}
-    .tm-bot-send svg{width:18px;height:18px;}
+    .tm-bot-input input{width:100%;background:transparent;border:0;color:#fff;padding:10px 12px;border-radius:999px;font-size:15px;outline:none!important;box-shadow:none!important;font-family:inherit;-webkit-appearance:none;appearance:none;}
+    /* La regla general de accesibilidad (html body :focus-visible) pinta un
+       contorno naranja cuadrado en todo lo enfocado. Aquí el foco ya se ve: se
+       ilumina la píldora entera (:focus-within), así que el campo no lo lleva. */
+    html body #tmBotPanel #tmBotInput,html body #tmBotPanel #tmBotInput:focus,html body #tmBotPanel #tmBotInput:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;border-radius:999px!important;}
+    .tm-bot-input input::placeholder{color:#71717a;}
+    .tm-bot-send{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s,opacity .2s;box-shadow:0 4px 14px rgba(234,88,12,.35);}
+    .tm-bot-send:hover:not(:disabled){transform:scale(1.06);}
+    .tm-bot-send:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+    .tm-bot-send svg{width:19px;height:19px;margin-left:2px;}
     /* ── Sugerencias del input ── */
     .tm-bot-suggestions{position:absolute;bottom:100%;left:0;right:0;margin-bottom:6px;background:#1a1a1a;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px;display:none;flex-direction:column;gap:2px;max-height:200px;overflow-y:auto;box-shadow:0 -4px 16px rgba(0,0,0,.4);z-index:5;}
     .tm-bot-suggestions.show{display:flex;}
@@ -257,8 +275,8 @@
     body.light-mode .tm-bot-compare-verdict{background:rgba(46,204,113,.08);color:#14532D;border-top-color:rgba(0,0,0,.08);}
     body.light-mode .tm-bot-compare-verdict b{color:#15803D;}
     body.light-mode .tm-bot-quickreply{background:rgba(232,80,30,.1);color:#C2410C;}
-    body.light-mode .tm-bot-input{background:#fff;border-top-color:rgba(0,0,0,.06);}
-    body.light-mode .tm-bot-input input{background:#F7F5F2;border-color:rgba(0,0,0,.1);color:#1a1a1a;}
+    body.light-mode .tm-bot-input{background:#F7F5F2;border-color:rgba(0,0,0,.1);}
+    body.light-mode .tm-bot-input input{background:transparent;color:#1a1a1a;}
     body.light-mode .tm-bot-suggestions{background:#fff;border-color:rgba(0,0,0,.1);box-shadow:0 -4px 16px rgba(0,0,0,.12);}
     body.light-mode .tm-bot-suggestion{color:#1a1a1a;}
     body.light-mode .tm-bot-suggestion:hover,body.light-mode .tm-bot-suggestion.active{background:#F0EBE4;}
@@ -333,7 +351,7 @@
                 <div class="tm-bot-suggestions" id="tmBotSuggestions" role="listbox" aria-label="Sugerencias"></div>
             </div>
             <button class="tm-bot-send" id="tmBotSend" aria-label="Enviar">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.64l-19 6.5a.5.5 0 0 0-.02.94l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></svg>
             </button>
         </div>
     `;
