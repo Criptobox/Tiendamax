@@ -4718,7 +4718,7 @@ ${notasHTML}
     if(o.unidad) body += `🎮 Va directo a tu cuenta con tu ID de jugador.\n`;
     else if(String(o.region || '') === 'EE. UU.') body += `⚠️ Solo funciona en cuentas de EE. UU.\n`;
     body += `\nToca la tarjeta para elegir el importe y pedirla.`;
-    return { response: body, products: [p], quickReplies: ['💬 WhatsApp','📦 Categorías'] };
+    return { response: body, products: [p], productosPrimero: true, quickReplies: ['💬 WhatsApp','📦 Categorías'] };
   }
 
   /* Lo que preguntaron de UN producto, contestado con su ficha.
@@ -4852,6 +4852,7 @@ ${notasHTML}
     return {
       response: body,
       products: [p],
+      productosPrimero: true,
       quickReplies: qrs,
       // De las tres cosas que ofrece la frase, la única que siempre se puede
       // dar sin pedir nada más es ver alternativas: comparar necesita un
@@ -6562,9 +6563,20 @@ ${notasHTML}
   // termine de cargar cada imagen recién insertada (las tarjetas de
   // producto crecen después de pintarse y dejaban la respuesta a medias).
   let _scrollTimer = null;
+  /* Ficha de un producto: el chat se queda con la FOTO arriba de lo que se ve
+     (y los datos debajo, para bajar a leerlos), en vez de saltar al final del
+     texto largo y esconder la foto que va primero. Se suelta con el siguiente
+     mensaje del cliente. */
+  let _ancla = null;
   function _scrollAlFondo(){
     if(!bodyEl) return;
-    const bajar = () => { bodyEl.scrollTop = bodyEl['scrollHeight']; };
+    const bajar = () => {
+      if(_ancla && _ancla.isConnected){
+        bodyEl.scrollTop += _ancla.getBoundingClientRect().top - bodyEl.getBoundingClientRect().top - 8;
+      } else {
+        bodyEl.scrollTop = bodyEl['scrollHeight'];
+      }
+    };
     bajar();
     requestAnimationFrame(bajar);
     clearTimeout(_scrollTimer);
@@ -6682,8 +6694,7 @@ ${notasHTML}
     if(!rivales.length){
       addMessageTyped('No tengo otro <strong>' + escapeHtml(p.subcategoria || p.categoria) + '</strong> disponible para comparar con <strong>' + escapeHtml(p.nombre) + '</strong>. Te muestro su ficha completa:', 'bot');
       const d = buildDetalle(p);
-      if(d.response) addMessageTyped(d.response, 'bot');
-      if(d.products) addProducts(d.products);
+      _mostrarRespuestaProductos(d);
       if(d.quickReplies) renderQuickReplies(d.quickReplies);
       return;
     }
@@ -6810,7 +6821,7 @@ ${notasHTML}
         const b = ev.target.closest('button'); if(!b) return;
         if(b.dataset.acc != null) sendMessage(_ACCIONES[+b.dataset.acc].msg);
         else if(b.dataset.regalo) sendMessage('cómo funciona la tarjeta tiendamax');
-        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); if(r.response) addMessageTyped(r.response, 'bot'); if(r.products) addProducts(r.products); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
+        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); _mostrarRespuestaProductos(r); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
       });
       bodyEl.appendChild(box);
       _scrollAlFondo();
@@ -6825,13 +6836,24 @@ ${notasHTML}
     return `<span class="tmb-st ok">● ${n} disponibles</span>`;
   }
 
-  function addProducts(products){
+  /* Enseña lo que devolvió un detalle: si trae `productosPrimero`, la tarjeta
+     con la foto va ANTES del texto; si no, como siempre (texto y luego tarjetas). */
+  function _mostrarRespuestaProductos(r){
+    const primero = !!(r.productosPrimero && r.products && r.products.length);
+    if(primero) addProducts(r.products, { grande: true });
+    if(r.response) addMessageTyped(r.response, 'bot');
+    if(r.products && !primero) addProducts(r.products);
+  }
+
+  function addProducts(products, opts){
     if(!products || products.length === 0) return;
+    const grande = !!(opts && opts.grande) && products.length === 1;
     const wrap = document.createElement('div');
     wrap.className = 'tm-bot-products';
+    if(grande) _ancla = wrap;
     products.forEach(p => {
       const item = document.createElement('div');
-      item.className = 'tm-bot-product';
+      item.className = 'tm-bot-product' + (grande ? ' grande' : '');
       const agotado = p.stock === 0;
       // Imagen con fallback multinivel: original → thumbs/ → placeholder
       const imgInfo = imageUrl(p);
@@ -6846,6 +6868,8 @@ ${notasHTML}
         <div class="tm-bot-product-go">›</div>
       `;
       item.onclick = () => {
+        // La tarjeta grande ya ES la ficha: tocarla abre la de la tienda.
+        if(grande){ abrirFichaEnTienda(p.id); return; }
         // Si el producto es de ROPA o LLANTAS, mostrar selector de talla/medida primero
         const subcatUpper = (p.subcategoria||'').toUpperCase();
         const catUpper = (p.categoria||'').toUpperCase();
@@ -6858,8 +6882,7 @@ ${notasHTML}
           return;
         }
         const r = buildDetalle(p);
-        if(r.response) addMessageTyped(r.response, 'bot');
-        if(r.products) addProducts(r.products);
+        _mostrarRespuestaProductos(r);
         if(r.quickReplies) renderQuickReplies(r.quickReplies);
       };
       wrap.appendChild(item);
@@ -7163,8 +7186,7 @@ ${notasHTML}
              || _lastProductsShown.find(x => x.nombre.startsWith(name));
       if(p){
         const r2 = buildDetalle(p);
-        if(r2.response) addMessageTyped(r2.response, 'bot');
-        if(r2.products) addProducts(r2.products);
+        _mostrarRespuestaProductos(r2);
         if(r2.quickReplies) renderQuickReplies(r2.quickReplies);
         return;
       }
@@ -7248,6 +7270,7 @@ ${notasHTML}
     text = (text||'').trim();
     if(!text || _sending) return;
     _sending = true;
+    _ancla = null;                       // el cliente sigue la conversación: abajo otra vez
     inputEl.value = '';
     hideSuggestions();
     sendBtn.disabled = true;
@@ -7270,6 +7293,11 @@ ${notasHTML}
       // chat sigue igual. responder() acaba de dejar la intención en _context.
       // Este es el ÚNICO sitio que registra la pregunta: una por mensaje.
       _registrarPreguntaFAQ(text, data.sinRespuesta ? 'desconocido' : _context.lastIntent, data.response);
+      // Ficha de UN producto: primero la foto con el nombre y el precio, y debajo
+      // los datos. Verlo antes de leerlo es lo que hace falta para decidir.
+      const _primero = !!(data.productosPrimero && data.products && data.products.length &&
+                          !data.compare && !data.elegirComparar && !data.elegirRival);
+      if(_primero) addProducts(data.products, { grande: true });
       if(data.response) addMessageTyped(data.response, 'bot');
       // Señales del flujo de comparación: en vez de un texto, se pintan las
       // opciones para que el cliente elija tocando cuál va contra cuál.
@@ -7277,7 +7305,7 @@ ${notasHTML}
       if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
       if(data.bienvenida) _pintarBienvenida();
       if(data.compare) addCompareTable(data.compare);
-      else if(data.products) addProducts(data.products);
+      else if(data.products && !_primero) addProducts(data.products);
       _pedirOpinion(text, data);
       renderQuickReplies(data.quickReplies || defaultQuickReplies());
       saveHistory(); // guardar tras respuesta del bot
@@ -7395,8 +7423,7 @@ ${notasHTML}
           addTyping();
           setTimeout(() => {
             removeTyping();
-            if(r.response) addMessageTyped(r.response, 'bot');
-            if(r.products) addProducts(r.products);
+            _mostrarRespuestaProductos(r);
             if(r.quickReplies) renderQuickReplies(r.quickReplies);
           }, 500);
         } else if(it.isAction){
