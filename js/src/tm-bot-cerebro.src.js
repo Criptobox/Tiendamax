@@ -1768,6 +1768,10 @@
     const hilo = _hiloDe(text);
     if(hilo) return hilo;
 
+    // La Tarjeta TiendaMax y los referidos. Estrecho a propósito: «pagar con
+    // tarjeta» es pago y «tarjeta de PlayStation» es un producto digital.
+    if(/\btarjeta\s+(de\s+)?(tienda\s*max|cliente|descuentos?|regalo)\b|\breferid[oa]s?\b|\breferir\b|recomi?e?nd\w*\s+(la\s+tienda\s+)?(a\s+)?(un\s+|mis?\s+)?amig|como\s+funciona\s+la\s+tarjeta|descuentos?\s+(en|para)\s+(las?\s+|mis\s+)?(proxima|siguiente)/.test(t)) return 'tarjeta';
+
     // Comparación tecnológica (no de productos): "wifi 5 vs wifi 6", "wifi 5 o wifi 6"
     // Detecta: vs, versus, "o" entre dos términos, "mejor que", "diferencia entre", "qué es mejor"
     //          Y TAMBIÉN: "compara", "comparar", "compara X con Y", "contra", "cuál es mejor"
@@ -2158,10 +2162,55 @@
   // ════════════════════════════════════════════════════════════
   const R = {};
 
+  /* El saludo era un mensaje con nueve funciones listadas: había que bajar
+     para encontrar qué tocar. Ahora una línea, y debajo cuatro botones
+     grandes, la Tarjeta TiendaMax (si la campaña está encendida) y las
+     rebajas del día (_pintarBienvenida). Lo de siempre sigue en /ayuda. */
   R.saludo = (text) => ({
-    response: `¡Hola! 🤖 Soy <strong>Max</strong>, tu asesor en TiendaMax. Te atiendo como si fuera mi propia tienda.\n\nTengo acceso al catálogo completo (<em>${PRODUCTOS.filter(p=>p.stock>0).length} productos disponibles</em>) y puedo hacer mucho más que buscar productos:\n\n• <em>Explicarte términos técnicos</em> (WAN, MPPT, PoE, LiFePO4, RJ11, ADSL...) y decirte qué productos los cumplen\n• <em>Comparar dos productos del mismo tipo</em> lado a lado con veredicto\n• <em>Armar un sistema completo</em> (solar, seguridad, internet para la finca) con todos los componentes\n• <em>Calcular autonomía</em>: "¿cuánto dura esta batería con mi nevera?"\n• <em>Diagnosticar una avería</em>: "mi inversor pita y tiene la luz roja"\n• <em>Filtrar por presupuesto</em>: "tengo $100, ¿qué cámara me recomiendas?"\n• <em>Nauta Hogar / ETECSA</em>: "¿venden módems para Nauta Hogar?"\n• <em>Lista de deseos</em>: guarda productos y pide todos por WhatsApp\n• <em>Comandos rápidos</em>: escribe <code>/ayuda</code> para ver todos\n\n¿Qué necesitas hoy? Pregúntame lo que sea.`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💝 Ver mi lista','📶 Nauta Hogar','🤖 /ayuda']
+    response: `Hola 👋 Soy <strong>Max</strong>. Dime qué buscas o toca una opción:`,
+    bienvenida: true,
+    quickReplies: ['💬 WhatsApp','💝 Ver mi lista','📦 Categorías']
   });
+
+  /* ── La Tarjeta TiendaMax, explicada ──
+     Mismas reglas que cobra el panel (js/tarjeta-cliente.js); un test cruza
+     los tramos. Solo con la campaña encendida: anunciar una promoción que
+     ya no existe es prometer un descuento que nadie va a dar. */
+  const _TARJETA = { TRAMOS: [[45, 1000], [25, 500]], USOS: 3, EXTRA_MAX: 2, DIAS: 90 };
+  // Cantidades que YA están en MN (fmtMN convierte desde USD): miles con punto.
+  const _mnFijo = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' MN';
+  function _campanaTarjeta(){
+    try { const c = JSON.parse(localStorage.getItem('tm_tarjeta_campana') || 'null'); return !(c && c.on === false); }
+    catch(e){ return true; }
+  }
+  const _ICO = {
+    regalo: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>',
+    tarjeta: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>',
+    etiqueta: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.41l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
+    amigos: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    qr: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1"/></svg>',
+    rayo: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+    calc: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M16 14v4"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"/></svg>',
+    llave: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    wifi: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.86a10 10 0 0 1 14 0"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/></svg>',
+  };
+  R.tarjeta = () => {
+    if(!_campanaTarjeta()) return {
+      response: 'Ahora mismo no tengo una promoción de tarjeta activa. Si ya tienes tu Tarjeta TiendaMax, vale hasta la fecha que dice: dinos tu código al pagar.',
+      quickReplies: ['💳 Ver mi tarjeta','💬 WhatsApp']
+    };
+    const T = _TARJETA.TRAMOS, bajo = T[T.length - 1], alto = T[0];
+    const paso = (cls, ico, tit, txt) => `<div class="tmb-paso"><div class="tmb-pi ${cls}">${ico}</div><div><b>${tit}</b><p>${txt}</p></div></div>`;
+    const html = `<div class="tmb-regalo-det">`
+      + `<div class="tmb-rg-cab"><div class="tmb-rg-ico">${_ICO.regalo}</div><div><b>Tarjeta TiendaMax</b><small>Gratis · sin registrarte · con tu WhatsApp</small></div></div>`
+      + paso('n', _ICO.tarjeta, '1. Te llega con tu primera compra', 'Al recibir tu pedido te la mandamos por WhatsApp, con su código y su QR.')
+      + paso('t', _ICO.etiqueta, `2. Descuento en tus próximas ${_TARJETA.USOS} compras`,
+          `<span class="tmb-tr"><span>Compra de menos de $${bajo[0]}</span><i>no se usa</i><span>Desde $${bajo[0]}</span><i class="d">−${_mnFijo(bajo[1])}</i><span>Desde $${alto[0]}</span><i class="d">−${_mnFijo(alto[1])}</i></span>`)
+      + paso('v', _ICO.amigos, '3. Recomienda y gana más', `Comparte tu enlace. Tu amigo estrena su descuento en su primera compra desde $${bajo[0]}, y tú sumas uno más (hasta ${_TARJETA.EXTRA_MAX}).`)
+      + paso('s', _ICO.qr, 'Al pagar', `Dinos tu código o enseña el QR. Vale ${_TARJETA.DIAS} días desde que te llega.`)
+      + `</div>`;
+    return { response: html, quickReplies: ['💳 Ver mi tarjeta','💬 WhatsApp'] };
+  };
 
   R.despedida = () => ({
     response: '¡Chao! 🙌 Vuelve cuando quieras. Si necesitas ayuda con un pedido, escríbenos por WhatsApp. Dale, que estés bien. 👋',
@@ -4083,6 +4132,9 @@ ${notasHTML}
     const enOferta = p.precioOriginal > 0 && p.precioOriginal > p.precio;
     const usado = p.usado;
     let body = `📦 <strong>${escapeHtml(p.nombre)}</strong>\n\n`;
+    // Agotado, lo primero: antes salía al final, detrás de la ficha y del
+    // glosario, y quien lo pedía leía todo para enterarse de que no hay.
+    if(agotado) body += `⚠️ <strong>Agotado ahora mismo.</strong> Toca «Avísame» y te escribimos en cuanto entre.\n\n`;
     body += _datosPreguntados(p, originalQuery);
     body += `💰 <strong>Precio:</strong> ${fmtUSD(p.precio)} USD · <em>${fmtMN(p.precio)}</em>\n`;
     if(enOferta){
@@ -4106,13 +4158,16 @@ ${notasHTML}
     // Detectar términos técnicos en specs del producto y explicarlos
     const techEnSpecs = detectTechTerms((p.specs||[]).join(' '));
     if(techEnSpecs.length > 0){
-      body += `\n📖 <strong>¿Qué significan estos términos?</strong>\n`;
+      // Plegado: es ayuda para quien la quiera, no algo que leer antes de
+      // saber si hay o cuánto cuesta.
+      body += `\n<details class="tmb-glos"><summary>📖 ¿Qué significan estos términos?</summary>`;
       techEnSpecs.slice(0,2).forEach(k => {
         const info = KNOWLEDGE[k];
         if(info){
           body += `• <strong>${info.term}:</strong> ${info.what.slice(0,120)}${info.what.length > 120 ? '…' : ''}\n`;
         }
       });
+      body += `</details>`;
     }
 
     // Sugerir accesorios automáticamente
@@ -4143,12 +4198,12 @@ ${notasHTML}
       // que se enseña es la SUYA (marcada agotada): preguntó por este.
       const alt = findAlternativas(p, 3);
       body += alt.length
-        ? `\n⚠️ <em>Este producto está agotado ahora mismo.</em> Pero tengo alternativas similares disponibles:`
-        : `\n⚠️ <em>Este producto está agotado ahora mismo</em> y no tengo nada parecido disponible. Escríbeme por WhatsApp y te aviso en cuanto entre.`;
+        ? `\nMientras, tengo estas alternativas parecidas disponibles:`
+        : `\nNo tengo nada parecido disponible ahora.`;
       return {
         response: body,
         products: alt.length ? alt : [p],
-        quickReplies: alt.length > 0 ? ['🆚 Comparar dos de estos','❤️ Añadir a deseos','💬 WhatsApp'] : ['❤️ Añadir a deseos','💬 WhatsApp','📦 Ver categorías']
+        quickReplies: alt.length > 0 ? ['🔔 Avísame cuando llegue','🆚 Comparar dos de estos','💬 WhatsApp'] : ['🔔 Avísame cuando llegue','❤️ Añadir a deseos','💬 WhatsApp']
       };
     }
 
@@ -5955,6 +6010,53 @@ ${notasHTML}
     return { items: c, total, unidades };
   }
 
+  /* La bienvenida: cuatro botones grandes, la Tarjeta (si hay campaña) y las
+     rebajas del día. Cada botón manda una pregunta de verdad, la misma que
+     escribiría el cliente: no hay un segundo camino que pueda contestar
+     distinto. */
+  const _ACCIONES = [
+    { cls: 'n', ico: 'rayo',  tit: 'Armar un sistema',   sub: 'Solar para los apagones', msg: 'arma un sistema solar para los apagones' },
+    { cls: 't', ico: 'calc',  tit: 'Calcular autonomía', sub: '¿Cuánto me dura la batería?', msg: 'cuánto me dura una batería' },
+    { cls: 'v', ico: 'llave', tit: 'Mi equipo falla',    sub: '«El inversor pita»', msg: 'mi equipo tiene una avería' },
+    { cls: 's', ico: 'wifi',  tit: 'Nauta Hogar',        sub: 'Módems y antenas ETECSA', msg: 'nauta hogar' },
+  ];
+  function _pintarBienvenida(){
+    try {
+      const box = document.createElement('div');
+      box.className = 'tmb-bienv';
+      let h = '<div class="tmb-grid">' + _ACCIONES.map((a, i) =>
+        `<button type="button" class="tmb-int" data-acc="${i}"><span class="tmb-ico ${a.cls}">${_ICO[a.ico]}</span><b>${a.tit}</b><small>${a.sub}</small></button>`).join('') + '</div>';
+      if(_campanaTarjeta()){
+        const alto = _TARJETA.TRAMOS[0];
+        h += `<button type="button" class="tmb-regalo" data-regalo="1"><span class="tmb-rg-ico">${_ICO.regalo}</span><span class="tmb-rg-txt"><b>Tarjeta TiendaMax</b><small>Hasta ${_mnFijo(alto[1])} menos en tus próximas compras</small></span><span class="tmb-rg-ver">Ver ›</span></button>`;
+      }
+      const reb = PRODUCTOS.filter(p => p.stock > 0 && p.precioOriginal > p.precio).slice(0, 3);
+      if(reb.length){
+        h += '<div class="tmb-tit">🔥 Rebajas de hoy</div><div class="tmb-reb">' + reb.map((p, i) => {
+          const img = imageUrl(p), pct = Math.round((1 - p.precio / p.precioOriginal) * 100);
+          return `<button type="button" class="tmb-mini" data-reb="${i}"><img src="${escapeAttr(img ? img.primary : PLACEHOLDER_IMG)}" alt="" loading="lazy"><span class="nm">${escapeHtml(p.nombre)}</span><span class="pr">${fmtUSD(p.precio)} <i>−${pct}%</i></span>${_insignia(p)}</button>`;
+        }).join('') + '</div>';
+      }
+      box.innerHTML = h;
+      box.addEventListener('click', ev => {
+        const b = ev.target.closest('button'); if(!b) return;
+        if(b.dataset.acc != null) sendMessage(_ACCIONES[+b.dataset.acc].msg);
+        else if(b.dataset.regalo) sendMessage('cómo funciona la tarjeta tiendamax');
+        else if(b.dataset.reb != null){ const p = reb[+b.dataset.reb]; if(p){ const r = buildDetalle(p); if(r.response) addMessageTyped(r.response, 'bot'); if(r.products) addProducts(r.products); if(r.quickReplies) renderQuickReplies(r.quickReplies); } }
+      });
+      bodyEl.appendChild(box);
+      _scrollAlFondo();
+    } catch(e){}
+  }
+  /* El estado del stock, con el mismo color en todas partes: verde
+     disponible, ámbar quedan 5 o menos, rojo agotado. */
+  function _insignia(p){
+    const n = Number(p.stock) || 0;
+    if(n <= 0) return '<span class="tmb-st ag">● Agotado</span>';
+    if(n <= 5) return `<span class="tmb-st am">● Quedan ${n}</span>`;
+    return `<span class="tmb-st ok">● ${n} disponibles</span>`;
+  }
+
   function addProducts(products){
     if(!products || products.length === 0) return;
     const wrap = document.createElement('div');
@@ -5971,7 +6073,7 @@ ${notasHTML}
         <div class="tm-bot-product-info">
           <div class="tm-bot-product-name">${escapeHtml(p.nombre)}</div>
           <div class="tm-bot-product-price">${fmtUSD(p.precio)} USD <span class="mn">· ${fmtMN(p.precio)}</span></div>
-          <div class="tm-bot-product-stock ${agotado?'out':''}">${agotado ? '❌ Agotado' : '📦 ' + p.stock + ' en stock'}</div>
+          ${_insignia(p)}
         </div>
         <div class="tm-bot-product-go">›</div>
       `;
@@ -6158,6 +6260,15 @@ ${notasHTML}
       }
     }
     if(/whatsapp/i.test(r)){ window.open('https://wa.me/' + WHATSAPP, '_blank', 'noopener,noreferrer'); return; }
+    if(/ver mi tarjeta/i.test(r)){ window.open('/t', '_blank', 'noopener'); return; }
+    // «Avísame cuando llegue»: el mismo aviso de reposición que la ficha de
+    // la tienda (suscribirAvisoStock, en el bundle); sin él, por WhatsApp.
+    if(/av[ií]same cuando llegue/i.test(r)){
+      const p = _context.lastProduct;
+      if(p && typeof suscribirAvisoStock === 'function'){ try { suscribirAvisoStock(p.id, p.nombre); } catch(e){} return; }
+      window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('Hola, avísenme cuando entre ' + (p ? p.nombre : 'el producto')), '_blank', 'noopener,noreferrer');
+      return;
+    }
     // Lista de deseos
     if(/añadir a deseos|añade a deseos|agregar a deseos/i.test(r)){
       if(_context.lastProduct){
@@ -6384,6 +6495,7 @@ ${notasHTML}
       // opciones para que el cliente elija tocando cuál va contra cuál.
       if(data.elegirComparar){ pedirElegirPrimero(data.elegirComparar, data.tituloComparar); saveHistory(); return; }
       if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
+      if(data.bienvenida) _pintarBienvenida();
       if(data.compare) addCompareTable(data.compare);
       else if(data.products) addProducts(data.products);
       _pedirOpinion(text, data);
@@ -6657,6 +6769,7 @@ ${notasHTML}
         addDateSep();
         const saludo = R.saludo('hola');
         addMessageTyped(saludo.response, 'bot');
+        _pintarBienvenida();
         renderQuickReplies(saludo.quickReplies);
       }
     }
@@ -6677,6 +6790,7 @@ ${notasHTML}
     addDateSep();
     const saludo = R.saludo('hola');
     addMessageTyped(saludo.response, 'bot');
+    _pintarBienvenida();
     renderQuickReplies(saludo.quickReplies);
   }
 
@@ -6798,6 +6912,7 @@ ${notasHTML}
     armarSistemaInternet: R.sistemaInternet,
     armarSistema: _armarSistema,
     claveFAQ: _claveFAQ,
+    TARJETA: _TARJETA,
     ponerEnsenado: _ponerEnsenado,
     capacidadBateria: _capacidadBateria,
     diagnosticar: R.diagnostico,

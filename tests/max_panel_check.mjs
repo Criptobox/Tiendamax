@@ -114,6 +114,20 @@ async function preguntar(pg, texto) {
   await pg.waitForFunction(() => window._tmBot && typeof window._tmBot.claveFAQ === 'function', null, { timeout: 20000 });
   await pg.waitForTimeout(800);
 
+  // La bienvenida: cuatro botones, la caja de regalo y las rebajas
+  ok((await pg.$$('.tmb-bienv .tmb-int')).length === 4, 'la bienvenida trae los cuatro botones grandes');
+  ok(!!(await pg.$('.tmb-bienv .tmb-regalo')), 'con la campaña encendida sale la caja de la Tarjeta TiendaMax');
+  const reb = await pg.$$eval('.tmb-mini .tmb-st', xs => xs.map(x => x.className + '|' + x.textContent));
+  ok(reb.every(r => (/ ok\|● \d+ disponibles/.test(r)) || (/ am\|● Quedan [1-5]$/.test(r))), `rebajas con el color de stock correcto: ${reb.join(' ; ')}`);
+  await pg.click('.tmb-bienv .tmb-regalo');
+  await pg.waitForFunction(() => !document.getElementById('tmBotTyping') && document.querySelector('.tmb-regalo-det'), null, { timeout: 15000 });
+  const det = await pg.$eval('.tmb-regalo-det', e => e.textContent);
+  ok(/Desde \$25.*−500 MN.*Desde \$45.*−1\.000 MN/.test(det) && /próximas 3 compras/.test(det) && /hasta 2/.test(det), `la explicación de la tarjeta, con los tramos de verdad: ${det.slice(0, 300)}`);
+  const ints = await pg.evaluate(() => ['cómo funciona la tarjeta tiendamax', 'si recomiendo a un amigo que gano', 'puedo pagar con tarjeta', 'tienen tarjeta de playstation']
+    .map(q => window._tmBot.detectIntent(q)));
+  ok(ints[0] === 'tarjeta' && ints[1] === 'tarjeta', `preguntar por la tarjeta o los referidos lleva a la explicación: ${ints}`);
+  ok(ints[2] === 'pago' && ints[3] !== 'tarjeta', `«pagar con tarjeta» es pago y una tarjeta regalo es un producto: ${ints}`);
+
   await preguntar(pg, 'hola');
   ok(!(await pg.$('.tm-bot-opina')), 'un saludo no pide opinión');
 
@@ -142,6 +156,28 @@ async function preguntar(pg, texto) {
     return String(r.response || '') + ' || ' + (r.products || []).map(p => p.nombre).join('|');
   });
   ok(/NanoStation M5 Loco/i.test(ens), `lo enseñado («nano loco» → NanoStation M5 Loco) tiene que aplicarse: ${ens.slice(0, 300)}`);
+  await ctx.close();
+}
+
+// ── 1b) Con la campaña apagada, Max no anuncia la tarjeta ──
+{
+  const ctx = await contexto();
+  await ctx.addInitScript(() => localStorage.setItem('tm_tarjeta_campana', JSON.stringify({ on: false, ts: 1 })));
+  await ctx.route(u => /\/config\.json/.test(u.pathname), async r => {
+    const c = JSON.parse(await readFile(join(RAIZ, 'config.json'), 'utf8'));
+    c.firebaseConfig = Object.assign({}, c.firebaseConfig, { databaseURL: `http://localhost:${PUERTO}/fakedb` });
+    c.tarjeta = { on: false, ts: 1 };
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(c) });
+  });
+  const pg = await ctx.newPage();
+  pg.on('pageerror', e => errores.push('campaña: ' + String(e).slice(0, 200)));
+  await pg.goto(`http://localhost:${PUERTO}/`, { waitUntil: 'domcontentloaded' });
+  await pg.waitForTimeout(2500);
+  await pg.click('#tmBotBubble');
+  await pg.waitForFunction(() => window._tmBot && document.querySelector('.tmb-bienv'), null, { timeout: 20000 });
+  ok(!(await pg.$('.tmb-bienv .tmb-regalo')), 'con la campaña apagada no sale la caja de regalo');
+  const r = await pg.evaluate(() => String(window._tmBot.responder('como funciona la tarjeta tiendamax').response || ''));
+  ok(/no tengo una promoción de tarjeta activa/.test(r) && !/−500/.test(r), `apagada, no se promete ningún descuento: ${r.slice(0, 160)}`);
   await ctx.close();
 }
 

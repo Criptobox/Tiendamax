@@ -534,6 +534,25 @@
     hoja(t, true);
   };
 
+  /* La tienda (Max) solo anuncia la tarjeta con la campaña encendida, y no
+     puede leer /privado: se publica {on, ts} en config.json, cambiando SOLO
+     esa clave tras releer el fichero (como el tema y las zonas de envío). */
+  async function publicarCampana(n) {
+    var u = localStorage.getItem('githubUser'), r = localStorage.getItem('githubRepo'), t = localStorage.getItem('githubToken');
+    if (!u || !r || !t || typeof subirArchivoAGitHub !== 'function' || typeof _tmLeerJsonRepoFresco !== 'function') return false;
+    try {
+      var c = await _tmLeerJsonRepoFresco(u, r, t, 'config.json');
+      if (!c || typeof c !== 'object' || Array.isArray(c) || !c.firebaseConfig) throw new Error('no pude leer config.json');
+      var nueva = { on: !!n.on, ts: n.ts };
+      if (c.tarjeta && (+c.tarjeta.ts || 0) >= n.ts) return true;
+      await subirArchivoAGitHub(u, r, t, 'config.json', Object.assign({}, c, { tarjeta: nueva }));
+      return true;
+    } catch (e) {
+      if (typeof showToast === 'function') showToast('⚠️ No pude avisar a la tienda', 'Max puede seguir anunciando la tarjeta. Vuelve a tocar el interruptor.');
+      return false;
+    }
+  }
+
   /* ── ⚙️ Configuración: la campaña ── */
   function pintarCfg() {
     var box = document.getElementById('tarjetaCfg'); if (!box) return;
@@ -550,6 +569,7 @@
       // La página de cada tarjeta deja (o vuelve) a ofrecer «regala a un amigo».
       Object.keys(leer()).forEach(function (k) { subir(k); });
       if (typeof showToast === 'function') showToast(n.on ? '🎁 Campaña de tarjetas encendida' : '⏸️ Campaña de tarjetas apagada', n.on ? 'Tarjetas de ' + n.dias + ' días' : 'Las que ya existen valen hasta su fecha');
+      publicarCampana(n);
       pintarCfg();
     }
     box.querySelector('#tj-on').onchange = guardar;

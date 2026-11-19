@@ -41,6 +41,15 @@ class ContratosTest(unittest.TestCase):
         self.assertIn("const clave = _claveFAQ(t);", CEREBRO)
         self.assertIn("const clave = _claveFAQ(text);", CEREBRO)
 
+    def test_los_tramos_de_max_son_los_de_la_tarjeta(self):
+        """Max explica lo que el panel cobra: si se separan, el cliente reclama con razón."""
+        import re
+        mod = (ROOT / "js" / "tarjeta-cliente.js").read_text(encoding="utf-8")
+        tramos = re.search(r"var TRAMOS = (\[\[\d+, \d+\], \[\d+, \d+\]\])", mod).group(1)
+        usos = re.search(r"var USOS = (\d+), EXTRA_MAX = (\d+)", mod).groups()
+        dias = re.search(r"DIAS_DEF = (\d+)", mod).group(1)
+        self.assertIn(f"const _TARJETA = {{ TRAMOS: {tramos}, USOS: {usos[0]}, EXTRA_MAX: {usos[1]}, DIAS: {dias} }};", CEREBRO)
+
     def test_lo_ensenado_existe_y_se_aplica_antes_de_entender(self):
         self.assertTrue((ROOT / "max-aprendido.json").exists())
         cuerpo = CEREBRO[CEREBRO.index("function responder(text){"):]
