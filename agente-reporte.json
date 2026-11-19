@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-18T17:41:40.463333+00:00",
+  "generado": "2026-11-19T17:51:28.619723+00:00",
   "productos": 175,
   "urgentes": 23,
   "advertencias": 0,
-  "info": 5,
-  "resumen": "Anoche revisé tus 175 productos y encontré 23 urgente(s), 5 de info.",
+  "info": 4,
+  "resumen": "Anoche revisé tus 175 productos y encontré 23 urgente(s), 4 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -137,14 +137,9 @@
       "detalle": "quedan 2"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble Banda AC1200 (Modo 3 en 1)",
-      "detalle": "quedan 3"
-    },
-    {
       "tipo": "agotados",
-      "nombre": "119 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 116 más"
+      "nombre": "120 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 117 más"
     }
   ]
 }
