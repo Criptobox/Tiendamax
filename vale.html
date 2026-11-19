@@ -280,7 +280,7 @@ input:focus,textarea:focus{border-color:var(--o)}
       <div class="fld"><div class="lbl">🔸 Artículo y cantidad<span class="la">✓ auto</span></div><textarea id="vArticulo" class="auto" rows="2" placeholder="—"></textarea></div>
       <button class="btn-act" onclick="abrirCatalogo()">🛍️ Elegir del catálogo</button>
       <div id="reservaPanel" style="display:none;margin-top:12px;padding:11px;border:1px solid rgba(255,107,53,.35);background:rgba(255,107,53,.07);border-radius:10px"></div>
-      <div class="fld" style="margin-top:12px"><div class="lbl">🔸 Garantía<span class="lf">✏️</span></div><input type="text" id="vGarantia" class="fill" placeholder="Ej: 3 meses"></div>
+      <div class="fld" style="margin-top:12px"><div class="lbl">🔸 Garantía de lo escrito a mano<span class="lf">✏️</span></div><input type="text" id="vGarantia" class="fill" placeholder="Ej: 3 meses"><div id="vGarantiaInfo" style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45">Lo elegido del catálogo lleva la garantía de su ficha; este campo es solo para lo que escribas a mano.</div></div>
     </div>
   </div>
 
@@ -386,7 +386,7 @@ input:focus,textarea:focus{border-color:var(--o)}
 <script src="/js/auth.js?v=4c7b6472"></script>
 <!-- Reservas: compartido con admin.html. Debe ir ANTES del script de
      la página para que TMReservas exista cuando se dibuja el vale. -->
-<script src="/js/reservas.js?v=e6a536a1"></script>
+<script src="/js/reservas.js?v=c69dfed0"></script>
 <script>
 let tasa = parseInt(localStorage.getItem('tasaMax')||'0')||0;
 // Margen sobre la tasa elToque (igual que la tienda: getTasaMN = tasaMN + margenMN).
@@ -450,7 +450,7 @@ function recalc(){
   const cup=parseInt(document.getElementById('vCUP').value)||0;
   const mens=getMens();
   const totalCup=cup+mens;
-  document.getElementById('vTotal').textContent=cup?totalCup.toLocaleString()+' CUP':'—';
+  document.getElementById('vTotal').textContent=cup?fmtMN(totalCup)+' CUP':'—';
   // Equivalente en USD de referencia (usando la tasa + margen)
   const usdRef=document.getElementById('vTotalUsd');
   if(cup && tasa){
@@ -722,13 +722,13 @@ function construirTextoVale(){
 🔸Mensajería/ costo: ${g('vMensajeria')}${lineaRecogida()}
 🔸 Artículo y cantidad: ${g('vArticulo').replace(/\n/g,'\n   ')}
 🔸Precio USD/ Zelle: ${g('vUSD')!=='—'?'$'+g('vUSD')+' USD':'—'}
-🔸Precio CUP: ${g('vCUP')!=='—'?parseInt(g('vCUP')).toLocaleString()+' CUP':'—'}
+🔸Precio CUP: ${g('vCUP')!=='—'?fmtMN(parseInt(g('vCUP')))+' CUP':'—'}
 🔸 Vuelto: ${g('vVuelto')!=='—'?g('vVuelto'):'—'}
 
 🔸 Total a pagar: ${document.getElementById('vTotal').textContent}
 
-*Garantía: ${g('vGarantia')}
-*Fecha y hora de Venta: ${g('vFecha')}
+${textoGarantias()}
+*Fecha y hora de Venta: ${g('vFecha')}${_valeVence()?'\n🔒 Te lo guardamos hasta el '+fmtVence(_valeVence()):''}
 
 ${textoAtencion()}`;
 }
@@ -968,120 +968,302 @@ function _parseItems(txt) {
   }).filter(Boolean);
 }
 
-function _genCodigo(){ return Math.random().toString(36).slice(2,8).toUpperCase(); }
+const _VALE_ALF='23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+function _genCodigo(){
+  const b=new Uint8Array(6); (window.crypto||window.msCrypto).getRandomValues(b);
+  let c=''; for(let i=0;i<6;i++) c+=_VALE_ALF[b[i]%_VALE_ALF.length]; return c;
+}
+/* Miles con punto, nunca coma: «80,750 MN» se lee ochenta pesos (tmMN en la tienda). */
+function fmtMN(n){ return String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function fmtUSD(n){ n=Number(n)||0; return '$'+(n%1?n.toFixed(2):String(n)); }
 let _valeCodigo = _genCodigo();
+
+/* ¿Este WhatsApp tiene tarjeta TiendaMax viva? Solo para recordarle que la
+   traiga: el vale va ANTES de la compra, así que no promete ningún descuento
+   —eso se decide al registrar la venta, donde el panel comprueba el tramo, la
+   fecha y los usos—. Se lee lo que el panel guardó en este teléfono. */
+function _valeTieneTarjeta(){
+  const tl=String(g('vTelefono')).replace(/\D/g,''); if(tl.length<6) return false;
+  let o={}; try{ o=JSON.parse(localStorage.getItem('tm_tarjetas_v1')||'{}')||{}; }catch(e){}
+  return Object.keys(o).some(c=>{ const x=o[c]; return x && x.t && (tl.endsWith(x.t)||x.t.endsWith(tl)) && !(x.x && Date.now()>x.x); });
+}
+
+/* La garantía es de cada producto, no del vale: la escribe el gestor en la
+   ficha (`garantia`) y solo la tienen algunos. Un campo único aplicado a todo
+   prometía garantía a lo que no la tiene — y el cliente vuelve a cobrarla.
+   Lo elegido del catálogo (o escrito con su nombre exacto) lleva la de su
+   ficha, o ninguna; el campo «Garantía» solo vale para lo escrito a mano que
+   no está en el catálogo. */
+function _garantiasVale(){
+  const txt=(document.getElementById('vArticulo')?.value||'').trim(); if(!txt) return [];
+  let ps=[]; try{ ps=JSON.parse(localStorage.getItem('productos')||'[]')||[]; }catch(e){}
+  const manual=(document.getElementById('vGarantia')?.value||'').trim();
+  return _parseItems(txt).map(it=>{
+    const n=_nNombre(it.nombre);
+    const sel=_valeItems.find(x=>_nNombre(x.nombre)===n);
+    const p=(sel && ps.find(x=>String(x.id)===String(sel.id))) || ps.find(x=>_nNombre(x.nombre)===n) || null;
+    const gar = p ? String(p.garantia||'').trim() : manual;
+    return {nombre:it.nombre, enCatalogo:!!p, garantia:gar};
+  });
+}
+function textoGarantias(){
+  const gs=_garantiasVale();
+  if(!gs.length || !gs.some(x=>x.garantia)) return '*Garantía: sin garantía';
+  const uno=gs.every(x=>x.garantia && x.garantia===gs[0].garantia);
+  if(uno) return '*Garantía: '+gs[0].garantia;
+  return '*Garantía:\n'+gs.map(x=>'   • '+x.nombre+': '+(x.garantia||'sin garantía')).join('\n');
+}
+function _pintarGarantiaInfo(gs){
+  const el=document.getElementById('vGarantiaInfo'); if(!el) return;
+  const cat=gs.filter(x=>x.enCatalogo);
+  if(!cat.length){ el.textContent='Lo elegido del catálogo lleva la garantía de su ficha; este campo es solo para lo que escribas a mano.'; return; }
+  el.textContent='Del catálogo: '+cat.map(x=>x.nombre.split(' ').slice(0,3).join(' ')+' → '+(x.garantia||'sin garantía')).join(' · ')
+    +(gs.some(x=>!x.enCatalogo)?' · El campo vale para lo escrito a mano.':'');
+}
+
+/* Hasta cuándo se guarda: el de la reserva si ya se hizo, si no el que tendrá. */
+function _valeVence(){
+  if(typeof TMReservas==='undefined') return 0;
+  const r=_reservaDelVale();
+  if(r) return TMReservas.venceDe(r);
+  return (_valeItems.length || _valeEscritosEnCatalogo().length) ? Date.now()+TMReservas.horas()*3600000 : 0;
+}
+function fmtVence(ts){
+  try{ return new Date(ts).toLocaleString('es-ES',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; }
+}
+
+/* El nombre entero, achicando la letra y en hasta dos líneas: cortar el final
+   es como se pierde el modelo («Loco M…»), lo único que lo separa de su hermano. */
+function _vNombre(ctx, nombre, maxW){
+  for(let f=32; f>=24; f-=2){
+    ctx.font='500 '+f+'px system-ui,Arial,sans-serif';
+    if(ctx.measureText(nombre).width<=maxW) return {f, lineas:[nombre]};
+    const l=_vWrap(ctx, nombre, maxW, 2);
+    if(l.length===2 && !/…$/.test(l[1])) return {f, lineas:l};
+  }
+  ctx.font='500 24px system-ui,Arial,sans-serif';
+  return {f:24, lineas:_vWrap(ctx, nombre, maxW, 2)};
+}
 
 function drawValeImg() {
   const canvas = document.getElementById('valeImgCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const F = (w,px,fam) => w+' '+px+'px '+(fam||'system-ui,Arial,sans-serif');
+  const C = { bg:'#121215', card:'#18181c', chip:'#202026', borde:'rgba(255,255,255,.07)', txt:'#f4f4f5', sub:'#a1a1aa', dim:'#71717a', nar:'#f97316', nar2:'#fb923c', ver:'#34d399' };
 
-  const promotor = (document.getElementById('vPromotor')?.value||'').trim() || 'JULIO';
-  const cliente  = (document.getElementById('vCliente')?.value||'').trim()  || '\u2014';
+  const promotor = (document.getElementById('vPromotor')?.value||'').trim();
+  const cliente  = (document.getElementById('vCliente')?.value||'').trim()  || '—';
+  const direccion= (document.getElementById('vDireccion')?.value||'').trim();
+  const fecha    = (document.getElementById('vFecha')?.value||'').trim();
   const artTxt   = (document.getElementById('vArticulo')?.value||'').trim();
-  let items      = _parseItems(artTxt);
-  if(!items.length) items=[{qty:'',nombre:'(Artículos aparecerán aquí)'}];
+  let items = artTxt ? artTxt.split('\n').map(l=>{
+    const it=_parseItems(l)[0]; if(!it) return null;
+    const m=l.match(/\$\s*([\d.,]+)\s*USD/i);
+    it.precio = m ? parseFloat(m[1].replace(/,/g,'')) : null;
+    return it;
+  }).filter(Boolean) : [];
+  const gars=_garantiasVale();
+  _pintarGarantiaInfo(gars);
+  items.forEach((it,k)=>{ it.garantia=(gars[k]&&gars[k].garantia)||''; });
+  const conGar=items.filter(it=>it.garantia);
+  const garUnica=conGar.length && conGar.length===items.length && conGar.every(it=>it.garantia===conGar[0].garantia) ? conGar[0].garantia : '';
+  const vacio = !items.length;
+  if(vacio) items=[{qty:'',nombre:'(Artículos aparecerán aquí)'}];
 
-  // Total en USD (precio) y su equivalente en MN con la tasa de la tienda (tasa + margen)
-  const usd = parseFloat(document.getElementById('vUSD')?.value)||0;
-  const totalMN = (usd>0 && tasa>0) ? Math.round(usd*(tasa+margenMN)).toLocaleString('es-CU') : null;
+  const usd  = parseFloat(document.getElementById('vUSD')?.value)||0;
+  const cup  = parseInt(document.getElementById('vCUP')?.value)||0;
+  const mens = getMens();
+  const totalCup = cup + mens;
+  const alm = _valeAlm || null;                       // objeto = recoge; null/undefined = domicilio o sin decidir
+  const recoge = !!alm;
+  const domicilio = !recoge && !!direccion && direccion!=='—';
+  const vence = _valeVence();
+  const conTarjeta = _valeTieneTarjeta();
+  const at = leerAten();
+  const wa = getNumeroTienda();
+  const waTxt = '+'+wa.replace(/^(\d{2})(\d{4})(\d{4})$/,'$1 $2 $3');
 
-  const W=1080, M=64, rowH=72, firstRow=536;
-  const dashedY = firstRow + (items.length-1)*rowH + 40;
-  const totalY  = dashedY + 84;
-  const mnExtra = totalMN ? 44 : 0;
-  // Recogida: se mide antes de fijar el alto, o el sello le cae encima.
+  const W=1080, P=56, M=P+40, IW=W-2*M;               // P: margen de la tarjeta; M: del contenido
   canvas.width=W;
-  const alm = _valeAlm || null;
-  let almLineas = [], almUbi = '';
-  if(alm){
-    ctx.font='500 30px system-ui,Arial,sans-serif';
-    almLineas = _vWrap(ctx, alm.direccion || 'Dirección no guardada: pregúntala por WhatsApp', W-2*M-60, 4);
-    almUbi = alm.ubicacion ? 'Ubicación: '+alm.ubicacion : '';
+
+  // ── Medir antes de fijar el alto: el canvas no avisa si algo se pisa ──
+  const filas = items.map(it=>{
+    if(it.qty==='') return {it, h:76};
+    ctx.font=F(700,28,'ui-monospace,Menlo,monospace'); const qw=Math.max(64, ctx.measureText(it.qty+'x').width+28);
+    ctx.font=F(700,30,'ui-monospace,Menlo,monospace'); const pw=it.precio!=null ? ctx.measureText(fmtUSD(it.precio*it.qty)).width+28 : 0;
+    const nm=_vNombre(ctx, String(it.nombre||''), IW-qw-22-pw);
+    const sub = it.precio!=null && it.qty>1;
+    return {it, qw, nm, sub, h: nm.lineas.length*(nm.f+10) + (sub?34:0) + (it.garantia?34:0) + 30};
+  });
+  let lugarL=[];
+  if(recoge || domicilio){
+    ctx.font=F(400,27);
+    lugarL=_vWrap(ctx, recoge ? (alm.direccion||'Dirección no guardada: pregúntala por WhatsApp') : direccion, IW-140, 3);
   }
-  const almH = alm ? (104 + almLineas.length*40 + (almUbi?40:0) + 26) : 0;
-  const H = totalY + mnExtra + 44 + almH + 96 + 54;
+  ctx.font=F(400,25);
+  const atL=[]; at.lineas.forEach(l=>_vWrap(ctx,l,IW-40,2).forEach((x,k)=>atL.push({x,k})));
+
+  const hHead=200, hCli=132;
+  const hProd=58+filas.reduce((a,f)=>a+f.h,0);
+  const hTot=34+46+(mens?44:0)+26+132+(usd&&totalCup?52:10);
+  const hLugar=(recoge||domicilio) ? 30 + 54 + 40 + lugarL.length*38 + ((recoge&&alm.ubicacion)||domicilio?38:0) + 30 : 0;
+  const hVence=vence ? 26+76 : 0;
+  const hGar=conGar.length ? 26+92 : 0;
+  const hTj=conTarjeta ? 22+40 : 0;
+  const hAt=atL.length ? 40+50+atL.length*36 : 0;
+  const hPie=34+112;
+  const H = P + 48 + hHead + 26 + hCli + 40 + hProd + hTot + hLugar + hVence + hGar + hTj + hAt + hPie + 48 + P;
   canvas.height=H;
 
-  // Fondo a sangre (sin esquinas blancas)
-  ctx.fillStyle='#141414'; ctx.fillRect(0,0,W,H);
+  // El alto de arriba es una cota: la tarjeta y el fondo se pintan al final,
+  // DETRÁS, con el alto real (si no, sobraba una franja vacía abajo).
+  ctx.clearRect(0,0,W,H);
+  let y=P+48;
 
-  // ── Header: logo real + TIENDAMAX ──
+  // ── 1. Cabecera: marca a la izquierda, vale y fecha a la derecha ──
+  const lg=96;
   if(_valeLogo && _valeLogo.complete && _valeLogo.naturalWidth){
-    ctx.save(); _vRR(ctx,M,52,128,128,28); ctx.clip(); ctx.drawImage(_valeLogo,M,52,128,128); ctx.restore();
+    ctx.save(); _vRR(ctx,M,y,lg,lg,26); ctx.clip(); ctx.drawImage(_valeLogo,M,y,lg,lg); ctx.restore();
   } else {
-    ctx.fillStyle='#FF6B35'; _vRR(ctx,M,52,128,128,28); ctx.fill();
-    ctx.fillStyle='#fff'; ctx.font='900 70px system-ui,Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('M', M+64, 118);
+    const gr=ctx.createLinearGradient(M,y,M+lg,y+lg); gr.addColorStop(0,C.nar); gr.addColorStop(1,'#ea580c');
+    ctx.fillStyle=gr; _vRR(ctx,M,y,lg,lg,26); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font=F(900,52); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('M', M+lg/2, y+lg/2+2);
+    ctx.textBaseline='alphabetic';
   }
-  ctx.textBaseline='alphabetic'; ctx.textAlign='left'; ctx.fillStyle='#fff'; ctx.font='800 66px system-ui,Arial,sans-serif';
-  ctx.fillText('TIENDAMAX', M+156, 150);
+  ctx.textAlign='left'; ctx.fillStyle='#fff'; ctx.font=F(800,46); ctx.fillText('TIENDAMAX', M+lg+26, y+50);
+  ctx.fillStyle=C.sub; ctx.font=F(500,25); ctx.fillText('tiendamax.org', M+lg+28, y+86);
+  ctx.textAlign='right'; ctx.fillStyle=C.dim; ctx.font=F(700,21); ctx.fillText('VALE', W-M, y+22);
+  ctx.fillStyle=C.txt; ctx.font=F(700,30,'ui-monospace,Menlo,monospace'); ctx.fillText('TM-'+_valeCodigo, W-M, y+60);
+  if(fecha){ ctx.fillStyle=C.sub; ctx.font=F(400,23); ctx.fillText(fecha, W-M, y+92); }
+  y+=hHead-58;
+  ctx.fillStyle=C.nar; ctx.globalAlpha=.8; ctx.fillRect(M,y,IW,3); ctx.globalAlpha=1;
+  y+=26+26;
 
-  // Barra naranja
-  ctx.fillStyle='#FF6B35'; ctx.fillRect(M,212,W-2*M,6);
+  // ── 2. Cliente y quién atiende ──
+  _vRR(ctx,M,y,IW,hCli-26,30); ctx.fillStyle=C.card; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
+  ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(600,21); ctx.fillText('CLIENTE', M+34, y+42);
+  ctx.fillStyle=C.nar2; ctx.font=F(700,32);
+  ctx.fillText(_vWrap(ctx, cliente.toUpperCase(), promotor?IW*0.6:IW-68, 1)[0]||'', M+34, y+84);
+  if(promotor){
+    ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(600,21); ctx.fillText('TE ATIENDE', W-M-34, y+42);
+    ctx.fillStyle=C.txt; ctx.font=F(600,30); ctx.fillText(_vWrap(ctx, promotor, IW*0.35, 1)[0]||'', W-M-34, y+84);
+  }
+  y+=hCli-26+40;
 
-  // ── Caja PROMOTOR / CLIENTE ──
-  const boxY=252, boxH=150;
-  _vRR(ctx,M,boxY,W-2*M,boxH,24); ctx.fillStyle='#1f1f1f'; ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1; ctx.stroke();
-  ctx.textAlign='left';  ctx.fillStyle='#8c8c8c'; ctx.font='700 24px system-ui,Arial,sans-serif'; ctx.fillText('PROMOTOR', M+30, boxY+52);
-  ctx.fillStyle='#FF6B35'; ctx.font='800 40px system-ui,Arial,sans-serif'; ctx.fillText(promotor.toUpperCase(), M+30, boxY+104);
-  ctx.textAlign='right'; ctx.fillStyle='#8c8c8c'; ctx.font='700 24px system-ui,Arial,sans-serif'; ctx.fillText('CLIENTE', W-M-30, boxY+52);
-  ctx.fillStyle='#FF6B35'; ctx.font='800 40px system-ui,Arial,sans-serif';
-  let cl=cliente.toUpperCase(); const maxCl=(W-2*M)/2-40; while(ctx.measureText(cl).width>maxCl && cl.length>3) cl=cl.slice(0,-1);
-  if(cl!==cliente.toUpperCase()) cl=cl.replace(/\s+$/,'')+'…';
-  ctx.fillText(cl, W-M-30, boxY+104);
-
-  // ── Productos ──
-  ctx.textAlign='left'; ctx.fillStyle='#8c8c8c'; ctx.font='700 26px system-ui,Arial,sans-serif'; ctx.fillText('PRODUCTOS A ENTREGAR', M, 472);
-  let y=firstRow;
-  items.forEach(it=>{
-    if(it.qty!==''){
-      const qty=it.qty+'x';
-      ctx.font='800 30px system-ui,Arial,sans-serif'; const qw=ctx.measureText(qty).width;
-      _vRR(ctx,M,y-38,qw+44,56,12); ctx.fillStyle='#2a2a2a'; ctx.fill();
-      ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.fillText(qty, M+22, y);
-      ctx.textAlign='right'; ctx.fillStyle='#f3f0ec'; ctx.font='600 34px system-ui,Arial,sans-serif';
-      let nm=String(it.nombre||''); const maxNW=(W-M)-(M+qw+44+30);
-      while(ctx.measureText(nm).width>maxNW && nm.length>3) nm=nm.slice(0,-1);
-      if(nm!==it.nombre) nm=nm.replace(/\s+$/,'')+'…';
-      ctx.fillText(nm, W-M, y);
-    } else {
-      ctx.fillStyle='rgba(255,255,255,.2)'; ctx.font='30px system-ui,Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='alphabetic'; ctx.fillText(it.nombre, W/2, y);
-    }
-    y+=rowH;
+  // ── 3. Productos, cada uno con su importe ──
+  ctx.fillStyle=C.sub; ctx.font=F(600,21);
+  ctx.textAlign='left'; ctx.fillText('PRODUCTOS', M+6, y+20);
+  ctx.textAlign='right'; if(!vacio) ctx.fillText('IMPORTE', W-M-6, y+20);
+  y+=58;
+  filas.forEach(f=>{
+    const it=f.it;
+    if(it.qty===''){ ctx.fillStyle='rgba(255,255,255,.22)'; ctx.font=F(400,28); ctx.textAlign='center'; ctx.fillText(it.nombre, W/2, y+30); y+=f.h; return; }
+    const base=y+f.nm.f;
+    _vRR(ctx,M,y-4,f.qw,46,14); ctx.fillStyle=C.chip; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='#e4e4e7'; ctx.font=F(700,26,'ui-monospace,Menlo,monospace'); ctx.textAlign='center'; ctx.fillText(it.qty+'x', M+f.qw/2, y+28);
+    ctx.textAlign='left'; ctx.fillStyle=C.txt; ctx.font=F(500,f.nm.f);
+    f.nm.lineas.forEach((l,k)=>ctx.fillText(l, M+f.qw+22, base+k*(f.nm.f+10)));
+    let ey=base+f.nm.lineas.length*(f.nm.f+10)+6;
+    if(f.sub){ ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText(fmtUSD(it.precio)+' c/u', M+f.qw+22, ey); ey+=34; }
+    if(it.garantia){ ctx.fillStyle='#6ee7b7'; ctx.font=F(500,22); ctx.fillText('🛡️ Garantía: '+it.garantia, M+f.qw+22, ey); }
+    if(it.precio!=null){ ctx.textAlign='right'; ctx.fillStyle=C.txt; ctx.font=F(700,30,'ui-monospace,Menlo,monospace'); ctx.fillText(fmtUSD(it.precio*it.qty), W-M, y+28); }
+    y+=f.h;
   });
 
-  // Línea punteada
-  ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.lineWidth=2; ctx.setLineDash([8,8]); ctx.beginPath(); ctx.moveTo(M,dashedY); ctx.lineTo(W-M,dashedY); ctx.stroke(); ctx.setLineDash([]);
+  // ── 4. Totales ──
+  y+=10;
+  ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=2; ctx.setLineDash([8,8]); ctx.beginPath(); ctx.moveTo(M,y); ctx.lineTo(W-M,y); ctx.stroke(); ctx.setLineDash([]);
+  y+=24+22;
+  const fila=(a,b)=>{ ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(400,25); ctx.fillText(a, M+6, y); ctx.textAlign='right'; ctx.fillStyle='#e4e4e7'; ctx.font=F(500,25); ctx.fillText(b, W-M-6, y); };
+  fila('Subtotal productos', (usd?fmtUSD(usd)+' USD':'')+(usd&&cup?'  ·  ':'')+(cup?fmtMN(cup)+' MN':'')||'—');
+  if(mens){ y+=44; fila('Mensajería'+(domicilio?' (a domicilio)':''), fmtMN(mens)+' MN'); }
+  y+=26;
+  const tg=ctx.createLinearGradient(M,y,W-M,y);
+  tg.addColorStop(0,'rgba(234,88,12,.22)'); tg.addColorStop(.5,'rgba(249,115,22,.15)'); tg.addColorStop(1,'rgba(234,88,12,.10)');
+  _vRR(ctx,M,y,IW,118,30); ctx.fillStyle=tg; ctx.fill(); ctx.strokeStyle='rgba(249,115,22,.45)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.textAlign='left'; ctx.fillStyle=C.nar2; ctx.font=F(800,23); ctx.fillText('TOTAL A PAGAR', M+34, y+52);
+  ctx.fillStyle='#d4d4d8'; ctx.font=F(500,24); ctx.fillText(recoge?'Pagar al recoger':'Pagar al recibir', M+34, y+86);
+  ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font=F(800,58);
+  ctx.fillText(totalCup ? fmtMN(totalCup)+' MN' : (usd?fmtUSD(usd)+' USD':'—'), W-M-34, y+80);
+  y+=118;
+  if(usd && totalCup){ y+=40; ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,24); ctx.fillText('o '+fmtUSD(usd)+' USD'+(mens?' + '+fmtMN(mens)+' MN de mensajería':''), W-M-6, y); y+=12; }
+  else y+=10;
 
-  // ── Total ──
-  ctx.textAlign='left';  ctx.fillStyle='#8c8c8c'; ctx.font='700 34px system-ui,Arial,sans-serif'; ctx.fillText('TOTAL A PAGAR', M, totalY);
-  ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='800 64px system-ui,Arial,sans-serif'; ctx.fillText('$'+usd.toFixed(2), W-M, totalY+6);
-  if(totalMN){ ctx.fillStyle='#8c8c8c'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.textAlign='right'; ctx.fillText('≈ '+totalMN+' MN', W-M, totalY+mnExtra); }
-
-  // ── Dónde recoger ──
-  if(alm){
-    const ay = totalY + mnExtra + 44;
-    _vRR(ctx,M,ay,W-2*M,almH-26,22); ctx.fillStyle='#1f1f1f'; ctx.fill();
-    ctx.strokeStyle='rgba(255,107,53,.35)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-    ctx.fillStyle='#8c8c8c'; ctx.font='700 24px system-ui,Arial,sans-serif'; ctx.fillText('RECOGER EN', M+30, ay+46);
-    ctx.fillStyle='#FF6B35'; ctx.font='800 36px system-ui,Arial,sans-serif';
-    ctx.fillText(_vWrap(ctx, String(alm.nombre||''), W-2*M-60, 1)[0]||'', M+30, ay+90);
-    ctx.fillStyle='#f3f0ec'; ctx.font='500 30px system-ui,Arial,sans-serif';
-    let ly = ay+90+40;
-    almLineas.forEach(l=>{ ctx.fillText(l, M+30, ly); ly+=40; });
-    if(almUbi){ ctx.fillStyle='#8c8c8c'; ctx.font='500 24px system-ui,Arial,sans-serif'; ctx.fillText(_vWrap(ctx, almUbi, W-2*M-60, 1)[0], M+30, ly); }
+  // ── 5. Dónde: recoge en el almacén o se le lleva ──
+  if(recoge || domicilio){
+    y+=30;
+    const h=hLugar-30;
+    _vRR(ctx,M,y,IW,h,30); ctx.fillStyle=C.card; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
+    // Icono de ubicación
+    _vRR(ctx,M+28,y+30,58,58,18); ctx.fillStyle='rgba(249,115,22,.15)'; ctx.fill();
+    ctx.strokeStyle=C.nar2; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(M+57,y+54,9,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(M+44,y+60); ctx.quadraticCurveTo(M+57,y+86,M+57,y+80); ctx.quadraticCurveTo(M+57,y+86,M+70,y+60); ctx.stroke();
+    const tx=M+108;
+    ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(600,21); ctx.fillText(recoge?'RECOGER EN':'ENTREGA A DOMICILIO', tx, y+46);
+    ctx.fillStyle=C.nar2; ctx.font=F(700,28); ctx.fillText(_vWrap(ctx, recoge?String(alm.nombre||''):'Dirección del cliente', IW-140, 1)[0]||'', tx, y+86);
+    ctx.fillStyle='#d4d4d8'; ctx.font=F(400,27);
+    let ly=y+126; lugarL.forEach(l=>{ ctx.fillText(l, tx, ly); ly+=38; });
+    ctx.fillStyle=C.dim; ctx.font=F(400,22);
+    if(recoge && alm.ubicacion) ctx.fillText(_vWrap(ctx, 'Ubicación: '+alm.ubicacion, IW-140, 1)[0], tx, ly);
+    else if(domicilio) ctx.fillText('Te escribimos para confirmar antes de que salga el mensajero', tx, ly);
+    y+=h;
   }
 
-  // ── Sello dorado verificado ──
-  const sy=H-150;
-  _vRR(ctx,M,sy,W-2*M,96,18); ctx.fillStyle='rgba(201,169,110,.10)'; ctx.fill(); ctx.strokeStyle='rgba(201,169,110,.3)'; ctx.lineWidth=2; ctx.stroke();
-  ctx.beginPath(); ctx.arc(M+46,sy+48,24,0,Math.PI*2); ctx.fillStyle='#C9A96E'; ctx.fill();
-  ctx.fillStyle='#1a1006'; ctx.font='900 26px system-ui,Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('✓', M+46, sy+49);
-  ctx.textBaseline='alphabetic'; ctx.textAlign='left'; ctx.fillStyle='#C9A96E'; ctx.font='800 26px system-ui,Arial,sans-serif'; ctx.fillText('Vale verificado · TiendaMax', M+88, sy+42);
-  ctx.fillStyle='#8c8c8c'; ctx.font='400 22px system-ui,Arial,sans-serif'; ctx.fillText(alm ? 'Pago contra entrega · muestra este vale al recoger' : 'Pago contra entrega · muestra al llegar a la tienda', M+88, sy+72);
-  ctx.textAlign='right'; ctx.fillStyle='#cdbfa6'; ctx.font='700 24px ui-monospace,Menlo,monospace'; ctx.fillText('#TM-'+_valeCodigo, W-M-20, sy+58);
+  // ── 6. Hasta cuándo se le guarda ──
+  if(vence){
+    y+=26;
+    _vRR(ctx,M,y,IW,76,24); ctx.fillStyle='rgba(250,204,21,.08)'; ctx.fill(); ctx.strokeStyle='rgba(250,204,21,.30)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.textAlign='left'; ctx.fillStyle='#fde68a'; ctx.font=F(700,25); ctx.fillText('🔒 Te lo guardamos hasta el '+fmtVence(vence), M+30, y+48);
+    y+=76;
+  }
+
+  // ── 7. Garantía ──
+  // Solo si algún producto la tiene; cuál, va en su propia línea arriba.
+  if(conGar.length){
+    y+=26;
+    _vRR(ctx,M,y,IW,92,26); ctx.fillStyle=C.card; ctx.fill(); ctx.strokeStyle=C.borde; ctx.lineWidth=2; ctx.stroke();
+    ctx.textAlign='left'; ctx.fillStyle=C.sub; ctx.font=F(600,20); ctx.fillText('GARANTÍA', M+34, y+38);
+    ctx.fillStyle=C.txt; ctx.font=F(700,26); ctx.fillText(garUnica || 'Solo en lo marcado con 🛡️', M+34, y+72);
+    ctx.textAlign='right'; ctx.fillStyle=C.sub; ctx.font=F(400,22); ctx.fillText('Guarda este vale como comprobante', W-M-34, y+56);
+    y+=92;
+  }
+
+  // ── 8. Si ya tiene tarjeta: que la traiga (sin cifras: el descuento se decide al vender) ──
+  if(conTarjeta){
+    y+=22+30; ctx.textAlign='left'; ctx.fillStyle='#e7c99a'; ctx.font=F(500,24);
+    ctx.fillText('🎁 Si tienes tu tarjeta TiendaMax, enséñala al pagar.', M+6, y);
+    y+=10;
+  }
+
+  // ── 9. Condiciones del dueño ──
+  if(atL.length){
+    y+=40; ctx.fillStyle='rgba(255,255,255,.06)'; ctx.fillRect(M,y,IW,2);
+    y+=50; ctx.textAlign='left'; ctx.fillStyle=C.nar2; ctx.font=F(700,22);
+    ctx.fillText(((at.titulo||'').replace(/🚨/g,'').trim().toUpperCase()||'ATENCIÓN')+' · CONDICIONES DE PAGO', M+6, y);
+    ctx.font=F(400,25);
+    atL.forEach(o=>{ y+=36; if(!o.k){ ctx.fillStyle=C.nar; ctx.fillText('•', M+8, y); } ctx.fillStyle=C.sub; ctx.fillText(o.x, M+34, y); });
+  }
+
+  // ── 10. Pie: verificado, cuándo paga y a quién escribir ──
+  y+=34;
+  _vRR(ctx,M,y,IW,112,28); ctx.fillStyle='rgba(6,78,59,.30)'; ctx.fill(); ctx.strokeStyle='rgba(16,185,129,.22)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(M+56,y+56,26,0,Math.PI*2); ctx.fillStyle='rgba(16,185,129,.20)'; ctx.fill();
+  ctx.strokeStyle=C.ver; ctx.lineWidth=5; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(M+44,y+57); ctx.lineTo(M+53,y+66); ctx.lineTo(M+69,y+46); ctx.stroke(); ctx.lineCap='butt';
+  ctx.textAlign='left'; ctx.fillStyle='#6ee7b7'; ctx.font=F(700,25); ctx.fillText('Vale verificado · '+(recoge?'pagas al recoger':'pagas al recibir'), M+100, y+48);
+  ctx.fillStyle='#d4d4d8'; ctx.font=F(400,23); ctx.fillText('¿Dudas o garantía? WhatsApp '+waTxt, M+100, y+84);
+  y+=112;
+
+  // Recortar al alto real y pintar detrás la tarjeta y el fondo.
+  const HF=Math.min(H, Math.ceil(y+48+P));
+  const img=ctx.getImageData(0,0,W,HF);
+  canvas.height=HF; ctx.putImageData(img,0,0);
+  ctx.globalCompositeOperation='destination-over';
+  _vRR(ctx,P,P,W-2*P,HF-2*P,52); ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle=C.bg; ctx.fill();
+  ctx.fillStyle='#09090b'; ctx.fillRect(0,0,W,HF);
+  ctx.globalCompositeOperation='source-over';
 }
 
 // Parte un texto en líneas que caben en `maxW`. La última se corta con «…»
@@ -1345,7 +1527,7 @@ async function _enviarValeImagenWA(){
   if(blob){
     const file=new File([blob],'vale-tiendamax-'+Date.now()+'.png',{type:'image/png'});
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      try{ await navigator.share({files:[file], text:texto, title:'Vale TiendaMax'}); toast('📤 Vale listo para enviar'); return; }
+      try{ await navigator.share({files:[file], text:texto, title:'Vale TiendaMax'}); reservarSiToca(); guardarHist(); toast('📤 Vale listo para enviar'); return; }
       catch(e){ if(e && (e.name==='AbortError' || /abort|cancel/i.test(e.message||''))) return; }
     }
     // Respaldo: descargar la imagen y abrir WhatsApp con el texto para adjuntarla
@@ -1353,6 +1535,7 @@ async function _enviarValeImagenWA(){
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   }
   window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank','noopener,noreferrer');
+  reservarSiToca(); guardarHist();
   toast('📥 Imagen descargada · adjúntala en WhatsApp');
 }
 
@@ -1486,9 +1669,32 @@ function renderReservaPanel(){
 
 /* Se llama al copiar y al enviar. Silencioso si no se eligió nada del
    catálogo: un vale escrito a mano sigue funcionando igual que siempre. */
+function _nNombre(t){ return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim(); }
+/* Las líneas del artículo que no vienen del botón del catálogo, cruzadas con
+   el catálogo de este teléfono por nombre idéntico (sin tildes ni mayúsculas). */
+function _valeEscritosEnCatalogo(){
+  const txt=(document.getElementById('vArticulo')?.value||'').trim(); if(!txt) return [];
+  let ps=[]; try{ ps=JSON.parse(localStorage.getItem('productos')||'[]')||[]; }catch(e){}
+  const ya=new Set(_valeItems.map(it=>_nNombre(it.nombre)));
+  const out=[];
+  _parseItems(txt).forEach(it=>{
+    const n=_nNombre(it.nombre); if(!n || ya.has(n)) return;
+    const p=ps.find(x=>_nNombre(x.nombre)===n);
+    out.push(p ? {id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0, cantidad:it.qty||1} : {sin:it.nombre});
+  });
+  return out;
+}
 function reservarSiToca(){
-  if(!_valeItems.length || _valeReservaHecha) return;
+  if(_valeReservaHecha) return;
   if(typeof TMReservas==='undefined') return;
+  const escritos=_valeEscritosEnCatalogo();
+  escritos.filter(x=>x.id).forEach(x=>_valeItems.push({id:x.id, nombre:x.nombre, precio:x.precio, cantidad:x.cantidad}));
+  const sueltos=escritos.filter(x=>x.sin).map(x=>x.sin);
+  if(!_valeItems.length){
+    if(sueltos.length) toast('⚠️ No se reservó nada: «'+sueltos[0]+'» no está en el catálogo con ese nombre. Elígelo con 🛍️ Catálogo.');
+    return;
+  }
+  if(sueltos.length) setTimeout(()=>toast('⚠️ Sin reservar: '+sueltos.join(', ')+' (no está en el catálogo con ese nombre)'), 2600);
   const r=TMReservas.crear(_valeItems,{cliente:g('vCliente'),telefono:g('vTelefono'),nota:g('vArticulo').split('\n')[0]});
   if(!r.ok){ toast('⚠️ '+r.msg); return; }
   _valeReservaHecha=r.reserva.id;

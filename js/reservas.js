@@ -45,6 +45,13 @@
   var MAX_MOV = 100;
   var MAX = 300;
   var DIAS_AVISO = 3;
+  /* El plazo que se le da al cliente: se imprime en el vale («te lo guardamos
+     hasta…») y pasado ese momento el panel avisa. La reserva NO se libera
+     sola —si el cliente pagó y el sistema devolviera el stock, se vendería
+     dos veces la misma unidad—: recordarle o liberarla lo decide el gestor. */
+  var HORAS_DEF = 48, LS_HORAS = 'tm_reserva_horas';
+  function horas() { var h = parseInt(localStorage.getItem(LS_HORAS), 10); return h >= 1 && h <= 720 ? h : HORAS_DEF; }
+  function ponerHoras(h) { h = parseInt(h, 10); if (!(h >= 1 && h <= 720)) return false; try { localStorage.setItem(LS_HORAS, String(h)); return true; } catch (e) { return false; } }
 
   function _leer(clave, porDefecto) {
     try {
@@ -154,9 +161,11 @@
     var aplicado = _moverStock(detalle, -1);
     if (aplicado === null) return { ok: false, msg: 'No se pudo guardar el descuento de stock (navegador sin espacio). No se reservó nada.' };
 
+    var ahora = Date.now();
     var r = {
-      id: 'rsv-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
-      ts: Date.now(),
+      id: 'rsv-' + ahora.toString(36) + Math.random().toString(36).slice(2, 5),
+      ts: ahora,
+      vence: ahora + horas() * 3600000,
       estado: 'reservada',
       cliente: String((datos && datos.cliente) || '').slice(0, 80),
       telefono: String((datos && datos.telefono) || '').slice(0, 25),
@@ -178,7 +187,7 @@
     return { ok: true, reserva: r };
   }
 
-  function _cerrar(id, estado, devolverStock) {
+  function _cerrar(id, estado, devolverStock, motivo) {
     var lista = reservas();
     var r = null;
     for (var i = 0; i < lista.length; i++) { if (lista[i].id === id) { r = lista[i]; break; } }
@@ -191,6 +200,7 @@
     }
     r.estado = estado;
     r.tsResuelta = Date.now();
+    if (motivo) r.motivo = motivo;
     if (!_guardarReservas(lista)) {
       if (devolverStock) _moverStock(r.items, -1);   // deshacer la devolución
       return { ok: false, msg: 'No se pudo guardar el cambio.' };
@@ -204,11 +214,21 @@
   function marcarVendida(id) { return _cerrar(id, 'vendida', false); }
 
   /* El cliente no vino. El producto vuelve a estar a la venta. */
-  function cancelar(id) { return _cerrar(id, 'cancelada', true); }
+  // motivo 'novino': el cliente no apareció. Se cuenta por WhatsApp para avisar la próxima vez.
+  function cancelar(id, motivo) { return _cerrar(id, 'cancelada', true, motivo === 'novino' ? 'novino' : ''); }
 
   function diasDe(r) { return Math.floor((Date.now() - (r.ts || 0)) / 86400000); }
   function pendientes() { return reservas().filter(function (r) { return r.estado === 'reservada'; }); }
   function pendientesViejas() { return pendientes().filter(function (r) { return diasDe(r) >= DIAS_AVISO; }); }
+  // Las de antes de existir el plazo no traen `vence`: se cuentan con el de ahora desde que se crearon.
+  function venceDe(r) { return Number(r && r.vence) || ((Number(r && r.ts) || 0) + horas() * 3600000); }
+  function vencida(r, ahora) { return !!r && r.estado === 'reservada' && (ahora || Date.now()) > venceDe(r); }
+  function pendientesVencidas() { var a = Date.now(); return pendientes().filter(function (r) { return vencida(r, a); }); }
+  function _tel8(t) { var d = String(t || '').replace(/\D/g, ''); return d.length >= 6 ? d.slice(-8) : ''; }
+  function noVinoDe(tel, salvoId) {
+    var t = _tel8(tel); if (!t) return 0;
+    return reservas().filter(function (r) { return r.estado === 'cancelada' && r.motivo === 'novino' && r.id !== salvoId && _tel8(r.telefono) === t; }).length;
+  }
 
   /* ── Espejo en Firebase ────────────────────────────────────────────────
      localStorage sigue mandando: es instantáneo y funciona sin cobertura, que
@@ -268,7 +288,7 @@
       var mio = porId[x.id];
       if (!mio) { locales.push(x); porId[x.id] = x; nuevas++; return; }
       if (mio.estado === 'reservada' && x.estado !== 'reservada') {
-        mio.estado = x.estado; mio.tsResuelta = x.tsResuelta || Date.now(); cerradas++;
+        mio.estado = x.estado; mio.tsResuelta = x.tsResuelta || Date.now(); if (x.motivo) mio.motivo = x.motivo; cerradas++;
       }
     });
     if (nuevas || cerradas) {
@@ -295,6 +315,8 @@
     cancelar: cancelar,
     sincronizar: sincronizar,
     dias: diasDe,
-    DIAS_AVISO: DIAS_AVISO
+    DIAS_AVISO: DIAS_AVISO,
+    horas: horas, ponerHoras: ponerHoras, venceDe: venceDe, vencida: vencida,
+    pendientesVencidas: pendientesVencidas, noVinoDe: noVinoDe
   };
 })();

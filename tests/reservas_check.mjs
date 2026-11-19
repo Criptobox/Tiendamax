@@ -172,7 +172,7 @@ const CATALOGO = [
     ok(/function reservarSiToca\(\)/.test(VALE), 'falta la reserva al enviar el vale');
     ok(/_valeReservaHecha/.test(VALE), 'hace falta recordar que este vale ya reservó');
     const f = VALE.slice(VALE.indexOf('function reservarSiToca()'), VALE.indexOf('function reservarSiToca()') + 700);
-    ok(/if\(!_valeItems\.length \|\| _valeReservaHecha\) return;/.test(f),
+    ok(/if\((?:!_valeItems\.length \|\| )?_valeReservaHecha\) return;/.test(f),
         'mandar el mismo vale dos veces no puede reservar dos veces');
     // Se reserva lo ELEGIDO DEL CATÁLOGO, no el texto del artículo: ese es
     // libre y no dice qué producto es.

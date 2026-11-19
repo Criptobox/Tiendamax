@@ -1872,7 +1872,11 @@ try{var _piel=localStorage.getItem('tm_piel');
            el cliente pagó y el sistema devolviera el stock por su cuenta,
            venderías dos veces la misma unidad. -->
       <div id="view-reservas" class="view">
-        <div class="ph"><div><h2>🔒 Reservas</h2><p id="reservas-sub">Vales enviados que aún no son venta</p></div></div>
+        <div class="ph"><div><h2>🔒 Reservas</h2><p id="reservas-sub">Vales enviados que aún no son venta</p></div>
+          <div class="ph-actions"><label style="font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px">Se guarda
+            <select id="reservas-plazo" onchange="reservaPlazo(this.value)" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 6px;font-size:13px">
+              <option value="24">24 horas</option><option value="48">48 horas</option><option value="72">3 días</option><option value="168">1 semana</option>
+            </select></label></div></div>
         <div class="section"><div id="reservasContenido"></div></div>
       </div>
 
@@ -3097,8 +3101,8 @@ try{var _piel=localStorage.getItem('tm_piel');
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js?v=e6a536a1"></script>
-<script src="js/admin-copilot.js?v=4a19301b"></script>
+<script src="js/reservas.js?v=c69dfed0"></script>
+<script src="js/admin-copilot.js?v=bd3ebe26"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
 <script src="js/tarjeta-cliente.js?v=7ad6f871"></script>
@@ -3861,9 +3865,15 @@ function renderReservas(){
   // confirmarlo, y buscarlo entre otras reservas es donde se equivoca uno.
   const delVale=_reservaDelVale(pend);
   if(delVale){ pend.sort((a,b)=>(a.id===delVale?-1:0)-(b.id===delVale?-1:0)); }
+  const selP=document.getElementById('reservas-plazo');
+  if(selP){ const h=String(TMReservas.horas()); if(![...selP.options].some(o=>o.value===h)) selP.add(new Option(h+' horas',h)); selP.value=h; }
+  const ahora=Date.now();
   cont.innerHTML=pend.map(r=>{
     const d=TMReservas.dias(r);
-    const viejo=d>=TMReservas.DIAS_AVISO;
+    const vence=TMReservas.venceDe(r);
+    const viejo=TMReservas.vencida(r, ahora);
+    const nv=TMReservas.noVinoDe(r.telefono, r.id);
+    const hVen=Math.max(1, Math.round((ahora-vence)/3600000));
     const esVale=r.id===delVale;
     const items=(r.items||[]).map(i=>i.cantidad+'× '+esc(i.nombre)).join(' · ');
     const wa=String(r.telefono||'').replace(/\D/g,'');
@@ -3875,16 +3885,39 @@ function renderReservas(){
       + '</div>'
       + '<div style="font-size:13px;color:var(--text);margin-top:5px">'+items+'</div>'
       + '<div style="font-size:13px;color:var(--gold);margin-top:3px">'+dosMonedas({usd:Number(r.total)||0, mn:Number(r.totalMN)||0})+'</div>'
-      + (viejo?'<div style="font-size:12px;color:#ff8f85;margin-top:6px">⚠️ Lleva '+d+' días sin cerrar. Ese stock está apartado y nadie más lo puede comprar.</div>':'')
+      + (viejo
+          ? '<div style="font-size:12px;color:#ff8f85;margin-top:6px">⏰ Venció '+(hVen<48?'hace '+hVen+' h':'hace '+Math.round(hVen/24)+' días')+' y no vino. Ese stock está apartado y nadie más lo puede comprar: recuérdale o libéralo.</div>'
+          : '<div style="font-size:12px;color:var(--muted);margin-top:6px">🔒 Guardado hasta el '+esc(_resFecha(vence))+'</div>')
+      + (nv?'<div style="font-size:12px;color:#fbbf24;margin-top:4px">⚠️ Este WhatsApp ya dejó '+nv+' vale'+(nv>1?'s':'')+' sin venir a recoger.</div>':'')
       + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'
       +   '<button class="btn btn-success" style="flex:1;min-width:130px;justify-content:center" onclick="reservaVender(\''+r.id+'\')">✅ Ejecutar venta</button>'
       +   '<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="reservaCancelar(\''+r.id+'\')">❌ Cancelar</button>'
-      +   (wa.length>=8?'<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="window.open(\'https://wa.me/'+wa+'\',\'_blank\')">💬 Escribirle</button>':'')
+      +   (wa.length>=8?'<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="reservaRecordar(\''+r.id+'\')">'+(viejo?'📲 Recordarle':'💬 Escribirle')+'</button>':'')
       + '</div></div>';
   }).join('');
 }
 
 function _reservaBuscar(id){ return TMReservas.lista().find(r=>r.id===id); }
+function _resFecha(ts){ try{ return new Date(ts).toLocaleString('es-ES',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
+function reservaPlazo(h){
+  if(!TMReservas.ponerHoras(h)){ mostrarNotificacion('❌ Plazo no válido','error'); return; }
+  mostrarNotificacion('✅ Los próximos vales se guardan '+(h>=48&&h%24===0?(h/24)+' días':h+' horas')+'. Los ya enviados mantienen su fecha.');
+  renderReservas();
+}
+/* Recordarle con el texto ya escrito: es lo que de verdad se hace cuando un
+   vale vence, y escribirlo cada vez es donde se deja para mañana. */
+function reservaRecordar(id){
+  const r=_reservaBuscar(id); if(!r) return;
+  const wa=String(r.telefono||'').replace(/\D/g,''); if(wa.length<8) return;
+  const num=wa.length===8?'53'+wa:wa;
+  const nom=String(r.cliente||'').trim().split(/\s+/)[0];
+  const prods=(r.items||[]).map(i=>(i.cantidad>1?i.cantidad+'× ':'')+i.nombre).join(', ');
+  const vencida=TMReservas.vencida(r);
+  const txt=(nom?'Hola '+nom+', ':'Hola, ')+(vencida
+    ? 'te escribo de TiendaMax por tu '+prods+'. Te lo tengo apartado todavía: ¿sigues interesado? Si no me dices nada hoy, lo libero para otro cliente.'
+    : 'te escribo de TiendaMax por tu '+prods+'. Te lo tengo guardado hasta el '+_resFecha(TMReservas.venceDe(r))+'. ¿A qué hora te viene bien?');
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(txt),'_blank','noopener');
+}
 
 /* vale.html → «✅ Entregado → registrar venta» apunta aquí qué reserva es
    (tm_vale_vender) y abre #reservas. Solo vale si esa reserva sigue
@@ -3923,7 +3956,9 @@ function reservaCancelar(id){
   const r=_reservaBuscar(id);
   if(!r) return;
   if(!confirm('¿Cancelar la reserva de '+(r.cliente||'este cliente')+'?\n\nEl producto vuelve al stock y se podrá vender a otro.')) return;
-  const c=TMReservas.cancelar(id);
+  // Apuntar si fue porque no vino: la próxima vez que ese WhatsApp pida algo, se avisa.
+  const noVino=confirm('¿Se cancela porque el cliente NO VINO a recogerlo?\n\nAceptar = no vino (se apunta para la próxima vez)\nCancelar = fue por otra razón');
+  const c=TMReservas.cancelar(id, noVino?'novino':'');
   if(!c.ok){ mostrarNotificacion('❌ '+c.msg,'error'); return; }
   // TMReservas devolvió el stock en localStorage; a la memoria del panel hay
   // que traerlo antes de sincronizar, o se sube la cifra de antes.
@@ -10511,11 +10546,19 @@ window.pubToggleSinPublicar=pubToggleSinPublicar;
 window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.pubShareReset=pubShareReset;
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
+window.reservaPlazo=reservaPlazo; window.reservaRecordar=reservaRecordar;
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
 window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas; window.tmCuentaDiagnostico=tmCuentaDiagnostico;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.
 window.tmAvisoSinCuenta=tmAvisoSinCuenta;
-if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>TMAuth.alCambiar(u=>{ tmCuentaPintar(u); tmAvisoSinCuenta(); })).catch(()=>{
+if(typeof TMAuth!=='undefined'){ TMAuth.init().then(()=>{
+  try{
+    const panel=document.getElementById('adminPanel');
+    if(TMAuth.usuario() && panel && panel.classList.contains('hidden') && typeof window.tmGrantAdminAccess==='function')
+      window.tmGrantAdminAccess({ok:true, via:'sesion'});
+  }catch(e){}
+  TMAuth.alCambiar(u=>{ tmCuentaPintar(u); tmAvisoSinCuenta(); });
+}).catch(()=>{
   const e=document.getElementById('tmCuentaEstado');
   if(e) e.textContent='No pude cargar Firebase Auth. Revisa la conexión o la configuración de Firebase en esta misma página.';
 }); }
