@@ -27,13 +27,21 @@ class EnNavegadorTest(unittest.TestCase):
 
 
 class ContratosTest(unittest.TestCase):
-    def test_el_vale_no_promete_descuentos(self):
-        """El vale va antes de la compra: el descuento de la tarjeta se decide
-        al registrar la venta. Ninguna cifra de la tarjeta en el vale."""
-        cuerpo = VALE[VALE.index("function drawValeImg()"):VALE.index("// Parte un texto en líneas")]
-        sin_comentarios = "\n".join(l.split("//")[0] for l in cuerpo.splitlines())
-        self.assertNotIn("1000", sin_comentarios)
-        self.assertNotIn("descuento", sin_comentarios.lower())
+    def test_el_vale_no_descuenta_esta_compra(self):
+        """El vale va antes de la compra: el descuento de la tarjeta se decide al
+        registrar la venta. El vale solo cuenta lo de las PRÓXIMAS compras."""
+        self.assertNotIn("descuentoDe(", VALE)
+        self.assertNotIn("descTarjetaMN", VALE)
+        prog = VALE[VALE.index("function _valeProgramaTarjeta()"):VALE.index("function textoGarantias()")]
+        self.assertIn("próximas", prog)
+
+    def test_los_tramos_del_vale_son_los_de_la_tarjeta(self):
+        """El vale promete lo que el panel cobra: si se separan, el cliente reclama con razón."""
+        import re
+        mod = (ROOT / "js" / "tarjeta-cliente.js").read_text(encoding="utf-8")
+        tramos = re.search(r"var TRAMOS = (\[\[\d+, \d+\], \[\d+, \d+\]\])", mod).group(1).replace(" ", "")
+        usos = re.search(r"var USOS = (\d+), EXTRA_MAX = (\d+)", mod).groups()
+        self.assertIn(f"const VALE_TARJETA={{TRAMOS:{tramos}, USOS:{usos[0]}, EXTRA_MAX:{usos[1]}}};", VALE)
 
     def test_la_reserva_no_caduca_sola(self):
         """Si el cliente pagó y el sistema devolviera el stock, se vendería dos

@@ -169,12 +169,16 @@ for (const modo of ['comparte', 'cancela']) {
         document.getElementById('vUSD').value = '100'; tasa = 500; margenMN = 0; calcular();
         reservarSiToca();
         const res = TMReservas.pendientes().find(r => r.cliente === 'Plazo');
-        return { texto: construirTextoVale(), vence: res && res.vence, ts: res && res.ts, cup: document.getElementById('vTotal').textContent,
+        document.getElementById('vMensajeria').value = '500 CUP'; recalc();
+        const total = totalValeTexto();
+        return { total, texto: construirTextoVale(), vence: res && res.vence, ts: res && res.ts, cup: document.getElementById('vTotal').textContent,
                  codigo: _valeCodigo, mn: fmtMN(80750) };
     }, [A]);
-    ok(t.vence && Math.abs(t.vence - t.ts - 24 * 3600000) < 5000, `la reserva no tomó el plazo de 24 h: ${t.vence - t.ts}`);
+    ok(t.vence && t.vence >= t.ts + 24 * 3600000 && t.vence - t.ts < 48 * 3600000 && new Date(t.vence).getHours() === 20 && new Date(t.vence).getMinutes() === 0,
+       `la reserva tiene que durar al menos 24 h y vencer al cierre (20:00), no de madrugada: ${new Date(t.vence)}`);
     ok(/Te lo guardamos hasta el/.test(t.texto), 'el texto del vale no dice hasta cuándo se guarda');
-    ok(t.mn === '80.750' && /50\.000 CUP/.test(t.cup), `los MN tienen que llevar punto de miles: ${t.mn} / ${t.cup}`);
+    ok(/^\$100 USD \+ 500 MN de mensajería \(o 50\.500 MN todo incluido\)$/.test(t.total), `el total tiene que ir en USD, con la mensajería aparte y los MN de referencia: «${t.total}»`);
+    ok(t.mn === '80.750' && /50\.500 CUP/.test(t.cup), `los MN tienen que llevar punto de miles: ${t.mn} / ${t.cup}`);
     ok(/^[2-9A-HJKMNP-Z]{6}$/.test(t.codigo), `el código del vale tiene letras que se confunden al dictarlo: ${t.codigo}`);
     await ctx.close();
 }
@@ -205,6 +209,80 @@ for (const modo of ['comparte', 'cancela']) {
        `la garantía tiene que ser la de cada producto: «${g.mixto}»`);
     ok(g.conMano.find(x => /Cable escrito/.test(x.nombre)).garantia === '1 año', 'el campo de garantía tiene que valer para lo escrito a mano');
     ok(/sin garantía/.test(g.ninguna), `un vale sin productos con garantía no puede prometerla: «${g.ninguna}»`);
+    await ctx.close();
+}
+
+// ── 2c) El texto es para el cliente, y con mensajería cuenta la Tarjeta ──
+{
+    const ctx = await contexto(false, null);
+    const pg = await ctx.newPage();
+    pg.on('pageerror', e => errores.push('vale tarjeta: ' + String(e).slice(0, 200)));
+    await pg.goto(`http://localhost:${PUERTO}/vale.html`);
+    await pg.waitForFunction(() => typeof _valeProgramaTarjeta === 'function', null, { timeout: 15000 });
+    const r = await pg.evaluate(([a]) => {
+        const llenar = () => {
+            resetForm();
+            document.getElementById('vCliente').value = 'Nuevo Cliente';
+            document.getElementById('vTelefono').value = '53 5000 7777';
+            document.getElementById('vDireccion').value = 'Calle 10 #5, Playa';
+            agregarProductoVale(a.nombre, Number(a.precioActual) || 0, String(a.id));
+        };
+        localStorage.removeItem('tm_tarjetas_v1'); localStorage.removeItem('tm_tarjeta_cfg');
+        llenar(); _valeAlm = null;
+        const dom = construirTextoVale();
+        llenar(); _valeAlm = { id: 'x', nombre: 'Almacén X', direccion: 'Dir X' };
+        const rec = construirTextoVale();
+        localStorage.setItem('tm_tarjeta_cfg', JSON.stringify({ on: false, dias: 90, ts: 1 }));
+        llenar(); _valeAlm = null;
+        const apagada = construirTextoVale();
+        localStorage.removeItem('tm_tarjeta_cfg');
+        localStorage.setItem('tm_tarjetas_v1', JSON.stringify({ TMABCDEF: { c: 'TMABCDEF', t: '5350007777', e: Date.now(), x: Date.now() + 864e5, usos: {}, extra: {} } }));
+        llenar(); _valeAlm = null;
+        const yaTiene = construirTextoVale();
+        return { dom, rec, apagada, yaTiene };
+    }, [A]);
+    ok(/Con esta compra recibes tu Tarjeta TiendaMax/.test(r.dom) && /próximas 3 compras \(desde \$25: −500 MN · desde \$45: −1000 MN\)/.test(r.dom) && /Recomienda a un amigo/.test(r.dom),
+       `con mensajería, al cliente nuevo hay que contarle la Tarjeta con sus tramos: «${r.dom.slice(-600)}»`);
+    ok(!/Tarjeta/.test(r.rec), 'en recogida la tarjeta la da el gestor en mano: el vale no la anuncia');
+    ok(!/Tarjeta/.test(r.apagada), 'con la campaña apagada el vale no puede prometer la tarjeta');
+    ok(/Tu Tarjeta TiendaMax: TM-ABCDEF/.test(r.yaTiene) && /\?ref=TMABCDEF/.test(r.yaTiene) && /t\?c=TMABCDEF/.test(r.yaTiene) && !/recibes tu Tarjeta/.test(r.yaTiene),
+       `a quien ya tiene tarjeta se le recuerda la suya, con su enlace y el de recomendar: «${r.yaTiene.slice(-500)}»`);
+    ok(/te mandamos tu tarjeta con su QR y tu enlace/.test(r.dom), 'al cliente nuevo hay que decirle cómo le llega la tarjeta');
+    ok(!/Zelle|Promotor|Vuelto: —|Dirección Cliente/.test(r.dom + r.rec), 'el texto del cliente no puede llevar etiquetas internas (Zelle, Promotor, Vuelto vacío)');
+    ok(!/Dirección:|Mensajería:/.test(r.rec), `en recogida no van la dirección del cliente ni la mensajería: «${r.rec.slice(0, 300)}»`);
+    ok(/Lo revisas antes de pagar/.test(r.dom) && !/verificado/i.test(r.dom), 'el texto tiene que decir que se revisa antes de pagar, sin «verificado»');
+    await ctx.close();
+}
+
+// ── 2d) El descuento se refleja: el de la tarjeta se propone solo, uno escrito manda ──
+{
+    const ctx = await contexto(false, null);
+    const pg = await ctx.newPage();
+    pg.on('pageerror', e => errores.push('vale descuento: ' + String(e).slice(0, 200)));
+    await pg.goto(`http://localhost:${PUERTO}/vale.html`);
+    await pg.waitForFunction(() => typeof _valeDescuento === 'function', null, { timeout: 15000 });
+    const r = await pg.evaluate(() => {
+        localStorage.setItem('tm_tarjetas_v1', JSON.stringify({ TMABCDEF: { c: 'TMABCDEF', t: '5350008888', e: Date.now(), x: Date.now() + 864e5, usos: {}, extra: {} } }));
+        resetForm(); _valeAlm = null; tasa = 500; margenMN = 0;
+        document.getElementById('vCliente').value = 'Con Tarjeta';
+        document.getElementById('vTelefono').value = '53 5000 8888';
+        document.getElementById('vArticulo').value = '1x Cosa — $50.00 USD c/u';
+        document.getElementById('vUSD').value = '50'; calcular();
+        document.getElementById('vMensajeria').value = '500'; recalc(); drawValeImg();
+        const auto = { campo: document.getElementById('vDescuento').value, total: totalValeTexto(), form: document.getElementById('vTotal').textContent, texto: construirTextoVale() };
+        document.getElementById('vUSD').value = '20'; calcular(); drawValeImg();
+        const bajo = document.getElementById('vDescuento').value;
+        document.getElementById('vUSD').value = '50'; calcular();
+        document.getElementById('vDescuento').value = '$5'; _valeDescTocado(); drawValeImg();
+        const manual = { campo: document.getElementById('vDescuento').value, total: totalValeTexto() };
+        return { auto, bajo, manual };
+    });
+    ok(r.auto.campo === '1000 MN', `con tarjeta y compra de $50 tenía que proponer 1000 MN: «${r.auto.campo}»`);
+    ok(/^\$50 USD − 1\.000 MN de descuento \+ 500 MN de mensajería \(o 24\.500 MN todo incluido\)$/.test(r.auto.total), `el total no refleja el descuento: «${r.auto.total}»`);
+    ok(/24\.500/.test(r.auto.form), `el total del formulario no refleja el descuento: «${r.auto.form}»`);
+    ok(/🏷️ Descuento \(Tarjeta TM-ABCDEF\): −1\.000 MN/.test(r.auto.texto) && /En este pedido: −1\.000 MN/.test(r.auto.texto), 'el texto no dice el descuento ni que sale de la tarjeta');
+    ok(r.bajo === '', `por debajo de $25 la tarjeta no se gasta: «${r.bajo}»`);
+    ok(/^\$45 USD \+ 500 MN de mensajería \(o 23\.000 MN todo incluido\)$/.test(r.manual.total), `un descuento escrito en USD tiene que restarse de los dólares: «${r.manual.total}»`);
     await ctx.close();
 }
 
