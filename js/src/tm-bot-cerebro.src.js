@@ -261,15 +261,21 @@
   // con longitudes topadas. Si falta uno, la regla rechaza el PATCH entero.
   // Se conserva la misma forma de clave que usaba TmAgent para no partir en
   // dos el histórico ya acumulado.
+  /* La clave de una pregunta en /agente/faq (y en /agente/opiniones, que
+     cuelga de la misma): una sola definición, o el voto del cliente acabaría
+     apuntado a una pregunta distinta de la que se registró. */
+  function _claveFAQ(texto){
+    const t = String(texto || '').trim();
+    if (t.length < 5 || t.length > 300 || t.charAt(0) === '/') return '';
+    // Firebase prohíbe . # $ / [ ] en las claves
+    return cleanForMatch(t).replace(/\s+/g, '_').substring(0, 50).replace(/[.#$/[\]]/g, '_');
+  }
   function _registrarPreguntaFAQ(texto, intent, respuestaHTML){
     try {
       const t = String(texto || '').trim();
-      if (t.length < 5 || t.length > 300) return;
-      if (t.charAt(0) === '/') return;              // comandos, no preguntas
       const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
       if (!base) return;
-      // Firebase prohíbe . # $ / [ ] en las claves
-      const clave = cleanForMatch(t).replace(/\s+/g, '_').substring(0, 50).replace(/[.#$/[\]]/g, '_');
+      const clave = _claveFAQ(t);
       if (!clave) return;
       // Cortar a 300 puede partir un emoji por la mitad (son 2 unidades UTF-16)
       // y dejar un � en faq.html, que es una página pública indexada.
@@ -3572,7 +3578,7 @@ ${notasHTML}
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: hayInversores ? ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp'] : ['📄 Descargar cotización','⏱️ Calcular autonomía','💬 WhatsApp'],
+      quickReplies: ['📄 Descargar cotización'].concat(hayInversores ? ['🆚 Comparar inversores'] : [], ['⏱️ Calcular autonomía','💬 WhatsApp']),
       // Un "sí" a una pregunta de dos no elige: Max toma la primera, la
       // comparativa, y lo dice — con la otra opción a un toque.
       siDigoSi: hayInversores ? () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores') : () => R.autonomia('autonomia')
@@ -5645,10 +5651,43 @@ ${notasHTML}
     return _componer(piezas.slice(0, _MULTI_MAX + 1).map(p => p.data));
   }
 
+  /* ── Lo que el dueño le enseña desde el panel (🤖 Max → «Enseñar») ──
+     max-aprendido.json: { ensenado: { "nano loco": {id, ts} | {borrado, ts} } }.
+     Si el mensaje contiene una frase enseñada (palabras enteras, sin tildes),
+     se cambia por el nombre del producto y Max sigue su camino de siempre:
+     «cuánto cuesta el nano loco» pasa a preguntar por la NanoStation M5 Loco.
+     Max no aprende solo; aprende esto, que alguien decidió. */
+  let _ENSENADO = [];
+  function _ponerEnsenado(datos){
+    const e = (datos && datos.ensenado) || {};
+    _ENSENADO = Object.keys(e).map(f => ({ f: cleanForMatch(f), id: e[f] && e[f].id, borrado: e[f] && e[f].borrado }))
+      .filter(x => x.f && x.id != null && !x.borrado)
+      .sort((a, b) => b.f.length - a.f.length);      // la frase más larga gana
+  }
+  function _cargarEnsenado(){
+    try {
+      fetch('/max-aprendido.json', { cache: 'no-cache' })
+        .then(r => r.ok ? r.json() : null).then(d => { if(d) _ponerEnsenado(d); }).catch(() => {});
+    } catch(e){}
+  }
+  _cargarEnsenado();
+  function _aplicarEnsenado(text){
+    if(!_ENSENADO.length) return text;
+    const t = ' ' + cleanForMatch(text) + ' ';
+    for(const x of _ENSENADO){
+      if(t.indexOf(' ' + x.f + ' ') === -1) continue;
+      const p = PRODUCTOS.find(q => String(q.id) === String(x.id));
+      if(!p) continue;                                   // borrado del catálogo: no se aplica
+      return t.replace(' ' + x.f + ' ', ' ' + p.nombre + ' ').trim();
+    }
+    return text;
+  }
+
   function responder(text){
     // El catálogo llega asincrónico y el admin puede cambiar precios o la
     // tasa mientras el chat está abierto: se releen en cada mensaje.
     _sincronizar();
+    text = _aplicarEnsenado(text);
     if(PRODUCTOS.length === 0){
       return {
         response: '⏳ Todavía estoy cargando el catálogo. Dame un segundo y vuelve a preguntarme, o escríbenos directo por WhatsApp y te atendemos al momento.',
@@ -6347,6 +6386,7 @@ ${notasHTML}
       if(data.elegirRival){ elegirPrimero(data.elegirRival); saveHistory(); return; }
       if(data.compare) addCompareTable(data.compare);
       else if(data.products) addProducts(data.products);
+      _pedirOpinion(text, data);
       renderQuickReplies(data.quickReplies || defaultQuickReplies());
       saveHistory(); // guardar tras respuesta del bot
     } catch(e){
@@ -6358,6 +6398,60 @@ ${notasHTML}
       sendBtn.disabled = false;
       inputEl.focus();
     }
+  }
+
+  /* ── «¿Te sirvió?» ──────────────────────────────────────────────────────
+     Un toque debajo de cada respuesta que contesta algo (no en saludos ni
+     en «no te entendí», que ya se apunta solo como 'desconocido'). Solo la
+     ÚLTIMA respuesta lo lleva: una fila por mensaje llena el chat. El voto va
+     a /agente/opiniones/<clave>/<id> —la misma clave que la pregunta en
+     /agente/faq— con {v: 1|-1, m: motivo, ts}; nada del cliente. El panel
+     (🤖 Max) los junta para saber qué enseñarle o corregir. */
+  const _SIN_OPINION = /^(saludo|despedida|gracias|confirmacion|negacion|ayuda|comando|resetCmd|quienEres|whatsapp|carrito|wishlist|fallback)$/;
+  const _MOTIVOS_NO = ['No era lo que buscaba', 'Información incorrecta', 'No entendió mi pregunta', 'Prefiero una persona'];
+  function _votar(clave, v, m){
+    try {
+      const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+      if(!base || !clave) return;
+      const cuerpo = { v: v, ts: { '.sv': 'timestamp' } };
+      if(m) cuerpo.m = String(m).slice(0, 40);
+      fetch(base + '/agente/opiniones/' + encodeURIComponent(clave) + '.json', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo)
+      }).catch(() => {});
+    } catch(e){}
+  }
+  function _pedirOpinion(text, data){
+    try {
+      document.querySelectorAll('.tm-bot-opina').forEach(e => e.remove());
+      const clave = _claveFAQ(text);
+      if(!clave || data.sinRespuesta || _SIN_OPINION.test(String(_context.lastIntent || ''))) return;
+      const row = document.createElement('div');
+      row.className = 'tm-bot-opina';
+      row.innerHTML = '<span>¿Te sirvió?</span>'
+        + '<button type="button" data-v="1" aria-label="Sí me sirvió">👍 Sí</button>'
+        + '<button type="button" data-v="-1" aria-label="No me sirvió">👎 No</button>';
+      row.addEventListener('click', function(ev){
+        const b = ev.target.closest('button'); if(!b) return;
+        if(b.dataset.v === '1'){
+          _votar(clave, 1);
+          row.innerHTML = '<span>¡Gracias! 🙌</span>';
+          return;
+        }
+        if(b.dataset.v === '-1'){
+          row.innerHTML = '<span>Gracias por decírmelo. ¿Qué falló?</span><div class="tm-bot-opina-mot">'
+            + _MOTIVOS_NO.map(mo => '<button type="button" data-m="' + escapeAttr(mo) + '">' + escapeHtml(mo) + '</button>').join('') + '</div>';
+          return;
+        }
+        if(b.dataset.m){
+          const mo = b.dataset.m;
+          _votar(clave, -1, mo);
+          row.innerHTML = '<span>Anotado ✅ Se lo paso a la tienda para mejorar.</span>';
+          if(/persona/i.test(mo)) window.open('https://wa.me/' + WHATSAPP, '_blank', 'noopener,noreferrer');
+        }
+      });
+      bodyEl.appendChild(row);
+      _scrollAlFondo();
+    } catch(e){}
   }
 
   function defaultQuickReplies(){
@@ -6703,6 +6797,8 @@ ${notasHTML}
     armarSistemaSeguridad: R.sistemaSeguridad,
     armarSistemaInternet: R.sistemaInternet,
     armarSistema: _armarSistema,
+    claveFAQ: _claveFAQ,
+    ponerEnsenado: _ponerEnsenado,
     capacidadBateria: _capacidadBateria,
     diagnosticar: R.diagnostico,
     esAveria,

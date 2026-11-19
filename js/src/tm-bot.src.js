@@ -148,6 +148,11 @@
     .tm-bot-compare-verdict b{color:#2ECC71;}
     /* ── Quick replies ── */
     .tm-bot-quickreplies{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 8px;flex-shrink:0;max-height:92px;overflow-y:auto;}
+    .tm-bot-opina{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 6px 4px;font-size:12.5px;color:#a1a1aa;}
+    .tm-bot-opina button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#e4e4e7;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer;}
+    .tm-bot-opina button:hover{border-color:rgba(249,115,22,.6);}
+    .tm-bot-opina-mot{display:flex;flex-wrap:wrap;gap:6px;width:100%;}
+    .tm-bot-opina-mot button{border-radius:12px;}
     .tm-bot-quickreply{background:rgba(232,80,30,.12);color:#ff6b35;border:1px solid rgba(232,80,30,.3);padding:7px 12px;border-radius:18px;font-size:12px;cursor:pointer;transition:all .2s;font-weight:600;white-space:nowrap;}
     .tm-bot-quickreply:hover{background:#E8501E;color:#fff;border-color:#E8501E;transform:translateY(-1px);}
     .tm-bot-quickreply.wa{background:rgba(37,211,102,.12);color:#25D366;border-color:rgba(37,211,102,.3);}

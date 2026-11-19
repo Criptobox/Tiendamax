@@ -284,6 +284,28 @@
         },
         ".read": true,
         ".write": false
+      },
+      "opiniones": {
+        ".read": "auth != null && auth.uid === root.child('admin_uid').val()",
+        ".write": false,
+        "$clave": {
+          "$id": {
+            ".write": "!data.exists() && $clave.length <= 60",
+            ".validate": "newData.hasChildren(['v','ts']) && (newData.child('v').val() === 1 || newData.child('v').val() === -1) && newData.child('ts').isNumber() && newData.child('ts').val() <= now + 60000 && newData.child('ts').val() >= now - 300000",
+            "v": {
+              ".validate": true
+            },
+            "ts": {
+              ".validate": true
+            },
+            "m": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "$otro": {
+              ".validate": false
+            }
+          }
+        }
       }
     },
     "wishlist_avisos": {

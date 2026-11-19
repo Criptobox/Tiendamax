@@ -1201,7 +1201,8 @@ function preguntasHtml(){
       <button type="button" class="tm-copilot-btn" data-cop="pregOk" data-k="${esc(p.k)}">Hecho</button>
     </div>
   </div>`;
-  let html = `<div class="tm-copilot-summary tres">
+  let html = `<div class="tm-copilot-smart" style="border-left:3px solid #a78bfa"><h4>🤖 Ahora todo está en el panel de Max</h4><small>Con lo que opinan los clientes (👍/👎), lo que buscan y no tienes, y «Enseñar» para que Max aprenda.</small><div class="tm-copilot-task-actions" style="margin-top:8px"><button type="button" class="tm-copilot-btn primary" data-cop="task" data-tab="max">Abrir 🤖 Max</button></div></div>
+    <div class="tm-copilot-summary tres">
       <div class="tm-copilot-stat"><small>🤷 Sin respuesta</small><b>${sin.length}</b></div>
       <div class="tm-copilot-stat"><small>💬 Contestadas</small><b>${con.length}</b></div>
       <div class="tm-copilot-stat"><small>🔁 Más repetida</small><b>${todas[0] ? '×' + todas[0].n : '—'}</b></div>
