@@ -90,6 +90,9 @@ async function abrir({ conCache = false } = {}) {
             { id: 102, nombre: 'Cable Prueba', precioActual: 5, stock: 40 },
         ]));
         localStorage.setItem('tm_almacenes_borrados', JSON.stringify(['alm_c']));
+        // La medida de abajo compara el alto con y sin dirección del almacén: el
+        // anuncio de la Tarjeta (solo con mensajería) cambiaría el alto por su cuenta.
+        localStorage.setItem('tm_tarjeta_cfg', JSON.stringify({ on: false, dias: 90, ts: 1 }));
         if (cache) localStorage.setItem('tm_vale_almacenes', JSON.stringify(alm));
         window.__copiado = [];
         try {

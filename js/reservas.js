@@ -50,6 +50,16 @@
      sola —si el cliente pagó y el sistema devolviera el stock, se vendería
      dos veces la misma unidad—: recordarle o liberarla lo decide el gestor. */
   var HORAS_DEF = 48, LS_HORAS = 'tm_reserva_horas';
+  /* El plazo vence al CIERRE del día (20:00), nunca de madrugada: «hasta el
+     sábado 0:53» no se puede cumplir con un horario de 8 a 8. Se redondea
+     hacia arriba, así el cliente nunca tiene menos tiempo del prometido. */
+  var CIERRE_H = 20;
+  function alCierre(ts) {
+    var d = new Date(ts), c = new Date(ts);
+    c.setHours(CIERRE_H, 0, 0, 0);
+    if (c.getTime() < d.getTime()) c.setDate(c.getDate() + 1);
+    return c.getTime();
+  }
   function horas() { var h = parseInt(localStorage.getItem(LS_HORAS), 10); return h >= 1 && h <= 720 ? h : HORAS_DEF; }
   function ponerHoras(h) { h = parseInt(h, 10); if (!(h >= 1 && h <= 720)) return false; try { localStorage.setItem(LS_HORAS, String(h)); return true; } catch (e) { return false; } }
 
@@ -165,7 +175,7 @@
     var r = {
       id: 'rsv-' + ahora.toString(36) + Math.random().toString(36).slice(2, 5),
       ts: ahora,
-      vence: ahora + horas() * 3600000,
+      vence: alCierre(ahora + horas() * 3600000),
       estado: 'reservada',
       cliente: String((datos && datos.cliente) || '').slice(0, 80),
       telefono: String((datos && datos.telefono) || '').slice(0, 25),
@@ -316,7 +326,7 @@
     sincronizar: sincronizar,
     dias: diasDe,
     DIAS_AVISO: DIAS_AVISO,
-    horas: horas, ponerHoras: ponerHoras, venceDe: venceDe, vencida: vencida,
+    horas: horas, ponerHoras: ponerHoras, alCierre: alCierre, venceDe: venceDe, vencida: vencida,
     pendientesVencidas: pendientesVencidas, noVinoDe: noVinoDe
   };
 })();
