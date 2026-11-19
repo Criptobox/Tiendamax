@@ -348,6 +348,7 @@ function agregarAlCarrito(id, cantidad) {
             // Sin esto el carrito no sabe en qué moneda está cada línea y las
             // suma todas como si fueran USD.
             moneda:   (typeof tmMoneda === 'function') ? tmMoneda(p) : 'USD',
+            antes:    parseFloat(p.precioOriginal) || 0,
             imagen:   p.imagen,
             cantidad: cant
         });
@@ -622,9 +623,14 @@ function _mensajeOrdenWA(items, opts) {
         const esMN = it.moneda === 'MN';
         const precioTxt = esMN
             ? tmMN(precio) + ' MN'
-            : '$' + precio.toFixed(2) + ' USD';
+            : '$' + (precio % 1 ? precio.toFixed(2) : String(precio)) + ' USD';
+        // Si va rebajado, que quede escrito: confirma que pidió la rebaja.
+        const antes = Number(it.antes || 0);
+        const antesTxt = (antes > precio && precio > 0)
+            ? '  (rebajado, antes ' + (esMN ? tmMN(antes) + ' MN' : '$' + (antes % 1 ? antes.toFixed(2) : antes)) + ')'
+            : '';
         L.push(precio > 0
-            ? '      \u25b8 Cant: *' + cant + '*  \u00b7  ' + precioTxt + ' c/u'
+            ? '      \u25b8 Cant: *' + cant + '*  \u00b7  ' + precioTxt + ' c/u' + antesTxt
             : '      \u25b8 Cant: *' + cant + '*');
         L.push('');
     });

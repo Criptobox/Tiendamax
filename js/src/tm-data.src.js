@@ -1319,12 +1319,30 @@ function tmOrdenBusqueda(lista, q) {
     return lista.map((p, i) => [g(p), i, p]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
 }
 
+/* Texto del producto sin acentos, espacios ni guiones: «10w40» tiene que
+   encontrar «10W-40» y «cat 6» a «Cat6». */
+function _tmTextoCompacto(p) {
+    if (p._tmCompacto) return p._tmCompacto;
+    const t = _tmTextoBuscable(p).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s\-_.\/]+/g, '');
+    try { Object.defineProperty(p, '_tmCompacto', { value: t, enumerable: false }); } catch (e) {}
+    return t;
+}
+const _TM_PALABRAS_VACIAS = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'para', 'con', 'y', 'en', 'por', 'que', 'mi', 'tu', 'quiero', 'busco', 'necesito', 'tienen', 'tiene', 'hay'];
 function tmCoincideBusqueda(p, q) {
     if (!q) return true;
     const texto = _tmTextoBuscable(p);
     if (texto.includes(q)) return true;
     const palabras = q.split(/\s+/).filter(Boolean);
     if (palabras.length > 1 && palabras.every(w => texto.includes(w))) return true;
+    // «aceite para carro», «aceite 10w40»: sin las palabras de relleno y con
+    // las medidas pegadas o con guion, todas las que quedan tienen que estar.
+    const claves = palabras.filter(w => _TM_PALABRAS_VACIAS.indexOf(w) < 0);
+    if (claves.length && claves.length <= palabras.length && !(claves.length === 1 && palabras.length === 1)) {
+        const comp = _tmTextoCompacto(p);
+        const norm = w => w.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s\-_.\/]+/g, '');
+        const sing = w => (w.length > 3 && /s$/.test(w)) ? w.slice(0, -1) : w;
+        if (claves.every(w => texto.includes(w) || comp.includes(norm(w)) || comp.includes(sing(norm(w))))) return true;
+    }
     // El aproximado sólo sobre nombre+categoría, como estaba: aplicarlo al
     // texto entero devolvería medio catálogo por cualquier letra suelta.
     return (typeof tmFuzzyMatch === 'function')

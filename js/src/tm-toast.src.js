@@ -181,7 +181,7 @@ function tmComprar(event, id, nombre) {
     // Buscar producto para tener el precio en el mensaje
     const _prod = productos.find(p => p.id === id || p.id === Number(id));
     const item = _prod
-        ? { id: _prod.id, nombre: _prod.nombre, precio: parseFloat(_prod.precioActual) || 0, cantidad: 1 }
+        ? { id: _prod.id, nombre: _prod.nombre, precio: parseFloat(_prod.precioActual) || 0, moneda: (typeof tmMoneda === 'function') ? tmMoneda(_prod) : 'USD', antes: parseFloat(_prod.precioOriginal) || 0, cantidad: 1 }
         : { id: id, nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
     _gaEvent('contact', { method: 'whatsapp_product', item_name: item.nombre, value: item.precio });
     // Generar vale/pedido para seguimiento

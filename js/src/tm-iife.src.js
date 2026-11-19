@@ -237,6 +237,18 @@ async function guardarTasaMNAdmin() {
             const header = document.createElement('div');
             header.className = 'tm-agotados-header';
             const n = agotadoCards.length;
+            // Todo lo que salió está agotado: decirlo claro y ofrecer una salida,
+            // en vez de una pared de «AGOTADO» repitiendo cada uno su aviso.
+            const hayDisp = !!grid.querySelector('.producto-card:not(.card-agotado)');
+            if (!hayDisp && typeof _heroSearchActivo !== 'undefined' && _heroSearchActivo) {
+                header.innerHTML =
+                    '<div class="tm-ah-left"><span class="tm-ah-icon">📦</span>' +
+                    '<div><div class="tm-ah-title">Ahora mismo no hay disponibles</div>' +
+                    '<div class="tm-ah-sub">Toca «Avísame» y te escribimos cuando lleguen, o ' +
+                    '<a href="#" onclick="tmPreguntarAMax(\'tienen \'+_heroSearchActivo);return false;" style="color:#f97316;font-weight:700;">pregúntale a Max</a>.</div></div></div>';
+                agotadoCards[0].parentNode.insertBefore(header, agotadoCards[0]);
+                return;
+            }
             header.innerHTML =
                 '<div class="tm-ah-left">' +
                     '<span class="tm-ah-icon">📦</span>' +

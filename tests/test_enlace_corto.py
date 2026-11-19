@@ -128,7 +128,13 @@ class PaginasTest(unittest.TestCase):
         self.assertIn('<meta property="og:title" content="📶 Router AX1800 | TiendaMax">', ficha)
         self.assertIn('og:image:alt" content="Router AX1800"', ficha)
         self.assertIn('"name": "Router AX1800"', ficha, "el JSON-LD lleva el nombre sin emoji")
-        self.assertIn("me%20interesa%3A%20Router%20AX1800.", ficha, "el pedido lleva el nombre sin emoji")
+        # El pedido sale completo (producto, cantidad, precio, datos a coordinar)
+        # y con el nombre sin emoji.
+        self.assertIn("%E2%96%B8%20Router%20AX1800%0A", ficha, "el pedido lleva el nombre sin emoji")
+        self.assertIn("Cantidad%3A%201", ficha, "el pedido dice la cantidad")
+        self.assertIn("Precio%3A%20%24140", ficha, "el pedido dice el precio en su moneda")
+        self.assertIn("Municipio%3A", ficha, "el pedido pide lo que hace falta para coordinar")
+        self.assertIn("Mensajería en La Habana", ficha, "la ficha dice dónde hay mensajería")
         self.assertIn('content="✅ 3 disponibles · Pagas al recibirlo · Garantía 3 meses. Router rápido."', ficha)
         self.assertIn('<meta name="description" content="Router rápido.">', ficha,
                       "la descripción para Google no cambia")

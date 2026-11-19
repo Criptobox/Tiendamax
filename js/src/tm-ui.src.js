@@ -1308,6 +1308,44 @@ async function _tmCargarMetaCatalogo() {
 }
 
 // ── Patch renderizarProductos to show agotado/oferta badges ──
+/* Una búsqueda sin resultados no puede ser una pared vacía: quien busca ya
+   quiere comprar. Se le ofrece preguntarle a Max, escribir por WhatsApp con
+   lo que buscaba (también es demanda que el panel ve) o volver al catálogo. */
+function tmSinResultadosHTML(q) {
+    const t = escapeHtml(q);
+    return '<div class="tm-sinres" style="grid-column:1/-1;text-align:center;padding:36px 18px 28px;">' +
+        '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;">No encontré «' + t + '»</div>' +
+        '<p style="color:#aaa;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:320px;">Puede que lo tengamos con otro nombre o que llegue pronto. Pregúntale a Max o escríbenos y lo buscamos.</p>' +
+        '<div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;">' +
+        '<button type="button" class="btn" onclick="tmSinResAccion(\'max\')" style="padding:13px;border-radius:12px;font-weight:700;">💬 Preguntarle a Max</button>' +
+        '<button type="button" class="btn" onclick="tmSinResAccion(\'wa\')" style="padding:13px;border-radius:12px;font-weight:700;background:#25D366;color:#fff;border:0;">Escribir por WhatsApp</button>' +
+        '<button type="button" class="btn" onclick="tmSinResAccion(\'todo\')" style="padding:13px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,.18);color:#ddd;">Ver todo el catálogo</button>' +
+        '</div></div>';
+}
+function tmSinResAccion(que) {
+    const q = _heroSearchActivo || '';
+    if (que === 'todo') {
+        const i = document.getElementById('heroSearchInput'); if (i) i.value = '';
+        aplicarBusquedaHero();
+    } else if (que === 'wa') {
+        const msg = encodeURIComponent('Hola, busco: ' + q + '. ¿Lo tienen o lo pueden conseguir?');
+        window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
+    } else if (typeof tmPreguntarAMax === 'function') {
+        tmPreguntarAMax('tienen ' + q);
+    }
+}
+function tmPreguntarAMax(txt) {
+    const panel = document.getElementById('tmBotPanel');
+    if (window._tmBotCerebroListo && window._tmBot) {
+        try { window._tmBot.open(); } catch (e) {}
+        try { window._tmBot.send(txt); } catch (e) {}
+        return;
+    }
+    window._tmBotPendiente = txt;
+    const b = document.getElementById('tmBotBubble');
+    if (b && !(panel && panel.classList.contains('open'))) b.click();
+}
+
 if (typeof renderizarProductos === 'function') {
 const _origRenderProductosFinal = renderizarProductos;
 renderizarProductos = function() {
@@ -1408,6 +1446,10 @@ renderizarProductos = function() {
             mensaje = 'No hay productos que coincidan con tu búsqueda.';
         } else {
             mensaje = 'No hay productos en esta categoría aún.';
+        }
+        if (_heroSearchActivo && !(subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas')) {
+            productosGrid.innerHTML = tmSinResultadosHTML(_heroSearchActivo);
+            return;
         }
         productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
