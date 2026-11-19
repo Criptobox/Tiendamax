@@ -3097,7 +3097,12 @@
   function _armarSistema(sis){
     const grupos = (sis.componentes || []).map(comp => {
       const prods = PRODUCTOS.filter(p =>
-        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0
+        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0 &&
+        // Una batería de carro es de ARRANQUE (corriente alta unos segundos)
+        // y se muere en semanas descargándose a diario con un panel; y una
+        // estación de energía no es «una batería», es el sistema entero.
+        // Ninguna de las dos cabe en el hueco «Batería» de un sistema solar.
+        !(comp.subcat === 'BATERÍAS' && (_esBateriaArranque(p) || _estacionDatos(p)))
       ).slice(0, 2);
       // "Agotado" y "no lo vendemos" no son lo mismo, y decir lo primero
       // cuando pasa lo segundo promete que vuelve algo que nunca estuvo:
@@ -3116,6 +3121,80 @@
       };
     });
     return { nombre: sis.nombre, presupuesto: sis.presupuesto, grupos: grupos };
+  }
+
+  /* ── Estaciones de energía todo en uno (BLUETTI, EcoFlow…) ──
+     Traen dentro batería, inversor y controlador solar. Sumarles otra
+     batería y otro controlador —lo que Max hacía, porque el AC180 está en
+     la subcategoría BATERÍAS— es una propuesta que cualquier instalador
+     tacha. Se reconocen por sus DATOS (capacidad en Wh y salida AC en W en
+     la ficha), no por la marca: así una nueva entra sola. */
+  function _esBateriaArranque(p){
+    return /automotriz|arranque|\bcarro\b|\bauto\b|\bmoto\b/i.test(p && p.nombre || '');
+  }
+  function _num(t){ return parseFloat(String(t).replace(/\./g, '').replace(',', '.')); }
+  function _estacionDatos(p){
+    // La ficha viaja en el producto original (_orig): la copia normalizada no la lleva.
+    const ficha = p && (Array.isArray(p.ficha) ? p.ficha : (p._orig && Array.isArray(p._orig.ficha) ? p._orig.ficha : null));
+    if(!ficha) return null;
+    const val = re => { const f = ficha.find(x => x && re.test(String(x.k || ''))); return f ? String(f.v || '') : ''; };
+    const capT = val(/capacidad/i), salT = val(/potencia de salida|salida ac/i);
+    const mWh = capT.match(/(\d[\d.,]*)\s*wh\b/i), mW = salT.match(/(\d[\d.,]*)\s*w\b/i);
+    if(!mWh || !mW) return null;
+    const wh = _num(mWh[1]), w = _num(mW[1]);
+    if(!(wh > 0) || !(w > 0)) return null;
+    const entT = val(/entrada|carga/i);
+    const mSol = entT.match(/solar[^)]*?(\d[\d.,]*)\s*w\b/i);
+    const mRango = entT.match(/(\d+)\s*v\s*[-–]\s*(\d+)\s*v/i);
+    return { wh: wh, w: w, solarW: mSol ? _num(mSol[1]) : 0, rango: mRango ? mRango[1] + '–' + mRango[2] + ' V' : '' };
+  }
+  /** La estación en stock que da al menos `minW`, la más barata. */
+  function _estacionSolar(minW){
+    return PRODUCTOS.filter(p => p.stock > 0)
+      .map(p => ({ p: p, d: _estacionDatos(p) }))
+      .filter(x => x.d && x.d.w >= (minW || 0))
+      .sort((a, b) => (a.p.precio || 0) - (b.p.precio || 0))[0] || null;
+  }
+  function _miles(n){ return Math.round(n).toLocaleString('es-ES').replace(/,/g, '.'); }
+
+  /** Sistema solar con una estación: ella hace de batería + inversor +
+   *  controlador; lo único que falta son los paneles. Lo que no hay se dice. */
+  function _solarConEstacion(sis, est, text){
+    const d = est.d, p = est.p;
+    const paneles = PRODUCTOS.filter(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES' && x.stock > 0).slice(0, 2);
+    const panelesEnCatalogo = PRODUCTOS.some(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES');
+    const rolPaneles = 'Paneles solares' + (d.solarW ? ` (hasta ${_miles(d.solarW)} W en total${d.rango ? ', entrada ' + d.rango : ''})` : '');
+    const armado = {
+      nombre: sis.nombre, presupuesto: null,
+      grupos: [
+        { rol: 'Estación de energía (batería + inversor + controlador)', subcat: 'ESTACION', enCatalogo: true, cantidad: 1, opcional: false, prods: [p] },
+        { rol: rolPaneles, subcat: 'PANELES SOLARES', enCatalogo: panelesEnCatalogo, cantidad: 1, opcional: false, prods: paneles },
+      ]
+    };
+    let body = `☀️ <strong>${sis.nombre}</strong>\n\n`;
+    body += `El <strong>${escapeHtml(p.nombre)}</strong> lo resuelve en un solo equipo: guarda <strong>${_miles(d.wh)} Wh</strong> y da <strong>${_miles(d.w)} W</strong>`
+      + (d.solarW ? `, y trae el controlador solar dentro (hasta ${_miles(d.solarW)} W de paneles)` : '')
+      + `. <strong>No necesitas batería, inversor ni controlador aparte.</strong>\n\n`;
+    body += `📋 <strong>Tu sistema:</strong>\n\n`;
+    body += `<strong>Estación de energía:</strong>\n• ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n\n`;
+    if(paneles.length){
+      body += `<strong>${rolPaneles}:</strong>\n`;
+      paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtUSD(x.precio)} · <em>${stockText(x)}</em>\n`; });
+      body += '\n';
+    } else {
+      body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+    }
+    // La autonomía no se inventa: depende de lo que el cliente conecte.
+    body += /\b(refri|refrigerador|nevera|frio)\b/i.test(text || '')
+      ? `⏱️ ¿Cuántos <strong>watts</strong> dice la etiqueta de tu refri? Con eso te digo cuántas horas te dura (${_miles(d.wh)} Wh de batería).`
+      : `⏱️ Dime qué vas a conectar y cuántos <strong>watts</strong> gasta cada cosa, y te digo cuántas horas te dura (${_miles(d.wh)} Wh de batería).`;
+    const notas = `La estación incluye batería (${_miles(d.wh)} Wh), inversor (${_miles(d.w)} W) y controlador solar${d.solarW ? ' (hasta ' + _miles(d.solarW) + ' W de paneles' + (d.rango ? ', ' + d.rango : '') + ')' : ''}: no hace falta batería, inversor ni controlador aparte.`;
+    _ULTIMO_SISTEMA = { armado: armado, notas: notas };
+    return {
+      response: body,
+      products: [p].concat(paneles).slice(0, 4),
+      quickReplies: ['📄 Descargar cotización', '⏱️ Calcular autonomía', '💬 WhatsApp']
+    };
   }
 
   /** El texto de componentes, idéntico al que pintaban los tres armadores. */
@@ -3363,7 +3442,7 @@
 </header>
 
 <h1>${esc(armado.nombre)}</h1>
-<p class="presu">Rango de presupuesto de referencia: <strong>${esc(armado.presupuesto)}</strong></p>
+${armado.presupuesto ? `<p class="presu">Rango de presupuesto de referencia: <strong>${esc(armado.presupuesto)}</strong></p>` : ''}
 
 <section class="bloque">
   <h2>Componentes</h2>
@@ -3454,9 +3533,17 @@ ${notasHTML}
     else if(/\bcompleto|grande|casa completa|aire acondicionado|todo|potente\b/.test(m)) tamano = 'solar completo';
 
     const sis = SISTEMAS[tamano];
+    // Básico y mediano caben en una estación todo en uno si hay alguna en
+    // stock (mediano pide 1000 W para la nevera). La casa completa no.
+    if(tamano !== 'solar completo'){
+      const est = _estacionSolar(tamano === 'solar mediano' ? 1000 : 0);
+      if(est) return _solarConEstacion(sis, est, text);
+    }
     let body = `☀️ <strong>${sis.nombre}</strong>\n`;
     body += `💰 <strong>Presupuesto estimado:</strong> ${sis.presupuesto}\n\n`;
-    body += `📋 <strong>Componentes necesarios</strong> (todos disponibles en TiendaMax):\n\n`;
+    // Antes decía «(todos disponibles en TiendaMax)» con piezas agotadas o
+    // que ni vendemos debajo.
+    body += `📋 <strong>Componentes necesarios:</strong>\n\n`;
 
     const armado = _armarSistema(sis);
     body += _sistemaCuerpo(armado, true);
@@ -3474,17 +3561,21 @@ ${notasHTML}
       tip = `Para casa completa necesitas inversor híbrido (carga batería con panel Y con red eléctrica). Sistema 48V es más eficiente que 12V a esta escala.`;
     }
     body += `💡 <strong>Tip de experto:</strong> ` + tip;
-    body += `\n\n¿Quieres que te arme la <em>comparativa</em> de los inversores disponibles, o prefieres que te calcule la <em>autonomía</em> exacta con tus equipos?`;
+    // Ofrecer comparar inversores con todos agotados lleva a una tabla vacía.
+    const hayInversores = PRODUCTOS.some(p => (p.subcategoria || '').toUpperCase() === 'INVERSORES' && p.stock > 0);
+    body += hayInversores
+      ? `\n\n¿Quieres que te arme la <em>comparativa</em> de los inversores disponibles, o prefieres que te calcule la <em>autonomía</em> exacta con tus equipos?`
+      : `\n\n¿Te calculo la <em>autonomía</em> con tus equipos?`;
 
     _ULTIMO_SISTEMA = { armado: armado, notas: tip };
 
     return {
       response: body,
       products: _sistemaProductos(armado).slice(0,4),
-      quickReplies: ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp'],
+      quickReplies: hayInversores ? ['📄 Descargar cotización','🆚 Comparar inversores','⏱️ Calcular autonomía','💬 WhatsApp'] : ['📄 Descargar cotización','⏱️ Calcular autonomía','💬 WhatsApp'],
       // Un "sí" a una pregunta de dos no elige: Max toma la primera, la
       // comparativa, y lo dice — con la otra opción a un toque.
-      siDigoSi: () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores')
+      siDigoSi: hayInversores ? () => _verSubcat('INVERSORES', '⚡ Va, estos son los <strong>inversores</strong> que tengo (si lo que querías era el cálculo de autonomía, pídemelo y te lo hago):', 'inversores') : () => R.autonomia('autonomia')
     };
   };
 
@@ -5519,6 +5610,11 @@ ${notasHTML}
      todas en el orden en que se escribieron. */
   function _responderTodo(text, intent, data){
     if(!_esTextoPegable(data)) return data;
+    /* «Sistema solar para el refri y 2 ventiladores»: lo que va detrás del
+       «y» es la carga del sistema, no otra pregunta. Contestarlo aparte
+       pegaba la ficha de una lámpara-ventilador debajo del sistema, como si
+       Max la recomendara para él. */
+    if(/^sistema/.test(intent)) return data;
     const trozos = _trozosConIntencion(text);
     // El hueco de la principal: el trozo que pidió lo mismo que ella.
     const iPrincipal = trozos.findIndex(t => t.intent === intent);
