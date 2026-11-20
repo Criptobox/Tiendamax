@@ -13,7 +13,8 @@
     "PC Y LAPTOPS",
     "GYM",
     "AUDIO",
-    "TARJETAS"
+    "TARJETAS",
+    "LUBRICANTES"
   ],
   "iconos": {
     "SEGURIDAD": "🔒",
@@ -27,7 +28,8 @@
     "ENERGIA": "⚡",
     "UTILES": "🛠️",
     "ROPA": "👗",
-    "TARJETAS": "💳"
+    "TARJETAS": "💳",
+    "LUBRICANTES": "🛢️"
   },
   "apagadas": {
     "categorias": {
