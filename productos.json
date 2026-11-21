@@ -11150,7 +11150,7 @@
     "precioActual": 55,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 4,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -11255,7 +11255,7 @@
       "1× Manual de usuario e instrucciones de uso"
     ],
     "slug": "binoculares-vision-4k-36mp",
-    "rev": 1793393116521,
+    "rev": 1795289146058,
     "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
     "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…",
     "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado."
@@ -13096,15 +13096,14 @@
   {
     "id": 1793571822463,
     "nombre": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble Banda AC1200 (Modo 3 en 1)",
-    "descripcion": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y pequeñas oficinas. Gracias a su bajo consumo eléctrico de apenas 5W a 9W máximo, es un equipo altamente eficiente para funcionar de manera ininterrumpida conectado a sistemas de respaldo por batería de 12V, mini UPS o instalaciones solares fotovoltaicas sin agotar las reservas de energía.",
     "imagen": "https://tiendamax.org/imagenes/img_1793571820238.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793571820238.webp"
     ],
-    "precioActual": 60,
+    "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -13210,9 +13209,10 @@
       "1× Guía de instalación rápida"
     ],
     "slug": "tplink-c50-5-ac1200-3en1",
-    "rev": 1795037813031,
+    "rev": 1795289146058,
     "seoTitle": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble… | TiendaMax",
-    "seoDescription": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y…"
+    "seoDescription": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y…",
+    "descripcion": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y pequeñas oficinas. Gracias a su bajo consumo eléctrico de apenas 5W a 9W máximo, es un equipo altamente eficiente para funcionar de manera ininterrumpida conectado a sistemas de respaldo por batería de 12V, mini UPS o instalaciones solares fotovoltaicas sin agotar las reservas de energía."
   },
   {
     "id": 1793662537113,
@@ -13682,7 +13682,7 @@
     "precioActual": 5,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 17,
+    "stock": 16,
     "comision": 0.25,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -13771,7 +13771,7 @@
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
     ],
     "slug": "liquido-duty-dot-3-500-ml",
-    "rev": 1793994800647,
+    "rev": 1795289146058,
     "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
     "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…",
     "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes."
