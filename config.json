@@ -1,5 +1,5 @@
 {
-  "tasaMN": 950,
+  "tasaMN": 955.0,
   "ofertaDiaId": "1780017975657",
   "ofertaDiaTexto": "🔥🔥🔥TU MEJOR OPCIÓN 🔥🔥🔥",
   "ofertaDiaActualizado": "2026-11-21T19:14:51.342Z",
@@ -18,6 +18,10 @@
     "ts": 1794541074865,
     "temporada": "fuera"
   },
-  "actualizado": "2026-11-21T19:14:51.342Z",
-  "margenMN": 20
+  "actualizado": "2026-11-21T19:54:47.838658+00:00",
+  "margenMN": 20,
+  "tasaMNAnterior": 950.0,
+  "tasaFuente": "elTOQUE API",
+  "tasaActualizada": "2026-11-21",
+  "tasaAvisadaTelegram": 975
 }
