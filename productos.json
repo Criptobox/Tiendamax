@@ -12983,7 +12983,7 @@
     "precioActual": 40,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -13087,7 +13087,7 @@
       "1× Manual de usuario e instrucciones de operación"
     ],
     "slug": "inflador-bateria-luz-led",
-    "rev": 1795288491345,
+    "rev": 1795292604045,
     "seoTitle": "Inflador Digital con Batería Recargable y Luz LED",
     "seoDescription": "El Car Air Pump ATJ-6988 es un compresor de aire digital inalámbrico y ultracompacto diseñado para ofrecer un inflado rápido, preciso y sin esfuerzo en…",
     "almacenId": "alm_1783425091823",
