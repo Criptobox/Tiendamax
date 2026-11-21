@@ -1,16 +1,16 @@
 {
-  "actualizado": "2026-11-20T18:58:52.034366+00:00",
-  "fecha": "2026-11-20",
+  "actualizado": "2026-11-21T17:53:38.323376+00:00",
+  "fecha": "2026-11-21",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 940.0,
+  "tasa": 950.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -48,6 +48,12 @@
         },
         {
           "fecha": "2026-11-20",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-21",
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
@@ -276,6 +282,12 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -308,11 +320,11 @@
       "tuPrecio": 90.0,
       "convertidos": 0,
       "mercado": {
-        "min": 85.0,
-        "mediana": 135.0,
+        "min": 51.0,
+        "mediana": 130.0,
         "n": 19
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -5.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -339,9 +351,33 @@
           "mediana": 135.0,
           "min": 85.0,
           "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD Batería 51v|280/100amp 24v|200amp | Inversor  8kw 4kw| Controlador MPPT Solar | Ecof",
+          "precio": 51.0,
+          "url": "https://www.revolico.com/item/envio-gratis-ventilador-coldsky-doble-aspa-lampara-solar-con-sensor-de-mov-bateria-24v-200-amp-57192728?p",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 51.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD CONTROLADOR SOLAR BOOST MPPT 1200W (baterías de 48v, 60v y 72v)",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-mppt-1200w-baterias-de-48v-60v-y-72v-58981113",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 75.0
+        },
         {
           "fuente": "revolico",
           "titulo": "85 USD Controlador Solar MPPT Boost 1200W",
@@ -461,15 +497,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "140 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-56278890",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 140.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "145 USD Controlador Solar MPPT 1200W Lumina Q7 Boost – Panel hasta 1200W – Transporte incl",
           "precio": 145.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-1200w-lumina-q7-boost-panel-hasta-1200w-transporte-incluido-diez-de-octubre-58807064",
@@ -482,15 +509,6 @@
           "titulo": "145 USD Controlador Solar Boost Q7-Lumina MPPT 1200W",
           "precio": 145.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58650822",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 145.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "145 USD 👑 Controlador Solar Boost Q7-LUMINA MPPT 1200W PRECIO: 145 USD Garantía 7 días 🚗",
-          "precio": 145.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-precio-145-usd-garantia-7-dias-58649173",
           "dias": null,
           "moneda": "USD",
           "orig": 145.0
@@ -552,6 +570,12 @@
         },
         {
           "fecha": "2026-11-20",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-21",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -717,6 +741,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -768,6 +798,12 @@
         },
         {
           "fecha": "2026-11-20",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-21",
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
@@ -921,10 +957,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 100.0,
-        "mediana": 100.8,
-        "n": 8
+        "mediana": 101.0,
+        "n": 7
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": 0.2,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -949,6 +985,12 @@
         {
           "fecha": "2026-11-20",
           "mediana": 100.8,
+          "min": 100.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 101.0,
           "min": 100.0,
           "tu": 110.0
         }
@@ -977,15 +1019,6 @@
           "titulo": "100.59 USD TELEFONO CELULAR  iTel Acity A100C (x) $100.59",
           "precio": 100.59,
           "url": "https://www.revolico.com/item/telefono-celular-itel-acity-a100c-x-10059-58552635",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 100.59
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "100.59 USD 🪙Gana por comprar🪙 teléfono iTel Acity A100C",
-          "precio": 100.59,
-          "url": "https://www.revolico.com/item/gana-por-comprar-telefono-itel-acity-a100c-58364930",
           "dias": null,
           "moneda": "USD",
           "orig": 100.59
@@ -1065,6 +1098,12 @@
         },
         {
           "fecha": "2026-11-20",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-21",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
