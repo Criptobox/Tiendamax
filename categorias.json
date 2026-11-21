@@ -70,8 +70,8 @@
         "ts": 1793733843460
       },
       "WIFI": {
-        "off": true,
-        "ts": 1795102863587
+        "off": false,
+        "ts": 1795288440279
       },
       "TARJETAS": {
         "off": true,
