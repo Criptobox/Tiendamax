@@ -14148,7 +14148,7 @@
     "precioActual": 30,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -14255,7 +14255,7 @@
       "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
     ],
     "slug": "compresor-aire-st-221-air",
-    "rev": 1795371645624,
+    "rev": 1795380767792,
     "seoTitle": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
     "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…",
     "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje."
