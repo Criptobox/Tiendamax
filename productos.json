@@ -13103,7 +13103,7 @@
     "precioActual": 70,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -13209,7 +13209,7 @@
       "1× Guía de instalación rápida"
     ],
     "slug": "tplink-c50-5-ac1200-3en1",
-    "rev": 1795288491345,
+    "rev": 1795375858393,
     "seoTitle": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble… | TiendaMax",
     "seoDescription": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y…",
     "descripcion": "El TP-Link Archer C50 es un router inalámbrico de doble banda AC1200 diseñado para ofrecer conexiones de alta velocidad y cobertura extendida en hogares y pequeñas oficinas. Gracias a su bajo consumo eléctrico de apenas 5W a 9W máximo, es un equipo altamente eficiente para funcionar de manera ininterrumpida conectado a sistemas de respaldo por batería de 12V, mini UPS o instalaciones solares fotovoltaicas sin agotar las reservas de energía."
