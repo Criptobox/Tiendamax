@@ -1,12 +1,12 @@
 {
-  "actualizado": "2026-11-21T17:53:38.323376+00:00",
-  "fecha": "2026-11-21",
+  "actualizado": "2026-11-22T18:15:33.436210+00:00",
+  "fecha": "2026-11-22",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 950.0,
+  "tasa": 960.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
@@ -21,10 +21,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 600.0,
-        "mediana": 700.0,
-        "n": 21
+        "mediana": 682.5,
+        "n": 22
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -17.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -55,6 +55,12 @@
         {
           "fecha": "2026-11-21",
           "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 682.5,
           "min": 600.0,
           "tu": 640.0
         }
@@ -152,6 +158,15 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "665 USD Estación de carga portátil Bluetti",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-57927874",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
           "titulo": "700 USD Estación de carga portátil Bluetti ac180",
           "precio": 700.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac180-56866224",
@@ -230,20 +245,11 @@
           "dias": null,
           "moneda": "USD",
           "orig": 800.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "835 USD 🔋 BLUETTI AC180P  🔋 Capacidad: 1.440 Wh | Máxima: 1.440 Wh ⚡ Potencia: 1.800 W nom",
-          "precio": 835.0,
-          "url": "https://www.revolico.com/item/bluetti-ac180p-capacidad-1440-wh-maxima-1440-wh-potencia-1800-w-nominal-2700-w-power-lifting-58852990",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 835.0
         }
       ],
       "busqueda": "generador solar portátil bluetti ac180",
       "firma": "981c7ce4dc",
-      "descartados": 2
+      "descartados": 1
     },
     {
       "id": 1787071784077,
@@ -288,6 +294,12 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -324,7 +336,7 @@
         "mediana": 130.0,
         "n": 19
       },
-      "deltaAyerMediana": -5.0,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -354,6 +366,12 @@
         },
         {
           "fecha": "2026-11-21",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 130.0,
           "min": 51.0,
           "tu": 90.0
@@ -579,6 +597,12 @@
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
         }
       ],
       "muestras": [
@@ -747,6 +771,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -804,6 +834,12 @@
         },
         {
           "fecha": "2026-11-21",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
@@ -960,7 +996,7 @@
         "mediana": 101.0,
         "n": 7
       },
-      "deltaAyerMediana": 0.2,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -990,6 +1026,12 @@
         },
         {
           "fecha": "2026-11-21",
+          "mediana": 101.0,
+          "min": 100.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 101.0,
           "min": 100.0,
           "tu": 110.0
@@ -1104,6 +1146,12 @@
         },
         {
           "fecha": "2026-11-21",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
