@@ -14148,7 +14148,7 @@
     "precioActual": 30,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 2,
+    "stock": 1,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -14255,7 +14255,7 @@
       "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
     ],
     "slug": "compresor-aire-st-221-air",
-    "rev": 1795293026536,
+    "rev": 1795371645624,
     "seoTitle": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
     "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…",
     "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje."
@@ -14926,5 +14926,109 @@
     "rev": 1795330823848,
     "seoTitle": "Batería Recargable de Litio LiFePO4 POERUNI… | TiendaMax",
     "seoDescription": "La POERUNI 12.8V 100Ah es una batería recargable de fosfato de hierro y litio (LiFePO4) de ciclo profundo que entrega 1280Wh de energía utilizable…"
+  },
+  {
+    "id": 1795371607824,
+    "nombre": "Panel Solar Fotovoltaico GCL Solar GCL-NT12/66GD-620W",
+    "descripcion": "El GCL Solar GCL-NT12/66GD-620W es un panel solar fotovoltaico monocristalino de alta eficiencia y potencia nominal de 620W (con tolerancia positiva garantizada de 0~+3%), diseñado para maximizar el ahorro y la generación de energía limpia en hogares, negocios e instalaciones industriales. Construido con celdas divididas de alto rendimiento y marco estructural reforzado, ofrece una excelente captación energética incluso en condiciones de baja luminosidad y una gran durabilidad frente a condiciones climáticas adversas.",
+    "imagen": "https://tiendamax.org/imagenes/img_1795371591984.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1795371591984.webp"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 17,
+    "comision": 3,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "ACCESORIOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "⚡ Potencia Máxima (P_{max}): 620W (0~+3%)",
+      "🔋 Voltaje (V_{mp}): 40.95V / Corriente (I_{mp}): 15.15A",
+      "🛡️ Voltaje Máximo del Sistema: 1500V DC | Fusible Máximo en Serie: 30A"
+    ],
+    "fechaAgregado": "2026-11-22T18:20:07.825Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "GCL Solar"
+      },
+      {
+        "k": "Modelo",
+        "v": "GCL-NT12/66GD-620W"
+      },
+      {
+        "k": "Potencia Máxima (P_{max})",
+        "v": "620 W",
+        "nota": "Tolerancia 0~+3%"
+      },
+      {
+        "k": "Voltaje de Máxima Potencia (V_{mp})",
+        "v": "40.95 V"
+      },
+      {
+        "k": "Corriente de Máxima Potencia (I_{mp})",
+        "v": "15.15 A"
+      },
+      {
+        "k": "Voltaje en Circuito Abierto (V_{oc})",
+        "v": "48.40 V",
+        "nota": "+/-3%"
+      },
+      {
+        "k": "Corriente de Cortocircuito (I_{sc})",
+        "v": "15.95 A",
+        "nota": "+/-4%"
+      },
+      {
+        "k": "Voltaje Máximo del Sistema",
+        "v": "1500 V DC"
+      },
+      {
+        "k": "Fusible Máximo en Serie",
+        "v": "30 A"
+      },
+      {
+        "k": "Construcción y Marco",
+        "v": "Celdas fotovoltaicas de alta eficiencia con marco de aluminio anodizado resistente a la intemperie y caja de conexiones sellada con conectores estándar MC4"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Alta Eficiencia y Mayor Ahorro",
+        "d": "entrega hasta 620W por módulo, reduciendo la cantidad de paneles, soportes y cableado necesarios para alcanzar la potencia deseada."
+      },
+      {
+        "t": "Excelente Rendimiento con Poca Luz",
+        "d": "optimizado para mantener una generación constante durante días nublados, amaneceres y atardeceres."
+      },
+      {
+        "t": "Gran Durabilidad Estructural",
+        "d": "diseñado para soportar exposición prolongada a radiación UV, humedad, lluvia y cargas de viento."
+      },
+      {
+        "t": "Tolerancia Positiva (0~+3%)",
+        "d": "asegura que cada panel entregue al menos su potencia nominal especificada."
+      },
+      {
+        "t": "Alta Compatibilidad de Sistema (1500V)",
+        "d": "apto tanto para bancos residenciales aislados como para cadenas de alto voltaje en instalaciones comerciales."
+      }
+    ],
+    "idealPara": [
+      "Sistemas solares residenciales para respaldo energético continuo en el hogar.",
+      "Instalaciones fotovoltaicas comerciales e industriales que buscan alta densidad de potencia por metro cuadrado.",
+      "Sistemas híbridos y autónomos (off-grid) con inversores solares y reguladores MPPT compatibles con rangos de entrada de 40V–50V por panel."
+    ],
+    "incluye": [
+      "1× Panel Solar Fotovoltaico GCL Solar GCL-NT12/66GD-620W (620W) con cables de salida y conectores MC4 integrados"
+    ],
+    "slug": "panel-gcl-gcl-nt12-66gd-620w",
+    "rev": 1795371645624
   }
 ]
