@@ -1,0 +1,254 @@
+{
+  "v": 1,
+  "creado": "2026-11-22T06:57:44.328Z",
+  "productos": [
+    {
+      "id": 1790963608288,
+      "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
+      "imagen": "https://tiendamax.org/imagenes/img_1790963603542.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1790963603542.webp"
+      ],
+      "precioActual": 55,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 3,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "UTILES",
+      "subcategoria": "DEPORTES",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🎥 Video 4K / Foto 36MP",
+        "🔌 Consumo 3W – 5W (Batería Litio USB-C)",
+        "🌙 Alcance Nocturno 300 m (IR 850nm)"
+      ],
+      "fechaAgregado": "2026-10-02T17:53:28.289Z",
+      "ficha": [
+        {
+          "k": "Resolución de Video",
+          "v": "4K / 2.7K / 1080P FHD"
+        },
+        {
+          "k": "Resolución de Foto",
+          "v": "36MP / 32MP / 24MP / 12MP"
+        },
+        {
+          "k": "Consumo Eléctrico",
+          "v": "3W – 5W",
+          "nota": "eficiente con banco de carga USB o panel solar"
+        },
+        {
+          "k": "Alimentación",
+          "v": "Batería recargable de iones de litio integrada",
+          "nota": "carga vía puerto USB-C"
+        },
+        {
+          "k": "Iluminador Infrarrojo",
+          "v": "Foco LED IR de 850 nm con 7 niveles de intensidad regulable"
+        },
+        {
+          "k": "Alcance de Visión Nocturna",
+          "v": "Hasta 250 – 300 metros en oscuridad total",
+          "nota": "ilimitado con luz diurna"
+        },
+        {
+          "k": "Pantalla",
+          "v": "Pantalla digital LCD TFT de gran formato con marco protector antirreflejo"
+        },
+        {
+          "k": "Zoom",
+          "v": "Zoom digital continuo de hasta 8×"
+        },
+        {
+          "k": "Almacenamiento",
+          "v": "Ranura para tarjeta MicroSD / TF de hasta 128 GB",
+          "nota": "incluye tarjeta de 32 GB"
+        },
+        {
+          "k": "Modos de Operación",
+          "v": "Foto, Video y Reproducción en pantalla"
+        },
+        {
+          "k": "Modo Día / Noche",
+          "v": "Imagen a todo color durante el día e imagen en blanco y negro de alta definición en modo nocturno"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Grabación Dual Día y Noche",
+          "d": "reproduce imágenes a todo color bajo el sol y conmuta automáticamente a blanco y negro con infrarrojos en la noche."
+        },
+        {
+          "t": "Infrarrojo Ajustable de 7 Niveles",
+          "d": "gradúa la potencia del haz IR para no sobreexponer objetos cercanos y ahorrar energía, o llevarlo al máximo para largo alcance."
+        },
+        {
+          "t": "Batería de Litio Recargable por USB-C",
+          "d": "olvídate de comprar pilas AA desechables; se recarga directamente en el auto, casa o con un power bank."
+        },
+        {
+          "t": "Visor Panorámico sin Fatiga Ocular",
+          "d": "pantalla amplia que elimina la incomodidad de cerrar un ojo como en los monoculares tradicionales."
+        },
+        {
+          "t": "Transferencia Rápida de Archivos",
+          "d": "conecta los binoculares a la computadora mediante su cable USB para descargar fotos y videos al instante."
+        },
+        {
+          "t": "Rosca para Trípode Estándar (1/4\")",
+          "d": "compatible con trípodes para monitoreo fijo y observación prolongada sin vibraciones."
+        }
+      ],
+      "idealPara": [
+        "Vigilar de noche la finca, el patio o el almacén sin encender luces",
+        "Ver y grabar en la oscuridad total con infrarrojo",
+        "Campismo y salidas de noche"
+      ],
+      "incluye": [
+        "1× Binoculares de visión nocturna digital 4K / 36MP",
+        "1× Tarjeta de memoria MicroSD de 32 GB",
+        "1× Cable de carga y datos USB Tipo C",
+        "1× Cable / lector de transferencia de archivos",
+        "1× Correa de cuello ajustable reforzada con mosquetones metálicos",
+        "1× Manual de usuario e instrucciones de uso"
+      ],
+      "slug": "binoculares-vision-4k-36mp",
+      "rev": 1795330664328,
+      "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
+      "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…",
+      "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado."
+    },
+    {
+      "id": 1795330662692,
+      "nombre": "Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo con BMS Integrado",
+      "descripcion": "La POERUNI 12.8V 100Ah es una batería recargable de fosfato de hierro y litio (LiFePO4) de ciclo profundo que entrega 1280Wh de energía utilizable. Diseñada para reemplazar baterías tradicionales de plomo-ácido con aproximadamente la mitad de peso (alrededor de 10.9 kg / 24 lbs) y una capacidad aprovechable del 100%, ofrece un rendimiento estable y libre de mantenimiento para instalaciones solares, respaldo energético en el hogar, vehículos recreativos (RV) y aplicaciones marinas.",
+      "imagen": "https://tiendamax.org/imagenes/img_1795330660956.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1795330660956.webp"
+      ],
+      "precioActual": 210,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 7,
+      "comision": 10,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Capacidad: 100Ah / 1280Wh (12.8V)",
+        "🛡️ BMS Inteligente Integrado (100A)",
+        "🔄 Ciclo Profundo de Larga Vida Útil + Expansión en Serie/Paralelo (4S/4P)"
+      ],
+      "fechaAgregado": "2026-11-22T06:57:42.693Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "POERUNI"
+        },
+        {
+          "k": "Modelo",
+          "v": "12.8V100Ah",
+          "nota": "LiFePO4 Rechargeable Battery"
+        },
+        {
+          "k": "Química de Celda",
+          "v": "Fosfato de Hierro y Litio",
+          "nota": "LiFePO4"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12.8 V"
+        },
+        {
+          "k": "Capacidad Nominal",
+          "v": "100 Ah"
+        },
+        {
+          "k": "Energía Total",
+          "v": "1280 Wh"
+        },
+        {
+          "k": "Voltaje de Carga Recomendado",
+          "v": "14.4 V – 14.6 V"
+        },
+        {
+          "k": "Corriente Máxima de Carga Continua",
+          "v": "100 A"
+        },
+        {
+          "k": "Corriente Máxima de Descarga Continua",
+          "v": "100 A",
+          "nota": "Potencia continua máxima: 1280 W"
+        },
+        {
+          "k": "Sistema de Protección",
+          "v": "BMS integrado de 100A",
+          "nota": "sobrecarga, sobredescarga, sobrecorriente, cortocircuito y temperatura"
+        },
+        {
+          "k": "Configuración de Expansión",
+          "v": "Hasta 4 unidades en serie (4S) o 4 en paralelo (4P)"
+        },
+        {
+          "k": "Rango de Temperatura de Descarga",
+          "v": "-20 °C a 60 °C"
+        },
+        {
+          "k": "Peso Aproximado",
+          "v": "10.9 kg",
+          "nota": "24 lbs"
+        },
+        {
+          "k": "Carcasa y Terminales",
+          "v": "Caja plástica sellada con doble asa abatible superior y bornes roscados"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Alta Densidad Energética y Bajo Peso",
+          "d": "pesa cerca de la mitad que una batería de plomo-ácido equivalente y permite aprovechar el 100% de su capacidad nominal."
+        },
+        {
+          "t": "BMS Inteligente de 100A",
+          "d": "supervisa y balancea las celdas automáticamente, desconectando la salida ante fallos eléctricos o térmicos."
+        },
+        {
+          "t": "Banco Escalable (4S / 4P)",
+          "d": "permite ampliar fácilmente sistemas a 24V, 36V o 48V en serie, o incrementar la autonomía hasta 400Ah en paralelo."
+        },
+        {
+          "t": "Cero Mantenimiento",
+          "d": "diseño hermético sin emisión de gases ni derrames de ácido; admite montaje en múltiples posiciones (excepto invertida con bornes hacia abajo)."
+        },
+        {
+          "t": "Asas Integradas de Transporte",
+          "d": "facilitar el traslado, elevación e instalación segura en gabinetes, embarcaciones o compartimentos solares."
+        }
+      ],
+      "idealPara": [
+        "Sistemas de energía solar aislados (off-grid) y bancos de respaldo energético residencial con inversores de 12V, 24V o 48V.",
+        "Alimentación auxiliar en autocaravanas (RV), campers, embarcaciones y motores eléctricos marinos (trolling motors).",
+        "Estaciones de respaldo para electrodomésticos, iluminación y equipos electrónicos (nota: diseñada para ciclo profundo, no apta como batería de arranque de motor de combustión)."
+      ],
+      "incluye": [
+        "1× Batería Recargable LiFePO4 POERUNI 12.8V 100Ah",
+        "1× Juego de tornillos/bornes terminales",
+        "1× Manual de usuario e instrucciones de conexión"
+      ],
+      "slug": "bateria-lifepo4-12-8v-100ah",
+      "rev": 1795330664328
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1795330662692": "1794935278007"
+  }
+}
