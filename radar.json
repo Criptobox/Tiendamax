@@ -1,12 +1,12 @@
 {
-  "actualizado": "2026-11-22T18:15:33.436210+00:00",
-  "fecha": "2026-11-22",
+  "actualizado": "2026-11-23T22:28:27.021622+00:00",
+  "fecha": "2026-11-23",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 960.0,
+  "tasa": 965.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
@@ -21,10 +21,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 600.0,
-        "mediana": 682.5,
-        "n": 22
+        "mediana": 700.0,
+        "n": 21
       },
-      "deltaAyerMediana": -17.5,
+      "deltaAyerMediana": 17.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -61,6 +61,12 @@
         {
           "fecha": "2026-11-22",
           "mediana": 682.5,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-23",
+          "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
         }
@@ -116,15 +122,6 @@
           "titulo": "665 USD Estacion de carga portátil  BLUETTI AC 180. Compatible con Paneles y Energía Solar",
           "precio": 665.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-54870185",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 665.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "665 USD BLUETTI AC180 – Estación de Carga Portátil 1800W. Interesados al 53998989 o 549819",
-          "precio": 665.0,
-          "url": "https://www.revolico.com/item/bluetti-ac180-estacion-de-carga-portatil-1800w-interesados-al-53998989-o-54981957-56752827",
           "dias": null,
           "moneda": "USD",
           "orig": 665.0
@@ -245,6 +242,15 @@
           "dias": null,
           "moneda": "USD",
           "orig": 800.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "835 USD 🔋 BLUETTI AC180P  🔋 Capacidad: 1.440 Wh | Máxima: 1.440 Wh ⚡ Potencia: 1.800 W nom",
+          "precio": 835.0,
+          "url": "https://www.revolico.com/item/bluetti-ac180p-capacidad-1440-wh-maxima-1440-wh-potencia-1800-w-nominal-2700-w-power-lifting-58852990",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 835.0
         }
       ],
       "busqueda": "generador solar portátil bluetti ac180",
@@ -297,6 +303,12 @@
         },
         {
           "fecha": "2026-11-22",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-23",
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
@@ -372,6 +384,12 @@
         },
         {
           "fecha": "2026-11-22",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-23",
           "mediana": 130.0,
           "min": 51.0,
           "tu": 90.0
@@ -488,15 +506,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W. ✅ Tecnolog",
-          "precio": 135.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt-para-mayor-eficiencia-de-carga-57250846",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 135.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "135 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W nuevo con mensajería !",
           "precio": 135.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-nuevo-con-mensajeria-56299820",
@@ -512,6 +521,15 @@
           "dias": null,
           "moneda": "USD",
           "orig": 138.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "140 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 140.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-56278890",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 140.0
         },
         {
           "fuente": "revolico",
@@ -600,6 +618,12 @@
         },
         {
           "fecha": "2026-11-22",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-23",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -777,6 +801,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-23",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -840,6 +870,12 @@
         },
         {
           "fecha": "2026-11-22",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-23",
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
@@ -984,7 +1020,7 @@
       ],
       "busqueda": "interruptor transferencia automática ats lsp",
       "firma": "981c7ce4dc",
-      "descartados": 4
+      "descartados": 5
     },
     {
       "id": 1793733652655,
@@ -992,11 +1028,11 @@
       "tuPrecio": 110.0,
       "convertidos": 0,
       "mercado": {
-        "min": 100.0,
-        "mediana": 101.0,
-        "n": 7
+        "min": 97.0,
+        "mediana": 100.8,
+        "n": 8
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -0.2,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -1035,9 +1071,24 @@
           "mediana": 101.0,
           "min": 100.0,
           "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-23",
+          "mediana": 100.8,
+          "min": 97.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "97 USD Celular nuevo iTel Acity A100C",
+          "precio": 97.0,
+          "url": "https://www.revolico.com/item/celular-nuevo-itel-acity-a100c-59038848",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 97.0
+        },
         {
           "fuente": "revolico",
           "titulo": "100 USD iTel Acity A100C",
@@ -1152,6 +1203,12 @@
         },
         {
           "fecha": "2026-11-22",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-23",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
