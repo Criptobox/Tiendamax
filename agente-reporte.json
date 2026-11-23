@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-19T17:51:28.619723+00:00",
-  "productos": 175,
-  "urgentes": 23,
+  "generado": "2026-11-22T16:47:51.613411+00:00",
+  "productos": 176,
+  "urgentes": 24,
   "advertencias": 0,
-  "info": 4,
-  "resumen": "Anoche revisé tus 175 productos y encontré 23 urgente(s), 4 de info.",
+  "info": 7,
+  "resumen": "Anoche revisé tus 176 productos y encontré 24 urgente(s), 7 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -122,6 +122,11 @@
       "detalle": "→ Aceite Sintético Para Transmisión Automática Fanfaro CVT 8601 (1 Litro)"
     },
     {
+      "tipo": "nombre",
+      "nombre": "Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo con BMS Integrado",
+      "detalle": "→ Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo Con BMS Integrado"
+    },
+    {
       "tipo": "stock_bajo",
       "nombre": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
       "detalle": "quedan 2"
@@ -133,7 +138,22 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "Cámara de reversa",
+      "detalle": "quedan 2"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble Banda AC1200 (Modo 3 en 1)",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
       "detalle": "quedan 2"
     },
     {

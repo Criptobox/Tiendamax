@@ -13,7 +13,8 @@
     "PC Y LAPTOPS",
     "GYM",
     "AUDIO",
-    "TARJETAS"
+    "TARJETAS",
+    "LUBRICANTES"
   ],
   "iconos": {
     "SEGURIDAD": "🔒",
@@ -27,7 +28,8 @@
     "ENERGIA": "⚡",
     "UTILES": "🛠️",
     "ROPA": "👗",
-    "TARJETAS": "💳"
+    "TARJETAS": "💳",
+    "LUBRICANTES": "🛢️"
   },
   "apagadas": {
     "categorias": {
@@ -69,7 +71,7 @@
       },
       "WIFI": {
         "off": true,
-        "ts": 1795102863587
+        "ts": 1795292615699
       },
       "TARJETAS": {
         "off": true,

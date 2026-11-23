@@ -1,16 +1,16 @@
 {
-  "actualizado": "2026-11-18T19:15:47.373639+00:00",
-  "fecha": "2026-11-18",
+  "actualizado": "2026-11-22T18:15:33.436210+00:00",
+  "fecha": "2026-11-22",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 930.0,
+  "tasa": 960.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -21,10 +21,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 600.0,
-        "mediana": 700.0,
-        "n": 21
+        "mediana": 682.5,
+        "n": 22
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -17.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -37,6 +37,30 @@
         {
           "fecha": "2026-11-18",
           "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 682.5,
           "min": 600.0,
           "tu": 640.0
         }
@@ -134,6 +158,15 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "665 USD Estación de carga portátil Bluetti",
+          "precio": 665.0,
+          "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-57927874",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 665.0
+        },
+        {
+          "fuente": "revolico",
           "titulo": "700 USD Estación de carga portátil Bluetti ac180",
           "precio": 700.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac180-56866224",
@@ -212,20 +245,11 @@
           "dias": null,
           "moneda": "USD",
           "orig": 800.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "835 USD 🔋 BLUETTI AC180P  🔋 Capacidad: 1.440 Wh | Máxima: 1.440 Wh ⚡ Potencia: 1.800 W nom",
-          "precio": 835.0,
-          "url": "https://www.revolico.com/item/bluetti-ac180p-capacidad-1440-wh-maxima-1440-wh-potencia-1800-w-nominal-2700-w-power-lifting-58852990",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 835.0
         }
       ],
       "busqueda": "generador solar portátil bluetti ac180",
       "firma": "981c7ce4dc",
-      "descartados": 2
+      "descartados": 1
     },
     {
       "id": 1787071784077,
@@ -249,6 +273,30 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
@@ -284,8 +332,8 @@
       "tuPrecio": 90.0,
       "convertidos": 0,
       "mercado": {
-        "min": 85.0,
-        "mediana": 135.0,
+        "min": 51.0,
+        "mediana": 130.0,
         "n": 19
       },
       "deltaAyerMediana": 0.0,
@@ -303,9 +351,51 @@
           "mediana": 135.0,
           "min": 85.0,
           "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 135.0,
+          "min": 85.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 135.0,
+          "min": 85.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
         }
       ],
       "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD Batería 51v|280/100amp 24v|200amp | Inversor  8kw 4kw| Controlador MPPT Solar | Ecof",
+          "precio": 51.0,
+          "url": "https://www.revolico.com/item/envio-gratis-ventilador-coldsky-doble-aspa-lampara-solar-con-sensor-de-mov-bateria-24v-200-amp-57192728?p",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 51.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD CONTROLADOR SOLAR BOOST MPPT 1200W (baterías de 48v, 60v y 72v)",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-mppt-1200w-baterias-de-48v-60v-y-72v-58981113",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 75.0
+        },
         {
           "fuente": "revolico",
           "titulo": "85 USD Controlador Solar MPPT Boost 1200W",
@@ -425,24 +515,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "140 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-56278890",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 140.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "145 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 145.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58825067",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 145.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "145 USD Controlador Solar MPPT 1200W Lumina Q7 Boost – Panel hasta 1200W – Transporte incl",
           "precio": 145.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-1200w-lumina-q7-boost-panel-hasta-1200w-transporte-incluido-diez-de-octubre-58807064",
@@ -461,12 +533,12 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "145 USD 👑 Controlador Solar Boost Q7-LUMINA MPPT 1200W PRECIO: 145 USD Garantía 7 días 🚗",
-          "precio": 145.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-precio-145-usd-garantia-7-dias-58649173",
+          "titulo": "150 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 150.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58934971",
           "dias": null,
           "moneda": "USD",
-          "orig": 145.0
+          "orig": 150.0
         },
         {
           "fuente": "revolico",
@@ -504,6 +576,30 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -551,15 +647,6 @@
           "titulo": "115 USD Cargador de Bateria 30A Vevor [115]",
           "precio": 115.0,
           "url": "https://www.revolico.com/item/cargador-de-bateria-30a-vevor-115-57834421",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 115.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "115 USD Cargador 30A Vevor [115]",
-          "precio": 115.0,
-          "url": "https://www.revolico.com/item/cargador-30a-vevor-115-57576733",
           "dias": null,
           "moneda": "USD",
           "orig": 115.0
@@ -626,6 +713,15 @@
           "dias": null,
           "moneda": "USD",
           "orig": 130.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Cargador inteligente",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/cargador-inteligente-57714278",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 130.0
         }
       ],
       "busqueda": "vevor cargador batería inteligente 30a",
@@ -654,6 +750,30 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
@@ -696,6 +816,30 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 65.0,
+          "min": 40.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
@@ -848,9 +992,9 @@
       "tuPrecio": 110.0,
       "convertidos": 0,
       "mercado": {
-        "min": 97.0,
-        "mediana": 100.59,
-        "n": 9
+        "min": 100.0,
+        "mediana": 101.0,
+        "n": 7
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -867,18 +1011,33 @@
           "mediana": 100.59,
           "min": 97.0,
           "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 100.8,
+          "min": 100.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 100.8,
+          "min": 100.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 101.0,
+          "min": 100.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-22",
+          "mediana": 101.0,
+          "min": 100.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "97 USD Celular nuevo iTel Acity A100C",
-          "precio": 97.0,
-          "url": "https://www.revolico.com/item/celular-nuevo-itel-acity-a100c-58896187",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 97.0
-        },
         {
           "fuente": "revolico",
           "titulo": "100 USD iTel Acity A100C",
@@ -902,15 +1061,6 @@
           "titulo": "100.59 USD TELEFONO CELULAR  iTel Acity A100C (x) $100.59",
           "precio": 100.59,
           "url": "https://www.revolico.com/item/telefono-celular-itel-acity-a100c-x-10059-58552635",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 100.59
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "100.59 USD 🪙Gana por comprar🪙 teléfono iTel Acity A100C",
-          "precio": 100.59,
-          "url": "https://www.revolico.com/item/gana-por-comprar-telefono-itel-acity-a100c-58364930",
           "dias": null,
           "moneda": "USD",
           "orig": 100.59
@@ -978,6 +1128,30 @@
         },
         {
           "fecha": "2026-11-18",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-19",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-20",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-21",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-22",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0

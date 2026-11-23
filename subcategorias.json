@@ -78,5 +78,16 @@
     "JUEGOS",
     "STREAMING",
     "APPS Y COMPRAS"
+  ],
+  "LUBRICANTES": [
+    "ACEITE DE MOTOR",
+    "ACEITE PARA MOTOS",
+    "ACEITE DE TRANSMISIÓN",
+    "LÍQUIDO DE FRENOS",
+    "REFRIGERANTES",
+    "GRASAS",
+    "ADITIVOS",
+    "FILTROS",
+    "MANTENIMIENTO"
   ]
 }

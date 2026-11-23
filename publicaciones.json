@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-19T16:45:08.000Z",
+  "actualizado": "2026-11-22T19:19:36.492Z",
   "eventos": [
     {
       "pid": "1778383966832",
@@ -911,6 +911,70 @@
       "destino": "Facebook",
       "ts": 1795106701777,
       "precio": 30,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1790963608288",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795183209807,
+      "precio": 55,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1790961637329",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795292138409,
+      "precio": 60,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1793392791910",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795292382620,
+      "precio": 70,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1793980370363",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795292655199,
+      "precio": 35,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1793722641800",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795292774055,
+      "precio": 35,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1793722839535",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795292932391,
+      "precio": 5,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1793740398660",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795293046771,
+      "precio": 30,
+      "moneda": "USD"
+    },
+    {
+      "pid": "1795330662692",
+      "red": "fb",
+      "destino": "Facebook",
+      "ts": 1795359469715,
+      "precio": 210,
       "moneda": "USD"
     }
   ]
