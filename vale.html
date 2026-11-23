@@ -374,9 +374,9 @@ input:focus,textarea:focus{border-color:var(--o)}
       <div style="font-size:18px">🛍️ Elegir del catálogo</div>
       <button class="btn-act" style="width:auto;margin:0;padding:7px 14px" onclick="cerrarCatalogo()">Listo</button>
     </div>
-    <input type="text" id="catBuscar" placeholder="🔍 Buscar producto" oninput="renderCatalogo()" style="margin-bottom:10px">
-    <div class="chips" id="catChips" style="margin-bottom:6px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:4px"></div>
-    <div id="catLista" style="overflow-y:auto;flex:1;margin-top:6px"><div class="hist-empty">Cargando catálogo…</div></div>
+    <input type="text" id="catBuscar" placeholder="🔍 Buscar producto" oninput="renderCatalogo()" style="margin-bottom:10px;flex-shrink:0">
+    <div class="chips" id="catChips" style="margin-bottom:6px;overflow-x:auto;flex-wrap:nowrap;flex-shrink:0;-webkit-overflow-scrolling:touch;padding-bottom:4px"></div>
+    <div id="catLista" style="overflow-y:auto;flex:1 1 auto;min-height:120px;margin-top:6px"><div class="hist-empty">Cargando catálogo…</div></div>
   </div>
 </div>
 
@@ -1748,7 +1748,7 @@ function cerrarCatalogo(){ document.getElementById('modalCatalogo').classList.re
 function renderCatChips(){
   const cats=[...new Set((_catProductos||[]).map(p=>p.categoria).filter(Boolean))].sort();
   const box=document.getElementById('catChips');
-  const chip=(val,txt)=>`<span class="chip" style="cursor:pointer;background:${_catCategoria===val?'#FF6B35':'#1a2a1a'};border-color:${_catCategoria===val?'#FF6B35':'#2d4a2d'};color:${_catCategoria===val?'#fff':'var(--green-light)'};white-space:nowrap" onclick="setCatCategoria('${val.replace(/'/g,"\\'")}')">${txt}</span>`;
+  const chip=(val,txt)=>`<span class="chip" style="cursor:pointer;flex-shrink:0;white-space:nowrap;background:${_catCategoria===val?'#FF6B35':'#1a2a1a'};border-color:${_catCategoria===val?'#FF6B35':'#2d4a2d'};color:${_catCategoria===val?'#fff':'var(--green-light)'};white-space:nowrap" onclick="setCatCategoria('${val.replace(/'/g,"\\'")}')">${txt}</span>`;
   box.innerHTML=chip('','Todas')+cats.map(c=>chip(c,c)).join('');
 }
 function setCatCategoria(c){ _catCategoria=c; renderCatChips(); renderCatalogo(); }
