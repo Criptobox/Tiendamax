@@ -86,5 +86,11 @@
         }
       }
     }
+  },
+  "colores": {
+    "LUBRICANTES": "#3FA30D"
+  },
+  "coloresTs": {
+    "LUBRICANTES": 1795464653777
   }
 }

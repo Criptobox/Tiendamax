@@ -333,7 +333,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
-    "stock": 7,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -417,7 +417,7 @@
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
       "2× Tapas protectoras de bornes (integradas)"
     ],
-    "rev": 1795457522637,
+    "rev": 1795464431396,
     "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
   },
   {
@@ -1281,7 +1281,7 @@
     "nombre": "Mannol Antifreeze AG13+ (- 40 °c) Advanced 4014. 5L",
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
-    "categoria": "CARROS",
+    "categoria": "LUBRICANTES",
     "subcategoria": "REFRIGERANTES",
     "stock": 29,
     "masVendido": false,
@@ -1316,7 +1316,7 @@
     "slugsAnteriores": [
       "mannol-ag13-40-c-4014-5l"
     ],
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "precioOriginal": 0,
     "comision": 0.75,
     "comisionMoneda": "USD",
@@ -1331,7 +1331,7 @@
     "nombre": "Mannol Antifreeze AG13 (- 40 °c) Hightec 4013. 5L",
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
-    "categoria": "CARROS",
+    "categoria": "LUBRICANTES",
     "subcategoria": "REFRIGERANTES",
     "stock": 21,
     "masVendido": false,
@@ -1366,7 +1366,7 @@
     "slugsAnteriores": [
       "mannol-ag13-40-c-4013-5l"
     ],
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "precioOriginal": 0,
     "comision": 0.75,
     "comisionMoneda": "USD",
@@ -1381,7 +1381,7 @@
     "nombre": "Mannol Antifreeze AG11 (- 40 °c) Longterm 4011. 5L",
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
-    "categoria": "CARROS",
+    "categoria": "LUBRICANTES",
     "subcategoria": "REFRIGERANTES",
     "stock": 24,
     "masVendido": false,
@@ -1416,7 +1416,7 @@
     "slugsAnteriores": [
       "mannol-ag11-40-c-4011-5l"
     ],
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "precioOriginal": 0,
     "comision": 0.75,
     "comisionMoneda": "USD",
@@ -13687,8 +13687,8 @@
     "stock": 15,
     "comision": 0.25,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "LIQUIDO DE FRENOS",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "LÍQUIDO DE FRENOS",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13773,7 +13773,7 @@
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
     ],
     "slug": "liquido-duty-dot-3-500-ml",
-    "rev": 1795452306560,
+    "rev": 1795466431828,
     "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
     "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…",
     "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes."
@@ -13791,8 +13791,8 @@
     "stock": 15,
     "comision": 0.5,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "LIQUIDO DE FRENOS",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "LÍQUIDO DE FRENOS",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13877,7 +13877,7 @@
       "1× Botella de Líquido de Frenos Sintético MANNOL Brake Fluid DOT-4 3002"
     ],
     "slug": "liquido-fluid-dot-4-3002-1l",
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "seoTitle": "Líquido de Frenos Sintético Mannol Brake Fluid DOT-4 3002 1L",
     "seoDescription": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues…",
     "descripcion": "El MANNOL Brake Fluid DOT-4 3002 es un fluido hidráulico sintético de alto rendimiento formulado para sistemas de frenos de disco, tambor y embragues hidráulicos en todo tipo de vehículos automotores modernos. Su avanzada composición química ofrece un punto de ebullición elevado (superior a 240 °C), evitando con máxima efectividad el fenómeno de vapor lock (formación de burbujas de gas por sobrecalentamiento) en frenadas bruscas, prolongadas o bajo cargas pesadas."
@@ -14391,8 +14391,8 @@
     "stock": 15,
     "comision": 0.5,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "CAJA MECÁNICA Y AUTOMÁTICA",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE TRANSMISIÓN",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14482,7 +14482,7 @@
       "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
     ],
     "slug": "aceite-digear-80w90-1-litro",
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
     "seoDescription": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios…",
     "descripcion": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios manuales, diferenciales, cajas de transferencia y engranajes hipoidales sometidos a cargas severas y presiones extremas (Extreme Pressure / EP). Elaborado con aceites base altamente refinados y un avanzado paquete de aditivos azufre-fósforo, garantiza una protección robusta contra el desgaste metálico, el picado (pitting) y la formación de corrosión en piñones y rodamientos."
@@ -14500,8 +14500,8 @@
     "stock": 13,
     "comision": 1.75,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "CAJA MECÁNICA Y AUTOMÁTICA",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE TRANSMISIÓN",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14591,7 +14591,7 @@
       "1× Garrafa de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (5 Litros)"
     ],
     "slug": "aceite-digear-80w90-5-litros",
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
     "seoDescription": "El DIMASOIL Digear 80W90 (Garrafa de 5 Litros) es un fluido lubricante de base mineral en formato económico de gran volumen, formulado especialmente para…",
     "descripcion": "El DIMASOIL Digear 80W90 (Garrafa de 5 Litros) es un fluido lubricante de base mineral en formato económico de gran volumen, formulado especialmente para cajas de cambios manuales, diferenciales, cajas de transferencia y engranajes hipoidales sometidos a cargas severas y presiones extremas (Extreme Pressure / EP). Elaborado con aceites base altamente refinados y un avanzado paquete de aditivos azufre-fósforo, garantiza una protección robusta contra el desgaste metálico, el picado (pitting) y la formación de corrosión en piñones y rodamientos."
@@ -14609,8 +14609,8 @@
     "stock": 15,
     "comision": 0.75,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "CAJA MECÁNICA Y AUTOMÁTICA",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE TRANSMISIÓN",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -14690,7 +14690,7 @@
       "1× Botella de Aceite Sintético para Transmisión FANFARO CVT 8601 (1 Litro)"
     ],
     "slug": "aceite-cvt-8601-1-litro",
-    "rev": 1795288491345,
+    "rev": 1795466431828,
     "seoTitle": "Aceite Sintético para Transmisión Automática… | TiendaMax",
     "seoDescription": "El FANFARO CVT 8601 (1 Litro) es un fluido de transmisión sintético de ultra alto rendimiento diseñado especialmente para las exigencias mecánicas de las…",
     "descripcion": "El FANFARO CVT 8601 (1 Litro) es un fluido de transmisión sintético de ultra alto rendimiento diseñado especialmente para las exigencias mecánicas de las transmisiones automáticas de variación continua (CVT - Continuously Variable Transmission). Formulado con aceites base 100% sintéticos de primera calidad e inhibidores de fricción de última generación, asegura una transferencia de torque óptima sin deslizamientos ni patinamientos entre la correa/cadena metálica y las poleas de la transmisión"
