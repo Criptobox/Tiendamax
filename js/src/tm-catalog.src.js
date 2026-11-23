@@ -143,6 +143,10 @@ function guardarCategorias() {
             const d = { nombres: categorias, iconos: iconosPersonalizados };
             const ap = (typeof window.tmApagadasParaSubir === 'function') ? window.tmApagadasParaSubir(r && r.apagadas) : (r && r.apagadas);
             if (ap) d.apagadas = ap;
+            // Lo mismo con los colores elegidos (`colores` + sus horas): sin la clave se perderían.
+            const co = (typeof window.tmColoresParaSubir === 'function') ? window.tmColoresParaSubir(r) : null;
+            if (co) Object.assign(d, co);
+            else if (r && r.colores) { d.colores = r.colores; if (r.coloresTs) d.coloresTs = r.coloresTs; }
             return subirArchivoAGitHub(user, repo, token, 'categorias.json', d);
         }).catch(() => {});
         subirArchivoAGitHub(user, repo, token, 'subcategorias.json', tmParseObject(localStorage.getItem('subcategorias'))).catch(() => {});
@@ -500,7 +504,14 @@ async function _tmMergeCategoriasConRepo(user, repo, remotoYaLeido) {
     // panel cargado se conserva lo que ya hubiera en el repo.
     const apR = remoto ? remoto.apagadas : undefined;
     const apagadas = (typeof window.tmApagadasParaSubir === 'function') ? window.tmApagadasParaSubir(apR) : apR;
-    const conApagadas = o => (apagadas ? Object.assign(o, { apagadas }) : o);
+    // Colores elegidos en el panel: viajan en este mismo fichero, igual que `apagadas`.
+    const coloresSub = (typeof window.tmColoresParaSubir === 'function') ? window.tmColoresParaSubir(remoto) : null;
+    const conApagadas = o => {
+        if (apagadas) Object.assign(o, { apagadas });
+        if (coloresSub) Object.assign(o, coloresSub);
+        else if (remoto && remoto.colores) { o.colores = remoto.colores; if (remoto.coloresTs) o.coloresTs = remoto.coloresTs; }
+        return o;
+    };
     if (!remoto) return conApagadas(local);
 
     const eliminadas = new Set(tmParseArray(localStorage.getItem('categoriasEliminadas')));

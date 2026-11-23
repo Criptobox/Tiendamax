@@ -21,7 +21,11 @@ const _TM_FICHA_SECCIONES = [
     [/^ideal\s+para/i, 'idealPara'],
     [/^(?:(?:incluye|contenido).*caja|qu[eé]\s+incluye|incluye)/i, 'incluye']
 ];
-const _TM_EMOJI_INI = /^((?:[\p{Extended_Pictographic}\u3030\u303d\ufe0f\u200d])+)\s*/u;
+// Sin \p{...} ni la bandera /u: un literal as\u00ed es un SyntaxError al ANALIZAR el
+// bundle en navegadores sin property escapes (Safari < 11.1, Firefox < 78,
+// WebViews viejas) y entonces no corre NADA, ni el bot\u00f3n de rese\u00f1a. Rangos
+// expl\u00edcitos y pares sustitutos (los emojis astrales son \ud83c-\ud83e + cola).
+const _TM_EMOJI_INI = /^((?:[\ud83c-\ud83e][\udc00-\udfff]|[\u2100-\u27bf\u2b00-\u2bff\u203c\u2049\u3030\u303d\ufe0f\u200d])+)\s*/;
 
 function _tmFichaLimpiar(t) {
     return String(t == null ? '' : t).replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, '')

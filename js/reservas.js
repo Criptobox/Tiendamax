@@ -63,6 +63,37 @@
   function horas() { var h = parseInt(localStorage.getItem(LS_HORAS), 10); return h >= 1 && h <= 720 ? h : HORAS_DEF; }
   function ponerHoras(h) { h = parseInt(h, 10); if (!(h >= 1 && h <= 720)) return false; try { localStorage.setItem(LS_HORAS, String(h)); return true; } catch (e) { return false; } }
 
+  /* ── Dónde salió la unidad del stock ───────────────────────────────────
+     El descuento se hace en el catálogo de ESTE dispositivo (localStorage). Una
+     reserva hecha en el móvil y confirmada desde la PC llega por Firebase, pero
+     su descuento no: en la PC el stock seguía entero, «Ejecutar venta» daba la
+     unidad por descontada (stockYaDescontado) y no bajaba nunca; y cancelarla
+     devolvía una unidad que jamás había salido. Por eso cada reserva apunta el
+     dispositivo que la descontó (`disp`) y cada dispositivo apunta las que ya
+     descontó o cuyo descuento ya vio (`tm_reservas_aplicadas`). Las anteriores
+     a esto no traen `disp` y se tratan como hechas aquí: es lo que siempre
+     fueron. */
+  var LS_DISP = 'tm_dispositivo', LS_APLICADAS = 'tm_reservas_aplicadas';
+  function dispositivo() {
+    try {
+      var d = localStorage.getItem(LS_DISP);
+      if (!d) { d = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); localStorage.setItem(LS_DISP, d); }
+      return d;
+    } catch (e) { return 'sin-almacen'; }
+  }
+  function _aplicadas() {
+    try { var o = JSON.parse(localStorage.getItem(LS_APLICADAS) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; }
+    catch (e) { return {}; }
+  }
+  function _marcarAplicada(id) {
+    try { var o = _aplicadas(); o[id] = Date.now(); localStorage.setItem(LS_APLICADAS, JSON.stringify(o)); } catch (e) {}
+  }
+  function descontadaAqui(r) {
+    if (!r) return false;
+    if (!r.disp || r.disp === dispositivo()) return true;
+    return !!_aplicadas()[r.id];
+  }
+
   function _leer(clave, porDefecto) {
     try {
       var v = JSON.parse(localStorage.getItem(clave) || 'null');
@@ -177,6 +208,7 @@
       ts: ahora,
       vence: alCierre(ahora + horas() * 3600000),
       estado: 'reservada',
+      disp: dispositivo(),
       cliente: String((datos && datos.cliente) || '').slice(0, 80),
       telefono: String((datos && datos.telefono) || '').slice(0, 25),
       nota: String((datos && datos.nota) || '').slice(0, 140),
@@ -193,6 +225,7 @@
       _moverStock(detalle, +1);          // deshacer: sin reserva guardada, el stock no puede quedar descontado
       return { ok: false, msg: 'No se pudo guardar la reserva (navegador sin espacio). El stock se devolvió.' };
     }
+    _marcarAplicada(r.id);
     _espejar();
     return { ok: true, reserva: r };
   }
@@ -203,24 +236,38 @@
     for (var i = 0; i < lista.length; i++) { if (lista[i].id === id) { r = lista[i]; break; } }
     if (!r) return { ok: false, msg: 'No encuentro esa reserva.' };
     if (r.estado !== 'reservada') return { ok: false, msg: 'Esa reserva ya estaba ' + r.estado + '.' };
-    if (devolverStock) {
+    /* Cada unidad sale del stock UNA vez entre reservar y vender.
+       · Cancelar: solo se devuelve lo que salió de este catálogo.
+       · Vender: si la reserva es de otro dispositivo y aquí no salió, sale ahora
+         (`descontado` lo dice, para avisar); si ya salió, no se toca. */
+    var aqui = descontadaAqui(r);
+    var devuelto = devolverStock && aqui;
+    var descontado = null;
+    if (devuelto) {
       if (_moverStock(r.items, +1) === null) {
         return { ok: false, msg: 'No se pudo devolver el stock. No se canceló nada.' };
       }
+    }
+    if (estado === 'vendida' && !aqui) {
+      descontado = _moverStock(r.items, -1);
+      if (descontado === null) return { ok: false, msg: 'No se pudo descontar el stock de esta reserva. No se registró nada.' };
     }
     r.estado = estado;
     r.tsResuelta = Date.now();
     if (motivo) r.motivo = motivo;
     if (!_guardarReservas(lista)) {
-      if (devolverStock) _moverStock(r.items, -1);   // deshacer la devolución
+      if (devuelto) _moverStock(r.items, -1);        // deshacer la devolución
+      if (descontado && descontado.length) _moverStock(r.items, +1);   // deshacer el descuento
       return { ok: false, msg: 'No se pudo guardar el cambio.' };
     }
+    if (descontado) _marcarAplicada(r.id);
     _espejar();
-    return { ok: true, reserva: r };
+    return { ok: true, reserva: r, descontado: descontado, devuelto: devuelto };
   }
 
   /* La venta se ejecutó. El stock YA está descontado desde que se hizo el
-     vale: volver a descontarlo aquí lo restaría dos veces. */
+     vale: volver a descontarlo aquí lo restaría dos veces. Salvo que la reserva
+     la hiciera otro dispositivo y aquí no haya salido (ver descontadaAqui). */
   function marcarVendida(id) { return _cerrar(id, 'vendida', false); }
 
   /* El cliente no vino. El producto vuelve a estar a la venta. */
@@ -298,6 +345,9 @@
       var mio = porId[x.id];
       if (!mio) { locales.push(x); porId[x.id] = x; nuevas++; return; }
       if (mio.estado === 'reservada' && x.estado !== 'reservada') {
+        /* Cancelada en otro dispositivo: si la unidad salió de ESTE catálogo,
+           tiene que volver aquí (allí no salió, y allí no la devolvieron). */
+        if (x.estado === 'cancelada' && descontadaAqui(mio)) _moverStock(mio.items, +1);
         mio.estado = x.estado; mio.tsResuelta = x.tsResuelta || Date.now(); if (x.motivo) mio.motivo = x.motivo; cerradas++;
       }
     });
@@ -320,6 +370,8 @@
     pendientes: pendientes,
     pendientesViejas: pendientesViejas,
     reservadoDe: reservadoDe,
+    descontadaAqui: descontadaAqui,
+    dispositivo: dispositivo,
     crear: crear,
     marcarVendida: marcarVendida,
     cancelar: cancelar,

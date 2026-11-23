@@ -2465,7 +2465,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=2fd39d0f"></script>
+<script src="js/tm-bundle.js?v=54b886cb"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -3108,8 +3108,8 @@ try{var _piel=localStorage.getItem('tm_piel');
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
 <!-- Reservas: mismo archivo que usa vale.html -->
-<script src="js/reservas.js?v=789cac20"></script>
-<script src="js/admin-copilot.js?v=405a8d9b"></script>
+<script src="js/reservas.js?v=fa4c9a84"></script>
+<script src="js/admin-copilot.js?v=0aac74e4"></script>
 <script src="js/max-panel.js?v=e078d97f"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
@@ -3464,6 +3464,7 @@ async function cargarDatos(recargar){
   _ofertasFinAutoRevertir(); // ofertas con fecha de fin ya vencidas: revertir de una vez
   await catSubCargar();
   catApDesdeRepo(CATEGORIAS);
+  catColDesdeRepo(CATEGORIAS);
   RADAR = await jget('radar.json');
   await radarCargarIds();
   VENTAS = lsVentas();
@@ -3947,7 +3948,8 @@ function _reservaDelVale(pend){
 function reservaVender(id){
   const r=_reservaBuscar(id);
   if(!r) return;
-  if(!confirm('¿El cliente ya pagó y se llevó '+(r.items||[]).map(i=>i.cantidad+'× '+i.nombre).join(', ')+'?\n\nSe registra como venta. El stock no cambia: esa unidad ya salió cuando mandaste el vale.')) return;
+  const yaSalio=TMReservas.descontadaAqui(r);
+  if(!confirm('¿El cliente ya pagó y se llevó '+(r.items||[]).map(i=>i.cantidad+'× '+i.nombre).join(', ')+'?\n\nSe registra como venta. '+(yaSalio?'El stock no cambia: esa unidad ya salió cuando mandaste el vale.':'Este vale se hizo en otro dispositivo y aquí la unidad no había salido del stock: se descuenta ahora, una sola vez.'))) return;
   // Marcar PRIMERO. Si se registrara la venta y luego fallara el guardado de
   // la reserva, quedaría una venta hecha y la reserva todavía pendiente:
   // volverías a ejecutarla y venderías dos veces lo mismo.
@@ -3957,6 +3959,17 @@ function reservaVender(id){
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
   const tarjeta=(typeof window.tmTarjetaPreguntar==='function') ? window.tmTarjetaPreguntar(r.telefono, items) : null;
   registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true, tarjeta:tarjeta||undefined});
+  // Si la reserva era de otro dispositivo, el descuento acaba de hacerse en
+  // localStorage: traerlo a la memoria del panel y decirlo.
+  if(m.descontado){
+    reservasTraerStock();
+    mostrarNotificacion('📦 Stock descontado ahora: '+(m.descontado.map(t=>t.nombre+' '+t.antes+' → '+t.despues).join(' · ')||'sin productos en este catálogo')+' (el vale se hizo en otro dispositivo).');
+  }
+  // Publicar el stock como cualquier otra venta (ajustarStock lo hace a los 2 s;
+  // aquí no se llama porque la unidad ya había salido). Sin esto el descuento
+  // de la reserva se quedaba en el panel y la tienda seguía enseñando el viejo.
+  clearTimeout(window._resSyncTimer);
+  window._resSyncTimer=setTimeout(()=>{ if(typeof sincronizarConGitHub==='function'){ try{ sincronizarConGitHub(); }catch(e){} } },2000);
   try{ const v=JSON.parse(localStorage.getItem('tm_vale_vender')||'null'); if(v && v.id===id) localStorage.removeItem('tm_vale_vender'); }catch(e){}
   renderReservas();
 }
@@ -3964,7 +3977,7 @@ function reservaVender(id){
 function reservaCancelar(id){
   const r=_reservaBuscar(id);
   if(!r) return;
-  if(!confirm('¿Cancelar la reserva de '+(r.cliente||'este cliente')+'?\n\nEl producto vuelve al stock y se podrá vender a otro.')) return;
+  if(!confirm('¿Cancelar la reserva de '+(r.cliente||'este cliente')+'?\n\n'+(TMReservas.descontadaAqui(r)?'El producto vuelve al stock y se podrá vender a otro.':'Este vale se hizo en otro dispositivo: aquí la unidad no había salido, así que el stock no cambia.'))) return;
   // Apuntar si fue porque no vino: la próxima vez que ese WhatsApp pida algo, se avisa.
   const noVino=confirm('¿Se cancela porque el cliente NO VINO a recogerlo?\n\nAceptar = no vino (se apunta para la próxima vez)\nCancelar = fue por otra razón');
   const c=TMReservas.cancelar(id, noVino?'novino':'');
@@ -3993,10 +4006,21 @@ function reservasTraerStock(){
     const movs=TMReservas.movimientosDesde(_resMovVisto);
     if(!movs.length) return 0;
     let cambios=0;
+    /* El panel tiene DOS arrays de catálogo: PRODUCTOS (el que pinta) y el
+       bareword `productos` del motor (el que usan ajustarStock, la venta y
+       «Actualizar tienda» al fusionar con el repo). Son el mismo solo hasta que
+       el motor recarga o reasigna el suyo, y entonces se aplicaba el descuento
+       a uno solo: el otro seguía con la cifra vieja, no publicaba nada y su
+       siguiente guardado pisaba el descuento del localStorage. Se aplica a los
+       dos. */
+    const listas=[PRODUCTOS];
+    try{ if(typeof productos!=='undefined' && Array.isArray(productos) && productos!==PRODUCTOS) listas.push(productos); }catch(e){}
     movs.forEach(m=>{
       _resMovVisto=Math.max(_resMovVisto, m.ts||0);
-      const p=PRODUCTOS.find(x=>String(x.id)===String(m.id));
-      if(p && Number(p.stock)!==Number(m.stock)){ p.stock=Number(m.stock); cambios++; }
+      listas.forEach(l=>{
+        const p=l.find(x=>String(x.id)===String(m.id));
+        if(p && Number(p.stock)!==Number(m.stock)){ p.stock=Number(m.stock); cambios++; }
+      });
     });
     if(cambios){
       if(typeof actualizarCountdownProductSelect==='function') actualizarCountdownProductSelect();
@@ -4214,7 +4238,7 @@ function ventaElegirImporte(p){
 
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
-  const cats=catNombres();
+  const cats=apCatsParaSelect('');
   sel.innerHTML='<option value="">Selecciona…</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
 function fileName(input, spanId, def){
@@ -5704,7 +5728,7 @@ function apSpecsDeTexto(raw){
   for(const t of trozos){ if(out.length && !conEmoji(t)) out[out.length-1]+=', '+t; else out.push(t); }
   return out.slice(0,6);
 }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; if($('#pedit-slug')){ $('#pedit-slug').value=slugValido(p.slug)?p.slug:slugProponer(p.nombre, slugsOcupados(id)); apSlugInput(); } $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; if($('#pedit-slug')){ $('#pedit-slug').value=slugValido(p.slug)?p.slug:slugProponer(p.nombre, slugsOcupados(id)); apSlugInput(); } $('#pedit-precio').value=p.precioActual||''; if($('#pedit-moneda')) $('#pedit-moneda').value=(p.moneda==='MN'?'MN':'USD'); $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=apCatsParaSelect(p.categoria).sort((a,b)=>a.localeCompare(b,'es')); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); }
   apEditFillSubcats(p.subcategoria); const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
@@ -6029,8 +6053,9 @@ window.catSubPublicar=catSubPublicar;
 
 function catNombres(){ if(Array.isArray(CATEGORIAS)) return CATEGORIAS.map(c=>typeof c==='string'?c:(c.nombre||c.name||'')); return (CATEGORIAS&&CATEGORIAS.nombres)||[]; }
 function catIcono(nm){ const ic=(CATEGORIAS&&CATEGORIAS.iconos)||{}; return ic[nm] || ic[(nm||'').toUpperCase()] || emojiCat(nm); }
-let CAT_VIEW='cat';
+let CAT_VIEW='cat', CAT_SUB_SEL='';
 function catSwitch(v){ CAT_VIEW=v; renderCategorias(); }
+function catSubSel(v){ CAT_SUB_SEL=v; }       // el selector es de un onchange en línea: no ve las variables de este bloque
 function renderCategorias(){
   const cats = catNombres();
   const subMap = (SUBCATS && !Array.isArray(SUBCATS)) ? SUBCATS : {};
@@ -6043,13 +6068,16 @@ function renderCategorias(){
     + `<button class="btn ${CAT_VIEW==='sub'?'btn-primary':'btn-ghost'}" onclick="catSwitch('sub')">📁 Subcategorías (${totalSubs})</button></div>`;
   let addForm;
   if(CAT_VIEW==='cat'){
-    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><input class="form-input" id="newCategoryName" placeholder="Nueva categoría" style="flex:1;min-width:150px"><input class="form-input" id="newCategoryIcon" placeholder="🏷️ emoji" style="width:110px"><button class="btn btn-primary" onclick="catAgregar()">+ Agregar</button></div>`;
+    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><input class="form-input" id="newCategoryName" placeholder="Nueva categoría" style="flex:1;min-width:150px" onkeydown="if(event.key==='Enter'){event.preventDefault();catAgregar();}"><input class="form-input" id="newCategoryIcon" placeholder="🏷️ emoji" style="width:110px"><button class="btn btn-primary" onclick="catAgregar()">+ Agregar</button></div>`;
   } else {
-    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><select class="form-select" id="newSubCat" style="min-width:140px">${cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select><input class="form-input" id="newSubName" placeholder="Nueva subcategoría" style="flex:1;min-width:150px"><button class="btn btn-primary" onclick="subAgregar()">+ Agregar</button></div>`;
+    // La categoría con la que se está trabajando se recuerda: antes cada alta redibujaba el
+    // formulario y el selector volvía a la primera categoría.
+    if(CAT_SUB_SEL && !cats.includes(CAT_SUB_SEL)) CAT_SUB_SEL='';
+    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><select class="form-select" id="newSubCat" style="min-width:140px" onchange="catSubSel(this.value)">${cats.map(c=>`<option value="${esc(c)}"${c===CAT_SUB_SEL?' selected':''}>${esc(c)}</option>`).join('')}</select><input class="form-input" id="newSubName" placeholder="Nueva subcategoría" style="flex:1;min-width:150px" onkeydown="if(event.key==='Enter'){event.preventDefault();subAgregar();}"><button class="btn btn-primary" onclick="subAgregar()">+ Agregar</button></div>`;
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div class="${catApagada(nm)?'cat-off':''}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">${catApSwitch(nm)}<div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div>${catApagada(nm)?'<span class="cat-off-tag">Apagada</span>':''}<span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div class="${catApagada(nm)?'cat-off':''}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">${catApSwitch(nm)}<div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div>${catApagada(nm)?'<span class="cat-off-tag">Apagada</span>':''}<span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(var(--o-rgb),0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span>${catColControl(nm)}<button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
@@ -6063,13 +6091,32 @@ function renderCategorias(){
   $('#cat-list').innerHTML = pills + `<div id="cat-ap-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px"></div>` + `<div id="catsub-estado" style="font-size:12px;color:var(--muted);margin:-4px 0 12px">${esc(_catSubEstado)}</div>` + addForm + body;
   catApAviso();
 }
+// Categorías para los selectores de producto: las declaradas MÁS las que algún producto ya usa
+// (más la del propio producto). Antes salían solo las de los productos, y una categoría recién
+// creada, aún sin productos, no aparecía para asignársela a ninguno.
+function apCatsParaSelect(actual){
+  const vistos=new Set(), out=[];
+  catNombres().concat(PRODUCTOS.map(x=>x.categoria), [actual]).forEach(c=>{
+    c=String(c==null?'':c).trim(); if(!c||vistos.has(norm(c))) return; vistos.add(norm(c)); out.push(c);
+  });
+  return out;
+}
+// Tras crear/renombrar/borrar: los selectores del formulario de producto nuevo se rehacen sin perder lo elegido.
+function catSelectsRefrescar(){
+  const sc=$('#productCategory'), ss=$('#productSubcategory');
+  const vc=sc?sc.value:'', vs=ss?ss.value:'';
+  fillAgregarCategorias();
+  if(sc && vc && [...sc.options].some(o=>o.value===vc)) sc.value=vc;
+  agregarFillSubcats();
+  if(ss && vs && [...ss.options].some(o=>o.value===vs)) ss.value=vs;
+}
 function catAgregar(){
   if(typeof agregarCategoria!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
   const inp=$('#newCategoryName'); if(!inp || !inp.value.trim()){ showToast('⚠️ Escribe la categoría'); return; }
   const _nuevaCat=inp.value.trim();
   agregarCategoria();
   catSubVuelve(_nuevaCat); catSubPendiente(false);
-  setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS={nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}; }catch(e){} renderCategorias(); showToast('✅ Categoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar'); },120);
+  setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS=Object.assign({}, (CATEGORIAS&&!Array.isArray(CATEGORIAS))?CATEGORIAS:{}, {nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}); }catch(e){} renderCategorias(); catSelectsRefrescar(); showToast('✅ Categoría agregada','Pulsa 🔄 Actualizar tienda en 📦 Productos para publicar'); },120);
 }
 function subAgregar(){
   const cat=$('#newSubCat') && $('#newSubCat').value;
@@ -6084,7 +6131,9 @@ function subAgregar(){
   try{ localStorage.setItem('subcategorias', JSON.stringify(map)); }catch(e){ console.warn('[subcategorias] cuota llena', e); }
   SUBCATS=map;
   catSubVuelve(cat, name); catSubPendiente(false);
-  renderCategorias();
+  CAT_SUB_SEL=cat;                          // se sigue en la misma categoría
+  renderCategorias(); catSelectsRefrescar();
+  const _in=$('#newSubName'); if(_in){ _in.value=''; try{ _in.focus(); }catch(e){} }   // listo para la siguiente
   showToast('✅ Subcategoría agregada','Se guarda sola en la tienda en unos segundos');
 }
 // ── Editar/borrar categorías y subcategorías ──
@@ -6105,7 +6154,9 @@ function catRenombrar(nm){
   catApRenombrar(nm, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)){ p.categoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
-  renderCategorias(); renderProductos(); fillAgregarCategorias();
+  if(CAT_SUB_SEL===nm) CAT_SUB_SEL=nuevo;
+  catColRenombrar(nm, nuevo);
+  renderCategorias(); renderProductos(); catSelectsRefrescar();
   showToast('✏️ Categoría renombrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 // Cambiar el emoji/ícono de una categoría (se publica igual que el renombre)
@@ -6129,7 +6180,9 @@ function catBorrar(nm){
   _saveCats(names, ic);
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; }catch(e){}
   catSubQuitoCat(nm); catSubQuitoSub(nm,'*'); catSubPendiente(false);
-  renderCategorias(); fillAgregarCategorias();
+  if(CAT_SUB_SEL===nm) CAT_SUB_SEL='';
+  catColQuitar(nm);
+  renderCategorias(); catSelectsRefrescar();
   showToast('🗑️ Categoría borrada','Se guarda sola en la tienda en unos segundos');
 }
 function subRenombrar(cat, s){
@@ -6140,7 +6193,8 @@ function subRenombrar(cat, s){
   catSubQuitoSub(cat, s); catSubVuelve(cat, nuevo); catSubPendiente(true);
   catApRenombrar(cat, null, s, nuevo);
   syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)){ p.subcategoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
-  renderCategorias();
+  CAT_SUB_SEL=cat;
+  renderCategorias(); catSelectsRefrescar();
   showToast('✏️ Subcategoría renombrada','Pulsa "🔄 Actualizar tienda" en 📦 Productos para publicar');
 }
 function subBorrar(cat, s){
@@ -6149,7 +6203,8 @@ function subBorrar(cat, s){
   if(map[cat]) map[cat]=map[cat].filter(x=>x!==s);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
   catSubQuitoSub(cat, s); catSubPendiente(false);
-  renderCategorias();
+  CAT_SUB_SEL=cat;
+  renderCategorias(); catSelectsRefrescar();
   showToast('🗑️ Subcategoría borrada','Se guarda sola en la tienda en unos segundos');
 }
 /* ── Apagar / encender categorías y subcategorías ──
@@ -6259,7 +6314,7 @@ function catApSubirLuego(){ CAT_AP_ESTADO='pendiente'; catApAviso(); clearTimeou
 async function catApSubir(){
   const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
   if(!user||!repo||!token||typeof subirArchivoAGitHub!=='function'||typeof _tmLeerJsonRepoFresco!=='function'){ CAT_AP_ESTADO='sin-token'; catApAviso(); return false; }
-  if(_catApSubiendo){ catApSubirLuego(); return false; }
+  if(_catApSubiendo||(typeof _catColSubiendo!=='undefined'&&_catColSubiendo)){ catApSubirLuego(); return false; }
   _catApSubiendo=true; CAT_AP_ESTADO='guardando'; catApAviso();
   try{
     // Se relee justo antes de escribir, y sin haberlo leído NO se escribe:
@@ -6310,6 +6365,132 @@ function catApAviso(){
   }[CAT_AP_ESTADO]||'';
   el.innerHTML=esc(resumen)+(est?'<br>'+est:'');
 }
+/* ── Color por categoría ──
+   El color de la tarjeta salía solo de una tabla por nombre y, para las
+   nuevas, de un hash: dos categorías podían salir del mismo color y no había
+   forma de elegirlo. Ahora cada categoría puede llevar el suyo
+   (categorias.json → `colores`: {NOMBRE: '#RRGGBB'}, más `coloresTs`, la hora
+   de cada cambio, para fusionar por entrada). La tienda aplica primero el
+   elegido (tmColorCategoria) y, sin elegir, uno automático que nunca repite
+   el de otra categoría.
+
+   Mismo patrón que `apagadas`: el toque se guarda aquí al momento, el repo se
+   relee y se escribe unos segundos después cambiando SOLO estas claves, gana
+   la hora más reciente y «volver a automático» deja una lápida {c:null}. Todos
+   los que reescriben categorias.json (tmColoresParaSubir) la llevan. */
+const CAT_COL_LS='tm_cat_colores_panel';
+let _catColTimer=null, _catColSubiendo=false, _catColMemo=null;
+function _catColHex(h){ return /^#[0-9a-fA-F]{6}$/.test(String(h||''))?String(h).toUpperCase():null; }
+function _catColLimpio(m){
+  const o={}; if(!m||typeof m!=='object'||Array.isArray(m)) return o;
+  Object.keys(m).forEach(k=>{ const e=m[k]; if(!e||typeof e!=='object') return;
+    const c=e.c==null?null:_catColHex(e.c); if(e.c!=null&&!c) return; o[k]={c, ts:Number(e.ts)||0}; });
+  return o;
+}
+function _catColDeArchivo(colores, horas){
+  const cs=(colores&&typeof colores==='object'&&!Array.isArray(colores))?colores:{};
+  const hs=(horas&&typeof horas==='object'&&!Array.isArray(horas))?horas:{}, o={};
+  Object.keys(cs).forEach(k=>{ const c=_catColHex(cs[k]); if(c) o[k]={c, ts:Number(hs[k])||0}; });
+  Object.keys(hs).forEach(k=>{ if(!(k in o)&&Number(hs[k])>0) o[k]={c:null, ts:Number(hs[k])}; });
+  return o;
+}
+function _catColAArchivo(m){
+  const colores={}, coloresTs={};
+  Object.keys(m).forEach(k=>{ if(m[k].c) colores[k]=m[k].c; if(m[k].ts>0) coloresTs[k]=m[k].ts; });
+  return {colores, coloresTs};
+}
+function catColFusionar(a,b){
+  a=_catColLimpio(a); b=_catColLimpio(b);
+  const o={}, idx={}, lim=Date.now()-CAT_AP_LAPIDA_DIAS*864e5;
+  [a,b].forEach(m=>Object.keys(m).forEach(k=>{
+    const n=norm(k), previo=idx[n];
+    if(previo===undefined){ idx[n]=k; o[k]=m[k]; }
+    else if(m[k].ts>=o[previo].ts){ delete o[previo]; idx[n]=k; o[k]=m[k]; }
+  }));
+  Object.keys(o).forEach(k=>{ if(!o[k].c&&o[k].ts<lim) delete o[k]; });   // una lápida vieja ya no le gana a nadie
+  return o;
+}
+function _catColFirma(m){ m=_catColLimpio(m); return Object.keys(m).map(k=>norm(k)+'|'+m[k].c+'|'+m[k].ts).sort().join('\n'); }
+function _catColLocal(){ try{ return _catColLimpio(JSON.parse(localStorage.getItem(CAT_COL_LS)||'null')); }catch(e){ return {}; } }
+function _catColRemoto(){ return (CATEGORIAS&&!Array.isArray(CATEGORIAS))?_catColDeArchivo(CATEGORIAS.colores, CATEGORIAS.coloresTs):{}; }
+function _catColGuardar(m){
+  _catColMemo=null; tmGuardarLS(CAT_COL_LS, m);
+  // Copia que lee la tienda (tmColorCategoria) en este mismo navegador.
+  const simple={}; Object.keys(m).forEach(k=>{ if(m[k].c) simple[k]=m[k].c; });
+  tmGuardarLS('tm_cat_colores', simple);
+}
+function catColActual(){ return _catColMemo || (_catColMemo=catColFusionar(_catColRemoto(), _catColLocal())); }
+function catColElegido(nm){ const a=catColActual(), k=Object.keys(a).find(x=>norm(x)===norm(nm)); return k?a[k].c:null; }
+// El color que verá el cliente: el elegido o, si no, el automático de la tienda.
+function catColVisto(nm){
+  const el=catColElegido(nm); if(el) return el;
+  const f=window.tmColorTiendaCategoria||window.tmColorCategoria;
+  const c=typeof f==='function'?_catColHex(f(nm)):null; return c||'#888888';
+}
+function catColControl(nm){
+  const e=catColElegido(nm), a=escJsAttr(nm);
+  return `<input type="color" class="cat-col-in" value="${(catColVisto(nm)).toLowerCase()}" title="${e?'Color elegido para la tienda':'Color automático · toca para elegir otro'}" aria-label="Color de ${esc(nm)}" onchange="catColElegir('${a}', this.value)" style="width:36px;height:36px;padding:0;border:2px solid ${e?'var(--gold)':'rgba(255,255,255,.2)'};border-radius:8px;background:none;cursor:pointer;flex-shrink:0">`
+    + (e?`<button class="pico edit" style="width:36px;height:36px;font-size:11px;font-weight:700" title="Volver al color automático" onclick="catColAuto('${a}')">Auto</button>`:'');
+}
+function _catColPoner(nm, c){
+  const m=catColActual(), k=Object.keys(m).find(x=>norm(x)===norm(nm))||nm;
+  m[k]={c, ts:Date.now()}; _catColGuardar(m);
+}
+function catColElegir(nm, hex){
+  const c=_catColHex(hex); if(!c) return;
+  _catColPoner(nm, c); renderCategorias(); catColSubirLuego();
+  showToast('🎨 Color elegido para '+nm,'Se guarda solo en la tienda en unos segundos');
+}
+function catColAuto(nm){
+  _catColPoner(nm, null); renderCategorias(); catColSubirLuego();
+  showToast('🎨 '+nm+' vuelve al color automático','Se guarda solo en la tienda en unos segundos');
+}
+function catColRenombrar(nm, nuevo){          // el nombre nuevo hereda el color elegido
+  const c=catColElegido(nm); if(!c) return;
+  _catColPoner(nuevo, c); catColSubirLuego();
+}
+function catColQuitar(nm){                    // categoría borrada: su color elegido deja de contar
+  if(!catColElegido(nm)) return;
+  _catColPoner(nm, null); catColSubirLuego();
+}
+function catColSubirLuego(){
+  catSubEstado('⏳ Guardando el color en la tienda…');
+  clearTimeout(_catColTimer); _catColTimer=setTimeout(catColSubir,4000);
+}
+async function catColSubir(){
+  const g=catSubDatosGitHub();
+  if(!g||typeof subirArchivoAGitHub!=='function'||typeof _tmLeerJsonRepoFresco!=='function'){ catSubEstado('📱 Color guardado en este teléfono. Configura GitHub en ⚙️ para que se publique.'); return false; }
+  if(_catColSubiendo||_catApSubiendo){ clearTimeout(_catColTimer); _catColTimer=setTimeout(catColSubir,1500); return false; }
+  _catColSubiendo=true;
+  try{
+    // Se relee justo antes de escribir, y sin haberlo leído NO se escribe.
+    const remoto=await _tmLeerJsonRepoFresco(g.user, g.repo, g.token, 'categorias.json');
+    if(!remoto||typeof remoto!=='object'||!Array.isArray(remoto.nombres)) throw new Error('no pude leer categorias.json');
+    const previo=_catColDeArchivo(remoto.colores, remoto.coloresTs);
+    const f=catColFusionar(previo, _catColLocal());
+    _catColGuardar(f);
+    if(_catColFirma(previo)!==_catColFirma(f)){
+      await subirArchivoAGitHub(g.user, g.repo, g.token, 'categorias.json', Object.assign({}, remoto, _catColAArchivo(f)));
+      catSubEstado('☁️ Color guardado en la tienda (se ve en ~1–2 min)');
+    } else catSubEstado('☁️ Color guardado en la tienda (ya estaba igual)');
+    if(CATEGORIAS&&!Array.isArray(CATEGORIAS)) Object.assign(CATEGORIAS, _catColAArchivo(f));
+    _catColMemo=null; renderCategorias();
+    return true;
+  }catch(e){ catSubEstado('⚠️ No pude guardar el color en la tienda ('+((e&&e.message)||'sin conexión')+'). Sigue guardado aquí y se reintenta al volver a entrar.'); return false; }
+  finally{ _catColSubiendo=false; }
+}
+// Al cargar: lo elegido en este teléfono que el repo no tiene se sube solo; y la copia de la tienda se pone al día.
+function catColDesdeRepo(cat){
+  const r=(cat&&!Array.isArray(cat))?_catColDeArchivo(cat.colores, cat.coloresTs):{}, f=catColFusionar(r,_catColLocal());
+  _catColGuardar(f);
+  if(_catColFirma(f)!==_catColFirma(r)) catColSubirLuego();
+}
+// Todo el que reescribe categorias.json lleva los colores (si no, «Actualizar tienda» los borraría).
+window.tmColoresParaSubir = remoto => {
+  const f=catColFusionar(_catColDeArchivo(remoto&&remoto.colores, remoto&&remoto.coloresTs), _catColLocal());
+  const a=_catColAArchivo(f);
+  return (Object.keys(a.colores).length||Object.keys(a.coloresTs).length) ? a : null;
+};
 /* ── ALMACENES ──
    Solo para organización interna del dueño: NO se publica en productos.json
    ni en el repo (dirección física no debe quedar en un archivo público para
@@ -10538,6 +10719,7 @@ window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subA
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.wzToggle=wzToggle; window.wzLimpiar=wzLimpiar; window.wzSoloConStock=wzSoloConStock; window.wzRenderLista=wzRenderLista; window.wzCopiar=wzCopiar; window.wzColaFB=wzColaFB;
 window.plNueva=plNueva; window.plEditar=plEditar; window.plDuplicar=plDuplicar; window.plBorrar=plBorrar; window.plGuardar=plGuardar; window.plCopiar=plCopiar; window.plInsertar=plInsertar; window.plCerrarEditor=plCerrarEditor; window.plRender=plRender;
+window.catColElegir=catColElegir; window.catColAuto=catColAuto; window.catColSubir=catColSubir; window.catSubSel=catSubSel;
 window.catRenombrar=catRenombrar; window.catApToggle=catApToggle; window.catApSubir=catApSubir; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;

@@ -2102,7 +2102,21 @@ const TM_CAT_COLORES = {
 window.TM_CAT_COLORES = TM_CAT_COLORES;
 function tmColorCategoria(cat){
   const k = String(cat || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-  return TM_CAT_COLORES[k] || null;
+  // El color que el dueño ELIGIÓ para la categoría (tm_cat_colores, el mismo que
+  // usa la tienda) manda sobre la tabla de los carteles.
+  try {
+    const el = JSON.parse(localStorage.getItem('tm_cat_colores') || 'null');
+    if (el && typeof el === 'object') {
+      const n = k.toLowerCase();
+      for (const nom in el) {
+        if (/^#[0-9a-fA-F]{6}$/.test(String(el[nom])) && String(nom).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase() === n) return String(el[nom]);
+      }
+    }
+  } catch (e) {}
+  if (TM_CAT_COLORES[k]) return TM_CAT_COLORES[k];
+  // Categoría nueva, sin color en la tabla ni elegido: el automático de la
+  // tienda (único por categoría), para que el cartel no salga todo igual.
+  return (k && typeof window.tmColorTiendaCategoria === 'function') ? window.tmColorTiendaCategoria(cat) : null;
 }
 window.tmColorCategoria = tmColorCategoria;
 
