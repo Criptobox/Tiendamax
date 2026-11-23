@@ -4277,7 +4277,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781365019871_72e594.webp",
     "categoria": "ENERGIA",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -4371,7 +4371,7 @@
       "1× Probador Digital de Baterías Automotrices con pinzas tipo caimán integradas",
       "1× Manual de usuario e instrucciones de operación"
     ],
-    "rev": 1795288491345,
+    "rev": 1795452306560,
     "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura."
   },
   {
@@ -11150,7 +11150,7 @@
     "precioActual": 55,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 3,
+    "stock": 2,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
@@ -11255,7 +11255,7 @@
       "1× Manual de usuario e instrucciones de uso"
     ],
     "slug": "binoculares-vision-4k-36mp",
-    "rev": 1795330664328,
+    "rev": 1795452306560,
     "seoTitle": "Binoculares de Visión Nocturna Digital 4K 36MP | TiendaMax",
     "seoDescription": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en…",
     "descripcion": "Estos binoculares de visión nocturna digital 4K y 36MP son un dispositivo óptico y de grabación avanzado diseñado para la observación nítida en condiciones de oscuridad absoluta o a plena luz del día. Equipados con un sensor CMOS de alta sensibilidad y una potente luz infrarroja integrada de 850 nm, permiten identificar personas, animales u objetos a distancias de hasta 300 metros en plena noche sin ser detectado."
@@ -13682,7 +13682,7 @@
     "precioActual": 5,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 16,
+    "stock": 15,
     "comision": 0.25,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -13771,7 +13771,7 @@
       "1× Botella de Líquido de Frenos Sintético ROYAL Super Heavy Duty DOT 3 (500 ml)"
     ],
     "slug": "liquido-duty-dot-3-500-ml",
-    "rev": 1795288491345,
+    "rev": 1795452306560,
     "seoTitle": "Líquido de Frenos Sintético ROYAL Super Heavy… | TiendaMax",
     "seoDescription": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las…",
     "descripcion": "El ROYAL Super Heavy Duty Synthetic Brake Fluid DOT 3 (500 ml) es un fluido hidráulico sintético de alto rendimiento formulado para responder a las exigencias severas de los sistemas de frenado a disco, tambor y embragues hidráulicos de vehículos automotores. Diseñado bajo rigurosos estándares de calidad internacional, mantiene una viscosidad y presión hidráulica constante frente a variaciones extremas de temperatura, previniendo la formación de burbujas de vapor (vapor lock) durante frenadas prolongadas o exigentes."
