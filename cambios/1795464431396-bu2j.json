@@ -1,0 +1,102 @@
+{
+  "v": 1,
+  "creado": "2026-11-23T20:07:11.396Z",
+  "productos": [
+    {
+      "id": 1778103783319,
+      "nombre": "Batería Automotriz Lubrim (75A)",
+      "precioActual": 85,
+      "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 6,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "bateria-lubrim-75a",
+      "comision": 5,
+      "seoTitle": "Batería Automotriz Lubrim (75A) en Cuba | TiendaMax",
+      "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+        "https://tiendamax.org/imagenes/img_1778103783319.webp"
+      ],
+      "specs": [
+        "⚡ Voltaje Nominal: 12V DC",
+        "🔋 Capacidad: 75 Ah",
+        "🔋 Calcio-Calcio",
+        "📐278 mm de largo × 175 mm de ancho × 190 mm de alto"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Lubrim"
+        },
+        {
+          "k": "Modelo",
+          "v": "Batería Automotriz 75A (12V)"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12V DC"
+        },
+        {
+          "k": "Capacidad",
+          "v": "75 Ah",
+          "nota": "Amperios-hora"
+        },
+        {
+          "k": "Tecnología",
+          "v": "Calcio-Calcio (Ca/Ca) / Plomo-Ácido sellada"
+        },
+        {
+          "k": "Tipo de Mantenimiento",
+          "v": "Libre de mantenimiento",
+          "nota": "Maintenance-Free"
+        },
+        {
+          "k": "Terminales",
+          "v": "Bornes estándar superiores con tapas aislantes"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tecnología de aleación Calcio-Calcio (Ca/Ca) que minimiza la pérdida de agua, reduce notablemente la tasa de autodescarga y prolonga la vida útil de la batería."
+        },
+        {
+          "t": "Diseño 100% sellado y libre de mantenimiento",
+          "d": "no requiere recarga periódica de agua destilada ni manipulación de ácido."
+        },
+        {
+          "d": "Excelente potencia de arranque en frío (CCA) para un encendido rápido, consistente y seguro en motores a gasolina o diésel."
+        },
+        {
+          "d": "Carcasa de polipropileno reforzado de alta durabilidad, diseñada para absorber impactos mecánicos y resistir las vibraciones del camino y el calor del compartimiento del motor."
+        },
+        {
+          "d": "Protectores plásticos integrados en los bornes para evitar cortocircuitos accidentales durante el almacenamiento o transporte."
+        },
+        {
+          "d": "Asa de sujeción ergonómica y abatible en la parte superior para facilitar su traslado e instalación en el compartimento del vehículo."
+        }
+      ],
+      "idealPara": [
+        "Cambiar la batería del carro cuando ya no arranca bien",
+        "Carros que piden batería de 70 a 75 Ah",
+        "Batería de respaldo para un inversor de 12V cuando se va la luz"
+      ],
+      "incluye": [
+        "1× Batería Automotriz Lubrim (12V - 75Ah)",
+        "2× Tapas protectoras de bornes (integradas)"
+      ],
+      "rev": 1795464431396,
+      "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
