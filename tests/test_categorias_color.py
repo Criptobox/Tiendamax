@@ -37,7 +37,7 @@ class EnNavegadorTest(unittest.TestCase):
 
 class ContratosTest(unittest.TestCase):
     def test_los_dos_escritores_del_motor_llevan_los_colores(self):
-        self.assertEqual(CATALOGO.count("tmColoresParaSubir"), 2,
+        self.assertEqual(CATALOGO.count("window.tmColoresParaSubir("), 2,
                          "guardarCategorias y _tmMergeCategoriasConRepo deben llevar `colores`")
 
     def test_el_panel_publica_solo_esa_clave(self):

@@ -539,7 +539,7 @@ function tmColoresAuto(extra) {
     nombres.forEach(n => {
         if (elegidos[n] || TM_CAT_COLORES[n]) return;
         let c = null;
-        while (sig < TM_CAT_PALETA.length && !c) { const t = TM_CAT_PALETA[sig++ % 3].toUpperCase(); c = t; /*MUT4*/ }
+        while (sig < TM_CAT_PALETA.length && !c) { const t = TM_CAT_PALETA[sig++].toUpperCase(); if (!usados.has(t)) c = t; }
         while (!c) { const t = _tmColorPorIndice(++gen); if (!usados.has(t)) c = t; }
         usados.add(c); mapa[n] = c;
     });
@@ -550,7 +550,7 @@ function tmColoresAuto(extra) {
 function tmColorCategoria(nombre) {
     const n = tmNormalizarCat(nombre);
     if (!n) return TM_CAT_PALETA[0];
-    const el = null; //MUT3
+    const el = tmColoresElegidos()[n];
     if (el) return el;
     if (TM_CAT_COLORES[n]) return TM_CAT_COLORES[n];
     return tmColoresAuto(nombre)[n] || TM_CAT_PALETA[0];
