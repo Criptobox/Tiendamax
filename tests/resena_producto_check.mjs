@@ -54,7 +54,8 @@ ok(info[0].alto >= 44, 'el toque mide al menos 44 px: ' + info[0].alto);
 ok(!info[0].desborda, 'no se sale de la pantalla a 320 px');
 ok(info[1].boton && info[1].img, 'sin productoId se encuentra por nombre: ' + JSON.stringify(info[1]));
 ok(info[2].texto && !info[2].boton, 'producto que ya no está: solo texto, sin botón: ' + JSON.stringify(info[2]));
-await pg.click('#testimoniosGrid .testimonio-card:first-child .resena-prod');
+// Con la suite en paralelo la página tarda en «estabilizarse» (fotos lazy): se toca el botón directamente.
+await pg.evaluate(() => { const b = document.querySelector('#testimoniosGrid .testimonio-card:first-child .resena-prod'); b.scrollIntoView(); b.click(); });
 ok(await pg.evaluate(() => window.__abierto) === String(A.id), 'tocar la miniatura abre la ficha de ese producto');
 ok(errs.length === 0, 'errores de página: ' + JSON.stringify(errs));
 await nav.close(); servidor.close();

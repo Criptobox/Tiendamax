@@ -397,6 +397,13 @@ function verificarStockOfertaBanner() {
 // los dos renderers (instantáneo y con datos frescos).
 const TM_CAT_MIN = 3;
 const TM_CAT_MAX_MOVIL = 4;
+/* Las tarjetas de categoría van de más a menos DISPONIBLES (a igualdad, el orden de
+   siempre): con un tope de tarjetas en el móvil, una categoría con muchos productos
+   no puede quedar al final detrás de «Ver más» solo por haberse creado después. */
+function tmCatsPorDisponibles(prods, cats) {
+    const n = c => (prods || []).filter(p => p.categoria === c && Number(p.stock) > 0).length;
+    return (cats || []).map((c, i) => ({ c, i, n: n(c) })).sort((a, b) => (b.n - a.n) || (a.i - b.i)).map(x => x.c);
+}
 function _tmCatEsMovil() { try { return window.matchMedia('(max-width: 899px)').matches; } catch (e) { return false; } }
 function _tmCatVerMas(grid, extras) {
     if (!grid) return;
@@ -538,7 +545,7 @@ function renderizarCategoriasHome() {
     let _tmMostradas = 0;
     // Incluye las categorías que solo existen dentro de los productos: si no,
     // sus productos no tienen tarjeta por la que llegar (ver tmCategoriasVisibles).
-    tmCategoriasVisibles(productos, categorias).forEach(cat => {
+    tmCatsPorDisponibles(productos, tmCategoriasVisibles(productos, categorias)).forEach(cat => {
         const count = _disp(productos.filter(p => p.categoria === cat));
         const displayCat = _catDisplayNames[cat] || cat;
         // Pocas unidades (< 3) → al desplegable "Ver más"
