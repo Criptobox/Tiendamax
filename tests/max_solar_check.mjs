@@ -79,5 +79,22 @@ const rc = await B.responder('sistema solar para casa completa con aire acondici
 ok(!/no necesitas bater/i.test(txt(rc)), 'la casa completa no se resuelve con una estación portátil');
 ok(!/automotriz/i.test(txt(rc) + nombres(rc)), 'casa completa: tampoco baterías de carro');
 
+// Un panel solar real en el catálogo: se ofrece si cabe en la entrada de la estación y, si da
+// más vatios de los que ella admite, se dice que NO se conecte (en vez de recomendarlo o de
+// decir «no los tengo»).
+{
+  const panel = PRODS.find(p => p.stock > 0 && (/panel(es)?\s+solar(es)?|panel.*fotovoltaic/i.test(String(p.nombre).split('|')[0]) || String(p.subcategoria).toUpperCase() === 'PANELES SOLARES') && !/\b(base|soporte|estructura|riel|rack|kit|controlador|cargador|inversor|disyuntor|breaker)\b/i.test(p.nombre));
+  if (hayEstacion && panel) {
+    const w = (String(panel.nombre).match(/(\d{2,4})\s*w\b/i) || [0, 0])[1] * 1;
+    const r = await B.responder('quiero un sistema solar para el refri y 2 ventiladores');
+    const t = txt(r);
+    ok(!/No los tengo ahora|Agotados ahora mismo/i.test(t), 'hay un panel en el catálogo: no puede decir «no los tengo»');
+    // El nombre puede traer espacios raros: se compara por palabras, no por la cadena exacta.
+    const norm = x => String(x).replace(/\s+/g, ' ').trim().toLowerCase();
+    ok(norm(t).includes(norm(panel.nombre).split('|')[0].trim().slice(0, 30)), 'el panel del catálogo tiene que aparecer en el sistema: ' + JSON.stringify(panel.nombre));
+    if (w > 500) ok(/no lo conectes/i.test(t), `un panel de ${w} W supera la entrada de la estación (500 W): se dice que no se conecte`);
+  }
+}
+
 if (fallos.length) { console.error('❌ ' + fallos.length + ' fallo(s):\n - ' + fallos.join('\n - ')); process.exit(1); }
 console.log('✅ Max armando sistemas solares' + (SIN_ESTACION ? ' (sin estación)' : '') + ': en regla.');

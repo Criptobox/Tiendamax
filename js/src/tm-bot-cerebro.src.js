@@ -1276,8 +1276,38 @@
     return { n: mejor, cob: Math.min(1, mejor / contenido) };
   }
   const _SIN_COB = 0.6;       // desde aquí el sinónimo cuenta como el NOMBRE del producto
+  /* AUTOMÁTICO, sin que nadie lo escriba: lo que el cliente pide con DOS o más
+     palabras y que están TODAS en el arranque del nombre del producto («panel
+     solar» → «Panel Solar Fotovoltaico GCL…», «batería litio» → «Batería
+     Recargable de Litio…») cuenta como el nombre. El tipo de producto va casi
+     siempre al principio del nombre, así que un producto nuevo se reconoce desde
+     el minuto en que entra al catálogo, sin esperar a que alguien le añada
+     sinónimos. Con UNA palabra no actúa (eso ya lo resuelven las familias y los
+     tipos), y si el cliente nombró un modelo que el arranque no trae, no casa. */
+  const _LEAD = new Map();
+  function _lead(p){
+    const k = String(p.id) + '|' + p.nombre;
+    let v = _LEAD.get(k);
+    if(v === undefined){
+      const toks = cleanForMatch(String(p.nombre || '').split('|')[0]).split(' ')
+        .filter(w => w.length > 1 && !_VACIAS.has(w)).slice(0, 5);
+      v = toks.length >= 2 ? toks.join(' ') : '';
+      _LEAD.set(k, v);
+    }
+    return v;
+  }
+  function _autoInfo(p, q){
+    if(!p || !q) return null;
+    const lead = _lead(p);
+    if(!lead) return null;
+    const qw = q.split(' ').filter(w => w.length > 1 && !_VACIAS.has(w));
+    if(qw.length < 2) return null;
+    return qw.every(w => _casaConPlural(lead, w)) ? { n: qw.length, cob: 1 } : null;
+  }
   function _sinInfo(p, q){
-    return (_SIN.prod.size && p) ? _frasesCasan(_SIN.prod.get(String(p.id)), q) : null;
+    const f = (_SIN.prod.size && p) ? _frasesCasan(_SIN.prod.get(String(p.id)), q) : null;
+    const a = _autoInfo(p, q);
+    return (a && (!f || a.n > f.n)) ? a : f;
   }
   const _sinonimoProducto = (p, q) => { const i = _sinInfo(p, q); return i ? i.n : 0; };
   function _sinonimoCategoria(p, q){
@@ -1348,11 +1378,8 @@
      el catálogo. Decirle que no a un cliente por algo que sí tienes es peor
      que el fallo que esto arregla. */
   const NO_VENDEMOS = [
-    { re: /\b(panel|paneles|placa|placas)\s+(solar|solares|fotovoltaic\w*)\b|\bpanel solar\b/i,
-      que: 'paneles solares',
-      nota: 'Paneles solares no vendo.',
-      ofrecer: 'Esa pieza la pones tú, pero el resto del sistema sí te lo armo: controlador, batería e inversor.',
-      botones: ['☀️ Arma un sistema solar','💬 WhatsApp'] },
+    // Paneles solares estuvo aquí hasta que entró uno al catálogo (un GCL de 620 W):
+    // decir «no vendo» de algo que se vende es peor que el fallo que esto arregla.
     // "portátil" a secas se salió de madre: el catálogo tiene un "Generador
     // Solar Portátil BLUETTI" y a quien preguntaba por él se le contestaba
     // "laptops no manejo". Aquí solo caben las formas que hablan de una
@@ -1445,6 +1472,25 @@
     if(!hit) return null;
     const loTengo = PRODUCTOS.some(p => p && Number(p.stock) > 0 && hit.re.test(p.nombre || ''));
     return loTengo ? null : hit;
+  }
+
+  /* Un panel solar de verdad: de la subcategoría PANELES SOLARES o, si el dueño
+     lo puso en otra (hoy está en ACCESORIOS), el que su nombre dice. No cuentan
+     la base ni el soporte («Base para Paneles»), que cuelgan de la misma palabra. */
+  function _esPanelSolar(p){
+    if(!p) return false;
+    if((p.subcategoria || '').toUpperCase() === 'PANELES SOLARES') return true;
+    const n = String(p.nombre || '');
+    return /\bpanel(es)?\s+(solar(es)?|fotovoltaic\w*)\b|\bpanel\b.*\bfotovoltaic\w*/i.test(n)
+      && !/\b(base|soporte|estructura|riel|rack|kit|controlador|cargador|inversor)\b/i.test(n);
+  }
+  /** Potencia del panel, en W, leída de su nombre («…-620W»); 0 si no la dice. */
+  function _panelW(p){
+    const m = String((p && p.nombre) || '').match(/(\d{2,4})\s*w\b/i);
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function _enSubcat(p, subcat){
+    return subcat === 'PANELES SOLARES' ? _esPanelSolar(p) : (p.subcategoria || '').toUpperCase() === subcat;
   }
 
   function _buscarPuntuados(query, opts={}){
@@ -1594,7 +1640,7 @@
     /* Cómo LLAMA la gente al producto (max-sinonimos.json): suma una mención
        aunque el nombre no se parezca en nada, y sube la que ya había. Pasa
        por los mismos filtros de modelo de abajo; no descarta ninguna. */
-    if(_SIN.prod.size){
+    {   // (sin el archivo de sinónimos también: _sinInfo trae el reconocimiento automático)
       for(const p of PRODUCTOS){
         const _si = _sinInfo(p, t);
         if(!_si || _si.cob < _SIN_COB) continue;   // cubre poco de lo dicho: no nombró el producto
@@ -2110,6 +2156,70 @@
     finally { PRODUCTOS = guardado; }
   }
 
+  /* UN TIPO DE PRODUCTO QUE NO HAY A LA VENTA (router, antena, switch…).
+     «¿Tienen routers?» con la categoría apagada contestaba el bloque genérico
+     del catálogo o «no lo manejo»: ninguno dice la verdad, que es «ahora mismo
+     no tengo routers». Solo cuando el mensaje es el tipo y nada más (con marca,
+     modelo o presupuesto sigue su camino) y la subcategoría existe en el
+     catálogo guardado pero NO en lo visible. Si está visible y agotada, no se
+     toca: su ficha ya dice «agotado» y ofrece «Avísame»; lo apagado no existe,
+     así que aquí no hay «Avísame» ni tarjeta. */
+  const _RELLENO_TIPO = new Set(['tienen','tiene','tienes','hay','venden','vende','vendes','un','una','unos','unas','el','la','los','las','algun','alguna','algunos','algunas','disponible','disponibles','quiero','necesito','busco','buscando','ver','de','que','por','favor','porfa','ahora','tambien','hola']);
+  function _tipoOcultoPedido(text){
+    const ocultos = _productosOcultos();
+    if(!ocultos.length) return null;
+    const toks = cleanForMatch(text).split(' ').filter(w => w && !_RELLENO_TIPO.has(w));
+    if(toks.length !== 1) return null;
+    const w = toks[0];
+    const visibles = new Set(PRODUCTOS.map(p => cleanForMatch(p.subcategoria || '')));
+    for(const p of ocultos){
+      const sub = String(p.subcategoria || '');
+      const base = cleanForMatch(sub);
+      if(!base || visibles.has(base)) continue;
+      const prim = base.split(' ')[0];
+      if(prim.length < 4) continue;
+      const sing = prim.replace(/es$/, '').replace(/s$/, '');
+      if(w === prim || w === sing || w === sing + 's' || w === sing + 'es'){
+        const plural = sub.split(' ')[0].toLowerCase();
+        return { plural };
+      }
+    }
+    return null;
+  }
+
+  function _tipoDeX(text){
+    const t = cleanForMatch(text);
+    const mt = t.match(/^(?:(?:tienen|tiene|tienes|hay|quiero|necesito|busco|dame|ensename|muestrame|un|una|unos|unas|el|los|las|algun|alguna)\s+)*([a-z]{5,})\s+(?:de|para)\s+(.+)$/);
+    if(!mt) return null;
+    const cab = mt[1], resto = mt[2];
+    if(/\d/.test(resto)) return null;
+    /* No se usa detectProductMentions: «cargador de batería» «nombraba» una
+       batería porque «carga» está dentro de «cargador». En su lugar, si lo de
+       detrás trae una palabra que solo sale en uno o dos nombres del catálogo
+       (una marca: «cargador de batería vevor») es ese producto y sigue su
+       camino. */
+    const _rara = resto.split(' ').filter(w => w.length >= 4 && !_VACIAS.has(w) && !_PALABRAS_DE_USO.has(w)).some(w => {
+      const n = PRODUCTOS.filter(p => _casaPalabra(cleanForMatch(p.nombre), w)).length;
+      return n >= 1 && n <= 2;
+    });
+    if(_rara) return null;
+    const sing = cab.replace(/es$/, '').replace(/s$/, '');
+    const subs = [...new Set(PRODUCTOS.filter(p => p.stock > 0 && p.subcategoria).map(p => String(p.subcategoria)))];
+    const sub = subs.find(sb => { const pr = cleanForMatch(sb).split(' ')[0]; const ps = pr.replace(/es$/, '').replace(/s$/, ''); return ps === sing && ps.length >= 5; });
+    if(!sub) return null;
+    /* Y solo cuando lo de detrás es OTRO tipo del catálogo (batería, inversor,
+       cámara…): «A de B» con los dos tipos es «A, para B». «Batería para carro»
+       no entra: «carro» no es un tipo, es un uso. */
+    const subsTodas = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean).map(String))];
+    const _prim = sb => cleanForMatch(sb).split(' ')[0].replace(/es$/, '').replace(/s$/, '');
+    const otroTipo = resto.split(' ').some(w => { const ws = w.replace(/es$/, '').replace(/s$/, '');
+      return ws.length >= 5 && subsTodas.some(sb => sb !== sub && _prim(sb) === ws); });
+    if(!otroTipo) return null;
+    const prods = PRODUCTOS.filter(p => p.stock > 0 && String(p.subcategoria) === sub);
+    if(!prods.length) return null;
+    return { sub, resto, prods };
+  }
+
   function detectIntent(text){
     let t = normalize(text).trim();
     let m = text.toLowerCase().trim();
@@ -2143,6 +2253,7 @@
 
     // Nombró algo que la tienda tiene apagado: se dice, no se inventa otra cosa.
     if(_mencionOculto(text)) return 'noDisponible';
+    if(_tipoOcultoPedido(text)) return 'tipoSinStock';
 
     // Actualizar contexto con presupuesto si lo menciona
     const presupuesto = detectPresupuesto(text);
@@ -2380,7 +2491,9 @@
     /* "¿Puedo ir a verlo?" caía en "no te entendí", que es la peor respuesta
        posible para alguien que está a un paso de comprar y solo quiere
        comprobar que el equipo existe. */
-    if(/\b(donde est[aá]n|ubicaci[oó]n|direcci[oó]n|donde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)
+    if(/\b(d[oó]nde est[aá]n|ubicaci[oó]n|direcci[oó]n|d[oó]nde quedan|local|tienda f[ií]sica|est[aá]n en)\b/.test(m)
+       // «tienda» a secas no nombra un producto: «¿dónde está la tienda?» es la ubicación.
+       || /\bd[oó]nde\s+(est[aá]|queda|se ubica|se encuentra)\s+(la |su |vuestra )?(tienda|local|negocio)\b/.test(m)
        || /\b(ir a ver\w*|pasar (a|por) ver\w*|pasar por (la tienda|all[ií]|el local)|ir (a|hasta) (la tienda|el local)|verlo en persona|ver\w* en persona|presencial\w*|atienden en|visitarlos|visitar la tienda)\b/.test(m)
        || /\b(puedo|podr[ií]a|se puede)\s+(ir|pasar|llegar\w*|acercar\w*)\b/.test(m)
        || /\bme\s+(puedo|podr[ií]a)\s+(acercar|llegar|pasar)\w*\b/.test(m)) return 'ubicacion';
@@ -2468,6 +2581,14 @@
     // Va antes que DETALLE porque «aceite de motor» casaba con UN aceite de
     // moto agotado y era la respuesta entera.
     if(!_pideDefinicion && _familiaDe(text)) return 'familia';
+
+    /* «Cargador de batería», «cargador para batería de carro»: lo que se busca
+       es el TIPO (la palabra de delante) y lo de después es lo que se carga o
+       dónde va. Sin esto puntuaba más una batería agotada que nombraba las dos
+       palabras, y los cargadores en stock no salían. Solo si el tipo es una
+       subcategoría con algo a la venta y lo de detrás no trae cifras ni nombra
+       un producto concreto. */
+    { const _td = _tipoDeX(text); if(_td) return 'tipoDe'; }
 
     // ─── DETALLE: si el usuario menciona un producto específico por nombre,
     //priorizar DETALLE sobre recomendación (ej: "quiero el router Tenda", "dame el cargador Ntrc")
@@ -2775,11 +2896,17 @@
     };
   };
 
-  R.comprar = () => ({
-    response: `🛒 <strong>Cómo comprar en TiendaMax</strong>\n\n<strong>Paso 1 — Elige tu producto</strong>\nNavega el catálogo o pídeme que te busque algo. También puedes añadir productos a tu lista de deseos escribiendo "añade [producto] a mi lista".\n\n<strong>Paso 2 — Haz tu pedido</strong>\nToca el botón <code>Pedir</code> en cualquier producto. Se abre WhatsApp con tu pedido ya armado. O escribe "pedir todo mi carrito" para enviar todo de una vez.\n\n<strong>Paso 3 — Coordina el pago</strong>\nPagas <strong>contra entrega</strong> cuando recibes el producto. Pagas en efectivo:\n• USD (dólares)\n• MN (pesos cubanos a la tasa del día)\nPor ahora no aceptamos Zelle ni transferencias.\n\n<strong>Paso 4 — Recibe tu pedido</strong>\nNuestro mensajero lleva el producto a tu puerta. Pagas al recibir y revisas que todo esté bien.\n\nSin riesgos. Pagas solo cuando lo tienes en la mano. ¿Quieres que te muestre productos para empezar?`,
-    quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp'],
-    siDigoSi: () => R.categorias()
-  });
+  /* Pedir y pagar es UNA sola explicación: «¿cómo pago?», «¿cómo hago el
+     pedido?» y «¿cómo compro y pago?» preguntan lo mismo con otras palabras.
+     Antes la primera solo explicaba los pagos y la segunda solo el pedido. */
+  function _pedirYPagar(){
+    return {
+      response: `🛒 <strong>Así se pide y se paga en TiendaMax</strong>\n\n1️⃣ Elige tu producto en el catálogo (o dime qué buscas y te lo enseño).\n2️⃣ Toca <code>Pedir</code>: se abre WhatsApp con tu pedido ya armado.\n3️⃣ Coordinamos la entrega contigo por WhatsApp.\n4️⃣ <strong>Pagas al recibir</strong>, en efectivo: <strong>USD</strong> o <strong>MN</strong> a la tasa del día. Por ahora no aceptamos Zelle ni transferencias.\n\n<em>Lo revisas y lo pruebas con el mensajero antes de pagar.</em>`,
+      quickReplies: ['🔥 Ver ofertas','📦 Categorías','💳 Métodos de pago','🚚 Envíos','💬 WhatsApp'],
+      siDigoSi: () => R.categorias()
+    };
+  }
+  R.comprar = () => _pedirYPagar();
 
   /* Las zonas de mensajería las pone el dueño en ⚙️ Configuración → 🚚
      Mensajería y llegan en config.json (tmEnviosCfg, en el bundle de la
@@ -2894,10 +3021,13 @@
 
     if(/\bmn|peso cubano|pesos? nacionales?\b/.test(m)){
       return {
-        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nEl precio en MN que ves en el catálogo ya está calculado con la <strong>tasa de cambio del día</strong> más un pequeño <strong>margen operativo</strong> de la tienda.\n\nEse es el monto exacto que pagarás contra entrega. No hay que sumar nada más.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nEl precio en MN que ves en el catálogo ya está calculado con la <strong>tasa de cambio del día</strong> (la de elTOQUE más el margen de la tienda; escribe «tasa del dólar» y te la detallo).\n\nEse es el monto exacto que pagarás contra entrega. No hay que sumar nada más.\n\n<em>El precio que ves es el precio que pagas.</em>`,
         quickReplies: ['💵 Ver otros métodos','💬 WhatsApp','📦 Ver productos']
       };
     }
+
+    // «¿Cómo pago?» a secas pregunta por el proceso entero, no solo por los métodos.
+    if(/\bc[oó]mo\b[^.?]{0,25}\b(pago|pagar|paga|compro|comprar|pido|pedir|pedido)\b/.test(m)) return _pedirYPagar();
 
     // Se arma desde METODOS_PAGO, no a mano: escribir la lista aquí es cómo se
     // llega a que el dato diga una cosa y el mensaje otra.
@@ -2979,6 +3109,23 @@
     };
   };
 
+  R.tipoSinStock = (text) => {
+    const t = _tipoOcultoPedido(text);
+    const que = t ? t.plural : 'de esos';
+    return {
+      response: `😕 Ahora mismo no tengo <strong>${escapeHtml(que)}</strong> disponibles.\n\nSi necesitas alguno, escríbenos por WhatsApp y te decimos qué podemos hacer. También te puedo enseñar lo que sí tengo.`,
+      quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+    };
+  };
+
+  R.tipoDe = (text) => {
+    const d = _tipoDeX(text);
+    if(!d) return R.fallback ? R.fallback(text) : R.busqueda(text);
+    const q = _expandirConsulta(cleanForMatch(d.resto));
+    const punt = d.prods.map(p => ({ p, s: scoreProduct(p, q) + 1 })).sort((a, b) => (b.s - a.s) || (a.p.precio - b.p.precio));
+    return _enseñarTres(punt, `🔌 Esto es lo que tengo en <strong>${escapeHtml(_tituloSub(d.sub))}</strong>, disponible ahora:`);
+  };
+
   R.humano = () => ({
     response: `👤 Claro, te paso con una persona del equipo. Escríbenos por WhatsApp (<code>+${WHATSAPP}</code>): <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">abrir WhatsApp</a>.\n\n🕐 Atendemos de <strong>10:00 am a 6:00 pm</strong> (hora de Cuba).`,
     quickReplies: ['💬 Abrir WhatsApp','📦 Categorías','🔥 Ofertas']
@@ -3040,14 +3187,47 @@
      con SU precio en las dos monedas, no con la tasa genérica. Y la respuesta
      al cliente ya no desglosa «margen operativo +20 MN»: suena a recargo y
      resta confianza; el precio en MN que ve es el que paga. */
+  /* De qué se compone la tasa, dicho con los mismos números que usa fmtMN:
+     TASA_MN (la del sitio, base + margen). Solo se desglosa cuando las partes
+     suman el total; con margen 0 es solo la de elTOQUE. */
+  function _composicionTasa(){
+    const t = `<code>1 USD = ${TASA_MN} MN</code>`;
+    if(TASA_BASE_MN > 0 && Math.abs(TASA_BASE_MN + MARGEN_MN - TASA_MN) < 0.005){
+      return MARGEN_MN > 0
+        ? `${t}: tasa de elTOQUE de hoy (${TASA_BASE_MN}) + ${MARGEN_MN} MN de margen`
+        : `${t}: tasa de elTOQUE de hoy`;
+    }
+    return t;
+  }
+  /* «¿Cuánto cuesta el timbre en MN?» pregunta el PRECIO de un tipo de
+     producto, no la tasa. Regla estructural: se quita del mensaje lo que habla
+     de precio y moneda, y lo que queda tiene que estar entero en el NOMBRE de
+     lo que hay a la venta. Uno a tres productos: se dan sus precios; más, no se
+     adivina. Si no queda nada que buscar («¿a cuánto está el dólar?») no es
+     un producto y se explica la tasa. */
+  const _PALABRAS_PRECIO_MONEDA = new Set(['cuanto','cuesta','cuestan','vale','valen','sale','salen','precio','precios','cost','costo','cuesto','como','esta','estan','es','son','en','mn','cup','pesos','peso','cubanos','cubano','moneda','nacional','usd','dolar','dolares','tasa','cambio','hoy','dia','del','de','a','sera','seria','serian','quiero','saber','dime','dame','decir','me','puedes','podrias','favor','porfa','cuanto','ahora','actual','actualmente','cuantos','dos','tres','total']);
+  function _productosPorTipoPrecio(text){
+    const q = cleanForMatch(text).split(' ').filter(w => w.length > 1 && !_VACIAS.has(w) && !_PALABRAS_PRECIO_MONEDA.has(w));
+    if(!q.length) return [];
+    const hit = PRODUCTOS.filter(p => p && p.stock > 0 && !_esDigital(p)).filter(p => {
+      const n = cleanForMatch(p.nombre);
+      return q.every(w => _casaConPlural(n, w));
+    });
+    return hit.length >= 1 && hit.length <= 3 ? hit : [];
+  }
+  function _esDigital(p){ return !!(p && p.digital); }
   R.tasa = (text) => {
-    const nombrados = (TASA_MN > 0 && text) ? detectProductMentions(text).slice(0, 3) : [];
+    let nombrados = [];
+    if(TASA_MN > 0 && text){
+      nombrados = detectProductMentions(text).slice(0, 3);
+      if(!nombrados.length && /\b(cu[aá]nto|precio|vale|cuesta|sale|a c[oó]mo)\b/i.test(text)) nombrados = _productosPorTipoPrecio(text);
+    }
     if (nombrados.length) {
       const lineas = nombrados.map(p => _esMN(p)
         ? `• <strong>${escapeHtml(p.nombre)}</strong>: <strong>${fmtP(p)}</strong> (precio fijo en pesos, sin conversión)`
         : `• <strong>${escapeHtml(p.nombre)}</strong>: ${fmtP(p).replace(/\.00$/, '')} USD = <strong>${fmtMN(p.precio)}</strong>`).join('\n');
       return {
-        response: `💱 ${lineas}\n\n<em>A ${TASA_MN} MN el dólar, la tasa de hoy. Pagas al recibirlo, en USD o en MN.</em>`,
+        response: `💱 ${lineas}\n\n<em>${_composicionTasa()}. El precio en MN ya lo incluye todo. Pagas al recibirlo, en USD o en MN.</em>`,
         products: nombrados,
         quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
       };
@@ -3055,10 +3235,10 @@
     return R._tasaGeneral();
   };
   R._tasaGeneral = () => (!TASA_MN || TASA_MN <= 0) ? {
-    response: `💱 <strong>Tasa de cambio</strong>\n\nAhora mismo no tengo la tasa del día cargada, y prefiero no darte un número inventado. La tasa que aplicamos es la de <strong>elTOQUE</strong> más un margen operativo fijo, y el precio en MN que ves en el catálogo ya la lleva dentro.\n\nEscríbenos por WhatsApp (<code>+${WHATSAPP}</code>) y te decimos la de hoy.`,
+    response: `💱 <strong>Tasa de cambio</strong>\n\nAhora mismo no tengo la tasa del día cargada, y prefiero no darte un número inventado. La tasa que aplicamos es la de <strong>elTOQUE</strong> más un margen fijo, y el precio en MN que ves en el catálogo ya la lleva dentro.\n\nEscríbenos por WhatsApp (<code>+${WHATSAPP}</code>) y te decimos la de hoy.`,
     quickReplies: ['💬 WhatsApp','💳 Métodos de pago','📦 Ver productos']
   } : ({
-    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n<code>1 USD = ${TASA_MN} MN</code>\n\nSe basa en la tasa de <strong>elTOQUE</strong>, la referencia en Cuba, y se actualiza a diario.\n\nEl precio en MN que ves en el catálogo <strong>ya está calculado</strong>: no hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+    response: `💱 <strong>Tasa de cambio TiendaMax</strong>\n\n${_composicionTasa()}.\n\nSe actualiza a diario. El precio en MN que ves en el catálogo <strong>ya lo incluye todo</strong>: no hay que sumar nada más.\n\nEjemplo: un producto de <code>$100 USD</code> → pagas <code>${(100*TASA_MN).toLocaleString('es-ES')} MN</code> contra entrega.\n\n<em>El precio que ves es el precio que pagas.</em>`,
     quickReplies: ['💳 Métodos de pago','📦 Ver productos','💬 WhatsApp']
   });
 
@@ -3823,7 +4003,7 @@
   function _armarSistema(sis){
     const grupos = (sis.componentes || []).map(comp => {
       const prods = PRODUCTOS.filter(p =>
-        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0 &&
+        _enSubcat(p, comp.subcat) && p.stock > 0 &&
         // Una batería de carro es de ARRANQUE (corriente alta unos segundos)
         // y se muere en semanas descargándose a diario con un panel; y una
         // estación de energía no es «una batería», es el sistema entero.
@@ -3833,7 +4013,7 @@
       // "Agotado" y "no lo vendemos" no son lo mismo, y decir lo primero
       // cuando pasa lo segundo promete que vuelve algo que nunca estuvo:
       // de PANELES SOLARES no hay ni uno en el catálogo, ni agotado.
-      const enCatalogo = PRODUCTOS.some(p => (p.subcategoria || '').toUpperCase() === comp.subcat);
+      const enCatalogo = PRODUCTOS.some(p => _enSubcat(p, comp.subcat));
       return {
         rol: comp.rol,
         subcat: comp.subcat,
@@ -3887,8 +4067,13 @@
    *  controlador; lo único que falta son los paneles. Lo que no hay se dice. */
   function _solarConEstacion(sis, est, text){
     const d = est.d, p = est.p;
-    const paneles = PRODUCTOS.filter(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES' && x.stock > 0).slice(0, 2);
-    const panelesEnCatalogo = PRODUCTOS.some(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES');
+    const todosPaneles = PRODUCTOS.filter(x => _esPanelSolar(x) && x.stock > 0);
+    // Un panel que da más vatios que la entrada solar de la estación no se
+    // conecta a ella: se dice, no se recomienda.
+    const demasiado = x => d.solarW && _panelW(x) > d.solarW;
+    const paneles = todosPaneles.filter(x => !demasiado(x)).slice(0, 2);
+    const panelesGrandes = todosPaneles.filter(demasiado);
+    const panelesEnCatalogo = PRODUCTOS.some(x => _esPanelSolar(x));
     const rolPaneles = 'Paneles solares' + (d.solarW ? ` (hasta ${_miles(d.solarW)} W en total${d.rango ? ', entrada ' + d.rango : ''})` : '');
     const armado = {
       nombre: sis.nombre, presupuesto: null,
@@ -3908,7 +4093,12 @@
       paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtP(x)} · <em>${stockText(x)}</em>\n`; });
       body += '\n';
     } else {
-      body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+      if(panelesGrandes.length){
+        const g = panelesGrandes[0];
+        body += `<strong>${rolPaneles}:</strong> tengo el <strong>${escapeHtml(g.nombre)}</strong> (${_panelW(g)} W), pero da más de lo que admite la entrada solar de esta estación (${_miles(d.solarW)} W): <strong>no lo conectes a ella</strong>. Mientras, la estación se carga en la corriente.\n\n`;
+      } else {
+        body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+      }
     }
     // La autonomía no se inventa: depende de lo que el cliente conecte.
     body += /\b(refri|refrigerador|nevera|frio)\b/i.test(text || '')

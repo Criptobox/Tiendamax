@@ -167,7 +167,10 @@ ok(/Cobertura|Matanzas/i.test(await preguntar('hacen envios a matanzas')),
 // Cada una de estas tiene su propia cicatriz en los comentarios del cerebro.
 const HAY_PC = PRODS.some(p => /laptop|computadora|\bpc\b/i.test(String(p.nombre)) && Number(p.stock) > 0 && !/apagad/.test(String(p.apagado)));
 const noRomper = [
-    ['tienen paneles solares', /no vendo|no tenemos/i, 'paneles solares: sigue diciendo que no'],
+    // Si el catálogo trae un panel solar en stock, negarlo sería mentir: el invariante se invierte.
+    PRODS.some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0)
+      ? ['tienen paneles solares', /^(?![\s\S]*(no vendo|no tenemos))[\s\S]*Panel Solar/i, 'paneles solares: hay uno en el catálogo y no debe negarse']
+      : ['tienen paneles solares', /no vendo|no tenemos/i, 'paneles solares: sigue diciendo que no'],
     ['aceite para carro', /aceite|mannol|fanfaro/i, 'aceite para carro no puede devolver el ventilador'],
     // Aquí el invariante es al revés: NO negar algo que el catálogo sí
     // tiene. El generador solar BLUETTI y la PC de escritorio existen, y

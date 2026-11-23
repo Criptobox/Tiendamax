@@ -301,14 +301,21 @@ for (const [q, esperado] of ENCAMINADAS) {
     // 'tienen cable de red' salió de esta lista: el catálogo ahora trae un
     // Patch Cord Cat6A con 300 unidades, así que decir "no lo vendo" sería
     // mentir. Lo que se comprueba de ese caso está justo debajo.
-    for (const q of ['tienen paneles solares', 'venden placas solares',
+    // Con un panel solar en el catálogo, «paneles solares» deja de ser algo que no se vende.
+    const hayPanel = (typeof PRODS !== 'undefined' ? PRODS : JSON.parse(readFileSync(join(RAIZ, 'productos.json'), 'utf8')))
+        .some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0);
+    for (const q of (hayPanel ? [] : ['tienen paneles solares', 'venden placas solares']).concat([
                      'cuanto cuesta una laptop',
-                     'tienen tarjetas sim']) {
+                     'tienen tarjetas sim'])) {
         ok(intent(q) === 'noVendemos', `"${q}" → ${intent(q)}, debería decir que no lo vende`);
     }
-    const r = B.responder('tienen paneles solares');
-    ok(/no vendo|no manejo/i.test(r.response), 'tiene que decirlo con todas las letras');
-    ok(!(r.products || []).length, 'y no enseñar productos como si fueran eso');
+    if (!hayPanel) {
+        const r = B.responder('tienen paneles solares');
+        ok(/no vendo|no manejo/i.test(r.response), 'tiene que decirlo con todas las letras');
+        ok(!(r.products || []).length, 'y no enseñar productos como si fueran eso');
+    } else {
+        ok(intent('tienen paneles solares') !== 'noVendemos', 'hay un panel solar en el catálogo: no se niega');
+    }
     // Pero preguntar QUÉ ES sigue siendo una explicación.
     ok(intent('que es un panel solar') === 'tecnico',
         'preguntar qué es un panel solar sigue siendo una explicación');
