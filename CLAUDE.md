@@ -34,6 +34,8 @@ python -m unittest discover -s tests -v     # what CI actually runs (run-tests.y
 node tests/smoke-web.mjs                     # Playwright smoke test of the live site (smoke-web.yml)
 ```
 
+**Run the suite with `python3 scripts/correr_tests.py`, not `unittest discover`.** The full suite is ~1,000 tests and `unittest discover` runs them one at a time (~12 min, almost all of it browser tests waiting). The runner splits the modules over N processes (default: the cores; 4 here → **274 s, same 1,018 tests**, and it improves on the second run because it balances by the times it saved in `.tests_tiempos.json`). `--cambios` runs only the modules whose `.py`/`.mjs` *name* the changed files (a change in `tm-bot-cerebro.src.js` → 17 modules, in `admin.html` → 55): the daily loop; **the full run is still what gates a merge to main**. Tests are independent (each starts its server on a free port), so a new test that writes a fixed path in the repo or binds a fixed port would break the parallel run — use a temp dir and port 0.
+
 `tests/` holds ~600 unit tests. `test_build_completeness.py` asserts every `css/*.css`/`js/src/*.src.js` file is actually listed in `build_css.py`'s `ORDEN` / `build_js_bundle.py`'s `ORDEN` — add new source files there or they'll silently never ship. There is still no coverage for `admin.html`'s inline `<script>` logic beyond the smoke test.
 
 Several tests exist because the failure they catch is **silent** — nothing errors, the page renders, and the damage only shows up in the live site or in Google. Read these before "simplifying" them away:
