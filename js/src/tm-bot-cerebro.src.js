@@ -1640,7 +1640,7 @@
     /* Cómo LLAMA la gente al producto (max-sinonimos.json): suma una mención
        aunque el nombre no se parezca en nada, y sube la que ya había. Pasa
        por los mismos filtros de modelo de abajo; no descarta ninguna. */
-    if(_SIN.prod.size){
+    {   // (sin el archivo de sinónimos también: _sinInfo trae el reconocimiento automático)
       for(const p of PRODUCTOS){
         const _si = _sinInfo(p, t);
         if(!_si || _si.cob < _SIN_COB) continue;   // cubre poco de lo dicho: no nombró el producto
