@@ -75,6 +75,25 @@ function tmAplicarApagadas(nuevo) {
     return antes !== JSON.stringify(_tmApagadas);
 }
 
+/* Colores de categoría elegidos en el panel (categorias.json → `colores`:
+ * {NOMBRE: '#RRGGBB'}). Se copian a localStorage `tm_cat_colores` —que lee
+ * tmColorCategoria— para que la primera pintura ya salga bien. En el panel NO:
+ * ahí manda lo elegido y aún sin publicar (lo escribe el propio panel).
+ * Devuelve true si cambió algo (hay que repintar las tarjetas). */
+function tmAplicarColores(nuevo) {
+    if (_tmEsPanel()) return false;
+    const limpio = {};
+    if (nuevo && typeof nuevo === 'object' && !Array.isArray(nuevo)) {
+        Object.keys(nuevo).forEach(k => { if (/^#[0-9a-fA-F]{6}$/.test(String(nuevo[k] || ''))) limpio[k] = String(nuevo[k]).toUpperCase(); });
+    }
+    const txt = JSON.stringify(limpio);
+    let antes = null;
+    try { antes = localStorage.getItem('tm_cat_colores'); } catch (e) {}
+    if ((antes || '{}') === txt) return false;
+    try { localStorage.setItem('tm_cat_colores', txt); } catch (e) {}
+    return true;
+}
+
 let productos = tmSoloVisibles(tmParse(localStorage.getItem('productos'), null) || []);
 let categorias = tmCatsVisibles(tmParse(localStorage.getItem('categorias'), null) || ['General']);
 let usuarioAutenticado = false;
@@ -1047,6 +1066,7 @@ function tmRefrescarCatalogoVivo(opts) {
             let apagadasCambiaron = false;
             if (dataCat) {
                 apagadasCambiaron = !!tmAplicarApagadas(Array.isArray(dataCat) ? null : dataCat.apagadas);
+                if (tmAplicarColores(Array.isArray(dataCat) ? null : dataCat.colores)) apagadasCambiaron = true;
                 const nombres = Array.isArray(dataCat) ? dataCat : (dataCat.nombres || []);
                 if (nombres.length) {
                     const antes = JSON.stringify(tmParseArray(localStorage.getItem('categorias')));
@@ -1154,6 +1174,7 @@ async function cargarDatosDesdeGitHub() {
             if (tmAplicarApagadas(Array.isArray(dataCat) ? null : dataCat.apagadas)) {
                 productos = tmSoloVisibles(tmParse(localStorage.getItem('productos'), null) || []);
             }
+            tmAplicarColores(Array.isArray(dataCat) ? null : dataCat.colores);
             // En el panel, lo editado y aún sin publicar (tm_catsub_pend) MANDA: copiar aquí la
             // lista del sitio encima lo borraba al volver a entrar. (La tienda pública no tiene la marca.)
             if (document.getElementById('adminPanel') && localStorage.getItem('tm_catsub_pend')) {

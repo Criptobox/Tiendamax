@@ -307,14 +307,18 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
         }
     `;
     document.head.appendChild(style);
-    window._tmAnimObs = new IntersectionObserver((entries) => {
-        entries.forEach((e, i) => {
-            if (e.isIntersecting) {
-                setTimeout(() => e.target.classList.add('tm-visible'), i * 60);
-                window._tmAnimObs.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.08 });
+    // Sin IntersectionObserver (navegadores/WebViews viejos) esto lanzaba un
+    // ReferenceError que cortaba el resto del bundle: se muestra todo de una vez.
+    window._tmAnimObs = typeof IntersectionObserver === 'undefined'
+        ? { observe(el) { if (el && el.classList) el.classList.add('tm-visible'); }, unobserve() {}, disconnect() {} }
+        : new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('tm-visible'), i * 60);
+                    window._tmAnimObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
 })();
 
 // ── VENTAS — registro de ventas ─────────────────────
@@ -1616,11 +1620,14 @@ renderizarProductos = function() {
         };
         loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = _appendBatch;
 
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) _appendBatch();
-        }, { rootMargin: '300px' });
-        observer.observe(loadMoreBtn);
-        window._tmLoadMoreObs = observer;
+        // Sin IntersectionObserver queda el botón «Seguir viendo», que ya existe.
+        if (typeof IntersectionObserver !== 'undefined') {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) _appendBatch();
+            }, { rootMargin: '300px' });
+            observer.observe(loadMoreBtn);
+            window._tmLoadMoreObs = observer;
+        }
 
         productosGrid.appendChild(loadMoreBtn);
     }

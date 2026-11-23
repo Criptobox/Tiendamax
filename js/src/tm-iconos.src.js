@@ -476,38 +476,89 @@ const TM_CAT_COLORES = {
     'ropa':         '#D946EF'    // magenta — el admin no tenía preferencia
 };
 
-// Respaldo para categorías nuevas: mismo tono siempre para el mismo
-// nombre (hash estable), así no cambia de color entre visitas ni entre
-// dispositivos. Se evitan los tonos ya asignados arriba.
-const TM_CAT_PALETA = ['#3B82F6','#F59E0B','#A855F7','#EF4444','#6366F1',
-                       '#FF6B1A','#14B8A6','#06B6D4','#22C55E','#EAB308',
-                       '#EC4899','#D946EF','#84CC16','#0EA5E9','#F43F5E'];
+// Estas dos existían ya y su color salía de un hash: se dejan como estaban.
+TM_CAT_COLORES['audio'] = '#F43F5E';
+TM_CAT_COLORES['tarjetas'] = '#84CC16';
+
+/* Categoría SIN color elegido ni propio: se reparte por ORDEN entre las que no
+   lo tienen, con tonos que ninguna otra categoría usa. Antes era un hash sobre
+   15 tonos y una coincidencia parcial de subcadenas: dos categorías nuevas (o
+   una nueva y una vieja) salían del mismo color, y «Lubricantes» heredó el de
+   «Audio». Ahora nunca coinciden mientras queden tonos libres (hay 20 más de
+   reserva y, pasados esos, se generan por ángulo áureo). */
+const TM_CAT_PALETA = ['#0EA5E9','#10B981','#8B5CF6','#F472B6','#FB923C',
+                       '#2DD4BF','#A3E635','#38BDF8','#C084FC','#FB7185',
+                       '#FACC15','#4ADE80','#818CF8','#E879F9','#34D399',
+                       '#F87171','#60A5FA','#FDBA74','#5EEAD4','#BEF264'];
 
 function tmNormalizarCat(nombre) {
     return String(nombre || '').toLowerCase().normalize('NFD')
         .replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
 }
 
+function tmHexValido(h) { return /^#[0-9a-fA-F]{6}$/.test(String(h || '')); }
+
+// Lo que el dueño eligió en el panel (categorias.json → `colores`), copiado a
+// localStorage `tm_cat_colores` para que la primera pintura ya sea la buena.
+function tmColoresElegidos() {
+    let o = null;
+    try { o = JSON.parse(localStorage.getItem('tm_cat_colores') || 'null'); } catch (e) {}
+    const r = {};
+    if (o && typeof o === 'object' && !Array.isArray(o)) {
+        Object.keys(o).forEach(k => { if (tmHexValido(o[k])) r[tmNormalizarCat(k)] = String(o[k]).toUpperCase(); });
+    }
+    return r;
+}
+
+function _tmColorPorIndice(i) {
+    const h = Math.round((i * 137.508) % 360);
+    const s = 0.72, l = 0.56, a = s * Math.min(l, 1 - l);
+    const f = n => { const k = (n + h / 30) % 12; const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(255 * c).toString(16).padStart(2, '0'); };
+    return ('#' + f(0) + f(8) + f(4)).toUpperCase();
+}
+
+let _tmAutoMemo = { k: null, mapa: null };
+// {nombre normalizado: hex} de TODAS las categorías sin color fijo ni elegido.
+// Se usa la lista entera de localStorage (no la filtrada por «apagadas»): si no,
+// apagar una categoría movería el color de las demás.
+function tmColoresAuto(extra) {
+    let lista = [];
+    try { const a = JSON.parse(localStorage.getItem('categorias') || '[]'); if (Array.isArray(a)) lista = a; } catch (e) {}
+    const elegidos = tmColoresElegidos();
+    const nombres = [];
+    lista.concat(extra ? [extra] : []).forEach(c => {
+        const n = tmNormalizarCat(typeof c === 'string' ? c : (c && (c.nombre || c.name)));
+        if (n && nombres.indexOf(n) === -1) nombres.push(n);
+    });
+    const k = nombres.join('|') + '#' + JSON.stringify(elegidos);
+    if (_tmAutoMemo.k === k) return _tmAutoMemo.mapa;
+    const usados = new Set(Object.keys(TM_CAT_COLORES).map(x => TM_CAT_COLORES[x].toUpperCase()));
+    Object.keys(elegidos).forEach(n => usados.add(elegidos[n]));
+    const mapa = {};
+    let sig = 0, gen = 0;
+    nombres.forEach(n => {
+        if (elegidos[n] || TM_CAT_COLORES[n]) return;
+        let c = null;
+        while (sig < TM_CAT_PALETA.length && !c) { const t = TM_CAT_PALETA[sig++].toUpperCase(); if (!usados.has(t)) c = t; }
+        while (!c) { const t = _tmColorPorIndice(++gen); if (!usados.has(t)) c = t; }
+        usados.add(c); mapa[n] = c;
+    });
+    _tmAutoMemo = { k, mapa };
+    return mapa;
+}
+
 function tmColorCategoria(nombre) {
     const n = tmNormalizarCat(nombre);
     if (!n) return TM_CAT_PALETA[0];
+    const el = tmColoresElegidos()[n];
+    if (el) return el;
     if (TM_CAT_COLORES[n]) return TM_CAT_COLORES[n];
-    // Coincidencia parcial: "PC Y LAPTOPS 2024" sigue siendo rosa. Se pide
-    // 3 caracteres para que un nombre de una o dos letras no matchee medio mapa.
-    if (n.length >= 3) {
-        for (const clave in TM_CAT_COLORES) {
-            if (n.includes(clave) || clave.includes(n)) return TM_CAT_COLORES[clave];
-        }
-    }
-    // Categoría nueva: primero los tonos que nadie usa todavía, para que no
-    // salga del mismo color que una categoría existente.
-    const usados = Object.keys(TM_CAT_COLORES).map(k => TM_CAT_COLORES[k]);
-    const libres = TM_CAT_PALETA.filter(c => usados.indexOf(c) === -1);
-    const pool = libres.length ? libres : TM_CAT_PALETA;
-    let h = 0;
-    for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
-    return pool[h % pool.length];
+    return tmColoresAuto(nombre)[n] || TM_CAT_PALETA[0];
 }
+
+// El panel carga después js/admin-copilot.js, que reemplaza window.tmColorCategoria
+// por la tabla de los carteles; el color que ve el CLIENTE sigue disponible aquí.
+window.tmColorTiendaCategoria = tmColorCategoria;
 
 // '#3B82F6' → '59,130,246'. El CSS usa rgba(var(--cat-rgb),.12) en vez de
 // color-mix() para que funcione también en WebViews viejas de Android.

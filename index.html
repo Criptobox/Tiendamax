@@ -3,6 +3,38 @@
 <head>
     <meta charset="UTF-8">
 <meta name="tiendamax-admin-final-version" content="admin-final-202606111836">
+<script id="tm-almacenamiento-seguro">
+/* El bundle lee y escribe localStorage en su código de arranque, sin try/catch.
+   Donde el almacenamiento está bloqueado (WebViews con DOM storage apagado,
+   cookies bloqueadas, navegadores viejos en modo privado) acceder a
+   `localStorage` LANZA o devuelve null: el bundle moría a medias y no salía ni
+   un producto, ni el botón de reseña. Y si solo setItem falla (cuota llena,
+   modo privado de Safari viejo) el catálogo cargado nunca llegaba a `productos`.
+   Aquí, antes que nada: si no se puede leer, una copia en memoria; si no se
+   puede escribir, se ignora el error (todo lo que la tienda guarda es caché). */
+(function () {
+  function memoria() {
+    var d = {};
+    return {
+      getItem: function (k) { return Object.prototype.hasOwnProperty.call(d, k) ? d[k] : null; },
+      setItem: function (k, v) { d[k] = String(v); },
+      removeItem: function (k) { delete d[k]; },
+      clear: function () { d = {}; },
+      key: function (i) { return Object.keys(d)[i] || null; },
+      get length() { return Object.keys(d).length; }
+    };
+  }
+  ['localStorage', 'sessionStorage'].forEach(function (n) {
+    var ok = false;
+    try { ok = !!window[n] && typeof window[n].getItem === 'function'; if (ok) window[n].getItem('__tm'); } catch (e) { ok = false; }
+    if (!ok) { try { Object.defineProperty(window, n, { value: memoria(), configurable: true }); } catch (e) {} }
+  });
+  try {
+    var set = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (k, v) { try { return set.call(this, k, v); } catch (e) {} };
+  } catch (e) {}
+})();
+</script>
 <script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-202606111836";</script>
 <script src="js/error-report.js?v=fa18fca5" defer></script>
     <script>
@@ -314,7 +346,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=2fd39d0f" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=cee46851" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -325,7 +357,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=d6687bba">
+    <link rel="stylesheet" href="css/bundle.css?v=ab76e504">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -1025,6 +1057,10 @@
                 <p class="section-eyebrow">Reseñas</p>
                 <h2>Lo Que Dicen <em>Nuestros Clientes</em></h2>
                 <p class="section-subtitle">Opiniones reales de clientes que ya compraron con nosotros.</p>
+                <div id="testimoniosCTA" class="tm-resena-cta">
+                    <button type="button" id="tmResenaPortadaBtn" class="tm-resena-btn" data-tm-resena aria-haspopup="dialog">⭐ Deja tu reseña</button>
+                    <p id="testimoniosCTAtxt" class="tm-resena-nota">¿Compraste con nosotros? Cuéntanos qué tal te fue: son dos toques.</p>
+                </div>
                 <div id="testimoniosGrid" class="testimonios-grid">
                     <!-- Se cargan dinámicamente desde Firebase -->
                     <div class="testimonio-card" style="opacity:0.4;animation:skeletonPulse 1.5s ease-in-out infinite;">
@@ -1042,9 +1078,6 @@
                         <p style="background:rgba(255,255,255,0.08);border-radius:8px;height:60px;"></p>
                         <p class="autor" style="background:rgba(255,255,255,0.05);border-radius:8px;height:16px;width:55%;margin-top:8px;"></p>
                     </div>
-                </div>
-                <div id="testimoniosCTA" style="text-align:center;margin-top:28px;display:none;">
-                    <p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">¿Compraste con nosotros? Deja tu reseña en cualquier producto</p>
                 </div>
             </div>
         </section>
@@ -1789,7 +1822,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=2fd39d0f" defer></script>
+    <script src="js/tm-bundle.js?v=cee46851" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1804,6 +1837,7 @@
     <script src="js/tienda-plus.js?v=ba354dad" defer></script>
     <!-- 🤝 Referidos: recoge /?ref=<código de tarjeta> y lo pone en el pedido por WhatsApp -->
     <script src="js/referido.js?v=6a8dedf5" defer></script>
+    <script src="js/resena-portada.js?v=125aa068" defer></script>
     <script src="js/cart-share.js?v=797b6d55" defer></script>
     <script src="js/barra-inferior.js?v=2ad62283" defer></script>
     <script>

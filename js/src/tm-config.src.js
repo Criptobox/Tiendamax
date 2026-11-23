@@ -1195,13 +1195,10 @@ function _renderTestimoniosPage(show) {
         btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 6) + ')">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
     } else {
         if (btn) btn.remove();
-        // Mostrar CTA "deja tu reseña" cuando ya no hay más
-        if (cta) {
-            cta.style.display = 'block';
-            if (!cta.querySelector('#tm-cta-link')) {
-                cta.innerHTML = '<button id="tm-cta-link" onclick="document.querySelector(\'.productos-grid,.producto-card\')?.scrollIntoView({behavior:\'smooth\'})">' + tmIcoUI('✍') + ' Deja tu reseña en cualquier producto →</button>';
-            }
-        }
+        // El botón «⭐ Deja tu reseña» es HTML estático de index.html (lo abre
+        // js/resena-portada.js) y se ve siempre: aquí ya no se toca. Antes se
+        // escondía hasta que Firebase contestaba y su único texto no era un botón.
+        void cta;
     }
 }
 
@@ -1211,7 +1208,10 @@ function _observarTestimonios() {
     const grid = document.getElementById('testimoniosGrid');
     if (!grid) return;
     if (!('IntersectionObserver' in window)) {
-        window.addEventListener('load', () => setTimeout(cargarTestimoniosFirebase, 2000), { once: true });
+        // Sin IntersectionObserver. Esperar al evento 'load' no vale si ya pasó
+        // (esta función se llama tarde): entonces las reseñas no cargaban nunca.
+        _testimoniosIniciados = true;
+        setTimeout(cargarTestimoniosFirebase, 2000);
         return;
     }
     // FIX: si el grid está oculto (dentro de vistaInicio con display:none), el observer
@@ -1301,12 +1301,9 @@ async function cargarTestimoniosFirebase() {
     }
 
     if (allResenas.length === 0) {
-        // Vacío real: ni Firebase ni cache tienen reseñas
+        // Vacío real: ni Firebase ni cache tienen reseñas. El botón se queda.
         grid.innerHTML = '';
-        if (cta) {
-            cta.style.display = 'block';
-            cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
-        }
+        _tmTextoCTAResena('Sé el primero en dejar una reseña.');
         console.warn('cargarTestimoniosFirebase: sin reseñas ni en Firebase ni en cache');
         return;
     }
@@ -1324,16 +1321,18 @@ async function cargarTestimoniosFirebase() {
 
     if (mejores.length === 0) {
         grid.innerHTML = '';
-        if (cta) {
-            cta.style.display = 'block';
-            cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
-        }
+        _tmTextoCTAResena('Sé el primero en dejar una reseña.');
         return;
     }
 
     _tmAllResenas = mejores;
     _renderTestimoniosPage(4);
-    if (cta) cta.style.display = 'block';
+}
+
+// Cambia solo la frase bajo el botón «⭐ Deja tu reseña»; el botón nunca se borra.
+function _tmTextoCTAResena(txt) {
+    const el = document.getElementById('testimoniosCTAtxt');
+    if (el) el.textContent = txt;
 }
 
 // ═══════════════════════════════════════════════════════
