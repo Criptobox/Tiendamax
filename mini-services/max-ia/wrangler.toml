@@ -1,0 +1,5 @@
+# Max IA — intérprete de preguntas. Se despliega solo desde GitHub Actions
+# (.github/workflows/deploy-max-ia.yml); las claves son secretos del repositorio.
+name = "tiendamax-max-ia"
+main = "worker.js"
+compatibility_date = "2024-09-01"

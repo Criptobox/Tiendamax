@@ -1,0 +1,31 @@
+name: Deploy Max IA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['mini-services/max-ia/**']
+concurrency:
+  group: deploy-max-ia
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mini-services/max-ia
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Desplegar el Worker
+        run: npx --yes wrangler@3 deploy
+      - name: Subir solo las claves que existen
+        run: |
+          for N in OPENROUTER_API_KEY GEMINI_API_KEY NVIDIA_API_KEY; do
+            V="${!N}"
+            if [ -n "$V" ]; then printf '%s' "$V" | npx --yes wrangler@3 secret put "$N"; else echo "sin $N: se omite"; fi
+          done
