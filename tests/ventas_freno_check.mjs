@@ -96,7 +96,7 @@ const TASA = 950;
         ok(pla.includes('500 MN') && pla.includes('24–48 h') && /al recibir/i.test(pla), 'un municipio de La Habana toma el precio y el tiempo de la zona La Habana: ' + pla.slice(0, 220));
     }
     const r = await B.responder('/tasa');
-    ok(!/margen/i.test(limpio(r.response)), 'la respuesta de la tasa al cliente no desglosa el margen: ' + limpio(r.response).slice(0, 200));
+    ok(!/margen operativo|recargo/i.test(limpio(r.response)), 'la respuesta de la tasa al cliente no habla de «margen operativo» ni de recargo (desde nov-2026 sí dice de qué se compone, en neutro): ' + limpio(r.response).slice(0, 200));
 }
 
 // ── 2) La tienda, en un navegador ─────────────────────────────────────────

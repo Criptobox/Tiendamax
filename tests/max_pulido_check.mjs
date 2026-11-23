@@ -297,7 +297,7 @@ ok(/Archer A6/i.test(v2) && /Stock|Precio/i.test(v2) && !/Paso 1/i.test(v2),
    `nombrando el producto, su ficha: «${v2.slice(0,140)}»`);
 /* Pero la pregunta genérica sigue dando el instructivo, que es lo que pide. */
 for(const q of ['como compro','como hago un pedido','quiero comprar un router']){
-    ok(/Paso 1|C[oó]mo comprar/i.test(await preguntar(q)),
+    ok(/Paso 1|C[oó]mo comprar|Así se pide y se paga/i.test(await preguntar(q)),
        `«${q}» sí pide el instructivo de compra`);
 }
 
@@ -311,11 +311,11 @@ for(const q of ['como compro','como hago un pedido','quiero comprar un router'])
 await limpiarHilo();
 const sep = '──────────';
 for(const [q, primero, segundo] of [
-        ['cuanto cuesta el archer a6 y como pago',            /Archer A6/i,   /M[eé]todos de pago/i],
+        ['cuanto cuesta el archer a6 y como pago',            /Archer A6/i,   /M[eé]todos de pago|Pagas al recibir/i],
         ['hola quiero el precio del archer a6 y si hacen envio a holguin', /Archer A6/i, /Holgu[ií]n/i],
         ['tienes el hap ac3 y cuanto cuesta con garantia',    /hAP ac3/i,     /Garant[ií]a/i],
         ['tienen camaras y hacen envio a matanzas',           /C[ÁA]MARAS|Zosi/i, /Matanzas/i],
-        ['quiero un panel solar y saber como pago',           /no vendo/i,    /M[eé]todos de pago/i],
+        ['quiero un panel solar y saber como pago',           /no vendo/i,    /M[eé]todos de pago|Pagas al recibir/i],
         ['el nanostation m5 loco tiene garantia y cuanto tarda en llegar', /Garant[ií]a/i, /tiempo de entrega|se coordina/i]]){
     const r = await preguntar(q);
     ok(r.includes(sep), `«${q}» trae dos preguntas: hay que contestar las dos. «${r.slice(0,150)}»`);

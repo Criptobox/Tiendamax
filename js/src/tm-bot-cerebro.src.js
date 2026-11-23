@@ -2161,6 +2161,14 @@
     const subs = [...new Set(PRODUCTOS.filter(p => p.stock > 0 && p.subcategoria).map(p => String(p.subcategoria)))];
     const sub = subs.find(sb => { const pr = cleanForMatch(sb).split(' ')[0]; const ps = pr.replace(/es$/, '').replace(/s$/, ''); return ps === sing && ps.length >= 5; });
     if(!sub) return null;
+    /* Y solo cuando lo de detrás es OTRO tipo del catálogo (batería, inversor,
+       cámara…): «A de B» con los dos tipos es «A, para B». «Batería para carro»
+       no entra: «carro» no es un tipo, es un uso. */
+    const subsTodas = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean).map(String))];
+    const _prim = sb => cleanForMatch(sb).split(' ')[0].replace(/es$/, '').replace(/s$/, '');
+    const otroTipo = resto.split(' ').some(w => { const ws = w.replace(/es$/, '').replace(/s$/, '');
+      return ws.length >= 5 && subsTodas.some(sb => sb !== sub && _prim(sb) === ws); });
+    if(!otroTipo) return null;
     const prods = PRODUCTOS.filter(p => p.stock > 0 && String(p.subcategoria) === sub);
     if(!prods.length) return null;
     return { sub, resto, prods };
@@ -2967,7 +2975,7 @@
 
     if(/\bmn|peso cubano|pesos? nacionales?\b/.test(m)){
       return {
-        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nEl precio en MN que ves en el catálogo ya está calculado con la <strong>tasa de cambio del día</strong> más un pequeño <strong>margen operativo</strong> de la tienda.\n\nEse es el monto exacto que pagarás contra entrega. No hay que sumar nada más.\n\n<em>El precio que ves es el precio que pagas.</em>`,
+        response: `💵 <strong>Pago en MN (pesos cubanos)</strong>\n\nAceptamos pago en efectivo MN al recibir el producto.\n\nEl precio en MN que ves en el catálogo ya está calculado con la <strong>tasa de cambio del día</strong> (la de elTOQUE más el margen de la tienda; escribe «tasa del dólar» y te la detallo).\n\nEse es el monto exacto que pagarás contra entrega. No hay que sumar nada más.\n\n<em>El precio que ves es el precio que pagas.</em>`,
         quickReplies: ['💵 Ver otros métodos','💬 WhatsApp','📦 Ver productos']
       };
     }
