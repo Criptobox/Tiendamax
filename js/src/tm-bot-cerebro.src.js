@@ -1348,11 +1348,8 @@
      el catálogo. Decirle que no a un cliente por algo que sí tienes es peor
      que el fallo que esto arregla. */
   const NO_VENDEMOS = [
-    { re: /\b(panel|paneles|placa|placas)\s+(solar|solares|fotovoltaic\w*)\b|\bpanel solar\b/i,
-      que: 'paneles solares',
-      nota: 'Paneles solares no vendo.',
-      ofrecer: 'Esa pieza la pones tú, pero el resto del sistema sí te lo armo: controlador, batería e inversor.',
-      botones: ['☀️ Arma un sistema solar','💬 WhatsApp'] },
+    // Paneles solares estuvo aquí hasta que entró uno al catálogo (un GCL de 620 W):
+    // decir «no vendo» de algo que se vende es peor que el fallo que esto arregla.
     // "portátil" a secas se salió de madre: el catálogo tiene un "Generador
     // Solar Portátil BLUETTI" y a quien preguntaba por él se le contestaba
     // "laptops no manejo". Aquí solo caben las formas que hablan de una
@@ -1445,6 +1442,25 @@
     if(!hit) return null;
     const loTengo = PRODUCTOS.some(p => p && Number(p.stock) > 0 && hit.re.test(p.nombre || ''));
     return loTengo ? null : hit;
+  }
+
+  /* Un panel solar de verdad: de la subcategoría PANELES SOLARES o, si el dueño
+     lo puso en otra (hoy está en ACCESORIOS), el que su nombre dice. No cuentan
+     la base ni el soporte («Base para Paneles»), que cuelgan de la misma palabra. */
+  function _esPanelSolar(p){
+    if(!p) return false;
+    if((p.subcategoria || '').toUpperCase() === 'PANELES SOLARES') return true;
+    const n = String(p.nombre || '');
+    return /\bpanel(es)?\s+(solar(es)?|fotovoltaic\w*)\b|\bpanel\b.*\bfotovoltaic\w*/i.test(n)
+      && !/\b(base|soporte|estructura|riel|rack|kit|controlador|cargador|inversor)\b/i.test(n);
+  }
+  /** Potencia del panel, en W, leída de su nombre («…-620W»); 0 si no la dice. */
+  function _panelW(p){
+    const m = String((p && p.nombre) || '').match(/(\d{2,4})\s*w\b/i);
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function _enSubcat(p, subcat){
+    return subcat === 'PANELES SOLARES' ? _esPanelSolar(p) : (p.subcategoria || '').toUpperCase() === subcat;
   }
 
   function _buscarPuntuados(query, opts={}){
@@ -3957,7 +3973,7 @@
   function _armarSistema(sis){
     const grupos = (sis.componentes || []).map(comp => {
       const prods = PRODUCTOS.filter(p =>
-        (p.subcategoria || '').toUpperCase() === comp.subcat && p.stock > 0 &&
+        _enSubcat(p, comp.subcat) && p.stock > 0 &&
         // Una batería de carro es de ARRANQUE (corriente alta unos segundos)
         // y se muere en semanas descargándose a diario con un panel; y una
         // estación de energía no es «una batería», es el sistema entero.
@@ -3967,7 +3983,7 @@
       // "Agotado" y "no lo vendemos" no son lo mismo, y decir lo primero
       // cuando pasa lo segundo promete que vuelve algo que nunca estuvo:
       // de PANELES SOLARES no hay ni uno en el catálogo, ni agotado.
-      const enCatalogo = PRODUCTOS.some(p => (p.subcategoria || '').toUpperCase() === comp.subcat);
+      const enCatalogo = PRODUCTOS.some(p => _enSubcat(p, comp.subcat));
       return {
         rol: comp.rol,
         subcat: comp.subcat,
@@ -4021,8 +4037,13 @@
    *  controlador; lo único que falta son los paneles. Lo que no hay se dice. */
   function _solarConEstacion(sis, est, text){
     const d = est.d, p = est.p;
-    const paneles = PRODUCTOS.filter(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES' && x.stock > 0).slice(0, 2);
-    const panelesEnCatalogo = PRODUCTOS.some(x => (x.subcategoria || '').toUpperCase() === 'PANELES SOLARES');
+    const todosPaneles = PRODUCTOS.filter(x => _esPanelSolar(x) && x.stock > 0);
+    // Un panel que da más vatios que la entrada solar de la estación no se
+    // conecta a ella: se dice, no se recomienda.
+    const demasiado = x => d.solarW && _panelW(x) > d.solarW;
+    const paneles = todosPaneles.filter(x => !demasiado(x)).slice(0, 2);
+    const panelesGrandes = todosPaneles.filter(demasiado);
+    const panelesEnCatalogo = PRODUCTOS.some(x => _esPanelSolar(x));
     const rolPaneles = 'Paneles solares' + (d.solarW ? ` (hasta ${_miles(d.solarW)} W en total${d.rango ? ', entrada ' + d.rango : ''})` : '');
     const armado = {
       nombre: sis.nombre, presupuesto: null,
@@ -4042,7 +4063,12 @@
       paneles.forEach(x => { body += `• ${escapeHtml(x.nombre)} — ${fmtP(x)} · <em>${stockText(x)}</em>\n`; });
       body += '\n';
     } else {
-      body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+      if(panelesGrandes.length){
+        const g = panelesGrandes[0];
+        body += `<strong>${rolPaneles}:</strong> tengo el <strong>${escapeHtml(g.nombre)}</strong> (${_panelW(g)} W), pero da más de lo que admite la entrada solar de esta estación (${_miles(d.solarW)} W): <strong>no lo conectes a ella</strong>. Mientras, la estación se carga en la corriente.\n\n`;
+      } else {
+        body += `<strong>${rolPaneles}:</strong> <em style="color:#ff8888">${panelesEnCatalogo ? 'Agotados ahora mismo' : 'No los tengo ahora'}</em>. Mientras, la estación se carga en la corriente; con paneles, también con el sol.\n\n`;
+      }
     }
     // La autonomía no se inventa: depende de lo que el cliente conecte.
     body += /\b(refri|refrigerador|nevera|frio)\b/i.test(text || '')

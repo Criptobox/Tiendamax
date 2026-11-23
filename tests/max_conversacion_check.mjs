@@ -283,8 +283,10 @@ for (const q of GENERICAS) {
     const a = una('tienen cuchillos de cocina');
     ok(/no lo manejo/i.test(a.texto) && !a.prods.length && a.botones.some(b => /WhatsApp/.test(b)) && a.botones.some(b => /Categor/.test(b)),
        `lo que no hay se dice («eso no lo manejo») con WhatsApp y categorías: ${lineaDe('cuchillos', a)}`);
+    const hayPanel = PRODS.some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0);
     const p = una('tienen paneles solares');
-    ok(p.intent === 'noVendemos' && !p.prods.length, '«paneles solares» sigue diciendo que no se venden');
+    ok(hayPanel ? p.intent !== 'noVendemos' : (p.intent === 'noVendemos' && !p.prods.length),
+       '«paneles solares»: ' + (hayPanel ? 'hay uno en el catálogo y no se niega' : 'sigue diciendo que no se venden'));
 }
 // Lo que se pide EXPRESAMENTE como familia o categoría sigue como está.
 {
@@ -337,7 +339,13 @@ for (const q of GENERICAS) {
     ok(inv.intent === 'diagnostico', `«mi inversor pita» sigue siendo diagnóstico (dio ${inv.intent})`);
     const ac = una('aceite 10w40');
     ok(ac.nombres.length >= 1 && ac.nombres.every(n => /10W ?-? ?40/i.test(n)), `«aceite 10w40» solo da 10W-40: ${lineaDe('aceite 10w40', ac)}`);
-    ok(!una('paneles solares').prods.length, '«paneles solares» no enseña productos como si fueran paneles');
+    {
+        const hayPanel2 = PRODS.some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0);
+        // Sin panel en el catálogo no se enseña nada como si lo fuera; con él, se enseña ese y solo ese.
+        const pr = una('paneles solares').prods;
+        ok(hayPanel2 ? (pr.length >= 1 && pr.every(x => /panel/i.test(String((x && x.nombre) || x)))) : !pr.length,
+           '«paneles solares» enseña solo paneles (o nada si no hay): ' + JSON.stringify(pr));
+    }
 }
 
 if (fallos.length) {

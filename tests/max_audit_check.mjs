@@ -190,7 +190,10 @@ if(conStock(/Inflador/i)){
 
 // ── Lo que NO se puede romper ───────────────────────────────────────────
 {
-    ok(ask('paneles solares').intent === 'noVendemos', '«paneles solares» sigue diciendo que no se vende');
+    // Con un panel solar real en el catálogo, negarlo sería mentir; sin él, se dice que no.
+    const hayPanel = PRODS.some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0);
+    ok(hayPanel ? ask('paneles solares').intent !== 'noVendemos' : ask('paneles solares').intent === 'noVendemos',
+       '«paneles solares»: ' + (hayPanel ? 'hay uno en el catálogo y no se niega' : 'sigue diciendo que no se vende'));
     if(hay(/NanoStation M5 Loco/i)){ const a = ask('nano loco m5'); ok(a.nombres.length === 1 && /M5 Loco/i.test(a.nombres[0]), '«nano loco m5» da la M5 Loco'); }
     if(hay(/Switch Gigabit de 8/i)){ const a = ask('switch de 8 puertos'); ok(a.nombres.length === 1 && /8 Puertos/i.test(a.nombres[0]), '«switch de 8 puertos» da el de 8'); }
     ok(ask('mi inversor pita').intent === 'diagnostico', '«mi inversor pita» sigue siendo diagnóstico');

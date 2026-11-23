@@ -284,12 +284,12 @@ for(const q of ['se me apaga el inversor solo','no me carga la bateria',
 }
 
 // ── 11) Querer comprar algo que no se vende → el instructivo de compra ──
-/* «Quiero comprar un panel solar» devolvía los cinco pasos de cómo se compra
+/* «Quiero comprar una laptop» (antes, un panel solar) devolvía los cinco pasos de cómo se compra
    en TiendaMax, de algo que no está a la venta. Y nombrando un producto
    concreto, lo que se quiere es su ficha con el botón de pedir, no el
    instructivo general. */
 await limpiarHilo();
-const v1 = await preguntar('quiero comprar un panel solar');
+const v1 = await preguntar('quiero comprar una laptop');
 ok(/no vendo|no manejo/i.test(v1) && !/Paso 1/i.test(v1),
    `querer comprar lo que no se vende se contesta que no: «${v1.slice(0,140)}»`);
 const v2 = await preguntar('quiero comprar el archer a6');
@@ -315,7 +315,7 @@ for(const [q, primero, segundo] of [
         ['hola quiero el precio del archer a6 y si hacen envio a holguin', /Archer A6/i, /Holgu[ií]n/i],
         ['tienes el hap ac3 y cuanto cuesta con garantia',    /hAP ac3/i,     /Garant[ií]a/i],
         ['tienen camaras y hacen envio a matanzas',           /C[ÁA]MARAS|Zosi/i, /Matanzas/i],
-        ['quiero un panel solar y saber como pago',           /no vendo/i,    /M[eé]todos de pago|Pagas al recibir/i],
+        ['quiero una laptop y saber como pago',               /no vendo|no manejo/i,    /M[eé]todos de pago|Pagas al recibir/i],
         ['el nanostation m5 loco tiene garantia y cuanto tarda en llegar', /Garant[ií]a/i, /tiempo de entrega|se coordina/i]]){
     const r = await preguntar(q);
     ok(r.includes(sep), `«${q}» trae dos preguntas: hay que contestar las dos. «${r.slice(0,150)}»`);
@@ -358,9 +358,15 @@ for(const q of ['quiero el Cargador y Mantenedor de Baterías VEVOR 35A',
    sí, que es justo el fallo que NO_VENDEMOS vino a arreglar. Cualquier verbo
    de petición saltaba por encima del control. */
 await limpiarHilo();
-for(const q of ['quiero un panel solar','necesito un panel solar','busco paneles solares',
-                'dame un panel solar','quiero una laptop','necesito una tarjeta sim',
-                'tienen tarjeta de memoria']){
+// Con un panel solar real en el catálogo, pedirlo ya no es pedir algo que no se vende:
+// lo único que no puede pasar es negarlo.
+const hayPanel = PRODS.some(p => /panel(es)?\s+solar(es)?|fotovoltaic/i.test(String(p.nombre)) && !/base|soporte|estructura/i.test(String(p.nombre)) && Number(p.stock) > 0);
+for(const q of ['quiero un panel solar','necesito un panel solar','busco paneles solares','dame un panel solar']){
+    const r = await preguntar(q);
+    if(hayPanel) ok(!/no vendo|no manejo/i.test(r), `«${q}» hay un panel en el catálogo: no puede negarse. «${r.slice(0,130)}»`);
+    else ok(/no vendo|no manejo/i.test(r), `«${q}» pide algo que no está a la venta: se dice. «${r.slice(0,130)}»`);
+}
+for(const q of ['quiero una laptop','necesito una tarjeta sim','tienen tarjeta de memoria']){
     const r = await preguntar(q);
     ok(/no vendo|no manejo/i.test(r),
        `«${q}» pide algo que no está a la venta: se dice. «${r.slice(0,130)}»`);
