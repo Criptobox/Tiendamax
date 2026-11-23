@@ -352,7 +352,8 @@
     "specs": [
       "⚡ Voltaje Nominal: 12V DC",
       "🔋 Capacidad: 75 Ah",
-      "🔋 Calcio-Calcio"
+      "🔋 Calcio-Calcio",
+      "📐278 mm de largo × 175 mm de ancho × 190 mm de alto"
     ],
     "ficha": [
       {
@@ -416,7 +417,7 @@
       "1× Batería Automotriz Lubrim (12V - 75Ah)",
       "2× Tapas protectoras de bornes (integradas)"
     ],
-    "rev": 1795288491345,
+    "rev": 1795457522637,
     "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
   },
   {
@@ -12892,7 +12893,8 @@
     "specs": [
       "⚡ Voltaje: 12V / Capacidad: 60Ah",
       "🚗 Tecnología Plomo-Calcio (Ca/Ca)",
-      "🔄 Libre de Mantenimiento / Formato DIN"
+      "🔄 Libre de Mantenimiento / Formato DIN",
+      "📐242 mm de largo × 175 mm de ancho × 190 mm de alto"
     ],
     "fechaAgregado": "2026-10-30T20:39:51.910Z",
     "ficha": [
@@ -12968,7 +12970,7 @@
       "2× Tapas protectoras de seguridad para bornes (roja/negra)"
     ],
     "slug": "bateria-lubrim-12v-60ah",
-    "rev": 1795288491345,
+    "rev": 1795457522637,
     "seoTitle": "Batería Automotriz Lubrim 12V 60Ah en Cuba | TiendaMax",
     "seoDescription": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos…",
     "descripcion": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos modernos de gasolina y diésel de cilindrada pequeña a mediana. Fabricada con tecnología de placas de aleación Plomo-Calcio (Ca/Ca), ofrece una mínima tasa de autodescarga, mayor potencia de arranque en frío y una resistencia superior a la corrosión y altas temperaturas dentro del compartimento del motor."
