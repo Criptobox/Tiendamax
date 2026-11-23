@@ -27,11 +27,13 @@ class Prueba2Test(unittest.TestCase):
         self.assertEqual(CEREBRO.count("* TASA_MN"), 1, "una sola conversión USD→MN (fmtMN)")
         self.assertNotIn("* TASA_BASE_MN", CEREBRO, "la base sola nunca convierte")
 
-    def test_la_composicion_sale_de_base_y_margen(self):
+    def test_la_tasa_se_dice_final_sin_desglose(self):
+        """El cliente ve 1 USD = 955 MN, ya con el margen: nada que sumar."""
         i = CEREBRO.index("function _composicionTasa(")
-        cuerpo = CEREBRO[i:i + 600]
-        self.assertIn("TASA_BASE_MN", cuerpo)
-        self.assertIn("MARGEN_MN", cuerpo)
+        cuerpo = CEREBRO[i:i + 400]
+        self.assertIn("TASA_MN", cuerpo)
+        self.assertNotIn("TASA_BASE_MN", cuerpo)
+        self.assertNotIn("MARGEN_MN", cuerpo)
 
     def test_el_tipo_sin_stock_solo_mira_lo_oculto(self):
         i = CEREBRO.index("function _tipoOcultoPedido(")
