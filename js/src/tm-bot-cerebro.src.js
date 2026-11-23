@@ -2104,12 +2104,73 @@
     }
     return null;
   }
-  /* ENGANCHE PARA LA IA — todavía SIN conectar a nada. Cuando ni los sinónimos
-     ni las reglas dan una respuesta confiable, aquí se le preguntará a un
-     modelo (con SOLO el texto del cliente y los candidatos del catálogo).
-     Hoy devuelve null y nadie lo llama: Max sigue siendo determinista y sin
-     red en la tienda. */
-  function _preguntarIA(texto, candidatos){ return null; }
+  /* LA IA, COMO INTÉRPRETE Y NADA MÁS (mini-services/max-ia).
+     Solo se le pregunta cuando Max NO supo contestar (`sinRespuesta`), con el
+     texto del cliente y los nombres de lo que hay a la venta; nada del cliente.
+     Devuelve {consulta, ids, fuera}: qué quiso decir, no qué contestar. La
+     respuesta, el precio y el stock salen siempre del catálogo y de las reglas
+     de Max, así que un modelo que se equivoca solo puede señalar otro producto:
+     cada id se valida contra PRODUCTOS y la respuesta final pasa por el mismo
+     camino determinista que si el cliente lo hubiera escrito bien. Se enciende
+     con <meta name="tm-bot-ia" content="URL">; sin URL (o con el servicio
+     caído) Max contesta como siempre. Dos fallos seguidos lo apagan 5 minutos y
+     hay un tope de consultas por visita. */
+  const _IA = { fallos: 0, apagadaHasta: 0, usos: 0, cache: new Map() };
+  function _iaUrl(){
+    try { const m = document.querySelector('meta[name="tm-bot-ia"]'); return ((m && m.content) || '').trim(); }
+    catch(e){ return ''; }
+  }
+  async function _preguntarIA(texto){
+    const url = _iaUrl();
+    if(!/^https:\/\//.test(url)) return null;
+    const q = String(texto || '').trim().slice(0, 200);
+    if(q.length < 3 || Date.now() < _IA.apagadaHasta || _IA.usos >= 15) return null;
+    if(_IA.cache.has(q)) return _IA.cache.get(q);
+    const cat = PRODUCTOS.slice().sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 160)
+      .map(p => [String(p.id), String(p.nombre || '').split('|')[0].trim().slice(0, 60)]);
+    if(!cat.length) return null;
+    _IA.usos++;
+    const ctrl = new AbortController(), tope = setTimeout(() => ctrl.abort(), 6500);
+    try {
+      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ q, cat }), signal: ctrl.signal });
+      const j = r.ok ? await r.json() : null;
+      if(!j || !j.ok) throw new Error('ia');
+      const ids = (Array.isArray(j.ids) ? j.ids : []).map(String).filter((id, i, a) => a.indexOf(id) === i && PRODUCTOS.some(p => String(p.id) === id)).slice(0, 3);
+      const out = { consulta: String(j.consulta || '').slice(0, 80), ids, fuera: j.fuera === true };
+      _IA.fallos = 0; _IA.cache.set(q, out);
+      return out;
+    } catch(e){
+      if(++_IA.fallos >= 2){ _IA.apagadaHasta = Date.now() + 5 * 60000; _IA.fallos = 0; }
+      return null;
+    } finally { clearTimeout(tope); }
+  }
+  /* Mejora una respuesta «no supe» con lo que interpretó la IA; null = se queda
+     la de Max. Un solo producto → su ficha por el camino normal (por nombre
+     exacto); varios → hasta 3 tarjetas; si no hay ids, la frase del catálogo.
+     Lo que no mejora (sigue en «no supe») se descarta. */
+  async function _mejorarConIA(text, data){
+    if(!data || !data.sinRespuesta) return null;
+    const ia = await _preguntarIA(text);
+    if(!ia) return null;
+    const prods = ia.ids.map(id => PRODUCTOS.find(p => String(p.id) === id)).filter(Boolean);
+    const corto = p => String(p.nombre || '').split('|')[0].trim();
+    if(prods.length === 1){
+      const d = responder(corto(prods[0]));
+      if(d && !d.sinRespuesta){
+        d.response = `🤖 Entendí que buscas <strong>${escapeHtml(corto(prods[0]))}</strong>. Si no es eso, cuéntame un poco más.\n\n` + (d.response || '');
+        return d;
+      }
+    }
+    if(prods.length >= 1){
+      return _enseñarTres(prods.map(p => ({ p, s: 1 })),
+        '🤖 No estoy 100% seguro de qué buscas, pero por lo que cuentas creo que esto te puede servir. Si no es, dime para qué lo necesitas.', ['💬 WhatsApp', '📦 Categorías']);
+    }
+    if(ia.consulta && !ia.fuera){
+      const d = responder(ia.consulta);
+      if(d && !d.sinRespuesta) return d;
+    }
+    return null;
+  }
 
   // ════════════════════════════════════════════════════════════
   //  DETECCIÓN DE INTENCIÓN
@@ -7525,7 +7586,14 @@ ${notasHTML}
     ]);
     removeTyping();
     try {
-      const data = responder(text);
+      let data = responder(text);
+      // Max no supo: se le pregunta a la IA qué quiso decir (solo interpreta, ver _preguntarIA).
+      if(data.sinRespuesta && _iaUrl()){
+        addTyping();
+        const _mejor = await _mejorarConIA(text, data).catch(() => null);
+        removeTyping();
+        if(_mejor) data = Object.assign(_mejor, { viaIA: true });
+      }
       // Fire-and-forget: si Firebase no está configurado o el PATCH falla, el
       // chat sigue igual. responder() acaba de dejar la intención en _context.
       // Este es el ÚNICO sitio que registra la pregunta: una por mensaje.

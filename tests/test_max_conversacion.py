@@ -61,12 +61,14 @@ class MaxConversacionEstructuraTest(unittest.TestCase):
             c = c[:c.index("\n  R.", 10)] if "\n  R." in c[10:] else c
             self.assertNotIn("Math.random", c, r)
 
-    def test_el_enganche_de_la_ia_existe_y_no_esta_conectado(self):
-        """`_preguntarIA` es el punto de enganche para un paso posterior: hoy
-        devuelve null y nadie lo llama (solo se expone en _tmBot)."""
-        self.assertRegex(self.src, r"function _preguntarIA\(texto, candidatos\)\{ return null; \}")
+    def test_la_ia_es_un_interprete_apagado_por_defecto(self):
+        """`_preguntarIA` solo se llama desde `_mejorarConIA` (y esta, solo cuando Max
+        no supo); sin URL en <meta tm-bot-ia> devuelve null sin tocar la red.
+        Ver tests/test_max_ia.py y la sección «Max IA» de CLAUDE.md."""
+        self.assertRegex(self.src, r"async function _preguntarIA\(texto\)")
         llamadas = re.findall(r"_preguntarIA\(", self.src)
-        self.assertEqual(len(llamadas), 1, "solo la definición: nadie lo llama todavía")
+        self.assertEqual(len(llamadas), 2, "la definición y _mejorarConIA, nada más")
+        self.assertIn("if(!/^https:\\/\\//.test(url)) return null;", self.src)
 
     def test_no_se_anadio_red_ni_ia(self):
         """Lo único que baja el cerebro es JSON propio de la tienda."""

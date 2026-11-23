@@ -75,8 +75,10 @@ function renderizarCategoriasHomeInstant() {
     // solo existen dentro de los productos): si esta lista fuera más corta,
     // el pintado instantáneo mostraría menos tarjetas y al llegar la red
     // aparecerían de golpe.
-    const _catsI = (typeof tmCategoriasVisibles === 'function')
+    const _catsI0 = (typeof tmCategoriasVisibles === 'function')
         ? tmCategoriasVisibles(localProds, localCats) : localCats;
+    // Mismo orden que renderizarCategoriasHome (más disponibles primero)
+    const _catsI = (typeof tmCatsPorDisponibles === 'function') ? tmCatsPorDisponibles(localProds, _catsI0) : _catsI0;
     const maxCount = _catsI.length ? Math.max(..._catsI.map(cat => _dispI(localProds.filter(p => p.categoria === cat)))) : 0;
     const _dn = { 'WIFI': 'REDES' };
     const _extrasI = [];
