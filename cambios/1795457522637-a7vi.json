@@ -1,0 +1,206 @@
+{
+  "v": 1,
+  "creado": "2026-11-23T18:12:02.637Z",
+  "productos": [
+    {
+      "id": 1778103783319,
+      "nombre": "Batería Automotriz Lubrim (75A)",
+      "precioActual": 85,
+      "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "stock": 7,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "bateria-lubrim-75a",
+      "comision": 5,
+      "seoTitle": "Batería Automotriz Lubrim (75A) en Cuba | TiendaMax",
+      "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
+      "precioOriginal": 0,
+      "comisionMoneda": "USD",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
+        "https://tiendamax.org/imagenes/img_1778103783319.webp"
+      ],
+      "specs": [
+        "⚡ Voltaje Nominal: 12V DC",
+        "🔋 Capacidad: 75 Ah",
+        "🔋 Calcio-Calcio",
+        "📐278 mm de largo × 175 mm de ancho × 190 mm de alto"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Lubrim"
+        },
+        {
+          "k": "Modelo",
+          "v": "Batería Automotriz 75A (12V)"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12V DC"
+        },
+        {
+          "k": "Capacidad",
+          "v": "75 Ah",
+          "nota": "Amperios-hora"
+        },
+        {
+          "k": "Tecnología",
+          "v": "Calcio-Calcio (Ca/Ca) / Plomo-Ácido sellada"
+        },
+        {
+          "k": "Tipo de Mantenimiento",
+          "v": "Libre de mantenimiento",
+          "nota": "Maintenance-Free"
+        },
+        {
+          "k": "Terminales",
+          "v": "Bornes estándar superiores con tapas aislantes"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Tecnología de aleación Calcio-Calcio (Ca/Ca) que minimiza la pérdida de agua, reduce notablemente la tasa de autodescarga y prolonga la vida útil de la batería."
+        },
+        {
+          "t": "Diseño 100% sellado y libre de mantenimiento",
+          "d": "no requiere recarga periódica de agua destilada ni manipulación de ácido."
+        },
+        {
+          "d": "Excelente potencia de arranque en frío (CCA) para un encendido rápido, consistente y seguro en motores a gasolina o diésel."
+        },
+        {
+          "d": "Carcasa de polipropileno reforzado de alta durabilidad, diseñada para absorber impactos mecánicos y resistir las vibraciones del camino y el calor del compartimiento del motor."
+        },
+        {
+          "d": "Protectores plásticos integrados en los bornes para evitar cortocircuitos accidentales durante el almacenamiento o transporte."
+        },
+        {
+          "d": "Asa de sujeción ergonómica y abatible en la parte superior para facilitar su traslado e instalación en el compartimento del vehículo."
+        }
+      ],
+      "idealPara": [
+        "Cambiar la batería del carro cuando ya no arranca bien",
+        "Carros que piden batería de 70 a 75 Ah",
+        "Batería de respaldo para un inversor de 12V cuando se va la luz"
+      ],
+      "incluye": [
+        "1× Batería Automotriz Lubrim (12V - 75Ah)",
+        "2× Tapas protectoras de bornes (integradas)"
+      ],
+      "rev": 1795457522637,
+      "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario."
+    },
+    {
+      "id": 1793392791910,
+      "nombre": "Batería Automotriz Lubrim 12V 60Ah",
+      "imagen": "https://tiendamax.org/imagenes/img_1793392775198.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793392775198.webp"
+      ],
+      "precioActual": 70,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 7,
+      "comision": 5,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "BATERÍAS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "⚡ Voltaje: 12V / Capacidad: 60Ah",
+        "🚗 Tecnología Plomo-Calcio (Ca/Ca)",
+        "🔄 Libre de Mantenimiento / Formato DIN",
+        "📐242 mm de largo × 175 mm de ancho × 190 mm de alto"
+      ],
+      "fechaAgregado": "2026-10-30T20:39:51.910Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "LUBRIM",
+          "nota": "Battery Automotive"
+        },
+        {
+          "k": "Voltaje Nominal",
+          "v": "12 V"
+        },
+        {
+          "k": "Capacidad Nominal",
+          "v": "60 Ah"
+        },
+        {
+          "k": "Tecnología de Fabricación",
+          "v": "Plomo-Calcio (Ca/Ca) Sellada"
+        },
+        {
+          "k": "Mantenimiento",
+          "v": "Libre de Mantenimiento",
+          "nota": "Maintenance Free"
+        },
+        {
+          "k": "Bornes de Conexión",
+          "v": "Polos de plomo estándar cónicos",
+          "nota": "Positivo a la derecha / izquierda según variante de caja"
+        },
+        {
+          "k": "Cubierta",
+          "v": "Chasis de polipropileno inyectado resistente a impactos y vibraciones"
+        },
+        {
+          "k": "Tapa y Asas",
+          "v": "Tapas protectoras rojas/negras removibles para bornes y asa ergonómica de transporte integrada"
+        },
+        {
+          "k": "Uso Automotriz / Respaldo",
+          "v": "Arranque automotriz de 12V y respaldo secundario para cargas ligeras de corriente continua"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología Plomo-Calcio (Ca/Ca)",
+          "d": "minimiza la gasificación y reduce significativamente la autodescarga en periodos de inactividad."
+        },
+        {
+          "t": "Diseño Sellado sin Mantenimiento",
+          "d": "totalmente hermética, lista para instalar sin preocuparse por revisar ni rellenar niveles de electrolito."
+        },
+        {
+          "t": "Excelente Capacidad de Arranque",
+          "d": "suministra una corriente sostenida en frío para un encendido rápido del motor en cualquier condición climática."
+        },
+        {
+          "t": "Estructura Antivibraciones",
+          "d": "carcasa robusta que protege la grilla interna frente a sacudidas y baches en la vía."
+        },
+        {
+          "t": "Protección de Bornes y Asa de Agarre",
+          "d": "tapas protectoras de plástico para evitar cortocircuitos accidentales durante la instalación o traslado."
+        }
+      ],
+      "idealPara": [
+        "Cambiar la batería del carro cuando ya no arranca bien",
+        "Carros chicos y medianos que piden batería de 60 Ah",
+        "Respaldo de 12V para luces LED o un inversor pequeño"
+      ],
+      "incluye": [
+        "1× Batería automotriz LUBRIM 12V 60Ah",
+        "2× Tapas protectoras de seguridad para bornes (roja/negra)"
+      ],
+      "slug": "bateria-lubrim-12v-60ah",
+      "rev": 1795457522637,
+      "seoTitle": "Batería Automotriz Lubrim 12V 60Ah en Cuba | TiendaMax",
+      "seoDescription": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos…",
+      "descripcion": "La batería automotriz LUBRIM de 12V y 60Ah es un acumulador de arranque de alta fiabilidad diseñado para satisfacer las demandas eléctricas de vehículos modernos de gasolina y diésel de cilindrada pequeña a mediana. Fabricada con tecnología de placas de aleación Plomo-Calcio (Ca/Ca), ofrece una mínima tasa de autodescarga, mayor potencia de arranque en frío y una resistencia superior a la corrosión y altas temperaturas dentro del compartimento del motor."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
