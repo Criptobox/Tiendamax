@@ -445,3 +445,10 @@ html.tmrs-abierto, html.tmrs-abierto body { overflow: hidden; }
 .tmrs-nom { flex: 1 1 auto; min-width: 0; font-size: 14px; line-height: 1.3; font-weight: 600; }
 .tmrs-ir { margin-left: 8px; font-size: 22px; color: #9898a8; }
 @media (min-width: 560px) { .tmrs-fondo { align-items: center; } .tmrs-panel { border-radius: 20px; } }
+
+/* Reseñas de la portada: el producto reseñado, con su foto pequeña, es un solo toque. */
+.testimonio-card .resena-prod{display:inline-flex;align-items:center;gap:10px;min-height:44px;max-width:100%;margin-top:10px;padding:4px 12px 4px 4px;border-radius:12px;border:1px solid rgba(255,107,53,.3);background:rgba(255,107,53,.08);color:var(--coral,#FF6B35);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:pointer}
+.testimonio-card .resena-prod img{width:40px;height:40px;flex:0 0 40px;border-radius:9px;object-fit:cover;background:#1b1b22}
+.testimonio-card .resena-prod span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.testimonio-card .resena-prod:focus-visible{outline:2px solid var(--coral,#FF6B35);outline-offset:2px}
+.testimonio-card .resena-prod-txt{background:rgba(255,107,53,.08)!important;color:var(--coral,#FF6B35)!important;border:1px solid rgba(255,107,53,.25)!important}
