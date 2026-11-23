@@ -1158,6 +1158,24 @@ async function renderizarResenas(productoId) {
 // ── TESTIMONIOS DINÁMICOS DESDE FIREBASE ────────────────
 let _tmAllResenas = [];
 
+/* El producto de una reseña: foto pequeña + nombre, un solo toque que abre su ficha.
+   Sale del catálogo vivo (`productos`: lo apagado o borrado no está) y, si el producto
+   ya no se vende aquí, solo queda el nombre como texto, sin enlace roto. Agotado sí
+   lleva foto y enlace: la ficha ofrece «Avísame». */
+function tmResenaProductoChip(r) {
+    if (!r || !r.productoNombre) return '';
+    const nombre = String(r.productoNombre).substring(0, 30);
+    const norm = x => String(x || '').trim().toLowerCase();
+    const p = (typeof productos !== 'undefined' && Array.isArray(productos))
+        ? (productos.find(x => String(x.id) === String(r.productoId)) || productos.find(x => norm(x.nombre) === norm(r.productoNombre)))
+        : null;
+    if (!p || !p.id) return '<span class="resena-verificada resena-prod-txt">' + escapeHtml(nombre) + '</span>';
+    const img = p.imagen || (Array.isArray(p.imagenes) && p.imagenes[0]) || '';
+    return '<button type="button" class="resena-prod" onclick="abrirDetalleProducto(' + (typeof p.id === 'number' ? p.id : "'" + escapeAttr(String(p.id)) + "'") + ')" aria-label="Ver ' + escapeAttr(nombre) + '">' +
+        (img ? '<img src="' + escapeAttr(img) + '" alt="" width="40" height="40" loading="lazy" decoding="async">' : '') +
+        '<span>' + escapeHtml(nombre) + '</span></button>';
+}
+
 function _renderTestimoniosPage(show) {
     const grid = document.getElementById('testimoniosGrid');
     const cta  = document.getElementById('testimoniosCTA');
@@ -1180,7 +1198,7 @@ function _renderTestimoniosPage(show) {
                 '<span class="resena-estrellas">' + starChars(estrellas) + '</span>' +
             '</div>' +
             '<p class="resena-texto">' + escapeHtml(r.texto.substring(0, 250)) + '</p>' +
-            (r.productoNombre ? '<span class="resena-verificada" style="background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.25);color:var(--coral,#FF6B35);">' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
+            tmResenaProductoChip(r) +
         '</div>';
     }).join('');
     const remaining = _tmAllResenas.length - show;
@@ -1264,7 +1282,7 @@ async function cargarTestimoniosFirebase() {
                 if (!rp.ok) return;
                 const data = await rp.json();
                 if (data && typeof data === 'object') {
-                    Object.values(data).filter(Boolean).forEach(r => allResenas.push(r));
+                    Object.values(data).filter(Boolean).forEach(r => { if (!r.productoId) r.productoId = pid; allResenas.push(r); });
                 }
             } catch(e) {}
         }));
@@ -1277,7 +1295,7 @@ async function cargarTestimoniosFirebase() {
                 const porProd = cache && cache.por_producto || {};
                 Object.keys(porProd).forEach(pid => {
                     if (Array.isArray(porProd[pid])) {
-                        porProd[pid].forEach(r => allResenas.push(r));
+                        porProd[pid].forEach(r => { if (r && !r.productoId) r.productoId = pid; allResenas.push(r); });
                     }
                 });
             }
@@ -1292,7 +1310,7 @@ async function cargarTestimoniosFirebase() {
                 const porProd = cache && cache.por_producto || {};
                 Object.keys(porProd).forEach(pid => {
                     if (Array.isArray(porProd[pid])) {
-                        porProd[pid].forEach(r => allResenas.push(r));
+                        porProd[pid].forEach(r => { if (r && !r.productoId) r.productoId = pid; allResenas.push(r); });
                     }
                 });
                 if (allResenas.length) usedSource = 'cache-fallback';

@@ -53,11 +53,11 @@ const mn = n => Math.round(n).toLocaleString('es-ES');
         const a = ask(B, q);
         ok(a.texto.includes(mn(precioTimbre * 955) + ' MN'), `«${q}» debe dar ${mn(precioTimbre*955)} MN (tasa 935 + 20): ${a.texto.slice(0,160)}`);
         ok(/Timbre/i.test(a.prods.join()), `«${q}» nombra el timbre`);
-        ok(/elTOQUE de hoy \(935\) \+ 20 MN de margen/.test(a.texto), `«${q}» dice de qué se compone: ${a.texto.slice(0,200)}`);
+        ok(!/margen|\(935\)|\+ 20/i.test(a.texto), `«${q}» da el precio final sin desglosar: ${a.texto.slice(0,200)}`);
         ok(!/margen operativo|recargo/i.test(a.texto), `«${q}» no suena a recargo`);
     }
     const g = ask(B, 'cuánto es el dólar');
-    ok(/1 USD = 955 MN\s*: tasa de elTOQUE de hoy \(935\) \+ 20 MN de margen/.test(g.texto), 'la tasa general dice la composición: ' + g.texto.slice(0,200));
+    ok(/1 USD = 955 MN/.test(g.texto) && !/margen|\(935\)|\+ 20/i.test(g.texto), 'la tasa general da 955 directo, sin sumas: ' + g.texto.slice(0,200));
     ok(/ya lo incluye todo/i.test(g.texto), 'y deja claro que el precio en MN ya lo incluye todo');
     ok(!g.texto.includes('23.375'), 'nunca la base sola');
 }
@@ -65,7 +65,7 @@ const mn = n => Math.round(n).toLocaleString('es-ES');
     const B = nuevo(visibles, TODOS, { tasaMN:'935', margenMN:'0' });
     const a = ask(B, 'cuánto cuesta el timbre en MN');
     ok(a.texto.includes(mn(precioTimbre * 935) + ' MN'), `con margen 0 sale ${mn(precioTimbre*935)} MN: ${a.texto.slice(0,160)}`);
-    ok(/tasa de elTOQUE de hoy/.test(a.texto) && !/margen/i.test(a.texto), 'con margen 0 solo «tasa de elTOQUE»: ' + a.texto.slice(0,200));
+    ok(/1 USD = 935 MN/.test(ask(B, 'cuánto es el dólar').texto) && !/margen/i.test(a.texto), 'con margen 0 la tasa es 935 directa: ' + a.texto.slice(0,200));
 }
 {   // sin tasa cargada: texto honesto, ningún 0 MN
     const B = nuevo(visibles, TODOS, {});

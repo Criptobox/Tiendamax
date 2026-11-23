@@ -2465,7 +2465,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=cee46851"></script>
+<script src="js/tm-bundle.js?v=419f5a5e"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -3113,7 +3113,7 @@ try{var _piel=localStorage.getItem('tm_piel');
 <script src="js/max-panel.js?v=e078d97f"></script>
 <!-- 🎁 Tarjeta de cliente: generador de QR propio (sin red) y el módulo -->
 <script src="js/qr-mini.js?v=f43cbef0"></script>
-<script src="js/tarjeta-cliente.js?v=21955685"></script>
+<script src="js/tarjeta-cliente.js?v=55b091b0"></script>
 
 <script>
 (function(){
@@ -3899,6 +3899,7 @@ function renderReservas(){
           ? '<div style="font-size:12px;color:#ff8f85;margin-top:6px">⏰ Venció '+(hVen<48?'hace '+hVen+' h':'hace '+Math.round(hVen/24)+' días')+' y no vino. Ese stock está apartado y nadie más lo puede comprar: recuérdale o libéralo.</div>'
           : '<div style="font-size:12px;color:var(--muted);margin-top:6px">🔒 Guardado hasta el '+esc(_resFecha(vence))+'</div>')
       + (nv?'<div style="font-size:12px;color:#fbbf24;margin-top:4px">⚠️ Este WhatsApp ya dejó '+nv+' vale'+(nv>1?'s':'')+' sin venir a recoger.</div>':'')
+      + _reservaTarjetaHTML(r, esc)
       + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'
       +   '<button class="btn btn-success" style="flex:1;min-width:130px;justify-content:center" onclick="reservaVender(\''+r.id+'\')">✅ Ejecutar venta</button>'
       +   '<button class="btn btn-ghost" style="flex:1;min-width:110px;justify-content:center" onclick="reservaCancelar(\''+r.id+'\')">❌ Cancelar</button>'
@@ -3906,6 +3907,45 @@ function renderReservas(){
       + '</div></div>';
   }).join('');
 }
+
+/* La tarjeta TiendaMax escaneada en una reserva: {idReserva: {c, n, t}}. Es de este
+   teléfono (como el resto de la reserva) y solo sirve hasta que se ejecuta la venta. */
+function _resTarjetas(){ try{ return JSON.parse(localStorage.getItem('tm_reserva_tarjeta')||'{}')||{}; }catch(e){ return {}; } }
+function _resTarjetaGuardar(m){ try{ localStorage.setItem('tm_reserva_tarjeta', JSON.stringify(m)); }catch(e){} }
+function _reservaTarjetaHTML(r, esc){
+  if(typeof window.tmTarjetaEscanear!=='function') return '';
+  const x=_resTarjetas()[r.id];
+  const bonito=c=>c?c.slice(0,2)+'-'+c.slice(2):'';
+  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px">'
+    + (x
+      ? '<span style="color:var(--gold)">🎁 Tarjeta '+esc(bonito(x.c))+(x.n?' · '+esc(x.n):'')+'</span>'
+        +'<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="reservaTarjetaQuitar(\''+r.id+'\')">✕ Quitar</button>'
+      : '<button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="reservaEscanearTarjeta(\''+r.id+'\')">📷 Escanear tarjeta</button>'
+        +'<span style="color:var(--muted)">¿Es cliente con Tarjeta TiendaMax? Escanéala para aplicar su descuento.</span>')
+    + '</div>';
+}
+async function reservaEscanearTarjeta(id){
+  const r=_reservaBuscar(id); if(!r) return;
+  const guardar=async c=>{
+    const v=await window.tmTarjetaValidar(c);
+    if(!v.ok) return v;
+    const m=_resTarjetas(); m[id]={c:c, n:v.t.n||'', t:v.t.t||''}; _resTarjetaGuardar(m);
+    renderReservas();
+    return v;
+  };
+  // Sin lector de QR en el navegador (iPhone) se escribe el código.
+  if(!('BarcodeDetector' in window)){
+    const t=(prompt('Código de la tarjeta (las 6 letras tras TM-):')||'').trim().toUpperCase();
+    if(!t) return;
+    const c=window.tmTarjetaCodigoDe(t);
+    if(!c){ mostrarNotificacion('❌ Ese código no tiene la forma TM-XXXXXX','error'); return; }
+    const v=await guardar(c);
+    mostrarNotificacion(v.ok?'🎁 '+v.toast:'❌ '+v.msg, v.ok?undefined:'error');
+    return;
+  }
+  window.tmTarjetaEscanear({alCodigo:guardar});
+}
+function reservaTarjetaQuitar(id){ const m=_resTarjetas(); delete m[id]; _resTarjetaGuardar(m); renderReservas(); }
 
 function _reservaBuscar(id){ return TMReservas.lista().find(r=>r.id===id); }
 function _resFecha(ts){ try{ return new Date(ts).toLocaleString('es-ES',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
@@ -3957,8 +3997,11 @@ function reservaVender(id){
   if(!m.ok){ mostrarNotificacion('❌ '+m.msg,'error'); return; }
   const items=(r.items||[]).map(i=>({productoId:i.id, producto:i.nombre, cantidad:i.cantidad, precio:i.precio, moneda:i.moneda, comision:i.comision, comisionMoneda:i.comisionMoneda}));
   // stockYaDescontado: la unidad salió del stock al mandar el vale.
-  const tarjeta=(typeof window.tmTarjetaPreguntar==='function') ? window.tmTarjetaPreguntar(r.telefono, items) : null;
-  registrarVentaPedido(items, {nombre:r.cliente, tel:r.telefono}, {stockYaDescontado:true, tarjeta:tarjeta||undefined});
+  const esc1=_resTarjetas()[id]||null;
+  const telV=r.telefono||(esc1&&esc1.t)||'';
+  const tarjeta=(typeof window.tmTarjetaPreguntar==='function') ? window.tmTarjetaPreguntar(telV, items, esc1&&esc1.c) : null;
+  if(esc1){ const m=_resTarjetas(); delete m[id]; _resTarjetaGuardar(m); }
+  registrarVentaPedido(items, {nombre:r.cliente, tel:telV}, {stockYaDescontado:true, tarjeta:tarjeta||undefined});
   // Si la reserva era de otro dispositivo, el descuento acaba de hacerse en
   // localStorage: traerlo a la memoria del panel y decirlo.
   if(m.descontado){
@@ -10737,7 +10780,7 @@ window.pubToggleSinPublicar=pubToggleSinPublicar;
 window.pubRenderHoy=pubRenderHoy; window.pubShareVerMas=pubShareVerMas; window.pubShareReset=pubShareReset;
 // Reservas: los tres se llaman desde onclick= en el HTML que pinta renderReservas.
 window.renderReservas=renderReservas; window.reservaVender=reservaVender; window.reservaCancelar=reservaCancelar;
-window.reservaPlazo=reservaPlazo; window.reservaRecordar=reservaRecordar;
+window.reservaPlazo=reservaPlazo; window.reservaRecordar=reservaRecordar; window.reservaEscanearTarjeta=reservaEscanearTarjeta; window.reservaTarjetaQuitar=reservaTarjetaQuitar;
 window.tmCuentaEntrar=tmCuentaEntrar; window.tmCuentaCrear=tmCuentaCrear; window.tmCuentaRecuperar=tmCuentaRecuperar;
 window.tmCuentaSalir=tmCuentaSalir; window.tmCuentaProbar=tmCuentaProbar; window.tmCuentaReclamar=tmCuentaReclamar; window.tmCopiarReglas=tmCopiarReglas; window.tmCuentaDiagnostico=tmCuentaDiagnostico;
 // La sección de cuenta se repinta sola al entrar, al salir y si caduca la sesión.

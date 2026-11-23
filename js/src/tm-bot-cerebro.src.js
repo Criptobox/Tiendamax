@@ -3187,17 +3187,12 @@
      con SU precio en las dos monedas, no con la tasa genérica. Y la respuesta
      al cliente ya no desglosa «margen operativo +20 MN»: suena a recargo y
      resta confianza; el precio en MN que ve es el que paga. */
-  /* De qué se compone la tasa, dicho con los mismos números que usa fmtMN:
-     TASA_MN (la del sitio, base + margen). Solo se desglosa cuando las partes
-     suman el total; con margen 0 es solo la de elTOQUE. */
+  /* La tasa que ve el cliente es TASA_MN (la del sitio, ya con el margen): se
+     da el número final, sin desglose. */
   function _composicionTasa(){
-    const t = `<code>1 USD = ${TASA_MN} MN</code>`;
-    if(TASA_BASE_MN > 0 && Math.abs(TASA_BASE_MN + MARGEN_MN - TASA_MN) < 0.005){
-      return MARGEN_MN > 0
-        ? `${t}: tasa de elTOQUE de hoy (${TASA_BASE_MN}) + ${MARGEN_MN} MN de margen`
-        : `${t}: tasa de elTOQUE de hoy`;
-    }
-    return t;
+    // Directo el precio final: 1 USD = 955 MN, sin desglosar la base y el margen
+    // (el cliente no tiene que sumar nada; el margen ya va dentro).
+    return `<code>1 USD = ${TASA_MN} MN</code>`;
   }
   /* «¿Cuánto cuesta el timbre en MN?» pregunta el PRECIO de un tipo de
      producto, no la tasa. Regla estructural: se quita del mensaje lo que habla
