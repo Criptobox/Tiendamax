@@ -1276,8 +1276,38 @@
     return { n: mejor, cob: Math.min(1, mejor / contenido) };
   }
   const _SIN_COB = 0.6;       // desde aquí el sinónimo cuenta como el NOMBRE del producto
+  /* AUTOMÁTICO, sin que nadie lo escriba: lo que el cliente pide con DOS o más
+     palabras y que están TODAS en el arranque del nombre del producto («panel
+     solar» → «Panel Solar Fotovoltaico GCL…», «batería litio» → «Batería
+     Recargable de Litio…») cuenta como el nombre. El tipo de producto va casi
+     siempre al principio del nombre, así que un producto nuevo se reconoce desde
+     el minuto en que entra al catálogo, sin esperar a que alguien le añada
+     sinónimos. Con UNA palabra no actúa (eso ya lo resuelven las familias y los
+     tipos), y si el cliente nombró un modelo que el arranque no trae, no casa. */
+  const _LEAD = new Map();
+  function _lead(p){
+    const k = String(p.id) + '|' + p.nombre;
+    let v = _LEAD.get(k);
+    if(v === undefined){
+      const toks = cleanForMatch(String(p.nombre || '').split('|')[0]).split(' ')
+        .filter(w => w.length > 1 && !_VACIAS.has(w)).slice(0, 5);
+      v = toks.length >= 2 ? toks.join(' ') : '';
+      _LEAD.set(k, v);
+    }
+    return v;
+  }
+  function _autoInfo(p, q){
+    if(!p || !q) return null;
+    const lead = _lead(p);
+    if(!lead) return null;
+    const qw = q.split(' ').filter(w => w.length > 1 && !_VACIAS.has(w));
+    if(qw.length < 2) return null;
+    return qw.every(w => _casaConPlural(lead, w)) ? { n: qw.length, cob: 1 } : null;
+  }
   function _sinInfo(p, q){
-    return (_SIN.prod.size && p) ? _frasesCasan(_SIN.prod.get(String(p.id)), q) : null;
+    const f = (_SIN.prod.size && p) ? _frasesCasan(_SIN.prod.get(String(p.id)), q) : null;
+    const a = _autoInfo(p, q);
+    return (a && (!f || a.n > f.n)) ? a : f;
   }
   const _sinonimoProducto = (p, q) => { const i = _sinInfo(p, q); return i ? i.n : 0; };
   function _sinonimoCategoria(p, q){
