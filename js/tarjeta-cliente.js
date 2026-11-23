@@ -400,8 +400,23 @@
     return VENTA_TJ.indexOf('ref:') === 0 ? { ref: VENTA_TJ.slice(4) } : { codigo: VENTA_TJ };
   };
   // La venta desde una reserva (vale entregado): se pregunta, con la tarjeta y el tramo delante.
-  window.tmTarjetaPreguntar = function (telefono, items) {
-    var t = porTel(telefono), desc = descuentoDe(items);
+  window.tmTarjetaPreguntar = function (telefono, items, codigo) {
+    var desc = descuentoDe(items), c = codigoDe(codigo), tlCli = tel(telefono);
+    // Una tarjeta escaneada en la reserva: es la del cliente, o —si el WhatsApp es
+    // nuevo y la tarjeta es de otra persona— la de quien lo recomendó.
+    if (c) {
+      var te = leer()[c];
+      if (!te || desc <= 0) return null;
+      if (tlCli && te.t !== tlCli && primeraCompra(tlCli)) {
+        if (!cfg().on || vencida(te)) return null;
+        return confirm('🤝 Recomendado por ' + (te.n || 'un cliente') + ' (tarjeta ' + bonito(c) + ').\n\nSu primera compra lleva ' + desc + ' MN de descuento y ' + (pila(te.n) || 'quien lo recomendó') + ' gana un uso. Sale de tu comisión.\n\n¿Aplicar?')
+          ? { ref: c } : null;
+      }
+      if (restantes(te) <= 0) return null;
+      return confirm('🎁 ' + (te.n || 'Este cliente') + ' tiene Tarjeta ' + bonito(c) + ' (le quedan ' + restantes(te) + ').\n\n¿Le aplicas ' + desc + ' MN de descuento en esta venta? Sale de tu comisión.')
+        ? { codigo: c } : null;
+    }
+    var t = porTel(telefono);
     if (!t || restantes(t) <= 0 || desc <= 0) return null;
     return confirm('🎁 ' + (t.n || 'Este cliente') + ' tiene Tarjeta ' + bonito(t.c) + ' (le quedan ' + restantes(t) + ').\n\n¿Le aplicas ' + desc + ' MN de descuento en esta venta? Sale de tu comisión.')
       ? { codigo: t.c } : null;
@@ -429,7 +444,19 @@
     return { ok: true, t: t };
   }
   window.tmTarjetaCodigoDe = codigoDe;
-  window.tmTarjetaEscanear = async function () {
+  /* Comprueba un código escaneado sin tocar el formulario de venta (lo usa Reservas). */
+  async function validarEscaneada(c) {
+    var t = leer()[c];
+    // Con un tope: en datos lentos la cuenta puede no contestar y el escáner no se queda esperando.
+    if (!t) { try { await Promise.race([sincronizar(), new Promise(function (r) { setTimeout(r, 4000); })]); } catch (e) {} t = leer()[c]; }
+    if (!t) return { ok: false, msg: 'Esa tarjeta (' + bonito(c) + ') no está en tu cuenta.' };
+    if (restantes(t) <= 0) return { ok: false, msg: (t.n || 'Ese cliente') + (vencida(t) ? ': su tarjeta caducó.' : ' ya usó todos sus descuentos.') };
+    return { ok: true, t: t, toast: '🎁 Tarjeta de ' + (t.n || 'cliente') };
+  }
+  window.tmTarjetaValidar = validarEscaneada;
+  /* opts.alCodigo(c) → {ok,msg,t,toast}: en vez de rellenar la venta, entrega el código. */
+  window.tmTarjetaEscanear = async function (opts) {
+    var alCodigo = opts && typeof opts.alCodigo === 'function' ? opts.alCodigo : null;
     var prev = document.getElementById('tarjeta-escaner'); if (prev) prev.remove();
     var d = document.createElement('div'); d.id = 'tarjeta-escaner';
     d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:14px';
@@ -450,9 +477,10 @@
       var c = codigoDe(valor);
       if (!c) { est.textContent = 'Ese QR no es de una Tarjeta TiendaMax.'; return false; }
       est.textContent = 'Tarjeta ' + bonito(c) + '…';
-      var r = await aplicarEscaneada(c);
+      var r = alCodigo ? await alCodigo(c) : await aplicarEscaneada(c);
       if (!r.ok) { est.textContent = r.msg; return false; }
       cerrar();
+      if (alCodigo) { if (typeof showToast === 'function' && r.toast) showToast(r.toast, ''); return true; }
       if (typeof showToast === 'function') showToast(r.ref ? '🤝 Recomendado por ' + (pila(r.t.n) || 'un cliente') : '🎁 Tarjeta de ' + (r.t.n || 'cliente'), r.ref ? 'Su descuento de bienvenida queda aplicado' : (descuentoDe(CARRITO) > 0 ? 'Descuento aplicado' : 'Esta compra no llega a $' + MINIMO + ': no se gasta'));
       return true;
     }
