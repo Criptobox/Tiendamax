@@ -9580,6 +9580,12 @@ html body button[aria-label^="Ofertas "]{position:relative}
 html body .currency-toggle .cur-btn{min-height:40px}
 html body #catVerMasBtn{min-height:44px}
 
+/* Controles nativos (campos, selectores, casillas), barras de desplazamiento y fondo del
+   lienzo siguen el modo de la tienda: oscuro por defecto, claro con body.light-mode
+   (o html.tm-pre-light mientras carga). Sin esto el navegador los pinta siempre claros. */
+html{color-scheme:dark}
+html.tm-pre-light,html:has(body.light-mode){color-scheme:light}
+
 /* ===== escala-tipografica.css ===== */
 /* ── Escala tipográfica (móvil) ─────────────────────────────────────────
    Seis tamaños de texto en la tienda: 11 · 12 · 14 · 16 · 18 · 22. Antes había
