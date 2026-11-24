@@ -1,0 +1,209 @@
+{
+  "v": 1,
+  "creado": "2026-11-24T17:01:43.732Z",
+  "productos": [
+    {
+      "id": 1795539259264,
+      "nombre": "Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954(450 ML)",
+      "descripcion": "El MANNOL Octane Plus 9954 (450 ml)es un aditivo multifuncional concentrado para gasolina (Multifunctional Petrol Fuel Additive) formulado para aumentar el índice de octano del combustible hasta en 6 puntos, optimizando la combustión y eliminando el picado de bielas o detonación prematura (knocking) en motores de gasolina de cuatro y dos tiempos. Su fórmula avanzada permite compensar combustibles de bajo octanaje o calidad irregular, protegiendo las válvulas y pistones contra el sobrecalentamiento y el desgaste mecánico.",
+      "imagen": "https://tiendamax.org/imagenes/img_1795539256824.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1795539256824.webp"
+      ],
+      "precioActual": 8,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 13,
+      "comision": 0.4,
+      "comisionMoneda": "USD",
+      "categoria": "LUBRICANTES",
+      "subcategoria": "ADITIVOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "🚀 Incremento: Hasta +6 Puntos de Octano",
+        "🛡️ Protege y Limpia el Sistema de Combustible",
+        "⚙️ Mejora la Eficiencia y el Rendimiento del Motor"
+      ],
+      "fechaAgregado": "2026-11-24T16:54:19.266Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Modelo / Referencia",
+          "v": "Octane Plus",
+          "nota": "9954"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "450 ml"
+        },
+        {
+          "k": "Tipo de Producto",
+          "v": "Aditivo multifuncional para gasolina / Elevador de octanaje",
+          "nota": "Octane Booster"
+        },
+        {
+          "k": "Incremento de Octanaje",
+          "v": "Hasta +6 puntos",
+          "nota": "según la calidad base de la gasolina"
+        },
+        {
+          "k": "Compatibilidad de Combustible",
+          "v": "Todo tipo de gasolinas",
+          "nota": "con o sin plomo, con etanol"
+        },
+        {
+          "k": "Compatibilidad de Motores",
+          "v": "Motores de gasolina atmosféricos y turboalimentados, con inyección directa/indirecta o carburador, apto para convertidores catalíticos y sensores de oxígeno"
+        },
+        {
+          "k": "Funciones Principales",
+          "v": "Elevación de octanaje, limpieza y protección del sistema de combustible, mejora de eficiencia y rendimiento del motor"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella cilíndrica negra de 450 ml con cuello estrecho para vertido directo en el depósito"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Presentación de 450 ml",
+          "d": "formato concentrado de rendimiento óptimo para tratar tanques completos de combustible de forma práctica y directa."
+        },
+        {
+          "t": "Aumento de Hasta 6 Puntos de Octano",
+          "d": "previene el autoencendido, el cascabeleo (detonación) y los daños por combustión irregular."
+        },
+        {
+          "t": "Sistema de Combustible Protegido y Limpio",
+          "d": "disuelve depósitos de carbón y barnices en inyectores y válvulas, previniendo la corrosión interna."
+        },
+        {
+          "t": "Mayor Eficiencia del Vehículo",
+          "d": "optimiza el aprovechamiento energético de cada gota de gasolina, favoreciendo el ahorro de combustible."
+        },
+        {
+          "t": "Rendimiento Mejorado del Motor",
+          "d": "proporciona una aceleración más suave, rápida y potente sin tirones ni pérdida de fuerza bajo carga."
+        },
+        {
+          "t": "Seguro para Componentes del Escape",
+          "d": "fórmula libre de compuestos metálicos nocivos que no daña catalizadores ni bujías."
+        }
+      ],
+      "idealPara": [
+        "Automóviles y motocicletas de gasolina que operan en zonas donde el octanaje del combustible disponible es bajo o variable.",
+        "Motores de alta relación de compresión o turboalimentados que requieren protección adicional contra la detonación.",
+        "Mantenimiento preventivo periódico para mantener limpios los inyectores, las válvulas y la cámara de combustión."
+      ],
+      "incluye": [
+        "1× Botella de Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954 (450 ml)"
+      ],
+      "slug": "aditivo-plus-9954-450-ml",
+      "rev": 1795539703732
+    },
+    {
+      "id": 1795539696918,
+      "nombre": "Aditivo Elevador de Octanaje VESLEE Octane Booster (355 ml)",
+      "descripcion": "El VESLEE Octane Booster (355 ml) es un aditivo concentrado de alto rendimiento diseñado para incrementar el índice de octano de la gasolina y optimizar la eficiencia de combustión en motores de encendido por chispa. Su fórmula especializada actúa directamente sobre el combustible para detener el golpeteo, cascabeleo o picado de bielas (stops pinging & knocking) y reducir el fenómeno de autoencendido tras apagar el motor (reduces dieseling), protegiendo pistones, válvulas y cilindros contra el desgaste prematuro.",
+      "imagen": "https://tiendamax.org/imagenes/img_1795539694168.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1795539694168.webp"
+      ],
+      "precioActual": 5,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 19,
+      "comision": 0.25,
+      "comisionMoneda": "USD",
+      "categoria": "LUBRICANTES",
+      "subcategoria": "ADITIVOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Contenido Neto: 355 ml",
+        "🚀 Eleva el Octanaje y Elimina el Cascabeleo (Knocking)",
+        "🛡️ Reduce el Autoencendido (Dieseling) y Mejora el Rendimiento"
+      ],
+      "fechaAgregado": "2026-11-24T17:01:36.919Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "VESLEE"
+        },
+        {
+          "k": "Producto",
+          "v": "Octane Booster"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "355 ml"
+        },
+        {
+          "k": "Tipo de Aditivo",
+          "v": "Elevador de octanaje y mejorador de combustión para gasolina"
+        },
+        {
+          "k": "Funciones Principales",
+          "v": "Incrementa el octanaje (Increase Octane), detiene el cascabeleo y golpeteo (Stops Pinging & Knocking), reduce el autoencendido (Reduces Dieseling) y mejora el rendimiento kilométrico",
+          "nota": "Improves Mileage"
+        },
+        {
+          "k": "Compatibilidad de Combustible",
+          "v": "Todo tipo de gasolinas",
+          "nota": "con o sin plomo"
+        },
+        {
+          "k": "Compatibilidad de Motores",
+          "v": "Motores de gasolina de inyección electrónica o carburador",
+          "nota": "automóviles, motocicletas y equipos a gasolina"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella plástica naranja de 355 ml con cuello aplicador largo y tapón roscado negro"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "d": "Detiene el Cascabeleo y Picado (Pinging & Knocking): estabiliza el frente de llama en la cámara de combustión para evitar detonaciones irregulares."
+        },
+        {
+          "t": "Reduce el Autoencendido (Dieseling)",
+          "d": "evita que el motor siga dando sacudidas o combustiones residuales al cerrar el contacto."
+        },
+        {
+          "t": "Incremento Efectivo de Octano",
+          "d": "compensa gasolinas de bajo octanaje o calidad deficiente, protegiendo las piezas internas del motor."
+        },
+        {
+          "d": "Mejora la Economía de Combustible (Improves Mileage): optimiza la quema de la mezcla aire-combustible para un mayor aprovechamiento energético."
+        },
+        {
+          "t": "Envase Aplicador de Cuello Largo",
+          "d": "facilita el vertido directo en bocas de llenado con válvula de seguridad sin necesidad de embudos adicionales."
+        }
+      ],
+      "idealPara": [
+        "Vehículos de gasolina que presentan cascabeleo al acelerar, subir pendientes o operar bajo carga.",
+        "Compensar combustibles de bajo índice de octano en automóviles, camionetas y motocicletas.",
+        "Mantenimiento preventivo regular para conservar limpia la cámara de combustión y optimizar el consumo de gasolina."
+      ],
+      "incluye": [
+        "1× Botella de Aditivo Elevador de Octanaje VESLEE Octane Booster (355 ml)"
+      ],
+      "slug": "aditivo-veslee-octane-355-ml",
+      "rev": 1795539703732
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {
+    "1795539696918": "1795539259264"
+  }
+}
