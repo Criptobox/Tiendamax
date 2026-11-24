@@ -132,6 +132,30 @@ def safe_json(text: str) -> Any:
     return json.loads(text)
 
 
+def muestra_paginas(products: list[dict], products_sorted: list[dict] | None = None, apagadas=None) -> list[dict]:
+    """Productos cuya página /p/ hay que comprobar: los más recientes y algunos primeros.
+
+    Solo los que TIENEN página. Una categoría o subcategoría apagada en el panel (y
+    una tarjeta digital sin importes) no genera /p/ (ver regenerate_artifacts), así
+    que probarla daba un 404 «fallido» en cada ejecución: con WIFI apagada el agente
+    avisaba de un fallo inexistente cada 30 minutos y el aviso real se perdía."""
+    if apagadas is None:
+        try:
+            import categorias_apagadas
+            apagadas = categorias_apagadas.leer(ROOT / "categorias.json")
+        except Exception:
+            apagadas = None
+    visibles = apagadas.visibles(products) if apagadas is not None else list(products)
+    ids_visibles = {str(p.get("id", "")) for p in visibles}
+    orden = products_sorted if products_sorted is not None else sorted(products, key=lambda p: str(p.get("id", "")), reverse=True)
+    sample, seen = [], set()
+    for p in [x for x in orden if str(x.get("id", "")) in ids_visibles][:10] + visibles[:5]:
+        pid = str(p.get("id", ""))
+        if pid and pid not in seen:
+            seen.add(pid); sample.append(p)
+    return sample
+
+
 def load_local_products() -> list[dict]:
     try:
         return json.loads((ROOT / "productos.json").read_text(encoding="utf-8"))
@@ -313,12 +337,7 @@ def main() -> int:
     products_sorted = sorted(products, key=lambda p: str(p.get("id", "")), reverse=True)
 
     # Páginas /p/ de muestra: recientes + algunos primeros
-    sample = []
-    seen = set()
-    for p in products_sorted[:10] + products[:5]:
-        pid = str(p.get("id", ""))
-        if pid and pid not in seen:
-            seen.add(pid); sample.append(p)
+    sample = muestra_paginas(products, products_sorted)
     page_fails = []
     for p in sample[:12]:
         pid = p.get("id")
