@@ -28,7 +28,7 @@ class BuildCssCompletenessTest(unittest.TestCase):
     def test_todos_los_css_fuente_estan_en_orden(self):
         css_dir = ROOT / "css"
         en_disco = {p.name for p in css_dir.glob("*.css")} - self.EXCEPCIONES
-        en_orden = set(build_css.ORDEN)
+        en_orden = set(build_css.ORDEN) | set(getattr(build_css, 'APARTE', []))
         faltantes = en_disco - en_orden
         self.assertEqual(
             faltantes, set(),
@@ -38,7 +38,7 @@ class BuildCssCompletenessTest(unittest.TestCase):
 
     def test_orden_no_referencia_archivos_inexistentes(self):
         css_dir = ROOT / "css"
-        en_orden = set(build_css.ORDEN)
+        en_orden = set(build_css.ORDEN) | set(getattr(build_css, 'APARTE', []))
         inexistentes = {n for n in en_orden if not (css_dir / n).exists()}
         self.assertEqual(
             inexistentes, set(),

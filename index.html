@@ -80,9 +80,23 @@
   };
 })();
 </script>
+<meta name="tm-tema-css" content="css/tema-estacional.css?v=b3c1ba5a">
 <script>
 /* Se viste de temporada antes de pintar, con lo último que dijo config.json.
-   ?tema=navidad|halloween|no es la vista previa del panel: no se guarda. */
+   ?tema=navidad|halloween|no es la vista previa del panel: no se guarda.
+   La hoja del tema (css/tema-estacional.css, 9 KB comprimidos) NO va en bundle.css:
+   solo se pide cuando hay tema (tmTemaCSS), y siempre DESPUÉS del bundle para no
+   cambiar la cascada. */
+window.tmTemaCSS = function(){
+  try {
+    if (window.__tmTemaCSS) return;
+    var m = document.querySelector('meta[name="tm-tema-css"]');
+    if (!m || !m.content) return;
+    window.__tmTemaCSS = 1;
+    if (document.readyState === 'loading') document.write('<link rel="stylesheet" href="' + m.content + '">');
+    else { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = m.content; document.head.appendChild(l); }
+  } catch(e) {}
+};
 (function(){
   try {
     var q = /[?&]tema=(navidad|halloween|no)\b/.exec(location.search), t;
@@ -348,7 +362,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=bdad97b6" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=56ba4fa3" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -359,7 +373,8 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=f529ca86">
+    <link rel="stylesheet" href="css/bundle.css?v=98d2c1bd">
+    <script>if (document.documentElement.getAttribute('data-tema')) tmTemaCSS();</script>
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -667,7 +682,7 @@
                         if (cfg.tema) localStorage.setItem('tm_tema_cfg', JSON.stringify(cfg.tema));
                         else localStorage.removeItem('tm_tema_cfg');
                         var _t = tmTemaEfectivo(cfg.tema || null);
-                        if (_t) document.documentElement.setAttribute('data-tema', _t);
+                        if (_t) { document.documentElement.setAttribute('data-tema', _t); window.tmTemaCSS && tmTemaCSS(); }
                         else document.documentElement.removeAttribute('data-tema');
                         if (window.tmTemaIconos) tmTemaIconos(_t);
                     }
@@ -690,7 +705,7 @@
     <!-- Header -->
     <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-        <div class="mobile-menu-logo"><img src="iconos/icon-192.png" alt="TiendaMax" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
+        <div class="mobile-menu-logo"><img src="iconos/icon-192.png" alt="TiendaMax" width="30" height="30" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
         <button data-action="cerrarMenuMovil" aria-label="Cerrar menú" type="button" class="mobile-menu-close">×</button>
         <a href="#" data-action="volverAlInicio,cerrarMenuMovil">🏠 Inicio</a>
         <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">📂 Categorías</a>
@@ -1825,7 +1840,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=bdad97b6" defer></script>
+    <script src="js/tm-bundle.js?v=56ba4fa3" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -2013,7 +2028,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=fd846c7c" defer></script>
+    <script src="js/tm-bot.js?v=34ff9621" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

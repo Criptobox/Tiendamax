@@ -462,3 +462,29 @@ html body #subcategoriaTabs .subcategoria-tab{flex:0 0 auto;display:inline-flex;
 html body #subcategoriaTabs .subcategoria-tab .tab-n{font-size:11px;font-weight:700;opacity:.6}
 html body #subcategoriaTabs .subcategoria-tab.active .tab-n{opacity:.9}
 html body #subcategoriaTabs .subcategoria-tab.sin-stock:not(.active){opacity:.55}
+
+/* Zonas de toque de 44 px SIN cambiar el aspecto: lo que crece es un área invisible
+   alrededor del botón (el dedo mide ~44 px; estos botones de 29–32 px se fallaban).
+   Los que ya usan ::before/::after para dibujarse usan el otro, o crecen un poco. */
+html body .heart-icon-btn::after,
+html body .notif-icon-btn::after,
+html body .header-theme-btn::after,
+html body .hsb-buscar-pill::after,
+html body .mv-nav::after,
+html body .hero-banner-prev::after,
+html body .hero-banner-next::after,
+html body .mv-dots button::after,
+html body button[aria-label^="Ofertas "]::after{content:"";position:absolute;inset:-8px}
+html body .btn-megusta::before{content:"";position:absolute;inset:-7px}
+html body .mv-dots button::after{inset:-10px -3px}
+html body button[aria-label^="Ofertas "]::after{inset:-18px -7px}
+html body .mv-dots button,
+html body button[aria-label^="Ofertas "]{position:relative}
+html body .currency-toggle .cur-btn{min-height:40px}
+html body #catVerMasBtn{min-height:44px}
+
+/* Controles nativos (campos, selectores, casillas), barras de desplazamiento y fondo del
+   lienzo siguen el modo de la tienda: oscuro por defecto, claro con body.light-mode
+   (o html.tm-pre-light mientras carga). Sin esto el navegador los pinta siempre claros. */
+html{color-scheme:dark}
+html.tm-pre-light,html:has(body.light-mode){color-scheme:light}
