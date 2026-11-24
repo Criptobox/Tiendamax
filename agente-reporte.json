@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-23T20:44:27.869759+00:00",
-  "productos": 177,
-  "urgentes": 24,
+  "generado": "2026-11-24T19:49:42.208494+00:00",
+  "productos": 179,
+  "urgentes": 25,
   "advertencias": 0,
   "info": 5,
-  "resumen": "Anoche revisé tus 177 productos y encontré 24 urgente(s), 5 de info.",
+  "resumen": "Anoche revisé tus 179 productos y encontré 25 urgente(s), 5 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -125,6 +125,11 @@
       "tipo": "nombre",
       "nombre": "Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo con BMS Integrado",
       "detalle": "→ Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo Con BMS Integrado"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954(450 ML)",
+      "detalle": "→ Aditivo Multifuncional Para Gasolina Mannol Octane PLUS 9954(450 ML)"
     },
     {
       "tipo": "stock_bajo",
