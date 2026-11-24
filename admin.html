@@ -1430,6 +1430,25 @@ try{var _piel=localStorage.getItem('tm_piel');
     .sidebar { display:none !important; }
     .content { padding-top:16px !important; }
   }
+
+/* Selector de categoría / subcategoría con botones (chipPicker) */
+.chip-select-oculto{position:absolute !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;margin:0 !important;padding:0 !important;border:0 !important}
+.grid-picker{grid-template-columns:1fr !important}
+.chip-picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip-sel{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 14px;border-radius:999px;border:1px solid var(--border,rgba(255,255,255,.14));background:rgba(255,255,255,.04);color:var(--text,#e8e8ee);font:inherit;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.chip-sel b{font-size:12px;font-weight:600;opacity:.55;margin-left:auto}
+.chip-sel .chip-dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
+.chip-sel:hover{border-color:rgba(255,107,53,.5)}
+.chip-sel:focus-visible{outline:2px solid var(--o,#FF6B35);outline-offset:2px}
+/* Subcategorías: la elegida con borde y tinte naranja */
+.chip-sel.on{background:rgba(255,107,53,.16);border-color:var(--o,#FF6B35);color:#ffb08a}
+/* Categorías: dos columnas, nombre a la izquierda y cantidad a la derecha; la elegida, rellena */
+.chip-rejilla{display:grid;grid-template-columns:1fr 1fr}
+.chip-rejilla .chip-sel{min-height:46px;border-radius:16px;font-size:13px;letter-spacing:0;gap:7px;padding:8px 12px;min-width:0}
+.chip-rejilla .chip-sel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip-rejilla .chip-sel.on{background:var(--o,#FF6B35);border-color:var(--o,#FF6B35);color:#fff}
+.chip-rejilla .chip-sel.on b{opacity:.9}
+.chip-vacio{font-size:12.5px;color:var(--muted,#9a9aa8);padding:6px 2px}
 </style>
 <style>
 /* 🧾 Historial de ventas en fichas */
@@ -2292,7 +2311,7 @@ try{var _piel=localStorage.getItem('tm_piel');
               <h3>📝 Información</h3>
               <div class="form-group"><label class="form-label" for="productName">Nombre del producto *</label><input class="form-input" id="productName" required placeholder="Ej: Router WiFi 6 AX1800"></div>
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="productDescription">Descripción</label><textarea class="form-textarea" id="productDescription" placeholder="Características, materiales, para qué sirve…"></textarea></div>
-              <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+              <div class="form-grid grid-picker" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
                 <div class="form-group"><label class="form-label" for="productCategory">Categoría *</label><select class="form-select" id="productCategory" required onchange="agregarFillSubcats()"><option value="">Selecciona…</option></select></div>
                 <div class="form-group"><label class="form-label" for="productSubcategory">Subcategoría</label><select class="form-select" id="productSubcategory"><option value="">—</option></select></div>
               </div>
@@ -2419,7 +2438,7 @@ try{var _piel=localStorage.getItem('tm_piel');
     </div>
     <div class="grid-2" style="margin-top:10px">
       <div class="form-group"><label class="form-label" for="pedit-stock">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
-      <div class="grid-2" style="gap:8px">
+      <div class="grid-2 grid-picker" style="gap:8px">
         <div class="form-group" style="margin:0"><label class="form-label" for="pedit-cat">Categoría</label><select class="form-select" id="pedit-cat" onchange="apEditFillSubcats()"></select></div>
         <div class="form-group" style="margin:0"><label class="form-label" for="pedit-subcat">Subcategoría</label><select class="form-select" id="pedit-subcat"><option value="">—</option></select></div>
       </div>
@@ -2465,7 +2484,7 @@ try{var _piel=localStorage.getItem('tm_piel');
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=283a7043"></script>
+<script src="js/tm-bundle.js?v=bdad97b6"></script>
 <script>
 // Las pestañas se escriben con emoji para que el HTML se lea, pero se pintan
 // con el ícono de línea de tm-iconos, que es el mismo dibujo que usa la
@@ -4504,6 +4523,69 @@ function agregarFillSubcats(){
   if(!subs.length){ const k=Object.keys(map).find(x=>norm(x)===norm(cat)); if(k) subs=map[k]; }
   sub.innerHTML='<option value="">—</option>'+(subs||[]).map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
 }
+
+/* ============ Selector de categoría / subcategoría con botones ============
+   Los <select> de siempre (productCategory, productSubcategory, pedit-cat,
+   pedit-subcat) siguen siendo la fuente de verdad —todo el código lee su .value y
+   su onchange—; este selector los oculta a la vista y pinta encima botones con
+   el color y la cantidad de cada categoría, a un toque y sin abrir la lista del
+   sistema. Se mantiene al día solo: cuando el código cambia las opciones (al
+   elegir otra categoría) o el valor (al abrir un producto), se repinta. */
+function chipPicker(sel, cfg){
+  if(!sel || sel._chipPicker) return;
+  cfg = cfg || {};
+  const box = document.createElement('div');
+  box.className = 'chip-picker' + (cfg.rejilla ? ' chip-rejilla' : '');
+  box.setAttribute('role', 'radiogroup');
+  if(sel.getAttribute('aria-label') || cfg.etiqueta) box.setAttribute('aria-label', sel.getAttribute('aria-label') || cfg.etiqueta);
+  sel.insertAdjacentElement('afterend', box);
+  sel.classList.add('chip-select-oculto');
+  sel.tabIndex = -1;
+  sel._chipPicker = box;
+  const pintar = () => {
+    const opts = Array.from(sel.options);
+    const vacia = opts.find(o => o.value === '');
+    const cuerpo = opts.filter(o => o.value !== '');
+    if(!cuerpo.length){ box.innerHTML = '<span class="chip-vacio">' + esc(cfg.sinOpciones || 'Sin opciones') + '</span>'; return; }
+    const html = [];
+    if(cfg.conNinguna && vacia) html.push(chipHtml('', cfg.ninguna || 'Ninguna', sel.value === '', ''));
+    cuerpo.forEach(o => {
+      const n = cfg.contar ? cfg.contar(o.value) : null;
+      const color = cfg.color ? cfg.color(o.value) : '';
+      html.push(chipHtml(o.value, o.textContent, o.value === sel.value, color, n));
+    });
+    box.innerHTML = html.join('');
+  };
+  function chipHtml(v, txt, on, color, n){
+    return '<button type="button" class="chip-sel' + (on ? ' on' : '') + '" role="radio" aria-checked="' + (on ? 'true' : 'false') + '" data-v="' + esc(v) + '">'
+      + (color ? '<i class="chip-dot" style="background:' + esc(color) + '"></i>' : '')
+      + '<span>' + esc(txt) + '</span>'
+      + (n != null ? '<b>' + n + '</b>' : '') + '</button>';
+  }
+  box.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.chip-sel'); if(!b) return;
+    sel.value = b.getAttribute('data-v');
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    pintar();
+  });
+  // Cambios de valor hechos por el código (abrir un producto, limpiar el formulario)
+  // no disparan ningún evento: se intercepta el setter de esta instancia.
+  const d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+  Object.defineProperty(sel, 'value', { configurable: true, get(){ return d.get.call(this); }, set(v){ d.set.call(this, v); pintar(); } });
+  new MutationObserver(pintar).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ['selected'] });
+  sel.addEventListener('change', pintar);
+  pintar();
+}
+function chipPickersIniciar(){
+  const contar = c => { try { return (PRODUCTOS || []).filter(p => norm(p.categoria) === norm(c)).length; } catch(e){ return null; } };
+  const color = c => (typeof window.tmColorCategoria === 'function' ? window.tmColorCategoria(c) : '') || '';
+  [['productCategory','productSubcategory'], ['pedit-cat','pedit-subcat']].forEach(([c, sc]) => {
+    chipPicker(document.getElementById(c), { contar, color, etiqueta: 'Categoría', rejilla: true });
+    chipPicker(document.getElementById(sc), { conNinguna: true, ninguna: 'Sin subcategoría', sinOpciones: 'Esta categoría no tiene subcategorías', etiqueta: 'Subcategoría' });
+  });
+}
+window.chipPickersIniciar = chipPickersIniciar;
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', chipPickersIniciar); else chipPickersIniciar();
 
 /* ============ COMBOS (creador) ============ */
 let COMBO_SEL = [];
