@@ -80,9 +80,23 @@
   };
 })();
 </script>
+<meta name="tm-tema-css" content="css/tema-estacional.css?v=b3c1ba5a">
 <script>
 /* Se viste de temporada antes de pintar, con lo último que dijo config.json.
-   ?tema=navidad|halloween|no es la vista previa del panel: no se guarda. */
+   ?tema=navidad|halloween|no es la vista previa del panel: no se guarda.
+   La hoja del tema (css/tema-estacional.css, 9 KB comprimidos) NO va en bundle.css:
+   solo se pide cuando hay tema (tmTemaCSS), y siempre DESPUÉS del bundle para no
+   cambiar la cascada. */
+window.tmTemaCSS = function(){
+  try {
+    if (window.__tmTemaCSS) return;
+    var m = document.querySelector('meta[name="tm-tema-css"]');
+    if (!m || !m.content) return;
+    window.__tmTemaCSS = 1;
+    if (document.readyState === 'loading') document.write('<link rel="stylesheet" href="' + m.content + '">');
+    else { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = m.content; document.head.appendChild(l); }
+  } catch(e) {}
+};
 (function(){
   try {
     var q = /[?&]tema=(navidad|halloween|no)\b/.exec(location.search), t;
@@ -359,7 +373,8 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=db05ba7c">
+    <link rel="stylesheet" href="css/bundle.css?v=25b4d7c5">
+    <script>if (document.documentElement.getAttribute('data-tema')) tmTemaCSS();</script>
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -667,7 +682,7 @@
                         if (cfg.tema) localStorage.setItem('tm_tema_cfg', JSON.stringify(cfg.tema));
                         else localStorage.removeItem('tm_tema_cfg');
                         var _t = tmTemaEfectivo(cfg.tema || null);
-                        if (_t) document.documentElement.setAttribute('data-tema', _t);
+                        if (_t) { document.documentElement.setAttribute('data-tema', _t); window.tmTemaCSS && tmTemaCSS(); }
                         else document.documentElement.removeAttribute('data-tema');
                         if (window.tmTemaIconos) tmTemaIconos(_t);
                     }

@@ -32,6 +32,27 @@ class TemaEstacionalTest(unittest.TestCase):
                            capture_output=True, text=True, timeout=240)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
+    def test_la_hoja_del_tema_va_aparte_y_solo_con_tema(self):
+        """css/tema-estacional.css no va en bundle.css (9 KB comprimidos de peso muerto el 90 %
+        del año): index.html la añade DESPUÉS del bundle solo con data-tema (tests/tema_css_check.mjs)."""
+        import sys
+        sys.path.insert(0, str(RAIZ / "scripts"))
+        import build_css
+        self.assertNotIn("tema-estacional.css", build_css.ORDEN)
+        self.assertIn("tema-estacional.css", build_css.APARTE)
+        self.assertIn('<meta name="tm-tema-css" content="css/tema-estacional.css?v=', INDEX)
+        despues = INDEX[INDEX.index('href="css/bundle.css'):]
+        self.assertIn("getAttribute('data-tema')) tmTemaCSS();", despues[:300],
+                      "la llamada tiene que ir justo detrás del <link> del bundle (cascada)")
+
+    def test_la_hoja_del_tema_en_navegador(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(RAIZ / "tests" / "tema_css_check.mjs")], cwd=str(RAIZ),
+                           capture_output=True, text=True, timeout=240)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
     def test_la_regla_es_la_misma_en_la_tienda_y_en_el_panel(self):
         # Dos copias distintas y el panel diría "toca Navidad" mientras la tienda no.
         self.assertIsNotNone(_regla(INDEX))

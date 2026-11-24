@@ -34,8 +34,16 @@ ORDEN = [
     "escala-tipografica.css",  # los tamaños de letra, en una capa @layer (gana a los !important sueltos)
     "digital.css",         # tarjetas regalo/recargas: precio en USDT y su ficha — clases tm-dig-*, no pisa nada
     "barra-inferior.css",  # barra inferior del móvil (Inicio/Categorías/Carrito/Más) — clases tm-barra*, solo ≤768px
-    "tema-estacional.css",  # Navidad / Halloween: solo si html[data-tema]; sin el atributo no hace nada
     "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
+]
+
+# Hojas que NO van en bundle.css: se sirven aparte. tema-estacional.css (Navidad /
+# Halloween, 59 KB minificado = 9 KB comprimido) cuelga entero de html[data-tema],
+# así que fuera de temporada no hace nada y sería peso muerto en cada visita. El
+# <head> de index.html la añade DESPUÉS del bundle solo cuando hay tema (tmTemaCSS),
+# sin tocar el orden de la cascada. Sigue siendo una hoja fuente más de css/.
+APARTE = [
+    "tema-estacional.css",
 ]
 
 def main():
