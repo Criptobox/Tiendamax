@@ -170,6 +170,7 @@ const navegador = await chromium.launch({ executablePath: '/opt/pw-browsers/chro
     await pagina.waitForTimeout(800);
     e = await estado();
     ok(!e.ids.some(id => fueraIds.has(id)), 'con la red lenta, la caché vuelve a enseñar lo apagado hasta que llega categorias.json');
+    ok(!n(e.tarjetas).includes(n(CAT_OFF)), `con la red lenta la tarjeta de «${CAT_OFF}» (apagada) sale en la primera pintura y luego se va: ${e.tarjetas.slice(0, 160)}`);
     if (rebajado) ok(!e.rebajas.includes(rebajado.nombre.replace(/^\W+/, '').slice(0, 18)),
        'las rebajas se pintan antes del bundle y con la caché vuelven a enseñar lo apagado');
     CATS_COLGADO = false;
