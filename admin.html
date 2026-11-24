@@ -1434,14 +1434,20 @@ try{var _piel=localStorage.getItem('tm_piel');
 /* Selector de categoría / subcategoría con botones (chipPicker) */
 .chip-select-oculto{position:absolute !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;margin:0 !important;padding:0 !important;border:0 !important}
 .grid-picker{grid-template-columns:1fr !important}
-.chip-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.chip-sel{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--border,rgba(255,255,255,.14));background:rgba(255,255,255,.04);color:var(--text,#e8e8ee);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.chip-sel b{font-size:11px;font-weight:700;opacity:.65}
-.chip-sel .chip-dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.chip-picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip-sel{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 14px;border-radius:999px;border:1px solid var(--border,rgba(255,255,255,.14));background:rgba(255,255,255,.04);color:var(--text,#e8e8ee);font:inherit;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.chip-sel b{font-size:12px;font-weight:600;opacity:.55;margin-left:auto}
+.chip-sel .chip-dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
 .chip-sel:hover{border-color:rgba(255,107,53,.5)}
-.chip-sel.on{background:var(--o,#FF6B35);border-color:var(--o,#FF6B35);color:#fff}
-.chip-sel.on b{opacity:.9}
 .chip-sel:focus-visible{outline:2px solid var(--o,#FF6B35);outline-offset:2px}
+/* Subcategorías: la elegida con borde y tinte naranja */
+.chip-sel.on{background:rgba(255,107,53,.16);border-color:var(--o,#FF6B35);color:#ffb08a}
+/* Categorías: dos columnas, nombre a la izquierda y cantidad a la derecha; la elegida, rellena */
+.chip-rejilla{display:grid;grid-template-columns:1fr 1fr}
+.chip-rejilla .chip-sel{min-height:46px;border-radius:16px;font-size:13px;letter-spacing:0;gap:7px;padding:8px 12px;min-width:0}
+.chip-rejilla .chip-sel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip-rejilla .chip-sel.on{background:var(--o,#FF6B35);border-color:var(--o,#FF6B35);color:#fff}
+.chip-rejilla .chip-sel.on b{opacity:.9}
 .chip-vacio{font-size:12.5px;color:var(--muted,#9a9aa8);padding:6px 2px}
 </style>
 <style>
@@ -4529,7 +4535,7 @@ function chipPicker(sel, cfg){
   if(!sel || sel._chipPicker) return;
   cfg = cfg || {};
   const box = document.createElement('div');
-  box.className = 'chip-picker';
+  box.className = 'chip-picker' + (cfg.rejilla ? ' chip-rejilla' : '');
   box.setAttribute('role', 'radiogroup');
   if(sel.getAttribute('aria-label') || cfg.etiqueta) box.setAttribute('aria-label', sel.getAttribute('aria-label') || cfg.etiqueta);
   sel.insertAdjacentElement('afterend', box);
@@ -4574,7 +4580,7 @@ function chipPickersIniciar(){
   const contar = c => { try { return (PRODUCTOS || []).filter(p => norm(p.categoria) === norm(c)).length; } catch(e){ return null; } };
   const color = c => (typeof window.tmColorCategoria === 'function' ? window.tmColorCategoria(c) : '') || '';
   [['productCategory','productSubcategory'], ['pedit-cat','pedit-subcat']].forEach(([c, sc]) => {
-    chipPicker(document.getElementById(c), { contar, color, etiqueta: 'Categoría' });
+    chipPicker(document.getElementById(c), { contar, color, etiqueta: 'Categoría', rejilla: true });
     chipPicker(document.getElementById(sc), { conNinguna: true, ninguna: 'Sin subcategoría', sinOpciones: 'Esta categoría no tiene subcategorías', etiqueta: 'Subcategoría' });
   });
 }
