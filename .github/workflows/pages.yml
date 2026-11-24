@@ -39,9 +39,11 @@ jobs:
         uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: '_site'
+          # .nojekyll es un fichero oculto y la v4+ los deja fuera por defecto.
+          include-hidden-files: true
 
       - name: Deploy to GitHub Pages
         id: deployment
