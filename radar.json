@@ -1,16 +1,16 @@
 {
-  "actualizado": "2026-11-23T22:28:27.021622+00:00",
-  "fecha": "2026-11-23",
+  "actualizado": "2026-11-24T21:00:33.537612+00:00",
+  "fecha": "2026-11-24",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 965.0,
+  "tasa": 970.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -22,9 +22,9 @@
       "mercado": {
         "min": 600.0,
         "mediana": 700.0,
-        "n": 21
+        "n": 20
       },
-      "deltaAyerMediana": 17.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -66,6 +66,12 @@
         },
         {
           "fecha": "2026-11-23",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-24",
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
@@ -131,15 +137,6 @@
           "titulo": "665 USD Estacion de carga portátil  BLUETTI AC 180.",
           "precio": 665.0,
           "url": "https://www.revolico.com/item/estacion-de-carga-portatil-bluetti-ac-180-57536961",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 665.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "665 USD Bluetti AC180 [665]",
-          "precio": 665.0,
-          "url": "https://www.revolico.com/item/bluetti-ac180-665-57652277",
           "dias": null,
           "moneda": "USD",
           "orig": 665.0
@@ -251,6 +248,15 @@
           "dias": null,
           "moneda": "USD",
           "orig": 835.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "930 USD BLUETTI *Estación de energía portátil",
+          "precio": 930.0,
+          "url": "https://www.revolico.com/item/bluetti-estacion-de-energia-portatil-56685637",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 930.0
         }
       ],
       "busqueda": "generador solar portátil bluetti ac180",
@@ -309,6 +315,12 @@
         },
         {
           "fecha": "2026-11-23",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-24",
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
@@ -390,6 +402,12 @@
         },
         {
           "fecha": "2026-11-23",
+          "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-24",
           "mediana": 130.0,
           "min": 51.0,
           "tu": 90.0
@@ -627,6 +645,12 @@
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-24",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
         }
       ],
       "muestras": [
@@ -807,6 +831,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-24",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -830,7 +860,7 @@
       "tuPrecio": 65.0,
       "convertidos": 0,
       "mercado": {
-        "min": 40.0,
+        "min": 45.0,
         "mediana": 65.0,
         "n": 15
       },
@@ -879,18 +909,15 @@
           "mediana": 65.0,
           "min": 40.0,
           "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-24",
+          "mediana": 65.0,
+          "min": 45.0,
+          "tu": 65.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "40 USD Interruptor de transferencia automática.",
-          "precio": 40.0,
-          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-58116478",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 40.0
-        },
         {
           "fuente": "revolico",
           "titulo": "45 USD Interruptor de Transferencia Automática ATS 63A y 100A Red y Generador 45 USD la Un",
@@ -902,21 +929,30 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "55 USD Interruptor de transferencia automática (Transfer)",
+          "titulo": "45 USD interruptor de transferencia automática",
+          "precio": 45.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-59053083",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 45.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "55 USD Interruptor de Transferencia Automática (ATS) - AC 110V, 2P, 63A",
           "precio": 55.0,
-          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-56906442",
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-ac-110v-2p-63a-57587499",
           "dias": null,
           "moneda": "USD",
           "orig": 55.0
         },
         {
           "fuente": "revolico",
-          "titulo": "60 USD Interruptor de Transferencia Automática (ATS) - AC 110V, 2P, 63A",
-          "precio": 60.0,
-          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-ats-ac-110v-2p-63a-57587499",
+          "titulo": "55 USD Interruptor de transferencia automática (Transfer)",
+          "precio": 55.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-transfer-56906442",
           "dias": null,
           "moneda": "USD",
-          "orig": 60.0
+          "orig": 55.0
         },
         {
           "fuente": "revolico",
@@ -1032,7 +1068,7 @@
         "mediana": 100.8,
         "n": 8
       },
-      "deltaAyerMediana": -0.2,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -1074,6 +1110,12 @@
         },
         {
           "fecha": "2026-11-23",
+          "mediana": 100.8,
+          "min": 97.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-24",
           "mediana": 100.8,
           "min": 97.0,
           "tu": 110.0
@@ -1209,6 +1251,12 @@
         },
         {
           "fecha": "2026-11-23",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-24",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
