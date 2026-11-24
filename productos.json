@@ -15034,5 +15034,110 @@
     "rev": 1795371645624,
     "seoTitle": "Panel Solar Fotovoltaico GCL Solar GCL-NT12/66GD-620W",
     "seoDescription": "El GCL Solar GCL-NT12/66GD-620W es un panel solar fotovoltaico monocristalino de alta eficiencia y potencia nominal de 620W (con tolerancia positiva…"
+  },
+  {
+    "id": 1795539259264,
+    "nombre": "Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954(450 ML)",
+    "descripcion": "El MANNOL Octane Plus 9954 (450 ml)es un aditivo multifuncional concentrado para gasolina (Multifunctional Petrol Fuel Additive) formulado para aumentar el índice de octano del combustible hasta en 6 puntos, optimizando la combustión y eliminando el picado de bielas o detonación prematura (knocking) en motores de gasolina de cuatro y dos tiempos. Su fórmula avanzada permite compensar combustibles de bajo octanaje o calidad irregular, protegiendo las válvulas y pistones contra el sobrecalentamiento y el desgaste mecánico.",
+    "imagen": "https://tiendamax.org/imagenes/img_1795539256824.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1795539256824.webp"
+    ],
+    "precioActual": 8,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 0.4,
+    "comisionMoneda": "USD",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ADITIVOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "🚀 Incremento: Hasta +6 Puntos de Octano",
+      "🛡️ Protege y Limpia el Sistema de Combustible",
+      "⚙️ Mejora la Eficiencia y el Rendimiento del Motor"
+    ],
+    "fechaAgregado": "2026-11-24T16:54:19.266Z",
+    "ficha": [
+      {
+        "k": "Marca",
+        "v": "MANNOL"
+      },
+      {
+        "k": "Modelo / Referencia",
+        "v": "Octane Plus",
+        "nota": "9954"
+      },
+      {
+        "k": "Contenido Neto",
+        "v": "450 ml"
+      },
+      {
+        "k": "Tipo de Producto",
+        "v": "Aditivo multifuncional para gasolina / Elevador de octanaje",
+        "nota": "Octane Booster"
+      },
+      {
+        "k": "Incremento de Octanaje",
+        "v": "Hasta +6 puntos",
+        "nota": "según la calidad base de la gasolina"
+      },
+      {
+        "k": "Compatibilidad de Combustible",
+        "v": "Todo tipo de gasolinas",
+        "nota": "con o sin plomo, con etanol"
+      },
+      {
+        "k": "Compatibilidad de Motores",
+        "v": "Motores de gasolina atmosféricos y turboalimentados, con inyección directa/indirecta o carburador, apto para convertidores catalíticos y sensores de oxígeno"
+      },
+      {
+        "k": "Funciones Principales",
+        "v": "Elevación de octanaje, limpieza y protección del sistema de combustible, mejora de eficiencia y rendimiento del motor"
+      },
+      {
+        "k": "Envase",
+        "v": "Botella cilíndrica negra de 450 ml con cuello estrecho para vertido directo en el depósito"
+      }
+    ],
+    "caracteristicas": [
+      {
+        "t": "Presentación de 450 ml",
+        "d": "formato concentrado de rendimiento óptimo para tratar tanques completos de combustible de forma práctica y directa."
+      },
+      {
+        "t": "Aumento de Hasta 6 Puntos de Octano",
+        "d": "previene el autoencendido, el cascabeleo (detonación) y los daños por combustión irregular."
+      },
+      {
+        "t": "Sistema de Combustible Protegido y Limpio",
+        "d": "disuelve depósitos de carbón y barnices en inyectores y válvulas, previniendo la corrosión interna."
+      },
+      {
+        "t": "Mayor Eficiencia del Vehículo",
+        "d": "optimiza el aprovechamiento energético de cada gota de gasolina, favoreciendo el ahorro de combustible."
+      },
+      {
+        "t": "Rendimiento Mejorado del Motor",
+        "d": "proporciona una aceleración más suave, rápida y potente sin tirones ni pérdida de fuerza bajo carga."
+      },
+      {
+        "t": "Seguro para Componentes del Escape",
+        "d": "fórmula libre de compuestos metálicos nocivos que no daña catalizadores ni bujías."
+      }
+    ],
+    "idealPara": [
+      "Automóviles y motocicletas de gasolina que operan en zonas donde el octanaje del combustible disponible es bajo o variable.",
+      "Motores de alta relación de compresión o turboalimentados que requieren protección adicional contra la detonación.",
+      "Mantenimiento preventivo periódico para mantener limpios los inyectores, las válvulas y la cámara de combustión."
+    ],
+    "incluye": [
+      "1× Botella de Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954 (450 ml)"
+    ],
+    "slug": "aditivo-plus-9954-450-ml",
+    "rev": 1795539294646
   }
 ]
