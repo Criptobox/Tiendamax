@@ -48,8 +48,13 @@ window.tmFuzzyMatch = tmFuzzyMatch;
 
 function renderizarCategoriasHomeInstant() {
     // Load from localStorage immediately (no network wait)
-    const localProds = tmParse(localStorage.getItem('productos'), null) || [];
-    const localCats = tmParse(localStorage.getItem('categorias'), null) || [];
+    // localStorage guarda el catálogo ENTERO (lo comparte el panel); lo apagado
+    // se filtra aquí, como en el resto de la tienda: sin esto esta primera
+    // pintura enseñaba una categoría apagada y la quitaba al llegar la red.
+    const _vis = (typeof tmSoloVisibles === 'function') ? tmSoloVisibles : (x => x);
+    const _visC = (typeof tmCatsVisibles === 'function') ? tmCatsVisibles : (x => x);
+    const localProds = _vis(tmParse(localStorage.getItem('productos'), null) || []);
+    const localCats = _visC(tmParse(localStorage.getItem('categorias'), null) || []);
     // Solo omitir si no hay absolutamente nada (primer uso sin datos en caché)
     if (localCats.length === 0) return;
     
