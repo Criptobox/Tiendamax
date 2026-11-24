@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-11-23T08:52:51.105017+00:00",
-  "total": 3,
+  "actualizado": "2026-11-23T21:11:19.443328+00:00",
+  "total": 5,
   "por_producto": {
     "1777924173211": [
       {
@@ -38,6 +38,32 @@
         "fecha": "4 jun 2026",
         "productoId": "1778102507659",
         "productoNombre": "Pesa/ Báscula inteligente digital.",
+        "comprador": false
+      }
+    ],
+    "1785866159148": [
+      {
+        "id": 1795466851639,
+        "ts": 1795463282891,
+        "autor": "Ernesto",
+        "texto": "Lo recomiendo",
+        "estrellas": 5,
+        "fecha": "23 nov 2026",
+        "productoId": "1785866159148",
+        "productoNombre": "Cargador de Batería de Litio BIEN 48V 5A",
+        "comprador": true
+      }
+    ],
+    "1790963608288": [
+      {
+        "id": 1795460052590,
+        "ts": 1795460054317,
+        "autor": "Yunior",
+        "texto": "Lo compré para la finca y de noche se ve clarito, se distinguen bien las personas y los animales a lo lejos sin que se den cuenta. De día también se ve a color y bien nítido. Por el precio está muy bueno, lo recomiendo.",
+        "estrellas": 5,
+        "fecha": "23 nov 2026",
+        "productoId": "1790963608288",
+        "productoNombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
         "comprador": false
       }
     ]

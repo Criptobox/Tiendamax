@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-22T16:47:51.613411+00:00",
-  "productos": 176,
+  "generado": "2026-11-23T20:44:27.869759+00:00",
+  "productos": 177,
   "urgentes": 24,
   "advertencias": 0,
-  "info": 7,
-  "resumen": "Anoche revisé tus 176 productos y encontré 24 urgente(s), 7 de info.",
+  "info": 5,
+  "resumen": "Anoche revisé tus 177 productos y encontré 24 urgente(s), 5 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -139,7 +139,7 @@
     {
       "tipo": "stock_bajo",
       "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
-      "detalle": "quedan 3"
+      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
@@ -147,19 +147,9 @@
       "detalle": "quedan 2"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "TP-Link Archer C50 | Router Wi-Fi 5 de Doble Banda AC1200 (Modo 3 en 1)",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
-      "detalle": "quedan 2"
-    },
-    {
       "tipo": "agotados",
-      "nombre": "120 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 117 más"
+      "nombre": "123 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 120 más"
     }
   ]
 }
