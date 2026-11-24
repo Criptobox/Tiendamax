@@ -999,4 +999,12 @@ function _tmSliderMover() {
     pill.style.left = (aRect.left - wRect.left + wrap.scrollLeft) + 'px';
     pill.style.width = aRect.width + 'px';
     pill.style.height = active.offsetHeight + 'px';
+    // La categoría elegida se centra en la tira: LUBRICANTES, al final, quedaba
+    // cortada por el borde derecho y no se sabía cuál estaba activa.
+    if (wrap.scrollWidth > wrap.clientWidth) {
+        const meta = Math.max(0, active.offsetLeft - (wrap.clientWidth - active.offsetWidth) / 2);
+        if (Math.abs(meta - wrap.scrollLeft) > 8) {
+            try { wrap.scrollTo({ left: meta, behavior: 'smooth' }); } catch (e) { wrap.scrollLeft = meta; }
+        }
+    }
 }

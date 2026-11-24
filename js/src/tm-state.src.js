@@ -331,17 +331,27 @@ function renderizarSubcategoriaTabs() {
     tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
     // Era la única pestaña con emoji de color: desentonaba al lado de las
     // demás, que van solo con texto. Se deja el texto a secas.
-    tabTodas.innerHTML = `<span class="tab-label">Todos</span>`;
+    const _nTodos = productos.filter(p => p.categoria === categoriaSeleccionada && Number(p.stock) > 0).length;
+    tabTodas.innerHTML = `<span class="tab-label">Todos</span><small class="tab-n">${_nTodos}</small>`;
     tabTodas.onclick = () => seleccionarSubcategoria('Todas');
     tabsContainer.appendChild(tabTodas);
 
+    // Lo que se puede comprar en cada una (stock > 0), igual que las tarjetas del
+    // inicio: el cliente ve de un vistazo dónde hay y dónde no.
+    const _dispSub = subcat => productos.filter(p => p.categoria === categoriaSeleccionada && p.subcategoria === subcat && Number(p.stock) > 0).length;
     subcats.forEach(subcat => {
         const tab = document.createElement('button');
-        tab.className = `subcategoria-tab ${subcategoriaSeleccionada === subcat ? 'active' : ''}`;
-        tab.innerHTML = `<span class="tab-label">${escapeHtml(subcat)}</span>`;
+        const n = _dispSub(subcat);
+        tab.className = `subcategoria-tab ${subcategoriaSeleccionada === subcat ? 'active' : ''}${n === 0 ? ' sin-stock' : ''}`;
+        tab.innerHTML = `<span class="tab-label">${escapeHtml(subcat)}</span><small class="tab-n">${n}</small>`;
         tab.onclick = () => seleccionarSubcategoria(subcat);
         tabsContainer.appendChild(tab);
     });
+    // La pestaña elegida queda a la vista aunque la fila sea más ancha que la pantalla.
+    const _act = tabsContainer.querySelector('.subcategoria-tab.active');
+    if (_act && tabsContainer.scrollWidth > tabsContainer.clientWidth) {
+        tabsContainer.scrollLeft = Math.max(0, _act.offsetLeft - (tabsContainer.clientWidth - _act.offsetWidth) / 2);
+    }
 
 }
 

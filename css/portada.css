@@ -452,3 +452,13 @@ html.tmrs-abierto, html.tmrs-abierto body { overflow: hidden; }
 .testimonio-card .resena-prod span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .testimonio-card .resena-prod:focus-visible{outline:2px solid var(--coral,#FF6B35);outline-offset:2px}
 .testimonio-card .resena-prod-txt{background:rgba(255,107,53,.08)!important;color:var(--coral,#FF6B35)!important;border:1px solid rgba(255,107,53,.25)!important}
+
+/* Subcategorías de una categoría: UNA fila que se desliza, no seis renglones.
+   Con 9 subcategorías (LUBRICANTES) las píldoras ocupaban media pantalla y
+   empujaban los productos fuera de la vista. */
+html body #subcategoriaTabs.subcategoria-tabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:8px;padding:2px 2px 10px;margin:0 0 6px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+html body #subcategoriaTabs.subcategoria-tabs::-webkit-scrollbar{display:none}
+html body #subcategoriaTabs .subcategoria-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;scroll-snap-align:center;min-height:38px;padding:6px 14px !important;font-size:12px !important;letter-spacing:.03em !important}
+html body #subcategoriaTabs .subcategoria-tab .tab-n{font-size:11px;font-weight:700;opacity:.6}
+html body #subcategoriaTabs .subcategoria-tab.active .tab-n{opacity:.9}
+html body #subcategoriaTabs .subcategoria-tab.sin-stock:not(.active){opacity:.55}
