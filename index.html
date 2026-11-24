@@ -348,7 +348,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=bdad97b6" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=56ba4fa3" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -359,7 +359,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=0e879250">
+    <link rel="stylesheet" href="css/bundle.css?v=db05ba7c">
 
     <!-- Styles moved to bundle.css -->
 </head>
@@ -690,7 +690,7 @@
     <!-- Header -->
     <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-        <div class="mobile-menu-logo"><img src="iconos/icon-192.png" alt="TiendaMax" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
+        <div class="mobile-menu-logo"><img src="iconos/icon-192.png" alt="TiendaMax" width="30" height="30" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
         <button data-action="cerrarMenuMovil" aria-label="Cerrar menú" type="button" class="mobile-menu-close">×</button>
         <a href="#" data-action="volverAlInicio,cerrarMenuMovil">🏠 Inicio</a>
         <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">📂 Categorías</a>
@@ -1825,7 +1825,7 @@
         </button>
     </nav>
 
-    <script src="js/tm-bundle.js?v=bdad97b6" defer></script>
+    <script src="js/tm-bundle.js?v=56ba4fa3" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -2013,7 +2013,7 @@
     <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
          en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
          esta cáscara descarga sola al abrir el chat). -->
-    <script src="js/tm-bot.js?v=fd846c7c" defer></script>
+    <script src="js/tm-bot.js?v=34ff9621" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

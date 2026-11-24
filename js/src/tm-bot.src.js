@@ -83,6 +83,7 @@
     .tm-bot-header-status::before{background:#22c55e!important;box-shadow:0 0 6px rgba(34,197,94,.7)!important;}
     .tm-bot-header-btn{background:rgba(255,255,255,.07)!important;border-radius:11px!important;color:#d4d4d8!important;}
     .tm-bot-header-btn:hover{background:rgba(255,255,255,.14)!important;}
+    .tm-bot-header-btn{position:relative}.tm-bot-header-btn::after{content:'';position:absolute;inset:-8px}
     body.light-mode .tm-bot-header{background:#fff!important;border-bottom-color:rgba(0,0,0,.08);}
     body.light-mode .tm-bot-header,body.light-mode .tm-bot-header-name{color:#1a1a1a;}
     body.light-mode .tm-bot-header::after{background:rgba(0,0,0,.15);}
