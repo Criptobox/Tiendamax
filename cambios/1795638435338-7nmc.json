@@ -1,0 +1,64 @@
+{
+  "v": 1,
+  "creado": "2026-11-25T20:27:15.338Z",
+  "productos": [
+    {
+      "id": 1778547461235,
+      "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
+      "precioActual": 30,
+      "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
+      "categoria": "CARROS",
+      "subcategoria": "LUBRICANTES",
+      "stock": 52,
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "descuento": 0,
+      "slug": "mannol-ts4-15w40-7104-5l",
+      "seoTitle": "Mannol ts - 4 SHPD 15W - 40 7104. 5L en Cuba | TiendaMax",
+      "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…",
+      "precioOriginal": 0,
+      "comision": 1.5,
+      "comisionMoneda": "USD",
+      "specs": [
+        "⚙ Viscosidad (SAE): 15W-40"
+      ],
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1783919083218.webp"
+      ],
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "MANNOL"
+        },
+        {
+          "k": "Viscosidad (SAE)",
+          "v": "15W-40"
+        },
+        {
+          "k": "Categoría",
+          "v": "Aceites y lubricantes"
+        },
+        {
+          "k": "Estado",
+          "v": "Nuevo en caja original"
+        }
+      ],
+      "idealPara": [
+        "El cambio de aceite de camiones y motores diésel de trabajo",
+        "Motores diésel que piden 15W-40"
+      ],
+      "incluye": [
+        "1x Mannol ts - 4 SHPD 15W - 40 7104. 5L"
+      ],
+      "slugsAnteriores": [
+        "mannol-ts-4-15w40-7104-5l"
+      ],
+      "rev": 1795638435338,
+      "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
