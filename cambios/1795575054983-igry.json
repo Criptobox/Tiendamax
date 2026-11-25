@@ -1,0 +1,111 @@
+{
+  "v": 1,
+  "creado": "2026-11-25T02:50:54.983Z",
+  "productos": [
+    {
+      "id": 1795556899968,
+      "nombre": "Aceite Mineral para Transmisión FANFARO MAX 5 8703 SAE 80W-90 (1 Litro)",
+      "imagen": "https://tiendamax.org/imagenes/img_1795556898007.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1795556898007.webp"
+      ],
+      "precioActual": 12,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 13,
+      "comision": 0.6,
+      "comisionMoneda": "USD",
+      "categoria": "LUBRICANTES",
+      "subcategoria": "ACEITE DE TRANSMISIÓN",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Contenido Neto: 1 Litro",
+        "🛢️ Viscosidad: SAE 80W-90 (Base Mineral)",
+        "🛡️ Especificaciones: API GL-4 / API GL-5 LS (Limited Slip) / MIL-L-2105 D"
+      ],
+      "fechaAgregado": "2026-11-24T21:48:19.969Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "FANFARO",
+          "nota": "SCT Germany"
+        },
+        {
+          "k": "Línea / Modelo",
+          "v": "MAX 5",
+          "nota": "Código 8703"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "1 Litro",
+          "nota": "1000 ml"
+        },
+        {
+          "k": "Tipo de Base",
+          "v": "Mineral universal de alta pureza"
+        },
+        {
+          "k": "Grado de Viscosidad",
+          "v": "SAE 80W-90"
+        },
+        {
+          "k": "Clasificación de Servicio API",
+          "v": "API GL-4 / API GL-5 LS",
+          "nota": "Limited Slip"
+        },
+        {
+          "k": "Especificaciones y Normas",
+          "v": "MIL-L-2105 D / MACK GO-J"
+        },
+        {
+          "k": "Compatibilidad de Sistemas",
+          "v": "Diferenciales convencionales y autoblocantes (Limited Slip), engranajes hipoidales, cajas de transferencia y transmisiones manuales de trabajo pesado"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella plástica verde ergonómica de 1 Litro con tapón verde roscado y escala graduada de nivel"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Doble Norma API GL-4 y GL-5 LS",
+          "d": "versatilidad total para lubricar diferenciales de deslizamiento limitado, ejes hipoidales y cajas de cambios bajo una misma especificación."
+        },
+        {
+          "t": "Protección de Extrema Presión (EP)",
+          "d": "evita el desgaste abrasivo, el picado y el agarrotamiento de los dientes de engranajes sometidos a cargas severas."
+        },
+        {
+          "t": "Estabilidad Térmica y Antioxidante",
+          "d": "resiste la degradación a altas temperaturas de operación, prolongando los intervalos entre cambios y manteniendo limpios los componentes internos."
+        },
+        {
+          "t": "Compatibilidad Total con Sellos",
+          "d": "fórmula neutra con elastómeros y retenes que previene fugas e hinchamiento de juntas."
+        },
+        {
+          "t": "Rendimiento Todo el Año",
+          "d": "asegura arranque suave y protección inmediata desde temperaturas bajo cero hasta condiciones de calor extremo."
+        }
+      ],
+      "idealPara": [
+        "Diferenciales traseros y delanteros (incluidos diferenciales autoblocantes Limited Slip) de automóviles, camionetas 4x4, SUVs y vehículos comerciales.",
+        "Ejes motrices, transmisiones finales y cajas de transferencia de camiones, autobuses, maquinaria agrícola y equipos de construcción.",
+        "Transmisiones manuales que exijan lubricante mineral multigrado SAE 80W-90 con especificación API GL-4 o GL-5."
+      ],
+      "incluye": [
+        "1× Botella de Aceite Mineral para Transmisión FANFARO MAX 5 SAE 80W-90 (1 Litro)"
+      ],
+      "slug": "aceite-5-8703-sae-80w90-1",
+      "rev": 1795575054983,
+      "seoTitle": "Aceite Mineral para Transmisión FANFARO MAX 5… | TiendaMax",
+      "seoDescription": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes…",
+      "descripcion": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes hipoidales, diferenciales y sistemas de transmisión sometidos a cargas extremas. Elaborado con aceites base minerales altamente purificados y un paquete de aditivos de última generación, garantiza una película lubricante resistente y una excelente protección contra el desgaste mecánico y el rayado en pares cónicos, cilíndricos y de tornillo sin fin."
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
