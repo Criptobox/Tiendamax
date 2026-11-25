@@ -2691,7 +2691,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
     "categoria": "CARROS",
     "subcategoria": "LUBRICANTES",
-    "stock": 53,
+    "stock": 52,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2737,7 +2737,7 @@
     "slugsAnteriores": [
       "mannol-ts-4-15w40-7104-5l"
     ],
-    "rev": 1795575418095,
+    "rev": 1795638435338,
     "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros."
   },
   {
