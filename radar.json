@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-11-24T21:00:33.537612+00:00",
-  "fecha": "2026-11-24",
+  "actualizado": "2026-11-25T20:23:29.437708+00:00",
+  "fecha": "2026-11-25",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -10,7 +10,7 @@
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -72,6 +72,12 @@
         },
         {
           "fecha": "2026-11-24",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-25",
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
@@ -324,6 +330,12 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-25",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -357,10 +369,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 51.0,
-        "mediana": 130.0,
-        "n": 19
+        "mediana": 112.5,
+        "n": 18
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -17.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -409,6 +421,12 @@
         {
           "fecha": "2026-11-24",
           "mediana": 130.0,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-25",
+          "mediana": 112.5,
           "min": 51.0,
           "tu": 90.0
         }
@@ -497,6 +515,24 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "125 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
+          "precio": 125.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-59090587",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 125.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W. ✅ Tecnolog",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt-para-mayor-eficiencia-de-carga-59093206",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 130.0
+        },
+        {
+          "fuente": "revolico",
           "titulo": "130 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W en 130 usd",
           "precio": 130.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-en-140-usd-56279997",
@@ -542,15 +578,6 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "140 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-56278890",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 140.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "145 USD Controlador Solar MPPT 1200W Lumina Q7 Boost – Panel hasta 1200W – Transporte incl",
           "precio": 145.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-1200w-lumina-q7-boost-panel-hasta-1200w-transporte-incluido-diez-de-octubre-58807064",
@@ -566,24 +593,6 @@
           "dias": null,
           "moneda": "USD",
           "orig": 145.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "150 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 150.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58934971",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 150.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "160 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W",
-          "precio": 160.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-58352430",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 160.0
         }
       ],
       "busqueda": "controlador mppt boost 1200w",
@@ -648,6 +657,12 @@
         },
         {
           "fecha": "2026-11-24",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-25",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -837,6 +852,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-25",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -912,6 +933,12 @@
         },
         {
           "fecha": "2026-11-24",
+          "mediana": 65.0,
+          "min": 45.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-25",
           "mediana": 65.0,
           "min": 45.0,
           "tu": 65.0
@@ -1119,6 +1146,12 @@
           "mediana": 100.8,
           "min": 97.0,
           "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-25",
+          "mediana": 100.8,
+          "min": 97.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
@@ -1257,6 +1290,12 @@
         },
         {
           "fecha": "2026-11-24",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-25",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
