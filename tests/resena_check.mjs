@@ -121,6 +121,9 @@ const nuevoCtx = async (vp) => {
 {
     const AHORA = Date.now(), ID = AHORA - 4 * 86400000;
     const VENTAS = [{ id: ID, fecha: 'x', cliente: 'Lucía Gómez', telefono: '5355557777',
+        items: [{ producto: 'Inversor Tataliken 4000W', productoId: PID, cantidad: 1, precio: 170 }], total: 170 },
+      // Compró hace 4 días y NO se le ha escrito aún: está en «Por contactar», no en «Pedir reseña».
+      { id: ID - 1000, fecha: 'x', cliente: 'Pedro Ruiz', telefono: '5355558888',
         items: [{ producto: 'Inversor Tataliken 4000W', productoId: PID, cantidad: 1, precio: 170 }], total: 170 }];
     const ctx = await nuevoCtx({ width: 412, height: 915 });
     await ctx.addInitScript(([v, id]) => {
@@ -138,10 +141,23 @@ const nuevoCtx = async (vp) => {
     await p.evaluate(() => { window.__abiertos = []; window.open = (u) => { window.__abiertos.push(u); return null; };
         document.getElementById('adminPanel')?.classList.remove('hidden'); document.querySelectorAll('#loginModal,.tm2-login').forEach(e => e.style.display = 'none'); go('clientes'); });
     await p.waitForTimeout(800);
-    const fila = () => p.evaluate(() => document.getElementById('cli-lista').innerText);
+    const fila = () => p.evaluate(() => [...document.querySelectorAll('#cli-lista .cli-card')].map(c => c.innerText).join('\n---\n'));
     let f = await fila();
     ok(/Pedir reseña/.test(f), `tras el primer seguimiento, la fila ofrece pedir la reseña: ${f.slice(0, 200)}`);
-    await p.evaluate(() => [...document.querySelectorAll('#cli-lista button')].find(b => /Pedir reseña/.test(b.textContent)).click());
+    // Su propio apartado: quien ya contestó sale de «Por contactar» y entra en «Pedir reseña»,
+    // sin tener que buscarlo entre todos los clientes.
+    const chips = () => p.evaluate(() => [...document.querySelectorAll('#cli-lista .vo-chip')].map(c => c.textContent.trim()));
+    let ch = await chips();
+    ok(ch.some(t => /Pedir reseña \(1\)/.test(t)), 'el chip «Pedir reseña» cuenta 1: ' + ch.join(' | '));
+    ok(ch.some(t => /Por contactar \(1\)/.test(t)), 'Pedro sigue en «Por contactar»: ' + ch.join(' | '));
+    await p.evaluate(() => cliFiltro('resena'));
+    let fr = await fila();
+    ok(/Lucía/.test(fr) && !/Pedro/.test(fr), 'el apartado solo enseña a Lucía, no a Pedro: ' + fr.slice(0, 160));
+    await p.evaluate(() => cliFiltro('contactar'));
+    fr = await fila();
+    ok(/Pedro/.test(fr) && !/Lucía/.test(fr), '«Por contactar» enseña a Pedro y ya no a Lucía: ' + fr.slice(0, 160));
+    await p.evaluate(() => cliFiltro('resena'));
+    await p.evaluate(() => [...document.querySelectorAll('#cli-lista .cli-card button')].find(b => /Pedir reseña/.test(b.textContent)).click());
     const abiertos = await p.evaluate(() => window.__abiertos);
     const txt = decodeURIComponent((abiertos[0] || '').split('text=')[1] || '');
     ok((abiertos[0] || '').startsWith('https://wa.me/5355557777?text='), 'abre el chat del cliente: ' + abiertos[0]);
@@ -149,7 +165,7 @@ const nuevoCtx = async (vp) => {
     f = await fila();
     ok(/Reseña pedida/.test(f) && !/Pedir reseña/.test(f), 'pedida una vez, la fila ya no ofrece pedirla otra vez: ' + f.slice(0, 200));
     // Contestó por chat: se publica desde el panel.
-    await p.evaluate(() => [...document.querySelectorAll('#cli-lista button')].find(b => /Publicar su reseña/.test(b.textContent)).click());
+    await p.evaluate(() => [...document.querySelectorAll('#cli-lista .cli-card button')].find(b => /Publicar su reseña/.test(b.textContent)).click());
     await p.click('#rp-est .rp-e[data-n="5"]');
     await p.fill('#rp-txt', 'Muy bueno, llegó en dos días');
     const antes = PUTS.length;
@@ -161,7 +177,10 @@ const nuevoCtx = async (vp) => {
     if (put) ok(put.body.autor === 'Lucía' && put.body.comprador === true && put.body.origen === 'whatsapp' && put.body.estrellas === 5,
                'reseña del panel: ' + JSON.stringify(put.body));
     f = await fila();
-    ok(!/Publicar su reseña|Pedir reseña/.test(f) && /Al día/.test(f), 'publicada, la fila vuelve a «Al día»: ' + f.slice(0, 200));
+    ok(!/Publicar su reseña|Pedir reseña/.test(f), 'publicada, el apartado ya no la ofrece: ' + f.slice(0, 200));
+    await p.evaluate(() => cliFiltro('todos'));
+    f = await fila();
+    ok(/Al día/.test(f.split('---')[0] + f), 'publicada, su ficha vuelve a «Al día»: ' + f.slice(0, 200));
     await ctx.close();
 }
 

@@ -8590,7 +8590,14 @@ function renderClientes(){
     (b.seg?1:0)-(a.seg?1:0) || ((b.seg&&b.seg.atraso)||0)-((a.seg&&a.seg.atraso)||0)
     || (b.total.usd-a.total.usd) || (b.total.mn-a.total.mn));
   const porContactar=list.filter(c=>c.seg).length;
-  $('#cli-sub').textContent = list.length+' clientes · '+porContactar+' por contactar · reviews · avisos';
+  // «Pedir reseña» es su propio apartado: tras escribirle el primer seguimiento
+  // el cliente sale de «Por contactar» y, si no, se perdía entre los 41. Solo
+  // entra quien ya se contactó, dentro del plazo y con un producto del catálogo
+  // (la regla vive en tm-crm → tmResenaEstado); aquí solo se junta.
+  list.forEach(c=>{ c.res=(!c.seg&&c.tel)?resenaDeCliente(c):null; });
+  const nResPedir=list.filter(c=>c.res&&c.res.estado==='pedir').length;
+  const nResPedida=list.filter(c=>c.res&&c.res.estado==='pedida').length;
+  $('#cli-sub').textContent = list.length+' clientes · '+porContactar+' por contactar · '+nResPedir+' para pedir reseña';
   const P=$('#cli-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${CLI_VIEW===v?'btn-primary':'btn-ghost'}" onclick="cliSwitch('${v}')">${l}</button>`;
     P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('avisos','🔔 Avísame')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos'); }
@@ -8649,15 +8656,17 @@ function renderClientes(){
     };
     const pintar=()=>{
       const q=norm(CLI_Q||''), qd=(CLI_Q||'').replace(/\D/g,'');
-      const vis=list.filter(c=>(CLI_FILTRO==='contactar'?!!c.seg:CLI_FILTRO==='tarjeta'?conTj(c):true)
+      const vis=list.filter(c=>(CLI_FILTRO==='contactar'?!!c.seg:CLI_FILTRO==='tarjeta'?conTj(c):CLI_FILTRO==='resena'?!!c.res:true)
         && (!q || norm(c.nombre||'').includes(q) || (qd.length>=3 && String(c.tel||'').includes(qd))));
+      if(CLI_FILTRO==='resena') vis.sort((x,y)=>(x.res.estado==='pedir'?0:1)-(y.res.estado==='pedir'?0:1) || (tmVentaTs(x.res.venta)||0)-(tmVentaTs(y.res.venta)||0));
       const cards=$('#cli-cards'); if(!cards) return;
-      cards.innerHTML = vis.length ? vis.map(ficha).join('') : `<div class="empty" style="grid-column:1/-1">Nadie coincide con «${esc(CLI_Q||'')}».</div>`;
+      const vacio=CLI_FILTRO==='resena'&&!q?'Nadie por pedirle reseña ahora.<br><small>Aparece aquí quien ya tiene su primer seguimiento hecho (a los 3 días) y compró hace menos de '+TM_RESENA_VENTANA_DIAS+' días.</small>':'Nadie coincide con «'+esc(CLI_Q||'')+'».';
+      cards.innerHTML = vis.length ? vis.map(ficha).join('') : `<div class="empty" style="grid-column:1/-1">${vacio}</div>`;
     };
     const chip=(k,t)=>`<button type="button" class="vo-chip" aria-pressed="${CLI_FILTRO===k}" onclick="cliFiltro('${k}')">${t}</button>`;
-    box.innerHTML = `${porContactar?`<div class="cli-aviso">📞 <b>${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
+    box.innerHTML = `${(!porContactar&&nResPedir)?`<div class="cli-aviso">⭐ <b>${nResPedir} por pedirle reseña</b> — ya les escribiste. <button type="button" class="btn btn-primary" style="padding:4px 10px;font-size:11.5px;margin-left:6px" onclick="cliFiltro('resena')">Verlos</button></div>`:''}${porContactar?`<div class="cli-aviso">📞 <b>${porContactar} por contactar hoy</b> — el mensaje se abre escrito en WhatsApp y puedes cambiarlo antes de enviarlo. Los seguimientos salen solos a los 3, 30 y 90 días de cada compra.</div>`:''}
       <div class="cli-barra"><input class="form-input" id="cli-buscar" type="search" placeholder="Buscar por nombre o WhatsApp" value="${esc(CLI_Q||'')}" autocomplete="off">
-        <div class="cli-chips">${chip('todos','Todos ('+list.length+')')}${chip('contactar','📞 Por contactar ('+porContactar+')')}${chip('tarjeta','🎁 Con tarjeta ('+nTj+')')}</div></div>
+        <div class="cli-chips">${chip('todos','Todos ('+list.length+')')}${chip('contactar','📞 Por contactar ('+porContactar+')')}${chip('resena','⭐ Pedir reseña ('+nResPedir+(nResPedida?' · '+nResPedida+' pedidas':'')+')')}${chip('tarjeta','🎁 Con tarjeta ('+nTj+')')}</div></div>
       <div class="cli-grid" id="cli-cards"></div>`;
     const inp=$('#cli-buscar'); if(inp) inp.oninput=()=>{ CLI_Q=inp.value; pintar(); };
     pintar();
