@@ -34,6 +34,15 @@ class SelectorCatalogoDelValeTest(unittest.TestCase):
         self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
 
 
+    def test_el_catalogo_se_busca_se_cuenta_y_no_se_pierde(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node no está disponible en este entorno")
+        r = subprocess.run([node, str(ROOT / "tests" / "vale_catalogo_uso_check.mjs")], cwd=str(ROOT),
+                           capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, "\n" + (r.stderr or r.stdout).strip())
+
+
 class ContratosTest(unittest.TestCase):
     def test_ejecutar_venta_pasa_la_tarjeta_escaneada(self):
         i = ADMIN.index("function reservaVender(id)")
