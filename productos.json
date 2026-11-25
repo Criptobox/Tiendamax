@@ -14388,7 +14388,7 @@
     "precioActual": 10,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 14,
+    "stock": 16,
     "comision": 0.5,
     "comisionMoneda": "USD",
     "categoria": "LUBRICANTES",
@@ -14401,7 +14401,7 @@
       "💧 Contenido Neto: 1 Litro",
       "🛢️ Viscosidad: SAE 80W-90",
       "🧪 Base Mineral de Alta Calidad (Mineral)",
-      "🛡️ Especificaciones: API GL-5 / MT-1 / MIL-L-2105D"
+      "🛡️ Especificaciones: API GL-4 / GL-5 / MT-1 / MIL-L-2105D"
     ],
     "fechaAgregado": "2026-11-06T15:49:22.526Z",
     "ficha": [
@@ -14429,7 +14429,7 @@
       },
       {
         "k": "Clasificación de Servicio API",
-        "v": "API GL-5 / API MT-1"
+        "v": "API GL-4 / API GL-5 / API MT-1"
       },
       {
         "k": "Especificación Militar",
@@ -14462,7 +14462,7 @@
         "d": "excelente fluidez en frío para facilitar el engranaje de marchas e impecable resistencia térmica en caliente."
       },
       {
-        "t": "Compatibilidad Multinorma GL-5",
+        "t": "Compatibilidad Multinorma GL-4/GL-5",
         "d": "aditivación balanceada que protege tanto engranajes hipoides pesados como sistemas con sincronizadores de metales amarillos."
       },
       {
@@ -14482,7 +14482,7 @@
       "1× Botella de Aceite Mineral para Transmisión DIMASOIL Digear 80W90 (1 Litro)"
     ],
     "slug": "aceite-digear-80w90-1-litro",
-    "rev": 1795556901833,
+    "rev": 1795569962970,
     "seoTitle": "Aceite Mineral para Transmisión DIMASOIL Digear… | TiendaMax",
     "seoDescription": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios…",
     "descripcion": "El DIMASOIL Digear 80W90 (1 Litro) es un fluido lubricante de base mineral en presentación de 1 litro, formulado especialmente para cajas de cambios manuales, diferenciales, cajas de transferencia y engranajes hipoidales sometidos a cargas severas y presiones extremas (Extreme Pressure / EP). Elaborado con aceites base altamente refinados y un avanzado paquete de aditivos azufre-fósforo, garantiza una protección robusta contra el desgaste metálico, el picado (pitting) y la formación de corrosión en piñones y rodamientos."
