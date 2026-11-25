@@ -15241,7 +15241,6 @@
   {
     "id": 1795556899968,
     "nombre": "Aceite Mineral para Transmisión FANFARO MAX 5 8703 SAE 80W-90 (1 Litro)",
-    "descripcion": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes hipoidales, diferenciales y sistemas de transmisión sometidos a cargas extremas. Elaborado con aceites base minerales altamente purificados y un paquete de aditivos de última generación, garantiza una película lubricante resistente y una excelente protección contra el desgaste mecánico y el rayado en pares cónicos, cilíndricos y de tornillo sin fin.",
     "imagen": "https://tiendamax.org/imagenes/img_1795556898007.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1795556898007.webp"
@@ -15249,7 +15248,7 @@
     "precioActual": 12,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 15,
+    "stock": 13,
     "comision": 0.6,
     "comisionMoneda": "USD",
     "categoria": "LUBRICANTES",
@@ -15337,8 +15336,9 @@
       "1× Botella de Aceite Mineral para Transmisión FANFARO MAX 5 SAE 80W-90 (1 Litro)"
     ],
     "slug": "aceite-5-8703-sae-80w90-1",
-    "rev": 1795556901833,
+    "rev": 1795575054983,
     "seoTitle": "Aceite Mineral para Transmisión FANFARO MAX 5… | TiendaMax",
-    "seoDescription": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes…"
+    "seoDescription": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes…",
+    "descripcion": "El FANFARO MAX 5 8703 (SAE 80W-90, 1 Litro) es un aceite mineral universal multigrado para transmisiones, desarrollado especialmente para engranajes hipoidales, diferenciales y sistemas de transmisión sometidos a cargas extremas. Elaborado con aceites base minerales altamente purificados y un paquete de aditivos de última generación, garantiza una película lubricante resistente y una excelente protección contra el desgaste mecánico y el rayado en pares cónicos, cilíndricos y de tornillo sin fin."
   }
 ]
