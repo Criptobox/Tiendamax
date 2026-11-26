@@ -1,0 +1,122 @@
+{
+  "v": 1,
+  "creado": "2026-11-26T18:35:19.402Z",
+  "productos": [
+    {
+      "id": 1793663513608,
+      "nombre": "Protector de Sobretensión y Corriente con Pantalla Digital Voltage VT-SRP-02 (220V / 80A)",
+      "imagen": "https://tiendamax.org/imagenes/img_1793663507904.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1793663507904.webp",
+        "https://tiendamax.org/imagenes/img_1793663509547.webp",
+        "https://tiendamax.org/imagenes/img_1793663510997.webp",
+        "https://tiendamax.org/imagenes/img_1793663512371.webp"
+      ],
+      "precioActual": 17,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 10,
+      "comision": 2,
+      "comisionMoneda": "USD",
+      "categoria": "ENERGIA",
+      "subcategoria": "ACCESORIOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "​🔌 Voltaje Nominal: 220V AC",
+        "⚡ Corriente Máxima: 80A",
+        "🖥️ Pantalla Digital Dual (Voltaje y Amperaje)"
+      ],
+      "fechaAgregado": "2026-11-02T23:51:53.609Z",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "Voltage",
+          "nota": "electronics art"
+        },
+        {
+          "k": "Modelo",
+          "v": "VT-SRP-02"
+        },
+        {
+          "k": "Tipo de Dispositivo",
+          "v": "Protector de sobretensión y corriente auto-rearmable con pantalla",
+          "nota": "Surge Protector / Over & Under Voltage & Current Protector"
+        },
+        {
+          "k": "Voltaje Nominal de Operación",
+          "v": "220 V AC"
+        },
+        {
+          "k": "Corriente Nominal Máxima",
+          "v": "80 A"
+        },
+        {
+          "k": "Indicadores y Controles",
+          "v": "Doble pantalla digital LED (lectura de Voltaje en V y Corriente en A) con 4 botones frontales de ajuste y control"
+        },
+        {
+          "k": "Funciones de Protección",
+          "v": "Corte automático por sobretensión, subtensión y sobrecorriente con auto-rearme temporizado"
+        },
+        {
+          "k": "Aplicación",
+          "v": "Uso común residencial y comercial",
+          "nota": "Uso Común / Common Use"
+        },
+        {
+          "k": "Montaje",
+          "v": "Riel DIN estándar de 35 mm para tablero eléctrico"
+        },
+        {
+          "k": "Código de Barras (EAN)",
+          "v": "7453021145237"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Pantalla Digital Dual en Tiempo Real",
+          "d": "permite visualizar al instante el voltaje de la línea y el amperaje de consumo sin necesidad de pinzas amperimétricas o multímetros externos."
+        },
+        {
+          "t": "Auto-Rearmable con Protección Automática",
+          "d": "desconecta la carga ante anomalías eléctricas y restablece el paso de energía de forma automática cuando la red vuelve a la normalidad."
+        },
+        {
+          "t": "Alta Capacidad de Trabajo (80A / 220V)",
+          "d": "soporta acometidas principales de viviendas completas y circuitos de alto consumo energético."
+        },
+        {
+          "t": "Parámetros Configurables",
+          "d": "botones frontales intuitivos que permiten personalizar los límites de corte por alto/bajo voltaje, corriente máxima y tiempos de retardo."
+        },
+        {
+          "t": "Diseño Modular Compacto",
+          "d": "instalación rápida en cualquier caja de breakers o centro de carga estándar con riel DIN"
+        }
+      ],
+      "idealPara": [
+        "Protección general de acometidas de 220V en hogares, apartamentos, oficinas y comercios (Uso Común).",
+        "Resguardo de electrodomésticos sensibles y equipos de alto consumo como aires acondicionados, refrigeradores, bombas de agua e inversores solares.",
+        "Tableros eléctricos principales donde se requiera monitoreo visual constante de voltaje y amperaje."
+      ],
+      "incluye": [
+        "1× Protector de Sobretensión y Corriente Voltage VT-SRP-02 (220V / 80A)",
+        "1× Manual de usuario e instrucciones de configuración"
+      ],
+      "slug": "protector-vt-srp-02-220v-80a",
+      "rev": 1795718119402,
+      "seoTitle": "Protector de Sobre/Baja Tensión y… | TiendaMax",
+      "seoDescription": "El Voltage VT-SVP-02 es un protector digital multifunción de sobretensión, baja tensión y sobrecorriente de respuesta ultra rápida, diseñado para…",
+      "descripcion": "​El Voltage VT-SRP-02 (220V / 80A) es un protector de sobretensión y corriente auto-rearmable con pantalla digital integrada, diseñado para el resguardo continuo de instalaciones eléctricas residenciales y comerciales de uso común. Su diseño modular para montaje en riel DIN incorpora un doble display LED de lectura en tiempo real (que muestra simultáneamente la tensión en voltios y el consumo en amperios) junto con botones frontales de configuración (M, subir, bajar y encendido/apagado)",
+      "slugsAnteriores": [
+        "protector-vt-svp-02-110v"
+      ],
+      "almacenId": "alm_1783425091823"
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
