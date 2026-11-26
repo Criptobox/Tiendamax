@@ -1228,8 +1228,8 @@
     "nombre": "Mannol 5W30 5L LONGLIFE",
     "precioActual": 40,
     "imagen": "https://tiendamax.org/imagenes/img_1783918216261.webp",
-    "categoria": "CARROS",
-    "subcategoria": "LUBRICANTES",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE MOTOR",
     "stock": 20,
     "masVendido": false,
     "usado": false,
@@ -1273,7 +1273,7 @@
     "incluye": [
       "1x Mannol 5W30 5L"
     ],
-    "rev": 1795575418095,
+    "rev": 1795709849819,
     "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
   },
   {
@@ -1505,8 +1505,8 @@
     "nombre": "Mannol Safari 20W - 50 7404 5L",
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1783918626441.webp",
-    "categoria": "CARROS",
-    "subcategoria": "LUBRICANTES",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE MOTOR",
     "stock": 51,
     "masVendido": false,
     "usado": false,
@@ -1550,7 +1550,7 @@
     "incluye": [
       "1x Mannol Safari 20W - 50 7404 5L"
     ],
-    "rev": 1795575418095,
+    "rev": 1795709849819,
     "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
   },
   {
@@ -2689,8 +2689,8 @@
     "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783919083218.webp",
-    "categoria": "CARROS",
-    "subcategoria": "LUBRICANTES",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE MOTOR",
     "stock": 52,
     "masVendido": false,
     "usado": false,
@@ -2737,7 +2737,7 @@
     "slugsAnteriores": [
       "mannol-ts-4-15w40-7104-5l"
     ],
-    "rev": 1795638435338,
+    "rev": 1795709849819,
     "descripcion": "Aceite de motor MANNOL TS-4 SHPD (código 7104), 15W-40, API CI-4 Plus/CH-4/SL, ACEA E7, especial para camiones. Envase de 5 litros."
   },
   {
@@ -2745,8 +2745,8 @@
     "nombre": "Mannol Defender 10W - 40 7507. 5L",
     "precioActual": 30,
     "imagen": "https://tiendamax.org/imagenes/img_1783918493021.webp",
-    "categoria": "CARROS",
-    "subcategoria": "LUBRICANTES",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE MOTOR",
     "stock": 23,
     "masVendido": false,
     "usado": false,
@@ -2790,7 +2790,7 @@
     "incluye": [
       "1x Mannol Defender 10W - 40 7507. 5L"
     ],
-    "rev": 1795575418095,
+    "rev": 1795709849819,
     "descripcion": "Aceite de motor MANNOL DEFENDER (código 7507), 10W-40, sintético, API SP, ACEA A3/B4. Envase de 5 litros."
   },
   {
@@ -13582,8 +13582,8 @@
     "stock": 23,
     "comision": 1.75,
     "comisionMoneda": "USD",
-    "categoria": "CARROS",
-    "subcategoria": "LUBRICANTES",
+    "categoria": "LUBRICANTES",
+    "subcategoria": "ACEITE DE MOTOR",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -13669,7 +13669,7 @@
       "1× Garrafa de Aceite Sintético MANNOL Energy 7511 5W-30 (Ester Technology)"
     ],
     "slug": "mannol-energy-7511-5w30",
-    "rev": 1795575418095,
+    "rev": 1795709849819,
     "seoTitle": "Mannol Energy 7511 5W-30 en Cuba | TiendaMax",
     "seoDescription": "El MANNOL Energy 7511 5W-30 es un aceite de motor hidrocraqueado (HC) 100% sintético de última generación, formulado con Ester Technology (tecnología de…",
     "descripcion": "El MANNOL Energy 7511 5W-30 es un aceite de motor hidrocraqueado (HC) 100% sintético de última generación, formulado con Ester Technology (tecnología de ésteres de SCT), diseñado para la lubricación de motores modernos de gasolina y diésel (con y sin turbocompresor), incluyendo motores con inyección directa o multiválvulas."
@@ -14150,7 +14150,7 @@
     "precioActual": 30,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "CARROS",
@@ -14257,7 +14257,7 @@
       "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
     ],
     "slug": "compresor-aire-st-221-air",
-    "rev": 1795575418095,
+    "rev": 1795709849819,
     "seoTitle": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
     "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…",
     "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje."
