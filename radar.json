@@ -1,16 +1,16 @@
 {
-  "actualizado": "2026-11-25T20:23:29.437708+00:00",
-  "fecha": "2026-11-25",
+  "actualizado": "2026-11-26T20:00:12.221306+00:00",
+  "fecha": "2026-11-26",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 970.0,
+  "tasa": 975.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -78,6 +78,12 @@
         },
         {
           "fecha": "2026-11-25",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-26",
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
@@ -336,6 +342,12 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-26",
+          "mediana": 125.0,
+          "min": 125.0,
+          "tu": 125.0
         }
       ],
       "muestras": [
@@ -372,7 +384,7 @@
         "mediana": 112.5,
         "n": 18
       },
-      "deltaAyerMediana": -17.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -426,6 +438,12 @@
         },
         {
           "fecha": "2026-11-25",
+          "mediana": 112.5,
+          "min": 51.0,
+          "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-26",
           "mediana": 112.5,
           "min": 51.0,
           "tu": 90.0
@@ -488,21 +506,21 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD ☀️ Controlador Solar MPPT Boost 1200W",
+          "titulo": "90 USD Controlador MPPT Solar Boost 1200W (48V / 60V / 72V) - Nuevo en Caja",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58331974",
+          "url": "https://www.revolico.com/item/controlador-mppt-solar-boost-1200w-48v-60v-72v-nuevo-en-caja-56634706",
           "dias": null,
           "moneda": "USD",
           "orig": 90.0
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Controlador MPPT Solar Boost 1200W (48V / 60V / 72V) - Nuevo en Caja",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/controlador-mppt-solar-boost-1200w-48v-60v-72v-nuevo-en-caja-56634706",
+          "titulo": "90 USD ☀️ Controlador Solar MPPT Boost 1200W",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58331974",
           "dias": null,
           "moneda": "USD",
-          "orig": 100.0
+          "orig": 90.0
         },
         {
           "fuente": "revolico",
@@ -663,6 +681,12 @@
         },
         {
           "fecha": "2026-11-25",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-26",
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
@@ -858,6 +882,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-26",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 60.0
         }
       ],
       "muestras": [
@@ -883,7 +913,7 @@
       "mercado": {
         "min": 45.0,
         "mediana": 65.0,
-        "n": 15
+        "n": 16
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -942,6 +972,12 @@
           "mediana": 65.0,
           "min": 45.0,
           "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-26",
+          "mediana": 65.0,
+          "min": 45.0,
+          "tu": 65.0
         }
       ],
       "muestras": [
@@ -959,6 +995,15 @@
           "titulo": "45 USD interruptor de transferencia automática",
           "precio": 45.0,
           "url": "https://www.revolico.com/item/interruptor-de-transferencia-automatica-59053083",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 45.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "45 USD Interruptor de Transferencia ATS_100A",
+          "precio": 45.0,
+          "url": "https://www.revolico.com/item/interruptor-de-transferencia-ats_100a-59096355",
           "dias": null,
           "moneda": "USD",
           "orig": 45.0
@@ -1083,7 +1128,7 @@
       ],
       "busqueda": "interruptor transferencia automática ats lsp",
       "firma": "981c7ce4dc",
-      "descartados": 5
+      "descartados": 6
     },
     {
       "id": 1793733652655,
@@ -1149,6 +1194,12 @@
         },
         {
           "fecha": "2026-11-25",
+          "mediana": 100.8,
+          "min": 97.0,
+          "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-26",
           "mediana": 100.8,
           "min": 97.0,
           "tu": 110.0
@@ -1296,6 +1347,12 @@
         },
         {
           "fecha": "2026-11-25",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-26",
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
