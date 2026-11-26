@@ -1,15 +1,20 @@
 {
-  "generado": "2026-11-25T18:54:49.749575+00:00",
+  "generado": "2026-11-26T18:44:05.166309+00:00",
   "productos": 180,
-  "urgentes": 26,
+  "urgentes": 28,
   "advertencias": 0,
-  "info": 5,
-  "resumen": "Anoche revisé tus 180 productos y encontré 26 urgente(s), 5 de info.",
+  "info": 6,
+  "resumen": "Anoche revisé tus 180 productos y encontré 28 urgente(s), 6 de info.",
   "detalle": [
     {
       "tipo": "nombre",
       "nombre": "Juego de Fundas para Asientos (Edición Elegance)",
       "detalle": "→ Juego de Fundas Para Asientos (Edición Elegance)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Mannol Special Plus 10W - 30 7512. 5L",
+      "detalle": "→ Mannol Special PLUS 10W - 30 7512. 5L"
     },
     {
       "tipo": "nombre",
@@ -98,6 +103,11 @@
     },
     {
       "tipo": "nombre",
+      "nombre": "Protector de Sobretensión y Corriente con Pantalla Digital Voltage VT-SRP-02 (220V / 80A)",
+      "detalle": "→ Protector de Sobretensión y Corriente Con Pantalla Digital Voltage VT-SRP-02 (220V / 80A)"
+    },
+    {
+      "tipo": "nombre",
       "nombre": "Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
       "detalle": "→ Smartphone Itel A100C (64GB ROM / Hasta 8GB RAM Extendida)"
     },
@@ -128,13 +138,13 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "Aditivo Multifuncional para Gasolina MANNOL Octane Plus 9954(450 ML)",
+      "nombre": "Aditivo Multifuncional para Gasolina Mannol Octane Plus 9954(450 ML)",
       "detalle": "→ Aditivo Multifuncional Para Gasolina Mannol Octane PLUS 9954(450 ML)"
     },
     {
       "tipo": "nombre",
-      "nombre": "Aceite Mineral para Transmisión FANFARO MAX 5 8703 SAE 80W-90 (1 Litro)",
-      "detalle": "→ Aceite Mineral Para Transmisión FANFARO MAX 5 8703 SAE 80W-90 (1 Litro)"
+      "nombre": "Aceite Mineral para Transmisión Fanfaro MAX 5 8703 SAE 80W-90 (1 Litro)",
+      "detalle": "→ Aceite Mineral Para Transmisión Fanfaro MAX 5 8703 SAE 80W-90 (1 Litro)"
     },
     {
       "tipo": "stock_bajo",
@@ -157,9 +167,14 @@
       "detalle": "quedan 2"
     },
     {
+      "tipo": "stock_bajo",
+      "nombre": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
+      "detalle": "quedan 1"
+    },
+    {
       "tipo": "agotados",
-      "nombre": "123 agotados",
-      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 120 más"
+      "nombre": "121 agotados",
+      "detalle": "Inversor Tataliken 4000W, Switch Gigabit de 8 Puertos, Báscula Digital de Alta Definición y 118 más"
     }
   ]
 }
