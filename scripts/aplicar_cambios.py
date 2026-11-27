@@ -62,6 +62,29 @@ CARPETA = "cambios"
 CONSERVAR = ("descripcion", "slug", "slugsAnteriores", "gancho")
 
 
+def _seo_al_dia(p: dict) -> dict:
+    """Si el seoTitle guardado ya no habla del nombre actual, lo rehace.
+
+    El panel no toca seoTitle: al renombrar un producto (o cambiar «MANNOL» por
+    «Mannol») subía el título de antes, y el catálogo se quedaba con un
+    «Protector de Sobre/Baja Tensión…» sobre un producto que ya no se llama así.
+    Las páginas /p/ ya se protegían (titulo_seo en regenerate_artifacts), pero el
+    dato guardado seguía viejo y fallaba solo en los tests. Misma regla que allí:
+    lo guardado vale mientras contenga el comienzo del nombre."""
+    try:
+        from fill_seo import nombre_titulo, seo_title
+    except ImportError:          # sin fill_seo no se inventa nada: se deja lo que venía
+        return p
+    nombre = nombre_titulo(p.get("nombre") or "")
+    guardado = (p.get("seoTitle") or "").strip()
+    # Solo se corrige uno que existe y quedó viejo: sin título no se inventa uno aquí
+    # (el panel sube el producto tal cual y el catálogo debe reproducirse igual).
+    if nombre and guardado and nombre[:20].lower() not in guardado.lower():
+        p = dict(p)
+        p["seoTitle"] = seo_title(p)
+    return p
+
+
 class CambioInvalido(ValueError):
     pass
 
@@ -97,8 +120,9 @@ def aplicar(catalogo: list, cambios: list[tuple[str, dict]]) -> list:
                 for k in CONSERVAR:
                     if k not in nuevo and k in out[i]:
                         nuevo[k] = out[i][k]
-                out[i] = nuevo
+                out[i] = _seo_al_dia(nuevo)
                 continue
+            p = _seo_al_dia(p)
             if pid in pos and pos[pid] is None:
                 out.insert(0, dict(p))
                 continue

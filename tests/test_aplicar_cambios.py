@@ -157,5 +157,25 @@ class DesdeGitTest(unittest.TestCase):
             self.assertTrue((raiz / "cambios" / "1-a.json").exists())
 
 
+class SeoTituloAlDiaTest(unittest.TestCase):
+    """Renombrar un producto no puede dejar su título de buscador viejo."""
+
+    def test_un_nombre_nuevo_rehace_el_titulo_que_ya_no_le_habla(self):
+        viejo = P(1, nombre="Protector de Sobre/Baja Tensión y Sobrecorriente",
+                  seoTitle="Protector de Sobre/Baja Tensión… | TiendaMax")
+        nuevo = dict(viejo, nombre="Protector de Sobretensión y Corriente con Pantalla Digital VT-SRP-02")
+        out = ac.aplicar([viejo], [("a.json", cambio([nuevo]))])
+        self.assertIn("Protector de Sobretensión", out[0]["seoTitle"])
+
+    def test_un_titulo_que_todavia_vale_se_respeta(self):
+        p = P(1, nombre="Router MikroTik hAP ac3", seoTitle="Router MikroTik hAP ac3 — el mejor | TiendaMax")
+        out = ac.aplicar([p], [("a.json", cambio([dict(p, precioActual=99)]))])
+        self.assertEqual(out[0]["seoTitle"], p["seoTitle"], "el gestor/CI lo escribió y sigue hablando del producto")
+
+    def test_sin_titulo_no_se_inventa_uno(self):
+        out = ac.aplicar([], [("a.json", cambio([P(7, nombre="Cable de red Cat6 305m")]))])
+        self.assertNotIn("seoTitle", out[0])
+
+
 if __name__ == "__main__":
     unittest.main()
