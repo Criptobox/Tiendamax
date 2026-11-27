@@ -232,7 +232,7 @@ await ficha('ficha con localStorage lleno (setItem lanza)', { init: () => { Stor
     ok(/Ana/.test(await p.textContent('#titulo')), 'resena.html lee el nombre sin URLSearchParams');
     ok(/Inversor/.test(await p.textContent('#titulo')), 'resena.html saca el nombre del producto sin fetch');
     await p.locator('.estrella').nth(4).click();
-    await p.locator('.chip').first().click();
+    await p.locator('.sug').first().click();
     ok(await p.locator('#enviar').isEnabled(), 'con 5 estrellas, una frase y nombre se puede publicar');
     PUTS.length = 0;
     await p.click('#enviar');

@@ -3473,11 +3473,13 @@
     { id: 'aceite', icono: '🛢️', titulo: 'Aceites de motor y lubricantes', pide: 'la viscosidad que pide tu motor (10W-40, 5W-30…)',
       re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2}\b/,
       no: /transmisi|caja|cvt|atf|diferencial|hidraul|freno|\b2t\b|dos tiempos|compresor|comestible|vegetal|oliva|girasol|cocina|masaje|esencial/,
-      subs: ['LUBRICANTES', 'ACEITES Y LUBRICANTES'] },
+      // El dueño reorganizó (nov-2026): los aceites de carro pasaron de CARROS › LUBRICANTES a
+      // LUBRICANTES › ACEITE DE MOTOR; sin el nombre nuevo Max ofrecía el 2T de moto. Los viejos se quedan.
+      subs: ['LUBRICANTES', 'ACEITES Y LUBRICANTES', 'ACEITE DE MOTOR'] },
     { id: 'transmision', icono: '⚙️', titulo: 'Aceites de transmisión', pide: '',
       re: /\b(aceites?|lubricantes?)\b[^.?]{0,25}\b(transmisi\w*|caja|cvt|atf|diferencial)\b|\b(transmisi\w*|caja)\b[^.?]{0,25}\b(aceites?|lubricantes?)\b/,
       no: /^$/,
-      subs: ['CAJA MECÁNICA Y AUTOMÁTICA'] },
+      subs: ['CAJA MECÁNICA Y AUTOMÁTICA', 'ACEITE DE TRANSMISIÓN'] },
     { id: 'anticongelante', icono: '🧊', titulo: 'Anticongelante / refrigerante', pide: '',
       re: /\b(anticongelantes?|antifreeze|refrigerantes?|coolant)\b/,
       no: /\b(nevera|refrigerador|aire|freezer)\b/,

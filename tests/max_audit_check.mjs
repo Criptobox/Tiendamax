@@ -63,7 +63,7 @@ if(conStock(/5W-?30/i)){
 {
     const a = ask('aceite de motor');
     ok(a.nombres.length > 0 && !/Agotado/i.test(a.texto.slice(0, 80)), '«aceite de motor» no empieza por un agotado');
-    ok(a.r.products && a.r.products[0].categoria === 'CARROS', '«aceite de motor»: lo de carro en stock va primero');
+    ok(a.r.products && a.r.products[0].categoria !== 'MOTOS', '«aceite de motor»: lo de carro en stock va primero, no el de moto');
     ok(a.r.products.every(p => p.stock > 0), '«aceite de motor» solo enseña lo que hay');
 }
 if(conStock(/Antifreeze/i)){
