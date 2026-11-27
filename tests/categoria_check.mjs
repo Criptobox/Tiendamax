@@ -273,6 +273,55 @@ ok(!tags.some(t => /^#Rarito/.test(t)),
 ok(!tags.some(t => /^#(Adaptador|Exterior|Cable|Loco|Patch|Internacional)$/i.test(t)),
    'las palabras genéricas del nombre no son etiquetas: nadie busca «#Adaptador»');
 
+// ── 8) Álbum: UNA publicación con las fotos de varios productos ─────
+// Facebook no recibe texto desde otra app, así que el álbum guarda las fotos, copia UN texto con la
+// lista y abre el grupo. Preparar no apunta nada; apunta al abrir el grupo, con su nombre.
+await pagina.evaluate(() => {
+    localStorage.removeItem('tm_publog_v1');
+    localStorage.setItem('gruposFB', JSON.stringify([{ nombre: 'Grupo Solar Habana', url: 'https://www.facebook.com/groups/solarhabana' }]));
+    window.__abiertas = []; window.__copiado = '';
+    window.open = (u) => { window.__abiertas.push(String(u)); return {}; };
+    try { Object.defineProperty(navigator, 'clipboard', { value: { writeText: (t) => { window.__copiado = String(t); return Promise.resolve(); } }, configurable: true }); } catch (e) {}
+    pubCatOnSelect('GRANDE');
+});
+await pagina.waitForTimeout(2600);
+const bajadas = [];
+pagina.on('download', d => bajadas.push(d.suggestedFilename()));
+const alb0 = await pagina.evaluate(() => ({
+    hay: !!document.getElementById('pub-alb-btn'),
+    grupos: Array.from(document.querySelectorAll('#pub-alb-grupo option')).map(o => o.textContent),
+}));
+ok(alb0.hay, 'la pantalla de la categoría tiene el bloque del Álbum');
+ok(alb0.grupos.includes('Grupo Solar Habana'), 'el álbum ofrece los grupos guardados del gestor');
+await pagina.evaluate(() => pubAlbumPreparar());
+await pagina.waitForFunction(() => /Listo/.test((document.getElementById('pub-alb-info') || {}).textContent || ''), null, { timeout: 60000 });
+const alb1 = await pagina.evaluate(() => ({
+    log: JSON.parse(localStorage.getItem('tm_publog_v1') || '[]').length,
+    abiertas: window.__abiertas.length, copiado: window.__copiado,
+    boton: document.getElementById('pub-alb-btn').textContent,
+}));
+ok(alb1.log === 0 && alb1.abiertas === 0 && bajadas.length === 0 && alb1.copiado === '',
+   'preparar el álbum solo dibuja: no apunta, no descarga, no copia y no abre nada');
+ok(/Guardar 10 fotos/.test(alb1.boton), `el botón ofrece guardar las 10 fotos; dice «${alb1.boton}»`);
+await pagina.evaluate(() => pubAlbumPublicar());
+await pagina.waitForFunction(() => window.__abiertas.length > 0, null, { timeout: 15000 });
+await pagina.waitForTimeout(500);
+const alb2 = await pagina.evaluate(() => ({
+    log: JSON.parse(localStorage.getItem('tm_publog_v1') || '[]'),
+    abiertas: window.__abiertas, copiado: window.__copiado,
+    t0: pubCatProdsTanda('GRANDE', 0).slice(0, 10).map(p => ({ id: String(p.id), nombre: p.nombre })),
+}));
+ok(bajadas.length === 10, `se guardan las 10 fotos del álbum; bajaron ${bajadas.length}`);
+ok(alb2.abiertas.length === 1 && alb2.abiertas[0] === 'https://www.facebook.com/groups/solarhabana',
+   `abre el grupo elegido, una vez: ${JSON.stringify(alb2.abiertas)}`);
+ok(alb2.t0.every(p => alb2.copiado.includes(p.nombre.slice(0, 12))),
+   'el texto copiado nombra a los 10 productos: es UN texto con la lista');
+const aptos = alb2.log.filter(e => e.red === 'fb');
+ok(new Set(aptos.map(e => e.pid)).size === 10 && alb2.t0.every(p => aptos.some(e => e.pid === p.id)),
+   'al abrir el grupo se apuntan exactamente los 10 del álbum');
+ok(aptos.every(e => e.destino === 'Grupo Solar Habana'),
+   'y con el nombre del grupo como destino, que es lo que lee el «ya salió aquí hace…»');
+
 ok(erroresJs.length === 0, 'errores de JS: ' + erroresJs.join(' | '));
 
 await navegador.close();
@@ -283,4 +332,4 @@ if (fallos.length) {
     fallos.forEach(f => console.error('   · ' + f));
     process.exit(1);
 }
-console.log('✅ Compartir categoría: 39 comprobaciones OK');
+console.log('✅ Compartir categoría + Álbum: OK');
