@@ -1,0 +1,113 @@
+{
+  "v": 1,
+  "creado": "2026-11-27T18:26:32.409Z",
+  "productos": [
+    {
+      "id": 1795803623797,
+      "nombre": "Aceite Semisintético para Moto 4T FANFARO S-4T+ 6208 SAE 20W-50 (1 Litro)",
+      "descripcion": "El FANFARO S-4T+ 6208 (SAE 20W-50, 1 Litro) es un aceite de motor semisintético (Synthetic Blend) enriquecido con tecnología de ésteres (SCT Ester Technology), diseñado específicamente para motores de gasolina de 4 tiempos de motocicletas sometidos a cargas normales y elevadas. Su alta viscosidad 20W-50 proporciona una película lubricante sumamente estable y resistente a la cizalla térmica, asegurando una protección integral del conjunto cilindro-pistón, el tren de válvulas y la caja de cambios integrada incluso en condiciones extremas de temperatura y velocidad.",
+      "imagen": "https://tiendamax.org/imagenes/img_1795803610834.webp",
+      "imagenes": [
+        "https://tiendamax.org/imagenes/img_1795803610834.webp"
+      ],
+      "precioActual": 10,
+      "precioOriginal": 0,
+      "descuento": 0,
+      "stock": 15,
+      "comision": 0.5,
+      "comisionMoneda": "USD",
+      "categoria": "LUBRICANTES",
+      "subcategoria": "ACEITE PARA MOTOS",
+      "masVendido": false,
+      "usado": false,
+      "garantia": "",
+      "devolucion": false,
+      "specs": [
+        "💧 Contenido Neto: 1 Litro",
+        "🛢️ Viscosidad: SAE 20W-50 (Synthetic Blend + Ester)",
+        "🛡️ Especificaciones: API SN / JASO MA / JASO MA2"
+      ],
+      "fechaAgregado": "2026-11-27T18:20:23.808Z",
+      "slug": "aceite-4t-s-4t-6208-20w50-1",
+      "ficha": [
+        {
+          "k": "Marca",
+          "v": "FANFARO",
+          "nota": "SCT Germany"
+        },
+        {
+          "k": "Línea / Modelo",
+          "v": "S-4T+",
+          "nota": "Código 6208 / FF6208-1"
+        },
+        {
+          "k": "Contenido Neto",
+          "v": "1 Litro",
+          "nota": "1000 ml"
+        },
+        {
+          "k": "Tipo de Base",
+          "v": "Semisintético con Tecnología Éster",
+          "nota": "Synthetic Blend / SCT Ester Technology"
+        },
+        {
+          "k": "Grado de Viscosidad",
+          "v": "SAE 20W-50"
+        },
+        {
+          "k": "Clasificación de Servicio API",
+          "v": "API SN"
+        },
+        {
+          "k": "Normativa para Motocicletas",
+          "v": "JASO MA / JASO MA2"
+        },
+        {
+          "k": "Tipo de Motor Compatible",
+          "v": "Motores de gasolina de 4 tiempos (incluyendo bicilíndricos en V), refrigerados por aire o líquido"
+        },
+        {
+          "k": "Compatibilidad de Embrague y Caja",
+          "v": "Embrague húmedo (en baño de aceite) o seco; cajas de cambios integradas o separadas"
+        },
+        {
+          "k": "Envase",
+          "v": "Botella plástica verde ergonómica de 1 Litro con tapón verde roscado y escala graduada de nivel"
+        }
+      ],
+      "caracteristicas": [
+        {
+          "t": "Tecnología Éster (SCT Ester Technology)",
+          "d": "mejora la adherencia molecular del lubricante sobre las piezas metálicas, reduciendo el desgaste desde el momento del arranque."
+        },
+        {
+          "t": "Certificación JASO MA / MA2",
+          "d": "fricción controlada para evitar el deslizamiento del embrague húmedo y suavizar el accionamiento de la caja de velocidades."
+        },
+        {
+          "t": "Alta Estabilidad Térmica (SAE 20W-50)",
+          "d": "mantiene la viscosidad y la presión de aceite bajo altas temperaturas de trabajo en motores refrigerados por aire o exigidos en carretera."
+        },
+        {
+          "t": "Limpieza Interna del Motor",
+          "d": "paquete detergente-dispersante que controla la formación de lodos, barnices y depósitos de carbón, con baja volatilidad y propiedades antiespumantes."
+        },
+        {
+          "t": "Protección Anticorrosiva",
+          "d": "inhibidores de alto rendimiento que resguardan los componentes internos frente a la oxidación y la humedad."
+        }
+      ],
+      "idealPara": [
+        "Motocicletas de calle, turismo, off-road (enduro/cross), deportivas y de alto rendimiento con motores de 4 tiempos (incluyendo motores bicilíndricos en V).",
+        "Scooters de 4 tiempos, cuatriciclos (ATV), triciclos motorizados y mototécnica que requieran aceite SAE 20W-50 con norma API SN y JASO MA/MA2.",
+        "Climas cálidos o recorridos prolongados donde se necesite máxima protección térmica y durabilidad de la caja de cambios."
+      ],
+      "incluye": [
+        "1× Botella de Aceite para Motor de Moto 4T FANFARO S-4T+ 6208 SAE 20W-50 (1 Litro)"
+      ],
+      "rev": 1795803992409
+    }
+  ],
+  "eliminados": [],
+  "posiciones": {}
+}
