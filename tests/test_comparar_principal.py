@@ -30,6 +30,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest import mock
 
@@ -567,6 +568,45 @@ class ElFicheroPublicadoTest(unittest.TestCase):
         kb = (RAIZ / "principal-catalogo.json").stat().st_size / 1024
         self.assertLess(kb, 60, f"el catálogo ligero pesa {kb:.0f} KB; "
                                 "las descripciones van en principal-fichas.json")
+
+
+class LaPrincipalCongeladaTest(unittest.TestCase):
+    """data.json de la principal es un fichero que ELLA publica a mano: su web vende desde otra base.
+
+    El 27-nov-2026 llevaba el sello del 6-nov. El script corría cada 20 min, decía «sin cambios» y
+    el panel enseñaba como de hoy «repuso 4», precios «cambiados» y «disponibles» de hacía tres
+    semanas: ningún error, todo se pintaba bien, y el gestor tomaba decisiones con datos viejos."""
+
+    AHORA = 1795800000.0       # 27-nov-2026
+
+    def test_sin_sello_no_se_acusa_a_nadie(self):
+        self.assertFalse(cp.origen_viejo("", self.AHORA))
+        self.assertFalse(cp.origen_viejo("no es una fecha", self.AHORA))
+
+    def test_un_sello_reciente_no_es_viejo(self):
+        reciente = datetime.fromtimestamp(self.AHORA - 5 * 3600, timezone.utc).isoformat().replace("+00:00", "Z")
+        self.assertFalse(cp.origen_viejo(reciente, self.AHORA))
+
+    def test_el_sello_de_hace_tres_semanas_es_viejo(self):
+        self.assertTrue(cp.origen_viejo("2026-11-06T18:56:24.720Z", self.AHORA))
+        self.assertAlmostEqual(cp.horas_desde("2026-11-06T18:56:24.720Z", self.AHORA) / 24, 20.3, delta=1)
+
+    def test_el_umbral_es_de_36_horas(self):
+        justo = datetime.fromtimestamp(self.AHORA - 35 * 3600, timezone.utc).isoformat()
+        pasado = datetime.fromtimestamp(self.AHORA - 37 * 3600, timezone.utc).isoformat()
+        self.assertFalse(cp.origen_viejo(justo, self.AHORA))
+        self.assertTrue(cp.origen_viejo(pasado, self.AHORA))
+
+    def test_la_principal_congelada_no_agota_nada_ni_avisa(self):
+        """Si el sello es viejo, `agotar_mios` y el aviso de reposiciones no se ejecutan."""
+        fuente = (RAIZ / "scripts" / "comparar_principal.py").read_text(encoding="utf-8")
+        self.assertRegex(fuente, r"if isinstance\(catalogo_mio, list\) and catalogo_mio and not viejo:\s+fuera = agotar_mios\(")
+        self.assertIn("if relevantes and not viejo:", fuente)
+
+    def test_el_fichero_guarda_cuando_publico_ella(self):
+        fuente = (RAIZ / "scripts" / "comparar_principal.py").read_text(encoding="utf-8")
+        self.assertIn('info["origenTs"]', fuente)
+        self.assertIn('"origenActualizado": origen_ts', fuente)
 
 
 if __name__ == "__main__":
