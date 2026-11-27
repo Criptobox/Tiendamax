@@ -339,6 +339,9 @@ def descargar(url: str = PRINCIPAL_URL, timeout: int = 45,
     if info is not None:
         # Solo si la clave está: leerla es cosa de _reservado_por_producto.
         info["reservas"] = "vales" in datos
+        # Cuándo publicó la principal ESTE fichero. Es un dato suyo, no nuestro: su web
+        # vende desde otra base y data.json solo se renueva cuando alguien lo publica.
+        info["origenTs"] = str(datos.get("timestamp") or "") if isinstance(datos, dict) else ""
     filas = [f for f in (normalizar(p, categorias, reservado.get(str(p.get("id")), 0))
                          for p in crudos) if f]
     # Un id repetido se queda con la fila que declare stock: es la que vende.
@@ -348,6 +351,41 @@ def descargar(url: str = PRINCIPAL_URL, timeout: int = 45,
         if previa is None or (f["stock"] > 0 and previa["stock"] <= 0):
             por_id[f["id"]] = f
     return sorted(por_id.values(), key=lambda f: f["nombre"].lower())
+
+
+ORIGEN_VIEJO_HORAS = 36
+
+
+def horas_desde(ts: str, ahora: float | None = None) -> float | None:
+    """Horas desde un sello ISO («2026-11-06T18:56:24.720Z»); None si no hay o no se entiende."""
+    if not ts:
+        return None
+    try:
+        t = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    return ((ahora if ahora is not None else time.time()) - t.timestamp()) / 3600
+
+
+def origen_viejo(ts: str, ahora: float | None = None) -> bool:
+    """¿La principal lleva más de ORIGEN_VIEJO_HORAS sin publicar su catálogo?
+
+    El 27-nov-2026 el panel enseñaba «repuso 4», precios «cambiados» y productos
+    «disponibles» de hacía tres semanas: data.json de la principal tenía sello del
+    6-nov (su web ya vendía desde Supabase) y este script, cada 20 minutos, decía «sin
+    cambios» y lo daba por bueno. Sin sello no se acusa a nadie: solo se afirma lo que se sabe."""
+    h = horas_desde(ts, ahora)
+    return h is not None and h > ORIGEN_VIEJO_HORAS
+
+
+def origen_viejo_antes(path: Path = SALIDA) -> bool:
+    """Si la corrida anterior ya avisó de que la principal no publica."""
+    try:
+        return bool(json.loads(path.read_text(encoding="utf-8")).get("origenViejo"))
+    except (OSError, ValueError, AttributeError):
+        return False
 
 
 def reservas_desconocidas_antes(path: Path = SALIDA) -> bool:
@@ -844,6 +882,12 @@ def main() -> int:
     antes = leer_anterior(SALIDA)
     sin_reservas = info.get("reservas") is False
     avisado_antes = reservas_desconocidas_antes(SALIDA)   # antes de reescribir SALIDA
+    origen_ts = info.get("origenTs") or ""
+    viejo = origen_viejo(origen_ts)
+    viejo_antes = origen_viejo_antes(SALIDA)
+    if viejo:
+        print(f"⚠️ La principal no publica su catálogo desde {origen_ts[:10]}: lo que comparo "
+              f"es de esa fecha. No se agota nada solo ni se avisa de reposiciones.", file=sys.stderr)
     if sin_reservas:
         print("⚠️ La principal no publica `vales`: el stock es el del almacén, "
               "sin restar lo reservado.", file=sys.stderr)
@@ -864,6 +908,10 @@ def main() -> int:
         # El panel lo enseña en 🔀 Comparar; sin la marca, un stock que
         # puede estar prometido en vales se lee como disponible.
         **({"reservasDesconocidas": True} if sin_reservas else {}),
+        # Cuándo publicó la principal este catálogo (no cuándo lo leímos): el panel lo
+        # compara con hoy y avisa si es viejo, y no actúa con datos viejos.
+        **({"origenActualizado": origen_ts} if origen_ts else {}),
+        **({"origenViejo": True} if viejo else {}),
     }, "productos")
     escribir(FICHAS, {
         "actualizado": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -882,7 +930,9 @@ def main() -> int:
     # siguiente corrida lo vuelve a agotar.
     enlaces = leer_enlaces()
     fuera: list[dict] = []
-    if isinstance(catalogo_mio, list) and catalogo_mio:
+    # Con la principal sin publicar, «a 0 allí» puede ser de hace semanas: agotar mi stock
+    # con eso sería dejar de vender lo que sí hay.
+    if isinstance(catalogo_mio, list) and catalogo_mio and not viejo:
         fuera = agotar_mios(productos, catalogo_mio, enlaces)
         if fuera:
             for p in fuera:
@@ -900,6 +950,15 @@ def main() -> int:
                                 {str(p.get("id")) for p in fuera})
         # Solo al cambiar de estado: cada 20 minutos, la misma alarma
         # enseña a no leerla.
+        if viejo != viejo_antes:
+            _f = (origen_ts or "")[:10]
+            linea_v = (f"⚠️ <b>La principal no publica su catálogo desde el {_f}.</b>\n"
+                       "Su web vende desde otra base y el fichero que leo está congelado: "
+                       "🔀 Comparar enseña precios y stock de esa fecha. No agoto nada solo "
+                       "ni aviso de reposiciones hasta que vuelva a publicar."
+                       if viejo else
+                       "✅ La principal vuelve a publicar su catálogo: 🔀 Comparar está al día.")
+            texto = linea_v + ("\n\n" + texto if texto else "")
         if sin_reservas != avisado_antes:
             linea = ("⚠️ <b>La principal dejó de publicar sus vales.</b>\n"
                      "El stock que comparo es el del almacén: lo reservado a clientes "
@@ -911,7 +970,7 @@ def main() -> int:
         print(f"📝 Aviso de Telegram preparado: {sum(len(v) for v in cambios.values())} cambio(s)."
               if texto else "📝 Nada que avisar por Telegram.")
 
-    if relevantes:
+    if relevantes and not viejo:
         avisar(relevantes)
     return 0
 

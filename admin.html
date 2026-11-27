@@ -355,6 +355,7 @@ try{var _piel=localStorage.getItem('tm_piel');
     color:var(--muted); border-radius:9px; padding:7px 11px; font-size:11.5px; font-weight:800;
     font-family:inherit; cursor:pointer; white-space:nowrap; }
   .cmp-b-ok { background:rgba(var(--o-rgb),0.16); border-color:var(--o); color:var(--o); }
+  .cmp-viejo .cmp-b-ok { pointer-events:none; opacity:.3; filter:grayscale(1); }
   .cmp-b:active { transform:scale(.97); }
   .cmp-n-dorm { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.14);
     color:var(--muted); }
@@ -7482,6 +7483,28 @@ function cmpPartir(grupo, pintor){
   return {hoy, dormidas};
 }
 
+/* ¿Los datos de la principal están viejos? Se mira CUÁNDO PUBLICÓ ELLA su catálogo
+   (`origenActualizado`, el sello de su data.json), no cuándo lo leímos nosotros: el script
+   corre cada 20 min y escribía «comprobado hace 1 h» sobre un fichero congelado desde el 6-nov
+   (su web vende desde otra base y data.json solo se renueva si alguien lo publica). Con datos
+   así «repuso 4», «cambió el precio» o «agotado» son de hace semanas: la pantalla lo dice en
+   grande, no deja tocar los botones que cambian tu stock/precio y no agota nada sola.
+   Sin sello (ficheros de antes) no se acusa de nada. */
+const CMP_VIEJO_HORAS = 36;
+function cmpViejoInfo(){
+  const ts = CMP_DATOS && CMP_DATOS.origenActualizado ? new Date(CMP_DATOS.origenActualizado).getTime() : 0;
+  if(!ts || isNaN(ts)) return { viejo:false };
+  const horas = (Date.now() - ts) / 3600000;
+  return { viejo: horas > CMP_VIEJO_HORAS, horas, dias: Math.floor(horas / 24),
+           fecha: new Date(ts).toLocaleDateString('es-CU', { day:'numeric', month:'short' }) };
+}
+function cmpAvisoViejo(vj){
+  return `<div class="cmp-viejo-aviso" role="alert" style="border:1px solid #ff6b6b;background:rgba(255,107,107,.1);color:#fff;border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.45">`
+    + `<b>⚠️ Estos datos tienen ${vj.dias} días.</b><br>La principal no ha publicado su catálogo desde el <b>${esc(vj.fecha)}</b>. `
+    + `Lo que ves (repuestos, precios, agotados) es de esa fecha, <b>no de hoy</b>: si ya cambiaste precios allí, aquí no aparecen. `
+    + `Por eso los botones están apagados y no agoto nada solo. Pídele a la principal que vuelva a publicar su catálogo.`
+    + `</div>`;
+}
 function cmpRender(){
   const caja = $('#cmp-cuerpo'), sub = $('#cmp-sub');
   if(!caja) return;
@@ -7493,7 +7516,10 @@ function cmpRender(){
   }
   syncProductos();
   const g = cmpAnalizar(CMP_DATOS, PRODUCTOS);
-  cmpAutoAgotarFantasmas(g);
+  const vj = cmpViejoInfo();
+  if(vj.viejo) g.fantasma = [];          // con datos viejos no se agota nada solo
+  else cmpAutoAgotarFantasmas(g);
+  caja.classList.toggle('cmp-viejo', !!vj.viejo);
   const total = g.repuestos.length + g.fantasma.length + g.faltan.length
               + g.precio.length + g.comision.length;
 
@@ -7506,16 +7532,18 @@ function cmpRender(){
     sub.textContent = CMP_DATOS.total + ' productos en la principal · leído '
       + (hace === null ? '—' : hace < 1 ? 'hace menos de 1 h' : 'hace ' + hace + ' h')
       // Viejo = puede estar escondiendo reposiciones y productos nuevos.
-      + (hace !== null && hace >= 4 ? ' · ⚠️ toca 🔄 Actualizar' : '')
+      + (vj.viejo ? ' · 🔴 la principal publicó por última vez el ' + vj.fecha
+                  : hace !== null && hace >= 4 ? ' · ⚠️ toca 🔄 Actualizar' : '')
       // La principal no publicó sus vales: su stock incluye lo que ya tiene
       // dueño, y un «repuso» puede ser mercancía prometida a otro cliente.
       + (CMP_DATOS.reservasDesconocidas ? ' · ⚠️ sin sus reservas: el stock es el del almacén' : '');
   }
 
   if(!total && !g.dudosas.length){
-    caja.innerHTML = '<div class="empty" style="padding:26px"><div class="ico">✅</div>'
-      + 'Tu catálogo coincide con la principal: mismos precios, mismas comisiones '
-      + 'y nada por subir.</div>';
+    caja.innerHTML = (vj.viejo ? cmpAvisoViejo(vj) : '') + '<div class="empty" style="padding:26px"><div class="ico">' + (vj.viejo ? '🕰️' : '✅') + '</div>'
+      + (vj.viejo ? 'Con los datos que tengo (de hace ' + vj.dias + ' días) no hay diferencias, pero no me fío de ellos.'
+                  : 'Tu catálogo coincide con la principal: mismos precios, mismas comisiones y nada por subir.')
+      + '</div>';
     return;
   }
 
@@ -7588,7 +7616,7 @@ function cmpRender(){
     + '1500 MN y $1,80 son casi lo mismo, y cambiar uno por otro te cuesta dinero de verdad.',
     _dud.hoy, false, '', _dud.dormidas));
 
-  caja.innerHTML = bloques.join('') || '';
+  caja.innerHTML = (vj.viejo ? cmpAvisoViejo(vj) : '') + (bloques.join('') || '');
 }
 
 /* ── Los botones ────────────────────────────────────────────────────
@@ -7606,13 +7634,16 @@ function cmpAplicar(id, cambio, aviso){
   showToast(aviso, 'Recuerda pulsar 🔄 Actualizar tienda para publicarlo');
 }
 function cmpPonerStock(id, n){
+  if(cmpViejoInfo().viejo){ showToast('🕰️ Datos viejos','La principal no publica desde hace días: no cambio tu catálogo con eso'); return; }
   cmpAplicar(id, p => { p.stock = Math.max(0, Number(n)||0); },
              n > 0 ? '📦 Stock puesto en ' + n : '📦 Marcado como agotado');
 }
 function cmpPonerPrecio(id, v){
+  if(cmpViejoInfo().viejo){ showToast('🕰️ Datos viejos','La principal no publica desde hace días: no cambio tu catálogo con eso'); return; }
   cmpAplicar(id, p => { p.precioActual = Number(v)||0; }, '💲 Precio actualizado');
 }
 function cmpPonerComision(id, v, moneda){
+  if(cmpViejoInfo().viejo){ showToast('🕰️ Datos viejos','La principal no publica desde hace días: no cambio tu catálogo con eso'); return; }
   cmpAplicar(id, p => { p.comision = Number(v)||0; p.comisionMoneda = moneda; },
              '💵 Comisión actualizada');
 }
@@ -7874,6 +7905,18 @@ async function cmpRefrescar(){
   if(!(user && repo && token)){
     await cmpCargar(true);
     showToast('⚠️ Sin token de GitHub', 'Enseño lo último guardado. Configura el token para pedir datos nuevos.');
+    return;
+  }
+  // Con la principal sin publicar, correr el script otra vez lee el MISMO fichero congelado:
+  // esperar un minuto para ver lo mismo era la demora de la que se quejaba el gestor.
+  // (Solo si lo miramos hace poco: si no, la principal pudo publicar ahora y sí hay que correr el script.)
+  const _recien = CMP_DATOS && CMP_DATOS.actualizado && (Date.now() - new Date(CMP_DATOS.actualizado).getTime()) < 30 * 60000;
+  if(cmpViejoInfo().viejo && _recien){
+    await cmpCargar(true);
+    const vj = cmpViejoInfo();
+    showToast('🕰️ No hay nada nuevo que leer', vj.viejo
+      ? 'La principal no publica desde el ' + vj.fecha + '. Pídele que publique su catálogo.'
+      : 'Ya publicó: pantalla al día.');
     return;
   }
   const btn = $('#cmp-refrescar'), sub = $('#cmp-sub');

@@ -600,6 +600,41 @@ ok(tras.faltan.includes('Recién repuesta'),
 ok(/menos de 1 h/.test(tras.sub), `la línea de arriba debería decir «hace menos de 1 h», dice «${tras.sub}»`);
 ok(tras.boton === false, 'el botón 🔄 tiene que quedar usable al terminar');
 
+// ── 12) La principal congelada: datos de hace 3 semanas ───────────────
+// El 27-nov data.json de la principal llevaba el sello del 6-nov (su web ya vende desde otra
+// base): el script decía «sin cambios» cada 20 min y la pantalla enseñaba «repuso 4», precios
+// y «disponibles» de hace semanas como si fueran de hoy. Ahora, con el sello viejo: aviso
+// grande con los días, botones que cambian tu stock/precio apagados (y sin efecto aunque se
+// llamen), nada se agota solo, y 🔄 no hace esperar un minuto para releer lo mismo.
+const VIEJO = JSON.parse(JSON.stringify(PRINCIPAL));
+VIEJO.origenActualizado = new Date(Date.now() - 21 * 86400000).toISOString();
+VIEJO.origenViejo = true;
+VIEJO.actualizado = new Date(Date.now() + 5000).toISOString();   // más nuevo que lo ya leído: la copia vieja no «gana» por antigua
+await pagina.unroute(() => true).catch(() => {});
+await ctx.route(u => u.pathname.endsWith('/principal-catalogo.json'),
+    r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(VIEJO) }));
+await pagina.evaluate(prods => { localStorage.setItem('productos', JSON.stringify(prods)); PRODUCTOS = JSON.parse(JSON.stringify(prods)); }, MIOS);
+await pagina.evaluate(() => { go('productos'); go('comparar'); });
+await pagina.waitForTimeout(1500);
+const v = await pagina.evaluate(() => ({
+    aviso: (document.querySelector('.cmp-viejo-aviso') || {}).textContent || '',
+    clase: document.getElementById('cmp-cuerpo').classList.contains('cmp-viejo'),
+    sub: document.getElementById('cmp-sub').textContent,
+    evento: (() => { const b = document.querySelector('#cmp-cuerpo .cmp-b-ok'); return b ? getComputedStyle(b).pointerEvents : 'sin-boton'; })(),
+}));
+ok(/21 días/.test(v.aviso) && /no de hoy/.test(v.aviso), `con datos de hace 21 días debe avisarlo en grande: «${v.aviso.slice(0, 90)}»`);
+ok(v.clase && (v.evento === 'none' || v.evento === 'sin-boton'), `los botones que cambian tu catálogo deben estar apagados (${v.evento})`);
+ok(/publicó por última vez/.test(v.sub), `la línea de arriba dice la fecha de la principal: «${v.sub}»`);
+await pagina.evaluate(() => cmpPonerStock('103', 9));
+await pagina.evaluate(() => cmpPonerPrecio('103', 1));
+const tras103 = await leer('103');
+ok(tras103 && tras103.stock !== 9 && tras103.precio !== 1, 'con datos viejos, ni llamando a mano se cambia tu stock o precio: ' + JSON.stringify(tras103));
+ok((await leer('116')).stock === MIOS.find(x => x.id === 116).stock, 'con datos viejos no se agota nada solo (116 está a 6 y «la principal lo tiene en 0» ya no lo apaga)');
+const t0 = Date.now();
+pidioLectura = false;
+await pagina.evaluate(() => cmpRefrescar());
+ok(!pidioLectura && Date.now() - t0 < 3000, '🔄 con la principal congelada no lanza el workflow ni espera: lee lo mismo y lo dice');
+
 ok(erroresJs.length === 0, 'errores de JS: ' + erroresJs.join(' | '));
 
 await navegador.close();
