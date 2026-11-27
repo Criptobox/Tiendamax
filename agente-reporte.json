@@ -1,10 +1,10 @@
 {
-  "generado": "2026-11-26T18:44:05.166309+00:00",
-  "productos": 180,
-  "urgentes": 28,
+  "generado": "2026-11-27T18:35:50.515261+00:00",
+  "productos": 182,
+  "urgentes": 30,
   "advertencias": 0,
   "info": 6,
-  "resumen": "Anoche revisé tus 180 productos y encontré 28 urgente(s), 6 de info.",
+  "resumen": "Anoche revisé tus 182 productos y encontré 30 urgente(s), 6 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -147,6 +147,16 @@
       "detalle": "→ Aceite Mineral Para Transmisión Fanfaro MAX 5 8703 SAE 80W-90 (1 Litro)"
     },
     {
+      "tipo": "nombre",
+      "nombre": "Aceite Semisintético para Moto 4T FANFARO S-4T+ 6208 SAE 20W-50 (1 Litro)",
+      "detalle": "→ Aceite Semisintético Para Moto 4T FANFARO S-4T+ 6208 SAE 20W-50 (1 Litro)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Aceite Sintético para Moto 4T FANFARO M-4T+ 6201 SAE 10W-40 (1 Litro)",
+      "detalle": "→ Aceite Sintético Para Moto 4T FANFARO M-4T+ 6201 SAE 10W-40 (1 Litro)"
+    },
+    {
       "tipo": "stock_bajo",
       "nombre": "Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
       "detalle": "quedan 2"
@@ -159,7 +169,7 @@
     {
       "tipo": "stock_bajo",
       "nombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
-      "detalle": "quedan 3"
+      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
