@@ -1108,7 +1108,10 @@
      «aceite 10w40» no encontraba el «Defender 10W-40» que sí estaba. Se
      escriben igual en los dos lados de la comparación: 10w40. Solo los
      grados que existen, para no tocar «10 W 40 cm». */
-  const _SAE = /\b(0|5|10|15|20|25)\s*w\s*-?\s*(20|30|40|50|60)\b/g;
+  // Motor (5W-30, 10W-40…) y transmisión (80W-90, 75W-90, 85W-140): sin las de engranajes, «80W-90» se
+  // quedaba en «80w 90», R.familia no veía viscosidad y listaba TODOS los aceites de transmisión
+  // (el CVT sintético entre los minerales, que dañaría una caja manual).
+  const _SAE = /\b(0|5|10|15|20|25|70|75|80|85)\s*w\s*-?\s*(20|30|40|50|60|80|90|110|140)\b/g;
   function cleanForMatch(s){
     let n = normalize(s).replace(_SAE, '$1w$2').replace(/[^a-z0-9\s.]/g,' ').replace(/\s+/g,' ').trim();
     return n;
@@ -2578,6 +2581,14 @@
        contestaba con un litro de aceite Fanfaro. */
     if(/\b(cu[aá]nto (tiempo )?(me )?(dura|duran|aguanta|aguantan)|cu[aá]ntas horas|autonom[ií]a|duraci[oó]n)\b/.test(m)
        && /\b(bater[ií]a|bater[ií]as|inversor|sistema|nevera|refrigerador|aire|ventilador|fan|bombillo\w*|luces|bomba|tv|televisor|planta)\b/.test(m)) return 'autonomia';
+    // APAGONES a secas («¿me recomiendas algo para los apagones?»): no nombra ningún producto, y la
+    // búsqueda por texto sacaba la BLUETTI junto a una hamaca (su descripción dice «ideal para los
+    // apagones») sin una palabra de recomendación. Se contesta con las dos formas de resolverlo,
+    // lo que hay de verdad y UNA pregunta. Si el mensaje ya trae un producto o un tipo (inversor,
+    // batería, cargador, nevera…), sigue su camino de siempre.
+    if(/\b(apag[oó]n(es)?|se (va|fue|me va|nos va|me fue) la (luz|corriente)|sin (luz|corriente|electricidad)|cuando no hay (luz|corriente))\b/.test(m)
+       && !/\b(inversor|bater[ií]a|panel|planta|generador|estaci[oó]n|power|ups|sistema|kit|arma\w*|cu[aá]nto|dura\w*|precio|cargador|linterna|l[aá]mpara|bombillo|ventilador|nevera|televisor|tv|router|celular|tel[eé]fono|hamaca)\b/.test(m)
+       && !detectProductMentions(text).length) return 'apagones';
 
     // COMPATIBILIDAD: "este router funciona con mi equipo X"
     if(/\b(funciona con|compatible con|sirve para|lo puedo conectar a|lo puedo usar con|trabaja con|soporta)\b/.test(m)
@@ -3165,8 +3176,8 @@
     const p = _mencionOculto(text);
     const nombre = p ? String(p.nombre).split('|')[0].trim() : 'Ese producto';
     return {
-      response: `😕 <strong>${escapeHtml(nombre)}</strong> no está disponible ahora en la tienda.\n\nSi lo necesitas, escríbenos por WhatsApp y te decimos qué podemos hacer. También te puedo enseñar lo que sí tenemos.`,
-      quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+      response: `😕 <strong>${escapeHtml(nombre)}</strong> no está disponible ahora en la tienda.\n\nSi lo necesitas, escríbenos por WhatsApp y te decimos qué podemos hacer. Toca «📦 Categorías» para ver lo que sí tenemos.`,
+      quickReplies: ['📦 Categorías','💬 WhatsApp','🔥 Ofertas']
     };
   };
 
@@ -3174,8 +3185,8 @@
     const t = _tipoOcultoPedido(text);
     const que = t ? t.plural : 'de esos';
     return {
-      response: `😕 Ahora mismo no tengo <strong>${escapeHtml(que)}</strong> disponibles.\n\nSi necesitas alguno, escríbenos por WhatsApp y te decimos qué podemos hacer. También te puedo enseñar lo que sí tengo.`,
-      quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas']
+      response: `😕 Ahora mismo no tengo <strong>${escapeHtml(que)}</strong> disponibles.\n\nSi necesitas alguno, escríbenos por WhatsApp y te decimos qué podemos hacer. Toca «📦 Categorías» para ver lo que sí tengo.`,
+      quickReplies: ['📦 Categorías','💬 WhatsApp','🔥 Ofertas']
     };
   };
 
@@ -3477,7 +3488,7 @@
   const _enFamilia = (p, f) => f.sub.test(_subNorm(p));
   const _FAMILIAS = [
     { id: 'aceite', icono: '🛢️', titulo: 'Aceites de motor y lubricantes', pide: 'la viscosidad que pide tu motor (10W-40, 5W-30…)',
-      re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2}\b/,
+      re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2,3}\b/,
       no: /transmisi|caja|cvt|atf|diferencial|hidraul|freno|\b2t\b|dos tiempos|compresor|comestible|vegetal|oliva|girasol|cocina|masaje|esencial/,
       sub: /^(aceites?( (de|para) motor)?|aceites? y lubricantes|lubricantes?)$/ },
     { id: 'transmision', icono: '⚙️', titulo: 'Aceites de transmisión', pide: '',
@@ -4504,6 +4515,26 @@ ${notasHTML}
   // ════════════════════════════════════════════════════════════
   //  SISTEMA SOLAR COMPLETO
   // ════════════════════════════════════════════════════════════
+  R.apagones = () => {
+    const en = PRODUCTOS.filter(p => p.stock > 0 && p.categoria === 'ENERGIA');
+    const porPrecio = (a, b) => (a.precio || 0) - (b.precio || 0);
+    const estacion = en.filter(p => _estacionDatos(p)).sort(porPrecio)[0];
+    const bateria = en.filter(p => !_estacionDatos(p) && !_esBateriaArranque(p) && /bater/i.test(p.subcategoria || '')).sort(porPrecio)[0];
+    const panel = en.filter(p => _esPanelSolar(p)).sort(porPrecio)[0];
+    const prods = [estacion, bateria, panel].filter(Boolean);
+    if(!prods.length){
+      return { response: `🔌 Para los apagones lo que sirve es una estación de energía, o batería con inversor. Ahora mismo no tengo ninguno disponible: escríbenos por WhatsApp y te avisamos en cuanto entre.`,
+               quickReplies: ['💬 WhatsApp','📦 Categorías'] };
+    }
+    let body = `🔌 <strong>Para los apagones hay dos caminos:</strong>\n\n`;
+    body += `• <strong>Una estación de energía portátil:</strong> batería e inversor en un solo equipo, lo enchufas y ya.\n`;
+    body += `• <strong>Armar un sistema:</strong> batería + inversor, y un panel solar si quieres recargar con el sol.\n\n`;
+    body += `Esto es lo que tengo disponible ahora:\n\n`;
+    prods.forEach((p, i) => { body += `<strong>${i+1}.</strong> ${escapeHtml(String(p.nombre).split('|')[0].trim())} — ${fmtP(p)} · <em>${stockText(p)}</em>\n`; });
+    body += `\n¿Qué quieres mantener encendido: <strong>solo luces y el celular</strong>, o <strong>también nevera y ventilador</strong>? Con eso te armo lo que te conviene.`;
+    return { response: body, products: prods, quickReplies: ['💡 Sistema solar básico','🧊 Sistema solar mediano','💬 WhatsApp'] };
+  };
+
   R.sistemaSolar = (text) => {
     const m = text.toLowerCase();
     let tamano = 'solar mediano';
@@ -4966,6 +4997,15 @@ ${notasHTML}
       const lista = disponibles.length > 0 ? disponibles : mentions;
       // Uno solo con stock entre los que casan: es ese, no «1 producto que coinciden».
       if(disponibles.length === 1) return buildDetalle(disponibles[0], text);
+      // Ninguno con stock: decirlo claro. «Encontré 6 productos que coinciden» con seis «Agotado» debajo
+      // parece una oferta y no lo es; lo útil es el aviso de cuando lleguen.
+      if(disponibles.length === 0){
+        const ag = mentions.slice(0, 3);
+        let b0 = `😕 Ahora mismo no tengo ninguno de esos disponible. Estos son los que están agotados:\n\n`;
+        ag.forEach((prod, i) => { b0 += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtP(prod)}\n`; });
+        b0 += `\nToca el que te interese y pulsa <strong>🔔 Avísame</strong> para que te escribamos en cuanto llegue, o escríbenos por WhatsApp.`;
+        return { response: b0, products: ag, quickReplies: ['💬 WhatsApp','📦 Categorías','🔥 Ofertas'] };
+      }
       // El contador iba sobre `mentions` pero la lista pintada es `lista`
       // (solo los disponibles): decía "3 productos" y enseñaba 2.
       const muestra = lista.slice(0,3);
@@ -6035,7 +6075,7 @@ ${notasHTML}
   R.familia = (text) => {
     const f = _familiaDe(text) || _FAMILIAS[0];
     const m = cleanForMatch(text);
-    const visc = (m.match(/\b\d{1,2}w\d{2}\b/) || [])[0] || '';
+    const visc = (m.match(/\b\d{1,2}w\d{2,3}\b/) || [])[0] || '';
     const pideMoto = /\b(motos?|motocicleta|scooter)\b/.test(m);
     const pool = PRODUCTOS.filter(p => _enFamilia(p, f));
     // Lo de carro primero salvo que hablen de moto: «aceite de motor» es el
