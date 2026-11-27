@@ -10555,8 +10555,91 @@ async function pubCatUpdatePreview(){
       </div>
       <div id="pub-cat-lote-bar" style="display:none;height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px"><div id="pub-cat-lote-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B1A,#e8501e);transition:width .25s;border-radius:6px"></div></div>
       <div id="pub-cat-lote-info" style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;min-height:16px"></div>
+    </div>
+    ${pubAlbumHTML(prods)}`;
+}
+
+/* ── 📘 Álbum: UNA publicación de Facebook con las fotos de varios productos ──────────
+   Facebook no recibe texto desde otra app: al compartir fotos solo entran las fotos y el texto se
+   pierde (el gestor lo comprobó). Subir N productos eran N subidas, cada una con su texto a mano.
+   Aquí se hace una sola: las imágenes (ya llevan nombre y precio dibujados) y UN texto con la lista
+   numerada, el enlace de cada una y los hashtags. Se prepara una vez (dibujar tarda) y un toque
+   guarda las fotos, copia el texto y abre el grupo; en Facebook solo se pega y se adjuntan las fotos
+   de la galería. Hasta 10 por álbum: más, y el selector de fotos de Facebook se vuelve incómodo.
+   Mirar no es publicar: los productos se apuntan al abrir el grupo, con su nombre como destino. */
+const PUB_ALBUM_MAX = 10;
+let _pubAlbum = null;
+function pubAlbumGrupos(){
+  try{ return (typeof _gruposFB==='function'?_gruposFB():[]).filter(g=>typeof _grupoValido==='function'?_grupoValido(g):!!(g&&g.url)); }catch(e){ return []; }
+}
+function pubAlbumHTML(prods){
+  const n=Math.min((prods||[]).length, PUB_ALBUM_MAX);
+  if(!n) return '';
+  const gs=pubAlbumGrupos();
+  const opc=gs.map((g,i)=>`<option value="${i}">${esc(String(g.nombre||g.url))}</option>`).join('')
+    + `<option value="-1">${gs.length?'Otro: abrir mi lista de grupos':'Abrir mi lista de grupos de Facebook'}</option>`;
+  return `<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">📘 Álbum en un grupo de Facebook</div>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Una sola publicación con las fotos de ${n} producto${n!==1?'s':''} (nombre y precio ya van en cada foto) y <b>un solo texto</b> con la lista y los enlaces. Preparas una vez; después, un toque guarda las fotos, copia el texto y abre el grupo.${(prods||[]).length>PUB_ALBUM_MAX?` De los ${prods.length} de esta tanda entran los primeros ${PUB_ALBUM_MAX}.`:''}</p>
+      <select class="form-select" id="pub-alb-grupo" style="width:100%;margin-bottom:10px">${opc}</select>
+      <button type="button" class="pub-act fb" id="pub-alb-btn" style="width:100%" onclick="pubAlbumPreparar()">📘 Preparar álbum (${n} foto${n!==1?'s':''})</button>
+      <div id="pub-alb-info" style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;min-height:16px"></div>
     </div>`;
 }
+async function pubAlbumPreparar(){
+  const cat=_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
+  if(typeof window.tmAnuncioImagen!=='function'){ showToast('⚠️ Recarga la página','No se pudo cargar el generador de imágenes'); return; }
+  const prods=pubCatProdsTanda(cat).slice(0,PUB_ALBUM_MAX);
+  const btn=$('#pub-alb-btn'), info=$('#pub-alb-info');
+  if(!prods.length) return;
+  _pubAlbum=null;
+  if(btn){ btn.disabled=true; btn.onclick=pubAlbumPreparar; }
+  const files=[], hechos=[];
+  for(let i=0;i<prods.length;i++){
+    if(info) info.textContent='⏳ Dibujando '+(i+1)+'/'+prods.length+'…';
+    const blob=await pubGenCartelBlob(prods[i]);
+    if(blob){ files.push(new File([blob],'tiendamax-album-'+String(i+1).padStart(2,'0')+'-'+prods[i].id+'.jpg',{type:'image/jpeg'})); hechos.push(prods[i]); }
+  }
+  if(!files.length){
+    if(info) info.textContent='❌ No se pudo dibujar ninguna imagen'+(_pubLoteLastError?': '+_pubLoteLastError:'');
+    if(btn){ btn.disabled=false; }
+    return;
+  }
+  _pubAlbum={cat, files, hechos, texto:pubCatText(cat,'fb',hechos)};
+  if(btn){
+    btn.disabled=false;
+    btn.textContent='⬇️ Guardar '+files.length+' foto'+(files.length!==1?'s':'')+', copiar texto y abrir el grupo →';
+    btn.onclick=pubAlbumPublicar;
+  }
+  if(info) info.textContent='✅ Listo'+(files.length<prods.length?' ('+files.length+' de '+prods.length+': a las demás no se les pudo exportar la foto)':'')+'. Toca el botón de arriba.';
+}
+async function pubAlbumPublicar(){
+  const A=_pubAlbum; if(!A) return;
+  const btn=$('#pub-alb-btn'), info=$('#pub-alb-info'), sel=$('#pub-alb-grupo');
+  if(btn) btn.disabled=true;
+  const gs=pubAlbumGrupos();
+  const idx=sel?parseInt(sel.value,10):-1;
+  const g=(idx>=0&&gs[idx])?gs[idx]:null;
+  const url=g?String(g.url):'https://www.facebook.com/groups/feed/';
+  // 1) El texto, primero y con tope: en algunos webviews el permiso del portapapeles ni resuelve ni rechaza.
+  let copiado=false;
+  try{ await Promise.race([navigator.clipboard.writeText(A.texto).then(()=>{ copiado=true; }), new Promise(r=>setTimeout(r,1500))]); }catch(e){}
+  // 2) Las fotos a la galería (con respiro: algunos navegadores bloquean ráfagas).
+  await _pubDownloadFiles(A.files);
+  // 3) El grupo, al final y todavía dentro de la ventana del gesto (unos 5 s; con 10 fotos caben).
+  let w=null;
+  try{ w=window.open(url,'_blank','noopener,noreferrer'); }catch(e){}
+  const destino=g?((typeof _grupoDestino==='function'?_grupoDestino(g):String(g.nombre||g.url))):'Facebook';
+  A.hechos.forEach(pr=>{
+    try{ if(typeof _marcarPublicado==='function') _marcarPublicado(pr.id,'fb',destino,g); else pubMarcarPublicado(pr.id,'fb',destino); }catch(e){}
+  });
+  if(info) info.innerHTML=(w?'✅ ':'⚠️ ')+A.files.length+' fotos en tu galería'+(copiado?' · 📋 texto copiado':' · el texto NO se pudo copiar: usa «🔗 Copiar texto»')
+    +(w?'. En el grupo: pega el texto y adjunta las fotos.':'. El navegador bloqueó abrir el grupo: <a href="'+esc(url)+'" target="_blank" rel="noopener" style="color:var(--o)">ábrelo aquí</a>.');
+  showToast('📘 Álbum listo', copiado?'Pega el texto y adjunta las fotos en el grupo':'Copia el texto con «🔗 Copiar texto»');
+  if(btn){ btn.disabled=false; btn.textContent='📘 Preparar otro álbum'; btn.onclick=pubAlbumPreparar; }
+  _pubAlbum=null;
+}
+window.pubAlbumPreparar=pubAlbumPreparar; window.pubAlbumPublicar=pubAlbumPublicar;
 /* Publicar la tarjeta de una categoría ES publicar esos productos: hasta
    ahora no quedaba anotado en ninguna parte, así que los badges seguían en
    blanco y «Hoy toca publicar» los volvía a proponer al rato. Se apunta la
