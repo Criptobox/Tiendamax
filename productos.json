@@ -1037,7 +1037,7 @@
   {
     "id": 1778104924836,
     "nombre": "Generador Solar Portátil BLUETTI AC180",
-    "precioActual": 640,
+    "precioActual": 620,
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
@@ -1046,9 +1046,9 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 9,
+    "descuento": 11,
     "slug": "bluetti-ac180",
-    "comision": 10,
+    "comision": 5,
     "specs": [
       "⚡ 1800W de Potencia / 1152Wh Capacidad",
       "🔌 Salidas AC Múltiples y Puertos USB-C / USB-A",
@@ -1141,7 +1141,7 @@
       "generador-solar-ac180"
     ],
     "almacenId": "alm_1790824274659",
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "descripcion": "Estación de energía portátil de alta potencia y capacidad diseñada para respaldo en el hogar, actividades al aire libre o emergencias. Cuenta con múltiples salidas de corriente alterna (AC), puertos USB de carga rápida, salida de corriente continua (DC) tipo encendedor y una pantalla digital informativa en un diseño robusto y compacto."
   },
   {
@@ -8218,9 +8218,9 @@
       "https://tiendamax.org/imagenes/img_1787071781631.webp",
       "https://tiendamax.org/imagenes/img_1787071783066.webp"
     ],
-    "precioActual": 125,
+    "precioActual": 115,
     "precioOriginal": 145,
-    "descuento": 14,
+    "descuento": 21,
     "stock": 7,
     "comision": 5,
     "comisionMoneda": "USD",
@@ -8319,7 +8319,7 @@
     "slugsAnteriores": [
       "cargador-baterias-vevor-35a"
     ],
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "descripcion": "Cargador y mantenedor de baterías inteligente de alta potencia (35A) de la marca VEVOR, diseñado para la recuperación y carga segura de diversos tipos de acumuladores (como AGM/Lead, LiFePO4 y Litio). Cuenta con una pantalla digital interactiva a color y múltiples botones de control lateral para seleccionar voltajes, corrientes y modos de operación especiales como desulfatación o modo forzado."
   },
   {
@@ -8398,7 +8398,7 @@
       "https://tiendamax.org/imagenes/img_1787079477837.webp",
       "https://tiendamax.org/imagenes/img_1787079479174.webp"
     ],
-    "precioActual": 90,
+    "precioActual": 75,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 4,
@@ -8489,7 +8489,7 @@
       "1× Manual de usuario e instrucciones de configuración"
     ],
     "slug": "controlador-mppt-boost-1200w",
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "descripcion": "Controlador de carga solar elevador (Boost) con tecnología MPPT y una potencia nominal de 1200W. Está diseñado específicamente para recibir un voltaje de entrada menor (12-60V) y elevarlo para cargar bancos de baterías de mayor tensión (48V, 60V y 72V). Cuenta con una carcasa metálica roja resistente, una pantalla digital a color con métricas detalladas y un botón de configuración frontal."
   },
   {
@@ -9583,9 +9583,9 @@
       "https://tiendamax.org/imagenes/img_1788627369327.webp",
       "https://tiendamax.org/imagenes/img_1788627371422.webp"
     ],
-    "precioActual": 115,
+    "precioActual": 105,
     "precioOriginal": 125,
-    "descuento": 8,
+    "descuento": 16,
     "stock": 5,
     "comision": 5,
     "comisionMoneda": "USD",
@@ -9684,7 +9684,7 @@
     "slugsAnteriores": [
       "vevor-cargador-bateria-30a"
     ],
-    "rev": 1795708475383,
+    "rev": 1795790422002,
     "descripcion": "es una solución profesional multivoltaje diseñada para diagnosticar, recargar y mantener baterías de 6V, 12V y 24V con máxima rapidez y precisión. Su potente entrega de corriente de hasta 30 amperios reduce drásticamente los tiempos de espera, convirtiéndolo en un equipo indispensable para talleres, flotas comerciales, bancos de energía solar y uso doméstico exigente."
   },
   {
@@ -9960,7 +9960,7 @@
       "https://tiendamax.org/imagenes/img_1789065256344.webp",
       "https://tiendamax.org/imagenes/img_1791320779912.webp"
     ],
-    "precioActual": 75,
+    "precioActual": 55,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 6,
@@ -10024,7 +10024,7 @@
     "slugsAnteriores": [
       "anker-soundcore-motion-300"
     ],
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "descripcion": "El Anker Soundcore Select 3 es un altavoz inalámbrico portátil concebido para ofrecer un sonido potente, nítido y duradero en cualquier aventura o entorno diario. Cuenta con una configuración acústica estéreo de 16W respaldada por dos transductores de rango completo y la tecnología propietaria BassUp™, la cual intensifica las frecuencias bajas en tiempo real para lograr graves con pegada sin distorsionar las frecuencias medias y agudas. Su batería de alta eficiencia entrega hasta 20 horas de reproducción continua, ofreciendo música ininterrumpida durante jornadas completas o escapadas de fin de semana sin requerir tomas de corriente frecuentes.  "
   },
   {
@@ -10929,7 +10929,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1790961633359.webp"
     ],
-    "precioActual": 60,
+    "precioActual": 45,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 8,
@@ -11008,7 +11008,7 @@
       "1× Juego completo de tornillos autorroscantes para techo y pernos de fijación para el marco del panel"
     ],
     "slug": "base-paneles",
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "seoTitle": "Base para Paneles en Cuba | TiendaMax",
     "seoDescription": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico…",
     "descripcion": "Este kit de soportes inclinables ajustables para paneles solares está diseñado para maximizar la generación energética de cualquier sistema fotovoltaico, permitiendo orientar los módulos solares con la inclinación adecuada según la estación del año y la latitud geográfica. Al evitar instalaciones totalmente planas, optimiza la captación de radiación solar directa hasta en un 25% – 30% adicional y favorece el escurrimiento natural de agua y suciedad sobre el cristal del panel."
@@ -12771,7 +12771,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793392322767.webp"
     ],
-    "precioActual": 20,
+    "precioActual": 15,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 16,
@@ -12866,7 +12866,7 @@
       "1× Cuerda/soporte para la estructura del mosquitero (según modelo)"
     ],
     "slug": "hamaca-camping-2en1",
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "seoTitle": "Hamaca de Camping 2 en 1 con Mosquitero en Cuba | TiendaMax",
     "seoDescription": "Ideal para los apagones , terrazas, excursiones y campismos..ligera, resistente y en los 3 colores de las fotos. Viene con su soga de nylon tipo linga y 2…",
     "descripcion": "Ideal para los apagones , terrazas, excursiones y campismos..ligera, resistente y en los 3 colores de las fotos. Viene con su soga de nylon tipo linga y 2 mosquetones metálicos para facilitar su fácil colocación y viene con bolsillo también para las pertenencias y el celular."
@@ -13223,9 +13223,9 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793662535527.webp"
     ],
-    "precioActual": 1700,
+    "precioActual": 1650,
     "precioOriginal": 1800,
-    "descuento": 6,
+    "descuento": 8,
     "stock": 5,
     "comision": 30,
     "comisionMoneda": "USD",
@@ -13337,7 +13337,7 @@
       "🎁 Regalos incluidos: 1× Casco de protección + 1× Malla elástica de agarre para carga"
     ],
     "slug": "moto-707-3000w-48v-50ah",
-    "rev": 1795575418095,
+    "rev": 1795790422002,
     "seoTitle": "Moto Eléctrica YOAZAKI 707 (GALACTICA 3000W / 48V 50Ah)",
     "seoDescription": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en…",
     "descripcion": "La scooter eléctrica YOAZAKI 707 (Edición GALACTICA 3000W) es una versión de alto rendimiento optimizada para ofrecer máxima autonomía y potencia en recorridos urbanos intensos. Destaca por incorporar una potente controladora programable VOTOL EM-50 combinada con un motor de alta eficiencia de 3000W, logrando una respuesta de aceleración inmediata, entrega de torque suave y una velocidad máxima controlada de 50 km/h."
@@ -14138,7 +14138,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1793740396177.webp"
     ],
-    "precioActual": 30,
+    "precioActual": 25,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 1,
@@ -14248,7 +14248,7 @@
       "Aplicación: Conmutación automática instantánea entre la red eléctrica comercial y plantas eléctricas, inversores solares o bancos de baterías"
     ],
     "slug": "compresor-aire-st-221-air",
-    "rev": 1795709849819,
+    "rev": 1795790422002,
     "seoTitle": "Compresor de Aire Portátil Digital ST-221 (Air Compressor)",
     "seoDescription": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión…",
     "descripcion": "El ST-221 Air Compressor es un compresor de aire digital compacto e inalámbrico diseñado para realizar inflados rápidos y calibraciones de presión precisas en neumáticos de automóviles, motocicletas, bicicletas y balones deportivos. Su formato portátil de diseño ergonómico con detalles en naranja permite llevarlo cómodamente en la guantera del vehículo, mochila o alforja de viaje."
