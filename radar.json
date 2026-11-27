@@ -1,23 +1,23 @@
 {
-  "actualizado": "2026-11-26T20:00:12.221306+00:00",
-  "fecha": "2026-11-26",
+  "actualizado": "2026-11-27T19:49:34.793720+00:00",
+  "fecha": "2026-11-27",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
-  "tasa": 975.0,
+  "tasa": 980.0,
   "resumen": {
     "vigilados": 8,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
     {
       "id": 1778104924836,
       "nombre": "Generador Solar Portátil BLUETTI AC180",
-      "tuPrecio": 640.0,
+      "tuPrecio": 620.0,
       "convertidos": 0,
       "mercado": {
         "min": 600.0,
@@ -87,6 +87,12 @@
           "mediana": 700.0,
           "min": 600.0,
           "tu": 640.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 700.0,
+          "min": 600.0,
+          "tu": 620.0
         }
       ],
       "muestras": [
@@ -101,12 +107,12 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "640 USD Generador Solar Portátil BLUETTI AC180 · 1152 Wh",
-          "precio": 640.0,
+          "titulo": "620 USD Generador Solar Portátil BLUETTI AC180 · 1152 Wh",
+          "precio": 620.0,
           "url": "https://www.revolico.com/item/generador-solar-portatil-bluetti-ac180-1152-wh-58583466",
           "dias": null,
           "moneda": "USD",
-          "orig": 640.0
+          "orig": 620.0
         },
         {
           "fuente": "revolico",
@@ -278,14 +284,14 @@
     {
       "id": 1787071784077,
       "nombre": "Cargador y Mantenedor de Baterías VEVOR 35A",
-      "tuPrecio": 125.0,
+      "tuPrecio": 115.0,
       "convertidos": 0,
       "mercado": {
-        "min": 125.0,
-        "mediana": 125.0,
+        "min": 115.0,
+        "mediana": 115.0,
         "n": 2
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -10.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -348,26 +354,32 @@
           "mediana": 125.0,
           "min": 125.0,
           "tu": 125.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 115.0,
+          "min": 115.0,
+          "tu": 115.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "125 USD Cargador y Mantenedor de Baterías VEVOR 35A con Pantalla Digital",
-          "precio": 125.0,
+          "titulo": "115 USD Cargador y Mantenedor de Baterías VEVOR 35A con Pantalla Digital",
+          "precio": 115.0,
           "url": "https://www.revolico.com/item/cargador-y-mantenedor-de-baterias-vevor-35a-con-pantalla-digital-58332137",
           "dias": null,
           "moneda": "USD",
-          "orig": 125.0
+          "orig": 115.0
         },
         {
           "fuente": "revolico",
-          "titulo": "125 USD 🔌 Cargador y Mantenedor VEVOR 35A con Pantalla Digital",
-          "precio": 125.0,
+          "titulo": "115 USD 🔌 Cargador y Mantenedor VEVOR 35A con Pantalla Digital",
+          "precio": 115.0,
           "url": "https://www.revolico.com/item/cargador-y-mantenedor-vevor-35a-con-pantalla-digital-58331959",
           "dias": null,
           "moneda": "USD",
-          "orig": 125.0
+          "orig": 115.0
         }
       ],
       "busqueda": "cargador mantenedor baterías vevor 35a",
@@ -377,7 +389,7 @@
     {
       "id": 1787079480177,
       "nombre": "Controlador MPPT Boost 1200W",
-      "tuPrecio": 90.0,
+      "tuPrecio": 75.0,
       "convertidos": 0,
       "mercado": {
         "min": 51.0,
@@ -447,6 +459,12 @@
           "mediana": 112.5,
           "min": 51.0,
           "tu": 90.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 112.5,
+          "min": 51.0,
+          "tu": 75.0
         }
       ],
       "muestras": [
@@ -461,9 +479,36 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "75 USD Controlador MPPT Boost 1200W · 12V a 60V DC",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/controlador-mppt-boost-1200w-12v-a-60v-dc-58583389",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 75.0
+        },
+        {
+          "fuente": "revolico",
           "titulo": "75 USD CONTROLADOR SOLAR BOOST MPPT 1200W (baterías de 48v, 60v y 72v)",
           "precio": 75.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-mppt-1200w-baterias-de-48v-60v-y-72v-58981113",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 75.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD Controlador Solar MPPT Boost 1200W",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58332151",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 75.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "75 USD ☀️ Controlador Solar MPPT Boost 1200W",
+          "precio": 75.0,
+          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58331974",
           "dias": null,
           "moneda": "USD",
           "orig": 75.0
@@ -479,27 +524,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD Controlador MPPT Boost 1200W · 12V a 60V DC",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/controlador-mppt-boost-1200w-12v-a-60v-dc-58583389",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 90.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "90 USD Controlador solar MPPT boost 1200w",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58386836",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 90.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD Controlador Solar MPPT Boost 1200W",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58332151",
           "dias": null,
           "moneda": "USD",
           "orig": 90.0
@@ -515,21 +542,21 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD ☀️ Controlador Solar MPPT Boost 1200W",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/controlador-solar-mppt-boost-1200w-58331974",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 90.0
-        },
-        {
-          "fuente": "revolico",
           "titulo": "100 USD 🚫🚫 ULTIMAS UNIDADE Controlador solar Mppt 1200w Boost trabaja en 48,60 y 72v.",
           "precio": 100.0,
           "url": "https://www.revolico.com/item/ultimas-unidade-controlador-solar-mppt-1200w-boost-trabaja-en-4860-y-72v-56615518",
           "dias": null,
           "moneda": "USD",
           "orig": 100.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "125 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W |125 USD|",
+          "precio": 125.0,
+          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-125-usd-59128950",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 125.0
         },
         {
           "fuente": "revolico",
@@ -545,15 +572,6 @@
           "titulo": "130 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W. ✅ Tecnolog",
           "precio": 130.0,
           "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-tecnologia-mppt-para-mayor-eficiencia-de-carga-59093206",
-          "dias": null,
-          "moneda": "USD",
-          "orig": 130.0
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "130 USD Controlador Solar Boost Q7-LUMINA MPPT 1200W  ✅ Potencia máxima: 1200W en 130 usd",
-          "precio": 130.0,
-          "url": "https://www.revolico.com/item/controlador-solar-boost-q7-lumina-mppt-1200w-potencia-maxima-1200w-en-140-usd-56279997",
           "dias": null,
           "moneda": "USD",
           "orig": 130.0
@@ -620,7 +638,7 @@
     {
       "id": 1788627372873,
       "nombre": "VEVOR Cargador de Batería Inteligente 30A",
-      "tuPrecio": 115.0,
+      "tuPrecio": 105.0,
       "convertidos": 0,
       "mercado": {
         "min": 85.0,
@@ -690,6 +708,12 @@
           "mediana": 115.0,
           "min": 85.0,
           "tu": 115.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 115.0,
+          "min": 85.0,
+          "tu": 105.0
         }
       ],
       "muestras": [
@@ -704,30 +728,30 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "115 USD VEVOR Cargador de Batería Inteligente 30A · 6V / 12V / 24V DC",
-          "precio": 115.0,
+          "titulo": "105 USD VEVOR Cargador de Batería Inteligente 30A · 6V / 12V / 24V DC",
+          "precio": 105.0,
           "url": "https://www.revolico.com/item/vevor-cargador-de-bateria-inteligente-30a-6v-12v-24v-dc-58583425",
           "dias": null,
           "moneda": "USD",
-          "orig": 115.0
+          "orig": 105.0
         },
         {
           "fuente": "revolico",
-          "titulo": "115 USD Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
-          "precio": 115.0,
+          "titulo": "105 USD Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
+          "precio": 105.0,
           "url": "https://www.revolico.com/item/cargador-inteligente-de-baterias-vevor-30a-6v12v24v-58332119",
           "dias": null,
           "moneda": "USD",
-          "orig": 115.0
+          "orig": 105.0
         },
         {
           "fuente": "revolico",
-          "titulo": "115 USD 🔌 Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
-          "precio": 115.0,
+          "titulo": "105 USD 🔌 Cargador Inteligente de Baterías VEVOR 30A (6V/12V/24V)",
+          "precio": 105.0,
           "url": "https://www.revolico.com/item/cargador-inteligente-de-baterias-vevor-30a-6v12v24v-58331944",
           "dias": null,
           "moneda": "USD",
-          "orig": 115.0
+          "orig": 105.0
         },
         {
           "fuente": "revolico",
@@ -818,7 +842,7 @@
     {
       "id": 1790961637329,
       "nombre": "Base para Paneles",
-      "tuPrecio": 60.0,
+      "tuPrecio": 45.0,
       "convertidos": 0,
       "mercado": {
         "min": 60.0,
@@ -826,9 +850,9 @@
         "n": 1
       },
       "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
+      "estado": "barato",
       "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
+        "texto": "Estás por debajo de todos (mín $60); hay margen para subir"
       },
       "historial": [
         {
@@ -888,6 +912,12 @@
           "mediana": 60.0,
           "min": 60.0,
           "tu": 60.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 60.0,
+          "min": 60.0,
+          "tu": 45.0
         }
       ],
       "muestras": [
@@ -975,6 +1005,12 @@
         },
         {
           "fecha": "2026-11-26",
+          "mediana": 65.0,
+          "min": 45.0,
+          "tu": 65.0
+        },
+        {
+          "fecha": "2026-11-27",
           "mediana": 65.0,
           "min": 45.0,
           "tu": 65.0
@@ -1128,7 +1164,7 @@
       ],
       "busqueda": "interruptor transferencia automática ats lsp",
       "firma": "981c7ce4dc",
-      "descartados": 6
+      "descartados": 5
     },
     {
       "id": 1793733652655,
@@ -1137,10 +1173,10 @@
       "convertidos": 0,
       "mercado": {
         "min": 97.0,
-        "mediana": 100.8,
-        "n": 8
+        "mediana": 101.0,
+        "n": 9
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": 0.2,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -1203,6 +1239,12 @@
           "mediana": 100.8,
           "min": 97.0,
           "tu": 110.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 101.0,
+          "min": 97.0,
+          "tu": 110.0
         }
       ],
       "muestras": [
@@ -1250,6 +1292,15 @@
           "dias": null,
           "moneda": "USD",
           "orig": 101.0
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "110 USD Smartphone itel A100C (64GB ROM / Hasta 8GB RAM Extendida)",
+          "precio": 110.0,
+          "url": "https://www.revolico.com/item/smartphone-itel-a100c-64gb-rom-hasta-8gb-ram-extendida-59145709",
+          "dias": null,
+          "moneda": "USD",
+          "orig": 110.0
         },
         {
           "fuente": "revolico",
@@ -1356,6 +1407,12 @@
           "mediana": 120.0,
           "min": 115.0,
           "tu": 120.0
+        },
+        {
+          "fecha": "2026-11-27",
+          "mediana": 120.0,
+          "min": 115.0,
+          "tu": 120.0
         }
       ],
       "muestras": [
@@ -1398,7 +1455,7 @@
       ],
       "busqueda": "smartphone itel a100c 128gb rom",
       "firma": "981c7ce4dc",
-      "descartados": 2
+      "descartados": 3
     }
   ]
 }
