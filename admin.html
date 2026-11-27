@@ -8926,7 +8926,7 @@ async function renderReviewsReal(box){
   Object.keys(data).forEach(pid=>{
     const prodResenas=data[pid]; if(!prodResenas||typeof prodResenas!=='object') return;
     const prod=PRODUCTOS.find(p=>String(p.id)===String(pid));
-    Object.keys(prodResenas).forEach(k=>{ const r0=prodResenas[k]; if(r0&&typeof r0==='object'){ all.push(Object.assign({},r0,{_pid:pid,_prodName:(prod&&prod.nombre)||'Producto'})); } });
+    Object.keys(prodResenas).forEach(k=>{ const r0=prodResenas[k]; if(r0&&typeof r0==='object'){ all.push(Object.assign({},r0,{_pid:pid,_k:k,_prodName:(prod&&prod.nombre)||'Producto'})); } });
   });
   if(!all.length){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
   all.sort((a,b)=>(b.ts||b.fecha||0)-(a.ts||a.fecha||0));
@@ -8949,17 +8949,49 @@ async function renderReviewsReal(box){
     const avatar = nombre.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
     const fecha = r.ts?new Date(r.ts).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}):'';
     const texto = r.texto||r.text||r.comentario||'';
-    return `<div class="rev-card">
+    // La clave de una reseña la pone Firebase (la hora): solo letras, cifras, «-» y «_». Lo demás no
+    // llega a la URL del DELETE aunque alguien haya escrito una clave rara.
+    const borrable=/^[\w-]+$/.test(String(r._pid))&&/^[\w-]+$/.test(String(r._k));
+    return `<div class="rev-card" data-pid="${esc(String(r._pid))}" data-k="${esc(String(r._k))}">
       <div class="rev-top">
         <div class="rev-avatar">${esc(avatar)}</div>
         <div><div class="rev-name">${esc(nombre)}</div><div class="rev-meta">${esc(r._prodName||'')}${fecha?' · '+fecha:''}</div></div>
         <div class="rev-stars-sm">${stars}</div>
       </div>
       ${texto?`<div class="rev-text">${esc(texto)}</div>`:''}
+      ${borrable?`<div style="display:flex;justify-content:flex-end;margin-top:8px"><button type="button" class="btn btn-ghost" style="padding:5px 11px;font-size:11.5px;color:#ff7a7a" onclick="resenaBorrar('${esc(String(r._pid))}','${esc(String(r._k))}',this)">🗑️ Borrar</button></div>`:''}
     </div>`;
   }).join('');
   box.innerHTML = html;
 }
+/* Borrar una reseña (solo el dueño). La regla de Firebase deja a cualquiera CREAR una reseña pero
+   solo a la cuenta del dueño tocar las que ya existen, así que esto va firmado (fetchPrivado).
+   Después se lanza la sincronización de la caché (resenas-cache.json) para que las páginas /p/ y la
+   portada dejen de enseñarla en unos minutos en vez de esperar a la hora en punto. */
+async function resenaBorrar(pid,k,btn){
+  if(!/^[\w-]+$/.test(String(pid))||!/^[\w-]+$/.test(String(k))) return;
+  const card=btn&&btn.closest?btn.closest('.rev-card'):null;
+  const quien=card?((card.querySelector('.rev-name')||{}).textContent||''):'';
+  const txt=card?((card.querySelector('.rev-text')||{}).textContent||''):'';
+  if(!confirm('¿Borrar la reseña de '+(quien||'este cliente')+'?'+(txt?'\n\n«'+txt.slice(0,120)+(txt.length>120?'…':'')+'»':'')+'\n\nNo se puede deshacer.')) return;
+  if(btn){ btn.disabled=true; btn.textContent='Borrando…'; }
+  if(typeof TMAuth==='undefined'||!TMAuth.fetchPrivado){ showToast('⚠️ No se pudo borrar','El panel no cargó la cuenta del dueño'); if(btn){ btn.disabled=false; btn.textContent='🗑️ Borrar'; } return; }
+  const r=await TMAuth.fetchPrivado('/resenas/'+pid+'/'+k+'.json',{method:'DELETE'});
+  if(!r.ok){
+    const pista=r.sinSesion?'Entra con tu cuenta del dueño y prueba otra vez.':(r.estado===401||r.estado===403?'Firebase la rechazó: publica las reglas nuevas (firebase-rules.json) y prueba otra vez.':(r.msg||''));
+    showToast('⚠️ No se pudo borrar',pista);
+    if(btn){ btn.disabled=false; btn.textContent='🗑️ Borrar'; }
+    return;
+  }
+  showToast('🗑️ Reseña borrada','Dejará de verse en la tienda en unos minutos');
+  // Sin esperar a la hora en punto: la caché de reseñas se rehace ya (mejor esfuerzo).
+  try{
+    const u=localStorage.getItem('githubUser'), rp=localStorage.getItem('githubRepo'), tk=localStorage.getItem('githubToken');
+    if(u&&rp&&tk) fetch('https://api.github.com/repos/'+u+'/'+rp+'/actions/workflows/sync-resenas.yml/dispatches',{ method:'POST', headers:{'Authorization':'token '+tk,'Accept':'application/vnd.github+json','Content-Type':'application/json'}, body:JSON.stringify({ref:'main'}) }).catch(()=>{});
+  }catch(e){}
+  try{ renderClientes(); }catch(e){}
+}
+window.resenaBorrar=resenaBorrar;
 /* ── Avísame cuando vuelva (Firebase /avisos_stock) ── */
 // Estructura: /avisos_stock/{productId}/{token} = { token, ts, producto, tel? }
 function _avisoTel(t){ return String(t||'').replace(/[^\d]/g,''); }

@@ -48,6 +48,16 @@ const hay = re => PRODS.some(p => re.test(p.nombre));
 const conStock = re => PRODS.some(p => re.test(p.nombre) && Number(p.stock) > 0);
 
 // ── 1. Aceites y anticongelante ─────────────────────────────────────────
+// Las familias se reconocen por el nombre de la subcategoría. Si el dueño la renombra y la
+// expresión ya no la ve, la familia queda sin productos y Max pasa a ofrecer otra cosa
+// (el 2T de moto para «aceite para carro») sin ningún error: esto lo hace ruidoso.
+{
+    const B = nuevo();
+    const vacias = B.familiaSinProductos ? B.familiaSinProductos() : (B.familiasSinProductos ? B.familiasSinProductos() : null);
+    ok(Array.isArray(vacias), 'el cerebro debe exponer familiasSinProductos()');
+    ok(Array.isArray(vacias) && vacias.length === 0,
+       'familias de Max sin ningún producto (¿renombraste una subcategoría? actualiza _FAMILIAS.sub): ' + JSON.stringify(vacias));
+}
 if(conStock(/Defender 10W/i)){
     for(const q of ['aceite 10w40 para carro','tienen 10w40']){
         const a = ask(q);
@@ -63,7 +73,7 @@ if(conStock(/5W-?30/i)){
 {
     const a = ask('aceite de motor');
     ok(a.nombres.length > 0 && !/Agotado/i.test(a.texto.slice(0, 80)), '«aceite de motor» no empieza por un agotado');
-    ok(a.r.products && a.r.products[0].categoria === 'CARROS', '«aceite de motor»: lo de carro en stock va primero');
+    ok(a.r.products && a.r.products[0].categoria !== 'MOTOS', '«aceite de motor»: lo de carro en stock va primero, no el de moto');
     ok(a.r.products.every(p => p.stock > 0), '«aceite de motor» solo enseña lo que hay');
 }
 if(conStock(/Antifreeze/i)){

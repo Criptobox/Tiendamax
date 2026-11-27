@@ -28,7 +28,8 @@ class ResenaTest(unittest.TestCase):
         self.assertNotIn("tm-bundle", PAGINA)
         self.assertNotIn("productos-lite.json", PAGINA)
         self.assertNotIn("googleapis", PAGINA)
-        self.assertLess(len(PAGINA.encode("utf-8")), 20000)
+        # 24 KB: las frases completas (en vez de etiquetas) añadieron ~2 KB de texto.
+        self.assertLess(len(PAGINA.encode("utf-8")), 24000)
 
     def test_no_se_indexa(self):
         self.assertIn('name="robots" content="noindex"', PAGINA)

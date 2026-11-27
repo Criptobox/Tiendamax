@@ -3469,19 +3469,25 @@
      contestaba «eso exacto no lo tengo» con los tres Antifreeze debajo.
      Si el cliente nombra una marca o un código de producto, no es una
      familia: es ese producto, y sigue su camino. */
+  /* Una familia se reconoce por el NOMBRE de la subcategoría, con una expresión y no con una lista
+     exacta: el dueño las reorganiza (nov-2026 movió los aceites de CARROS › LUBRICANTES a
+     LUBRICANTES › ACEITE DE MOTOR) y con nombres fijos Max pasó a ofrecer el aceite 2T de moto
+     para «aceite 10w40 para carro», sin ningún error. Sin tildes ni mayúsculas. */
+  const _subNorm = p => String(p && p.subcategoria || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const _enFamilia = (p, f) => f.sub.test(_subNorm(p));
   const _FAMILIAS = [
     { id: 'aceite', icono: '🛢️', titulo: 'Aceites de motor y lubricantes', pide: 'la viscosidad que pide tu motor (10W-40, 5W-30…)',
       re: /\b(aceites?|lubricantes?)\b|\b\d{1,2}w\d{2}\b/,
       no: /transmisi|caja|cvt|atf|diferencial|hidraul|freno|\b2t\b|dos tiempos|compresor|comestible|vegetal|oliva|girasol|cocina|masaje|esencial/,
-      subs: ['LUBRICANTES', 'ACEITES Y LUBRICANTES'] },
+      sub: /^(aceites?( (de|para) motor)?|aceites? y lubricantes|lubricantes?)$/ },
     { id: 'transmision', icono: '⚙️', titulo: 'Aceites de transmisión', pide: '',
       re: /\b(aceites?|lubricantes?)\b[^.?]{0,25}\b(transmisi\w*|caja|cvt|atf|diferencial)\b|\b(transmisi\w*|caja)\b[^.?]{0,25}\b(aceites?|lubricantes?)\b/,
       no: /^$/,
-      subs: ['CAJA MECÁNICA Y AUTOMÁTICA'] },
+      sub: /transmision|^caja\b/ },
     { id: 'anticongelante', icono: '🧊', titulo: 'Anticongelante / refrigerante', pide: '',
       re: /\b(anticongelantes?|antifreeze|refrigerantes?|coolant)\b/,
       no: /\b(nevera|refrigerador|aire|freezer)\b/,
-      subs: ['REFRIGERANTES'] },
+      sub: /refrigerant|anticongelant|antifreeze/ },
   ];
   const _FAMILIA_GENERICA = new Set(['aceite','aceites','motor','mineral','sintetico','semisintetico','transmision','automatica','manual','litro','litros','garrafa','liquido','frenos','lubricante','lubricantes','antifreeze','anticongelante','refrigerante','coolant','mecanica','caja','carro','carros','moto','motos']);
   function _familiaDe(text){
@@ -3490,7 +3496,7 @@
       .find(x => x.re.test(m) && !x.no.test(m));
     if(!f) return null;
     const palabras = new Set(m.split(' '));
-    const prods = PRODUCTOS.filter(p => f.subs.includes(String(p.subcategoria || '').toUpperCase()));
+    const prods = PRODUCTOS.filter(p => _enFamilia(p, f));
     if(!prods.length) return null;
     for(const p of prods){
       const toks = cleanForMatch(p.nombre).split(' ');
@@ -6031,7 +6037,7 @@ ${notasHTML}
     const m = cleanForMatch(text);
     const visc = (m.match(/\b\d{1,2}w\d{2}\b/) || [])[0] || '';
     const pideMoto = /\b(motos?|motocicleta|scooter)\b/.test(m);
-    const pool = PRODUCTOS.filter(p => f.subs.includes(String(p.subcategoria || '').toUpperCase()));
+    const pool = PRODUCTOS.filter(p => _enFamilia(p, f));
     // Lo de carro primero salvo que hablen de moto: «aceite de motor» es el
     // motor del carro para quien no dice más, y un aceite de moto agotado no
     // puede ser lo primero que ve.
@@ -8036,6 +8042,9 @@ ${notasHTML}
     esAveria,
     detectarCodigo,
     familiaDelTexto: _familiaDelTexto,
+    // Familias (aceite, transmisión, anticongelante) sin ningún producto en el catálogo: señal de que
+    // el dueño renombró una subcategoría y la expresión de arriba ya no la ve (lo comprueba un test).
+    familiasSinProductos: () => _FAMILIAS.filter(f => !PRODUCTOS.some(p => _enFamilia(p, f))).map(f => f.id),
     DIAGNOSTICO,
     cotizacionHTML,
     abrirCotizacion,

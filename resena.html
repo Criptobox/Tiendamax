@@ -68,7 +68,10 @@ h1 em{font-style:italic;color:var(--accent)}
 @supports (aspect-ratio:1){.estrella{height:auto;aspect-ratio:1}}
 @keyframes sube{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .lbl{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 8px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips{display:flex;flex-direction:column;gap:8px}
+.sug{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:11px 14px;font:500 15px/1.35 Inter,system-ui,sans-serif;cursor:pointer}
+.sug.on{border-color:var(--accent);background:rgba(255,107,53,.16);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.otras{align-self:flex-start;border:0;background:none;color:var(--accent);font:600 14px Inter,system-ui,sans-serif;padding:8px 2px;cursor:pointer}
 .chip{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:999px;padding:9px 14px;font:600 14px Inter,system-ui,sans-serif;cursor:pointer}
 .chip.on{border-color:var(--accent);background:rgba(255,107,53,.16);background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--text)}
 textarea,input{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:12px 14px;font:16px Inter,system-ui,sans-serif;outline:none}
@@ -107,9 +110,9 @@ textarea:focus,input:focus{border-color:var(--accent)}
       <div class="etq" id="etq" aria-live="polite"></div>
 
       <div class="paso" id="paso2">
-        <p class="lbl" id="lblChips">¿Qué te gustó? (toca las que quieras)</p>
+        <p class="lbl" id="lblChips">Toca la que diga lo que piensas (luego puedes cambiarla)</p>
         <div class="chips" id="chips"></div>
-        <textarea id="texto" maxlength="400" placeholder="Si quieres, cuéntalo con tus palabras…"></textarea>
+        <textarea id="texto" maxlength="400" placeholder="O escríbelo con tus palabras…"></textarea>
         <div class="cuenta"><span id="cuenta">0</span>/400</div>
         <div id="malo" class="aviso" style="display:none">
           Sentimos que no haya ido bien. Escríbenos y lo resolvemos: preferimos saberlo.
@@ -154,11 +157,42 @@ textarea:focus,input:focus{border-color:var(--accent)}
   var WA = '5354320170';
   var RTDB_RESPALDO = 'https://tiendamax-8feb5-default-rtdb.firebaseio.com';
   var ETIQUETAS = ['', 'Malo', 'Regular', 'Bien', 'Muy bien', '¡Excelente!'];
-  var BUENAS = ['Llegó rápido', 'Funciona perfecto', 'Buena atención', 'Buen precio', 'Lo recomiendo'];
-  var MALAS = ['Tardó en llegar', 'No funciona bien', 'Esperaba otra cosa', 'Buena atención'];
+  // Frases completas, no etiquetas: «Funciona perfecto · Buen precio · Lo recomiendo»
+  // pegado en cada reseña se lee a máquina. Cada persona ve tres distintas (el orden
+  // sale al azar en cada visita) y puede pedir otras; al tocar una se copia al cuadro
+  // de texto, donde se puede cambiar. Ninguna afirma nada del producto en concreto:
+  // solo lo que vale para cualquier compra aquí (se prueba y se paga al recibir).
+  var BUENAS = [
+    'Todo llegó bien y funciona como me dijeron.',
+    'Lo probé antes de pagar y quedé conforme.',
+    'Me atendieron rápido y sin complicaciones.',
+    'El producto es tal cual se ve en las fotos.',
+    'Buena compra, la verdad que me resolvió.',
+    'Me explicaron todo por WhatsApp y cumplieron lo acordado.',
+    'Pagué al recibir y no tuve ningún problema.',
+    'Muy buena atención, estuvieron pendientes hasta que me llegó.',
+    'Lo recomiendo, cumplieron con lo que prometieron.',
+    'Estuvo bien de precio y el producto trabaja perfecto.',
+    'Llegó bien cuidado y funcionando.',
+    'Ya lo estoy usando y hasta ahora todo bien.'
+  ];
+  var REGULARES = [
+    'Está bien, aunque esperaba un poco más.',
+    'Funciona, pero la entrega se demoró más de lo esperado.',
+    'Cumple, pero tuve que preguntar varias veces por mi pedido.',
+    'Es normal, ni mejor ni peor de lo que esperaba.',
+    'El producto está bien, pero me hubiera gustado más información antes.'
+  ];
+  var MALAS = [
+    'Tardó mucho en llegar y tuve que estar insistiendo.',
+    'No funciona como esperaba.',
+    'No era lo que esperaba por lo que vi en las fotos.',
+    'Tuve un problema con el producto y todavía espero solución.',
+    'La atención fue lenta y me quedé con dudas.'
+  ];
   var HECHA = 'tm_resena_hecha_' + PID;
   var $ = function (id) { return document.getElementById(id); };
-  var prod = { nombre: '', url: '/' }, estrellas = 0, elegidas = [];
+  var prod = { nombre: '', url: '/' }, estrellas = 0, orden = [], desde = 0, insertada = '';
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -186,32 +220,44 @@ textarea:focus,input:focus{border-color:var(--accent)}
       bs[i].className = 'estrella' + (on ? ' on' : ''); bs[i].setAttribute('aria-checked', String(k === n));
     }
     $('etq').textContent = ETIQUETAS[n];
-    var bueno = n >= 4, eraBueno = antes >= 4;
-    if (!antes || bueno !== eraBueno) { elegidas = []; pintarChips(bueno ? BUENAS : MALAS); }
-    $('lblChips').textContent = bueno ? '¿Qué te gustó? (toca las que quieras)' : '¿Qué pasó? (toca lo que aplique)';
+    var grupo = n >= 4 ? 'b' : (n === 3 ? 'r' : 'm'), grupoAntes = antes >= 4 ? 'b' : (antes === 3 ? 'r' : (antes ? 'm' : ''));
+    if (grupo !== grupoAntes) {
+      if (insertada && $('texto').value === insertada) $('texto').value = '';   // la frase de otro tono ya no vale
+      insertada = '';
+      orden = mezclar(grupo === 'b' ? BUENAS : (grupo === 'r' ? REGULARES : MALAS)); desde = 0; pintarSugerencias();
+    }
+    $('lblChips').textContent = n >= 4 ? 'Toca la que diga lo que piensas (luego puedes cambiarla)' : 'Toca la que se parezca a lo que pasó (luego puedes cambiarla)';
     $('malo').style.display = n <= 3 ? 'block' : 'none';
     $('paso2').classList.add('ver');
     validar();
   }
 
-  function pintarChips(lista) {
-    $('chips').innerHTML = lista.map(function (t) {
-      return '<button type="button" class="chip' + (elegidas.indexOf(t) >= 0 ? ' on' : '') + '" aria-pressed="' + (elegidas.indexOf(t) >= 0) + '">' + esc(t) + '</button>';
-    }).join('');
+  function mezclar(lista) {   // Fisher-Yates sobre una copia
+    var a = lista.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function pintarSugerencias() {
+    var n = Math.min(3, orden.length), html = '';
+    for (var k = 0; k < n; k++) {
+      var t = orden[(desde + k) % orden.length];
+      html += '<button type="button" class="sug' + (t === insertada ? ' on' : '') + '" aria-pressed="' + (t === insertada) + '">' + esc(t) + '</button>';
+    }
+    if (orden.length > 3) html += '<button type="button" class="otras" id="otras">↻ Otras opciones</button>';
+    $('chips').innerHTML = html;
   }
   $('chips').addEventListener('click', function (e) {
-    var c = sube(e.target, 'chip'); if (!c) return;
-    var t = c.textContent, i = elegidas.indexOf(t);
-    if (i >= 0) elegidas.splice(i, 1); else elegidas.push(t);
-    c.className = 'chip' + (i < 0 ? ' on' : ''); c.setAttribute('aria-pressed', String(i < 0));
-    validar();
+    if (sube(e.target, 'otras')) { desde = (desde + 3) % orden.length; pintarSugerencias(); return; }
+    var c = sube(e.target, 'sug'); if (!c) return;
+    var t = c.textContent, area = $('texto'), actual = area.value.trim();
+    // Cambia de frase sin pisar lo que la persona escribió ella misma.
+    if (!actual || area.value === insertada) area.value = t;
+    else if (actual.indexOf(t) < 0) area.value = actual + ' ' + t;
+    insertada = (area.value === t) ? t : '';
+    pintarSugerencias(); validar();
   });
 
-  function textoFinal() {
-    var libre = $('texto').value.trim();
-    var frases = elegidas.join(' · ');
-    return (frases && libre) ? frases + '. ' + libre : (frases || libre);
-  }
+  function textoFinal() { return $('texto').value.trim(); }
   function validar() {
     var t = textoFinal(); $('cuenta').textContent = $('texto').value.length;
     var listo = estrellas > 0 && t.length >= 10 && $('autor').value.trim().length >= 1;

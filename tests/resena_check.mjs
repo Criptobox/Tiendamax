@@ -79,9 +79,20 @@ const nuevoCtx = async (vp) => {
     ok(t.img, 'la imagen del producto se ve');
     ok(t.btn && !t.paso2, 'sin estrellas no se puede publicar y el resto aún no se ve');
     ok(!pedidos.some(u => /tm-bundle|productos(-lite)?\.json|bundle\.css/.test(u)), 'no baja el bundle ni el catálogo: ' + pedidos.filter(u => /bundle|productos/.test(u)).join(' '));
-    // Dos toques: 5 estrellas y una frase.
+    // Dos toques: 5 estrellas y una frase completa (no una etiqueta suelta).
     await p.click('.estrella[data-n="5"]');
-    await p.click('.chip:has-text("Funciona perfecto")');
+    const sugs = await p.evaluate(() => [...document.querySelectorAll('#chips .sug')].map(b => b.textContent));
+    ok(sugs.length === 3 && sugs.every(t => t.length > 25 && /[.]$/.test(t)), 'ofrece 3 frases completas: ' + JSON.stringify(sugs));
+    ok(await p.evaluate(() => document.getElementById('texto').value === ''), 'el cuadro empieza vacío: la frase se elige, no viene puesta');
+    await p.click('#otras');
+    const sugs2 = await p.evaluate(() => [...document.querySelectorAll('#chips .sug')].map(b => b.textContent));
+    ok(sugs2.length === 3 && sugs2.every(t => !sugs.includes(t)), '«Otras opciones» enseña otras tres distintas: ' + JSON.stringify(sugs2));
+    await p.click('#chips .sug');
+    const elegida = sugs2[0];
+    ok(await p.evaluate(() => document.getElementById('texto').value) === elegida, 'tocar una frase la copia al cuadro de texto');
+    await p.click('#chips .sug:nth-of-type(2)');
+    ok(await p.evaluate(() => document.getElementById('texto').value) === sugs2[1], 'tocar otra reemplaza la anterior en vez de juntarlas');
+    await p.click('#chips .sug:nth-of-type(2)');
     const listo = await p.evaluate(() => !document.getElementById('enviar').disabled);
     ok(listo, 'con 5 ★ y una frase ya se puede publicar');
     await p.click('#enviar');
@@ -90,7 +101,7 @@ const nuevoCtx = async (vp) => {
     ok(put, 'no se publicó nada en /resenas');
     if (put) {
         ok(cumpleRegla(put.body), 'lo publicado no pasa la regla de Firebase: ' + JSON.stringify(put.body));
-        ok(put.body.estrellas === 5 && put.body.texto === 'Funciona perfecto' && put.body.autor === 'Mario', 'contenido: ' + JSON.stringify(put.body));
+        ok(put.body.estrellas === 5 && put.body.texto === sugs2[1] && put.body.autor === 'Mario', 'contenido: ' + JSON.stringify(put.body));
         ok(put.body.comprador === true, 'desde el enlace del seguimiento sale marcada como compra');
         ok(put.body.productoNombre === 'Inversor Tataliken 4000W', 'productoNombre: ' + put.body.productoNombre);
         ok(put.body.ts && put.body.ts['.sv'] === 'timestamp', 'la hora la pone el servidor (un móvil con la hora mal no ve su reseña rechazada)');
@@ -108,10 +119,11 @@ const nuevoCtx = async (vp) => {
     await p.goto(`http://localhost:${PUERTO}/resena.html?p=${PID}`, { waitUntil: 'networkidle' });
     await p.click('.estrella[data-n="2"]');
     const r = await p.evaluate(() => ({ malo: getComputedStyle(document.getElementById('malo')).display !== 'none',
-        wa: document.getElementById('waMalo').href, chips: [...document.querySelectorAll('.chip')].map(c => c.textContent),
+        wa: document.getElementById('waMalo').href, chips: [...document.querySelectorAll('#chips .sug')].map(c => c.textContent),
         h1: document.getElementById('titulo').textContent, ancho: document.documentElement.scrollWidth }));
     ok(r.malo && /wa\.me\/5354320170/.test(r.wa) && decodeURIComponent(r.wa).includes('Inversor Tataliken 4000W'), 'con 2 ★ ofrece WhatsApp nombrando el producto: ' + r.wa);
-    ok(r.chips.includes('No funciona bien') && !r.chips.includes('Lo recomiendo'), 'con 2 ★ las frases son de queja: ' + r.chips.join(', '));
+    const MALAS = ['Tardó mucho en llegar y tuve que estar insistiendo.', 'No funciona como esperaba.', 'No era lo que esperaba por lo que vi en las fotos.', 'Tuve un problema con el producto y todavía espero solución.', 'La atención fue lenta y me quedé con dudas.'];
+    ok(r.chips.length === 3 && r.chips.every(t => MALAS.includes(t)), 'con 2 ★ las frases son de queja: ' + r.chips.join(', '));
     ok(/^¿Qué tal tu Inversor/.test(r.h1), 'sin nombre en el enlace el título empieza en mayúscula: ' + r.h1);
     ok(r.ancho <= 320, `a 320 px la página no se sale (${r.ancho})`);
     await ctx.close();
