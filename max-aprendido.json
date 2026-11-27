@@ -1,1 +1,10 @@
-{"ensenado": {}, "demanda": {}, "resueltas": {}}
+{
+  "ensenado": {
+    "protector de voltaje": { "id": "1793663513608", "ts": 1795749358638 }
+  },
+  "demanda": {
+    "router": { "n": 1, "ts": 1795749358638 },
+    "router wifi": { "n": 1, "ts": 1795749358638 }
+  },
+  "resueltas": {}
+}

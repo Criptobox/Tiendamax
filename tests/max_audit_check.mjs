@@ -47,6 +47,37 @@ const ask = (...hilo) => { const B = nuevo(); let r; for(const q of hilo) r = B.
 const hay = re => PRODS.some(p => re.test(p.nombre));
 const conStock = re => PRODS.some(p => re.test(p.nombre) && Number(p.stock) > 0);
 
+// ── 0. Prueba de estrés del 26-nov (14 preguntas, 4 fallos) ───────────────
+// «80W-90» (aceite de ENGRANAJES) no era una viscosidad que Max conociera: se quedaba en «80w 90», no
+// se filtraba y el Fanfaro CVT 8601 (sintético, caja automática) salía entre los minerales 80W-90.
+if(conStock(/Digear 80W-90/i)){
+    const a = ask('tienes aceite de transmisión 80W-90');
+    ok(a.nombres.length >= 1 && a.nombres.every(n => /80W-?90/i.test(n)), `«aceite de transmisión 80W-90» solo debe dar 80W-90: ${a.nombres}`);
+    ok(!a.nombres.some(n => /CVT/i.test(n)), 'el aceite CVT (caja automática) no es un 80W-90: dañaría una caja manual');
+    ok(/80W-90/.test(a.texto), `la respuesta nombra la viscosidad pedida: ${a.texto.slice(0, 80)}`);
+}
+// Varios productos que casan y NINGUNO con stock: se dice claro, no «Encontré 6 productos que coinciden».
+if(!conStock(/router|Tenda AC6|Wavlink/i) && PRODS.filter(p => /Tenda AC6|Wavlink AC1200|hEX RB750/i.test(p.nombre)).length >= 2){
+    // Con los sinónimos reales, que es como contesta Max en la tienda («router wifi» → los routers).
+    const B = nuevo(); B.ponerSinonimos(JSON.parse(readFileSync(join(RAIZ, 'max-sinonimos.json'), 'utf8')));
+    const r = B.responder('quiero un router wifi'), tx = limpio(r.response);
+    ok(/no tengo ninguno|agotad/i.test(tx) && !/Encontré/i.test(tx), `todo agotado: debe decirlo claro, dio: ${tx.slice(0, 140)}`);
+    ok(!/Encontré \d+ producto/i.test(tx), 'con todo agotado no se anuncia «Encontré N productos»');
+}
+// «Apagones» a secas: dos caminos + lo que hay + una pregunta; nunca la hamaca (su descripción dice «ideal para los apagones»).
+if(conStock(/BLUETTI AC180/i)){
+    for(const q of ['¿me recomiendas algo para los apagones?', 'qué me recomiendas para el apagón']){
+        const a = ask(q);
+        ok(a.intent === 'apagones', `«${q}» debe ir por apagones, fue ${a.intent}`);
+        ok(/dos caminos/i.test(a.texto) && /luces y el celular/i.test(a.texto), `«${q}»: debe explicar los caminos y preguntar qué alimentar: ${a.texto.slice(0, 100)}`);
+        ok(a.nombres.length >= 1 && !a.nombres.some(n => /hamaca/i.test(n)) && a.nombres.some(n => /BLUETTI/i.test(n)), `«${q}»: energía sí, hamaca no: ${a.nombres}`);
+    }
+    // Lo que nombra un tipo de producto sigue su camino (no se roba).
+    ok(ask('cuánto dura una batería en un apagón').intent === 'autonomia', 'la autonomía en un apagón sigue siendo autonomía');
+    ok(ask('inversor para el apagón').intent !== 'apagones', '«inversor para el apagón» nombra un producto: no es la respuesta genérica');
+    ok(/solar/i.test(ask('💡 Sistema solar básico').texto), 'el botón «Sistema solar básico» lleva al sistema solar');
+}
+
 // ── 1. Aceites y anticongelante ─────────────────────────────────────────
 // Las familias se reconocen por el nombre de la subcategoría. Si el dueño la renombra y la
 // expresión ya no la ve, la familia queda sin productos y Max pasa a ofrecer otra cosa
