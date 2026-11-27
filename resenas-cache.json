@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-11-27T04:11:56.909612+00:00",
-  "total": 6,
+  "actualizado": "2026-11-27T08:04:47.189450+00:00",
+  "total": 7,
   "por_producto": {
     "1777924173211": [
       {
@@ -77,6 +77,19 @@
         "fecha": "23 nov 2026",
         "productoId": "1790963608288",
         "productoNombre": "Binoculares de Visión Nocturna Digital 4K 36MP",
+        "comprador": false
+      }
+    ],
+    "1795330662692": [
+      {
+        "id": 1795752792435,
+        "ts": 1795752792956,
+        "autor": "Yosvani",
+        "texto": "La compré para el inversor de la casa y en los apagones aguanta bien, me mantiene las luces y el ventilador sin problema. Pesa lo suyo, pero se siente sólida. Hay que cargarla completa antes de usarla la primera vez. Hasta ahora todo bien.",
+        "estrellas": 4,
+        "fecha": "26 nov 2026",
+        "productoId": "1795330662692",
+        "productoNombre": "Batería Recargable de Litio LiFePO4 POERUNI 12.8V 100Ah (1280Wh) | Batería de Ciclo Profundo con BMS Integrado",
         "comprador": false
       }
     ]
